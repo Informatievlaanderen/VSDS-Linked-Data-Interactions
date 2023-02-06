@@ -9,9 +9,9 @@
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <modules>
-        <module>linked-data-transformer-orchestrator-api</module>
-        <module>linked-data-transformer-orchestrator-application</module>
-        <module>linked-data-transformer-orchestrator-built-in</module>
+        <module>linked-data-transformation-orchestrator-api</module>
+        <module>linked-data-transformation-orchestrator-application</module>
+        <module>linked-data-transformation-orchestrator-starter-kit</module>
     </modules>
 
     <properties>
