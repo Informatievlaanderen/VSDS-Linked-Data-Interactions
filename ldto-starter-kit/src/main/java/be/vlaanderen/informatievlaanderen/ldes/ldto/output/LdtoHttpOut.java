@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
@@ -16,7 +17,6 @@ import java.util.Objects;
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter.getLang;
 
-@Component
 public class LdtoHttpOut implements LdtoOutput {
 	private final RestTemplate restTemplate;
 	private final HttpHeaders headers;

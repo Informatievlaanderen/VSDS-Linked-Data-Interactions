@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>be.vlaanderen.informatievlaanderen.vsds</groupId>
-    <artifactId>linked-data-transformer-orchestrator</artifactId>
+    <artifactId>linked-data-transformation-orchestrator</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <modules>
-        <module>linked-data-transformation-orchestrator-api</module>
-        <module>linked-data-transformation-orchestrator-application</module>
-        <module>linked-data-transformation-orchestrator-starter-kit</module>
+        <module>ldto-api</module>
+        <module>ldto-application</module>
+        <module>ldto-starter-kit</module>
     </modules>
 
     <properties>

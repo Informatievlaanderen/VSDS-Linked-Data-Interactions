@@ -8,7 +8,6 @@ import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -16,7 +15,6 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.CONTENT
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.DEFAULT_OUTPUT_LANG;
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter.getLang;
 
-@Component
 public class LdtoConsoleOut implements LdtoOutput {
 	private final Logger LOGGER = LoggerFactory.getLogger(LdtoConsoleOut.class);
 

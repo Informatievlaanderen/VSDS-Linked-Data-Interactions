@@ -6,14 +6,12 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.*;
 
-@Component
 public class SparqlConstructTransformer implements LdtoTransformer {
 	private final Query query;
 	private final boolean inferMode;
