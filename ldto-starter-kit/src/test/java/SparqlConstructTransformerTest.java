@@ -24,7 +24,8 @@ public class SparqlConstructTransformerTest {
 	void when_executeTransform_ExpectTransformedModel() {
 		Map<String, String> config = new HashMap<>();
 		config.put("query", constructQuery);
-		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(config);
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer();
+		sparqlConstructTransformer.init(config);
 
 		Model model = RDFParserBuilder.create().fromString(content).lang(Lang.NQUADS).toModel();
 
