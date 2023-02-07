@@ -10,8 +10,8 @@
     <version>1.0.0-SNAPSHOT</version>
     <modules>
         <module>ldto-api</module>
-        <module>ldto-application</module>
         <module>ldto-starter-kit</module>
+        <module>ldto-application</module>
     </modules>
 
     <properties>
