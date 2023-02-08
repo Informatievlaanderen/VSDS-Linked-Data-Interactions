@@ -12,12 +12,12 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 
 	private final ExecutorService executorService;
 	private final List<LdtoTransformer> ldtoTransformers;
-	private final LdtoOutput ldtoOutput;
+	private final List<LdtoOutput> ldtoOutputs;
 
-	public ComponentExecutorImpl(List<LdtoTransformer> ldtoTransformers, LdtoOutput ldtoOutput) {
+	public ComponentExecutorImpl(List<LdtoTransformer> ldtoTransformers, List<LdtoOutput> ldtoOutputs) {
 		this.executorService = Executors.newSingleThreadExecutor();
 		this.ldtoTransformers = ldtoTransformers;
-		this.ldtoOutput = ldtoOutput;
+		this.ldtoOutputs = ldtoOutputs;
 	}
 
 	@Override
@@ -27,7 +27,9 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 			for (LdtoTransformer component: ldtoTransformers) {
 				transformedLinkedDataModel = component.execute(transformedLinkedDataModel);
 			}
-			ldtoOutput.sendLinkedData(transformedLinkedDataModel);
+			ldtoOutputs.parallelStream().forEach(ldtoOutput -> {
+				ldtoOutput.sendLinkedData(linkedDataModel);
+			});
 		});
 	}
 }

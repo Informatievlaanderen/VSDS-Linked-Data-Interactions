@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.CONTENT_TYPE;
@@ -20,10 +21,15 @@ public class LdtoConsoleOut implements LdtoOutput {
 
 	private Lang outputLanguage = DEFAULT_OUTPUT_LANG;
 
-	public LdtoConsoleOut(OrchestratorConfig config) {
-		if (config.getOutput().getConfig().containsKey(CONTENT_TYPE)) {
+	public LdtoConsoleOut(Map<String, String> config) {
+		init(config);
+	}
+
+	@Override
+	public void init(Map<String, String> config) {
+		if (config.containsKey(CONTENT_TYPE)) {
 			outputLanguage = getLang(
-					Objects.requireNonNull(MediaType.valueOf(config.getOutput().getConfig().get(CONTENT_TYPE))));
+					Objects.requireNonNull(MediaType.valueOf(config.get(CONTENT_TYPE))));
 		}
 	}
 

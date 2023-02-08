@@ -32,36 +32,41 @@ public class FlowAutoConfiguration {
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(LdtoOutput.class)
-	public LdtoOutput ldtoOutput(OrchestratorConfig orchestratorConfig, DefaultListableBeanFactory beanFactory)
-			throws ClassNotFoundException {
-		return (LdtoOutput) beanFactory.createBean(Class.forName(orchestratorConfig.getOutput().getName()));
-	}
-
-	public LdtoTransformer ldtoTransformer(String transformer, Map<String, String> config)
-			throws ClassNotFoundException {
-		LdtoTransformer ldtoTransformer = (LdtoTransformer) beanFactory.createBean(Class.forName(transformer));
-		ldtoTransformer.init(config);
-		return ldtoTransformer;
-	}
-
-	@Bean
-	public ComponentExecutor componentExecutor(final OrchestratorConfig orchestratorConfig, LdtoOutput ldtoOutput) {
+	public ComponentExecutor componentExecutor(final OrchestratorConfig orchestratorConfig) {
 		List<LdtoTransformer> ldtoTransformers = orchestratorConfig.getTransformers().stream()
-				.map(componentDefinition -> {
-					try {
-						return ldtoTransformer(componentDefinition.getName(), componentDefinition.getConfig());
-					} catch (ClassNotFoundException e) {
-						throw new RuntimeException(e);
-					}
-				})
-				.collect(Collectors.toList());
-		return new ComponentExecutorImpl(ldtoTransformers, ldtoOutput);
+				.map(componentDefinition -> ldtoTransformer(componentDefinition.getName(), componentDefinition.getConfig()))
+				.toList();
+		List<LdtoOutput> ldtoOutputs = orchestratorConfig.getOutputs().stream()
+				.map(componentDefinition -> ldtoOutput(componentDefinition.getName(), componentDefinition.getConfig()))
+				.toList();
+		return new ComponentExecutorImpl(ldtoTransformers, ldtoOutputs);
 	}
 
 	@Bean
 	public ModelHttpConverter memberConverter() {
 		return new ModelHttpConverter();
+	}
+
+	private LdtoTransformer ldtoTransformer(String className, Map<String, String> config) {
+		LdtoTransformer ldtoTransformer = null;
+		try {
+			ldtoTransformer = (LdtoTransformer) beanFactory.createBean(Class.forName(className));
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		ldtoTransformer.init(config);
+		return ldtoTransformer;
+	}
+
+	private LdtoOutput ldtoOutput(String className, Map<String, String> config) {
+		LdtoOutput ldtoOutput = null;
+		try {
+			ldtoOutput = (LdtoOutput) beanFactory.createBean(Class.forName(className));
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		ldtoOutput.init(config);
+		return ldtoOutput;
 	}
 
 }

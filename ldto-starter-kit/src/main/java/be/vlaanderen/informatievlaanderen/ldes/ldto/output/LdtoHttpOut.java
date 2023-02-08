@@ -12,29 +12,35 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter.getLang;
 
 public class LdtoHttpOut implements LdtoOutput {
-	private final RestTemplate restTemplate;
-	private final HttpHeaders headers;
-	private final String targetURL;
+	private RestTemplate restTemplate;
+	private HttpHeaders headers;
+	private String targetURL;
 	private Lang outputLanguage = DEFAULT_OUTPUT_LANG;
 
 
-	public LdtoHttpOut(OrchestratorConfig config) {
+	public LdtoHttpOut(Map<String, String> config) {
+		init(config);
+	}
+
+	@Override
+	public void init(Map<String, String> config) {
 		this.restTemplate = new RestTemplate();
 		this.headers = new HttpHeaders();
 
-		if (config.getOutput().getConfig().containsKey(CONTENT_TYPE)) {
+		if (config.containsKey(CONTENT_TYPE)) {
 			outputLanguage = getLang(
-					Objects.requireNonNull(MediaType.valueOf(config.getOutput().getConfig().get(CONTENT_TYPE))));
+					Objects.requireNonNull(MediaType.valueOf(config.get(CONTENT_TYPE))));
 		}
 
 		headers.setContentType(MediaType.valueOf(outputLanguage.getContentType().getContentTypeStr()));
-		targetURL = Objects.requireNonNull(config.getOutput().getConfig().get(ENDPOINT));
+		targetURL = Objects.requireNonNull(config.get(ENDPOINT));
 	}
 
 	@Override

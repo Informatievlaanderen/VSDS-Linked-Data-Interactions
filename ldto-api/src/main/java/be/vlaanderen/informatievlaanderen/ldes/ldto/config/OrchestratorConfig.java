@@ -11,7 +11,7 @@ import java.util.List;
 public class OrchestratorConfig {
 	private ComponentDefinition input;
 	private List<ComponentDefinition> transformers;
-	private ComponentDefinition output;
+	private List<ComponentDefinition> outputs;
 
 	public ComponentDefinition getInput() {
 		return input;
@@ -29,20 +29,19 @@ public class OrchestratorConfig {
 		this.transformers = transformers;
 	}
 
-	public ComponentDefinition getOutput() {
-		return output;
+	public List<ComponentDefinition> getOutputs() {
+		return outputs;
 	}
 
-	public void setOutput(ComponentDefinition output) {
-		this.output = output;
+	public void setOutputs(List<ComponentDefinition> outputs) {
+		this.outputs = outputs;
 	}
 
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		return "OrchestratorConfig{" +
 				"input=" + input +
-				", components=" + transformers +
-				", output=" + output +
+				", transformers=" + transformers +
+				", outputs=" + outputs +
 				'}';
 	}
 }
