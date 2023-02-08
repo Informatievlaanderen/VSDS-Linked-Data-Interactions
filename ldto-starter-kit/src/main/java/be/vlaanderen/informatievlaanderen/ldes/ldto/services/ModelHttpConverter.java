@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldto.converter;
+package be.vlaanderen.informatievlaanderen.ldes.ldto.services;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -16,8 +16,8 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter.fromString;
-import static be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter.getLang;
+import static be.vlaanderen.informatievlaanderen.ldes.ldto.services.RdfModelConverter.fromString;
+import static be.vlaanderen.informatievlaanderen.ldes.ldto.services.RdfModelConverter.getLang;
 import static org.apache.jena.riot.RDFFormat.NQUADS;
 
 public class ModelHttpConverter extends AbstractHttpMessageConverter<Model> {

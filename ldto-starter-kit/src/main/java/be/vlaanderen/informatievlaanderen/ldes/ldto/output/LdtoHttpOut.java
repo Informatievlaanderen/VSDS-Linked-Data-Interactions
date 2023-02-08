@@ -1,22 +1,19 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldto.output;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldto.config.OrchestratorConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter;
+import be.vlaanderen.informatievlaanderen.ldes.ldto.services.RdfModelConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.types.LdtoOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter.getLang;
+import static be.vlaanderen.informatievlaanderen.ldes.ldto.services.RdfModelConverter.getLang;
 
 public class LdtoHttpOut implements LdtoOutput {
 	private RestTemplate restTemplate;

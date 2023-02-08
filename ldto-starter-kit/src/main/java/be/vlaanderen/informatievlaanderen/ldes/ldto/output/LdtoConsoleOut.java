@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldto.output;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldto.config.OrchestratorConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter;
+import be.vlaanderen.informatievlaanderen.ldes.ldto.services.RdfModelConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.types.LdtoOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -14,7 +13,7 @@ import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.CONTENT_TYPE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.DEFAULT_OUTPUT_LANG;
-import static be.vlaanderen.informatievlaanderen.ldes.ldto.converter.RdfModelConverter.getLang;
+import static be.vlaanderen.informatievlaanderen.ldes.ldto.services.RdfModelConverter.getLang;
 
 public class LdtoConsoleOut implements LdtoOutput {
 	private final Logger LOGGER = LoggerFactory.getLogger(LdtoConsoleOut.class);
