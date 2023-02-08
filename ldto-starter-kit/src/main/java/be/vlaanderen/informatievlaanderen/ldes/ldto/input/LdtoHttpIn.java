@@ -3,13 +3,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldto.input;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.types.LdtoInput;
 import org.apache.jena.rdf.model.Model;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@RestController
-@ConditionalOnProperty(name = "orchestrator.input.name", havingValue = "ldtoHttpIn")
+@RequestMapping
 public class LdtoHttpIn implements LdtoInput {
 
 	private final ComponentExecutor componentExecutor;
