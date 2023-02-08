@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldto.converter;
+package be.vlaanderen.informatievlaanderen.ldes.ldto.services;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;

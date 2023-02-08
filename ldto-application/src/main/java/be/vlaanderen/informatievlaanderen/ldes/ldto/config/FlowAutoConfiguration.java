@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldto.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldto.converter.ModelHttpConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.services.ComponentExecutorImpl;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.types.ComponentDefinition;
@@ -15,8 +14,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Configuration
 @ComponentScan
@@ -43,11 +40,6 @@ public class FlowAutoConfiguration {
 				.map(this::ldtoOutput)
 				.toList();
 		return new ComponentExecutorImpl(ldtoTransformers, ldtoOutputs);
-	}
-
-	@Bean
-	public ModelHttpConverter memberConverter() {
-		return new ModelHttpConverter();
 	}
 
 	private LdtoTransformer ldtoTransformer(ComponentDefinition componentDefinition) {
