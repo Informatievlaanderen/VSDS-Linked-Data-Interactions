@@ -16,18 +16,12 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.services.RdfModelConverter.getLang;
 
 public class LdtoHttpOut implements LdtoOutput {
-	private RestTemplate restTemplate;
-	private HttpHeaders headers;
-	private String targetURL;
+	private final RestTemplate restTemplate;
+	private final HttpHeaders headers;
+	private final String targetURL;
 	private Lang outputLanguage = DEFAULT_OUTPUT_LANG;
 
-
 	public LdtoHttpOut(Map<String, String> config) {
-		init(config);
-	}
-
-	@Override
-	public void init(Map<String, String> config) {
 		this.restTemplate = new RestTemplate();
 		this.headers = new HttpHeaders();
 

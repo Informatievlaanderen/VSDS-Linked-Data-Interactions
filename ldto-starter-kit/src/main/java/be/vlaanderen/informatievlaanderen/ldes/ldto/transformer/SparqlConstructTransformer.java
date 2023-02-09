@@ -13,11 +13,10 @@ import java.util.Objects;
 import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.*;
 
 public class SparqlConstructTransformer implements LdtoTransformer {
-	private Query query;
-	private boolean inferMode;
+	private final Query query;
+	private final boolean inferMode;
 
-	@Override
-	public void init(Map<String, String> config) {
+	public SparqlConstructTransformer(Map<String, String> config) {
 		this.query = QueryFactory.create(Objects.requireNonNull(config.get(QUERY), QUERY_VALIDATION_MSG));
 		this.inferMode = Boolean.parseBoolean(config.getOrDefault(INFER, String.valueOf(false)));
 	}

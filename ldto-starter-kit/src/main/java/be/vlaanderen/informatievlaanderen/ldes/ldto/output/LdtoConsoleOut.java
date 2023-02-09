@@ -21,11 +21,6 @@ public class LdtoConsoleOut implements LdtoOutput {
 	private Lang outputLanguage = DEFAULT_OUTPUT_LANG;
 
 	public LdtoConsoleOut(Map<String, String> config) {
-		init(config);
-	}
-
-	@Override
-	public void init(Map<String, String> config) {
 		if (config.containsKey(CONTENT_TYPE)) {
 			outputLanguage = getLang(
 					Objects.requireNonNull(MediaType.valueOf(config.get(CONTENT_TYPE))));

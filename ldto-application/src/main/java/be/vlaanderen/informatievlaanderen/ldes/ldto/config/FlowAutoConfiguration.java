@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldto.types.LdtoOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.types.LdtoTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,7 +27,7 @@ public class FlowAutoConfiguration {
 	@ConditionalOnMissingBean(LdtoInput.class)
 	public LdtoInput ldtoInput(OrchestratorConfig orchestratorConfig)
 			throws ClassNotFoundException {
-		return (LdtoInput) beanFactory.createBean(Class.forName(orchestratorConfig.getInput().getName()));
+		return (LdtoInput) getBean(orchestratorConfig.getInput().getName(), orchestratorConfig.getInput().getConfig());
 	}
 
 	@Bean
@@ -44,10 +45,7 @@ public class FlowAutoConfiguration {
 
 	private LdtoTransformer ldtoTransformer(ComponentDefinition componentDefinition) {
 		try {
-			LdtoTransformer ldtoTransformer = (LdtoTransformer) beanFactory.createBean(Class.forName(
-					componentDefinition.getName()));
-			ldtoTransformer.init(componentDefinition.getConfig());
-			return ldtoTransformer;
+			return (LdtoTransformer) getBean(componentDefinition.getName(), componentDefinition.getConfig());
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -55,13 +53,20 @@ public class FlowAutoConfiguration {
 
 	private LdtoOutput ldtoOutput(ComponentDefinition componentDefinition) {
 		try {
-			LdtoOutput ldtoOutput = (LdtoOutput) beanFactory.createBean(Class.forName(
-					componentDefinition.getName()));
-			ldtoOutput.init(componentDefinition.getConfig());
-			return ldtoOutput;
+			return (LdtoOutput) getBean(componentDefinition.getName(), componentDefinition.getConfig());
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private Object getBean(String beanName, Object... args) throws ClassNotFoundException {
+		if (!beanFactory.containsBeanDefinition(beanName)) {
+			GenericBeanDefinition gbd = new GenericBeanDefinition();
+			gbd.setBeanClass(Class.forName(beanName));
+
+			beanFactory.registerBeanDefinition(beanName, gbd);
+		}
+		return beanFactory.getBean(beanName, args);
 	}
 
 }
