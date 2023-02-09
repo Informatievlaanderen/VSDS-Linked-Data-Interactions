@@ -19,7 +19,7 @@ public class StarterPackAutoConfiguration {
 
 	@Bean
 	@Qualifier("be.vlaanderen.informatievlaanderen.ldes.ldto.input.LdtoHttpIn")
-	public LdtoHttpIn ldtoHttpIn(ComponentExecutor ComponentExecutor) {
+	public LdtoHttpIn ldtoHttpIn(ComponentExecutor componentExecutor) {
 		// Workaround to lazy load the LdtoHttpIn RestController only when configured as an LdtoInput
 		@RestController
 		class LdtoHttpInBean extends LdtoHttpIn {
@@ -27,6 +27,6 @@ public class StarterPackAutoConfiguration {
 				super(componentExecutor);
 			}
 		}
-		return new LdtoHttpInBean(ComponentExecutor);
+		return new LdtoHttpInBean(componentExecutor);
 	}
 }
