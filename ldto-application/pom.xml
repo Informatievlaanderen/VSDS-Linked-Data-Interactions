@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.vsds</groupId>
-            <artifactId>sparql-construct</artifactId>
+            <artifactId>sparql-construct-wrapper</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

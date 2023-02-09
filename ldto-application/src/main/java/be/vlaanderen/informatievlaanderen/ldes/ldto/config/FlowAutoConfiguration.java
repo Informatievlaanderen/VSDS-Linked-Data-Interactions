@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldto.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldto.TransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.services.ComponentExecutorImpl;
 import be.vlaanderen.informatievlaanderen.ldes.ldto.types.ComponentDefinition;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @ComponentScan
@@ -27,7 +29,7 @@ public class FlowAutoConfiguration {
 	@ConditionalOnMissingBean(LdtoInput.class)
 	public LdtoInput ldtoInput(OrchestratorConfig orchestratorConfig)
 			throws ClassNotFoundException {
-		return (LdtoInput) getBean(orchestratorConfig.getInput().getName(), orchestratorConfig.getInput().getConfig());
+		return (LdtoInput) getIOBean(orchestratorConfig.getInput().getName(), orchestratorConfig.getInput().getConfig());
 	}
 
 	@Bean
@@ -38,28 +40,34 @@ public class FlowAutoConfiguration {
 				.toList();
 		List<LdtoOutput> ldtoOutputs = orchestratorConfig.getOutputs()
 				.stream()
-				.map(this::ldtoOutput)
+				.map(this::ldtoIO)
 				.toList();
 		return new ComponentExecutorImpl(ldtoTransformers, ldtoOutputs);
 	}
 
 	private LdtoTransformer ldtoTransformer(ComponentDefinition componentDefinition) {
 		try {
-			return (LdtoTransformer) getBean(componentDefinition.getName(), componentDefinition.getConfig());
+			return getBean(componentDefinition.getName(), componentDefinition.getConfig());
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private LdtoOutput ldtoOutput(ComponentDefinition componentDefinition) {
+	private LdtoOutput ldtoIO(ComponentDefinition componentDefinition) {
 		try {
-			return (LdtoOutput) getBean(componentDefinition.getName(), componentDefinition.getConfig());
+			return (LdtoOutput) getIOBean(componentDefinition.getName(), componentDefinition.getConfig());
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private Object getBean(String beanName, Object... args) throws ClassNotFoundException {
+	private LdtoTransformer getBean(String beanName, Map<String, String> config) throws ClassNotFoundException {
+		TransformerConfigurator transformerConfigurator = (TransformerConfigurator) beanFactory.getBean(beanName);
+		return transformerConfigurator.configure(config);
+	}
+
+
+	private Object getIOBean(String beanName, Object... args) throws ClassNotFoundException {
 		if (!beanFactory.containsBeanDefinition(beanName)) {
 			GenericBeanDefinition gbd = new GenericBeanDefinition();
 			gbd.setBeanClass(Class.forName(beanName));
@@ -68,5 +76,4 @@ public class FlowAutoConfiguration {
 		}
 		return beanFactory.getBean(beanName, args);
 	}
-
 }
