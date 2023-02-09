@@ -30,19 +30,21 @@
             <artifactId>ldto-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.vsds.linked-data-transformation-orchestrator</groupId>
+            <artifactId>ldto-starter-kit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>starter-kit</id>
-            <dependencies>
-                <dependency>
-                    <groupId>be.vlaanderen.informatievlaanderen.vsds.linked-data-transformation-orchestrator</groupId>
-                    <artifactId>ldto-starter-kit</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

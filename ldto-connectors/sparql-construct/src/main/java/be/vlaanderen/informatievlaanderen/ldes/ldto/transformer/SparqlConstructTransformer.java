@@ -10,9 +10,11 @@ import org.apache.jena.rdf.model.Model;
 import java.util.Map;
 import java.util.Objects;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldto.LdtoConstants.*;
-
 public class SparqlConstructTransformer implements LdtoTransformer {
+	public static final String QUERY = "query";
+	public static final String QUERY_VALIDATION_MSG = "Must provide a valid construct query";
+	public static final String INFER = "infer";
+
 	private final Query query;
 	private final boolean inferMode;
 

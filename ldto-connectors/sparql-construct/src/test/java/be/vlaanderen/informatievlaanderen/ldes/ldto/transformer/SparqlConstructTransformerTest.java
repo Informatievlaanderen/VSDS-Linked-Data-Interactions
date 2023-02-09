@@ -1,4 +1,5 @@
-import be.vlaanderen.informatievlaanderen.ldes.ldto.transformer.SparqlConstructTransformer;
+package be.vlaanderen.informatievlaanderen.ldes.ldto.transformer;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;

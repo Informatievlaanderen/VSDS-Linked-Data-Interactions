@@ -12,6 +12,8 @@
         <module>ldto-api</module>
         <module>ldto-starter-kit</module>
         <module>ldto-application</module>
+        <module>ldto-connectors</module>
+        <module>ldto-connectors/sparql-construct</module>
     </modules>
 
     <properties>
