@@ -35,6 +35,11 @@
             <artifactId>ldto-starter-kit</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.vsds</groupId>
+            <artifactId>sparql-construct</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
