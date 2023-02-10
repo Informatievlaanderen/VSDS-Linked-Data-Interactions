@@ -23,6 +23,11 @@ public class SparqlConstructTransformer implements LdtoTransformer {
 		this.inferMode = Boolean.parseBoolean(config.getOrDefault(INFER, String.valueOf(false)));
 	}
 
+	public SparqlConstructTransformer(Query query, boolean inferMode) {
+		this.query = query;
+		this.inferMode = inferMode;
+	}
+
 	public Model execute(Model linkedDataModel) {
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, linkedDataModel)) {
 			Model resultModel = qexec.execConstruct();

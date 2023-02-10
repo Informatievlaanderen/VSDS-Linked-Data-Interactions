@@ -14,7 +14,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Configuration
 @ComponentScan
@@ -45,7 +49,7 @@ public class FlowAutoConfiguration {
 
 	private LdtoTransformer ldtoTransformer(ComponentDefinition componentDefinition) {
 		try {
-			return (LdtoTransformer) getBean(componentDefinition.getName(), componentDefinition.getConfig());
+			return (LdtoTransformer) getClass(componentDefinition.getName(), componentDefinition.getConfig());
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -53,8 +57,31 @@ public class FlowAutoConfiguration {
 
 	private LdtoOutput ldtoOutput(ComponentDefinition componentDefinition) {
 		try {
-			return (LdtoOutput) getBean(componentDefinition.getName(), componentDefinition.getConfig());
+			return (LdtoOutput) getClass(componentDefinition.getName(), componentDefinition.getConfig());
 		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private Object getClass(String beanName, Object... args) throws ClassNotFoundException {
+		try {
+			Constructor<?>[] constructors = Class.forName(beanName).getConstructors();
+
+			if (Arrays.stream(args).noneMatch(Objects::isNull)) {
+				return Arrays.stream(constructors)
+						.filter(constructor -> matchesConstructor(constructor, args))
+						.findFirst()
+						.orElseThrow()
+						.newInstance(args);
+			}
+			else {
+				return Arrays.stream(constructors)
+						.filter(constructor -> constructor.getParameterCount() == 0)
+						.findFirst()
+						.orElseThrow(() -> new RuntimeException("No config was defined for " + beanName + ". No default contructor present to fall back on"));
+			}
+
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -66,7 +93,22 @@ public class FlowAutoConfiguration {
 
 			beanFactory.registerBeanDefinition(beanName, gbd);
 		}
+
 		return beanFactory.getBean(beanName, args);
+	}
+
+	private boolean matchesConstructor(Constructor c, Object... args) {
+		if (c.getParameterCount() != args.length) {
+			return false;
+		}
+
+		for (int i=0; i < c.getParameterCount(); i++) {
+			if (c.getParameterTypes()[i].isAssignableFrom(args[i].getClass())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

@@ -1,1 +1,0 @@
-java -cp "ldto-application.jar" -Dloader.path=plugins/ org.springframework.boot.loader.PropertiesLauncher
