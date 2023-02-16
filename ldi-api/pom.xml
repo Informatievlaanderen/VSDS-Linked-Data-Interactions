@@ -10,8 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-    <artifactId>ldio-api</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>ldi-api</artifactId>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
