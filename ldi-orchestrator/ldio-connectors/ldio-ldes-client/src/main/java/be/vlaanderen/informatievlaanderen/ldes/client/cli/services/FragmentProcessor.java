@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.client.converters.ModelConverter;
 import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.UnparseableFragmentException;
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesFragment;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,19 +16,16 @@ import java.time.temporal.ChronoUnit;
 import static java.lang.Thread.sleep;
 
 public class FragmentProcessor {
-
+	private final Logger logger = LoggerFactory.getLogger(FragmentProcessor.class);
 	private static final Logger LOGGER = LoggerFactory.getLogger(FragmentProcessor.class);
 	protected final LdesService ldesService;
-	private final PrintStream printStream;
-	private final Lang destinationFormat;
+	private final ComponentExecutor componentExecutor;
 	private final long maxPollingInterval;
 	private LocalDateTime nextExpire;
 
-	public FragmentProcessor(LdesService ldesService, PrintStream printStream, Lang destinationFormat,
-			long maxPollingInterval) {
+	public FragmentProcessor(LdesService ldesService, ComponentExecutor componentExecutor, long maxPollingInterval) {
 		this.ldesService = ldesService;
-		this.printStream = printStream;
-		this.destinationFormat = destinationFormat;
+		this.componentExecutor = componentExecutor;
 		this.maxPollingInterval = maxPollingInterval;
 		this.nextExpire = LocalDateTime.now().plusSeconds(maxPollingInterval);
 	}
@@ -38,8 +36,7 @@ public class FragmentProcessor {
 			if (ldesService.hasFragmentsToProcess()) {
 				LdesFragment fragment = ldesService.processNextFragment();
 				LOGGER.info("Fragment {} has {} member(s)", fragment.getFragmentId(), fragment.getMembers().size());
-				fragment.getMembers().forEach(member -> printStream
-						.println(ModelConverter.convertModelToString(member.getMemberModel(), destinationFormat)));
+				fragment.getMembers().forEach(member -> componentExecutor.transformLinkedData(member.getMemberModel()));
 				changeNextExpire(fragment.getExpirationDate());
 
 			} else if (nextExpire.isAfter(LocalDateTime.now())) {
@@ -49,7 +46,7 @@ public class FragmentProcessor {
 				sleep(sleepDuration);
 			}
 		} catch (UnparseableFragmentException ex) {
-			printStream.println(ex.getMessage());
+			logger.error(ex.getMessage());
 			throw ex;
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();

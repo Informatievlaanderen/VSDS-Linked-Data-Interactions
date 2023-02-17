@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class ComponentDefinition {
 	private String name;
-	private Map<String, String> config;
+	private ComponentProperties config;
 
 	public String getName() {
 		return name;
@@ -14,18 +14,12 @@ public class ComponentDefinition {
 		this.name = name;
 	}
 
-	public Map<String, String> getConfig() {
+	public ComponentProperties getConfig() {
 		return config;
 	}
 
 	public void setConfig(Map<String, String> config) {
-		this.config = config;
+		this.config = new ComponentProperties(config);
 	}
 
-	@Override public String toString() {
-		return "ComponentDefinition{" +
-				"name='" + name + '\'' +
-				", config=" + config +
-				'}';
-	}
 }

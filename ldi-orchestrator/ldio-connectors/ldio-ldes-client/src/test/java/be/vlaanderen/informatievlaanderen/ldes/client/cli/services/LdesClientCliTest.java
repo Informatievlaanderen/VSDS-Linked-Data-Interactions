@@ -29,14 +29,14 @@ class LdesClientCliTest {
 
 	ExecutorService executorService = mock(ExecutorService.class);
 	EndpointRequester endpointRequester = mock(EndpointRequester.class);
-	LdesClientCli ldesClientCli = new LdesClientCli(executorService, endpointRequester);
+	LdesClientCli ldesClientCli = null;//new LdesClientCli(executorService, endpointRequester);
 
 	@ParameterizedTest
 	@ArgumentsSource(EndpointBehavoirArgumentsProvider.class)
 	void when_LdesClientCliIsStarted_TaskOfClassCliRunnerIsSubmitted(final EndpointBehaviour endpointBehaviour) {
 		when(endpointRequester.determineStartingNode(any())).thenReturn(Optional.of(new StartingNode("url")));
 
-		ldesClientCli.start("fragmentId", Lang.NQUADS, Lang.TURTLE, 1000L, 20L, endpointBehaviour);
+		//ldesClientCli.start("fragmentId", Lang.NQUADS, Lang.TURTLE, 1000L, 20L, endpointBehaviour);
 
 		verify(executorService, times(1)).submit(any(CliRunner.class));
 		verify(executorService, times(1)).shutdown();

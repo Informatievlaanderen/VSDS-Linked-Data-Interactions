@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import org.apache.jena.query.Query;
@@ -29,9 +30,9 @@ public class LdioSparqlConstructAutoConfigure {
 		public static final String INFER = "infer";
 
 		@Override
-		public LdiComponent configure(Map<String, String> config) {
-			Query query = QueryFactory.create(Objects.requireNonNull(config.get(QUERY), QUERY_VALIDATION_MSG));
-			boolean inferMode = Boolean.parseBoolean(config.getOrDefault(INFER, String.valueOf(false)));
+		public LdiComponent configure(ComponentProperties config) {
+			Query query = QueryFactory.create(Objects.requireNonNull(config.getProperty(QUERY), QUERY_VALIDATION_MSG));
+			boolean inferMode = config.getOptionalProperty(INFER).map(Boolean::parseBoolean).orElse(false);
 			return new SparqlConstructTransformer(query, inferMode);
 		}
 	}

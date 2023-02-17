@@ -6,36 +6,29 @@ import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.Endpoint
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.Endpoint;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.StartingNode;
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import org.apache.jena.riot.Lang;
-import org.springframework.stereotype.Component;
 
-import java.io.PrintStream;
 import java.util.concurrent.ExecutorService;
 
-@Component
-public class LdesClientCli {
+public class LdesClientCli implements LdiInput {
 
-	private final ExecutorService executorService;
 	private final LdesService ldesService = LdesClientImplFactory.getLdesService();
 	private final EndpointRequester endpointRequester;
 
-	private static final PrintStream OUTPUT_STREAM = System.out;
-
-	public LdesClientCli(ExecutorService executorService, EndpointRequester endpointRequester) {
-		this.executorService = executorService;
-		this.endpointRequester = endpointRequester;
-	}
-
-	public void start(String fragmentId, Lang dataSourceFormat, Lang dataDestinationFormat, Long expirationInterval,
+	public LdesClientCli(ExecutorService executorService, EndpointRequester endpointRequester,
+			ComponentExecutor componentExecutor, String fragmentId, Lang dataSourceFormat, Long expirationInterval,
 			Long pollingInterval, EndpointBehaviour endpointBehaviour) {
+		this.endpointRequester = endpointRequester;
+
 		UnreachableEndpointStrategy unreachableEndpointStrategy = getUnreachableEndpointStrategy(endpointBehaviour,
 				fragmentId, pollingInterval);
 		ldesService.setDataSourceFormat(dataSourceFormat);
 		ldesService.setFragmentExpirationInterval(expirationInterval);
 		ldesService.queueFragment(getStartingUrl(fragmentId, dataSourceFormat));
 
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, OUTPUT_STREAM, dataDestinationFormat,
-				pollingInterval);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, pollingInterval);
 		EndpointChecker endpointChecker = new EndpointChecker(fragmentId);
 		CliRunner cliRunner = new CliRunner(fragmentProcessor, endpointChecker, unreachableEndpointStrategy);
 

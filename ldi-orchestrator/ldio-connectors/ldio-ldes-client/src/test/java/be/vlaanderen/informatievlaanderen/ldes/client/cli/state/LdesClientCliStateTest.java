@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.client.cli.services.WaitingStrate
 import be.vlaanderen.informatievlaanderen.ldes.client.config.LdesClientConfig;
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
 import be.vlaanderen.informatievlaanderen.ldes.client.state.LdesStateManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import org.apache.jena.riot.Lang;
 import org.junit.jupiter.api.Disabled;
 
@@ -20,8 +21,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @WireMockTest(httpPort = 10101)
 class LdesClientCliStateTest {
@@ -30,7 +30,7 @@ class LdesClientCliStateTest {
 	private final String fragment4 = "http://localhost:10101/exampleData?generatedAtTime=2022-05-04T00:00:00.000Z";
 	private final String fragment5 = "http://localhost:10101/exampleData?generatedAtTime=2022-05-05T00:00:00.000Z";
 
-	LdesClientConfig config = new LdesClientConfig();
+	private final ComponentExecutor componentExecutor = mock(ComponentExecutor.class);
 
 	@Disabled("in revision")
 	void whenLdesClientCliHasReplicated_thenNoFragmentsRemainInTheQueue() throws Exception {
@@ -43,7 +43,7 @@ class LdesClientCliStateTest {
 		ldesService.setFragmentExpirationInterval(1000L);
 		ldesService.queueFragment(fragment3);
 
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, System.out, Lang.TURTLE, 1L);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, 1L);
 		EndpointChecker endpointChecker = new EndpointChecker(fragment3);
 		CliRunner cliRunner = new CliRunner(fragmentProcessor, endpointChecker, new WaitingStrategy(20L));
 
@@ -70,7 +70,7 @@ class LdesClientCliStateTest {
 		ldesService.queueFragment(fragment3);
 		ldesService.getStateManager().clearState();
 
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, System.out, Lang.TURTLE, 1L);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, 1L);
 		EndpointChecker endpointChecker = new EndpointChecker(fragment3);
 		CliRunner cliRunner = new CliRunner(fragmentProcessor, endpointChecker, new WaitingStrategy(20L));
 

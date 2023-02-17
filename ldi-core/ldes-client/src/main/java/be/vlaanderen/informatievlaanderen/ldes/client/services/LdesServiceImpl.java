@@ -1,18 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.client.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.client.member.sqlite.Member;
 import be.vlaanderen.informatievlaanderen.ldes.client.state.LdesStateManager;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesFragment;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesMember;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import org.apache.jena.graph.TripleBoundary;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelExtract;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StatementTripleBoundary;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +17,9 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesConstants.W3ID_TREE_MEMBER;
-import static be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesConstants.W3ID_TREE_NODE;
-import static be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesConstants.W3ID_TREE_RELATION;
+import static be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesConstants.*;
 
-public class LdesServiceImpl implements LdesService, LdiInput {
+public class LdesServiceImpl implements LdesService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LdesServiceImpl.class);
 
@@ -117,7 +108,7 @@ public class LdesServiceImpl implements LdesService, LdiInput {
 	protected Stream<Statement> extractMembers(Model fragmentModel) {
 		StmtIterator memberIterator = fragmentModel.listStatements(ANY_RESOURCE, W3ID_TREE_MEMBER, ANY_RESOURCE);
 
-		return Stream.iterate(memberIterator, Iterator<Statement>::hasNext, UnaryOperator.identity())
+		return Stream.iterate(memberIterator, Iterator::hasNext, UnaryOperator.identity())
 				.map(Iterator::next);
 	}
 
@@ -160,11 +151,6 @@ public class LdesServiceImpl implements LdesService, LdiInput {
 	@Override
 	public Stream<Statement> extractRelations(Model fragmentModel) {
 		return Stream.iterate(fragmentModel.listStatements(ANY_RESOURCE, W3ID_TREE_RELATION, ANY_RESOURCE),
-				Iterator<Statement>::hasNext, UnaryOperator.identity()).map(Iterator::next);
-	}
-
-	@Override
-	public void passLinkedData(Model linkedDataModel) {
-
+				Iterator::hasNext, UnaryOperator.identity()).map(Iterator::next);
 	}
 }

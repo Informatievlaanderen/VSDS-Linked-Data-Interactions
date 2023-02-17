@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
@@ -30,23 +31,19 @@ public class LdioHttpOutAutoConfigure {
 
 	public static class LdioHttpOutConfigurator implements LdioConfigurator {
 		@Override
-		public LdiComponent configure(Map<String, String> config) {
+		public LdiComponent configure(ComponentProperties config) {
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
 
-			Lang outputLanguage;
+			Lang outputLanguage = config.getOptionalProperty("content-type")
+					.map(contentType -> {
+						Lang lang = getLang(Objects.requireNonNull(MediaType.valueOf(contentType)));
+						headers.setContentType(MediaType.valueOf(lang.getContentType().getContentTypeStr()));
+						return lang;
+					})
+					.orElse(Lang.NQUADS);
 
-			if (config.containsKey(CONTENT_TYPE)) {
-				outputLanguage = getLang(
-						Objects.requireNonNull(MediaType.valueOf(config.get(CONTENT_TYPE))));
-
-				headers.setContentType(MediaType.valueOf(outputLanguage.getContentType().getContentTypeStr()));
-			}
-			else {
-				outputLanguage = Lang.NQUADS;
-			}
-
-			String targetURL = Objects.requireNonNull(config.get("endpoint"));
+			String targetURL = config.getProperty("endpoint");
 
 			return new LdioHttpOut(restTemplate, headers, outputLanguage, targetURL);
 		}

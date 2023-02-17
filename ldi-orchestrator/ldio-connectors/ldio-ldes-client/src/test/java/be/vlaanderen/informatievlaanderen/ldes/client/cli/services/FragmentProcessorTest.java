@@ -5,11 +5,13 @@ import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.UnparseableFrag
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesFragment;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesMember;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,12 +29,12 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class FragmentProcessorTest {
 	LdesService ldesService = mock(LdesService.class);
 	LdesFragment mockLdesFragment = mock(LdesFragment.class);
+	ComponentExecutor componentExecutor = mock(ComponentExecutor.class);
 
 	@Test
 	void when_LdesServerHasFragments_TheyAreConvertedAndPrintedOut() throws IOException, URISyntaxException {
@@ -41,39 +43,30 @@ class FragmentProcessorTest {
 		LdesMember ldesMember = readLdesMemberFromFile(getClass().getClassLoader(), "member1.txt");
 		ldesFragment.addMember(ldesMember);
 		when(ldesService.processNextFragment()).thenReturn(ldesFragment);
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		PrintStream printStream = new PrintStream(byteArrayOutputStream);
 
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, printStream, Lang.NQUADS, 1L);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, 1L);
 		fragmentProcessor.processLdesFragments();
 
-		byteArrayOutputStream.flush();
-		String actualOutput = byteArrayOutputStream.toString();
-		assertTrue(ldesMember.getMemberModel().isIsomorphicWith(convertToModel(actualOutput)));
+		ArgumentCaptor<Model> argumentCaptor = ArgumentCaptor.forClass(Model.class);
+		verify(componentExecutor, times(1)).transformLinkedData(argumentCaptor.capture());
+
+		assertTrue(ldesMember.getMemberModel().isIsomorphicWith(argumentCaptor.getValue()));
 	}
 
 	@Test
-	void when_LdesServerHasNoFragments_NothingIsPrinted() throws IOException {
+	void when_LdesServerHasNoFragments_NothingIsPrinted() {
 		when(ldesService.hasFragmentsToProcess()).thenReturn(false);
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		PrintStream printStream = new PrintStream(byteArrayOutputStream);
 
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, printStream, null, 1L);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, 1L);
 		fragmentProcessor.processLdesFragments();
-
-		byteArrayOutputStream.flush();
-		String actualOutput = byteArrayOutputStream.toString();
-		assertEquals("", actualOutput);
 	}
 
 	@Test
 	void when_LdesServerThrowsUnparseableFragmentException_UnparseableFragmentExceptionIsRethrown() {
 		when(ldesService.hasFragmentsToProcess())
 				.thenThrow(new UnparseableFragmentException("fragmentURL", new RuntimeException()));
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		PrintStream printStream = new PrintStream(byteArrayOutputStream);
 
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, printStream, null, 1L);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, 1L);
 		UnparseableFragmentException unparseableFragmentException = assertThrows(UnparseableFragmentException.class,
 				fragmentProcessor::processLdesFragments);
 
@@ -84,10 +77,8 @@ class FragmentProcessorTest {
 	void when_LdesServerThrowsFragmentFetcherException_FragmentFetcherExceptionIsRethrown() {
 		when(ldesService.hasFragmentsToProcess())
 				.thenThrow(new FragmentFetcherException("fragmentURL", new RuntimeException()));
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		PrintStream printStream = new PrintStream(byteArrayOutputStream);
 
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, printStream, null, 1L);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, 1L);
 		FragmentFetcherException fragmentFetcherException = assertThrows(FragmentFetcherException.class,
 				fragmentProcessor::processLdesFragments);
 
@@ -101,10 +92,7 @@ class FragmentProcessorTest {
 		when(ldesService.processNextFragment()).thenReturn(mockLdesFragment);
 		when(mockLdesFragment.getExpirationDate()).thenReturn(LocalDateTime.now().plusSeconds(2));
 
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		PrintStream printStream = new PrintStream(byteArrayOutputStream);
-
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, printStream, Lang.NQUADS, 60L);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, 60L);
 		fragmentProcessor.processLdesFragments();
 		when(ldesService.hasFragmentsToProcess()).thenReturn(false);
 		await()
@@ -120,10 +108,7 @@ class FragmentProcessorTest {
 		when(ldesService.processNextFragment()).thenReturn(mockLdesFragment);
 		when(mockLdesFragment.getExpirationDate()).thenReturn(LocalDateTime.now().minusSeconds(2));
 
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		PrintStream printStream = new PrintStream(byteArrayOutputStream);
-
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, printStream, Lang.NQUADS, 60L);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, 60L);
 		fragmentProcessor.processLdesFragments();
 		when(ldesService.hasFragmentsToProcess()).thenReturn(false);
 		await()
