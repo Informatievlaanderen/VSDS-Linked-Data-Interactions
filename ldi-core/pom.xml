@@ -14,6 +14,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>sparql-construct</module>
+        <module>ldes-client</module>
     </modules>
 
 </project>

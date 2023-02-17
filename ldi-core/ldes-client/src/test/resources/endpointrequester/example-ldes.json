@@ -1,0 +1,316 @@
+[
+    {
+        "@id" : "_:b0",
+        "http://schema.org/repeatFrequency" : [
+            {
+                "@value" : "P1M",
+                "@language" : "nl-BE"
+            }
+        ],
+        "http://schema.org/repeatCount" : [
+            {
+                "@value" : 12
+            }
+        ],
+        "@type" : [
+            "https://schema.org/Schedule"
+        ],
+        "http://schema.org/byMonth" : [
+            {
+                "@value" : 3
+            },
+            {
+                "@value" : 6
+            },
+            {
+                "@value" : 1
+            },
+            {
+                "@value" : 10
+            }
+        ],
+        "http://schema.org/startTime" : [
+            {
+                "@value" : "11:09Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#time"
+            }
+        ],
+        "http://schema.org/startDate" : [
+            {
+                "@value" : "2022-10-15",
+                "@type" : "http://www.w3.org/2001/XMLSchema#date"
+            }
+        ],
+        "http://schema.org/endTime" : [
+            {
+                "@value" : "11:09Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#time"
+            }
+        ],
+        "http://schema.org/exceptDate" : [
+            {
+                "@value" : "2023-02-15",
+                "@type" : "http://www.w3.org/2001/XMLSchema#date"
+            }
+        ],
+        "https://data.vlaanderen.be/ns/generiek#Tijdsschema.duur" : [
+            {
+                "@value" : "P2D",
+                "@type" : "http://www.w3.org/2001/XMLSchema#duration"
+            }
+        ],
+        "http://schema.org/endDate" : [
+            {
+                "@value" : "2022-10-17",
+                "@type" : "http://www.w3.org/2001/XMLSchema#date"
+            }
+        ]
+    },
+    {
+        "@id" : "_:b1",
+        "@type" : [
+            "http://www.w3.org/ns/locn#Geometry"
+        ],
+        "http://www.opengis.net/ont/geosparql#asWKT" : [
+            {
+                "@value" : "POLYGON ((122980.5 183762, 122973.5 183742.75, 123007 183740.5, 122980.5 183762))",
+                "@type" : "http://www.opengis.net/ont/geosparql#wktLiteral"
+            }
+        ]
+    },
+    {
+        "@id" : "_:b2",
+        "@type" : [
+            "http://data.europa.eu/m8g/PeriodOfTime"
+        ],
+        "http://data.europa.eu/m8g/endTime" : [
+            {
+                "@value" : "2022-05-14T11:09:00Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+            }
+        ],
+        "http://data.europa.eu/m8g/startTime" : [
+            {
+                "@value" : "2022-05-12T11:09:00Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+            }
+        ]
+    },
+    {
+        "@id" : "_:b3",
+        "@type" : [
+            "http://data.europa.eu/m8g/PeriodOfTime"
+        ],
+        "http://data.europa.eu/m8g/endTime" : [
+            {
+                "@value" : "2022-05-22T11:09:00Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+            }
+        ],
+        "http://data.europa.eu/m8g/startTime" : [
+            {
+                "@value" : "2022-05-20T11:09:00Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+            }
+        ]
+    },
+    {
+        "@id" : "_:b4",
+        "@type" : [
+            "http://www.w3.org/ns/adms#Identifier"
+        ],
+        "http://www.w3.org/2004/02/skos/core#notation" : [
+            {
+                "@value" : "10034919",
+                "@type" : "https://gipod.vlaanderen.be/ns/gipod#gipodId"
+            }
+        ],
+        "http://www.w3.org/ns/adms#schemaAgency" : [
+            {
+                "@value" : "https://gipod.vlaanderen.be",
+                "@language" : "nl-BE"
+            }
+        ]
+    },
+    {
+        "@id" : "http://data.europa.eu/m8g/PeriodOfTime"
+    },
+    {
+        "@id" : "http://www.w3.org/ns/adms#Identifier"
+    },
+    {
+        "@id" : "http://www.w3.org/ns/locn#Geometry"
+    },
+    {
+        "@id" : "http://www.w3.org/ns/org#Organization"
+    },
+    {
+        "@id" : "https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder"
+    },
+    {
+        "@id" : "https://data.vlaanderen.be/ns/mobiliteit#Zone"
+    },
+    {
+        "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/ldes/mobility-hindrances",
+        "https://w3id.org/tree#member" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919/29797"
+            }
+        ]
+    },
+    {
+        "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919"
+    },
+    {
+        "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919/29797",
+        "http://schema.org/eventSchedule" : [
+            {
+                "@id" : "_:b0"
+            }
+        ],
+        "https://data.vlaanderen.be/ns/mobiliteit#periode" : [
+            {
+                "@id" : "_:b3"
+            },
+            {
+                "@id" : "_:b2"
+            }
+        ],
+        "http://purl.org/dc/terms/created" : [
+            {
+                "@value" : "2021-02-17T14:16:59.2053421Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+            }
+        ],
+        "http://purl.org/dc/elements/1.1/creator" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662"
+            }
+        ],
+        "http://purl.org/dc/terms/modified" : [
+            {
+                "@value" : "2021-02-17T14:16:59.2143997Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+            }
+        ],
+        "http://www.w3.org/ns/prov#generatedAtTime" : [
+            {
+                "@value" : "2021-02-17T14:16:59.233Z",
+                "@type" : "http://www.w3.org/2001/XMLSchema#dateTime"
+            }
+        ],
+        "https://data.vlaanderen.be/ns/mobiliteit#zone" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919/zones/72facaaa-f26b-4ec0-ac2d-cff24961f13d"
+            }
+        ],
+        "https://data.vlaanderen.be/ns/mobiliteit#Inname.status" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0"
+            }
+        ],
+        "http://purl.org/dc/terms/isVersionOf" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919"
+            }
+        ],
+        "http://www.w3.org/ns/adms#versionNotes" : [
+            {
+                "@value" : "MobilityHindranceZoneWasAdded",
+                "@language" : "nl-BE"
+            }
+        ],
+        "http://www.w3.org/ns/adms#identifier" : [
+            {
+                "@id" : "_:b4"
+            }
+        ],
+        "https://data.vlaanderen.be/ns/mobiliteit#beheerder" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662"
+            }
+        ],
+        "http://purl.org/dc/elements/1.1/contributor" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662"
+            }
+        ],
+        "http://purl.org/dc/terms/description" : [
+            {
+                "@value" : "Description of the mobility hindrance",
+                "@type" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            }
+        ],
+        "https://gipod.vlaanderen.be/ns/gipod#gipodId" : [
+            {
+                "@value" : 10034919
+            }
+        ],
+        "@type" : [
+            "https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder"
+        ]
+    },
+    {
+        "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919/zones/72facaaa-f26b-4ec0-ac2d-cff24961f13d",
+        "@type" : [
+            "https://data.vlaanderen.be/ns/mobiliteit#Zone"
+        ],
+        "http://www.w3.org/ns/locn#geometry" : [
+            {
+                "@id" : "_:b1"
+            }
+        ],
+        "https://data.vlaanderen.be/ns/mobiliteit#Zone.type" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250"
+            }
+        ],
+        "https://data.vlaanderen.be/ns/mobiliteit#gevolg" : [
+            {
+                "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/mobility-hindrance/consequencetypes/ee31fd67-b75e-4499-9ad4-0a595717a9c7"
+            }
+        ]
+    },
+    {
+        "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662",
+        "@type" : [
+            "http://www.w3.org/ns/org#Organization"
+        ],
+        "http://www.w3.org/2004/02/skos/core#prefLabel" : [
+            {
+                "@value" : "AIV",
+                "@type" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"
+            }
+        ]
+    },
+    {
+        "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/mobility-hindrance/consequencetypes/ee31fd67-b75e-4499-9ad4-0a595717a9c7",
+        "http://www.w3.org/2004/02/skos/core#prefLabel" : [
+            {
+                "@value" : "Afgesloten in 1 rijrichting",
+                "@language" : "nl-BE"
+            }
+        ]
+    },
+    {
+        "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0",
+        "http://www.w3.org/2004/02/skos/core#prefLabel" : [
+            {
+                "@value" : "In opmaak",
+                "@language" : "nl-BE"
+            }
+        ]
+    },
+    {
+        "@id" : "https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250",
+        "http://www.w3.org/2004/02/skos/core#prefLabel" : [
+            {
+                "@value" : "HinderZone",
+                "@language" : "nl-BE"
+            }
+        ]
+    },
+    {
+        "@id" : "https://schema.org/Schedule"
+    }
+]

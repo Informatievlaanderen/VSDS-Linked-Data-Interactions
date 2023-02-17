@@ -53,8 +53,8 @@ public class FlowAutoConfiguration {
 	}
 
 	private LdiComponent getBean(String beanName, Map<String, String> config) {
-		LdioConfigurator transformerConfigurator = (LdioConfigurator) applicationContext.getBean(beanName);
-		return transformerConfigurator.configure(config);
+		LdioConfigurator ldioConfigurator = (LdioConfigurator) applicationContext.getBean(beanName);
+		return ldioConfigurator.configure(config);
 	}
 
 }

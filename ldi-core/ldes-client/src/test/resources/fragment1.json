@@ -1,0 +1,98 @@
+{
+	"@context": [
+		"https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld"
+	],
+	"@id": "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z",
+	"@type": "Node",
+	"viewOf": "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances",
+	"collectionInfo": {
+		"@id": "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances",
+		"@type": "EventStream",
+		"shape": "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances/shape",
+		"timestampPath": "prov:generatedAtTime",
+		"versionOfPath": "dct:isVersionOf"
+	},
+	"tree:relation": [
+		{
+			"tree:node": "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:37:18.577Z",
+			"@type": "tree:GreaterThanRelation",
+			"tree:path": "prov:generatedAtTime",
+			"tree:value": "2020-12-28T09:37:18.577Z"
+		}
+	],
+	"items": [
+		{
+			"@id": "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3",
+			"@type": "MobilityHindrance",
+			"gipodId": 10228530,
+			"identifier": [
+				{
+					"@type": "Identifier",
+					"Identifier.identifier": {
+						"value": "10228530",
+						"type": "gipodId"
+					},
+					"assignedByName": "https://gipod.vlaanderen.be"
+				}
+			],
+			"isConsequenceOf": [
+				{
+					"@id": "/api/v1/works/3779167",
+					"@type": "Work",
+					"gipodId": 3779167
+				}
+			],
+			"description": "8420 De Haan, Grotestraat 159: Stelling",
+			"owner": {
+				"isVersionOf": "/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245",
+				"@type": "Organisation",
+				"preferredName": "EagleBe Smartcity"
+			},
+			"contactOrganisation": [],
+			"zone": [
+				{
+					"@id": "/api/v1/mobility-hindrances/10228530/zones/991fa7c1-a530-44f7-a185-98ba45b69ce0",
+					"@type": "Zone",
+					"consequence": [],
+					"geometry": {
+						"@type": "Geometry",
+						"wkt": "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((57626.8718169853 218733.768758968, 57626.8718169853 218731.768758968, 57639.8718169853 218731.768758968, 57639.8718169853 218733.768758968, 57626.8718169853 218733.768758968))"
+					},
+					"zoneType": {
+						"@id": "/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250",
+						"prefLabel": "HinderZone"
+					}
+				}
+			],
+			"period": [
+				{
+					"@type": "Period",
+					"start": "2021-01-14T05:00:00Z",
+					"end": "2021-01-27T19:00:00Z"
+				}
+			],
+			"timeSchedule": null,
+			"permittedBy": [],
+			"status": {
+				"@id": "/api/v1/taxonomies/statuses/a411c53e-db33-436a-9bb9-d62d535b661d",
+				"prefLabel": "Onbekend"
+			},
+			"generatedAtTime": "2020-12-28T09:36:09.72Z",
+			"eventName": "MobilityHindranceWasImportedFromLegacy",
+			"isVersionOf": "/api/v1/mobility-hindrances/10228530",
+			"memberOf": "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances",
+			"lastModifiedOn": "2020-12-24T09:44:05.58Z",
+			"lastModifiedBy": {
+				"isVersionOf": "/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245",
+				"@type": "Organisation",
+				"preferredName": "EagleBe Smartcity"
+			},
+			"createdOn": "2020-12-24T09:44:05.58Z",
+			"createdBy": {
+				"isVersionOf": "/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245",
+				"@type": "Organisation",
+				"preferredName": "EagleBe Smartcity"
+			}
+		}
+	]
+}
