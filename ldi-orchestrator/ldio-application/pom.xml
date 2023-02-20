@@ -64,6 +64,26 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ldio-version-object-creator</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-version-object-creator</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ldio-version-materialiser</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-version-materialiser</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>ldio-http-out</id>
             <dependencies>
                 <dependency>

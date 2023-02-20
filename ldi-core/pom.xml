@@ -15,6 +15,21 @@
     <modules>
         <module>sparql-construct</module>
         <module>ldes-client</module>
+        <module>version-object-creator</module>
+        <module>version-materialiser</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>

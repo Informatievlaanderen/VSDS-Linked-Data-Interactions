@@ -14,19 +14,6 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldi-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <!-- Jena -->
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-arq</artifactId>
-            <version>4.7.0</version>
-        </dependency>
-
         <!-- JSON -->
         <dependency>
             <groupId>org.glassfish</groupId>

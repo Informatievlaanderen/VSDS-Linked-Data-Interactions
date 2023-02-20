@@ -26,7 +26,7 @@ public class SparqlConstructTransformerTest {
 
 		Model model = RDFParserBuilder.create().fromString(content).lang(Lang.NQUADS).toModel();
 
-		model = sparqlConstructTransformer.execute(model);
+		model = sparqlConstructTransformer.transform(model);
 
 		assertTrue(model.containsLiteral(model.createResource("http://data-in-flowfile/"),
 				model.createProperty("http://xmlns.com/foaf/0.1/name"),

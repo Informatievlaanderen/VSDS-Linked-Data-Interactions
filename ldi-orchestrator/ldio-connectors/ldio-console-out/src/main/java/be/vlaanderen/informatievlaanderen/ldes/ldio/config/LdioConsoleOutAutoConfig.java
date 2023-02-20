@@ -16,7 +16,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdiConsoleOut.getLang
 @Configuration
 @EnableConfigurationProperties()
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes.ldio")
-public class LdioConsoleOutAutoConfigure {
+public class LdioConsoleOutAutoConfig {
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut")
 	public LdioConfigurator ldioConfigurator() {
 		return new LdioConsoleOutConfigurator();

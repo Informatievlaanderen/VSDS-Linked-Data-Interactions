@@ -13,16 +13,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
 import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut.getLang;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 @Configuration
 @EnableConfigurationProperties()
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
-public class LdioHttpOutAutoConfigure {
+public class LdioHttpOutAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut")
 	public LdioHttpOutConfigurator ldiHttpOutConfigurator() {

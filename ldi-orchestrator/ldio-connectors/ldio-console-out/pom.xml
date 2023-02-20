@@ -21,11 +21,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldi-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
 </project>

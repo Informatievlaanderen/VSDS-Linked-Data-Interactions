@@ -17,17 +17,4 @@
         <maven.compiler.target>18</maven.compiler.target>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldi-api</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
 </project>

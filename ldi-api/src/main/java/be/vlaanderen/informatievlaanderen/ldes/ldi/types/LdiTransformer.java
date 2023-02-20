@@ -3,5 +3,5 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.types;
 import org.apache.jena.rdf.model.Model;
 
 public interface LdiTransformer extends LdiComponent {
-	Model execute(Model linkedDataModel);
+	Model transform(Model linkedDataModel);
 }

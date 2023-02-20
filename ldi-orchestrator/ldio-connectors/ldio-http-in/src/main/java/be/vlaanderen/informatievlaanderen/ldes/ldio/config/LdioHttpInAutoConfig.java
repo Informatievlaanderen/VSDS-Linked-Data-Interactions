@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Configuration
 @EnableConfigurationProperties()
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
-public class LdioHttpInAutoConfiguration {
+public class LdioHttpInAutoConfig {
 	@Bean
 	public ModelHttpConverter memberConverter() {
 		return new ModelHttpConverter();
