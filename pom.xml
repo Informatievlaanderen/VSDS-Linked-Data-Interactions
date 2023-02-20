@@ -4,14 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>be.vlaanderen.informatievlaanderen.vsds</groupId>
-    <artifactId>linked-data-transformation-orchestrator</artifactId>
+    <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
+    <artifactId>linked-data-interactions</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <modules>
-        <module>ldto-api</module>
-        <module>ldto-starter-kit</module>
-        <module>ldto-application</module>
+        <module>ldi-api</module>
+        <module>ldi-core</module>
+        <module>ldi-orchestrator</module>
+        <module>ldi-nifi</module>
     </modules>
 
     <properties>

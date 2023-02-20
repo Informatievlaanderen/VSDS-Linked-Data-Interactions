@@ -198,7 +198,7 @@ build/
 #
 ###############################################################################
 # Created by git for backups. To disable backups in Git:
-# $ git be.vlaanderen.informatievlaanderen.ldes.ldto.config --global mergetool.keepBackup false
+# $ git be.vlaanderen.informatievlaanderen.ldes.ldi.config --global mergetool.keepBackup false
 *.orig
 
 # Created by git when using merge tools for conflicts
@@ -229,7 +229,7 @@ ehthumbs_vista.db
 # Dump file
 *.stackdump
 
-# Folder be.vlaanderen.informatievlaanderen.ldes.ldto.config file
+# Folder be.vlaanderen.informatievlaanderen.ldes.ldi.config file
 [Dd]esktop.ini
 
 # Recycle Bin used on file shares
