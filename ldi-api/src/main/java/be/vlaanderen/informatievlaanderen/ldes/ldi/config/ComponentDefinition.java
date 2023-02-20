@@ -21,5 +21,4 @@ public class ComponentDefinition {
 	public void setConfig(Map<String, String> config) {
 		this.config = new ComponentProperties(config);
 	}
-
 }

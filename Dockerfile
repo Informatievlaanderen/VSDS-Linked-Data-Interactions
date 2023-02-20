@@ -6,9 +6,9 @@
 FROM maven:3.8.5-openjdk-18 AS builder
 
 # MAVEN: application
-#FROM builder as app-stage
-#COPY . /
-#RUN mvn install -DskipTests
+FROM builder as app-stage
+COPY . /
+RUN mvn install -DskipTests
 
 #
 # RUN THE APPLICATION
@@ -22,7 +22,6 @@ COPY ldi-orchestrator/ldio-connectors/ldio-ldes-client/target/ldio-ldes-client-j
 COPY ldi-orchestrator/ldio-connectors/ldio-sparql-construct/target/ldio-sparql-construct-jar-with-dependencies.jar ./lib/
 COPY ldi-orchestrator/ldio-connectors/ldio-console-out/target/ldio-console-out-jar-with-dependencies.jar ./lib/
 COPY ldi-orchestrator/ldio-connectors/ldio-http-out/target/ldio-http-out-jar-with-dependencies.jar ./lib/
-
 
 RUN useradd -u 2000 ldes
 USER ldes
