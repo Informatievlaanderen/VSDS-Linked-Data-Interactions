@@ -28,6 +28,8 @@ public class LdioHttpOutAutoConfig {
 	}
 
 	public static class LdioHttpOutConfigurator implements LdioConfigurator {
+		private final Lang DEFAULT_OUTPUT_LANG = Lang.NQUADS;
+
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
 			RestTemplate restTemplate = new RestTemplate();
@@ -39,7 +41,7 @@ public class LdioHttpOutAutoConfig {
 						headers.setContentType(MediaType.valueOf(lang.getContentType().getContentTypeStr()));
 						return lang;
 					})
-					.orElse(Lang.NQUADS);
+					.orElse(DEFAULT_OUTPUT_LANG);
 
 			String targetURL = config.getProperty("endpoint");
 

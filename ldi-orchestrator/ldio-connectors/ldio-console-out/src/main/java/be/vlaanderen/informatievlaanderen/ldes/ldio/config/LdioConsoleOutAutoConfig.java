@@ -23,11 +23,13 @@ public class LdioConsoleOutAutoConfig {
 	}
 
 	public static class LdioConsoleOutConfigurator implements LdioConfigurator {
+		private final Lang DEFAULT_OUTPUT_LANG = Lang.NQUADS;
+
 		@Override
 		public LdiComponent configure(ComponentProperties properties) {
 			Lang outputLanguage = properties.getOptionalProperty("content-type")
 					.map(contentType -> getLang(MediaType.valueOf(contentType)))
-					.orElse(Lang.NQUADS);
+					.orElse(DEFAULT_OUTPUT_LANG);
 			return new LdiConsoleOut(outputLanguage);
 		}
 	}
