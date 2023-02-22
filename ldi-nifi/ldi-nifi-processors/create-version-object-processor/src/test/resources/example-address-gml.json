@@ -1,0 +1,51 @@
+{
+  "@context": "https://essentialcomplexity.eu/adres_detail.jsonld",
+  "@type": "Adres",
+  "identificator": {
+    "id": "https://data.vlaanderen.be/id/adres/1781021",
+    "naamruimte": "https://data.vlaanderen.be/id/adres",
+    "objectId": "1781021",
+    "versieId": "2022-12-05T08:10:55.007Z"
+  },
+  "gemeente": {
+    "objectId": "23025",
+    "detail": "https://api.basisregisters.staging-vlaanderen.be/v2/gemeenten/23025",
+    "gemeentenaam": {
+      "geografischeNaam": {
+        "spelling": "Grimbergen",
+        "taal": "nl"
+      }
+    }
+  },
+  "postinfo": {
+    "objectId": "1853",
+    "detail": "https://api.basisregisters.staging-vlaanderen.be/v2/postinfo/1853"
+  },
+  "straatnaam": {
+    "objectId": "25730",
+    "detail": "https://api.basisregisters.staging-vlaanderen.be/v2/straatnamen/25730",
+    "straatnaam": {
+      "geografischeNaam": {
+        "spelling": "Grotewinkellaan",
+        "taal": "nl"
+      }
+    }
+  },
+  "huisnummer": "146",
+  "volledigAdres": {
+    "geografischeNaam": {
+      "spelling": "Grotewinkellaan 146, 1853 Grimbergen",
+      "taal": "nl"
+    }
+  },
+  "adresPositie": {
+    "geometrie": {
+      "type": "Point",
+      "gml": "<gml:Point srsName=\"http://www.opengis.net/def/crs/EPSG/0/31370\" xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>149531.69 177745.18</gml:pos></gml:Point>"
+    },
+    "positieGeometrieMethode": "afgeleidVanObject",
+    "positieSpecificatie": "gebouweenheid"
+  },
+  "adresStatus": "inGebruik",
+  "officieelToegekend": true
+}

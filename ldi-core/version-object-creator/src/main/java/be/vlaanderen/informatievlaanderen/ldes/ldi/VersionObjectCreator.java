@@ -48,7 +48,8 @@ public class VersionObjectCreator implements LdiTransformer {
 		String dateObserved = Optional.ofNullable(dateObservedProperty)
 				.map(property -> linkedDataModel.listStatements(null, property, (Resource) null)
 						.nextOptional()
-						.map(statement -> statement.getObject().toString())
+						.map(Statement::getLiteral)
+						.map(Literal::getString)
 						.orElse(LocalDateTime.now().format(formatter)))
 				.orElse(LocalDateTime.now().format(formatter));
 		String id = linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
@@ -68,7 +69,7 @@ public class VersionObjectCreator implements LdiTransformer {
 		List<Statement> statementList = inputModel.listStatements().toList();
 		statementList.stream()
 				.filter(stmt -> stmt.getSubject().equals(inputModel.createResource(memberInfo.getVersionOf())))
-				.forEach(stmt -> versionObjectModel.add(subject, stmt.getPredicate(), stmt.getResource()));
+				.forEach(stmt -> versionObjectModel.add(subject, stmt.getPredicate(), stmt.getObject()));
 		statementList.stream()
 				.filter(stmt -> !stmt.getSubject().equals(inputModel.createResource(memberInfo.getVersionOf())))
 				.forEach(versionObjectModel::add);

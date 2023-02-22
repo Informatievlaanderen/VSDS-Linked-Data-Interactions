@@ -1,0 +1,22 @@
+[
+  {
+    "x": "http://somewhere/SarahJones/",
+    "fname": "Sarah Jones",
+    "gname": "Sarah"
+  },
+  {
+    "x": "http://somewhere/JohnSmith/",
+    "fname": "John Smith",
+    "gname": "John"
+  },
+  {
+    "x": "http://somewhere/RebeccaSmith/",
+    "fname": "Becky Smith",
+    "gname": "Rebecca"
+  },
+  {
+    "x": "http://somewhere/MattJones/",
+    "fname": "Matt Jones",
+    "gname": "Matthew"
+  }
+]

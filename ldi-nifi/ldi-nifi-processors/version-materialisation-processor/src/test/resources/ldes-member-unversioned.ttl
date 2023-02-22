@@ -1,0 +1,43 @@
+@prefix api:  <https://private-api.gipod.vlaanderen.be/api/v1/> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix dom:  <https://example/domain-ontology/> .
+@prefix ent:  <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/> .
+@prefix ext:  <https://gipod.vlaanderen.be/ns/gipod#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
+@prefix locn: <http://www.w3.org/ns/locn#> .
+@prefix m8g:  <http://data.europa.eu/m8g/> .
+@prefix mobi: <https://data.vlaanderen.be/ns/mobiliteit#> .
+@prefix org:  <http://www.w3.org/ns/org#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix tree: <https://w3id.org/tree#> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560>
+    rdf:type              mobi:Mobiliteitshinder ;
+    <http://purl.org/dc/elements/1.1/contributor>
+                          <https://private-api.gipod.vlaanderen.be/api/v1/organisations/760bb1a4-bc1c-0bb8-868d-c0b6fd937233> ;
+    <http://purl.org/dc/elements/1.1/creator>
+                          <https://private-api.gipod.vlaanderen.be/api/v1/organisations/760bb1a4-bc1c-0bb8-868d-c0b6fd937233> ;
+    dct:created           "2021-01-06T12:58:25.483Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+    dct:description       "2930 Brasschaat, Kasteellei 27: Huisaansluitingen/herstel kolken"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> ;
+    dct:modified          "2021-01-06T13:03:51.107Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+    <http://www.w3.org/ns/adms#identifier>
+                          [ rdf:type       <http://www.w3.org/ns/adms#Identifier> ;
+                            skos:notation  "10590560"^^ext:gipodId ;
+                            <http://www.w3.org/ns/adms#schemaAgency>
+                                           "https://gipod.vlaanderen.be"@nl-BE
+                          ] ;
+    <http://www.w3.org/ns/adms#versionNotes>
+                          "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+    prov:generatedAtTime  "2021-01-06T18:05:35.713Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+    mobi:Inname.status    <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/statuses/a411c53e-db33-436a-9bb9-d62d535b661d> ;
+    mobi:beheerder        <https://private-api.gipod.vlaanderen.be/api/v1/organisations/760bb1a4-bc1c-0bb8-868d-c0b6fd937233> ;
+    mobi:periode          [ rdf:type       m8g:PeriodOfTime ;
+                            m8g:endTime    "2021-01-22T15:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                            m8g:startTime  "2021-01-11T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                          ] ;
+    mobi:zone             <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7> ;
+    ext:gipodId           10590560 .

@@ -31,6 +31,7 @@ public class SqliteMemberRepository implements MemberRepository {
 		entityManager.getTransaction().commit();
 	}
 
+	@Deprecated(since = "Issue with db still being used")
 	private void destroyDb() {
 		try {
 			entityManager.close();
@@ -59,6 +60,6 @@ public class SqliteMemberRepository implements MemberRepository {
 	@Override
 	public void clearState() {
 		removeProcessedMembers();
-		destroyDb();
+//		destroyDb();
 	}
 }
