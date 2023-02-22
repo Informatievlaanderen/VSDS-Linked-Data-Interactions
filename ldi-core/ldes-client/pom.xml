@@ -9,10 +9,6 @@
 
     <artifactId>ldes-client</artifactId>
 
-    <properties>
-        <formatter.config-file>${project.basedir}/../formatter.xml</formatter.config-file>
-    </properties>
-
     <dependencies>
         <!-- JSON -->
         <dependency>

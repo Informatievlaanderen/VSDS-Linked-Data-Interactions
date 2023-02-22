@@ -60,6 +60,6 @@ public class SqliteMemberRepository implements MemberRepository {
 	@Override
 	public void clearState() {
 		removeProcessedMembers();
-//		destroyDb();
+    //destroyDb();
 	}
 }
