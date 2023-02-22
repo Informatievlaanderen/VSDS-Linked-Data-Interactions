@@ -10,31 +10,22 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.StringWriter;
-import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Optional.ofNullable;
 import static org.apache.jena.riot.Lang.TURTLE;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 public class LdioHttpOut implements LdiOutput {
 	private final RestTemplate restTemplate;
 	private final HttpHeaders headers;
 	private final String targetURL;
-	private Lang outputLanguage = Lang.NQUADS;
+	private final Lang outputLanguage;
 
-	public LdioHttpOut(Map<String, String> config) {
-		this.restTemplate = new RestTemplate();
-		this.headers = new HttpHeaders();
-
-		if (config.containsKey(CONTENT_TYPE)) {
-			outputLanguage = getLang(
-					Objects.requireNonNull(MediaType.valueOf(config.get(CONTENT_TYPE))));
-		}
-
-		headers.setContentType(MediaType.valueOf(outputLanguage.getContentType().getContentTypeStr()));
-		targetURL = Objects.requireNonNull(config.get("endpoint"));
+	public LdioHttpOut(RestTemplate restTemplate, HttpHeaders headers, Lang outputLanguage, String targetURL) {
+		this.restTemplate = restTemplate;
+		this.headers = headers;
+		this.outputLanguage = outputLanguage;
+		this.targetURL = targetURL;
 	}
 
 	@Override

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ns0="https://w3id.org/tree#"
+	xmlns:schema="http://schema.org/" xmlns:ns1="https://data.vlaanderen.be/ns/generiek#Tijdsschema."
+	xmlns:ns2="https://data.vlaanderen.be/ns/mobiliteit#" xmlns:ns3="http://data.europa.eu/m8g/"
+	xmlns:dc="http://purl.org/dc/terms/" xmlns:dc11="http://purl.org/dc/elements/1.1/"
+	xmlns:prov="http://www.w3.org/ns/prov#" xmlns:ns4="http://www.w3.org/ns/locn#"
+	xmlns:ns5="http://www.opengis.net/ont/geosparql#" xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+	xmlns:ns6="http://www.w3.org/ns/adms#" xmlns:ns7="https://gipod.vlaanderen.be/ns/gipod#"
+	xmlns:org="http://www.w3.org/ns/org#">
+
+	<rdf:Description rdf:about="https://private-api.gipod.test-vlaanderen.be/api/v1/ldes/mobility-hindrances">
+		<ns0:member>
+			<rdf:Description
+				rdf:about="https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919/29797">
+				<schema:eventSchedule>
+					<rdf:Description>
+						<schema:repeatFrequency xml:lang="nl-BE">P1M</schema:repeatFrequency>
+						<schema:repeatCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</schema:repeatCount>
+						<rdf:type rdf:resource="https://schema.org/Schedule" />
+						<schema:byMonth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</schema:byMonth>
+						<schema:byMonth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</schema:byMonth>
+						<schema:byMonth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</schema:byMonth>
+						<schema:byMonth rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10</schema:byMonth>
+						<schema:startTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">11:09Z</schema:startTime>
+						<schema:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2022-10-15</schema:startDate>
+						<schema:endTime rdf:datatype="http://www.w3.org/2001/XMLSchema#time">11:09Z</schema:endTime>
+						<schema:exceptDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-02-15</schema:exceptDate>
+						<ns1:duur rdf:datatype="http://www.w3.org/2001/XMLSchema#duration">P2D</ns1:duur>
+						<schema:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2022-10-17</schema:endDate>
+					</rdf:Description>
+				</schema:eventSchedule>
+
+				<ns2:periode>
+					<rdf:Description>
+						<rdf:type rdf:resource="http://data.europa.eu/m8g/PeriodOfTime" />
+						<ns3:endTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2022-05-22T11:09:00Z</ns3:endTime>
+						<ns3:startTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2022-05-20T11:09:00Z</ns3:startTime>
+					</rdf:Description>
+				</ns2:periode>
+
+				<ns2:periode>
+					<ns3:PeriodOfTime>
+						<ns3:endTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2022-05-14T11:09:00Z</ns3:endTime>
+						<ns3:startTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2022-05-12T11:09:00Z</ns3:startTime>
+					</ns3:PeriodOfTime>
+				</ns2:periode>
+
+				<dc:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-02-17T14:16:59.2053421Z</dc:created>
+				<dc11:creator
+					rdf:resource="https://private-api.gipod.test-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662" />
+				<dc:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-02-17T14:16:59.2143997Z</dc:modified>
+				<prov:generatedAtTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2021-02-17T14:16:59.233Z</prov:generatedAtTime>
+				<ns2:zone>
+					<ns2:Zone
+						rdf:about="https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919/zones/72facaaa-f26b-4ec0-ac2d-cff24961f13d">
+						<ns4:geometry>
+							<ns4:Geometry>
+								<ns5:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral">POLYGON ((122980.5 183762, 122973.5 183742.75, 123007 183740.5, 122980.5 183762))</ns5:asWKT>
+							</ns4:Geometry>
+						</ns4:geometry>
+
+						<ns2:Zone.type>
+							<rdf:Description
+								rdf:about="https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250">
+								<skos:prefLabel xml:lang="nl-BE">HinderZone</skos:prefLabel>
+							</rdf:Description>
+						</ns2:Zone.type>
+
+						<ns2:gevolg>
+							<rdf:Description
+								rdf:about="https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/mobility-hindrance/consequencetypes/ee31fd67-b75e-4499-9ad4-0a595717a9c7">
+								<skos:prefLabel xml:lang="nl-BE">Afgesloten in 1 rijrichting</skos:prefLabel>
+							</rdf:Description>
+						</ns2:gevolg>
+
+					</ns2:Zone>
+				</ns2:zone>
+
+				<ns2:Inname.status>
+					<rdf:Description
+						rdf:about="https://private-api.gipod.test-vlaanderen.be/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0">
+						<skos:prefLabel xml:lang="nl-BE">In opmaak</skos:prefLabel>
+					</rdf:Description>
+				</ns2:Inname.status>
+
+				<dc:isVersionOf
+					rdf:resource="https://private-api.gipod.test-vlaanderen.be/api/v1/mobility-hindrances/10034919" />
+				<ns6:versionNotes xml:lang="nl-BE">MobilityHindranceZoneWasAdded</ns6:versionNotes>
+				<ns6:identifier>
+					<ns6:Identifier>
+						<skos:notation rdf:datatype="https://gipod.vlaanderen.be/ns/gipod#gipodId">10034919</skos:notation>
+						<ns6:schemaAgency xml:lang="nl-BE">https://gipod.vlaanderen.be</ns6:schemaAgency>
+					</ns6:Identifier>
+				</ns6:identifier>
+
+				<ns2:beheerder
+					rdf:resource="https://private-api.gipod.test-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662" />
+				<dc11:contributor
+					rdf:resource="https://private-api.gipod.test-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662" />
+				<dc:description rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString">Description of the mobility hindrance</dc:description>
+				<ns7:gipodId rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">10034919</ns7:gipodId>
+				<rdf:type rdf:resource="https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder" />
+			</rdf:Description>
+		</ns0:member>
+
+	</rdf:Description>
+
+	<org:Organization
+		rdf:about="https://private-api.gipod.test-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662">
+		<skos:prefLabel rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString">AIV</skos:prefLabel>
+	</org:Organization>
+
+</rdf:RDF>

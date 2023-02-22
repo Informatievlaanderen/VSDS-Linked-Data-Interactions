@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
@@ -16,7 +17,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 @ComponentScan
@@ -52,9 +52,9 @@ public class FlowAutoConfiguration {
 		return (LdiOutput) getBean(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
-	private LdiComponent getBean(String beanName, Map<String, String> config) {
-		LdioConfigurator transformerConfigurator = (LdioConfigurator) applicationContext.getBean(beanName);
-		return transformerConfigurator.configure(config);
+	private LdiComponent getBean(String beanName, ComponentProperties config) {
+		LdioConfigurator ldioConfigurator = (LdioConfigurator) applicationContext.getBean(beanName);
+		return ldioConfigurator.configure(config);
 	}
 
 }

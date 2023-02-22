@@ -18,11 +18,6 @@ public class LdioHttpIn implements LdiInput {
 
 	@PostMapping("data")
 	public void receiveLinkedData(@RequestBody Model model) {
-		passLinkedData(model);
-	}
-
-	@Override
-	public void passLinkedData(Model linkedDataModel) {
-		componentExecutor.transformLinkedData(linkedDataModel);
+		componentExecutor.transformLinkedData(model);
 	}
 }

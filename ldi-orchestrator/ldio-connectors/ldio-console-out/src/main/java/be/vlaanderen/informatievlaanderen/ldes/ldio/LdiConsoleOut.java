@@ -17,16 +17,12 @@ import static org.apache.jena.riot.Lang.TURTLE;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
 public class LdiConsoleOut implements LdiOutput {
-	public static final String CONTENT_TYPE = "content-type";
-	public static final Lang DEFAULT_OUTPUT_LANG = Lang.NQUADS;
 	private final Logger LOGGER = LoggerFactory.getLogger(LdiConsoleOut.class);
 
-	private Lang outputLanguage = DEFAULT_OUTPUT_LANG;
+	private final Lang outputLanguage;
 
-	public LdiConsoleOut(Map<String, String> config) {
-		if (config.containsKey(CONTENT_TYPE)) {
-			outputLanguage = getLang(Objects.requireNonNull(MediaType.valueOf(config.get(CONTENT_TYPE))));
-		}
+	public LdiConsoleOut(Lang outputLanguage) {
+		this.outputLanguage = outputLanguage;
 	}
 
 	@Override

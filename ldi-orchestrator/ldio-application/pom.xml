@@ -39,7 +39,17 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-http-in</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ldio-ldes-client</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-ldes-client</artifactId>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -49,7 +59,27 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-sparql-construct</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ldio-version-object-creator</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-version-object-creator</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ldio-version-materialiser</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-version-materialiser</artifactId>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -59,7 +89,7 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-http-out</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -69,7 +99,7 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-console-out</artifactId>
-                    <version>1.0.0-SNAPSHOT</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>

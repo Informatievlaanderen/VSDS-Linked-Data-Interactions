@@ -15,7 +15,7 @@ public class SparqlConstructTransformer implements LdiTransformer {
 		this.inferMode = inferMode;
 	}
 
-	public Model execute(Model linkedDataModel) {
+	public Model transform(Model linkedDataModel) {
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, linkedDataModel)) {
 			Model resultModel = qexec.execConstruct();
 			if (inferMode) {

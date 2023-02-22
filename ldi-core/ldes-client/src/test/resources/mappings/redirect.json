@@ -1,0 +1,12 @@
+{
+	"request": {
+		"method": "GET",
+		"url": "/exampleData"
+	},
+	"response": {
+		"status": 302,
+		"headers": {
+			"Location": "/exampleData?generatedAtTime=2022-05-05T00:00:00.000Z"
+		}
+	}
+}

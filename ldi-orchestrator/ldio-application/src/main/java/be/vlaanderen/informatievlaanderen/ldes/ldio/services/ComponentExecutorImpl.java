@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.List;
@@ -25,14 +25,12 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 	public void transformLinkedData(final Model linkedDataModel) {
 		executorService.execute(() -> {
 			Model transformedLinkedDataModel = linkedDataModel;
-			for (LdiTransformer component: ldiTransformers) {
-				transformedLinkedDataModel = component.execute(transformedLinkedDataModel);
+			for (LdiTransformer component : ldiTransformers) {
+				transformedLinkedDataModel = component.transform(transformedLinkedDataModel);
 			}
 
 			Model finalTransformedLinkedDataModel = transformedLinkedDataModel;
-			ldiOutputs.parallelStream().forEach(ldiOutput -> {
-				ldiOutput.sendLinkedData(finalTransformedLinkedDataModel);
-			});
+			ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.sendLinkedData(finalTransformedLinkedDataModel));
 		});
 	}
 }

@@ -4,13 +4,15 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentDefinition;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Configuration
 @ConfigurationProperties(prefix = "orchestrator")
 public class OrchestratorConfig {
 	private ComponentDefinition input;
-	private List<ComponentDefinition> transformers;
+	private List<ComponentDefinition> transformers = new LinkedList<>();
 	private List<ComponentDefinition> outputs;
 
 	public ComponentDefinition getInput() {
