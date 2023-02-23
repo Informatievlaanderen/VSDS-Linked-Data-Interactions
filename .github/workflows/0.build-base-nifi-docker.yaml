@@ -1,0 +1,43 @@
+name: 0. Build Docker Base NiFi
+
+on:
+  workflow_dispatch:
+
+env:
+  BASE_IMAGE_NAME: openjdk
+  BASE_IMAGE_TAG: 18-ea-bullseye
+  NIFI_VERSION: 1.20.0
+  DISTRO_PATH: 1.20.0
+  NIFI_DOCKER_IMAGE_NAME: ldes/nifi
+  NIFI_DOCKER_IMAGE_VERSION: 1.20.0-jdk18
+
+jobs:
+  job-build-push-docker-nifi:
+    name: Build and push VSDS NiFi docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build NiFi JDK18 Docker image
+        run: |
+          echo ENVIRONMENT
+          echo BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
+          echo BASE_IMAGE_TAG: ${BASE_IMAGE_TAG}
+          echo NIFI_VERSION: ${NIFI_VERSION}
+          echo TARGET_IMAGE_TAG: ${NIFI_VERSION}-jdk18
+          echo NIFI_DOCKER_IMAGE_NAME: ${NIFI_DOCKER_IMAGE_NAME}
+          echo NIFI_DOCKER_IMAGE_VERSION: ${NIFI_DOCKER_IMAGE_VERSION}
+          curl -L https://github.com/apache/nifi/archive/refs/tags/rel/nifi-${NIFI_VERSION}.tar.gz | tar -zxv --strip-components=2 nifi-rel-nifi-${NIFI_VERSION}/nifi-docker/dockerhub/
+          sed -i 's/xmlstarlet procps$/xmlstarlet procps curl unzip/' dockerhub/Dockerfile
+          docker buildx build --build-arg IMAGE_NAME="${BASE_IMAGE_NAME}" --build-arg IMAGE_TAG="${BASE_IMAGE_TAG}" --build-arg NIFI_VERSION="${NIFI_VERSION}" \
+          --build-arg DISTRO_PATH="${DISTRO_PATH}" -t "${NIFI_DOCKER_IMAGE_NAME}:${NIFI_DOCKER_IMAGE_VERSION}" -f dockerhub/Dockerfile dockerhub/ \
+          --push --platform linux/amd64,linux/arm64
