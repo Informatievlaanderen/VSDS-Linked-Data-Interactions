@@ -178,7 +178,6 @@ public abstract class LdesStateManager {
 			addProcessedMutableFragment(fragmentId, Optional.ofNullable(fragment.getExpirationDate())
 					.orElse(LocalDateTime.now().plusSeconds(fragmentExpirationInterval)));
 
-
 			LOGGER.debug("PROCESSED MUTABLE FRAGMENT {}", fragmentId);
 		}
 
