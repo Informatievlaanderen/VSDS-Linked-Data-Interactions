@@ -32,12 +32,8 @@ public class SparqlProcessorProperties {
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.build();
 
-	public static final AllowableValue REPLACE_ALL = new AllowableValue(
-			"replace",
-			"Replace mode",
-			"In replace mode, the result of the CONSTRUCT query will replace the contents of the flowfile.");
-
-	public static final PropertyDescriptor INCLUDE_ORIGINAL = new PropertyDescriptor.Builder().name("INFERENCE_MODE")
+	public static final PropertyDescriptor INCLUDE_ORIGINAL = new PropertyDescriptor.Builder()
+			.name("INCLUDE_ORIGINAL")
 			.displayName("Include original model")
 			.required(true)
 			.defaultValue(Boolean.FALSE.toString())
