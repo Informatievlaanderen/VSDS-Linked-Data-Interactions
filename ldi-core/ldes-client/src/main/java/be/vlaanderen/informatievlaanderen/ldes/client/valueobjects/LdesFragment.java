@@ -12,113 +12,101 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class LdesFragment {
 
-	public static final String LDES = "https://w3id.org/ldes#";
-	public static final Property LDES_VERSION_OF = createProperty(LDES, "versionOfPath");
-	public static final Property LDES_TIMESTAMP_PATH = createProperty(LDES, "timestampPath");
-	public static final Property TREE_SHAPE = createProperty("https://w3id.org/tree#", "shape");
-	private final Model model = ModelFactory.createDefaultModel();
+    public static final String LDES = "https://w3id.org/ldes#";
+    public static final Property LDES_VERSION_OF = createProperty(LDES, "versionOfPath");
+    public static final Property LDES_TIMESTAMP_PATH = createProperty(LDES, "timestampPath");
+    public static final Property TREE_SHAPE = createProperty("https://w3id.org/tree#", "shape");
+    private final Model model = ModelFactory.createDefaultModel();
+    private String fragmentId;
+    private LocalDateTime expirationDate;
 
-	private LdesProcessingState state;
-	private String fragmentId;
-	private LocalDateTime expirationDate;
+    private boolean immutable = false;
+    private List<LdesMember> members = new ArrayList<>();
+    private final List<String> relations = new ArrayList<>();
 
-	private boolean immutable = false;
-	private List<LdesMember> members = new ArrayList<>();
-	private List<String> relations = new ArrayList<>();
+    public LdesFragment() {
+        this(null, null);
+    }
 
-	public LdesFragment() {
-		this(null, null);
-	}
+    public LdesFragment(String fragmentId, LocalDateTime expirationDate) {
+        this.fragmentId = fragmentId;
+        this.expirationDate = expirationDate;
+    }
 
-	public LdesFragment(String fragmentId, LocalDateTime expirationDate) {
-		this.fragmentId = fragmentId;
-		this.expirationDate = expirationDate;
+    public Model getModel() {
+        return model;
+    }
 
-		setState(LdesProcessingState.CREATED);
-	}
+    public String getFragmentId() {
+        return fragmentId;
+    }
 
-	public LdesProcessingState getState() {
-		return state;
-	}
+    public void setFragmentId(String fragmentId) {
+        this.fragmentId = fragmentId;
+    }
 
-	public void setState(LdesProcessingState state) {
-		this.state = state;
-	}
+    public LocalDateTime getExpirationDate() {
+        return expirationDate;
+    }
 
-	public Model getModel() {
-		return model;
-	}
+    public void setExpirationDate(LocalDateTime expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 
-	public String getFragmentId() {
-		return fragmentId;
-	}
+    public boolean isImmutable() {
+        return immutable;
+    }
 
-	public void setFragmentId(String fragmentId) {
-		this.fragmentId = fragmentId;
-	}
+    public void setImmutable(boolean immutable) {
+        this.immutable = immutable;
+    }
 
-	public LocalDateTime getExpirationDate() {
-		return expirationDate;
-	}
+    public List<LdesMember> getMembers() {
+        return members;
+    }
 
-	public void setExpirationDate(LocalDateTime expirationDate) {
-		this.expirationDate = expirationDate;
-	}
+    public void setMembers(List<LdesMember> members) {
+        this.members = members;
+    }
 
-	public boolean isImmutable() {
-		return immutable;
-	}
+    public void addMember(LdesMember member) {
+        members.add(member);
+    }
 
-	public void setImmutable(boolean immutable) {
-		this.immutable = immutable;
-	}
+    public LdesMember getMember(String memberId) {
+        for (LdesMember member : members) {
+            if (member.getMemberId().equalsIgnoreCase(memberId)) {
+                return member;
+            }
+        }
+        throw new LdesMemberNotFoundException(memberId);
+    }
 
-	public List<LdesMember> getMembers() {
-		return members;
-	}
+    public List<String> getRelations() {
+        return relations;
+    }
 
-	public void setMembers(List<LdesMember> members) {
-		this.members = members;
-	}
+    public void addRelation(String relation) {
+        relations.add(relation);
+    }
 
-	public void addMember(LdesMember member) {
-		members.add(member);
-	}
+    public Optional<String> getTimestampPath() {
+        return getPropertyValue(LDES_TIMESTAMP_PATH);
+    }
 
-	public LdesMember getMember(String memberId) {
-		for (LdesMember member : members) {
-			if (member.getMemberId().equalsIgnoreCase(memberId)) {
-				return member;
-			}
-		}
-		throw new LdesMemberNotFoundException(memberId);
-	}
+    public Optional<String> getVersionOfPath() {
+        return getPropertyValue(LDES_VERSION_OF);
+    }
 
-	public List<String> getRelations() {
-		return relations;
-	}
+    public Optional<String> getShaclShape() {
+        return getPropertyValue(TREE_SHAPE);
+    }
 
-	public void addRelation(String relation) {
-		relations.add(relation);
-	}
-
-	public Optional<String> getTimestampPath() {
-		return getPropertyValue(LDES_TIMESTAMP_PATH);
-	}
-
-	public Optional<String> getVersionOfPath() {
-		return getPropertyValue(LDES_VERSION_OF);
-	}
-
-	public Optional<String> getShaclShape() {
-		return getPropertyValue(TREE_SHAPE);
-	}
-
-	protected Optional<String> getPropertyValue(Property property) {
-		return model.listStatements(null, property, (Resource) null)
-				.nextOptional()
-				.map(Statement::getObject)
-				.map(RDFNode::asResource)
-				.map(Resource::toString);
-	}
+    protected Optional<String> getPropertyValue(Property property) {
+        return model.listStatements(null, property, (Resource) null)
+                .nextOptional()
+                .map(Statement::getObject)
+                .map(RDFNode::asResource)
+                .map(Resource::toString);
+    }
 }
