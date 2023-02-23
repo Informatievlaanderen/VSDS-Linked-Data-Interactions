@@ -70,7 +70,8 @@ public class VersionMaterialiser implements LdiTransformer {
 	 * potential nested blank nodes.
 	 * Excludes statements about referenced entities, provided as context.
 	 *
-	 * @param inputModel The model to reduce.
+	 * @param inputModel
+	 *            The model to reduce.
 	 * @return The reduced model.
 	 */
 	private Model reduceToLDESMemberOnlyModel(Model inputModel) {

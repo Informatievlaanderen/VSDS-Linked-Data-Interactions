@@ -34,8 +34,8 @@ public class SparqlConstructTransformerTest {
 
 	@Test
 	void when_executeTransform_ExpectTransformedModel() {
-		SparqlConstructTransformer sparqlConstructTransformer =
-				new SparqlConstructTransformer(QueryFactory.create(constructQuery), false);
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(constructQuery), false);
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
@@ -48,8 +48,8 @@ public class SparqlConstructTransformerTest {
 
 	@Test
 	void when_executeTransform_includeOriginal_ExpectTransformedModelWithOriginal() {
-		SparqlConstructTransformer sparqlConstructTransformer =
-				new SparqlConstructTransformer(QueryFactory.create(constructQuery), true);
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(constructQuery), true);
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 

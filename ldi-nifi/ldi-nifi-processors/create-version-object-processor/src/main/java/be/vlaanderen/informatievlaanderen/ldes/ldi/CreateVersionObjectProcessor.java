@@ -71,7 +71,8 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		Property generatedAtTimeProperty = getGeneratedAtTimeProperty(context);
 		dataDestinationFormat = getDataDestinationFormat(context);
 
-		versionObjectCreator = new VersionObjectCreator(dateObservedProperty, memberType, delimiter, generatedAtTimeProperty,
+		versionObjectCreator = new VersionObjectCreator(dateObservedProperty, memberType, delimiter,
+				generatedAtTimeProperty,
 				versionOfKey);
 	}
 

@@ -29,7 +29,7 @@ class LdesClientCliTest {
 
 	ExecutorService executorService = mock(ExecutorService.class);
 	EndpointRequester endpointRequester = mock(EndpointRequester.class);
-	LdesClientCli ldesClientCli = null;//new LdesClientCli(executorService, endpointRequester);
+	LdesClientCli ldesClientCli = null;// new LdesClientCli(executorService, endpointRequester);
 
 	@ParameterizedTest
 	@ArgumentsSource(EndpointBehavoirArgumentsProvider.class)
