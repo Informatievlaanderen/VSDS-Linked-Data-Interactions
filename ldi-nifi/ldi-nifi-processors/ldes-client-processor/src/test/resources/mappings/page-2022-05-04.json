@@ -1,0 +1,172 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/exampleData?generatedAtTime=2022-05-04T00:00:00.000Z"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "@context": [
+        "https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld"
+      ],
+      "@id": "http://localhost:10101/exampleData?generatedAtTime=2022-05-04T00:00:00.000Z",
+      "@type": "Node",
+      "viewOf": "http://localhost:10101/exampleData",
+      "collectionInfo": {
+        "@id": "localhost:10101/exampleData",
+        "@type": "EventStream",
+        "shape": "localhost:10101/exampleData/shape",
+        "timestampPath": "prov:generatedAtTime",
+        "versionOfPath": "dct:isVersionOf"
+      },
+      "tree:relation": [
+        {
+          "tree:node": "http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z",
+          "@type": "tree:LessThanRelation",
+          "tree:path": "prov:generatedAtTime",
+          "tree:value": "2022-05-03T00:00:00.000Z"
+        },
+        {
+          "tree:node": "http://localhost:10101/exampleData?generatedAtTime=2022-05-05T00:00:00.000Z",
+          "@type": "tree:GreaterThanRelation",
+          "tree:path": "prov:generatedAtTime",
+          "tree:value": "2022-05-05T00:00:00.000Z"
+        }
+      ],
+      "items": [
+        {
+          "@id": "http://localhost:10101/exampleData/10034919/29796",
+          "@type": "MobilityHindrance",
+          "gipodId": 10034919,
+          "identifier": [],
+          "isConsequenceOf": [],
+          "description": "Description of the mobility hindrance",
+          "owner": {},
+          "contactOrganisation": [],
+          "zone": [],
+          "period": [],
+          "timeSchedule": {},
+          "permittedBy": [],
+          "status": {},
+          "generatedAtTime": "2021-02-17T14:16:59.233Z",
+          "eventName": "MobilityHindranceWasRegistered",
+          "isVersionOf": "/api/v1/mobility-hindrances/10034919",
+          "memberOf": "http://localhost:10101/exampleData",
+          "lastModifiedOn": "2021-02-17T14:16:59.2053421Z",
+          "lastModifiedBy": {},
+          "createdOn": "2021-02-17T14:16:59.2053421Z",
+          "createdBy": {}
+        },
+        {
+          "@id": "http://localhost:10101/exampleData/10034919/29797",
+          "@type": "MobilityHindrance",
+          "gipodId": 10034919,
+          "identifier": [
+            {
+              "@type": "Identifier",
+              "Identifier.identifier": {
+                "value": "10034919",
+                "type": "gipodId"
+              },
+              "assignedByName": "https://gipod.vlaanderen.be"
+            }
+          ],
+          "isConsequenceOf": [
+            {
+              "@id": "/api/v1/groundworks/103748",
+              "@type": "Groundwork",
+              "gipodId": 103748
+            }
+          ],
+          "description": "Description of the mobility hindrance",
+          "owner": {
+            "@id": "/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662",
+            "@type": "Organisation",
+            "preferredName": "AIV"
+          },
+          "contactOrganisation": [],
+          "zone": [
+            {
+              "@id": "/api/v1/mobility-hindrances/10034919/zones/72facaaa-f26b-4ec0-ac2d-cff24961f13d",
+              "@type": "Zone",
+              "consequence": [
+                {
+                  "@id": "/api/v1/taxonomies/mobility-hindrance/consequencetypes/ee31fd67-b75e-4499-9ad4-0a595717a9c7",
+                  "prefLabel": "Afgesloten in 1 rijrichting"
+                }
+              ],
+              "geometry": {
+                "@type": "Geometry",
+                "wkt": "POLYGON ((122980.5 183762, 122973.5 183742.75, 123007 183740.5, 122980.5 183762))"
+              },
+              "zoneType": {
+                "@id": "/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250",
+                "prefLabel": "HinderZone"
+              }
+            }
+          ],
+          "period": [
+            {
+              "@type": "Period",
+              "start": "2022-05-12T11:09:00Z",
+              "end": "2022-05-14T11:09:00Z"
+            },
+            {
+              "@type": "Period",
+              "start": "2022-05-20T11:09:00Z",
+              "end": "2022-05-22T11:09:00Z"
+            }
+          ],
+          "timeSchedule": {
+            "@type": "TimeSchedule",
+            "startDate": "2022-10-15",
+            "endDate": "2022-10-17",
+            "repeatFrequency": "P1M",
+            "until": null,
+            "repeatCount": 12,
+            "startTime": "11:09Z",
+            "endTime": "11:09Z",
+            "duration": "P2D",
+            "byDay": null,
+            "byMonth": [
+              1,
+              3,
+              6,
+              10
+            ],
+            "byMonthDay": null,
+            "bySetPos": null,
+            "exceptDate": [
+              "2023-02-15"
+            ]
+          },
+          "permittedBy": [],
+          "status": {
+            "@id": "/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0",
+            "prefLabel": "In opmaak"
+          },
+          "generatedAtTime": "2021-02-17T14:16:59.233Z",
+          "eventName": "MobilityHindranceZoneWasAdded",
+          "isVersionOf": "/api/v1/mobility-hindrances/10034919",
+          "memberOf": "http://localhost:10101/exampleData",
+          "lastModifiedOn": "2021-02-17T14:16:59.2143997Z",
+          "lastModifiedBy": {
+            "@id": "/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662",
+            "@type": "Organisation",
+            "preferredName": "AIV"
+          },
+          "createdOn": "2021-02-17T14:16:59.2053421Z",
+          "createdBy": {
+            "@id": "/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662",
+            "@type": "Organisation",
+            "preferredName": "AIV"
+          }
+        }
+      ]
+    },
+    "headers": {
+      "Content-Type": "application/ld+json",
+      "Cache-Control": "public, max-age=604800, immutable"
+    }
+  }
+}

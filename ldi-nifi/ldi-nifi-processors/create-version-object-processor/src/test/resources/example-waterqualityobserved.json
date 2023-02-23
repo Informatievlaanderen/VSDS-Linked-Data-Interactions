@@ -1,0 +1,105 @@
+{
+  "id": "urn:ngsi-v2:cot-imec-be:WaterQualityObserved:imec-iow-3orY3reQDK5n3TMpPnLVYR",
+  "type": "WaterQualityObserved",
+  "batteryLevel": {
+    "type": "Property",
+    "value": 0.75,
+    "rawValue": {
+      "type": "Property",
+      "value": {}
+    },
+    "statusCode": {
+      "type": "Property",
+      "value": 1
+    },
+    "observedAt": "2022-04-19T11:40:42.000Z"
+  },
+  "conductivity": {
+    "type": "Property",
+    "value": 2567.02,
+    "phase": {
+      "type": "Property",
+      "value": {}
+    },
+    "rawValue": {
+      "type": "Property",
+      "value": {}
+    },
+    "statusCode": {
+      "type": "Property",
+      "value": 1
+    },
+    "observedAt": "2022-04-19T11:40:42.000Z",
+    "unitCode": "G42"
+  },
+  "dateObserved": {
+    "type": "Property",
+    "value": {
+      "@type": "DateTime",
+      "@value": "2022-04-19T11:40:42.000Z"
+    }
+  },
+  "depth": {
+    "type": "Property",
+    "value": 1142.11328,
+    "rawValue": {
+      "type": "Property",
+      "value": {}
+    },
+    "statusCode": {
+      "type": "Property",
+      "value": 1
+    },
+    "observedAt": "2022-04-19T11:40:42.000Z",
+    "unitCode": "HP"
+  },
+  "location": {
+    "type": "GeoProperty",
+    "value": {
+      "type": "Point",
+      "coordinates": [
+        3.22100827,
+        51.22159735
+      ]
+    },
+    "name": {
+      "type": "Property",
+      "value": "loc-00014-48"
+    }
+  },
+  "locationName": {
+    "type": "Property",
+    "value": "loc-00014-48"
+  },
+  "refDevice": {
+    "type": "Relationship",
+    "object": "urn:ngsi-v2:cot-imec-be:Device:imec-iow-eoP3fQDo577EmZz3nvVrJd"
+  },
+  "refDevices": {
+    "type": "Property",
+    "value": [
+      "urn:ngsi-v2:cot-imec-be:Device:imec-iow-eoP3fQDo577EmZz3nvVrJd"
+    ]
+  },
+  "samplingPoint": {
+    "type": "Property",
+    "value": "spt-00025-12"
+  },
+  "temperature": {
+    "type": "Property",
+    "value": 15.18,
+    "rawValue": {
+      "type": "Property",
+      "value": {}
+    },
+    "statusCode": {
+      "type": "Property",
+      "value": 1
+    },
+    "observedAt": "2022-04-19T11:40:42.000Z",
+    "unitCode": "CEL"
+  },
+  "@context": [
+    "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+  ]
+}

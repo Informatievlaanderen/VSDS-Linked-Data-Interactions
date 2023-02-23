@@ -1,0 +1,205 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/exampleData?generatedAtTime=2022-05-05T00:00:00.000Z"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "@context": [
+        "https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld"
+      ],
+      "@id": "http://localhost:10101/exampleData?generatedAtTime=2022-05-05T00:00:00.000Z",
+      "@type": "Node",
+      "viewOf": "http://localhost:10101/exampleData",
+      "collectionInfo": {
+        "@id": "http://localhost:10101/exampleData",
+        "@type": "EventStream",
+        "shape": "localhost:10101/exampleData/shape",
+        "timestampPath": "prov:generatedAtTime",
+        "versionOfPath": "dct:isVersionOf"
+      },
+      "tree:relation": [
+        {
+          "tree:node": "http://localhost:10101/exampleData?generatedAtTime=2022-05-04T00:00:00.000Z",
+          "@type": "tree:LessThanRelation",
+          "tree:path": "prov:generatedAtTime",
+          "tree:value": "2022-05-04T00:00:00.000Z"
+        }
+      ],
+      "items": [
+        {
+          "@id": "http://localhost:10101/exampleData/10034631/27325",
+          "@type": "MobilityHindrance",
+          "gipodId": 10034631,
+          "identifier": [
+            {
+              "@type": "Identifier",
+              "Identifier.identifier": {
+                "value": "10034631",
+                "type": "gipodId"
+              },
+              "assignedByName": "https://gipod.vlaanderen.be"
+            }
+          ],
+          "isConsequenceOf": [
+            {
+              "@id": "/api/v1/works/10034630",
+              "@type": "Work",
+              "gipodId": 10034630
+            }
+          ],
+          "description": "brug hinder",
+          "owner": {
+            "@id": "/api/v1/organisations/6b023897-3708-08c7-bd41-fd107d57e0ce",
+            "@type": "Organisation",
+            "preferredName": "Groen"
+          },
+          "contactOrganisation": [],
+          "zone": [],
+          "period": [],
+          "timeSchedule": {
+            "@type": "TimeSchedule",
+            "startDate": "2021-03-17",
+            "endDate": "2021-03-18",
+            "repeatFrequency": "P2D",
+            "until": "2021-09-30T22:00:00Z",
+            "repeatCount": null,
+            "startTime": "11:00Z",
+            "endTime": "11:00Z",
+            "duration": "P1D",
+            "byDay": null,
+            "byMonth": null,
+            "byMonthDay": null,
+            "bySetPos": null,
+            "exceptDate": []
+          },
+          "permittedBy": [],
+          "status": {
+            "@id": "/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0",
+            "prefLabel": "In opmaak"
+          },
+          "generatedAtTime": "2021-02-16T12:40:08.6Z",
+          "eventName": "MobilityHindranceWasRegistered",
+          "isVersionOf": "/api/v1/mobility-hindrances/10034631",
+          "memberOf": "http://localhost:10101/exampleData",
+          "lastModifiedOn": "2021-02-16T12:40:08.5985779Z",
+          "lastModifiedBy": {
+            "@id": "/api/v1/organisations/6b023897-3708-08c7-bd41-fd107d57e0ce",
+            "@type": "Organisation",
+            "preferredName": "Groen"
+          },
+          "createdOn": "2021-02-16T12:40:08.5985779Z",
+          "createdBy": {
+            "@id": "/api/v1/organisations/6b023897-3708-08c7-bd41-fd107d57e0ce",
+            "@type": "Organisation",
+            "preferredName": "Groen"
+          }
+        },
+        {
+          "@id": "http://localhost:10101/exampleData/10034631/27326",
+          "@type": "MobilityHindrance",
+          "gipodId": 10034631,
+          "identifier": [
+            {
+              "@type": "Identifier",
+              "Identifier.identifier": {
+                "value": "10034631",
+                "type": "gipodId"
+              },
+              "assignedByName": "https://gipod.vlaanderen.be"
+            }
+          ],
+          "isConsequenceOf": [
+            {
+              "@id": "/api/v1/works/10034630",
+              "@type": "Work",
+              "gipodId": 10034630
+            }
+          ],
+          "description": "brug hinder",
+          "owner": {
+            "@id": "/api/v1/organisations/6b023897-3708-08c7-bd41-fd107d57e0ce",
+            "@type": "Organisation",
+            "preferredName": "Groen"
+          },
+          "contactOrganisation": [],
+          "zone": [
+            {
+              "@id": "/api/v1/mobility-hindrances/10034631/zones/e83d9f95-dbb3-4a26-91d2-5afbb324cf70",
+              "@type": "Zone",
+              "consequence": [
+                {
+                  "@id": "/api/v1/taxonomies/mobility-hindrance/consequencetypes/6a71c816-511f-490c-9248-c68ded67ecd9",
+                  "prefLabel": "Beperkte doorgang voor fietsers"
+                },
+                {
+                  "@id": "/api/v1/taxonomies/mobility-hindrance/consequencetypes/5f8ff25a-87c7-47c8-9332-35d4fabf4b07",
+                  "prefLabel": "Versmalde rijstroken"
+                },
+                {
+                  "@id": "/api/v1/taxonomies/mobility-hindrance/consequencetypes/d0dbf2dd-b9bf-4d7a-b0ca-806f1ba4795a",
+                  "prefLabel": "Verboden voor + 3,5 ton"
+                },
+                {
+                  "@id": "/api/v1/taxonomies/mobility-hindrance/consequencetypes/b133bb2c-98b7-4485-9ef8-7513e73d63d7",
+                  "prefLabel": "Handelaars moeilijk bereikbaar"
+                }
+              ],
+              "geometry": {
+                "@type": "Geometry",
+                "wkt": "POLYGON ((90996.2599988613 185935.2792125139, 91007.2599988613 185890.2792125139, 91014.7599988613 185890.2792125139, 91011.5099988613 185922.0292125139, 91077.7599988613 185931.2792125139, 91083.5099988613 185897.5292125139, 91098.7599988613 185905.0292125139, 91078.0099988613 185976.5292125139, 91064.5099988613 185973.5292125139, 91072.7599988613 185942.0292125139, 91007.0099988613 185932.0292125139, 91001.5099988613 185958.5292125139, 90991.7599988613 185957.5292125139, 90996.2599988613 185935.2792125139))"
+              },
+              "zoneType": {
+                "@id": "/api/v1/taxonomies/zonetypes/362e85a3-fd7c-4132-a207-4400d5e2e6bf",
+                "prefLabel": "WerfZone"
+              }
+            }
+          ],
+          "period": [],
+          "timeSchedule": {
+            "@type": "TimeSchedule",
+            "startDate": "2021-03-17",
+            "endDate": "2021-03-18",
+            "repeatFrequency": "P2D",
+            "until": "2021-09-30T22:00:00Z",
+            "repeatCount": null,
+            "startTime": "11:00Z",
+            "endTime": "11:00Z",
+            "duration": "P1D",
+            "byDay": null,
+            "byMonth": null,
+            "byMonthDay": null,
+            "bySetPos": null,
+            "exceptDate": []
+          },
+          "permittedBy": [],
+          "status": {
+            "@id": "/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0",
+            "prefLabel": "In opmaak"
+          },
+          "generatedAtTime": "2021-02-16T12:40:08.6Z",
+          "eventName": "MobilityHindranceZoneWasAdded",
+          "isVersionOf": "/api/v1/mobility-hindrances/10034631",
+          "memberOf": "http://localhost:10101/exampleData",
+          "lastModifiedOn": "2021-02-16T12:40:08.600439Z",
+          "lastModifiedBy": {
+            "@id": "/api/v1/organisations/6b023897-3708-08c7-bd41-fd107d57e0ce",
+            "@type": "Organisation",
+            "preferredName": "Groen"
+          },
+          "createdOn": "2021-02-16T12:40:08.5985779Z",
+          "createdBy": {
+            "@id": "/api/v1/organisations/6b023897-3708-08c7-bd41-fd107d57e0ce",
+            "@type": "Organisation",
+            "preferredName": "Groen"
+          }
+        }
+      ]
+    },
+    "headers": {
+      "Content-Type": "application/ld+json",
+      "Cache-Control": "public, max-age=604800, immutable"
+    }
+  }
+}

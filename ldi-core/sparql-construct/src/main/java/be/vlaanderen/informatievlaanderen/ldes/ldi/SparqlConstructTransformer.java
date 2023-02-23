@@ -8,17 +8,17 @@ import org.apache.jena.rdf.model.Model;
 
 public class SparqlConstructTransformer implements LdiTransformer {
 	private final Query query;
-	private final boolean inferMode;
+	private final boolean includeOriginal;
 
-	public SparqlConstructTransformer(Query query, boolean inferMode) {
+	public SparqlConstructTransformer(Query query, boolean includeOriginal) {
 		this.query = query;
-		this.inferMode = inferMode;
+		this.includeOriginal = includeOriginal;
 	}
 
 	public Model transform(Model linkedDataModel) {
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, linkedDataModel)) {
 			Model resultModel = qexec.execConstruct();
-			if (inferMode) {
+			if (includeOriginal) {
 				resultModel.add(linkedDataModel);
 			}
 			return resultModel;
