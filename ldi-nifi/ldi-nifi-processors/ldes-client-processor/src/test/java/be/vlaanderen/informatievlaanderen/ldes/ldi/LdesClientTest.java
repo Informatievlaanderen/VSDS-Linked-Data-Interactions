@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.nifi.util.MockFlowFile;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
@@ -16,6 +15,8 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.List;
 import java.util.stream.Stream;
+
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 import static org.junit.jupiter.api.Assertions.assertEquals;

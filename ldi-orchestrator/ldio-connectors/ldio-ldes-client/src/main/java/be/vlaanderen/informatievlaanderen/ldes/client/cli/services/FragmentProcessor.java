@@ -1,15 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.client.cli.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.client.converters.ModelConverter;
 import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.UnparseableFragmentException;
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesFragment;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 

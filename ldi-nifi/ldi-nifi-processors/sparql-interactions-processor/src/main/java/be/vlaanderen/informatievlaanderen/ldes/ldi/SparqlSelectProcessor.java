@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.SparqlProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.SparqlSelectService;
-import com.google.gson.JsonElement;
 import org.apache.jena.rdf.model.Model;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -16,6 +15,8 @@ import org.apache.nifi.processor.Relationship;
 
 import java.util.List;
 import java.util.Set;
+
+import com.google.gson.JsonElement;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.SparqlProcessorProperties.DATA_SOURCE_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.SparqlProcessorProperties.SPARQL_SELECT_QUERY;
