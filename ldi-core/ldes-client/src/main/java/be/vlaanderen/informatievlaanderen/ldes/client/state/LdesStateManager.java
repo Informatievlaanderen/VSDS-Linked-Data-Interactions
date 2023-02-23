@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.client.state;
 
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesFragment;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesMember;
-import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesProcessingState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,14 +173,11 @@ public abstract class LdesStateManager {
 
 			removeProcessedMutableFragment(fragmentId);
 
-			fragment.setState(LdesProcessingState.PROCESSED_IMMUTABLE);
-
 			LOGGER.debug("PROCESSED IMMUTABLE FRAGMENT {}", fragmentId);
 		} else {
 			addProcessedMutableFragment(fragmentId, Optional.ofNullable(fragment.getExpirationDate())
 					.orElse(LocalDateTime.now().plusSeconds(fragmentExpirationInterval)));
 
-			fragment.setState(LdesProcessingState.PROCESSED_MUTABLE);
 
 			LOGGER.debug("PROCESSED MUTABLE FRAGMENT {}", fragmentId);
 		}
