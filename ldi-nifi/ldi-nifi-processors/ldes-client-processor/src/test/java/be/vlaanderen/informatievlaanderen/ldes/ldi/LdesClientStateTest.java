@@ -1,10 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

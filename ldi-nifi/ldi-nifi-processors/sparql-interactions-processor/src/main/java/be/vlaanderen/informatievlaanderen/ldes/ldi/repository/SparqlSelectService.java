@@ -1,11 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.repository;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.Iterator;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class SparqlSelectService {
 

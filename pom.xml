@@ -18,8 +18,10 @@
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
 
         <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
 
         <!-- SPRING BOOT -->
@@ -29,6 +31,7 @@
         <formatter-maven-plugin.version>2.22.0</formatter-maven-plugin.version>
         <skipFormatCode>false</skipFormatCode>
         <relative-formatter-path>${maven.multiModuleProjectDirectory}</relative-formatter-path>
+        <impsort-maven-plugin.version>1.8.0</impsort-maven-plugin.version>
 
         <!-- Jacoco -->
         <jacoco.version>0.8.8</jacoco.version>
@@ -82,6 +85,25 @@
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>impsort-maven-plugin</artifactId>
+                <version>${impsort-maven-plugin.version}</version>
+                <configuration>
+                    <removeUnused>true</removeUnused>
+                    <groups>*, java.,javax.,com.</groups>
+                    <staticGroups>*</staticGroups>
+                    <staticAfter>true</staticAfter>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>sort-imports</id>
+                        <goals>
+                            <goal>sort</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -140,6 +162,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>attach-source</id>

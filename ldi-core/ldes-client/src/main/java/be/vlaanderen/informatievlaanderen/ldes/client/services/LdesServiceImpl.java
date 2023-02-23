@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.client.services;
 import be.vlaanderen.informatievlaanderen.ldes.client.state.LdesStateManager;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesFragment;
 import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesMember;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import org.apache.jena.graph.TripleBoundary;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;

@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;

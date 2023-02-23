@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.client.cli.model.EndpointBehaviou
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.EndpointRequester;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.StartingNode;
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
-import org.apache.jena.riot.Lang;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
