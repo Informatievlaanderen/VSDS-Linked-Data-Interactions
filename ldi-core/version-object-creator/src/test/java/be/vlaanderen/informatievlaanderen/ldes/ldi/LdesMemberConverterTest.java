@@ -42,7 +42,8 @@ class LdesMemberConverterTest {
 
 	@Test
 	void when_constructVersionObject_ExpectLdesProperties() throws URISyntaxException, IOException {
-		Model model = RDFParserBuilder.create().fromString(getJsonString("outputformat/example-ldes.json")).lang(Lang.JSONLD).toModel();
+		Model model = RDFParserBuilder.create().fromString(getJsonString("outputformat/example-ldes.json"))
+				.lang(Lang.JSONLD).toModel();
 
 		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(null, null, DEFAULT_DELIMITER,
 				PROV_GENERATED_AT_TIME, TERMS_IS_VERSION_OF);
@@ -50,7 +51,7 @@ class LdesMemberConverterTest {
 		Model actualOutput = versionObjectCreator.constructVersionObject(model, memberInfo);
 
 		assertFalse(actualOutput.listStatements(null, PROV_GENERATED_AT_TIME,
-						model.createTypedLiteral(memberInfo.getObservedAt(), "http://www.w3.org/2001/XMLSchema#dateTime"))
+				model.createTypedLiteral(memberInfo.getObservedAt(), "http://www.w3.org/2001/XMLSchema#dateTime"))
 				.toList().isEmpty());
 		assertFalse(actualOutput.listStatements(null, SYNTAX_TYPE,
 				model.createResource(WATER_QUALITY_OBSERVED)).toList().isEmpty());
@@ -66,9 +67,8 @@ class LdesMemberConverterTest {
 
 		Model model = RDFParserBuilder.create().fromString(getJsonString(fileName)).lang(Lang.JSONLD).toModel();
 
-		VersionObjectCreator versionObjectCreator =
-				new VersionObjectCreator(null, model.createResource(memberType),
-						DEFAULT_DELIMITER, null, null);
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(null, model.createResource(memberType),
+				DEFAULT_DELIMITER, null, null);
 
 		Model versionObject = versionObjectCreator.transform(model);
 

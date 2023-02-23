@@ -75,7 +75,7 @@ class CreateVersionObjectProcessorTest {
 
 		final Path JSON_SNIPPET = Paths.get(String.valueOf(new File(
 				Objects.requireNonNull(
-								getClass().getClassLoader().getResource("example-invalid-waterqualityobserved.json"))
+						getClass().getClassLoader().getResource("example-invalid-waterqualityobserved.json"))
 						.toURI())));
 		testRunner.enqueue(JSON_SNIPPET);
 		testRunner.run(1);

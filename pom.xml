@@ -21,6 +21,11 @@
 
         <!-- SPRING BOOT -->
         <spring-boot.version>3.0.2</spring-boot.version>
+
+        <!-- CODE FORMATTER -->
+        <formatter-maven-plugin.version>2.22.0</formatter-maven-plugin.version>
+        <skipFormatCode>false</skipFormatCode>
+        <relative-formatter-path>${maven.multiModuleProjectDirectory}</relative-formatter-path>
     </properties>
 
     <dependencyManagement>
@@ -35,5 +40,37 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- CODE FORMATTER -->
+                <plugin>
+                    <groupId>net.revelc.code.formatter</groupId>
+                    <artifactId>formatter-maven-plugin</artifactId>
+                    <version>${formatter-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>validate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <skip>${skipFormatCode}</skip>
+                        <encoding>UTF-8</encoding>
+                        <configFile>${relative-formatter-path}/settings.xml</configFile>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <!-- CODE FORMATTER -->
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

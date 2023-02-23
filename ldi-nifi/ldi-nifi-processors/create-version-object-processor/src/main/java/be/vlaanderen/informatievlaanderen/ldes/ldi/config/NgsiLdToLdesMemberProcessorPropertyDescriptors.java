@@ -100,12 +100,12 @@ public final class NgsiLdToLdesMemberProcessorPropertyDescriptors {
 		String generatedAtTimeProperty = context.getProperty(GENERATED_AT_TIME_PROPERTY).getValue();
 		if (generatedAtTimeProperty.equals("")) {
 			return null;
-		}
-		else {
+		} else {
 			return initModel.createProperty(generatedAtTimeProperty);
 		}
 
 	}
+
 	public static Lang getDataDestinationFormat(ProcessContext context) {
 		return RDFLanguages.nameToLang(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
 	}

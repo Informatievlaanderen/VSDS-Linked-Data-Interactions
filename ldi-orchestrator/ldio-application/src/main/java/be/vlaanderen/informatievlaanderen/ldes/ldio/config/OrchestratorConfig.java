@@ -39,7 +39,8 @@ public class OrchestratorConfig {
 		this.outputs = outputs;
 	}
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return "OrchestratorConfig{" +
 				"input=" + input +
 				", transformers=" + transformers +

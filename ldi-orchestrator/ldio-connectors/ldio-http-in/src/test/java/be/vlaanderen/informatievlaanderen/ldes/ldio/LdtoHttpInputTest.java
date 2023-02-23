@@ -10,7 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LdtoHttpInputTest {
 	@Test
-	// As a workaround to not spin up the RestController by default, the LdtoHttpIn Bean gets a @RestController
+	// As a workaround to not spin up the RestController by default, the LdtoHttpIn
+	// Bean gets a @RestController
 	// Annotation on Autoconfiguration
 	void assert_NoRestControllerAnnotationisSet() {
 		LdioHttpIn ldtoHttpIn = new LdioHttpIn(null);
