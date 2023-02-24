@@ -11,6 +11,7 @@
         <module>ldi-core</module>
         <module>ldi-orchestrator</module>
         <module>ldi-nifi</module>
+        <module>ldi-core/ldes-client-v2</module>
     </modules>
 
     <properties>
