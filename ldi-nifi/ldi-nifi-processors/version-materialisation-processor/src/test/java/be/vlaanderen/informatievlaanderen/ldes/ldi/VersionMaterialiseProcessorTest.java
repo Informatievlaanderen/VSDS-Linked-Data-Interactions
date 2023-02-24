@@ -36,11 +36,12 @@ class VersionMaterialiseProcessorTest {
 	 */
 	@Test
 	void testVersionMaterialiseMemberOnly() throws IOException {
-		testRunner.setProperty(IS_VERSION_OF, "http://purl.org/dc/terms/isVersionOf");
+		testRunner.setProperty(IS_VERSION_OF,
+				"http://purl.org/dc/terms/isVersionOf");
 		testRunner.setProperty(RESTRICT_OUTPUT_TO_MEMBER, "true");
 
 		String versionedMember = Files.readString(Path.of("src/test/resources/ldes-member-versioned.ttl"));
-		testRunner.enqueue(versionedMember, Map.of("mime.type", "text/tom"));
+		testRunner.enqueue(versionedMember, Map.of("mime.type", "text/turtle"));
 
 		testRunner.run();
 

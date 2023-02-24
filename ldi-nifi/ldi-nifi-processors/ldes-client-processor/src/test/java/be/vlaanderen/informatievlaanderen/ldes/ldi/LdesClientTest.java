@@ -50,7 +50,8 @@ class LdesClientTest {
 
 	@Test
 	void when_runningLdesClientWithStreamPropertiesFlags_expectsLdesPropertiesInFlowFile() {
-		testRunner.setProperty("DATA_SOURCE_URL", "http://localhost:10101/exampleData?scenario=gml-data");
+		testRunner.setProperty("DATA_SOURCE_URL",
+				"http://localhost:10101/exampleData?scenario=gml-data");
 		testRunner.setProperty("STREAM_SHAPE_PROPERTY", Boolean.TRUE.toString());
 
 		testRunner.run(1);
@@ -59,13 +60,17 @@ class LdesClientTest {
 
 		assertEquals(1, dataFlowfiles.size());
 		MockFlowFile flowFile = dataFlowfiles.get(0);
-		assertEquals("localhost:10101/exampleData/shape", flowFile.getAttribute("ldes.shacleshapes"));
-		assertEquals("http://www.w3.org/ns/prov#generatedAtTime", flowFile.getAttribute("ldes.timestamppath"));
-		assertEquals("http://purl.org/dc/terms/isVersionOf", flowFile.getAttribute("ldes.isversionofpath"));
+		assertEquals("localhost:10101/exampleData/shape",
+				flowFile.getAttribute("ldes.shacleshapes"));
+		assertEquals("http://www.w3.org/ns/prov#generatedAtTime",
+				flowFile.getAttribute("ldes.timestamppath"));
+		assertEquals("http://purl.org/dc/terms/isVersionOf",
+				flowFile.getAttribute("ldes.isversionofpath"));
 
 	}
 
-	static class MatchNumberOfFlowFilesArgumentsProvider implements ArgumentsProvider {
+	static class MatchNumberOfFlowFilesArgumentsProvider implements
+			ArgumentsProvider {
 
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
