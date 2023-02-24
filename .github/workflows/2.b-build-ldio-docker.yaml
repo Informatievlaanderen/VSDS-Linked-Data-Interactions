@@ -7,8 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  job-build-docker-workbench-nifi:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  build-docker-ldio:
     name: Test build LDES Workbench NiFi Docker image
     runs-on: ubuntu-latest
     steps:
