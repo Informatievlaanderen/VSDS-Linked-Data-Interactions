@@ -29,17 +29,9 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: Informatievlaanderen
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: pr-merged.yml
-          workflow_conclusion: success
-          path: ./ldes-workbench-nifi
-          name: ldes-nar
       - name: Build LDES Workbench NiFi Docker image
         uses: docker/build-push-action@v3
         with:
