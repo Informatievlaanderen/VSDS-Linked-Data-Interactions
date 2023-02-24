@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows: [ 2.a Build Project ]
     types: [ completed ]
+    conclusion: success
   workflow_dispatch:
 
 jobs:
