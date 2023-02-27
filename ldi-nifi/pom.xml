@@ -20,6 +20,7 @@
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <relative-formatter-path>..</relative-formatter-path>
     </properties>
 
     <dependencies>
