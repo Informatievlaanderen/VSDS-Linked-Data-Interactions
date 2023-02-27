@@ -18,7 +18,8 @@ COPY --from=app-stage ldi-nifi/ldi-nifi-processors/sparql-interactions-processor
 COPY --from=app-stage ldi-nifi/ldi-nifi-processors/version-materialisation-processor/target/*.nar /opt/nifi/nifi-current/lib/
 
 
-ADD --chown=nifi:nifi *.nar /opt/nifi/nifi-current/lib/
+ADD *.nar /opt/nifi/nifi-current/lib/
+RUN chown nifi:nifi /opt/nifi/nifi-current/lib/*
 RUN rm -rf *.db *.db-* ldes-client-processor/*.db ldes-client-processor/*.db-*
 RUN chmod -R 664 /opt/nifi/nifi-current/lib/*.nar
 USER nifi
