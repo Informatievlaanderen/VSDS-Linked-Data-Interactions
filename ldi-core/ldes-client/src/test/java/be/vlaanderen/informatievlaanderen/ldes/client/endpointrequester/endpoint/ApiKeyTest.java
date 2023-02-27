@@ -2,14 +2,14 @@ package be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoin
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ApiKeyTest {
 
-    @Test
-    void empty() {
-        assertTrue(ApiKey.empty().key().isEmpty());
-        assertTrue(ApiKey.empty().header().isEmpty());
-    }
+	@Test
+	void empty() {
+		assertTrue(ApiKey.empty().key().isEmpty());
+		assertTrue(ApiKey.empty().header().isEmpty());
+	}
 
 }

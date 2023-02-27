@@ -7,6 +7,8 @@ import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
+import java.util.Objects;
+
 import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.*;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -88,6 +90,7 @@ public final class LdesProcessorProperties {
 			.name("API_KEY_PROPERTY")
 			.displayName("API key that should be used to access the API.")
 			.required(false)
+			.defaultValue("")
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
@@ -120,11 +123,11 @@ public final class LdesProcessorProperties {
 	}
 
 	public static String getApiKeyHeader(final ProcessContext context) {
-		return context.getProperty(API_KEY_HEADER_PROPERTY).getValue();
+		return Objects.requireNonNullElse(context.getProperty(API_KEY_HEADER_PROPERTY).getValue(), "");
 	}
 
 	public static String getApiKey(final ProcessContext context) {
-		return context.getProperty(API_KEY_PROPERTY).getValue();
+		return Objects.requireNonNullElse(context.getProperty(API_KEY_PROPERTY).getValue(), "");
 	}
 
 }
