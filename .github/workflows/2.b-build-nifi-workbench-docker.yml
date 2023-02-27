@@ -36,6 +36,11 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: Informatievlaanderen
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log into docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Test env
         run: |
           echo "NIFI_DOCKER_IMAGE_VERSION: ${{ env.NIFI_DOCKER_IMAGE_VERSION }}"
