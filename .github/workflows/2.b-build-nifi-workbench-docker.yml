@@ -36,9 +36,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: Informatievlaanderen
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Test env
-        run: |
-          echo "NIFI_DOCKER_IMAGE_VERSION: ${{ env.NIFI_DOCKER_IMAGE_VERSION }}"
       - name: Build LDES Workbench NiFi Docker image
         uses: docker/build-push-action@v3
         with:
