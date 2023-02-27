@@ -6,7 +6,7 @@ on:
 env:
   REGISTRY: ghcr.io
   NIFI_DOCKER_IMAGE_VERSION: 1.20.0-jdk18
-  LDES_NIFI_DOCKER_IMAGE_NAME: ghcr.io/informatievlaanderen/ldes-workbench-nifi
+  LDES_NIFI_DOCKER_IMAGE_NAME: ghcr.io/informatievlaanderen/ldi-workbench-nifi
 
 jobs:
   job-build-docker-workbench-nifi:
