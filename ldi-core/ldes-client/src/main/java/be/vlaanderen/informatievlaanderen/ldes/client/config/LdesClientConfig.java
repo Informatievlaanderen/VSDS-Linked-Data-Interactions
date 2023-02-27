@@ -82,7 +82,7 @@ public class LdesClientConfig {
 	}
 
 	public boolean hasApiKey() {
-		return getApiKey() != null;
+		return getApiKey() != null && !getApiKey().isBlank();
 	}
 
 	public String getPersistenceStrategy() {
