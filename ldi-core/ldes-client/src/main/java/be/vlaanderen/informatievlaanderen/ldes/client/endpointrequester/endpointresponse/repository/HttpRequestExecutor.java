@@ -25,6 +25,7 @@ public class HttpRequestExecutor implements EndpointResponseRepository {
 			HttpURLConnection connection = endpoint.httpConnection();
 			connection.setRequestMethod(HttpGet.METHOD_NAME);
 			connection.setRequestProperty(HttpHeaders.ACCEPT, endpoint.contentType());
+			connection.setRequestProperty(endpoint.getApiKey().header(), endpoint.getApiKey().key());
 			LOGGER.debug("Received response from {}", endpoint.url());
 			return endpointResponseFactory.createResponse(connection.getInputStream(), endpoint.lang());
 		} catch (Exception e) {

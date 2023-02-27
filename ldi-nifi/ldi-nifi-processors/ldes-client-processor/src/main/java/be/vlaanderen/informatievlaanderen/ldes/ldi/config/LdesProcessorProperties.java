@@ -76,6 +76,21 @@ public final class LdesProcessorProperties {
 			.defaultValue(FALSE.toString())
 			.build();
 
+	public static final PropertyDescriptor API_KEY_HEADER_PROPERTY = new PropertyDescriptor.Builder()
+			.name("API_KEY_HEADER_PROPERTY")
+			.displayName("API header that should be used for the API key")
+			.required(false)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.defaultValue("X-API-KEY")
+			.build();
+
+	public static final PropertyDescriptor API_KEY_PROPERTY = new PropertyDescriptor.Builder()
+			.name("API_KEY_PROPERTY")
+			.displayName("API key that should be used to access the API.")
+			.required(false)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
 	public static String getDataSourceUrl(final ProcessContext context) {
 		return context.getProperty(DATA_SOURCE_URL).getValue();
 	}
@@ -103,4 +118,13 @@ public final class LdesProcessorProperties {
 	public static boolean streamShapeProperty(final ProcessContext context) {
 		return TRUE.equals(context.getProperty(STREAM_SHAPE_PROPERTY).asBoolean());
 	}
+
+	public static String getApiKeyHeader(final ProcessContext context) {
+		return context.getProperty(API_KEY_HEADER_PROPERTY).getValue();
+	}
+
+	public static String getApiKey(final ProcessContext context) {
+		return context.getProperty(API_KEY_PROPERTY).getValue();
+	}
+
 }
