@@ -1,15 +1,11 @@
 name: 2.b Build LDIO Docker
 
 on:
-  workflow_run:
-    workflows: [ 2.a Build Project ]
-    types: [ completed ]
-    conclusion: success
-  workflow_dispatch:
+  [push]
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: Informatievlaanderen/ldes-cli
+  IMAGE_NAME: Informatievlaanderen/ldi-orchestrator
 
 jobs:
   build-docker-ldio:
