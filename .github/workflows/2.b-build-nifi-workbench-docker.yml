@@ -13,8 +13,8 @@ jobs:
     name: Test build LDES Workbench NiFi Docker image
     runs-on: ubuntu-latest
     permissions:
-      contents: read,write
-      packages: read,write
+      contents: write
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
