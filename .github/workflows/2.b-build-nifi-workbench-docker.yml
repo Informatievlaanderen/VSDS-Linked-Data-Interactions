@@ -1,7 +1,11 @@
 name: 2.b Build NiFi Workbench Docker
 
 on:
-  [push]
+  workflow_run:
+    workflows: [ 2.a Build Project ]
+    types: [ completed ]
+    conclusion: success
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
