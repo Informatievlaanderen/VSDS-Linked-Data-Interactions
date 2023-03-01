@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi-orchestrator</groupId>
+    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
     <artifactId>ldio-application</artifactId>
 
     <dependencies>

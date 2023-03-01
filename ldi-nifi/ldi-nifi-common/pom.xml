@@ -3,17 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>ldi-nifi-processors</artifactId>
-        <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
+        <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+        <artifactId>ldi-nifi</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>nifi-common</artifactId>
+    <artifactId>ldi-nifi-common</artifactId>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
+        <relative-formatter-path>../..</relative-formatter-path>
     </properties>
 
     <dependencies>
