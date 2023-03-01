@@ -21,7 +21,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 @WireMockTest(httpPort = 10101)
 class LdesClientTest {
 
