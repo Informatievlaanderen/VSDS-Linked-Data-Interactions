@@ -25,12 +25,11 @@ public class LdioSparqlConstructAutoConfig {
 
 	public static class LdioSparqlConstructConfigurator implements LdioConfigurator {
 		public static final String QUERY = "query";
-		public static final String QUERY_VALIDATION_MSG = "Must provide a valid construct query";
 		public static final String INFER = "infer";
 
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
-			Query query = QueryFactory.create(Objects.requireNonNull(config.getProperty(QUERY), QUERY_VALIDATION_MSG));
+			Query query = QueryFactory.create(config.getProperty(QUERY));
 			boolean inferMode = config.getOptionalProperty(INFER).map(Boolean::parseBoolean).orElse(false);
 			return new SparqlConstructTransformer(query, inferMode);
 		}

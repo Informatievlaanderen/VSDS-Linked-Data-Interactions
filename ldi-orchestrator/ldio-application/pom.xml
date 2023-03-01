@@ -28,7 +28,6 @@
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>ldi-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
