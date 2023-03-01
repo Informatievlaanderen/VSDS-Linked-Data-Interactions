@@ -12,6 +12,7 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
     <artifactId>ldi-core</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>sparql-construct</module>
         <module>ldes-client</module>
