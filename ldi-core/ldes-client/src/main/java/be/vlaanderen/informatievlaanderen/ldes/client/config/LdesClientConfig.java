@@ -47,8 +47,8 @@ public class LdesClientConfig {
 		try {
 			config.load(configurationPropertiesFile);
 
-			apiKeyHeader = getStringOrEmpty(config.getString(KEY_API_KEY_HEADER, DEFAULT_API_KEY_HEADER));
-			apiKey = getStringOrEmpty(config.getString(KEY_API_KEY, null));
+			apiKeyHeader = config.getString(KEY_API_KEY_HEADER, DEFAULT_API_KEY_HEADER);
+			apiKey = config.getString(KEY_API_KEY, "");
 			strategy = config.getString(KEY_STRATEGY, DEFAULT_PERSISTENCE_STRATEGY);
 			persistenceDbDriver = config.getString(KEY_DB_DRIVER, DEFAULT_PERSISTENCE_DB_DRIVER);
 			persistenceDbName = config.getString(KEY_DB_NAME, DEFAULT_PERSISTENCE_DB_NAME);
@@ -59,10 +59,6 @@ public class LdesClientConfig {
 			throw new LdesConfigurationException("Unable to process configuration properties",
 					configurationPropertiesFile, e);
 		}
-	}
-
-	private String getStringOrEmpty(String s) {
-		return Objects.requireNonNullElse(s, "");
 	}
 
 	public String getApiKeyHeader() {

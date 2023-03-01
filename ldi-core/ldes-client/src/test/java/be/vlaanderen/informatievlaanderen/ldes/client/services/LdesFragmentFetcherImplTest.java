@@ -61,7 +61,7 @@ class LdesFragmentFetcherImplTest {
 		loadedConfig = configuredFragmentFetcher.config;
 
 		assertEquals(LdesClientDefaults.DEFAULT_API_KEY_HEADER, loadedConfig.getApiKeyHeader());
-		assertNull(loadedConfig.getApiKey());
+		assertTrue(loadedConfig.getApiKey().isEmpty());
 
 		// Configured config
 		config = new LdesClientConfig();
