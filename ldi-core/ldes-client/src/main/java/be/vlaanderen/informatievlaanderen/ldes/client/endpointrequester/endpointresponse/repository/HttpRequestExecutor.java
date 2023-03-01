@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpointresponse.repository;
 
+import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.ApiKey;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.Endpoint;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpointresponse.EndpointResponse;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpointresponse.EndpointResponseFactory;
@@ -25,14 +26,18 @@ public class HttpRequestExecutor implements EndpointResponseRepository {
 			HttpURLConnection connection = endpoint.httpConnection();
 			connection.setRequestMethod(HttpGet.METHOD_NAME);
 			connection.setRequestProperty(HttpHeaders.ACCEPT, endpoint.contentType());
-			if (!endpoint.getApiKey().key().isBlank()) {
-				connection.setRequestProperty(endpoint.getApiKey().header(), endpoint.getApiKey().key());
-			}
+			addApiKeyToHeader(connection, endpoint.getApiKey());
 			LOGGER.debug("Received response from {}", endpoint.url());
 			return endpointResponseFactory.createResponse(connection.getInputStream(), endpoint.lang());
 		} catch (Exception e) {
 			LOGGER.error("EndpointResponse could not be determined: {} {}", e.getClass().getName(), e.getMessage());
 			return endpointResponseFactory.createEmptyResponse();
+		}
+	}
+
+	private void addApiKeyToHeader(HttpURLConnection connection, ApiKey apiKey) {
+		if (apiKey.isNotEmpty()) {
+			connection.setRequestProperty(apiKey.header(), apiKey.key());
 		}
 	}
 
