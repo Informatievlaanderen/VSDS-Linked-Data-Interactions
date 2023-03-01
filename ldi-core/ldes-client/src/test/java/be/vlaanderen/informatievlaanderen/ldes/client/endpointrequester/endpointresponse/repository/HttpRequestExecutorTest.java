@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpointresponse.repository;
 
+import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.ApiKey;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.Endpoint;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpointresponse.EndpointResponse;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpointresponse.EndpointResponseFactory;
@@ -42,6 +43,7 @@ class HttpRequestExecutorTest {
 		when(endpoint.contentType()).thenReturn(contentType);
 		when(endpoint.httpConnection()).thenReturn(urlConnection);
 		when(endpoint.lang()).thenReturn(Lang.TURTLE);
+		when(endpoint.getApiKey()).thenReturn(new ApiKey("header", "key"));
 
 		EndpointResponse endpointResponse = new EndpointResponse(null);
 		when(endpointResponseFactory.createResponse(inputStream, Lang.TURTLE)).thenReturn(endpointResponse);
@@ -50,7 +52,8 @@ class HttpRequestExecutorTest {
 
 		verify(urlConnection).setRequestMethod(HttpMethod.METHOD_GET.method());
 		verify(urlConnection).setRequestProperty(HttpHeaders.ACCEPT, contentType);
-		assertEquals(result, endpointResponse);
+		verify(urlConnection).setRequestProperty("header", "key");
+		assertEquals(endpointResponse, result);
 	}
 
 	@Test
