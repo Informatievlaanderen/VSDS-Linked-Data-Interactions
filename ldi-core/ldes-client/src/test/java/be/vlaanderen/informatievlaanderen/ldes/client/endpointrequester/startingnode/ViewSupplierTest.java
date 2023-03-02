@@ -9,22 +9,22 @@ import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.TreeNodeSupplier.RDF_SYNTAX_TYPE;
 import static be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.TreeNodeSupplier.TREE_NODE_RESOURCE;
-import static be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.ViewNodeSupplier.TREE_VIEW;
+import static be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.ViewSupplier.TREE_VIEW;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ViewNodeSupplierTest {
+class ViewSupplierTest {
 
 	private Model model;
 	private String id;
-	private ViewNodeSupplier viewNodeSupplier;
+	private ViewSupplier viewSupplier;
 
 	@BeforeEach
 	void setUp() {
 		model = ModelFactory.createDefaultModel();
 		id = "http://localhost:8080/mobility-hindrances";
-		viewNodeSupplier = new ViewNodeSupplier(null);
+		viewSupplier = new ViewSupplier(null);
 	}
 
 	@Test
@@ -32,7 +32,7 @@ class ViewNodeSupplierTest {
 		model.add(createResource(id), RDF_SYNTAX_TYPE, TREE_NODE_RESOURCE);
 		model.add(createResource(id), TREE_VIEW, createResource(id + "/view1"));
 
-		Optional<StartingNode> result = viewNodeSupplier.getStartingNode(model);
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
 
 		assertTrue(result.isPresent());
 		assertEquals(id + "/view1", result.get().url());
@@ -44,7 +44,7 @@ class ViewNodeSupplierTest {
 		model.add(createResource(id), TREE_VIEW, createResource(id + "/view1"));
 		model.add(createResource(id), TREE_VIEW, createResource(id + "/view2"));
 
-		Optional<StartingNode> result = viewNodeSupplier.getStartingNode(model);
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
 
 		assertTrue(result.isPresent());
 		assertTrue(result.get().url().contains("view"));
@@ -54,7 +54,7 @@ class ViewNodeSupplierTest {
 	void whenHasNoViewStatement_shouldReturnEmpty() {
 		model.add(createResource(id), RDF_SYNTAX_TYPE, TREE_NODE_RESOURCE);
 
-		Optional<StartingNode> result = viewNodeSupplier.getStartingNode(model);
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
 
 		assertTrue(result.isEmpty());
 	}

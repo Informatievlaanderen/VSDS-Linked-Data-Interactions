@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.TreeNodeSupplier.RDF_SYNTAX_TYPE;
 import static be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.TreeNodeSupplier.TREE_NODE_RESOURCE;
-import static be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.ViewNodeSupplier.TREE_VIEW;
+import static be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.ViewSupplier.TREE_VIEW;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
