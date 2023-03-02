@@ -1,4 +1,4 @@
-package ldes.client.endpointrequester.endpointresponse;
+package ldes.client.startingtreenode.domain.valueobjects;
 
 import org.apache.jena.rdf.model.Model;
 
