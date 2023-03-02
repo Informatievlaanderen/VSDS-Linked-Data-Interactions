@@ -9,7 +9,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NIFI_DOCKER_IMAGE_VERSION: 1.20.0-jdk18
   LDES_NIFI_DOCKER_IMAGE_NAME: ghcr.io/informatievlaanderen/ldi-workbench-nifi
 
 jobs:
@@ -49,5 +48,5 @@ jobs:
           tags: |
             ${{ env.LDES_NIFI_DOCKER_IMAGE_NAME }}:latest , ${{ env.LDES_NIFI_DOCKER_IMAGE_NAME }}:${{ env.BUILD_DATE }}
           build-args: |
-            NIFI_DOCKER_IMAGE_VERSION=${{ env.NIFI_DOCKER_IMAGE_VERSION }}
+            NIFI_DOCKER_IMAGE_VERSION=${{ vars.NIFI_DOCKER_IMAGE_VERSION }}
           platforms: linux/amd64,linux/arm64
