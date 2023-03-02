@@ -15,10 +15,16 @@ public class Endpoint {
 
 	private final String url;
 	private final Lang lang;
+	private final ApiKey apiKey;
 
 	public Endpoint(String url, Lang lang) {
+		this(url, lang, ApiKey.empty());
+	}
+
+	public Endpoint(String url, Lang lang, ApiKey apiKey) {
 		this.url = url;
 		this.lang = lang;
+		this.apiKey = apiKey;
 	}
 
 	public HttpURLConnection httpConnection() throws IOException {
@@ -37,6 +43,10 @@ public class Endpoint {
 		return lang;
 	}
 
+	public ApiKey getApiKey() {
+		return apiKey;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
@@ -45,17 +55,19 @@ public class Endpoint {
 			return false;
 		var that = (Endpoint) obj;
 		return Objects.equals(this.url, that.url) &&
-				Objects.equals(this.lang, that.lang);
+				Objects.equals(this.lang, that.lang) &&
+				Objects.equals(this.apiKey, that.apiKey);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(url, lang);
+		return Objects.hash(url, lang, apiKey);
 	}
 
 	@Override
 	public String toString() {
 		return "Endpoint[" +
+				"apiKey=" + apiKey + ", " +
 				"url=" + url + ", " +
 				"lang=" + lang + ']';
 	}

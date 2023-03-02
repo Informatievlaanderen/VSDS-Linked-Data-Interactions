@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LdesClientConfigTest {
 
@@ -25,7 +26,7 @@ class LdesClientConfigTest {
 		LdesClientConfig config = new LdesClientConfig();
 
 		assertEquals(LdesClientDefaults.DEFAULT_API_KEY_HEADER, config.getApiKeyHeader());
-		assertNull(config.getApiKey());
+		assertTrue(config.getApiKey().isEmpty());
 		assertEquals(LdesClientDefaults.DEFAULT_PERSISTENCE_STRATEGY, config.getPersistenceStrategy());
 		assertEquals(LdesClientDefaults.DEFAULT_PERSISTENCE_DB_DRIVER, config.getPersistenceDbDriver());
 		assertEquals(LdesClientDefaults.DEFAULT_PERSISTENCE_DB_NAME, config.getPersistenceDbName());

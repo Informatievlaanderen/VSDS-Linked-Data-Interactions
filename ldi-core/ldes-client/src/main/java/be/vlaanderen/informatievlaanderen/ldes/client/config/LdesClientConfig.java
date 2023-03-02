@@ -4,6 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.LdesConfigurati
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
+import java.util.Objects;
+
 import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_API_KEY_HEADER;
 import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_CONFIGURATION_PROPERTIES;
 import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_PERSISTENCE_DB_DRIVER;
@@ -46,7 +48,7 @@ public class LdesClientConfig {
 			config.load(configurationPropertiesFile);
 
 			apiKeyHeader = config.getString(KEY_API_KEY_HEADER, DEFAULT_API_KEY_HEADER);
-			apiKey = config.getString(KEY_API_KEY, null);
+			apiKey = config.getString(KEY_API_KEY, "");
 			strategy = config.getString(KEY_STRATEGY, DEFAULT_PERSISTENCE_STRATEGY);
 			persistenceDbDriver = config.getString(KEY_DB_DRIVER, DEFAULT_PERSISTENCE_DB_DRIVER);
 			persistenceDbName = config.getString(KEY_DB_NAME, DEFAULT_PERSISTENCE_DB_NAME);
@@ -76,7 +78,7 @@ public class LdesClientConfig {
 	}
 
 	public boolean hasApiKey() {
-		return getApiKey() != null;
+		return getApiKey() != null && !getApiKey().isBlank();
 	}
 
 	public String getPersistenceStrategy() {

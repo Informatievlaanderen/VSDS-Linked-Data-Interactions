@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.client.LdesClientImplFactory;
 import be.vlaanderen.informatievlaanderen.ldes.client.config.LdesClientConfig;
 import be.vlaanderen.informatievlaanderen.ldes.client.converters.ModelConverter;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.EndpointRequester;
+import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.ApiKey;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.Endpoint;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.StartingNode;
 import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.LdesPropertyNotFoundException;
@@ -73,6 +74,9 @@ public class LdesClient extends AbstractProcessor {
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		Long fragmentExpirationInterval = LdesProcessorProperties.getFragmentExpirationInterval(context);
 
+		config.setApiKey(getApiKey(context));
+		config.setApiKeyHeader(getApiKeyHeader(context));
+
 		ldesService = LdesClientImplFactory.getLdesService(config);
 
 		ldesService.setDataSourceFormat(dataSourceFormat);
@@ -84,8 +88,9 @@ public class LdesClient extends AbstractProcessor {
 	}
 
 	private String getStartingUrl(String dataSourceUrl, Lang dataSourceFormat) {
+		final ApiKey apiKey = new ApiKey(config.getApiKeyHeader(), config.getApiKey());
 		return endpointRequester
-				.determineStartingNode(new Endpoint(dataSourceUrl, dataSourceFormat))
+				.determineStartingNode(new Endpoint(dataSourceUrl, dataSourceFormat, apiKey))
 				.map(StartingNode::url)
 				.orElseThrow(
 						() -> new IllegalArgumentException(
