@@ -4,8 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.LdesConfigurati
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
-import java.util.Objects;
-
 import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_API_KEY_HEADER;
 import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_CONFIGURATION_PROPERTIES;
 import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_PERSISTENCE_DB_DRIVER;

@@ -29,7 +29,7 @@ public class LdioHttpOut implements LdiOutput {
 	}
 
 	@Override
-	public void sendLinkedData(Model linkedDataModel) {
+	public void accept(Model linkedDataModel) {
 		if (!linkedDataModel.isEmpty()) {
 			String content = toString(linkedDataModel, outputLanguage);
 

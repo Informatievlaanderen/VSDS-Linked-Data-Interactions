@@ -26,11 +26,11 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 		executorService.execute(() -> {
 			Model transformedLinkedDataModel = linkedDataModel;
 			for (LdiTransformer component : ldiTransformers) {
-				transformedLinkedDataModel = component.transform(transformedLinkedDataModel);
+				transformedLinkedDataModel = component.apply(transformedLinkedDataModel);
 			}
 
 			Model finalTransformedLinkedDataModel = transformedLinkedDataModel;
-			ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.sendLinkedData(finalTransformedLinkedDataModel));
+			ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(finalTransformedLinkedDataModel));
 		});
 	}
 }

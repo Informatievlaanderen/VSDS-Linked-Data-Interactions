@@ -68,6 +68,16 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ldio-rdf-adapter</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-rdf-adapter</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>ldio-sparql-construct</id>
             <dependencies>
                 <dependency>

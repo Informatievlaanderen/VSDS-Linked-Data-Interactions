@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.types;
 
 import org.apache.jena.rdf.model.Model;
 
-public interface LdiOutput extends LdiComponent {
-	void sendLinkedData(Model linkedDataModel);
+import java.util.function.Consumer;
+
+public interface LdiOutput extends LdiComponent, Consumer<Model> {
 }

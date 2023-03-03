@@ -24,8 +24,8 @@ public class LdiConsoleOut implements LdiOutput {
 	}
 
 	@Override
-	public void sendLinkedData(Model linkedDataModel) {
-		LOGGER.info(toString(linkedDataModel, outputLanguage));
+	public void accept(Model model) {
+		LOGGER.info(toString(model, outputLanguage));
 	}
 
 	public static Lang getLang(MediaType contentType) {

@@ -69,7 +69,7 @@ class LdesMemberConverterTest {
 		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(null, model.createResource(memberType),
 				DEFAULT_DELIMITER, null, null);
 
-		Model versionObject = versionObjectCreator.transform(model);
+		Model versionObject = versionObjectCreator.apply(model);
 
 		assertTrue(
 				versionObject.listStatements()
