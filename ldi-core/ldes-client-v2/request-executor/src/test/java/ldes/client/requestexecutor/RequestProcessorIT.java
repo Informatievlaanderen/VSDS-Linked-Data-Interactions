@@ -1,21 +1,11 @@
 package ldes.client.requestexecutor;
 
-import ldes.client.requestexecutor.domain.valueobjects.Request;
-import ldes.client.requestexecutor.domain.valueobjects.Response;
-import org.junit.jupiter.api.Test;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+import org.junit.runner.RunWith;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-class RequestProcessorIT {
-
-	@Test
-	void test() {
-		RequestProcessor requestProcessor = new RequestProcessor();
-
-		Response response = requestProcessor.processRequest(new Request(
-				"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances", "application/ld+json"));
-
-		assertEquals(302, response.getHttpStatus());
-	}
-
+@RunWith(Cucumber.class)
+@CucumberOptions(features = { "classpath:features/request-processor.feature" }, glue = {
+		"ldes.client.requestexecutor" })
+public class RequestProcessorIT {
 }

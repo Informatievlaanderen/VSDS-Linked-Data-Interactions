@@ -2,6 +2,8 @@ package ldes.client.startingtreenode;
 
 import ldes.client.requestexecutor.RequestProcessor;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
+import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
+import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
 import ldes.client.startingtreenode.domain.valueobjects.StartingNodeSpecification;
@@ -37,7 +39,9 @@ public class StartingTreeNodeFinder {
 	 */
 	public Optional<TreeNode> determineStartingTreeNode(final Endpoint endpoint) {
 		LOGGER.info("Determining starting node for: {}", endpoint.url());
-		Response response = requestProcessor.processRequest(new Request(endpoint.url(), endpoint.contentType()));
+		RequestHeaders requestHeaders = new RequestHeaders(
+				List.of(new RequestHeader("Accept", endpoint.contentType())));
+		Response response = requestProcessor.processRequest(new Request(endpoint.url(), requestHeaders));
 		if (responseIsOK(response)) {
 			return selectStartingNode(endpoint, response);
 		}
@@ -68,7 +72,8 @@ public class StartingTreeNodeFinder {
 	}
 
 	private boolean responseIsRedirect(Response response) {
-		return response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY && !response.getValueOfHeader("location").isEmpty();
+		return response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY
+				&& !response.getValueOfHeader("location").isEmpty();
 	}
 
 }

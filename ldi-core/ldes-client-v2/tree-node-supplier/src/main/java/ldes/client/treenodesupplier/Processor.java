@@ -1,8 +1,8 @@
 package ldes.client.treenodesupplier;
 
+import ldes.client.treenodefetcher.TreeNodeProcessor;
 import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
-import ldes.client.treenodefetcher.TreeNodeProcessor;
 
 import java.util.Optional;
 
