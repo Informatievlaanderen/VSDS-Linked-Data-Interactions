@@ -2,9 +2,12 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.NgsiLdDateParser;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.Map;
 
 public class JsonModel {
 
@@ -12,6 +15,10 @@ public class JsonModel {
     private String type;
     private String dateCreated;
     private String dateModified;
+
+    private Map<String, String> properties;
+    private Map<String, String> relationships;
+
 
 
     @JsonCreator
@@ -25,7 +32,16 @@ public class JsonModel {
         this.dateModified = normaliseDate(dateModified);
 
     }
-    @JsonValue
+
+
+    @JsonAnySetter
+    public void add(String key, String value) {
+        properties.put(key, value);
+    }
+
+
+
+
     public String getId() {
         return id;
     }
@@ -34,7 +50,6 @@ public class JsonModel {
         this.id = id;
     }
 
-    @JsonValue
     public String getType() {
         return type;
     }
@@ -43,7 +58,6 @@ public class JsonModel {
         this.type = type;
     }
 
-    @JsonValue
     public String getDateCreated() {
         return dateCreated;
     }
@@ -52,7 +66,6 @@ public class JsonModel {
         this.dateCreated = dateCreated;
     }
 
-    @JsonValue
     public String getDateModified() {
         return dateModified;
     }

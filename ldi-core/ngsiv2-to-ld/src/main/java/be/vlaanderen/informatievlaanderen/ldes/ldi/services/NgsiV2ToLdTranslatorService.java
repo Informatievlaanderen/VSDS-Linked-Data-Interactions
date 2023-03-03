@@ -69,7 +69,7 @@ public class NgsiV2ToLdTranslatorService {
 				NgsiV2ToLdMapping.NGSI_V2_KEY_VALUE).getAsString().value()
 				: null;
 
-		addBaseData(parsedData, jenaModel);
+		//addBaseData(parsedData, jenaModel);
 
 		for (Entry<String, JsonValue> entry : parsedData.entrySet()) {
 
