@@ -5,7 +5,7 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
     <artifactId>linked-data-interactions</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.0</version>
+    <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>ldi-api</module>
         <module>ldi-core</module>
@@ -337,7 +337,7 @@
         <connection>scm:git:${project.scm.url}</connection>
         <developerConnection>scm:git:${project.scm.url}</developerConnection>
         <url>git@github.com:Informatievlaanderen/VSDS-Linked-Data-Interactions.git</url>
-        <tag>0.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
