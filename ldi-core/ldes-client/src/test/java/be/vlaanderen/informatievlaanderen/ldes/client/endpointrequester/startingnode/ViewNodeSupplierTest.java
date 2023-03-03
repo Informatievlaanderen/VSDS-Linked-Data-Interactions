@@ -14,36 +14,47 @@ import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TreeNodeSupplierTest {
+class ViewNodeSupplierTest {
 
 	private Model model;
 	private String id;
-	private TreeNodeSupplier treeNodeSupplier;
+	private ViewNodeSupplier viewSupplier;
 
 	@BeforeEach
 	void setUp() {
 		model = ModelFactory.createDefaultModel();
 		id = "http://localhost:8080/mobility-hindrances";
-		treeNodeSupplier = new TreeNodeSupplier(null);
+		viewSupplier = new ViewNodeSupplier(null);
 	}
 
 	@Test
-	void whenHasTreeNode_shouldReturnSubjectFromTreeNode() {
+	void whenHasViewStatement_shouldReturnObjectOfViewNode() {
 		model.add(createResource(id), RDF_SYNTAX_TYPE, TREE_NODE_RESOURCE);
-		model.add(createResource(id + "/view"), RDF_SYNTAX_TYPE, TREE_VIEW);
+		model.add(createResource(id), TREE_VIEW, createResource(id + "/view1"));
 
-		Optional<StartingNode> result = treeNodeSupplier.getStartingNode(model);
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
 
 		assertTrue(result.isPresent());
-		assertEquals(id, result.get().url());
+		assertEquals(id + "/view1", result.get().url());
 	}
 
 	@Test
-	void whenHasNoTreeNode_shouldReturnEmpty() {
+	void whenHasMultipleViewStatements_shouldReturnObjectOfAnyViewStatement() {
+		model.add(createResource(id), RDF_SYNTAX_TYPE, TREE_NODE_RESOURCE);
 		model.add(createResource(id), TREE_VIEW, createResource(id + "/view1"));
 		model.add(createResource(id), TREE_VIEW, createResource(id + "/view2"));
 
-		Optional<StartingNode> result = treeNodeSupplier.getStartingNode(model);
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
+
+		assertTrue(result.isPresent());
+		assertTrue(result.get().url().contains("view"));
+	}
+
+	@Test
+	void whenHasNoViewStatement_shouldReturnEmpty() {
+		model.add(createResource(id), RDF_SYNTAX_TYPE, TREE_NODE_RESOURCE);
+
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
 
 		assertTrue(result.isEmpty());
 	}

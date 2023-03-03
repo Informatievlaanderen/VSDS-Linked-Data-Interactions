@@ -16,6 +16,7 @@
         <module>ldes-client</module>
         <module>version-object-creator</module>
         <module>version-materialiser</module>
+        <module>ldes-client-v2</module>
     </modules>
 
     <properties>
