@@ -1,6 +1,7 @@
 package ldes.client.requestexecutor;
 
 import ldes.client.requestexecutor.domain.valueobjects.Request;
+import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +26,7 @@ class HttpRequestExecutorTest {
 		when(httpResponse.body()).thenReturn("body");
 		when(httpResponse.headers()).thenReturn(HttpHeaders.of(Map.of(), (s, s2) -> false));
 		HttpRequestExecutor httpRequestExecutor = new HttpRequestExecutor(httpClient);
-		Request request = new Request("https://someUrl.be", "someContentType");
+		Request request = new Request("https://someUrl.be", new RequestHeaders(List.of()));
 		when(httpClient.send(request.createHttpRequest(), HttpResponse.BodyHandlers.ofString()))
 				.thenReturn(httpResponse);
 

@@ -1,7 +1,5 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
-import org.apache.http.HttpHeaders;
-
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.util.Objects;
@@ -12,17 +10,20 @@ import java.util.Objects;
 public class Request {
 
 	private final String url;
-	private final String contentType;
+	private final RequestHeaders requestHeaders;
 
-	public Request(String url, String contentType) {
+	public Request(String url, RequestHeaders requestHeaders) {
 		this.url = url;
-		this.contentType = contentType;
+		this.requestHeaders = requestHeaders;
 	}
 
 	public HttpRequest createHttpRequest() {
-		return HttpRequest.newBuilder()
-				.uri(URI.create(url))
-				.header(HttpHeaders.ACCEPT, contentType)
+		HttpRequest.Builder uri = HttpRequest.newBuilder()
+				.uri(URI.create(url));
+		for (RequestHeader requestHeader : requestHeaders.getHeaders()) {
+			uri = uri.header(requestHeader.getKey(), requestHeader.getValue());
+		}
+		return uri
 				.GET()
 				.build();
 	}
@@ -33,11 +34,11 @@ public class Request {
 			return true;
 		if (!(o instanceof Request request))
 			return false;
-		return Objects.equals(url, request.url) && Objects.equals(contentType, request.contentType);
+		return Objects.equals(url, request.url) && Objects.equals(requestHeaders, request.requestHeaders);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(url, contentType);
+		return Objects.hash(url, requestHeaders);
 	}
 }
