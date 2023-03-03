@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  LDES_NIFI_DOCKER_IMAGE_NAME: ghcr.io/informatievlaanderen/ldi-workbench-nifi
+  IMAGE_NAME: informatievlaanderen/ldi-workbench-nifi
 
 jobs:
   job-build-docker-workbench-nifi:
@@ -45,8 +45,7 @@ jobs:
           context: .
           file: ldi-nifi.Dockerfile
           push: true
-          tags: |
-            ${{ env.LDES_NIFI_DOCKER_IMAGE_NAME }}:latest , ${{ env.LDES_NIFI_DOCKER_IMAGE_NAME }}:${{ env.BUILD_DATE }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.version }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           build-args: |
             NIFI_DOCKER_IMAGE_VERSION=${{ vars.NIFI_DOCKER_IMAGE_VERSION }}
           platforms: linux/amd64,linux/arm64
