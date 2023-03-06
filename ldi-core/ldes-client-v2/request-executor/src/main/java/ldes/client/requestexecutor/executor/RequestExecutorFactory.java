@@ -28,55 +28,56 @@ import com.github.scribejava.httpclient.apache.ApacheHttpClient;
 // TODO: 6/03/2023 test
 public class RequestExecutorFactory {
 
-    public DefaultRequestExecutor createNoAuthRequestExecutor() {
-        return new DefaultRequestExecutor(HttpClientBuilder.create().disableRedirectHandling().build());
-    }
+	public DefaultRequestExecutor createNoAuthRequestExecutor() {
+		return new DefaultRequestExecutor(HttpClientBuilder.create().disableRedirectHandling().build());
+	}
 
-    public DefaultRequestExecutor createApiKeyRequestExecutor(ApiKeyConfig apiKeyConfig) {
-        final Collection<Header> headers = List.of(new BasicHeader(apiKeyConfig.getApiKeyHeader(), apiKeyConfig.getApiKey()));
-        HttpClient client = HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build();
-        return new DefaultRequestExecutor(client);
-    }
+	public DefaultRequestExecutor createApiKeyRequestExecutor(ApiKeyConfig apiKeyConfig) {
+		final Collection<Header> headers = List
+				.of(new BasicHeader(apiKeyConfig.getApiKeyHeader(), apiKeyConfig.getApiKey()));
+		HttpClient client = HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build();
+		return new DefaultRequestExecutor(client);
+	}
 
-    public ClientCredentialsRequestExecutor createClientCredentialsRequestExecutor(ClientCredentialsConfig config) {
-        final OAuth20ServiceTokenCacheWrapper oauthSvc = new OAuth20ServiceTokenCacheWrapper(createService(config));
-        return new ClientCredentialsRequestExecutor(oauthSvc);
-    }
+	public ClientCredentialsRequestExecutor createClientCredentialsRequestExecutor(ClientCredentialsConfig config) {
+		final OAuth20ServiceTokenCacheWrapper oauthSvc = new OAuth20ServiceTokenCacheWrapper(createService(config));
+		return new ClientCredentialsRequestExecutor(oauthSvc);
+	}
 
-    private OAuth20Service createService(ClientCredentialsConfig config) {
-        final RequestConfig clientConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
-        final ApacheHttpClient apacheHttpClient =
-                new ApacheHttpClient(HttpAsyncClientBuilder.create().setDefaultRequestConfig(clientConfig).build());
-        final DefaultApi20 authorizationApi = createAuthorizationApi(config.getTokenEndpoint());
-        return new ServiceBuilder(config.getClientId())
-                .apiSecret(config.getSecret())
-                .defaultScope(config.getScope())
-                .httpClient(apacheHttpClient)
-                .build(authorizationApi);
-    }
+	private OAuth20Service createService(ClientCredentialsConfig config) {
+		final RequestConfig clientConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
+		final ApacheHttpClient apacheHttpClient = new ApacheHttpClient(
+				HttpAsyncClientBuilder.create().setDefaultRequestConfig(clientConfig).build());
+		final DefaultApi20 authorizationApi = createAuthorizationApi(config.getTokenEndpoint());
+		return new ServiceBuilder(config.getClientId())
+				.apiSecret(config.getSecret())
+				.defaultScope(config.getScope())
+				.httpClient(apacheHttpClient)
+				.build(authorizationApi);
+	}
 
-    private DefaultApi20 createAuthorizationApi(String tokenEndpoint) {
-        return new DefaultApi20() {
-            @Override
-            public String getAccessTokenEndpoint() {
-                return tokenEndpoint;
-            }
+	private DefaultApi20 createAuthorizationApi(String tokenEndpoint) {
+		return new DefaultApi20() {
+			@Override
+			public String getAccessTokenEndpoint() {
+				return tokenEndpoint;
+			}
 
-            @Override
-            protected String getAuthorizationBaseUrl() {
-                throw new UnsupportedOperationException("This API doesn't support a Base URL.");
-            }
-        };
-    }
+			@Override
+			protected String getAuthorizationBaseUrl() {
+				throw new UnsupportedOperationException("This API doesn't support a Base URL.");
+			}
+		};
+	}
 
-    public RequestExecutor createRetry(RequestExecutor requestExecutor) {
-        final RetryConfig config = RetryConfig.<Response>custom()
-                .maxAttempts(3)
-                .waitDuration(Duration.ofMillis(500))
-                .retryOnResult(response -> response == null || response.getHttpStatus() >= 500)
-                .retryOnException(e -> e instanceof IOException)
-                .build();
+	public RequestExecutor createRetry(RequestExecutor requestExecutor) {
+		final RetryConfig config = RetryConfig.<Response>custom()
+				.maxAttempts(3)
+				.waitDuration(Duration.ofMillis(500))
+				.retryOnResult(response -> response == null || response.getHttpStatus() >= 500)
+				.retryOnException(e -> e instanceof IOException)
+				.build();
 
-        return new RetryExecutor(requestExecutor, config);
-    }
+		return new RetryExecutor(requestExecutor, config);
+	}
 }

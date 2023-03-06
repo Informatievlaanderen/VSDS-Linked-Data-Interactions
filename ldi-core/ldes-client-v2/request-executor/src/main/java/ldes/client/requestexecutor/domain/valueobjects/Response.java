@@ -42,8 +42,8 @@ public class Response {
 		return Arrays.stream(
 				getValueOfHeader(HttpHeaders.CACHE_CONTROL)
 						.map(cacheControl -> cacheControl.split(","))
-						.orElse(new String[0])
-				).filter(x -> x.contains("max-age"))
+						.orElse(new String[0]))
+				.filter(x -> x.contains("max-age"))
 				.map(x -> x.split("=")[1])
 				.map(Integer::parseInt)
 				.findFirst()

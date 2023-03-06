@@ -10,21 +10,21 @@ import java.io.IOException;
 
 public class DefaultRequestExecutor implements RequestExecutor {
 
-    private final HttpClient httpClient;
+	private final HttpClient httpClient;
 
-    public DefaultRequestExecutor(HttpClient httpClient) {
-        this.httpClient = httpClient;
-    }
+	public DefaultRequestExecutor(HttpClient httpClient) {
+		this.httpClient = httpClient;
+	}
 
-    @Override
-    public Response apply(Request request) {
-        try {
-            HttpUriRequest httpRequest = new DefaultRequest(request).getHttpRequest();
-            return new DefaultResponse(httpClient.execute(httpRequest)).getResponse();
-        } catch (IOException e) {
-            // TODO: 6/03/2023 handle exception flow
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public Response apply(Request request) {
+		try {
+			HttpUriRequest httpRequest = new DefaultRequest(request).getHttpRequest();
+			return new DefaultResponse(httpClient.execute(httpRequest)).getResponse();
+		} catch (IOException e) {
+			// TODO: 6/03/2023 handle exception flow
+			throw new RuntimeException(e);
+		}
+	}
 
 }

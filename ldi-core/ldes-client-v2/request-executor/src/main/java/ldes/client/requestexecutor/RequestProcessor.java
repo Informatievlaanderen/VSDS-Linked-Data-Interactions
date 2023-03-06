@@ -13,12 +13,12 @@ public class RequestProcessor {
 		// Insert Retry Logic
 		RequestExecutorFactory factory = new RequestExecutorFactory();
 
-		ClientCredentialsRequestExecutor noAuthRequestExecutor =
-				factory.createClientCredentialsRequestExecutor(
-						new ClientCredentialsConfig("id", "secret",
-								"http://localhost:8000/token", "scope"));
+		ClientCredentialsRequestExecutor noAuthRequestExecutor = factory.createClientCredentialsRequestExecutor(
+				new ClientCredentialsConfig("id", "secret",
+						"http://localhost:8000/token", "scope"));
 
-//		DefaultRequestExecutor noAuthRequestExecutor = factory.createNoAuthRequestExecutor();
+		// DefaultRequestExecutor noAuthRequestExecutor =
+		// factory.createNoAuthRequestExecutor();
 		return noAuthRequestExecutor.apply(request);
 	}
 }

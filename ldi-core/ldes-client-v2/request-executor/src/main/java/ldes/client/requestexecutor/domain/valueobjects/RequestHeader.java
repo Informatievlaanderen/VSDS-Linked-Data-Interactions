@@ -3,7 +3,7 @@ package ldes.client.requestexecutor.domain.valueobjects;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class RequestHeader {
-	
+
 	private final String key;
 	private final String value;
 
@@ -15,6 +15,7 @@ public class RequestHeader {
 	public String getKey() {
 		return key;
 	}
+
 	public String getValue() {
 		return value;
 	}

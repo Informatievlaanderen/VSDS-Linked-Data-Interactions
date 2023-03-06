@@ -7,17 +7,17 @@ import com.github.scribejava.core.model.Verb;
 
 public class ClientCredentialsRequest {
 
-    private final Request request;
+	private final Request request;
 
-    public ClientCredentialsRequest(Request request) {
-        this.request = request;
-    }
+	public ClientCredentialsRequest(Request request) {
+		this.request = request;
+	}
 
-    // TODO: 6/03/2023 test
-    public OAuthRequest getOAuthRequest() {
-        final OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, request.getUrl());
-        request.getRequestHeaders().forEach(header -> oAuthRequest.addHeader(header.getKey(), header.getValue()));
-        return oAuthRequest;
-    }
+	// TODO: 6/03/2023 test
+	public OAuthRequest getOAuthRequest() {
+		final OAuthRequest oAuthRequest = new OAuthRequest(Verb.GET, request.getUrl());
+		request.getRequestHeaders().forEach(header -> oAuthRequest.addHeader(header.getKey(), header.getValue()));
+		return oAuthRequest;
+	}
 
 }

@@ -18,35 +18,35 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OAuth20ServiceTokenCacheWrapperTest {
 
-    @Mock
-    private OAuth20Service oAuth20Service;
+	@Mock
+	private OAuth20Service oAuth20Service;
 
-    @InjectMocks
-    private OAuth20ServiceTokenCacheWrapper wrapper;
+	@InjectMocks
+	private OAuth20ServiceTokenCacheWrapper wrapper;
 
-    @Test
-    void shouldGetATokenFromTheServer_whenNotCached_elseGetCachedToken() throws Exception {
-        OAuth2AccessToken token = new OAuth2AccessToken("accessToken", "tokenType",
-                3600, "refreshToken", "scope", "rawResponse");
-        when(oAuth20Service.getAccessTokenClientCredentialsGrant()).thenReturn(token);
+	@Test
+	void shouldGetATokenFromTheServer_whenNotCached_elseGetCachedToken() throws Exception {
+		OAuth2AccessToken token = new OAuth2AccessToken("accessToken", "tokenType",
+				3600, "refreshToken", "scope", "rawResponse");
+		when(oAuth20Service.getAccessTokenClientCredentialsGrant()).thenReturn(token);
 
-        assertEquals(token, wrapper.getAccessTokenClientCredentialsGrant());
-        assertEquals(token, wrapper.getAccessTokenClientCredentialsGrant());
+		assertEquals(token, wrapper.getAccessTokenClientCredentialsGrant());
+		assertEquals(token, wrapper.getAccessTokenClientCredentialsGrant());
 
-        verify(oAuth20Service, times(1)).getAccessTokenClientCredentialsGrant();
-    }
+		verify(oAuth20Service, times(1)).getAccessTokenClientCredentialsGrant();
+	}
 
-    @Test
-    void whenSignRequestIsCalled_shouldPassThroughTheRequest() {
-        wrapper.signRequest(any(), any());
-        verify(oAuth20Service).signRequest((OAuth2AccessToken) any(), any());
-    }
+	@Test
+	void whenSignRequestIsCalled_shouldPassThroughTheRequest() {
+		wrapper.signRequest(any(), any());
+		verify(oAuth20Service).signRequest((OAuth2AccessToken) any(), any());
+	}
 
-    @SuppressWarnings("resource")
-    @Test
-    void whenExecuteIsCalled_shouldPassThroughTheRequest() throws Exception {
-        wrapper.execute(any());
-        verify(oAuth20Service).execute(any());
-    }
+	@SuppressWarnings("resource")
+	@Test
+	void whenExecuteIsCalled_shouldPassThroughTheRequest() throws Exception {
+		wrapper.execute(any());
+		verify(oAuth20Service).execute(any());
+	}
 
 }

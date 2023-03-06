@@ -16,7 +16,8 @@ import java.util.List;
 
 class TreeNodeFetcher {
 	private final Lang dataSourceFormat = Lang.JSONLD;
-	// TODO: 6/03/2023 hier twee injections? RequestSupplier en Executor? Of dit ding twee dingen laten doen?
+	// TODO: 6/03/2023 hier twee injections? RequestSupplier en Executor? Of dit
+	// ding twee dingen laten doen?
 	private final RequestProcessor requestProcessor = new RequestProcessor();
 
 	public TreeNode fetchFragment(String fragmentUrl) {
@@ -30,7 +31,8 @@ class TreeNodeFetcher {
 			return new TreeNode(fragmentUrl, modelResponse.getRelations(), modelResponse.getMembers());
 		}
 		if (response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY) {
-			return new TreeNode(fragmentUrl, List.of(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow()), List.of());
+			return new TreeNode(fragmentUrl, List.of(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow()),
+					List.of());
 		}
 		if (response.getHttpStatus() == HttpStatus.SC_NOT_MODIFIED) {
 			return new TreeNode(fragmentUrl, List.of(), List.of());

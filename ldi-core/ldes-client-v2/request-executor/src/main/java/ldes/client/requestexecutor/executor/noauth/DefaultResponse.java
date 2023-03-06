@@ -12,25 +12,24 @@ import java.util.stream.Stream;
 
 public class DefaultResponse {
 
-    private final HttpResponse httpResponse;
+	private final HttpResponse httpResponse;
 
-    public DefaultResponse(HttpResponse httpResponse) {
-        this.httpResponse = httpResponse;
-    }
+	public DefaultResponse(HttpResponse httpResponse) {
+		this.httpResponse = httpResponse;
+	}
 
-    // TODO: 6/03/2023 test
-    public Response getResponse() throws IOException {
-        final Map<String, String> headers = extractResponseHeaders(httpResponse.getAllHeaders());
-        final int statusCode = httpResponse.getStatusLine().getStatusCode();
-        final String body = httpResponse.getEntity() != null ? EntityUtils.toString(httpResponse.getEntity()) : null;
-        return new Response(headers, statusCode, body);
-    }
+	// TODO: 6/03/2023 test
+	public Response getResponse() throws IOException {
+		final Map<String, String> headers = extractResponseHeaders(httpResponse.getAllHeaders());
+		final int statusCode = httpResponse.getStatusLine().getStatusCode();
+		final String body = httpResponse.getEntity() != null ? EntityUtils.toString(httpResponse.getEntity()) : null;
+		return new Response(headers, statusCode, body);
+	}
 
-    private Map<String, String> extractResponseHeaders(Header[] allHeaders) {
-        return Stream.of(allHeaders)
-                .collect(
-                        Collectors.toMap(Header::getName, Header::getValue, (a, b) -> a + "," + b)
-                );
-    }
+	private Map<String, String> extractResponseHeaders(Header[] allHeaders) {
+		return Stream.of(allHeaders)
+				.collect(
+						Collectors.toMap(Header::getName, Header::getValue, (a, b) -> a + "," + b));
+	}
 
 }

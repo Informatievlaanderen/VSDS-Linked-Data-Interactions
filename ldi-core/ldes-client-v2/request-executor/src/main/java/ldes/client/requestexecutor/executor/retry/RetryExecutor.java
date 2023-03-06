@@ -8,20 +8,20 @@ import ldes.client.requestexecutor.executor.RequestExecutor;
 
 public class RetryExecutor implements RequestExecutor {
 
-    private final RequestExecutor requestExecutor;
-    private final RetryConfig retryConfig;
+	private final RequestExecutor requestExecutor;
+	private final RetryConfig retryConfig;
 
-    public RetryExecutor(RequestExecutor requestExecutor, RetryConfig retryConfig) {
-        this.requestExecutor = requestExecutor;
-        this.retryConfig = retryConfig;
-    }
+	public RetryExecutor(RequestExecutor requestExecutor, RetryConfig retryConfig) {
+		this.requestExecutor = requestExecutor;
+		this.retryConfig = retryConfig;
+	}
 
-    @Override
-    public Response apply(Request request) {
-        return RetryRegistry
-                .of(retryConfig)
-                .retry("retry-http-requests")
-                .executeSupplier(() -> requestExecutor.apply(request));
-    }
+	@Override
+	public Response apply(Request request) {
+		return RetryRegistry
+				.of(retryConfig)
+				.retry("retry-http-requests")
+				.executeSupplier(() -> requestExecutor.apply(request));
+	}
 
 }

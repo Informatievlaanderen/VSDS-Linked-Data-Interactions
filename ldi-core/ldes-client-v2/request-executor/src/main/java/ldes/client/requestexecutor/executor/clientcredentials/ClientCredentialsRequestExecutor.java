@@ -15,24 +15,24 @@ import com.github.scribejava.core.model.OAuthRequest;
  */
 public class ClientCredentialsRequestExecutor implements RequestExecutor {
 
-    private final OAuth20ServiceTokenCacheWrapper oAuthService;
+	private final OAuth20ServiceTokenCacheWrapper oAuthService;
 
-    public ClientCredentialsRequestExecutor(OAuth20ServiceTokenCacheWrapper oAuthService) {
-        this.oAuthService = oAuthService;
-    }
+	public ClientCredentialsRequestExecutor(OAuth20ServiceTokenCacheWrapper oAuthService) {
+		this.oAuthService = oAuthService;
+	}
 
-    @Override
-    public Response apply(Request request) {
-        final OAuth2AccessToken token = oAuthService.getAccessTokenClientCredentialsGrant();
-        final OAuthRequest oAuthRequest = new ClientCredentialsRequest(request).getOAuthRequest();
-        oAuthService.signRequest(token, oAuthRequest);
+	@Override
+	public Response apply(Request request) {
+		final OAuth2AccessToken token = oAuthService.getAccessTokenClientCredentialsGrant();
+		final OAuthRequest oAuthRequest = new ClientCredentialsRequest(request).getOAuthRequest();
+		oAuthService.signRequest(token, oAuthRequest);
 
-        try (com.github.scribejava.core.model.Response response = oAuthService.execute(oAuthRequest)) {
-            return new Response(response.getHeaders(), response.getCode(), response.getBody());
-        } catch (IOException | InterruptedException | ExecutionException e) {
-            // TODO: 6/03/2023 handle exceptions properly
-            throw new RuntimeException(e);
-        }
-    }
+		try (com.github.scribejava.core.model.Response response = oAuthService.execute(oAuthRequest)) {
+			return new Response(response.getHeaders(), response.getCode(), response.getBody());
+		} catch (IOException | InterruptedException | ExecutionException e) {
+			// TODO: 6/03/2023 handle exceptions properly
+			throw new RuntimeException(e);
+		}
+	}
 
 }
