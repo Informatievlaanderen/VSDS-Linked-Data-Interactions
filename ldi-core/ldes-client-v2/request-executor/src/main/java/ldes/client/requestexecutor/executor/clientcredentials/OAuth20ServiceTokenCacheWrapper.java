@@ -37,5 +37,4 @@ public class OAuth20ServiceTokenCacheWrapper {
         return oAuth20Service.execute(request);
     }
 
-
 }
