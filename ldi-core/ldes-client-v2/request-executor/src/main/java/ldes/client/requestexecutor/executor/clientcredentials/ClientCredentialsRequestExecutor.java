@@ -23,9 +23,6 @@ public class ClientCredentialsRequestExecutor implements RequestExecutor {
         this.oAuthService = oAuthService;
     }
 
-    // TODO: 3/03/2023 discuss with Wouter: Auth scope op client of request?
-    // TODO: 6/03/2023 code gaat enkel zonder retry
-
     @Override
     public Response apply(Request request) {
         final OAuth2AccessToken token = oAuthService.getAccessTokenClientCredentialsGrant();

@@ -27,7 +27,7 @@ public class RequestExecutorFactory {
     }
 
     public DefaultRequestExecutor createApiKeyRequestExecutor(ApiKeyConfig apiKeyConfig) {
-        final Collection<Header> headers = List.of(new BasicHeader(apiKeyConfig.apiKeyHeader(), apiKeyConfig.apiKey()));
+        final Collection<Header> headers = List.of(new BasicHeader(apiKeyConfig.getApiKeyHeader(), apiKeyConfig.getApiKey()));
         HttpClient client = HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build();
         return new DefaultRequestExecutor(client);
     }

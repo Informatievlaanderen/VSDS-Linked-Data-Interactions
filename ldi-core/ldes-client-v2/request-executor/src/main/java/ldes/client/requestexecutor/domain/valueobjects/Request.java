@@ -1,7 +1,5 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
-import org.apache.http.entity.ContentType;
-
 import java.util.Objects;
 
 /**
@@ -39,7 +37,4 @@ public class Request {
 		return requestHeaders;
 	}
 
-	public String getContentType() {
-		return requestHeaders.getContentType().map(RequestHeader::getValue).orElse(ContentType.WILDCARD.getMimeType());
-	}
 }
