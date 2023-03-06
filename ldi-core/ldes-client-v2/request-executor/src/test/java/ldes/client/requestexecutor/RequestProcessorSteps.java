@@ -10,7 +10,9 @@ import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import org.apache.http.HttpHeaders;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,7 +46,7 @@ public class RequestProcessorSteps {
 
 	@And("I add a RequestHeader with key {string} and value {string}")
 	public void iAddARequestHeaderWithKeyAndValue(String arg0, String arg1) {
-		requestHeaders = requestHeaders.addHeader(new RequestHeader(arg0, arg1));
+		addHeaderToRequestHeaders(arg0, arg1);
 	}
 
 	@And("I create a Request with the RequestHeaders and url: {string}")
@@ -59,6 +61,14 @@ public class RequestProcessorSteps {
 
 	@And("I add a RequestHeader with key {string} and value the obtained etag")
 	public void iAddARequestHeaderWithKeyAndValueTheObtainedEtag(String arg0) {
-		requestHeaders = requestHeaders.addHeader(new RequestHeader(arg0, etag));
+		addHeaderToRequestHeaders(arg0, etag);
 	}
+
+	private void addHeaderToRequestHeaders(String key, String value) {
+		List<RequestHeader> headers = new ArrayList<>();
+		requestHeaders.forEach(headers::add);
+		headers.add(new RequestHeader(key, value));
+		requestHeaders = new RequestHeaders(headers);
+	}
+
 }
