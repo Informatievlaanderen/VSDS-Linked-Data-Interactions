@@ -40,7 +40,8 @@ public class LdioHttpInAutoConfig {
 		public LdiComponent configure(ComponentProperties config) {
 			@RestController
 			class LdioHttpInBean extends LdioHttpIn {
-				// Workaround to lazy load the LdtoHttpIn RestController only when configured as an LdtoInput
+				// Workaround to lazy load the LdtoHttpIn RestController only when configured as
+				// an LdtoInput
 				public LdioHttpInBean() {
 				}
 			}

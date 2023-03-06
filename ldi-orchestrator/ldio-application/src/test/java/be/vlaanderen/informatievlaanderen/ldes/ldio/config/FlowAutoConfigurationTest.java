@@ -38,9 +38,10 @@ public class FlowAutoConfigurationTest {
 		dummyIn.sendData();
 
 		Model expected = RDFParserBuilder.create()
-				.fromString("""
-						_:Beced3445712fba4a1f51b6fae28e0147 <http://schema.org/description> "Transformed" .
-						_:Beced3445712fba4a1f51b6fae28e0147 <http://schema.org/integer> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .""")
+				.fromString(
+						"""
+								_:Beced3445712fba4a1f51b6fae28e0147 <http://schema.org/description> "Transformed" .
+								_:Beced3445712fba4a1f51b6fae28e0147 <http://schema.org/integer> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .""")
 				.lang(Lang.NQUADS)
 				.toModel();
 
