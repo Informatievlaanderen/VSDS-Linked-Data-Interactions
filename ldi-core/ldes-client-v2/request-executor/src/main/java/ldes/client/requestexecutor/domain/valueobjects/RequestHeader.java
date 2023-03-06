@@ -1,7 +1,5 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
-import java.util.Objects;
-
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class RequestHeader {
@@ -19,18 +17,5 @@ public class RequestHeader {
 	}
 	public String getValue() {
 		return value;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		RequestHeader that = (RequestHeader) o;
-		return key.equals(that.key) && value.equals(that.value);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(key, value);
 	}
 }
