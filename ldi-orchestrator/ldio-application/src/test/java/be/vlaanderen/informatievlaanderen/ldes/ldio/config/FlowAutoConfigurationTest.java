@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class FlowAutoConfigurationTest {
+class FlowAutoConfigurationTest {
 
 	@Autowired
 	LdiInput ldiInput;
@@ -33,7 +33,7 @@ public class FlowAutoConfigurationTest {
 	@Test
 	void verifyBeanCreation() {
 		DummyIn dummyIn = (DummyIn) ldiInput;
-		ComponentExecutorImpl executor = (ComponentExecutorImpl) ldiInput.executor;
+		ComponentExecutorImpl executor = (ComponentExecutorImpl) ldiInput.getExecutor();
 		DummyOut dummyOut = (DummyOut) executor.getLdiOutputs().get(0);
 		dummyIn.sendData();
 

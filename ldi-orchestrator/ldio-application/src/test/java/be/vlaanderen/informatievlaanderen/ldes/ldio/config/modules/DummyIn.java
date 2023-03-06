@@ -9,7 +9,7 @@ public class DummyIn extends LdiInput {
 	public void sendData() {
 		String quad = "_:b0 <http://schema.org/integer> \"" + counter++
 				+ "\"^^<http://www.w3.org/2001/XMLSchema#integer> .";
-		adapter.apply(LdiAdapter.InputObject.of(quad, "application/n-quads"))
-				.forEach(executor::transformLinkedData);
+		getAdapter().apply(LdiAdapter.InputObject.of(quad, "application/n-quads"))
+				.forEach(getExecutor()::transformLinkedData);
 	}
 }

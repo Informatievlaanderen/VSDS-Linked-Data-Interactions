@@ -29,8 +29,6 @@ public class LdiConsoleOut implements LdiOutput {
 	}
 
 	public static Lang getLang(MediaType contentType) {
-		if (contentType.equals(MediaType.TEXT_HTML))
-			return TURTLE;
 		return ofNullable(nameToLang(contentType.getType() + "/" + contentType.getSubtype()))
 				.orElseGet(() -> ofNullable(nameToLang(contentType.getSubtype()))
 						.orElseThrow());

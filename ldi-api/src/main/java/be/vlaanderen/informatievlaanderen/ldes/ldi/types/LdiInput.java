@@ -4,8 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 
 public abstract class LdiInput implements LdiComponent {
 
-	public ComponentExecutor executor;
-	public LdiAdapter adapter;
+	private ComponentExecutor executor;
+	private LdiAdapter adapter;
 
 	public LdiInput withExecutor(ComponentExecutor executor) {
 		this.executor = executor;
@@ -15,5 +15,13 @@ public abstract class LdiInput implements LdiComponent {
 	public LdiInput withAdapter(LdiAdapter adapter) {
 		this.adapter = adapter;
 		return this;
+	}
+
+	public ComponentExecutor getExecutor() {
+		return executor;
+	}
+
+	public LdiAdapter getAdapter() {
+		return adapter;
 	}
 }

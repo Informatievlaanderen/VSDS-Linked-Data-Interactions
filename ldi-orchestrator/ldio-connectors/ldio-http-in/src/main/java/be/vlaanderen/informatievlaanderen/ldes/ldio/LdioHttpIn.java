@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LdioHttpIn extends LdiInput {
 	@PostMapping("data")
 	public void accept(@RequestBody String input, @RequestHeader("Content-Type") String contentType) {
-		adapter.apply(LdiAdapter.InputObject.of(input, contentType))
-				.forEach(executor::transformLinkedData);
+		getAdapter().apply(LdiAdapter.InputObject.of(input, contentType))
+				.forEach(getExecutor()::transformLinkedData);
 	}
 }
