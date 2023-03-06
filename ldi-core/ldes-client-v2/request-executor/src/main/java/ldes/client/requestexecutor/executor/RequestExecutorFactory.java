@@ -1,10 +1,13 @@
 package ldes.client.requestexecutor.executor;
 
+import io.github.resilience4j.retry.RetryConfig;
 import ldes.client.requestexecutor.config.ApiKeyConfig;
 import ldes.client.requestexecutor.config.ClientCredentialsConfig;
+import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.clientcredentials.ClientCredentialsRequestExecutor;
 import ldes.client.requestexecutor.executor.clientcredentials.OAuth20ServiceTokenCacheWrapper;
 import ldes.client.requestexecutor.executor.noauth.DefaultRequestExecutor;
+import ldes.client.requestexecutor.executor.retry.RetryExecutor;
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -12,6 +15,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.message.BasicHeader;
 
+import java.io.IOException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 
@@ -63,4 +68,14 @@ public class RequestExecutorFactory {
         };
     }
 
+    public RequestExecutor createRetry(RequestExecutor requestExecutor) {
+        final RetryConfig config = RetryConfig.<Response>custom()
+                .maxAttempts(3)
+                .waitDuration(Duration.ofMillis(500))
+                .retryOnResult(response -> response == null || response.getHttpStatus() >= 500)
+                .retryOnException(e -> e instanceof IOException)
+                .build();
+
+        return new RetryExecutor(requestExecutor, config);
+    }
 }
