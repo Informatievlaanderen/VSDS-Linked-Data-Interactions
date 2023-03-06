@@ -16,6 +16,7 @@ import java.util.List;
 
 class TreeNodeFetcher {
 	private final Lang dataSourceFormat = Lang.JSONLD;
+	// TODO: 6/03/2023 hier twee injections? RequestSupplier en Executor? Of dit ding twee dingen laten doen?
 	private final RequestProcessor requestProcessor = new RequestProcessor();
 
 	public TreeNode fetchFragment(String fragmentUrl) {

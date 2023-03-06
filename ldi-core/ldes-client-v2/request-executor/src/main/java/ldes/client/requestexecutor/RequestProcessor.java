@@ -9,10 +9,16 @@ import ldes.client.requestexecutor.executor.noauth.DefaultRequestExecutor;
 
 public class RequestProcessor {
 
+	// TODO: 6/03/2023 remove this class
 	public Response processRequest(final Request request) {
 		// Insert Retry Logic
 		RequestExecutorFactory factory = new RequestExecutorFactory();
-		ClientCredentialsRequestExecutor noAuthRequestExecutor = factory.createClientCredentialsRequestExecutor(new ClientCredentialsConfig("id", "token", "http://localhost:8000/token", "scope"));
+
+		ClientCredentialsRequestExecutor noAuthRequestExecutor =
+				factory.createClientCredentialsRequestExecutor(
+						new ClientCredentialsConfig("id", "secret",
+								"http://localhost:8000/token", "scope"));
+
 //		DefaultRequestExecutor noAuthRequestExecutor = factory.createNoAuthRequestExecutor();
 		return noAuthRequestExecutor.apply(request);
 	}
