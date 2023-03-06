@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -25,18 +26,14 @@ public class LdiConsoleOut implements LdiOutput {
 
 	@Override
 	public void accept(Model model) {
-		LOGGER.info(toString(model, outputLanguage));
+		LOGGER.info(RDFWriter.source(model)
+				.lang(outputLanguage)
+				.asString());
 	}
 
 	public static Lang getLang(MediaType contentType) {
 		return ofNullable(nameToLang(contentType.getType() + "/" + contentType.getSubtype()))
 				.orElseGet(() -> ofNullable(nameToLang(contentType.getSubtype()))
 						.orElseThrow());
-	}
-
-	public static String toString(final Model model, final Lang lang) {
-		StringWriter stringWriter = new StringWriter();
-		RDFDataMgr.write(stringWriter, model, lang);
-		return stringWriter.toString();
 	}
 }
