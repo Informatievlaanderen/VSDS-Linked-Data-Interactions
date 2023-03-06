@@ -10,6 +10,7 @@ import ldes.client.startingtreenode.domain.valueobjects.StartingNodeSpecificatio
 import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
 import ldes.client.startingtreenode.domain.valueobjects.TreeNodeSpecification;
 import ldes.client.startingtreenode.domain.valueobjects.ViewSpecification;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
@@ -40,13 +41,14 @@ public class StartingTreeNodeFinder {
 	public Optional<TreeNode> determineStartingTreeNode(final Endpoint endpoint) {
 		LOGGER.info("Determining starting node for: {}", endpoint.url());
 		RequestHeaders requestHeaders = new RequestHeaders(
-				List.of(new RequestHeader("Accept", endpoint.contentType())));
+				List.of(new RequestHeader(HttpHeaders.ACCEPT, endpoint.contentType())));
 		Response response = requestProcessor.processRequest(new Request(endpoint.url(), requestHeaders));
 		if (responseIsOK(response)) {
 			return selectStartingNode(endpoint, response);
 		}
 		if (responseIsRedirect(response)) {
-			Endpoint newEndpoint = endpoint.createRedirectedEndpoint(response.getValueOfHeader("location").get(0));
+			@SuppressWarnings("OptionalGetWithoutIsPresent") // check done in responseIsRedirect(response)
+			Endpoint newEndpoint = endpoint.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION).get());
 			return determineStartingTreeNode(newEndpoint);
 		}
 		return Optional.empty();
@@ -54,7 +56,7 @@ public class StartingTreeNodeFinder {
 
 	private Optional<TreeNode> selectStartingNode(Endpoint endpoint, Response response) {
 		Model model = RDFParser
-				.fromString(response.getBody())
+				.fromString(response.getBody().orElseThrow())
 				.lang(endpoint.lang())
 				.build()
 				.toModel();
@@ -73,7 +75,7 @@ public class StartingTreeNodeFinder {
 
 	private boolean responseIsRedirect(Response response) {
 		return response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY
-				&& !response.getValueOfHeader("location").isEmpty();
+				&& response.getValueOfHeader(HttpHeaders.LOCATION).isPresent();
 	}
 
 }

@@ -8,6 +8,7 @@ import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
+import org.apache.http.HttpHeaders;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class RequestProcessorSteps {
 
 	@And("I extract the etag from the response")
 	public void iExtractTheEtagFromTheResponse() {
-		etag = response.getValueOfHeader("etag").get(0);
+		etag = response.getValueOfHeader(HttpHeaders.ETAG).orElseThrow();
 	}
 
 	@And("I add a RequestHeader with key {string} and value the obtained etag")

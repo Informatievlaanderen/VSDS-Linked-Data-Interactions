@@ -1,7 +1,7 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
-import java.net.URI;
-import java.net.http.HttpRequest;
+import org.apache.http.entity.ContentType;
+
 import java.util.Objects;
 
 /**
@@ -17,17 +17,6 @@ public class Request {
 		this.requestHeaders = requestHeaders;
 	}
 
-	public HttpRequest createHttpRequest() {
-		HttpRequest.Builder uri = HttpRequest.newBuilder()
-				.uri(URI.create(url));
-		for (RequestHeader requestHeader : requestHeaders.getHeaders()) {
-			uri = uri.header(requestHeader.getKey(), requestHeader.getValue());
-		}
-		return uri
-				.GET()
-				.build();
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -40,5 +29,17 @@ public class Request {
 	@Override
 	public int hashCode() {
 		return Objects.hash(url, requestHeaders);
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public RequestHeaders getRequestHeaders() {
+		return requestHeaders;
+	}
+
+	public String getContentType() {
+		return requestHeaders.getContentType().map(RequestHeader::getValue).orElse(ContentType.WILDCARD.getMimeType());
 	}
 }

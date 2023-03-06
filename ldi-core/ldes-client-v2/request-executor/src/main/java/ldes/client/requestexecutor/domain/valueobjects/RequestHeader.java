@@ -1,6 +1,7 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
 public class RequestHeader {
+	
 	private final String key;
 	private final String value;
 
@@ -12,8 +13,8 @@ public class RequestHeader {
 	public String getKey() {
 		return key;
 	}
-
 	public String getValue() {
 		return value;
 	}
+	
 }
