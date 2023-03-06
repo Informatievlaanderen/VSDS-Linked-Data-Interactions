@@ -5,7 +5,6 @@ import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.clientcredentials.ClientCredentialsRequestExecutor;
-import ldes.client.requestexecutor.executor.noauth.DefaultRequestExecutor;
 
 public class RequestProcessor {
 

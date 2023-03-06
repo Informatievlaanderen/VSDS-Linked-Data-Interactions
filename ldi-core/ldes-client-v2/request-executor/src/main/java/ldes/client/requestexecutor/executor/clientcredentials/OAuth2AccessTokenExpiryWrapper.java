@@ -16,14 +16,19 @@ public class OAuth2AccessTokenExpiryWrapper {
     }
 
     public static OAuth2AccessTokenExpiryWrapper from(OAuth2AccessToken token) {
-        final LocalDateTime expiryTs = LocalDateTime.now().plusSeconds(token.getExpiresIn());
-        return new OAuth2AccessTokenExpiryWrapper(token, expiryTs);
+        if (token.getExpiresIn() != null) {
+            final LocalDateTime expiryTs = LocalDateTime.now().plusSeconds(token.getExpiresIn());
+            return new OAuth2AccessTokenExpiryWrapper(token, expiryTs);
+        } else {
+            return empty();
+        }
     }
 
     public static OAuth2AccessTokenExpiryWrapper empty() {
         return new OAuth2AccessTokenExpiryWrapper(null, null);
     }
 
+    // TODO: 6/03/2023 test
     public Optional<OAuth2AccessToken> getAccessToken() {
         if (isValid()) {
             return Optional.of(token);
