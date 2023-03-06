@@ -33,4 +33,12 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 			ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(finalTransformedLinkedDataModel));
 		});
 	}
+
+	public List<LdiTransformer> getLdiTransformers() {
+		return ldiTransformers;
+	}
+
+	public List<LdiOutput> getLdiOutputs() {
+		return ldiOutputs;
+	}
 }

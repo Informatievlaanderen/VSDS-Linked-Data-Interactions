@@ -2,8 +2,18 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.types;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 
-public interface LdiInput extends LdiComponent {
-	LdiInput withExecutor(ComponentExecutor executor);
+public abstract class LdiInput implements LdiComponent {
 
-	LdiInput withAdapter(LdiAdapter adapter);
+	public ComponentExecutor executor;
+	public LdiAdapter adapter;
+
+	public LdiInput withExecutor(ComponentExecutor executor) {
+		this.executor = executor;
+		return this;
+	}
+
+	public LdiInput withAdapter(LdiAdapter adapter) {
+		this.adapter = adapter;
+		return this;
+	}
 }
