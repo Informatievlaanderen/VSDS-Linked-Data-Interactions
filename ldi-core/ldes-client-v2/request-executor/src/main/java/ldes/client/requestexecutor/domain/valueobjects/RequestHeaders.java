@@ -13,7 +13,7 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 		this.headers = requestHeaders;
 	}
 
-	public RequestHeaders addRequestHeader(RequestHeader requestHeader) {
+	public RequestHeaders addHeader(RequestHeader requestHeader) {
 		List<RequestHeader> newHeaders = new ArrayList<>(headers);
 		newHeaders.add(requestHeader);
 		return new RequestHeaders(newHeaders);

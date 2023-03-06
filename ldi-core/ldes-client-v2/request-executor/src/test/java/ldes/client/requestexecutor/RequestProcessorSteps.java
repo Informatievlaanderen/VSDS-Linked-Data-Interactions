@@ -44,7 +44,7 @@ public class RequestProcessorSteps {
 
 	@And("I add a RequestHeader with key {string} and value {string}")
 	public void iAddARequestHeaderWithKeyAndValue(String arg0, String arg1) {
-		requestHeaders = requestHeaders.addRequestHeader(new RequestHeader(arg0, arg1));
+		requestHeaders = requestHeaders.addHeader(new RequestHeader(arg0, arg1));
 	}
 
 	@And("I create a Request with the RequestHeaders and url: {string}")
@@ -59,6 +59,6 @@ public class RequestProcessorSteps {
 
 	@And("I add a RequestHeader with key {string} and value the obtained etag")
 	public void iAddARequestHeaderWithKeyAndValueTheObtainedEtag(String arg0) {
-		requestHeaders = requestHeaders.addRequestHeader(new RequestHeader(arg0, etag));
+		requestHeaders = requestHeaders.addHeader(new RequestHeader(arg0, etag));
 	}
 }
