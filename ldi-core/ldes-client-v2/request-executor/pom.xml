@@ -21,7 +21,6 @@
             <artifactId>scribejava-core</artifactId>
             <version>${scribejava.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.github.scribejava</groupId>
             <artifactId>scribejava-httpclient-apache</artifactId>
@@ -33,13 +32,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-retry</artifactId>
             <version>2.0.2</version>
         </dependency>
-
     </dependencies>
 
 </project>

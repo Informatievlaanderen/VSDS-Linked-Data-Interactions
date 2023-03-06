@@ -4,7 +4,6 @@ import org.apache.http.HttpHeaders;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public class Response {
@@ -31,12 +30,14 @@ public class Response {
 		return Optional.ofNullable(headers.get(key));
 	}
 
+	// TODO: 6/03/2023 add testing if this can stay
 	public boolean isImmutable() {
 		return getValueOfHeader(HttpHeaders.CACHE_CONTROL)
 				.map(cacheControl -> cacheControl.contains("immutable"))
 				.orElse(false);
 	}
 
+	// TODO: 6/03/2023 add testing if this can stay
 	public int getCacheMaxAge() {
 		return Arrays.stream(
 				getValueOfHeader(HttpHeaders.CACHE_CONTROL)
@@ -49,17 +50,4 @@ public class Response {
 				.orElse(0);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (!(o instanceof Response response))
-			return false;
-		return httpStatus == response.httpStatus && Objects.equals(body, response.body);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(httpStatus, body);
-	}
 }
