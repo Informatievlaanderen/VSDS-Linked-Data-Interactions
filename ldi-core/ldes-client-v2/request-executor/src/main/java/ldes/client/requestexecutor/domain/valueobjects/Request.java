@@ -1,8 +1,6 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Verb;
+import static org.apache.commons.lang3.Validate.notNull;
 
 /**
  * Contains the request details to connect to the server.
@@ -14,7 +12,7 @@ public class Request {
 
 	public Request(String url, RequestHeaders requestHeaders) {
 		this.url = url;
-		this.requestHeaders = requestHeaders;
+		this.requestHeaders = notNull(requestHeaders);
 	}
 
 	public String getUrl() {

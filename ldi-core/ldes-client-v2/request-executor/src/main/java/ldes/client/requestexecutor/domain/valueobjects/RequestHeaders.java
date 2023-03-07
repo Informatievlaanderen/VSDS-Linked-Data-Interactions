@@ -1,5 +1,6 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,6 +10,10 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 
 	public RequestHeaders(List<RequestHeader> requestHeaders) {
 		this.headers = requestHeaders;
+	}
+
+	public static RequestHeaders empty() {
+		return new RequestHeaders(new ArrayList<>());
 	}
 
 	@Override
