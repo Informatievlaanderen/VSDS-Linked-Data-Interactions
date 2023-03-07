@@ -9,10 +9,6 @@ import com.github.scribejava.core.model.Verb;
  */
 public class Request {
 
-	// TODO: 6/03/2023 request bouwen we nu op in executor -> kunnen er interface
-	// van maken en strategy patter (factories)
-	// TODO: 6/03/2023 processor geen meerwaarde? direct executor?
-
 	private final String url;
 	private final RequestHeaders requestHeaders;
 
