@@ -1,15 +1,12 @@
 package ldes.client.startingtreenode;
 
-import ldes.client.requestexecutor.RequestProcessor;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
-import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
-import ldes.client.startingtreenode.domain.valueobjects.StartingNodeSpecification;
-import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
-import ldes.client.startingtreenode.domain.valueobjects.TreeNodeSpecification;
-import ldes.client.startingtreenode.domain.valueobjects.ViewSpecification;
+import ldes.client.requestexecutor.executor.RequestExecutor;
+import ldes.client.requestexecutor.executor.RequestExecutorFactory;
+import ldes.client.startingtreenode.domain.valueobjects.*;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.jena.rdf.model.Model;
@@ -23,11 +20,12 @@ import java.util.Optional;
 public class StartingTreeNodeFinder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StartingTreeNodeFinder.class);
-	private final RequestProcessor requestProcessor;
+	private final RequestExecutor requestExecutor;
 	private final List<StartingNodeSpecification> startingNodeSpecifications;
 
 	public StartingTreeNodeFinder() {
-		requestProcessor = new RequestProcessor();
+		// TODO: 7/03/2023 wiring from config - support multiple executor strategies
+		requestExecutor = new RequestExecutorFactory().createNoAuthRequestExecutor();
 		startingNodeSpecifications = List.of(new ViewSpecification(), new TreeNodeSpecification());
 	}
 
@@ -42,7 +40,7 @@ public class StartingTreeNodeFinder {
 		LOGGER.info("Determining starting node for: {}", endpoint.url());
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, endpoint.contentType())));
-		Response response = requestProcessor.processRequest(new Request(endpoint.url(), requestHeaders));
+		Response response = requestExecutor.apply(new Request(endpoint.url(), requestHeaders));
 		if (responseIsOK(response)) {
 			return selectStartingNode(endpoint, response);
 		}
