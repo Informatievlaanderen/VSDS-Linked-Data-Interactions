@@ -24,42 +24,42 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ClientCredentialsRequestExecutorTest {
 
-    @InjectMocks
-    private ClientCredentialsRequestExecutor clientCredentialsRequestExecutor;
+	@InjectMocks
+	private ClientCredentialsRequestExecutor clientCredentialsRequestExecutor;
 
-    @Mock
-    private OAuth20ServiceTokenCacheWrapper oAuthService;
+	@Mock
+	private OAuth20ServiceTokenCacheWrapper oAuthService;
 
-    @Nested
-    class Apply {
-        @Test
-        void shouldReturnFilledResponse_whenSuccess() throws Exception {
-            OAuth2AccessToken token = new OAuth2AccessToken("accessToken", "tokenType",
-                    3600, "refreshToken", "scope", "rawResponse");
-            when(oAuthService.getAccessTokenClientCredentialsGrant()).thenReturn(token);
+	@Nested
+	class Apply {
+		@Test
+		void shouldReturnFilledResponse_whenSuccess() throws Exception {
+			OAuth2AccessToken token = new OAuth2AccessToken("accessToken", "tokenType",
+					3600, "refreshToken", "scope", "rawResponse");
+			when(oAuthService.getAccessTokenClientCredentialsGrant()).thenReturn(token);
 
-            Request request = new Request("url", RequestHeaders.empty());
+			Request request = new Request("url", RequestHeaders.empty());
 
-            com.github.scribejava.core.model.Response scribeResponse =
-                    new com.github.scribejava.core.model.Response(200, "OK", Map.of("key", "value"), "body");
-            when(oAuthService.execute(any())).thenReturn(scribeResponse);
+			com.github.scribejava.core.model.Response scribeResponse = new com.github.scribejava.core.model.Response(
+					200, "OK", Map.of("key", "value"), "body");
+			when(oAuthService.execute(any())).thenReturn(scribeResponse);
 
-            Response response = clientCredentialsRequestExecutor.apply(request);
+			Response response = clientCredentialsRequestExecutor.apply(request);
 
-            verify(oAuthService).signRequest(any(), any());
-            assertEquals(scribeResponse.getCode(), response.getHttpStatus());
-            assertTrue(response.getBody().isPresent());
-            assertEquals(scribeResponse.getBody(), response.getBody().get());
-            assertTrue(response.getValueOfHeader("key").isPresent());
-            assertEquals(scribeResponse.getHeader("key"), response.getValueOfHeader("key").get());
-        }
+			verify(oAuthService).signRequest(any(), any());
+			assertEquals(scribeResponse.getCode(), response.getHttpStatus());
+			assertTrue(response.getBody().isPresent());
+			assertEquals(scribeResponse.getBody(), response.getBody().get());
+			assertTrue(response.getValueOfHeader("key").isPresent());
+			assertEquals(scribeResponse.getHeader("key"), response.getValueOfHeader("key").get());
+		}
 
-        @Test
-        void shouldThrowException_whenFailure() throws Exception {
-            Request request = new Request("url", RequestHeaders.empty());
-            when(oAuthService.execute(any())).thenThrow(IOException.class);
+		@Test
+		void shouldThrowException_whenFailure() throws Exception {
+			Request request = new Request("url", RequestHeaders.empty());
+			when(oAuthService.execute(any())).thenThrow(IOException.class);
 
-            assertThrows(RuntimeException.class, () -> clientCredentialsRequestExecutor.apply(request));
-        }
-    }
+			assertThrows(RuntimeException.class, () -> clientCredentialsRequestExecutor.apply(request));
+		}
+	}
 }
