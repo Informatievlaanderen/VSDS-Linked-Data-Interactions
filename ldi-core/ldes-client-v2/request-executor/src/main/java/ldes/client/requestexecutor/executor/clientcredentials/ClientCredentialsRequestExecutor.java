@@ -29,7 +29,7 @@ public class ClientCredentialsRequestExecutor implements RequestExecutor {
 
 		try (com.github.scribejava.core.model.Response response = oAuthService.execute(oAuthRequest)) {
 			return new Response(response.getHeaders(), response.getCode(), response.getBody());
-		} catch (IOException | InterruptedException | ExecutionException e) {
+		} catch (Exception e) {
 			// TODO: 6/03/2023 handle exceptions properly
 			throw new RuntimeException(e);
 		}
