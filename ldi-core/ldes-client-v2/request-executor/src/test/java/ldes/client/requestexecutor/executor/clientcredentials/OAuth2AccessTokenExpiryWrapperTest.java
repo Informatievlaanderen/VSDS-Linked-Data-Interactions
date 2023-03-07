@@ -22,8 +22,7 @@ class OAuth2AccessTokenExpiryWrapperTest {
 		void shouldContainToken_whenTokenAndExpiryArePresent() {
 			OAuth2AccessToken token = new OAuth2AccessToken("accessToken", "tokenType",
 					3600, "refreshToken", "scope", "rawResponse");
-			OAuth2AccessTokenExpiryWrapper tokenWrapper = OAuth2AccessTokenExpiryWrapper
-					.from(new OAuth2AccessToken("token"));
+			OAuth2AccessTokenExpiryWrapper tokenWrapper = OAuth2AccessTokenExpiryWrapper.from(token);
 			assertTrue(tokenWrapper.getAccessToken().isPresent());
 			assertEquals("accessToken", tokenWrapper.getAccessToken().orElseThrow().getAccessToken());
 		}
