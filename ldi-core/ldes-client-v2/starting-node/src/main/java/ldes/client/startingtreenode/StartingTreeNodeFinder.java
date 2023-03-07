@@ -45,9 +45,8 @@ public class StartingTreeNodeFinder {
 			return selectStartingNode(endpoint, response);
 		}
 		if (responseIsRedirect(response)) {
-			@SuppressWarnings("OptionalGetWithoutIsPresent") // check done in responseIsRedirect(response)
 			Endpoint newEndpoint = endpoint
-					.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION).get());
+					.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow());
 			return determineStartingTreeNode(newEndpoint);
 		}
 		return Optional.empty();

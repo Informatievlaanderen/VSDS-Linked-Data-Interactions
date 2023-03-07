@@ -75,7 +75,7 @@ public class RequestExecutorFactory {
 				.maxAttempts(3)
 				.waitDuration(Duration.ofMillis(500))
 				.retryOnResult(response -> response == null || response.getHttpStatus() >= 500)
-				.retryOnException(e -> e instanceof IOException)
+				.retryOnException(IOException.class::isInstance)
 				.build();
 
 		return new RetryExecutor(requestExecutor, config);

@@ -1,4 +1,4 @@
-package ldes.client.requestexecutor;
+package ldes.client.requestexecutor.executor.noauth;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -10,7 +10,6 @@ import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.requestexecutor.executor.RequestExecutorFactory;
-import ldes.client.requestexecutor.executor.noauth.DefaultRequestExecutor;
 import org.apache.http.HttpHeaders;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RequestProcessorSteps {
+public class DefaultRequestExecutorSteps {
 
 	private RequestExecutor requestExecutor;
 	private Response response;
