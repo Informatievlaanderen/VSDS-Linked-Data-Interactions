@@ -15,7 +15,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.jena.riot.Lang.TURTLE;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
-@SuppressWarnings("java:2629")
+@SuppressWarnings("java:S2629")
 public class LdiConsoleOut implements LdiOutput {
 	private final Logger LOGGER = LoggerFactory.getLogger(LdiConsoleOut.class);
 
