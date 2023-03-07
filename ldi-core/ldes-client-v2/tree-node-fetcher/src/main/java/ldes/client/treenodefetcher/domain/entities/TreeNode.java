@@ -1,5 +1,7 @@
 package ldes.client.treenodefetcher.domain.entities;
 
+import ldes.client.treenodefetcher.domain.valueobjects.MutabilityStatus;
+
 import java.util.List;
 
 public class TreeNode {
@@ -7,10 +9,16 @@ public class TreeNode {
 	private final List<String> relation;
 	private final List<TreeMember> members;
 
-	public TreeNode(String treeNodeId, List<String> relations, List<TreeMember> members) {
+	private final MutabilityStatus mutabilityStatus;
+
+	// TODO extend with mutability of tree node (including max-age)
+
+	public TreeNode(String treeNodeId, List<String> relations, List<TreeMember> members,
+			MutabilityStatus mutabilityStatus) {
 		this.treeNodeId = treeNodeId;
 		this.relation = relations;
 		this.members = members;
+		this.mutabilityStatus = mutabilityStatus;
 	}
 
 	public String getTreeNodeId() {
@@ -25,4 +33,7 @@ public class TreeNode {
 		return members;
 	}
 
+	public MutabilityStatus getMutabilityStatus() {
+		return mutabilityStatus;
+	}
 }

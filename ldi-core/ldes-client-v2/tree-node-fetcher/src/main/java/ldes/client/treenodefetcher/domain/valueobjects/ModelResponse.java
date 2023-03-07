@@ -40,27 +40,27 @@ public class ModelResponse {
 				.toList();
 	}
 
-	private Stream<Statement> extractMembers(Model fragmentModel) {
-		StmtIterator memberIterator = fragmentModel.listStatements(ANY_RESOURCE, W3ID_TREE_MEMBER, ANY_RESOURCE);
+	private Stream<Statement> extractMembers(Model treeNodeModel) {
+		StmtIterator memberIterator = treeNodeModel.listStatements(ANY_RESOURCE, W3ID_TREE_MEMBER, ANY_RESOURCE);
 
 		return Stream.iterate(memberIterator, Iterator::hasNext, UnaryOperator.identity())
 				.map(Iterator::next);
 	}
 
-	private TreeMember processMember(Model fragmentModel, Statement memberStatement) {
-		Model memberModel = modelExtract.extract(memberStatement.getObject().asResource(), fragmentModel);
+	private TreeMember processMember(Model treeNodeModel, Statement memberStatement) {
+		Model memberModel = modelExtract.extract(memberStatement.getObject().asResource(), treeNodeModel);
 		String id = memberStatement.getObject().toString();
 		memberModel.add(memberStatement);
 
 		// Add reverse properties
-		Set<Statement> otherLdesMembers = fragmentModel
+		Set<Statement> otherLdesMembers = treeNodeModel
 				.listStatements(memberStatement.getSubject(), W3ID_TREE_MEMBER, ANY_RESOURCE).toSet().stream()
 				.filter(statement -> !memberStatement.equals(statement)).collect(Collectors.toSet());
 
-		fragmentModel.listStatements(ANY_RESOURCE, ANY_PROPERTY, memberStatement.getResource())
+		treeNodeModel.listStatements(ANY_RESOURCE, ANY_PROPERTY, memberStatement.getResource())
 				.filterKeep(statement -> statement.getSubject().isURIResource()).filterDrop(memberStatement::equals)
 				.forEach(statement -> {
-					Model reversePropertyModel = modelExtract.extract(statement.getSubject(), fragmentModel);
+					Model reversePropertyModel = modelExtract.extract(statement.getSubject(), treeNodeModel);
 					List<Statement> otherMembers = reversePropertyModel
 							.listStatements(statement.getSubject(), statement.getPredicate(), ANY_RESOURCE).toList();
 					otherLdesMembers.forEach(otherLdesMember -> reversePropertyModel
@@ -74,8 +74,8 @@ public class ModelResponse {
 		return new TreeMember(id, memberModel);
 	}
 
-	private Stream<Statement> extractRelations(Model fragmentModel) {
-		return Stream.iterate(fragmentModel.listStatements(ANY_RESOURCE, W3ID_TREE_RELATION, ANY_RESOURCE),
+	private Stream<Statement> extractRelations(Model treeNodeModel) {
+		return Stream.iterate(treeNodeModel.listStatements(ANY_RESOURCE, W3ID_TREE_RELATION, ANY_RESOURCE),
 				Iterator::hasNext, UnaryOperator.identity()).map(Iterator::next);
 	}
 }

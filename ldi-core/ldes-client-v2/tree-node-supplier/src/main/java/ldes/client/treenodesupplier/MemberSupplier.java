@@ -9,14 +9,12 @@ public class MemberSupplier implements Supplier<TreeMember>, LdiInput {
 
 	private final Processor processor;
 
-	public MemberSupplier(String string) {
-		this.processor = new Processor(string);
+	public MemberSupplier(Processor processor) {
+		this.processor = processor;
 	}
 
 	@Override
 	public TreeMember get() {
-		TreeMember member = processor.getMember();
-		System.out.println("\t" + member.getMemberId());
-		return member;
+		return processor.getMember();
 	}
 }
