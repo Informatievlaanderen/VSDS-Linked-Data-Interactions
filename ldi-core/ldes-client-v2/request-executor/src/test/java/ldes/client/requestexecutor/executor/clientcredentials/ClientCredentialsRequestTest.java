@@ -12,22 +12,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClientCredentialsRequestTest {
 
-    @Test
-    void whenGetOAuthRequest_shouldContainUrlAndHeaders() {
-        RequestHeaders requestHeaders =
-                new RequestHeaders(
-                        List.of(
-                                new RequestHeader("key", "value"),
-                                new RequestHeader("otherKey", "otherValue")
-                        )
-                );
+	@Test
+	void whenGetOAuthRequest_shouldContainUrlAndHeaders() {
+		RequestHeaders requestHeaders = new RequestHeaders(
+				List.of(
+						new RequestHeader("key", "value"),
+						new RequestHeader("otherKey", "otherValue")));
 
-        Request request = new Request("url", requestHeaders);
-        ClientCredentialsRequest credentialsRequest = new ClientCredentialsRequest(request);
-        OAuthRequest oAuthRequest = credentialsRequest.getOAuthRequest();
+		Request request = new Request("url", requestHeaders);
+		ClientCredentialsRequest credentialsRequest = new ClientCredentialsRequest(request);
+		OAuthRequest oAuthRequest = credentialsRequest.getOAuthRequest();
 
-        assertEquals("url", oAuthRequest.getUrl());
-        requestHeaders
-                .forEach(header -> assertEquals(header.getValue(), oAuthRequest.getHeaders().get(header.getKey())));
-    }
+		assertEquals("url", oAuthRequest.getUrl());
+		requestHeaders
+				.forEach(header -> assertEquals(header.getValue(), oAuthRequest.getHeaders().get(header.getKey())));
+	}
 }
