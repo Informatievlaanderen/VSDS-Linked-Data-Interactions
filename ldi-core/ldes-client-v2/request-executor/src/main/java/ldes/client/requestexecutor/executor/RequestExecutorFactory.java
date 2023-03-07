@@ -1,5 +1,9 @@
 package ldes.client.requestexecutor.executor;
 
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.oauth.OAuth20Service;
+import com.github.scribejava.httpclient.apache.ApacheHttpClient;
 import io.github.resilience4j.retry.RetryConfig;
 import ldes.client.requestexecutor.config.ApiKeyConfig;
 import ldes.client.requestexecutor.config.ClientCredentialsConfig;
@@ -17,24 +21,24 @@ import org.apache.http.message.BasicHeader;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.oauth.OAuth20Service;
-import com.github.scribejava.httpclient.apache.ApacheHttpClient;
 
 // TODO: 6/03/2023 test
 public class RequestExecutorFactory {
 
 	public DefaultRequestExecutor createNoAuthRequestExecutor() {
-		return new DefaultRequestExecutor(HttpClientBuilder.create().disableRedirectHandling().build());
+		return createDefaultRequestExecutor(new ArrayList<>());
 	}
 
 	public DefaultRequestExecutor createApiKeyRequestExecutor(ApiKeyConfig apiKeyConfig) {
 		final Collection<Header> headers = List
 				.of(new BasicHeader(apiKeyConfig.getApiKeyHeader(), apiKeyConfig.getApiKey()));
+		return createDefaultRequestExecutor(headers);
+	}
+
+	private DefaultRequestExecutor createDefaultRequestExecutor(Collection<Header> headers) {
 		HttpClient client = HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build();
 		return new DefaultRequestExecutor(client);
 	}

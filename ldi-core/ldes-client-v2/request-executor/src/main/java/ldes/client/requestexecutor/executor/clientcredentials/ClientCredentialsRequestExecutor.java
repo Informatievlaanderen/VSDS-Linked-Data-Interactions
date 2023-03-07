@@ -1,14 +1,10 @@
 package ldes.client.requestexecutor.executor.clientcredentials;
 
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.OAuthRequest;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.model.OAuthRequest;
 
 /**
  * Handles sending the actual HTTP request to the server.
