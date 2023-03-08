@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.client.cli.services;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.client.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.UnparseableFragmentException;
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;

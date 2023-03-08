@@ -1,10 +1,10 @@
-package be.vlaanderen.informatievlaanderen.ldes.client.cli.state;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.client.state;
 
 import be.vlaanderen.informatievlaanderen.ldes.client.LdesClientImplFactory;
-import be.vlaanderen.informatievlaanderen.ldes.client.cli.services.CliRunner;
-import be.vlaanderen.informatievlaanderen.ldes.client.cli.services.EndpointChecker;
-import be.vlaanderen.informatievlaanderen.ldes.client.cli.services.FragmentProcessor;
-import be.vlaanderen.informatievlaanderen.ldes.client.cli.services.WaitingStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.CliRunner;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.EndpointChecker;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.FragmentProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.WaitingStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.client.config.LdesClientConfig;
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
 import be.vlaanderen.informatievlaanderen.ldes.client.state.LdesStateManager;

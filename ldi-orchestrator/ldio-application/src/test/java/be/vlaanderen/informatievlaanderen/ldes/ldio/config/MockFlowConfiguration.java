@@ -9,7 +9,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules.DummyAdapt;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules.DummyIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules.DummyOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules.DummyTransform;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

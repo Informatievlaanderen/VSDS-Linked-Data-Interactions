@@ -1,8 +1,9 @@
-package be.vlaanderen.informatievlaanderen.ldes.client.cli.services;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.client.services;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,9 +14,10 @@ import static org.mockito.Mockito.*;
 
 class CliRunnerTest {
 
-	private final EndpointChecker endpointChecker = mock(EndpointChecker.class);
-	private final FragmentProcessor fragmentProcessor = mock(FragmentProcessor.class);
-	private final UnreachableEndpointStrategy unreachableEndpointStrategy = mock(UnreachableEndpointStrategy.class);
+	private final EndpointChecker endpointChecker = Mockito.mock(EndpointChecker.class);
+	private final FragmentProcessor fragmentProcessor = Mockito.mock(FragmentProcessor.class);
+	private final UnreachableEndpointStrategy unreachableEndpointStrategy = Mockito
+			.mock(UnreachableEndpointStrategy.class);
 
 	private CliRunner cliRunner;
 
