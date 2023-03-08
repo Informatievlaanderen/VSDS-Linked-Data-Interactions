@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.StringWriter;
 
 import static java.util.Optional.ofNullable;
-import static org.apache.jena.riot.Lang.TURTLE;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
 public class LdioHttpOut implements LdiOutput {

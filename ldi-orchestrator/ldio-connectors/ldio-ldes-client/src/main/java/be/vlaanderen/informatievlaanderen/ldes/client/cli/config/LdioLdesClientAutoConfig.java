@@ -21,7 +21,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 @EnableConfigurationProperties()
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioLdesClientAutoConfig {
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.LdesClient")
+	@Bean("be.vlaanderen.informatievlaanderen.ldes.client.cli.services.LdesClientCli")
 	public LdioConfigurator ldioConfigurator(ComponentExecutor componentExecutor) {
 		return new LdioLdesClientConfigurator(componentExecutor);
 	}
