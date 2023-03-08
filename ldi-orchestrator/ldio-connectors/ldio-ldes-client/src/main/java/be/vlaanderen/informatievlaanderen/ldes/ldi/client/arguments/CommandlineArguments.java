@@ -1,6 +1,6 @@
-package be.vlaanderen.informatievlaanderen.ldes.client.cli.arguments;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.client.arguments;
 
-import be.vlaanderen.informatievlaanderen.ldes.client.cli.model.EndpointBehaviour;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.model.EndpointBehaviour;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 
