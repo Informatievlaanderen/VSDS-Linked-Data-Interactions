@@ -12,7 +12,6 @@ public class DefaultRequest {
 		this.request = request;
 	}
 
-	// TODO: 6/03/2023 test
 	public HttpUriRequest getHttpRequest() {
 		final HttpGet httpRequest = new HttpGet(request.getUrl());
 		request.getRequestHeaders().forEach(header -> httpRequest.addHeader(header.getKey(), header.getValue()));

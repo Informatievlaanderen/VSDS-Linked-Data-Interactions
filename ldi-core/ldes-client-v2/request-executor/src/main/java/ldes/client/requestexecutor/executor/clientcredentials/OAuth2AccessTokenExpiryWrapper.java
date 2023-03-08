@@ -28,7 +28,6 @@ public class OAuth2AccessTokenExpiryWrapper {
 		return new OAuth2AccessTokenExpiryWrapper(null, null);
 	}
 
-	// TODO: 6/03/2023 test
 	public Optional<OAuth2AccessToken> getAccessToken() {
 		if (isValid()) {
 			return Optional.of(token);
