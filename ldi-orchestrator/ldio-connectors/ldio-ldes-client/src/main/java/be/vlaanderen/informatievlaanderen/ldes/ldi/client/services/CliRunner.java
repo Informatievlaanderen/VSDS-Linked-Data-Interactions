@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.client.cli.services;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.client.services;
 
 public class CliRunner implements Runnable {
 

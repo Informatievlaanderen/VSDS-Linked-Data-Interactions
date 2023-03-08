@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.client.cli.services;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.client.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
