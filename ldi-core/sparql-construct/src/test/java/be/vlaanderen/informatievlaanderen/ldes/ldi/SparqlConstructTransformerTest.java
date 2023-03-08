@@ -37,7 +37,7 @@ public class SparqlConstructTransformerTest {
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
-		model = sparqlConstructTransformer.transform(model);
+		model = sparqlConstructTransformer.apply(model);
 
 		assertTrue(model.contains(transformedData));
 		assertFalse(model.contains(originalData));
@@ -51,7 +51,7 @@ public class SparqlConstructTransformerTest {
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
-		model = sparqlConstructTransformer.transform(model);
+		model = sparqlConstructTransformer.apply(model);
 
 		assertTrue(model.contains(transformedData));
 		assertTrue(model.contains(originalData));

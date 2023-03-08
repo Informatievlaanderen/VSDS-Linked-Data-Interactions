@@ -21,6 +21,7 @@
         <module>ldio-http-out</module>
         <module>ldio-version-object-creator</module>
         <module>ldio-version-materialiser</module>
+        <module>ldio-rdf-adapter</module>
     </modules>
 
     <dependencies>

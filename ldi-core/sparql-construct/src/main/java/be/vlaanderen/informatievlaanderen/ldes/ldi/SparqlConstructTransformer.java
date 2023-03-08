@@ -15,7 +15,8 @@ public class SparqlConstructTransformer implements LdiTransformer {
 		this.includeOriginal = includeOriginal;
 	}
 
-	public Model transform(Model linkedDataModel) {
+	@Override
+	public Model apply(Model linkedDataModel) {
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, linkedDataModel)) {
 			Model resultModel = qexec.execConstruct();
 			if (includeOriginal) {

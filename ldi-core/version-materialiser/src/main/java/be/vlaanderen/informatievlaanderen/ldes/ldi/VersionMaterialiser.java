@@ -21,7 +21,7 @@ public class VersionMaterialiser implements LdiTransformer {
 	}
 
 	@Override
-	public Model transform(Model linkedDataModel) {
+	public Model apply(Model linkedDataModel) {
 		Model versionMaterialisedModel = ModelFactory.createDefaultModel();
 
 		Map<Resource, Resource> versionIDEntityIDMap = getVersionIDEntityIDMap(linkedDataModel, versionPredicate);

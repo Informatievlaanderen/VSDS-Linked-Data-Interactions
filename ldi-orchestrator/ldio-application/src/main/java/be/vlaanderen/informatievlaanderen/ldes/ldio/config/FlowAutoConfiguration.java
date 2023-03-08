@@ -4,10 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -17,18 +14,23 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @ComponentScan
 public class FlowAutoConfiguration {
 
-	@Autowired
-	private ApplicationContext applicationContext;
+	private final ApplicationContext applicationContext;
+
+	public FlowAutoConfiguration(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 
 	@Bean
 	@ConditionalOnMissingBean(LdiInput.class)
 	public LdiInput ldtoInput(OrchestratorConfig orchestratorConfig) {
-		return (LdiInput) getBean(orchestratorConfig.getInput().getName(), orchestratorConfig.getInput().getConfig());
+		return (LdiInput) getLdiComponent(orchestratorConfig.getInput().getName(),
+				orchestratorConfig.getInput().getConfig());
 	}
 
 	@Bean
@@ -44,15 +46,21 @@ public class FlowAutoConfiguration {
 		return new ComponentExecutorImpl(ldiTransformers, ldiOutputs);
 	}
 
+	@Bean
+	public LdiAdapter ldiAdapter(final OrchestratorConfig orchestratorConfig) {
+		return (LdiAdapter) getLdiComponent(orchestratorConfig.getInput().getConfig().getProperty("adapter"),
+				new ComponentProperties(Map.of()));
+	}
+
 	private LdiTransformer ldtoTransformer(ComponentDefinition componentDefinition) {
-		return (LdiTransformer) getBean(componentDefinition.getName(), componentDefinition.getConfig());
+		return (LdiTransformer) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
 	private LdiOutput ldtoOutput(ComponentDefinition componentDefinition) {
-		return (LdiOutput) getBean(componentDefinition.getName(), componentDefinition.getConfig());
+		return (LdiOutput) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
-	private LdiComponent getBean(String beanName, ComponentProperties config) {
+	private LdiComponent getLdiComponent(String beanName, ComponentProperties config) {
 		LdioConfigurator ldioConfigurator = (LdioConfigurator) applicationContext.getBean(beanName);
 		return ldioConfigurator.configure(config);
 	}

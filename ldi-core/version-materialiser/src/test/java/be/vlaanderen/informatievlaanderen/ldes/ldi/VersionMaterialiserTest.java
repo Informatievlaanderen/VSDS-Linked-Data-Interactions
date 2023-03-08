@@ -42,7 +42,7 @@ class VersionMaterialiserTest {
 
 		Model versionedMember = turtleFileToQuadString("src/test/resources/ldes-member-versioned.ttl");
 
-		Model output = versionMaterialiser.transform(versionedMember);
+		Model output = versionMaterialiser.apply(versionedMember);
 
 		InputStream comparisonFile = new FileInputStream("src/test/resources/ldes-member-unversioned.ttl");
 		Model comparisonModel = RDFParser.create()
@@ -62,7 +62,7 @@ class VersionMaterialiserTest {
 
 		Model versionedMember = turtleFileToQuadString("src/test/resources/ldes-member-versioned.ttl");
 
-		Model output = versionMaterialiser.transform(versionedMember);
+		Model output = versionMaterialiser.apply(versionedMember);
 
 		InputStream comparisonFile = new FileInputStream(
 				"src/test/resources/ldes-member-unversioned-context-included.ttl");
