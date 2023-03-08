@@ -1,7 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.client.cli.services;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.client.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.client.LdesClientImplFactory;
-import be.vlaanderen.informatievlaanderen.ldes.client.cli.model.EndpointBehaviour;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.model.EndpointBehaviour;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.EndpointRequester;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.Endpoint;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.StartingNode;
