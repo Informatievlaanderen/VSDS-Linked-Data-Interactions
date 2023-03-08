@@ -1,5 +1,6 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
+import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.requestexecutor.executor.noauth.DefaultRequestExecutor;
 import org.apache.http.Header;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -7,13 +8,13 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DefaultConfig {
+public class DefaultConfig implements RequestExecutorSupplier {
 
-	public DefaultRequestExecutor createRequestExecutor() {
+	public RequestExecutor createRequestExecutor() {
 		return createRequestExecutor(new ArrayList<>());
 	}
 
-	public DefaultRequestExecutor createRequestExecutor(Collection<Header> headers) {
+	public RequestExecutor createRequestExecutor(Collection<Header> headers) {
 		return new DefaultRequestExecutor(
 				HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build());
 	}

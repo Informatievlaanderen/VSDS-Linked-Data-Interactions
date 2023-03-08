@@ -1,5 +1,6 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
+import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.requestexecutor.executor.clientcredentials.ClientCredentialsRequestExecutor;
 import ldes.client.requestexecutor.executor.clientcredentials.OAuth20ServiceTokenCacheWrapper;
 import org.apache.http.client.config.RequestConfig;
@@ -10,7 +11,7 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.httpclient.apache.ApacheHttpClient;
 
-public class ClientCredentialsConfig {
+public class ClientCredentialsConfig implements RequestExecutorSupplier {
 
 	private final String clientId;
 	private final String secret;
@@ -24,7 +25,7 @@ public class ClientCredentialsConfig {
 		this.scope = scope;
 	}
 
-	public ClientCredentialsRequestExecutor createExecutor() {
+	public RequestExecutor createRequestExecutor() {
 		return new ClientCredentialsRequestExecutor(new OAuth20ServiceTokenCacheWrapper(createService()));
 	}
 

@@ -1,11 +1,11 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
-import ldes.client.requestexecutor.executor.noauth.DefaultRequestExecutor;
+import ldes.client.requestexecutor.executor.RequestExecutor;
 import org.apache.http.message.BasicHeader;
 
 import java.util.List;
 
-public class ApiKeyConfig {
+public class ApiKeyConfig implements RequestExecutorSupplier {
 
 	private final String apiKeyHeader;
 	private final String apiKey;
@@ -15,7 +15,7 @@ public class ApiKeyConfig {
 		this.apiKey = apiKey;
 	}
 
-	public DefaultRequestExecutor createRequestExecutor() {
+	public RequestExecutor createRequestExecutor() {
 		return new DefaultConfig().createRequestExecutor(List.of(createBasicHeader()));
 	}
 
