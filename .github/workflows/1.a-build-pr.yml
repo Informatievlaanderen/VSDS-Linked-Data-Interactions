@@ -38,4 +38,4 @@ jobs:
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Informatievlaanderen_VSDS-Linked-Data-Interactions -Pcoverage
       - name: Build (Forks) # https://portal.productboard.com/sonarsource/1-sonarcloud/c/50-sonarcloud-analyzes-external-pull-request
         if: ${{ github.actor == 'dependabot[bot]' || github.event.pull_request.head.repo.fork }}
-        run: mvn -B verify -Dintegrationtestskip=true
+        run: mvn -B verify

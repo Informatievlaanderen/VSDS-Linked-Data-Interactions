@@ -1,15 +1,17 @@
 package ldes.client.startingtreenode;
 
-import ldes.client.requestexecutor.RequestProcessor;
+import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
+import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
 import ldes.client.startingtreenode.domain.valueobjects.StartingNodeSpecification;
 import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
 import ldes.client.startingtreenode.domain.valueobjects.TreeNodeSpecification;
 import ldes.client.startingtreenode.domain.valueobjects.ViewSpecification;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
@@ -22,11 +24,12 @@ import java.util.Optional;
 public class StartingTreeNodeFinder {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StartingTreeNodeFinder.class);
-	private final RequestProcessor requestProcessor;
+	private final RequestExecutor requestExecutor;
 	private final List<StartingNodeSpecification> startingNodeSpecifications;
 
 	public StartingTreeNodeFinder() {
-		requestProcessor = new RequestProcessor();
+		// TODO: 7/03/2023 wiring from config - support multiple executor strategies
+		requestExecutor = new DefaultConfig().createRequestExecutor();
 		startingNodeSpecifications = List.of(new ViewSpecification(), new TreeNodeSpecification());
 	}
 
@@ -40,13 +43,14 @@ public class StartingTreeNodeFinder {
 	public Optional<TreeNode> determineStartingTreeNode(final Endpoint endpoint) {
 		LOGGER.info("Determining starting node for: {}", endpoint.url());
 		RequestHeaders requestHeaders = new RequestHeaders(
-				List.of(new RequestHeader("Accept", endpoint.contentType())));
-		Response response = requestProcessor.processRequest(new Request(endpoint.url(), requestHeaders));
+				List.of(new RequestHeader(HttpHeaders.ACCEPT, endpoint.contentType())));
+		Response response = requestExecutor.execute(new Request(endpoint.url(), requestHeaders));
 		if (responseIsOK(response)) {
 			return selectStartingNode(endpoint, response);
 		}
 		if (responseIsRedirect(response)) {
-			Endpoint newEndpoint = endpoint.createRedirectedEndpoint(response.getValueOfHeader("location").get(0));
+			Endpoint newEndpoint = endpoint
+					.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow());
 			return determineStartingTreeNode(newEndpoint);
 		}
 		return Optional.empty();
@@ -54,7 +58,7 @@ public class StartingTreeNodeFinder {
 
 	private Optional<TreeNode> selectStartingNode(Endpoint endpoint, Response response) {
 		Model model = RDFParser
-				.fromString(response.getBody())
+				.fromString(response.getBody().orElseThrow())
 				.lang(endpoint.lang())
 				.build()
 				.toModel();
@@ -73,7 +77,7 @@ public class StartingTreeNodeFinder {
 
 	private boolean responseIsRedirect(Response response) {
 		return response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY
-				&& !response.getValueOfHeader("location").isEmpty();
+				&& response.getValueOfHeader(HttpHeaders.LOCATION).isPresent();
 	}
 
 }
