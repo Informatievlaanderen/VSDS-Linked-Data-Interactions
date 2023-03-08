@@ -1,6 +1,5 @@
 package ldes.client.requestexecutor.executor.clientcredentials;
 
-import com.github.scribejava.core.model.OAuth2AccessToken;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
@@ -14,7 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,7 +45,7 @@ class ClientCredentialsRequestExecutorTest {
 					200, "OK", Map.of("key", "value"), "body");
 			when(oAuthService.execute(any())).thenReturn(scribeResponse);
 
-			Response response = clientCredentialsRequestExecutor.apply(request);
+			Response response = clientCredentialsRequestExecutor.execute(request);
 
 			verify(oAuthService).signRequest(any(), any());
 			assertEquals(scribeResponse.getCode(), response.getHttpStatus());
@@ -57,7 +60,7 @@ class ClientCredentialsRequestExecutorTest {
 			Request request = new Request("url", RequestHeaders.empty());
 			when(oAuthService.execute(any())).thenThrow(IOException.class);
 
-			assertThrows(RuntimeException.class, () -> clientCredentialsRequestExecutor.apply(request));
+			assertThrows(RuntimeException.class, () -> clientCredentialsRequestExecutor.execute(request));
 		}
 	}
 }

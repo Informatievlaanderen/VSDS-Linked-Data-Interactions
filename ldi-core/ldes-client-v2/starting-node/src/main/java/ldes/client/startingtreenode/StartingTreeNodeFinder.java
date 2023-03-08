@@ -1,12 +1,16 @@
 package ldes.client.startingtreenode;
 
+import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
-import ldes.client.requestexecutor.executor.RequestExecutorFactory;
-import ldes.client.startingtreenode.domain.valueobjects.*;
+import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
+import ldes.client.startingtreenode.domain.valueobjects.StartingNodeSpecification;
+import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
+import ldes.client.startingtreenode.domain.valueobjects.TreeNodeSpecification;
+import ldes.client.startingtreenode.domain.valueobjects.ViewSpecification;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.jena.rdf.model.Model;
@@ -25,7 +29,7 @@ public class StartingTreeNodeFinder {
 
 	public StartingTreeNodeFinder() {
 		// TODO: 7/03/2023 wiring from config - support multiple executor strategies
-		requestExecutor = new RequestExecutorFactory().createNoAuthRequestExecutor();
+		requestExecutor = new DefaultConfig().createRequestExecutor();
 		startingNodeSpecifications = List.of(new ViewSpecification(), new TreeNodeSpecification());
 	}
 
@@ -40,7 +44,7 @@ public class StartingTreeNodeFinder {
 		LOGGER.info("Determining starting node for: {}", endpoint.url());
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, endpoint.contentType())));
-		Response response = requestExecutor.apply(new Request(endpoint.url(), requestHeaders));
+		Response response = requestExecutor.execute(new Request(endpoint.url(), requestHeaders));
 		if (responseIsOK(response)) {
 			return selectStartingNode(endpoint, response);
 		}

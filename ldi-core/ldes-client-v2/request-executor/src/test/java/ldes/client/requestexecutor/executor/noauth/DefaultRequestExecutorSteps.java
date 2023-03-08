@@ -4,12 +4,12 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
-import ldes.client.requestexecutor.executor.RequestExecutorFactory;
 import org.apache.http.HttpHeaders;
 
 import java.util.ArrayList;
@@ -27,8 +27,7 @@ public class DefaultRequestExecutorSteps {
 
 	@Given("I have a RequestExecutor")
 	public void initializeCalculator() {
-		RequestExecutorFactory factory = new RequestExecutorFactory();
-		requestExecutor = factory.createNoAuthRequestExecutor();
+		requestExecutor = new DefaultConfig().createRequestExecutor();
 	}
 
 	@Then("I obtain a response with status code {int}")
@@ -38,7 +37,7 @@ public class DefaultRequestExecutorSteps {
 
 	@And("I execute the request")
 	public void iExecuteTheRequest() {
-		response = requestExecutor.apply(request);
+		response = requestExecutor.execute(request);
 	}
 
 	@When("I create RequestHeaders")

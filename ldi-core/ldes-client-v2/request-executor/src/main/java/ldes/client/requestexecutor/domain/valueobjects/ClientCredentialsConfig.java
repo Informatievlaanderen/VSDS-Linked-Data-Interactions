@@ -1,5 +1,7 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
+import ldes.client.requestexecutor.executor.clientcredentials.ClientCredentialsRequestExecutor;
+import ldes.client.requestexecutor.executor.clientcredentials.OAuth20ServiceTokenCacheWrapper;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 
@@ -22,7 +24,11 @@ public class ClientCredentialsConfig {
 		this.scope = scope;
 	}
 
-	public OAuth20Service createService() {
+	public ClientCredentialsRequestExecutor createExecutor() {
+		return new ClientCredentialsRequestExecutor(new OAuth20ServiceTokenCacheWrapper(createService()));
+	}
+
+	private OAuth20Service createService() {
 		final RequestConfig clientConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
 		final ApacheHttpClient apacheHttpClient = new ApacheHttpClient(
 				HttpAsyncClientBuilder.create().setDefaultRequestConfig(clientConfig).build());

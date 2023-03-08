@@ -1,11 +1,11 @@
 package ldes.client.treenodefetcher;
 
+import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
-import ldes.client.requestexecutor.executor.RequestExecutorFactory;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
 import ldes.client.treenodefetcher.domain.valueobjects.ModelResponse;
 import org.apache.http.HttpHeaders;
@@ -18,12 +18,12 @@ import java.util.List;
 class TreeNodeFetcher {
 	private final Lang dataSourceFormat = Lang.JSONLD;
 	// TODO: 7/03/2023 wiring from config - support multiple executor strategies
-	private final RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthRequestExecutor();
+	private final RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
 
 	public TreeNode fetchFragment(String fragmentUrl) {
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, dataSourceFormat.getHeaderString())));
-		Response response = requestExecutor.apply(new Request(fragmentUrl, requestHeaders));
+		Response response = requestExecutor.execute(new Request(fragmentUrl, requestHeaders));
 		if (response.getHttpStatus() == HttpStatus.SC_OK) {
 			ModelResponse modelResponse = new ModelResponse(
 					RDFParser.fromString(response.getBody().orElseThrow()).forceLang(dataSourceFormat).toModel());
