@@ -1,11 +1,10 @@
 package ldes.client.treenodesupplier;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import ldes.client.treenodefetcher.domain.entities.TreeMember;
 
 import java.util.function.Supplier;
 
-public class MemberSupplier implements Supplier<TreeMember>, LdiInput {
+public class MemberSupplier implements Supplier<TreeMember> {
 
 	private final Processor processor;
 
