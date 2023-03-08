@@ -30,24 +30,4 @@ public class Response {
 		return Optional.ofNullable(headers.get(key));
 	}
 
-	// TODO client-refactor: 6/03/2023 add testing if this can stay
-	public boolean isImmutable() {
-		return getValueOfHeader(HttpHeaders.CACHE_CONTROL)
-				.map(cacheControl -> cacheControl.contains("immutable"))
-				.orElse(false);
-	}
-
-	// TODO client-refactor: 6/03/2023 add testing if this can stay
-	public int getCacheMaxAge() {
-		return Arrays.stream(
-				getValueOfHeader(HttpHeaders.CACHE_CONTROL)
-						.map(cacheControl -> cacheControl.split(","))
-						.orElse(new String[0]))
-				.filter(x -> x.contains("max-age"))
-				.map(x -> x.split("=")[1])
-				.map(Integer::parseInt)
-				.findFirst()
-				.orElse(0);
-	}
-
 }
