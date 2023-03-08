@@ -1,4 +1,6 @@
-package ldes.client.requestexecutor.config;
+package ldes.client.requestexecutor.domain.valueobjects;
+
+import org.apache.http.message.BasicHeader;
 
 public class ApiKeyConfig {
 
@@ -10,11 +12,8 @@ public class ApiKeyConfig {
 		this.apiKey = apiKey;
 	}
 
-	public String getApiKeyHeader() {
-		return apiKeyHeader;
+	public BasicHeader createBasicHeader() {
+		return new BasicHeader(apiKeyHeader, apiKey);
 	}
 
-	public String getApiKey() {
-		return apiKey;
-	}
 }

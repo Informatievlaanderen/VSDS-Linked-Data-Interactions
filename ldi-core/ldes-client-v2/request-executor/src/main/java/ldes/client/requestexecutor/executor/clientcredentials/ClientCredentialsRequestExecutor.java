@@ -22,7 +22,7 @@ public class ClientCredentialsRequestExecutor implements RequestExecutor {
 	}
 
 	@Override
-	public Response apply(Request request) {
+	public Response execute(Request request) {
 		final OAuth2AccessToken token = oAuthService.getAccessTokenClientCredentialsGrant();
 		final OAuthRequest oAuthRequest = new ClientCredentialsRequest(request).getOAuthRequest();
 		oAuthService.signRequest(token, oAuthRequest);

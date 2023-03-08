@@ -1,6 +1,6 @@
 package ldes.client.requestexecutor;
 
-import ldes.client.requestexecutor.config.ClientCredentialsConfig;
+import ldes.client.requestexecutor.domain.valueobjects.ClientCredentialsConfig;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutorFactory;
@@ -19,6 +19,6 @@ public class RequestProcessor {
 
 		// DefaultRequestExecutor noAuthRequestExecutor =
 		// factory.createNoAuthRequestExecutor();
-		return noAuthRequestExecutor.apply(request);
+		return noAuthRequestExecutor.execute(request);
 	}
 }

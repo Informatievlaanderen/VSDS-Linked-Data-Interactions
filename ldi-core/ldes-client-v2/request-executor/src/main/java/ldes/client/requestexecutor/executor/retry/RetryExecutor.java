@@ -17,11 +17,11 @@ public class RetryExecutor implements RequestExecutor {
 	}
 
 	@Override
-	public Response apply(Request request) {
+	public Response execute(Request request) {
 		return RetryRegistry
 				.of(retryConfig)
 				.retry("retry-http-requests")
-				.executeSupplier(() -> requestExecutor.apply(request));
+				.executeSupplier(() -> requestExecutor.execute(request));
 	}
 
 }

@@ -17,7 +17,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 	}
 
 	@Override
-	public Response apply(Request request) {
+	public Response execute(Request request) {
 		try {
 			HttpUriRequest httpRequest = new DefaultRequest(request).getHttpRequest();
 			return new DefaultResponse(httpClient.execute(httpRequest)).getResponse();
