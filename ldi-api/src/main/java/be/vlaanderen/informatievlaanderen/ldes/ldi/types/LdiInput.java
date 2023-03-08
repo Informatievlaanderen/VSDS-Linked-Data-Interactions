@@ -24,7 +24,7 @@ public abstract class LdiInput implements LdiComponent {
 	 *            Instance of the LDI Adapter. Facilitates transforming the input
 	 *            data to a linked data model (RDF).
 	 */
-	public LdiInput(ComponentExecutor executor, LdiAdapter adapter) {
+	protected LdiInput(ComponentExecutor executor, LdiAdapter adapter) {
 		this.executor = executor;
 		this.adapter = adapter;
 	}
