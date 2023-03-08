@@ -1,4 +1,4 @@
-package ldes.client.startingnode;
+package ldes.client.startingtreenode;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;

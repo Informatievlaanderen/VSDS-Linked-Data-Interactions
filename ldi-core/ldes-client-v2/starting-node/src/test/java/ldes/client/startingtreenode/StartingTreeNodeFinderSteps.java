@@ -1,10 +1,9 @@
-package ldes.client.startingnode;
+package ldes.client.startingtreenode;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
-import ldes.client.startingtreenode.StartingTreeNodeFinder;
 import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
 import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
 import org.apache.jena.riot.Lang;
