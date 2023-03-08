@@ -16,7 +16,8 @@ class CliRunnerTest {
 
 	private final EndpointChecker endpointChecker = Mockito.mock(EndpointChecker.class);
 	private final FragmentProcessor fragmentProcessor = Mockito.mock(FragmentProcessor.class);
-	private final UnreachableEndpointStrategy unreachableEndpointStrategy = Mockito.mock(UnreachableEndpointStrategy.class);
+	private final UnreachableEndpointStrategy unreachableEndpointStrategy = Mockito
+			.mock(UnreachableEndpointStrategy.class);
 
 	private CliRunner cliRunner;
 
