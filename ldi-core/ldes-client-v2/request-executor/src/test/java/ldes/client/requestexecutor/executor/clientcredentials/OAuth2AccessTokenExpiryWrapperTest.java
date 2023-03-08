@@ -34,9 +34,38 @@ class OAuth2AccessTokenExpiryWrapperTest {
 		assertTrue(empty.getAccessToken().isEmpty());
 	}
 
-	@Test
-	void getAccessToken() {
-		// TODO: 7/03/2023
+	@Nested
+	class GetAccessToken {
+
+		@Test
+		void shouldReturnToken_whenPresentAndExpiresInMoreThan30Seconds() {
+			OAuth2AccessToken token = new OAuth2AccessToken("accessToken", "tokenType",
+					3600, "refreshToken", "scope", "rawResponse");
+
+			assertEquals(token, OAuth2AccessTokenExpiryWrapper.from(token).getAccessToken().orElseThrow());
+		}
+
+		@Test
+		void shouldReturnEmpty_whenTokenNotSet() {
+			assertTrue(OAuth2AccessTokenExpiryWrapper.empty().getAccessToken().isEmpty());
+		}
+
+		@Test
+		void shouldReturnEmpty_whenExpiryNotSet() {
+			OAuth2AccessToken token = new OAuth2AccessToken("accessToken", "tokenType",
+					null, "refreshToken", "scope", "rawResponse");
+
+			assertTrue(OAuth2AccessTokenExpiryWrapper.from(token).getAccessToken().isEmpty());
+		}
+
+		@Test
+		void shouldReturnEmpty_whenExpiresInLessThan30Seconds() {
+			OAuth2AccessToken token = new OAuth2AccessToken("accessToken", "tokenType",
+					29, "refreshToken", "scope", "rawResponse");
+
+			assertTrue(OAuth2AccessTokenExpiryWrapper.from(token).getAccessToken().isEmpty());
+		}
+
 	}
 
 }

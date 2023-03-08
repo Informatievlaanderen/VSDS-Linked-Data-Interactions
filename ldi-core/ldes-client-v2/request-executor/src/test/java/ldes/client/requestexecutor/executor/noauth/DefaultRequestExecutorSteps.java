@@ -9,13 +9,16 @@ import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
+import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import org.apache.http.HttpHeaders;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DefaultRequestExecutorSteps {
 
@@ -33,6 +36,11 @@ public class DefaultRequestExecutorSteps {
 	@Then("I obtain a response with status code {int}")
 	public void iObtainAResponseWithStatusCode(int arg0) {
 		assertEquals(arg0, response.getHttpStatus());
+	}
+
+	@Then("I obtain a HttpRequestException when executing the request")
+	public void iObtainAnException() {
+		assertThrows(HttpRequestException.class, () -> requestExecutor.execute(request));
 	}
 
 	@And("I execute the request")

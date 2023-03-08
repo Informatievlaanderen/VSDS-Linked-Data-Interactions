@@ -32,3 +32,9 @@ Feature: DefaultRequestExecutor
     And I create a Request with the RequestHeaders and url: "https://grar.smartdataspace.dev-vlaanderen.be/addresses/by-name?substring=a"
     And I execute the request
     Then I obtain a response with status code 304
+
+  Scenario: Obtaining a HttpRequestException of an invalid Request
+    Given I have a RequestExecutor
+    When I create RequestHeaders
+    And I create a Request with the RequestHeaders and url: "https://not-real"
+    Then I obtain a HttpRequestException when executing the request
