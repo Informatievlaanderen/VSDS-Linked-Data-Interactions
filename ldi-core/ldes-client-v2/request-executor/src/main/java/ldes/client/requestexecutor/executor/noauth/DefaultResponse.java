@@ -18,7 +18,6 @@ public class DefaultResponse {
 		this.httpResponse = httpResponse;
 	}
 
-	// TODO: 6/03/2023 test
 	public Response getResponse() throws IOException {
 		final Map<String, String> headers = extractResponseHeaders(httpResponse.getAllHeaders());
 		final int statusCode = httpResponse.getStatusLine().getStatusCode();
