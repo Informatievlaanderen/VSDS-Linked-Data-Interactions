@@ -30,14 +30,14 @@ public class Response {
 		return Optional.ofNullable(headers.get(key));
 	}
 
-	// TODO: 6/03/2023 add testing if this can stay
+	// TODO client-refactor: 6/03/2023 add testing if this can stay
 	public boolean isImmutable() {
 		return getValueOfHeader(HttpHeaders.CACHE_CONTROL)
 				.map(cacheControl -> cacheControl.contains("immutable"))
 				.orElse(false);
 	}
 
-	// TODO: 6/03/2023 add testing if this can stay
+	// TODO client-refactor: 6/03/2023 add testing if this can stay
 	public int getCacheMaxAge() {
 		return Arrays.stream(
 				getValueOfHeader(HttpHeaders.CACHE_CONTROL)
