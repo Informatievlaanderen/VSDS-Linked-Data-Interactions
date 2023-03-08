@@ -19,9 +19,9 @@ public class TreeNodeFetcher {
 	private final RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
 
 	public TreeNode fetchTreeNode(TreeNodeRequest treeNodeRequest) {
-		Response response = requestProcessor
-				.processRequest(treeNodeRequest.createRequest());
-		MutabilityStatus mutabilityStatus = MutabilityStatus.ofHeader(response.getValueOfHeader("cache-control"));
+		Response response = requestExecutor
+				.execute(treeNodeRequest.createRequest());
+		MutabilityStatus mutabilityStatus = MutabilityStatus.ofHeader(response.getValueOfHeader(HttpHeaders.CACHE_CONTROL));
 		if (response.getHttpStatus() == HttpStatus.SC_OK) {
 			ModelResponse modelResponse = new ModelResponse(
 					RDFParser.fromString(response.getBody().orElseThrow()).forceLang(treeNodeRequest.getLang()).toModel());
