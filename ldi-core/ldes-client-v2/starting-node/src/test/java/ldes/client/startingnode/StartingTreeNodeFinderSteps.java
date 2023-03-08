@@ -3,6 +3,7 @@ package ldes.client.startingnode;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.startingtreenode.StartingTreeNodeFinder;
 import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
 import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
@@ -21,7 +22,7 @@ public class StartingTreeNodeFinderSteps {
 
 	@Given("I have a StartingTreeNodeFinder$")
 	public void initializeCalculator() {
-		calculator = new StartingTreeNodeFinder();
+		calculator = new StartingTreeNodeFinder(new DefaultConfig().createRequestExecutor());
 	}
 
 	@Then("the starting Tree Node of the LDES Stream is the url of the View: {string}")

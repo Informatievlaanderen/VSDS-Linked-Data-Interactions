@@ -1,6 +1,5 @@
 package ldes.client.treenodefetcher;
 
-import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
@@ -15,8 +14,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TreeNodeFetcher {
-	// TODO: 7/03/2023 wiring from config - support multiple executor strategies
-	private final RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
+	private final RequestExecutor requestExecutor;
+
+	public TreeNodeFetcher(RequestExecutor requestExecutor) {
+		this.requestExecutor = requestExecutor;
+	}
 
 	public TreeNode fetchTreeNode(TreeNodeRequest treeNodeRequest) {
 		Response response = requestExecutor
