@@ -13,14 +13,15 @@ import org.apache.jena.riot.Lang;
 
 import java.util.concurrent.ExecutorService;
 
-public class LdesClientCli implements LdiInput {
+public class LdesClientCli extends LdiInput {
 
 	private final LdesService ldesService = LdesClientImplFactory.getLdesService();
 	private final EndpointRequester endpointRequester;
 
 	public LdesClientCli(ExecutorService executorService, EndpointRequester endpointRequester,
-			ComponentExecutor componentExecutor, String fragmentId, Lang dataSourceFormat, Long expirationInterval,
+			ComponentExecutor executor, String fragmentId, Lang dataSourceFormat, Long expirationInterval,
 			Long pollingInterval, EndpointBehaviour endpointBehaviour) {
+		super(executor, null);
 		this.endpointRequester = endpointRequester;
 
 		UnreachableEndpointStrategy unreachableEndpointStrategy = getUnreachableEndpointStrategy(endpointBehaviour,
@@ -29,7 +30,7 @@ public class LdesClientCli implements LdiInput {
 		ldesService.setFragmentExpirationInterval(expirationInterval);
 		ldesService.queueFragment(getStartingUrl(fragmentId, dataSourceFormat));
 
-		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, componentExecutor, pollingInterval);
+		FragmentProcessor fragmentProcessor = new FragmentProcessor(ldesService, executor, pollingInterval);
 		EndpointChecker endpointChecker = new EndpointChecker(fragmentId);
 		CliRunner cliRunner = new CliRunner(fragmentProcessor, endpointChecker, unreachableEndpointStrategy);
 

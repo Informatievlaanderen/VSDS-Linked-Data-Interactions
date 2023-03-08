@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RdfAdapterTest {
+class RdfAdapterTest {
 
 	private static final String expectedQuads = """
 			_:b0 <http://schema.org/jobTitle> "Professor" .
@@ -21,7 +21,7 @@ public class RdfAdapterTest {
 			.toModel();
 
 	@Test
-	public void adapt_jsonLd() {
+	void adapt_jsonLd() {
 		RdfAdapter adapter = new RdfAdapter();
 
 		String content = """
@@ -34,7 +34,7 @@ public class RdfAdapterTest {
 				  "url": "http://www.janedoe.com"
 				}""";
 
-		Model result = adapter.apply(LdiAdapter.InputObject.of(content, "application/ld+json"))
+		Model result = adapter.apply(LdiAdapter.Content.of(content, "application/ld+json"))
 				.findFirst()
 				.orElseThrow();
 
@@ -42,7 +42,7 @@ public class RdfAdapterTest {
 	}
 
 	@Test
-	public void adapt_turtle() {
+	void adapt_turtle() {
 		RdfAdapter adapter = new RdfAdapter();
 
 		String content = """
@@ -56,7 +56,7 @@ public class RdfAdapterTest {
 				   a schema:Person .
 				""";
 
-		Model result = adapter.apply(LdiAdapter.InputObject.of(content, "text/turtle"))
+		Model result = adapter.apply(LdiAdapter.Content.of(content, "text/turtle"))
 				.findFirst()
 				.orElseThrow();
 

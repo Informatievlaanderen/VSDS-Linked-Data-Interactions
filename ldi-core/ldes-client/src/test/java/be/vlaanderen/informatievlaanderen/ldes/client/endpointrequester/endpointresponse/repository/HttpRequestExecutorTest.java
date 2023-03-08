@@ -38,7 +38,7 @@ class HttpRequestExecutorTest {
 		InputStream inputStream = mock(InputStream.class);
 		HttpURLConnection urlConnection = mock(HttpURLConnection.class);
 		when(urlConnection.getInputStream()).thenReturn(inputStream);
-		String contentType = "contentType";
+		String contentType = "mimeType";
 		Endpoint endpoint = mock(Endpoint.class);
 		when(endpoint.contentType()).thenReturn(contentType);
 		when(endpoint.httpConnection()).thenReturn(urlConnection);

@@ -20,8 +20,11 @@ import java.util.Map;
 @ComponentScan
 public class FlowAutoConfiguration {
 
-	@Autowired
-	private ApplicationContext applicationContext;
+	private final ApplicationContext applicationContext;
+
+	public FlowAutoConfiguration(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 
 	@Bean
 	@ConditionalOnMissingBean(LdiInput.class)

@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import org.apache.jena.rdf.model.Model;
@@ -8,8 +8,7 @@ import java.util.stream.Stream;
 
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
-public class RdfAdapter implements LdiAdapter {
-
+public class DummyAdapt implements LdiAdapter {
 	@Override
 	public Stream<Model> apply(Content input) {
 		return Stream.of(

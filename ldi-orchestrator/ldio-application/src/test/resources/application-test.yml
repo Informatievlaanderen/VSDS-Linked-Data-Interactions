@@ -1,0 +1,9 @@
+orchestrator:
+  input:
+    name: "dummyIn"
+    config:
+      adapter: "dummyAdapt"
+  transformers:
+    - name: "dummyTransform"
+  outputs:
+    - name: "dummyOut"
