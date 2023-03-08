@@ -21,15 +21,18 @@ public class TreeNodeFetcher {
 	public TreeNode fetchTreeNode(TreeNodeRequest treeNodeRequest) {
 		Response response = requestExecutor
 				.execute(treeNodeRequest.createRequest());
-		MutabilityStatus mutabilityStatus = MutabilityStatus.ofHeader(response.getValueOfHeader(HttpHeaders.CACHE_CONTROL));
+		MutabilityStatus mutabilityStatus = MutabilityStatus
+				.ofHeader(response.getValueOfHeader(HttpHeaders.CACHE_CONTROL));
 		if (response.getHttpStatus() == HttpStatus.SC_OK) {
 			ModelResponse modelResponse = new ModelResponse(
-					RDFParser.fromString(response.getBody().orElseThrow()).forceLang(treeNodeRequest.getLang()).toModel());
+					RDFParser.fromString(response.getBody().orElseThrow()).forceLang(treeNodeRequest.getLang())
+							.toModel());
 			return new TreeNode(treeNodeRequest.getTreeNodeId(), modelResponse.getRelations(),
 					modelResponse.getMembers(), mutabilityStatus);
 		}
 		if (response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY) {
-			return new TreeNode(treeNodeRequest.getTreeNodeId(), List.of(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow()),
+			return new TreeNode(treeNodeRequest.getTreeNodeId(),
+					List.of(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow()),
 					List.of(),
 					new MutabilityStatus(false, LocalDateTime.MAX));
 		}
