@@ -1,6 +1,5 @@
 package ldes.client.startingtreenode;
 
-import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
@@ -27,9 +26,8 @@ public class StartingTreeNodeFinder {
 	private final RequestExecutor requestExecutor;
 	private final List<StartingNodeSpecification> startingNodeSpecifications;
 
-	public StartingTreeNodeFinder() {
-		// TODO: 7/03/2023 wiring from config - support multiple executor strategies
-		requestExecutor = new DefaultConfig().createRequestExecutor();
+	public StartingTreeNodeFinder(RequestExecutor requestExecutor) {
+		this.requestExecutor = requestExecutor;
 		startingNodeSpecifications = List.of(new ViewSpecification(), new TreeNodeSpecification());
 	}
 
