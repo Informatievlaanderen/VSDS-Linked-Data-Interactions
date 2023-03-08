@@ -1,4 +1,4 @@
-package ldes.client.requestexecutor;
+package ldes.client.requestexecutor.executor.noauth;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -8,25 +8,27 @@ import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
+import ldes.client.requestexecutor.executor.RequestExecutor;
+import ldes.client.requestexecutor.executor.RequestExecutorFactory;
 import org.apache.http.HttpHeaders;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RequestProcessorSteps {
+public class DefaultRequestExecutorSteps {
 
-	private RequestProcessor requestProcessor;
+	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
 	private String etag;
 	private RequestHeaders requestHeaders;
 
-	@Given("I have a RequestProcessor")
+	@Given("I have a RequestExecutor")
 	public void initializeCalculator() {
-		requestProcessor = new RequestProcessor();
+		RequestExecutorFactory factory = new RequestExecutorFactory();
+		requestExecutor = factory.createNoAuthRequestExecutor();
 	}
 
 	@Then("I obtain a response with status code {int}")
@@ -36,7 +38,7 @@ public class RequestProcessorSteps {
 
 	@And("I execute the request")
 	public void iExecuteTheRequest() {
-		response = requestProcessor.processRequest(request);
+		response = requestExecutor.apply(request);
 	}
 
 	@When("I create RequestHeaders")
