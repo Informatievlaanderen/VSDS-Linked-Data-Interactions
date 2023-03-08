@@ -1,5 +1,6 @@
 package ldes.client.requestexecutor.executor.noauth;
 
+import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
@@ -22,8 +23,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 			HttpUriRequest httpRequest = new DefaultRequest(request).getHttpRequest();
 			return new DefaultResponse(httpClient.execute(httpRequest)).getResponse();
 		} catch (IOException e) {
-			// TODO: 6/03/2023 handle exception flow
-			throw new RuntimeException(e);
+			throw new HttpRequestException(e);
 		}
 	}
 

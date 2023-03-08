@@ -1,5 +1,7 @@
 package ldes.client.requestexecutor.executor.clientcredentials;
 
+import ldes.client.requestexecutor.exceptions.HttpRequestException;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -23,9 +25,11 @@ public class OAuth20ServiceTokenCacheWrapper {
 				OAuth2AccessToken token = oAuth20Service.getAccessTokenClientCredentialsGrant();
 				tokenExpiryWrapper = OAuth2AccessTokenExpiryWrapper.from(token);
 				return token;
-			} catch (IOException | InterruptedException | ExecutionException e) {
-				// TODO: 6/03/2023 handle exceptions properly, also needed for retries
-				throw new RuntimeException(e);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new HttpRequestException(e);
+			} catch (IOException | ExecutionException e) {
+				throw new HttpRequestException(e);
 			}
 		});
 	}
