@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ModelHttpConverter;
@@ -22,28 +23,30 @@ public class LdioHttpInAutoConfig {
 	}
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn")
-	public LdioConfigurator ldioConfigurator(ComponentExecutor componentExecutor) {
-		return new LdioHttpInConfigurator(componentExecutor);
+	public LdioConfigurator ldioConfigurator(LdiAdapter adapter, ComponentExecutor componentExecutor) {
+		return new LdioHttpInConfigurator(adapter, componentExecutor);
 	}
 
 	public static class LdioHttpInConfigurator implements LdioConfigurator {
-		private final ComponentExecutor componentExecutor;
+		private final LdiAdapter adapter;
+		private final ComponentExecutor executor;
 
-		public LdioHttpInConfigurator(ComponentExecutor componentExecutor) {
-			this.componentExecutor = componentExecutor;
+		public LdioHttpInConfigurator(LdiAdapter adapter, ComponentExecutor executor) {
+			this.adapter = adapter;
+			this.executor = executor;
 		}
 
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
-			// Workaround to lazy load the LdtoHttpIn RestController only when configured as
-			// an LdtoInput
 			@RestController
 			class LdioHttpInBean extends LdioHttpIn {
-				public LdioHttpInBean(ComponentExecutor componentExecutor) {
-					super(componentExecutor);
+				public LdioHttpInBean() {
+					// Workaround to lazy load the LdtoHttpIn RestController only when configured as
+					// an LdtoInput
+					super(executor, adapter);
 				}
 			}
-			return new LdioHttpInBean(componentExecutor);
+			return new LdioHttpInBean();
 		}
 	}
 }

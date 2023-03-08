@@ -16,6 +16,7 @@
         <module>ldes-client</module>
         <module>version-object-creator</module>
         <module>version-materialiser</module>
+        <module>rdf-adapter</module>
     </modules>
 
     <properties>
