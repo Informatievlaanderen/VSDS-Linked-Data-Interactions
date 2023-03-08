@@ -7,7 +7,7 @@ import ldes.client.requestexecutor.executor.retry.RetryExecutor;
 import java.io.IOException;
 import java.time.Duration;
 
-// TODO retry: 6/03/2023 refactor in retry story
+// TODO VSDSPUB-521: 6/03/2023 refactor in retry story
 public class RequestExecutorFactory {
 
 	public RequestExecutor createRetry(RequestExecutor requestExecutor) {

@@ -37,4 +37,4 @@ Feature: DefaultRequestExecutor
     Given I have a RequestExecutor
     When I create RequestHeaders
     And I create a Request with the RequestHeaders and url: "https://not-real"
-    Then I obtain a HttpRequestException when executing the request
+    Then I get a HttpRequestException when executing the request

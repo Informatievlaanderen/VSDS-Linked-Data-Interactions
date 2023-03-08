@@ -38,8 +38,8 @@ public class DefaultRequestExecutorSteps {
 		assertEquals(arg0, response.getHttpStatus());
 	}
 
-	@Then("I obtain a HttpRequestException when executing the request")
-	public void iObtainAnException() {
+	@Then("I get a HttpRequestException when executing the request")
+	public void iGetAnException() {
 		assertThrows(HttpRequestException.class, () -> requestExecutor.execute(request));
 	}
 
