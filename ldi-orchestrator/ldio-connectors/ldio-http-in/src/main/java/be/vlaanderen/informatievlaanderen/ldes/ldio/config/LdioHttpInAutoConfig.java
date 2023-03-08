@@ -29,11 +29,11 @@ public class LdioHttpInAutoConfig {
 
 	public static class LdioHttpInConfigurator implements LdioConfigurator {
 		private final LdiAdapter adapter;
-		private final ComponentExecutor componentExecutor;
+		private final ComponentExecutor executor;
 
-		public LdioHttpInConfigurator(LdiAdapter adapter, ComponentExecutor componentExecutor) {
+		public LdioHttpInConfigurator(LdiAdapter adapter, ComponentExecutor executor) {
 			this.adapter = adapter;
-			this.componentExecutor = componentExecutor;
+			this.executor = executor;
 		}
 
 		@Override
@@ -43,11 +43,10 @@ public class LdioHttpInAutoConfig {
 				public LdioHttpInBean() {
 					// Workaround to lazy load the LdtoHttpIn RestController only when configured as
 					// an LdtoInput
+					super(executor, adapter);
 				}
 			}
-			return new LdioHttpInBean()
-					.withExecutor(componentExecutor)
-					.withAdapter(adapter);
+			return new LdioHttpInBean();
 		}
 	}
 }

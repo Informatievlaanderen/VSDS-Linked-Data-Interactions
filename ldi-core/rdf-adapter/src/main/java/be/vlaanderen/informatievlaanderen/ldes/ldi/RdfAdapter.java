@@ -11,8 +11,8 @@ import static org.apache.jena.riot.RDFLanguages.nameToLang;
 public class RdfAdapter implements LdiAdapter {
 
 	@Override
-	public Stream<Model> apply(InputObject input) {
+	public Stream<Model> apply(Content input) {
 		return Stream.of(
-				RDFParserBuilder.create().fromString(input.content()).lang(nameToLang(input.contentType())).toModel());
+				RDFParserBuilder.create().fromString(input.content()).lang(nameToLang(input.mimeType())).toModel());
 	}
 }

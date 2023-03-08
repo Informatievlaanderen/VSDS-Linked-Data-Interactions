@@ -34,7 +34,7 @@ class RdfAdapterTest {
 				  "url": "http://www.janedoe.com"
 				}""";
 
-		Model result = adapter.apply(LdiAdapter.InputObject.of(content, "application/ld+json"))
+		Model result = adapter.apply(LdiAdapter.Content.of(content, "application/ld+json"))
 				.findFirst()
 				.orElseThrow();
 
@@ -56,7 +56,7 @@ class RdfAdapterTest {
 				   a schema:Person .
 				""";
 
-		Model result = adapter.apply(LdiAdapter.InputObject.of(content, "text/turtle"))
+		Model result = adapter.apply(LdiAdapter.Content.of(content, "text/turtle"))
 				.findFirst()
 				.orElseThrow();
 

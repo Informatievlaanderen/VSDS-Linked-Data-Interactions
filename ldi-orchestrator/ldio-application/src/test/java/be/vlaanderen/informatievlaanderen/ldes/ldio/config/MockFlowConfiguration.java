@@ -51,9 +51,7 @@ public class MockFlowConfiguration {
 
 		@Override
 		public LdiComponent configure(ComponentProperties properties) {
-			return new DummyIn()
-					.withAdapter(adapter)
-					.withExecutor(executor);
+			return new DummyIn(executor, adapter);
 		}
 	}
 
