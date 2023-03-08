@@ -3,6 +3,7 @@ package ldes.client.treenodefetcher.domain.valueobjects;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
+import org.apache.http.HttpHeaders;
 import org.apache.jena.riot.Lang;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class TreeNodeRequest {
 
 	public Request createRequest() {
 		RequestHeaders requestHeaders = new RequestHeaders(
-				List.of(new RequestHeader("Accept", lang.getHeaderString())));
+				List.of(new RequestHeader(HttpHeaders.ACCEPT, lang.getHeaderString())));
 		return new Request(treeNodeUrl, requestHeaders);
 	}
 
