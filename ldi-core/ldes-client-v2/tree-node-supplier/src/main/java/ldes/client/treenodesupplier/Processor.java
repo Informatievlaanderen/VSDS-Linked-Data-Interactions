@@ -18,12 +18,15 @@ class Processor {
 
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
-	TreeNodeFetcher treeNodeProcessor = new TreeNodeFetcher();
+	private final TreeNodeFetcher treeNodeFetcher;
 
-	public Processor(TreeNodeRecord startingNode, TreeNodeRecordRepository treeNodeRecordRepository,
-			MemberRepository memberRepository) {
+	public Processor(TreeNodeRecord startingNode,
+			TreeNodeRecordRepository treeNodeRecordRepository,
+			MemberRepository memberRepository,
+			TreeNodeFetcher treeNodeFetcher) {
 		this.treeNodeRecordRepository = treeNodeRecordRepository;
 		this.memberRepository = memberRepository;
+		this.treeNodeFetcher = treeNodeFetcher;
 		this.treeNodeRecordRepository.saveTreeNodeRecord(startingNode);
 	}
 
@@ -33,7 +36,7 @@ class Processor {
 						() -> treeNodeRecordRepository.getOneTreeNodeRecordWithStatus(TreeNodeStatus.MUTABLE_AND_ACTIVE)
 								.orElseThrow(() -> new RuntimeException(
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
-		TreeNode treeNodeResponse = treeNodeProcessor
+		TreeNode treeNodeResponse = treeNodeFetcher
 				.fetchTreeNode(new TreeNodeRequest(treeNodeRecord.getTreeNodeUrl(), Lang.JSONLD));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
 		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);

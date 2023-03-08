@@ -1,5 +1,6 @@
 package ldes.client.treenodefetcher;
 
+import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import org.apache.jena.riot.Lang;
@@ -12,7 +13,7 @@ class TreeNodeFetcherTest {
 	// TODO write proper test
 	@Test
 	void test() {
-		TreeNodeFetcher treeNodeFetcher = new TreeNodeFetcher();
+		TreeNodeFetcher treeNodeFetcher = new TreeNodeFetcher(new DefaultConfig().createRequestExecutor());
 		TreeNode treeNode = treeNodeFetcher.fetchTreeNode(
 				new TreeNodeRequest(
 						"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2021-10-20T12:05:32.563Z",

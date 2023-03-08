@@ -5,7 +5,7 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = { "classpath:features/tree-node-fetcher.feature" }, glue = {
+@CucumberOptions(features = { "classpath:features/member-supplier.feature" }, glue = {
 		"ldes.client.treenodesupplier" })
 public class MemberSupplierIT {
 }

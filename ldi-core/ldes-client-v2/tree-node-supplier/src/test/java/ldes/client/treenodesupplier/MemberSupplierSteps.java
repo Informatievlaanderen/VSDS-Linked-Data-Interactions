@@ -4,6 +4,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
+import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 
@@ -20,7 +22,8 @@ public class MemberSupplierSteps {
 	public void aProcessorWithATreeNodeRepositoryAMemberRepositoryAndAStartingUrl(String arg0) {
 		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
 		memberRepository = new InMemoryMemberRepository();
-		processor = new Processor(new TreeNodeRecord(arg0), treeNodeRecordRepository, memberRepository);
+		processor = new Processor(new TreeNodeRecord(arg0), treeNodeRecordRepository, memberRepository,
+				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
 	}
 
 	@When("I request the {int} members from the MemberSupplier")
