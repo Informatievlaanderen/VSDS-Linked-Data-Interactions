@@ -15,7 +15,7 @@
             <property name="hibernate.format_sql" value="false"/>
 
             <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:member-database.db"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:database.db"/>
 
         </properties>
 

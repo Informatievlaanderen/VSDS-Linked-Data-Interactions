@@ -17,8 +17,3 @@ Feature: MemberSupplier
     Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances"
     Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z"
     Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:37:18.577Z"
-
-
-#   TODO Extend + Test SQLITE
-#   TODO Test mutable fragment (+ max age)
-#   TODO Extend + Test immutable fragment

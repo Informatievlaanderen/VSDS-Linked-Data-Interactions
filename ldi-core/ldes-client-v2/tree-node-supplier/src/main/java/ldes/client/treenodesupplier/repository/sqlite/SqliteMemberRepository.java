@@ -5,17 +5,11 @@ import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Optional;
 
 public class SqliteMemberRepository implements MemberRepository {
-	private final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("pu-sqlite-jpa");
-
-	private final EntityManager entityManager = entityManagerFactory.createEntityManager();
+	private final EntityManagerFactory entityManagerFactory = EntityManagerFactory.getInstance();
+	private final EntityManager entityManager = entityManagerFactory.getEntityManager();
 
 	@Override
 	public Optional<MemberRecord> getUnprocessedTreeMember() {
@@ -48,12 +42,6 @@ public class SqliteMemberRepository implements MemberRepository {
 
 	@Override
 	public void destroyState() {
-		try {
-			entityManager.close();
-			entityManagerFactory.close();
-			Files.delete(Path.of("member-database.db"));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		entityManagerFactory.destroyState();
 	}
 }
