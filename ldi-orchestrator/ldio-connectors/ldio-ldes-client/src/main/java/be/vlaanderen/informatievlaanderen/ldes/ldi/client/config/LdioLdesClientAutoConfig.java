@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.client.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.LdesClientCli;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.client.model.EndpointBehaviour;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.EndpointRequester;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.model.EndpointBehaviour;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.LdesClientCli;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;

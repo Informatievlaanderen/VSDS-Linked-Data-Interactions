@@ -1,10 +1,11 @@
 package ldes.client.treenodesupplier.repository.sqlite;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 
 public class EntityManagerFactory {
 
