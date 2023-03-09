@@ -1,12 +1,13 @@
 package ldes.client.requestexecutor.executor.clientcredentials;
 
-import com.github.scribejava.core.model.OAuthRequest;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import com.github.scribejava.core.model.OAuthRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
