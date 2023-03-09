@@ -8,6 +8,11 @@ import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
+import ldes.client.treenodesupplier.repository.MemberRepository;
+import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
+import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
+import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
+import ldes.client.treenodesupplier.repository.sqlite.SqliteMemberRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +28,7 @@ public class MemberSupplierSteps {
 		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
 		memberRepository = new InMemoryMemberRepository();
 		processor = new Processor(new TreeNodeRecord(arg0), treeNodeRecordRepository, memberRepository,
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
+				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
 	}
 
 	@When("I request the {int} members from the MemberSupplier")
@@ -51,5 +56,13 @@ public class MemberSupplierSteps {
 	@Then("Status {string} for TreeNodeRecord with identifier: {string}")
 	public void statusForTreeNodeRecordWithIdentifier(String arg0, String arg1) {
 		assertTrue(treeNodeRecordRepository.existsByIdAndStatus(arg1, TreeNodeStatus.valueOf(arg0)));
+	}
+
+	@Given("A Processor with a TreeNodeRepository, a sqlite MemberRepository and a starting url {string}")
+	public void aProcessorWithATreeNodeRepositoryASqliteMemberRepositoryAndAStartingUrl(String arg0) {
+		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
+		memberRepository = new SqliteMemberRepository();
+		processor = new Processor(new TreeNodeRecord(arg0), treeNodeRecordRepository, memberRepository,
+				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
 	}
 }
