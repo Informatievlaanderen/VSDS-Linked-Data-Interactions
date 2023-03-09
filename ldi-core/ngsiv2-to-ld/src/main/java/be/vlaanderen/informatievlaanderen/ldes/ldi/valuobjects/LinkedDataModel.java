@@ -1,43 +1,73 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping;
-import org.apache.jena.atlas.json.JsonArray;
-import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.json.JsonString;
-import org.apache.jena.atlas.json.JsonValue;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.properties.LinkedDataAttribute;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.valueproperties.DateTimeValue;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.services.NgsiLdURIParser.toNgsiLdUri;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class LinkedDataModel extends LinkedDataAttributeBase {
 
-public class LinkedDataModel {
-
-	private final JsonObject jsonModel;
-	private JsonModel jsonModelNew;
-	private final JsonArray contexts;
+	private List<String> contexts;
+	private String id;
+	private String type;
+	private DateTimeValue dateCreated;
+	private DateTimeValue dateModified;
+	private DateTimeValue dateObserved;
 
 	public LinkedDataModel() {
-		jsonModel = new JsonObject();
-		contexts = new JsonArray();
+		super();
+		this.contexts = new ArrayList<>();
 	}
 
-	public JsonObject getModel() {
-		jsonModel.put(NGSI_LD_CONTEXT, contexts);
-
-		return jsonModel;
+	// deserialize from NGSI_V2
+	@JsonCreator
+	public LinkedDataModel(@JsonProperty(NGSI_V2_KEY_ID) String id,
+			@JsonProperty(NGSI_V2_KEY_TYPE) String type,
+			@JsonProperty(NGSI_V2_KEY_DATE_OBSERVED) DateTimeValue dateObserved,
+			@JsonProperty(NGSI_V2_KEY_DATE_CREATED) DateTimeValue dateCreated,
+			@JsonProperty(NGSI_V2_KEY_DATE_MODIFIED) DateTimeValue dateModified) {
+		this();
+		this.id = toNgsiLdUri(id, type);
+		this.type = type;
+		this.dateCreated = dateCreated;
+		this.dateModified = dateModified;
+		this.dateObserved = dateObserved;
+		if (dateObserved != null) {
+			add(NGSI_V2_KEY_DATE_OBSERVED,
+					new LinkedDataAttribute(NGSI_V2_KEY_TIMESTAMP, dateObserved.getValue(), null, null));
+		}
 	}
 
-	public JsonModel getJsonModelNew() {
-		return jsonModelNew;
+	@Override
+	@JsonAnySetter
+	public void add(String key, LinkedDataAttribute value) {
+
+		if (!Objects.equals(value.getType(), NGSI_LD_ATTRIBUTE_TYPE_RELATIONSHIP)) {
+			value.setDateObserved(getDateObservedValue());
+		}
+		properties.put(translateKey(key), value);
 	}
 
 	public String toString() {
-		return getJsonModelNew().toString();
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public Model toRDFModel(Lang format) {
@@ -48,49 +78,53 @@ public class LinkedDataModel {
 		return model;
 	}
 
-	public List<String> getContexts() {
-		return contexts.stream().map(JsonValue::getAsString).map(JsonString::value).toList();
-	}
-
 	public void addContextDeclaration(String context) {
-		JsonString jsonContext = new JsonString(context);
-		if (!contexts.contains(jsonContext)) {
-			contexts.add(jsonContext);
+		if (!contexts.contains(context)) {
+			contexts.add(context);
 		}
 	}
 
-	public void addContexts(List<String> contexts) {
-		this.contexts.clear();
-		this.contexts.addAll(contexts.stream()
-				.map(JsonString::new)
-				.toList());
+	public void setContexts(List<String> contexts) {
+		this.contexts = contexts;
 	}
 
-	public void setId(String entityId) {
-		jsonModel.put(translateKey(NGSI_V2_KEY_ID), new JsonString(entityId));
+	// serialize to Json-LD
+	@JsonGetter(NGSI_LD_CONTEXT)
+	public String[] getContextsForSerialization() {
+		return contexts.toArray(new String[0]);
 	}
 
-	public void setType(String entityType) {
-		jsonModel.put(translateKey(NGSI_V2_KEY_TYPE), new JsonString(entityType));
+	@JsonGetter(NGSI_LD_ID)
+	public String getId() {
+		return id;
 	}
 
-	public void setDateCreated(String dateCreated) {
-		jsonModel.put(translateKey(NgsiV2ToLdMapping.NGSI_V2_KEY_DATE_CREATED), dateCreated);
+	@JsonGetter(NGSI_LD_ATTRIBUTE_TYPE)
+	public String getType() {
+		return type;
 	}
 
-	public void setDateModified(String dateModified) {
-		jsonModel.put(translateKey(NGSI_V2_KEY_DATE_MODIFIED), dateModified);
+	@JsonIgnore
+	public List<String> getContexts() {
+		return contexts;
 	}
 
-	public void setDateObserved(String dateObserved) {
-		jsonModel.put(NGSI_V2_KEY_DATE_OBSERVED, dateObserved);
+	@JsonIgnore
+	public String getDateObservedValue() {
+		return dateObserved == null ? null : dateObserved.getValue();
 	}
 
-	public boolean hasDateObserved() {
-		return jsonModel.hasKey(NGSI_V2_KEY_DATE_OBSERVED) && !jsonModel.get(NGSI_V2_KEY_DATE_OBSERVED).isNull();
+	@JsonIgnore
+	public DateTimeValue getDateObserved() {
+		return dateObserved;
 	}
 
-	public void addAttribute(String attributeKey, LinkedDataAttribute attribute) {
-		jsonModel.put(translateKey(attributeKey), attribute.toAttribute());
+	public String getValueDateCreated() {
+		return dateCreated != null ? dateCreated.getValue() : null;
 	}
+
+	public String getValueDateModified() {
+		return dateModified != null ? dateModified.getValue() : null;
+	}
+
 }

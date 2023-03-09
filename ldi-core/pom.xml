@@ -17,6 +17,7 @@
         <module>version-object-creator</module>
         <module>version-materialiser</module>
         <module>rdf-adapter</module>
+        <module>ngsiv2-to-ld</module>
     </modules>
 
     <properties>

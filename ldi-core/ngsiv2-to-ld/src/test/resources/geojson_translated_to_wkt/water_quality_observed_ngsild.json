@@ -1,0 +1,73 @@
+{
+    "@context": [
+		"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+	],
+	"id": "urn:ngsi-v2:cot-imec-be:WaterQualityObserved:dwg-iow-886nJGdroD857YjumSEuNj",
+    "type": "WaterQualityObserved",
+    "conductivity": {
+        "type": "Property",
+        "value": 6150,
+        "unitCode": "G42",
+        "observedAt": "2022-09-09T09:10:00.000Z"
+    },
+    "dateObserved": {
+        "type": "Property",
+        "value": {
+            "@type": "DateTime",
+            "@value": "2022-09-09T09:10:00.000Z"
+        },
+        "observedAt": "2022-09-09T09:10:00.000Z"
+    },
+    "depth": {
+        "type": "Property",
+        "value": 1442,
+        "unitCode": "HP",
+        "observedAt": "2022-09-09T09:10:00.000Z"
+    },
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                2.854459744,
+                51.03321207
+            ]
+        },
+        "name": {
+            "type": "Property",
+            "value": "loc-00019-33"
+        },
+        "observedAt": "2022-09-09T09:10:00.000Z",
+        "http://www.opengis.net/ont/geosparql#asWKT": {
+			"@type": "http://www.opengis.net/ont/geosparql#wktLiteral",
+			"@value": "POINT(2.854459744 51.03321207)"
+		}
+    },
+    "locationName": {
+        "type": "Property",
+        "value": "loc-00019-33",
+        "observedAt": "2022-09-09T09:10:00.000Z"
+    },
+    "refDevice": {
+        "type": "Relationship",
+        "object": "urn:ngsi-v2:cot-imec-be:Device:dwg-iow-JAmXrtiSYwBpsbN9s4nQDG"
+    },
+    "refDevices": {
+        "type": "Property",
+        "value": [
+            "urn:ngsi-v2:cot-imec-be:Device:dwg-iow-JAmXrtiSYwBpsbN9s4nQDG"
+        ],
+        "observedAt": "2022-09-09T09:10:00.000Z"
+    },
+    "samplingPoint": {
+        "type": "Property",
+        "value": "spt-00035-79",
+        "observedAt": "2022-09-09T09:10:00.000Z"
+    },
+    "temperature": {
+        "type": "Property",
+        "value": 20.43,
+        "unitCode": "CEL",
+        "observedAt": "2022-09-09T09:10:00.000Z"
+    }
+}

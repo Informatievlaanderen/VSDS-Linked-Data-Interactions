@@ -1,0 +1,59 @@
+{
+    "@context": [
+		"http://localhost:10101/ngsi-ld-core-context.json",
+		"http://localhost:10101/water-quality-observed-context.json"
+	],
+	"id": "urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005",
+    "type": "DeviceModel",
+    "brandName": {
+        "type": "Property",
+        "value": "imec"
+    },
+    "category": {
+        "type": "Property",
+        "value": [
+            "sensor"
+        ]
+    },
+    "controlledProperty": {
+        "type": "Property",
+        "value": [
+            "temperature",
+            "conductivity",
+            "pH",
+            "nitrate"
+        ]
+    },
+    "function": {
+        "type": "Property",
+        "value": [
+            "sensing"
+        ]
+    },
+    "iow_tags": {
+        "type": "Property",
+        "value": [
+            "wqmd_sensor"
+        ]
+    },
+    "manufacturerName": {
+        "type": "Property",
+        "value": "IMEC NL"
+    },
+    "maxTimeBetweenObservations": {
+        "type": "Property",
+        "value": 60
+    },
+    "modelName": {
+        "type": "Property",
+        "value": "iow-sensor-v0005"
+    },
+    "supportedUnits": {
+        "type": "Property",
+        "value": [
+            "CEL",
+            "D10",
+            "Q30"
+        ]
+    }
+}

@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
-
 import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdTranslatorDefaults;
 
 import java.net.URI;
