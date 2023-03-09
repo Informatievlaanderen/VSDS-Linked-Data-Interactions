@@ -1,11 +1,13 @@
 package ldes.client.startingtreenode;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.ConfigurationParameter;
+import org.junit.platform.suite.api.IncludeEngines;
+import org.junit.platform.suite.api.SelectClasspathResource;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Cucumber.class)
-@CucumberOptions(features = { "classpath:features/starting-point-finder.feature" }, glue = {
-		"ldes.client.startingtreenode" })
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("features")
+@ConfigurationParameter(key = "ldes.client.startingtreenode", value = "ldes.client.startingtreenode")
 public class StartingTreeNodeFinderIT {
 }

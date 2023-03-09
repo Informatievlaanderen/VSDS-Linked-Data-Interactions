@@ -1,11 +1,13 @@
 package ldes.client.treenodefetcher;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.ConfigurationParameter;
+import org.junit.platform.suite.api.IncludeEngines;
+import org.junit.platform.suite.api.SelectClasspathResource;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Cucumber.class)
-@CucumberOptions(features = { "classpath:features/tree-node-fetcher.feature" }, glue = {
-		"ldes.client.treenodefetcher" })
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("features")
+@ConfigurationParameter(key = "ldes.client.treenodefetcher", value = "ldes.client.treenodefetcher")
 public class TreeNodeFetcherIT {
 }
