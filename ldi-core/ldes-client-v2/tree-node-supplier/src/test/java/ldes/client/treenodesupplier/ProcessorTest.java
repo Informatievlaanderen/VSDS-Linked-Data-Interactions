@@ -3,6 +3,8 @@ package ldes.client.treenodesupplier;
 import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
+import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
+import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
 import org.junit.jupiter.api.Test;
 
 class ProcessorTest {
@@ -13,7 +15,7 @@ class ProcessorTest {
 				new TreeNodeRecord(
 						"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z"),
 				new InMemoryTreeNodeRecordRepository(), new InMemoryMemberRepository(),
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
+				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
 		processor.getMember();
 	}
 
