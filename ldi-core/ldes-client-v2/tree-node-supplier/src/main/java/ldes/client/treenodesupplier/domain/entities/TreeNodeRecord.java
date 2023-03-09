@@ -17,6 +17,12 @@ public class TreeNodeRecord {
 		this.earliestNextVisit = LocalDateTime.now();
 	}
 
+	public TreeNodeRecord(String treeNodeUrl, TreeNodeStatus treeNodeStatus, LocalDateTime earliestNextVisit) {
+		this.treeNodeUrl = treeNodeUrl;
+		this.treeNodeStatus = treeNodeStatus;
+		this.earliestNextVisit = earliestNextVisit;
+	}
+
 	public String getTreeNodeUrl() {
 		return treeNodeUrl;
 	}

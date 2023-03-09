@@ -13,6 +13,7 @@ import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sqlite.SqliteMemberRepository;
+import ldes.client.treenodesupplier.repository.sqlite.SqliteTreeNodeRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,9 +59,9 @@ public class MemberSupplierSteps {
 		assertTrue(treeNodeRecordRepository.existsByIdAndStatus(arg1, TreeNodeStatus.valueOf(arg0)));
 	}
 
-	@Given("A Processor with a TreeNodeRepository, a sqlite MemberRepository and a starting url {string}")
+	@Given("A Processor with a sqlite TreeNodeRepository, a sqlite MemberRepository and a starting url {string}")
 	public void aProcessorWithATreeNodeRepositoryASqliteMemberRepositoryAndAStartingUrl(String arg0) {
-		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
+		treeNodeRecordRepository = new SqliteTreeNodeRepository();
 		memberRepository = new SqliteMemberRepository();
 		processor = new Processor(new TreeNodeRecord(arg0), treeNodeRecordRepository, memberRepository,
 				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
