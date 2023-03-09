@@ -2,26 +2,24 @@ package ldes.client.treenodesupplier;
 
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
+import ldes.client.treenodesupplier.domain.valueobject.Ldes;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import org.apache.jena.riot.Lang;
 
 import java.util.Optional;
 
 class Processor {
 
-	// TODO extend with etag to create cached request
-
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
 	private final TreeNodeFetcher treeNodeFetcher;
 	private final boolean keepstate;
+	private final Ldes ldes;
 
-	public Processor(TreeNodeRecord startingNode,
+	public Processor(Ldes ldes,
 			TreeNodeRecordRepository treeNodeRecordRepository,
 			MemberRepository memberRepository,
 			TreeNodeFetcher treeNodeFetcher, boolean keepstate) {
@@ -29,7 +27,8 @@ class Processor {
 		this.memberRepository = memberRepository;
 		this.treeNodeFetcher = treeNodeFetcher;
 		this.keepstate = keepstate;
-		this.treeNodeRecordRepository.saveTreeNodeRecord(startingNode);
+		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(ldes.getStartingNodeUrl()));
+		this.ldes = ldes;
 		Runtime.getRuntime().addShutdownHook(new Thread(this::destoryState));
 	}
 
@@ -40,7 +39,7 @@ class Processor {
 								.orElseThrow(() -> new RuntimeException(
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
 		TreeNode treeNodeResponse = treeNodeFetcher
-				.fetchTreeNode(new TreeNodeRequest(treeNodeRecord.getTreeNodeUrl(), Lang.JSONLD));
+				.fetchTreeNode(ldes.createRequest(treeNodeRecord.getTreeNodeUrl()));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
 		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		treeNodeResponse.getRelations()
