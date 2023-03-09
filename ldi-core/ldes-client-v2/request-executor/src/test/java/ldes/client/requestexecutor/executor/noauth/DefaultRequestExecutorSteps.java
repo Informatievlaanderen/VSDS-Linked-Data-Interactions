@@ -13,6 +13,7 @@ import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import org.apache.http.HttpHeaders;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class DefaultRequestExecutorSteps {
 	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
+	private String etag;
 	private RequestHeaders requestHeaders;
 
 	@Given("I have a RequestExecutor")
@@ -64,6 +66,11 @@ public class DefaultRequestExecutorSteps {
 	@And("I create a Request with the RequestHeaders and url: {string}")
 	public void iCreateARequestWithTheRequestHeadersAndUrl(String arg0) {
 		request = new Request(arg0, requestHeaders);
+	}
+
+	@And("I add a RequestHeader with key {string} and value the obtained etag")
+	public void iAddARequestHeaderWithKeyAndValueTheObtainedEtag(String arg0) {
+		addHeaderToRequestHeaders(arg0, etag);
 	}
 
 	private void addHeaderToRequestHeaders(String key, String value) {
