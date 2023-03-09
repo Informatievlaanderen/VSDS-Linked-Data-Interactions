@@ -1,11 +1,13 @@
 package ldes.client.requestexecutor.executor;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.ConfigurationParameter;
+import org.junit.platform.suite.api.IncludeEngines;
+import org.junit.platform.suite.api.SelectClasspathResource;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Cucumber.class)
-@CucumberOptions(features = { "classpath:features/request-executor.feature" }, glue = {
-		"ldes.client.requestexecutor" })
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("features")
+@ConfigurationParameter(key = "ldes.client.requestexecutor", value = "ldes.client.requestexecutor")
 public class RequestExecutorIT {
 }

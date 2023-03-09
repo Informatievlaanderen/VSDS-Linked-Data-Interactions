@@ -137,6 +137,10 @@
                     <environmentVariables>
                         <SIS_DATA>./</SIS_DATA>
                     </environmentVariables>
+                    <includes>
+                        <include>**/*IT.java</include>
+                        <include>**/*Test.java</include>
+                    </includes>
                 </configuration>
             </plugin>
             <plugin>
