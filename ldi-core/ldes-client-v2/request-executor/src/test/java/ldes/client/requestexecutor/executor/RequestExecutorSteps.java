@@ -28,9 +28,8 @@ public class RequestExecutorSteps {
 
 	@Given("I have a ClientCredentialsRequestExecutor")
 	public void aClientCredentialsRequestExecutorIsAvailable() {
-		requestExecutor =
-				new ClientCredentialsConfig("clientId", "clientSecret",
-						"http://localhost:10101/token", "simpleScope").createRequestExecutor();
+		requestExecutor = new ClientCredentialsConfig("clientId", "clientSecret",
+				"http://localhost:10101/token", "simpleScope").createRequestExecutor();
 	}
 
 	@Given("I have a DefaultRequestExecutor")
