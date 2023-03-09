@@ -9,7 +9,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 public class WireMockConfig {
 
 	private static final int WIREMOCK_PORT = 10101;
-	private static final WireMockServer wireMockServer = new WireMockServer(
+	public static final WireMockServer wireMockServer = new WireMockServer(
 			WireMockConfiguration.options().port(WIREMOCK_PORT));
 
 	@Before
