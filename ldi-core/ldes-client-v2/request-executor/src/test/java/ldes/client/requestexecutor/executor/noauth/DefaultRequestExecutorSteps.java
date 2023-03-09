@@ -38,6 +38,11 @@ public class DefaultRequestExecutorSteps {
 		assertEquals(arg0, response.getHttpStatus());
 	}
 
+	@And("I obtain a location header: {string}")
+	public void iObtainALocationHeader(String url) {
+		assertEquals(url, response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow());
+	}
+
 	@Then("I get a HttpRequestException when executing the request")
 	public void iGetAnException() {
 		assertThrows(HttpRequestException.class, () -> requestExecutor.execute(request));
@@ -61,11 +66,6 @@ public class DefaultRequestExecutorSteps {
 	@And("I create a Request with the RequestHeaders and url: {string}")
 	public void iCreateARequestWithTheRequestHeadersAndUrl(String arg0) {
 		request = new Request(arg0, requestHeaders);
-	}
-
-	@And("I extract the etag from the response")
-	public void iExtractTheEtagFromTheResponse() {
-		etag = response.getValueOfHeader(HttpHeaders.ETAG).orElseThrow();
 	}
 
 	@And("I add a RequestHeader with key {string} and value the obtained etag")
