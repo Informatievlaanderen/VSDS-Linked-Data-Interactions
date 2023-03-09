@@ -7,5 +7,5 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(features = { "classpath:features/default-request-executor.feature" }, glue = {
 		"ldes.client.requestexecutor" })
-public class DefaultRequestExecutorIT {
+class DefaultRequestExecutorIT {
 }

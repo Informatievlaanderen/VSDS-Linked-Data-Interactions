@@ -1,8 +1,5 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
-import org.apache.http.HttpHeaders;
-
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 

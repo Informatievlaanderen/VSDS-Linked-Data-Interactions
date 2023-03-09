@@ -1,8 +1,8 @@
 package ldes.client.requestexecutor.executor.clientcredentials;
 
-import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
+import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 
 import java.io.IOException;

@@ -1,8 +1,8 @@
 package ldes.client.requestexecutor.executor.noauth;
 
-import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
+import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
