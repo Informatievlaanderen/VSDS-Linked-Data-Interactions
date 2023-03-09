@@ -1,16 +1,16 @@
-package ldes.client.requestexecutor.executor.noauth;
+package ldes.client.requestexecutor.executor;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import ldes.client.requestexecutor.domain.valueobjects.ClientCredentialsConfig;
 import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.exceptions.HttpRequestException;
-import ldes.client.requestexecutor.executor.RequestExecutor;
 import org.apache.http.HttpHeaders;
 
 import java.util.ArrayList;
@@ -19,15 +19,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DefaultRequestExecutorSteps {
+public class RequestExecutorSteps {
 
 	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
 	private RequestHeaders requestHeaders;
 
-	@Given("I have a RequestExecutor")
-	public void initializeCalculator() {
+	@Given("I have a ClientCredentialsRequestExecutor")
+	public void aClientCredentialsRequestExecutorIsAvailable() {
+		requestExecutor =
+				new ClientCredentialsConfig("clientId", "clientSecret",
+						"http://localhost:10101/token", "simpleScope").createRequestExecutor();
+	}
+
+	@Given("I have a DefaultRequestExecutor")
+	public void aDefaultRequestExecutorIsAvailable() {
 		requestExecutor = new DefaultConfig().createRequestExecutor();
 	}
 
