@@ -3,7 +3,7 @@ Feature: MemberSupplier
   I want get a stream of Members from the MemberSupplier
 
   Scenario: Obtaining the members from first three fragments including the starting node
-    Given A Processor with a TreeNodeRepository, a MemberRepository and a starting url "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances"
+    Given A Processor with a sqlite TreeNodeRepository, a sqlite MemberRepository and a starting url "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances"
     And I create a MemberSupplier
     When I request the 1 members from the MemberSupplier
     Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances"

@@ -1,33 +1,35 @@
 package ldes.client.treenodesupplier;
 
 import ldes.client.treenodefetcher.TreeNodeFetcher;
-import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
+import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
+import ldes.client.treenodesupplier.domain.valueobject.Ldes;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
-import org.apache.jena.riot.Lang;
+import ldes.client.treenodesupplier.repository.MemberRepository;
+import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
 import java.util.Optional;
 
 class Processor {
 
-	// TODO extend with SQLITE implementations for member and treenode repository
-	// TODO extend with mutable and immutable fragments (and max-age)
-	// TODO extend with etag to create cached request
-
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
 	private final TreeNodeFetcher treeNodeFetcher;
+	private final boolean keepstate;
+	private final Ldes ldes;
 
-	public Processor(TreeNodeRecord startingNode,
+	public Processor(Ldes ldes,
 			TreeNodeRecordRepository treeNodeRecordRepository,
 			MemberRepository memberRepository,
-			TreeNodeFetcher treeNodeFetcher) {
+			TreeNodeFetcher treeNodeFetcher, boolean keepstate) {
 		this.treeNodeRecordRepository = treeNodeRecordRepository;
 		this.memberRepository = memberRepository;
 		this.treeNodeFetcher = treeNodeFetcher;
-		this.treeNodeRecordRepository.saveTreeNodeRecord(startingNode);
+		this.keepstate = keepstate;
+		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(ldes.getStartingNodeUrl()));
+		this.ldes = ldes;
+		Runtime.getRuntime().addShutdownHook(new Thread(this::destoryState));
 	}
 
 	private void processedTreeNode() {
@@ -37,7 +39,7 @@ class Processor {
 								.orElseThrow(() -> new RuntimeException(
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
 		TreeNode treeNodeResponse = treeNodeFetcher
-				.fetchTreeNode(new TreeNodeRequest(treeNodeRecord.getTreeNodeUrl(), Lang.JSONLD));
+				.fetchTreeNode(ldes.createRequest(treeNodeRecord.getTreeNodeUrl()));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
 		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		treeNodeResponse.getRelations()
@@ -47,19 +49,28 @@ class Processor {
 				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
 		treeNodeResponse.getMembers()
 				.stream()
+				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel()))
 				.filter(member -> !memberRepository.isProcessed(member))
-				.forEach(memberRepository::addUnprocessedTreeMember);
+				.forEach(memberRepository::saveTreeMember);
 
 	}
 
-	public TreeMember getMember() {
-		Optional<TreeMember> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
+	public MemberRecord getMember() {
+		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		while (unprocessedTreeMember.isEmpty()) {
 			processedTreeNode();
 			unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		}
-		TreeMember treeMember = unprocessedTreeMember.get();
-		memberRepository.addProcessedTreeMember(treeMember);
+		MemberRecord treeMember = unprocessedTreeMember.get();
+		treeMember.processedMemberRecord();
+		memberRepository.saveTreeMember(treeMember);
 		return treeMember;
+	}
+
+	public void destoryState() {
+		if (!keepstate) {
+			memberRepository.destroyState();
+			treeNodeRecordRepository.destroyState();
+		}
 	}
 }
