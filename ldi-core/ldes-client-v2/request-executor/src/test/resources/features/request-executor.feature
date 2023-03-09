@@ -8,7 +8,6 @@ Feature: RequestExecutor
     And I add a RequestHeader with key "Accept" and value "application/ld+json"
     And I create a Request with the RequestHeaders and url: <endpoint>
     And I execute the request
-    And I execute the request
     Then I obtain a response with status code 200
 
     Examples:
