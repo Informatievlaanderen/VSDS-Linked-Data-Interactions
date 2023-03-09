@@ -1,8 +1,9 @@
 package ldes.client.requestexecutor.executor.clientcredentials;
 
+import ldes.client.requestexecutor.domain.valueobjects.Request;
+
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Verb;
-import ldes.client.requestexecutor.domain.valueobjects.Request;
 
 public class ClientCredentialsRequest {
 

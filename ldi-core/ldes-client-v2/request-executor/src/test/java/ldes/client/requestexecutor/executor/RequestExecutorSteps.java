@@ -11,11 +11,14 @@ import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.exceptions.HttpRequestException;
+import ldes.client.requestexecutor.executor.noauth.WireMockConfig;
 import org.apache.http.HttpHeaders;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -67,7 +70,7 @@ public class RequestExecutorSteps {
 		addHeaderToRequestHeaders(arg0, arg1);
 	}
 
-	@And("I create a Request with the RequestHeaders and url: {string}")
+	@And("^I create a Request with the RequestHeaders and url: (.*)$")
 	public void iCreateARequestWithTheRequestHeadersAndUrl(String arg0) {
 		request = new Request(arg0, requestHeaders);
 	}
@@ -79,4 +82,8 @@ public class RequestExecutorSteps {
 		requestHeaders = new RequestHeaders(headers);
 	}
 
+	@Then("I will have called the token endpoint only once")
+	public void iWillHaveCalledTheTokenEndpointOnlyOnce() {
+		WireMockConfig.wireMockServer.verify(1, postRequestedFor(urlEqualTo("/token")));
+	}
 }
