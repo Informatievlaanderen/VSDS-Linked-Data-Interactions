@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/304-response",
+    "headers": {
+      "Accept": {
+        "contains": "text/turtle"
+      },
+      "If-None-Match": {
+        "contains": "1e0d1c-54e36ac89d1c0"
+      }
+    }
+  },
+  "response": {
+    "status": 304
+  }
+}

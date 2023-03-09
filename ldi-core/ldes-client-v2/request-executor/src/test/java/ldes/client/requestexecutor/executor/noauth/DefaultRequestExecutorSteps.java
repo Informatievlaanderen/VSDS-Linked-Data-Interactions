@@ -13,7 +13,6 @@ import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import org.apache.http.HttpHeaders;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,6 @@ public class DefaultRequestExecutorSteps {
 	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
-	private String etag;
 	private RequestHeaders requestHeaders;
 
 	@Given("I have a RequestExecutor")
@@ -36,6 +34,11 @@ public class DefaultRequestExecutorSteps {
 	@Then("I obtain a response with status code {int}")
 	public void iObtainAResponseWithStatusCode(int arg0) {
 		assertEquals(arg0, response.getHttpStatus());
+	}
+
+	@And("I obtain a location header: {string}")
+	public void iObtainALocationHeader(String url) {
+		assertEquals(url, response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow());
 	}
 
 	@Then("I get a HttpRequestException when executing the request")
@@ -61,16 +64,6 @@ public class DefaultRequestExecutorSteps {
 	@And("I create a Request with the RequestHeaders and url: {string}")
 	public void iCreateARequestWithTheRequestHeadersAndUrl(String arg0) {
 		request = new Request(arg0, requestHeaders);
-	}
-
-	@And("I extract the etag from the response")
-	public void iExtractTheEtagFromTheResponse() {
-		etag = response.getValueOfHeader(HttpHeaders.ETAG).orElseThrow();
-	}
-
-	@And("I add a RequestHeader with key {string} and value the obtained etag")
-	public void iAddARequestHeaderWithKeyAndValueTheObtainedEtag(String arg0) {
-		addHeaderToRequestHeaders(arg0, etag);
 	}
 
 	private void addHeaderToRequestHeaders(String key, String value) {
