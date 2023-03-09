@@ -60,7 +60,7 @@ jobs:
           context: .
           file: ldio.Dockerfile
           push: true
-          tags: ${{ env.LDIO_IMAGE_NAME }}:${{ env.version }}
+          tags: ${{ env.LDIO_IMAGE_NAME }}:${{ env.version }}, ${{ env.LDIO_IMAGE_NAME }}:latest
           build-args: |
             platforms: linux/amd64,linux/arm64
       - name: Build and push NiFi Docker image
@@ -69,7 +69,7 @@ jobs:
           context: .
           file: ldi-nifi.Dockerfile
           push: true
-          tags: ${{ env.LDI_NIFI_IMAGE_NAME }}:${{ env.version }}
+          tags: ${{ env.LDI_NIFI_IMAGE_NAME }}:${{ env.version }}, ${{ env.LDI_NIFI_IMAGE_NAME }}:latest
           build-args: |
             NIFI_DOCKER_IMAGE_VERSION=${{ vars.NIFI_DOCKER_IMAGE_VERSION }}
             platforms: linux/amd64,linux/arm64
