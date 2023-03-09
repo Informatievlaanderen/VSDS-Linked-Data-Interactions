@@ -1,13 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.client.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.client.LdesClientImplFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.client.model.EndpointBehaviour;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.EndpointRequester;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.Endpoint;
 import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.StartingNode;
 import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.client.model.EndpointBehaviour;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import org.apache.jena.riot.Lang;
 
@@ -62,15 +61,5 @@ public class LdesClientCli extends LdiInput {
 			}
 			default -> throw new IllegalArgumentException();
 		}
-	}
-
-	@Override
-	public LdiInput withExecutor(ComponentExecutor executor) {
-		return null;
-	}
-
-	@Override
-	public LdiInput withAdapter(LdiAdapter adapter) {
-		return null;
 	}
 }
