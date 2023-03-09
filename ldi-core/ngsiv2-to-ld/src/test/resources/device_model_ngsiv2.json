@@ -1,0 +1,64 @@
+{
+    "id": "urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005",
+    "type": "DeviceModel",
+    "brandName": {
+        "type": "Text",
+        "value": "imec",
+        "metadata": {}
+    },
+    "category": {
+        "type": "StructuredValue",
+        "value": [
+            "sensor"
+        ],
+        "metadata": {}
+    },
+    "controlledProperty": {
+        "type": "StructuredValue",
+        "value": [
+            "temperature",
+            "conductivity",
+            "pH",
+            "nitrate"
+        ],
+        "metadata": {}
+    },
+    "function": {
+        "type": "StructuredValue",
+        "value": [
+            "sensing"
+        ],
+        "metadata": {}
+    },
+    "iow_tags": {
+        "type": "StructuredValue",
+        "value": [
+            "wqmd_sensor"
+        ],
+        "metadata": {}
+    },
+    "manufacturerName": {
+        "type": "Text",
+        "value": "IMEC NL",
+        "metadata": {}
+    },
+    "maxTimeBetweenObservations": {
+        "type": "Number",
+        "value": 60,
+        "metadata": {}
+    },
+    "modelName": {
+        "type": "Text",
+        "value": "iow-sensor-v0005",
+        "metadata": {}
+    },
+    "supportedUnits": {
+        "type": "StructuredValue",
+        "value": [
+            "CEL",
+            "D10",
+            "Q30"
+        ],
+        "metadata": {}
+    }
+}
