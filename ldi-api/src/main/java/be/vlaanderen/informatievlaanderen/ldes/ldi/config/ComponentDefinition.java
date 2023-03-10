@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class ComponentDefinition {
 	private String name;
-	private ComponentProperties config;
+	private ComponentProperties config = new ComponentProperties(Map.of());
 
 	public String getName() {
 		return name;
