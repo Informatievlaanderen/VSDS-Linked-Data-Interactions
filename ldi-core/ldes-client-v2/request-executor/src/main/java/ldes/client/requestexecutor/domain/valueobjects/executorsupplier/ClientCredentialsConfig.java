@@ -1,4 +1,4 @@
-package ldes.client.requestexecutor.domain.valueobjects;
+package ldes.client.requestexecutor.domain.valueobjects.executorsupplier;
 
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.requestexecutor.executor.clientcredentials.ClientCredentialsRequestExecutor;

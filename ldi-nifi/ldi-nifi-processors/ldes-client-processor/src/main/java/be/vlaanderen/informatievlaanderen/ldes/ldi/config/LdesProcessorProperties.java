@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.validators.RDFLanguageValidator;
+import ldes.client.requestexecutor.domain.valueobjects.AuthStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -9,7 +10,9 @@ import org.apache.nifi.processor.util.StandardValidators;
 
 import java.util.Objects;
 
-import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.*;
+import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_DATA_DESTINATION_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_DATA_SOURCE_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_FRAGMENT_EXPIRATION_INTERVAL;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -94,6 +97,48 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
+	public static final PropertyDescriptor OAUTH_CLIENT_ID = new PropertyDescriptor.Builder()
+			.name("OAUTH_CLIENT_ID")
+			.displayName("Client id used for Oauth2 client credentials flow")
+			.required(false)
+			.defaultValue("")
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor OAUTH_CLIENT_SECRET = new PropertyDescriptor.Builder()
+			.name("OAUTH_CLIENT_SECRET")
+			.displayName("Client secret used for Oauth2 client credentials flow")
+			.sensitive(true)
+			.required(false)
+			.defaultValue("")
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor OAUTH_SCOPE = new PropertyDescriptor.Builder()
+			.name("OAUTH_SCOPE")
+			.displayName("Scope used for Oauth2 client credentials flow")
+			.required(false)
+			.defaultValue("")
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor OAUTH_TOKEN_ENDPOINT = new PropertyDescriptor.Builder()
+			.name("OAUTH_TOKEN_ENDPOINT")
+			.displayName("Token endpoint used for Oauth2 client credentials flow.")
+			.required(false)
+			.defaultValue("")
+			.addValidator(StandardValidators.URL_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor AUTHORIZATION_STRATEGY = new PropertyDescriptor.Builder()
+			.name("AUTHORIZATION_STRATEGY")
+			.displayName("Authorization strategy for the internal http client.")
+			.required(true)
+			.defaultValue(AuthStrategy.NO_AUTH.name())
+			.allowableValues(AuthStrategy.values())
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
 	public static String getDataSourceUrl(final ProcessContext context) {
 		return context.getProperty(DATA_SOURCE_URL).getValue();
 	}
@@ -128,6 +173,29 @@ public final class LdesProcessorProperties {
 
 	public static String getApiKey(final ProcessContext context) {
 		return Objects.requireNonNullElse(context.getProperty(API_KEY_PROPERTY).getValue(), "");
+	}
+
+	public static String getOauthClientId(final ProcessContext context) {
+		return Objects.requireNonNullElse(context.getProperty(OAUTH_CLIENT_ID).getValue(), "");
+	}
+
+	public static String getOauthClientSecret(final ProcessContext context) {
+		return Objects.requireNonNullElse(context.getProperty(OAUTH_CLIENT_SECRET).getValue(), "");
+	}
+
+	public static String getOauthScope(final ProcessContext context) {
+		return Objects.requireNonNullElse(context.getProperty(OAUTH_SCOPE).getValue(), "");
+	}
+
+	public static String getOauthTokenEndpoint(final ProcessContext context) {
+		return Objects.requireNonNullElse(context.getProperty(OAUTH_TOKEN_ENDPOINT).getValue(), "");
+	}
+
+	public static AuthStrategy getAuthorizationStrategy(final ProcessContext context) {
+		final String authValue = context.getProperty(AUTHORIZATION_STRATEGY).getValue();
+		return AuthStrategy
+				.from(authValue)
+				.orElseThrow(() -> new IllegalArgumentException("Unsupported authorization strategy: " + authValue));
 	}
 
 }

@@ -4,7 +4,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import org.apache.jena.riot.RDFLanguages;
