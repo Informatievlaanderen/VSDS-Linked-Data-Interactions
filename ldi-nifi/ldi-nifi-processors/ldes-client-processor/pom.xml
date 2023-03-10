@@ -29,7 +29,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
             <artifactId>tree-node-supplier</artifactId>
             <version>${project.version}</version>
         </dependency>
