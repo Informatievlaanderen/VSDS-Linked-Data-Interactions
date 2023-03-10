@@ -70,10 +70,10 @@ public class LinkedDataModel extends LinkedDataAttributeBase {
 		}
 	}
 
-	public Model toRDFModel(Lang format) {
+	public Model toRDFModel() {
 		Model model = ModelFactory.createDefaultModel();
 		RDFParser.fromString(toString())
-				.lang(format)
+				.lang(Lang.JSONLD)
 				.parse(model);
 		return model;
 	}

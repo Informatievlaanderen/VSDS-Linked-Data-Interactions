@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdTranslatorDefaults;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidNgsiLdContextException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
@@ -8,7 +8,6 @@ import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,18 +17,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest(httpPort = 10101)
-class NgsiV2ToLdTranslatorServiceTest {
+class NgsiV2ToLdAdapterTest {
 
+	private static final String DEFAULT_CORE_CONTEXT = "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld";
+	private static final String TARGET_LD_CONTEXT = null;
 	private final String localCoreContext = "http://localhost:10101/ngsi-ld-core-context.json";
 	private final String localLdContext = "http://localhost:10101/water-quality-observed-context.json";
-	private final String remoteCoreContext = NgsiV2ToLdTranslatorDefaults.DEFAULT_CORE_CONTEXT;
-	private final String remoteLdContext = NgsiV2ToLdTranslatorDefaults.TARGET_LD_CONTEXT;
+	private final String remoteCoreContext = DEFAULT_CORE_CONTEXT;
+	private final String remoteLdContext = TARGET_LD_CONTEXT;
 
 	private final String idV2 = "waterqualityobserved:Sevilla:D1";
 	private final String type = "WaterQualityObserved";
@@ -41,7 +43,7 @@ class NgsiV2ToLdTranslatorServiceTest {
 	private static final String WATER_QUALITY_OBSERVED_V2 = "water_quality_observed_ngsiv2.json";
 	private static final String WATER_QUALITY_OBSERVED_LD = "water_quality_observed_ngsild.json";
 
-	private NgsiV2ToLdTranslatorService translator;
+	private NgsiV2ToLdAdapter translator;
 	private final JsonObject data = new JsonObject();
 
 	@BeforeEach
@@ -52,10 +54,10 @@ class NgsiV2ToLdTranslatorServiceTest {
 
 	@Test
 	void whenIdFound_thenIdTranslated() {
-		translator = new NgsiV2ToLdTranslatorService(localCoreContext, localLdContext);
+		translator = new NgsiV2ToLdAdapter(localCoreContext, localLdContext);
 
 		String idLd = "urn:ngsi-ld:WaterQualityObserved:" + idV2;
-		LinkedDataModel model = translator.translate(data.toString());
+		LinkedDataModel model = translator.translateJsonToLD(data.toString()).toList().get(0);
 
 		assertEquals(idLd,
 				model.getId(),
@@ -64,9 +66,9 @@ class NgsiV2ToLdTranslatorServiceTest {
 
 	@Test
 	void whenTypeFound_thenTypeTranslated() {
-		translator = new NgsiV2ToLdTranslatorService(localCoreContext, localLdContext);
+		translator = new NgsiV2ToLdAdapter(localCoreContext, localLdContext);
 
-		LinkedDataModel model = translator.translate(data.toString());
+		LinkedDataModel model = translator.translateJsonToLD(data.toString()).toList().get(0);
 
 		assertEquals(type,
 				model.getType(),
@@ -75,20 +77,20 @@ class NgsiV2ToLdTranslatorServiceTest {
 
 	@Test
 	void whenDateFound_thenDateNormalised() {
-		translator = new NgsiV2ToLdTranslatorService(localCoreContext, localLdContext);
+		translator = new NgsiV2ToLdAdapter(localCoreContext, localLdContext);
 
 		String expectedDate = "2017-01-31T06:45:00Z";
 		LinkedDataModel model;
 
 		data.put(NgsiV2ToLdMapping.NGSI_V2_KEY_DATE_CREATED, "2017-01-31T06:45:00");
-		model = translator.translate(data.toString());
+		model = translator.translateJsonToLD(data.toString()).toList().get(0);
 
 		assertEquals(expectedDate,
 				model.getValueDateCreated(),
 				"Translate a date");
 
 		data.put(NgsiV2ToLdMapping.NGSI_V2_KEY_DATE_CREATED, expectedDate);
-		model = translator.translate(data.toString());
+		model = translator.translateJsonToLD(data.toString()).toList().get(0);
 
 		assertEquals(expectedDate,
 				model.getValueDateCreated(),
@@ -97,10 +99,10 @@ class NgsiV2ToLdTranslatorServiceTest {
 
 	@Test
 	void whenDateCreatedFound_thenDateCreatedTranslated() {
-		translator = new NgsiV2ToLdTranslatorService(localCoreContext, localLdContext);
+		translator = new NgsiV2ToLdAdapter(localCoreContext, localLdContext);
 
 		data.put(NgsiV2ToLdMapping.NGSI_V2_KEY_DATE_CREATED, "2017-01-31T06:45:00");
-		LinkedDataModel model = translator.translate(data.toString());
+		LinkedDataModel model = translator.translateJsonToLD(data.toString()).toList().get(0);
 
 		assertEquals("2017-01-31T06:45:00Z", model.getValueDateCreated(),
 				"Translate dateCreated");
@@ -108,10 +110,10 @@ class NgsiV2ToLdTranslatorServiceTest {
 
 	@Test
 	void whenDateModifiedFound_thenDateModifiedTranslated() {
-		translator = new NgsiV2ToLdTranslatorService(localCoreContext, localLdContext);
+		translator = new NgsiV2ToLdAdapter(localCoreContext, localLdContext);
 
 		data.put(NgsiV2ToLdMapping.NGSI_V2_KEY_DATE_MODIFIED, "2017-01-31T06:45:00");
-		LinkedDataModel model = translator.translate(data.toString());
+		LinkedDataModel model = translator.translateJsonToLD(data.toString()).toList().get(0);
 
 		assertEquals("2017-01-31T06:45:00Z", model.getValueDateModified(),
 				"Translate dateModified");
@@ -120,13 +122,7 @@ class NgsiV2ToLdTranslatorServiceTest {
 	@Test
 	void whenCoreContextIsNull_thenInvalidNgsiLdContextExceptionIsThrown() throws Exception {
 		String coreContext = null;
-		Path data = Paths.get(String.valueOf(getFile(DEVICE_V2)));
-
-		translator = new NgsiV2ToLdTranslatorService(coreContext);
-
-		String contents = Files.readString(data);
-
-		assertThrows(InvalidNgsiLdContextException.class, () -> translator.translate(contents));
+		assertThrows(InvalidNgsiLdContextException.class, () -> new NgsiV2ToLdAdapter(coreContext));
 	}
 
 	@Test
@@ -191,6 +187,22 @@ class NgsiV2ToLdTranslatorServiceTest {
 				"Translate WaterQualityObserved NGSIv2 (local context), with geo:json -> wkt translation added");
 	}
 
+	@Test
+	void whenTranslateFromNestedObject_thenModelTranslated()
+			throws Exception {
+		translator = new NgsiV2ToLdAdapter(localCoreContext, localLdContext);
+		Stream<Model> modelStream = getLdModelStream("water_quality_observed_ngsiv2_nested_object.json");
+		assertEquals(1, modelStream.count());
+	}
+
+	@Test
+	void whenTranslateFromNestedObjectWithArray_thenStreamHasCorrectNumberOfModels()
+			throws Exception {
+		translator = new NgsiV2ToLdAdapter(localCoreContext, localLdContext);
+		Stream<Model> modelStream = getLdModelStream("json_array_nested_object.json");
+		assertEquals(2, modelStream.count());
+	}
+
 	private void testTranslationLocalContext(String input, String expected, String message) throws Exception {
 		testTranslation(true, input, expected, message);
 	}
@@ -203,24 +215,20 @@ class NgsiV2ToLdTranslatorServiceTest {
 		Model v2Model = getV2Model(input, local);
 		Model ldModel = getLdModel(expected, local);
 
-		OutputStream outputStream = new ByteArrayOutputStream();
-		RDFDataMgr.write(outputStream, v2Model, Lang.JSONLD);
-		String test = outputStream.toString();
-
 		assertTrue(ldModel.isIsomorphicWith(v2Model), message);
 	}
 
 	private Model getV2Model(String input, boolean local) throws Exception {
-		return getV2LinkedDataModel(input, local).toRDFModel(Lang.JSONLD11);
+		return getV2LinkedDataModel(input, local).toRDFModel();
 	}
 
 	private LinkedDataModel getV2LinkedDataModel(String input, boolean local) throws Exception {
-		translator = new NgsiV2ToLdTranslatorService(local ? localCoreContext : remoteCoreContext,
+		translator = new NgsiV2ToLdAdapter(local ? localCoreContext : remoteCoreContext,
 				local ? localLdContext : remoteLdContext);
 
 		Path v2 = Paths.get(String.valueOf(getFile(input)));
 
-		return translator.translate(Files.readString(v2));
+		return translator.translateJsonToLD(Files.readString(v2)).toList().get(0);
 	}
 
 	private Model getLdModel(String expected, boolean local) throws Exception {
@@ -232,6 +240,11 @@ class NgsiV2ToLdTranslatorServiceTest {
 				.parse(ldModel);
 
 		return ldModel;
+	}
+
+	private Stream<Model> getLdModelStream(String filePath) throws Exception {
+		Path ld = Paths.get(String.valueOf(getFile(filePath)));
+		return translator.translate(Files.readString(ld));
 	}
 
 	private File getFile(String input) throws Exception {
