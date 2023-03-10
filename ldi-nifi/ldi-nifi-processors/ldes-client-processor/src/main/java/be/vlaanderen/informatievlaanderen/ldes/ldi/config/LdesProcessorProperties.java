@@ -10,13 +10,27 @@ import org.apache.nifi.processor.util.StandardValidators;
 
 import java.util.Objects;
 
-import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_DATA_DESTINATION_FORMAT;
-import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_DATA_SOURCE_FORMAT;
-import static be.vlaanderen.informatievlaanderen.ldes.client.LdesClientDefaults.DEFAULT_FRAGMENT_EXPIRATION_INTERVAL;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 public final class LdesProcessorProperties {
+	/**
+	 * The expected RDF format of the LDES data source
+	 */
+	public static final Lang DEFAULT_DATA_SOURCE_FORMAT = Lang.JSONLD;
+	/**
+	 * The desired RDF format for output
+	 */
+	public static final Lang DEFAULT_DATA_DESTINATION_FORMAT = Lang.NQUADS;
+
+	/**
+	 * The number of seconds to add to the current time before a fragment is
+	 * considered expired.
+	 * <p>
+	 * Only used when the HTTP request that contains the fragment does not have a
+	 * max-age element in the Cache-control header.
+	 */
+	public static final Long DEFAULT_FRAGMENT_EXPIRATION_INTERVAL = 604800L;
 
 	private LdesProcessorProperties() {
 	}
