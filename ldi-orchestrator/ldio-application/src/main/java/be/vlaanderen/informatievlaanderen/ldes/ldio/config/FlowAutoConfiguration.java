@@ -32,7 +32,7 @@ public class FlowAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(LdiInput.class)
-	@DependsOn({"componentExecutor"})
+	@DependsOn({ "componentExecutor" })
 	public LdiInput ldtoInput(OrchestratorConfig orchestratorConfig) {
 		return (LdiInput) getLdiComponent(orchestratorConfig.getInput().getName(),
 				orchestratorConfig.getInput().getConfig());
