@@ -9,7 +9,6 @@ public class NoStartingNodeException extends RuntimeException {
 
 	@Override
 	public String getMessage() {
-		// TODO
-		return super.getMessage();
+		return "No starting TreeNode found from url: "+url;
 	}
 }
