@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ngsiv2-to-ld</artifactId>
+            <artifactId>ngsiv2-to-ld-adapter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

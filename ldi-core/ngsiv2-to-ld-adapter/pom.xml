@@ -9,6 +9,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ngsiv2-to-ld</artifactId>
+    <artifactId>ngsiv2-to-ld-adapter</artifactId>
 
 </project>
