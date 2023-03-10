@@ -20,7 +20,7 @@ public class LdesProvider {
 
 	public Ldes getLdes(String url, Lang lang) {
 		StartingTreeNodeFinder startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
-		Optional<ldes.client.startingtreenode.domain.valueobjects.TreeNode> startingTreeNode = startingTreeNodeFinder
+		Optional<TreeNode> startingTreeNode = startingTreeNodeFinder
 				.determineStartingTreeNode(new Endpoint(url, lang));
 		TreeNode treeNode = startingTreeNode.orElseThrow(() -> new NoStartingNodeException(url));
 		return new Ldes(treeNode.getUrl(), lang);
