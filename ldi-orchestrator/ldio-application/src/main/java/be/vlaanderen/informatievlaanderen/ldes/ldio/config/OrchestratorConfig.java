@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.config.InputComponentDefinition;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,15 +11,15 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties(prefix = "orchestrator")
 public class OrchestratorConfig {
-	private ComponentDefinition input;
+	private InputComponentDefinition input;
 	private List<ComponentDefinition> transformers = new LinkedList<>();
 	private List<ComponentDefinition> outputs;
 
-	public ComponentDefinition getInput() {
+	public InputComponentDefinition getInput() {
 		return input;
 	}
 
-	public void setInput(ComponentDefinition input) {
+	public void setInput(InputComponentDefinition input) {
 		this.input = input;
 	}
 

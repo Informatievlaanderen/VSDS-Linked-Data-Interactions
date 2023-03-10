@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ldio-ngsiv-to-ld-adapter</artifactId>
+    <artifactId>ldio-ngsiv2-to-ld-adapter</artifactId>
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>

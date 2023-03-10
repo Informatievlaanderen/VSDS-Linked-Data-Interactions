@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioNgsiv2ToLdAdapterAutoConfig {
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiToLdAdapter")
+	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter")
 	public LdioConfigurator ldiHttpOutConfigurator() {
 		return new LdioSparqlConstructConfigurator();
 	}
