@@ -1,19 +1,19 @@
 package ldes.client.treenodesupplier;
 
-import ldes.client.treenodesupplier.domain.entities.MemberRecord;
+import ldes.client.treenodesupplier.domain.entities.SuppliedMember;
 
 import java.util.function.Supplier;
 
-public class MemberSupplier implements Supplier<MemberRecord> {
+public class MemberSupplier implements Supplier<SuppliedMember> {
 
-	private final Processor processor;
+	private final TreeNodeProcessor treeNodeProcessor;
 
-	public MemberSupplier(Processor processor) {
-		this.processor = processor;
+	public MemberSupplier(TreeNodeProcessor treeNodeProcessor) {
+		this.treeNodeProcessor = treeNodeProcessor;
 	}
 
 	@Override
-	public MemberRecord get() {
-		return processor.getMember();
+	public SuppliedMember get() {
+		return treeNodeProcessor.getMember();
 	}
 }

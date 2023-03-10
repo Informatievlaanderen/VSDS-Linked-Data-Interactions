@@ -36,6 +36,10 @@ public class MemberRecord {
 		return memberStatus;
 	}
 
+	public SuppliedMember createSuppliedMember() {
+		return new SuppliedMember(memberId, model);
+	}
+
 	public Model getModel() {
 		return model;
 	}
