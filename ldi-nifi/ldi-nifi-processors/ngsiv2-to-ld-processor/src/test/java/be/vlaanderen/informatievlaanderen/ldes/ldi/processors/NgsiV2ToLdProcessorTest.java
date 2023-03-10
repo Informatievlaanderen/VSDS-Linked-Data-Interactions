@@ -13,7 +13,7 @@ import java.util.Map;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 @WireMockTest(httpPort = 10101)
-public class NgsiV2ToLdProcessorTest {
+class NgsiV2ToLdProcessorTest {
 	private final TestRunner testRunner = TestRunners.newTestRunner(NgsiV2ToLdProcessor.class);
 
 	@Test
