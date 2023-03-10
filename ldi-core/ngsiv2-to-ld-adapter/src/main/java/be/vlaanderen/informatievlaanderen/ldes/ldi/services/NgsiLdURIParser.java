@@ -20,7 +20,7 @@ public class NgsiLdURIParser {
 		}
 
 		if (uri == null || uri.getScheme() == null
-				|| !Arrays.asList(NGSI_LD_ALLOWED_URI_SCHEMES).contains(uri.getScheme())) {
+				|| !Arrays.asList(getNgsiLdAllowedUriSchemes()).contains(uri.getScheme())) {
 			return NGSI_LD_URI_PREFIX + ":" + entityType + ":" + entityId;
 		}
 

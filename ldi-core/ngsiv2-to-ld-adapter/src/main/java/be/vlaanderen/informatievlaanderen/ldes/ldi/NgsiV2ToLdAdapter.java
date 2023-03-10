@@ -1,6 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.DeserializationFromJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidNgsiLdContextException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
 import org.apache.jena.atlas.json.JSON;
@@ -51,7 +53,7 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 						return model;
 					});
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+			throw new DeserializationFromJsonException(e, data);
 		}
 	}
 
@@ -71,7 +73,7 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 	@Override
 	public Stream<Model> apply(Content content) {
 		if (!content.mimeType().equalsIgnoreCase("application/json")) {
-			throw new RuntimeException("Requested mimetype should be application/json");
+			throw new UnsupportedMimeTypeException("application/json", content.mimeType());
 		}
 		return translate(content.content());
 	}

@@ -38,7 +38,7 @@ public class NgsiV2ToLdMapping {
 	public static final String NGSI_LD_ATTRIBUTE_TYPE_POSTAL_ADDRESS = "PostalAddress";
 
 	public static final String NGSI_LD_URI_PREFIX = "urn:ngsi-ld";
-	public static final String[] NGSI_LD_ALLOWED_URI_SCHEMES = new String[] { "urn", "http", "https" };
+	private static final String[] NGSI_LD_ALLOWED_URI_SCHEMES = new String[] { "urn", "http", "https" };
 
 	private static final Map<String, String> MAPPINGS = Map.of(
 			NGSI_V2_KEY_DATE_CREATED, NGSI_LD_KEY_DATE_CREATED,
@@ -47,7 +47,11 @@ public class NgsiV2ToLdMapping {
 			NGSI_V2_TYPE_GEO, NGSI_LD_ATTRIBUTE_TYPE_GEOPROPERTY,
 			NGSI_V2_TYPE_REFERENCE, NGSI_LD_ATTRIBUTE_TYPE_RELATIONSHIP);
 
-	public static final String translateKey(String key) {
+	public static String translateKey(String key) {
 		return MAPPINGS.get(key) != null ? MAPPINGS.get(key) : key;
+	}
+
+	public static String[] getNgsiLdAllowedUriSchemes() {
+		return NGSI_LD_ALLOWED_URI_SCHEMES;
 	}
 }

@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.SerializationToJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.properties.LinkedDataAttribute;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.valueproperties.DateTimeValue;
 import org.apache.jena.rdf.model.Model;
@@ -66,7 +67,7 @@ public class LinkedDataModel extends LinkedDataAttributeBase {
 		try {
 			return new ObjectMapper().writeValueAsString(this);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+			throw new SerializationToJsonException(e, this.id);
 		}
 	}
 

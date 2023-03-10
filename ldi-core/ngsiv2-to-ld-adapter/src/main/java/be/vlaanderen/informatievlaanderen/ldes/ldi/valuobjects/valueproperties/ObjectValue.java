@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.valueproperties;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.SerializationToJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataAttributeBase;
 
 import com.fasterxml.jackson.annotation.*;
@@ -41,7 +42,7 @@ public class ObjectValue extends LinkedDataAttributeBase {
 		try {
 			return new ObjectMapper().writeValueAsString(this);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+			throw new SerializationToJsonException(e, this.value);
 		}
 	}
 }
