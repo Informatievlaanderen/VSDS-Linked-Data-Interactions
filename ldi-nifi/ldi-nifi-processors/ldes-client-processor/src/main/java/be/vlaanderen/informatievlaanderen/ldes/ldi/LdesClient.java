@@ -38,10 +38,20 @@ import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.DATA_DESTINATION_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.DATA_SOURCE_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.DATA_SOURCE_URL;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.FRAGMENT_EXPIRATION_INTERVAL;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.STREAM_SHAPE_PROPERTY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.STREAM_TIMESTAMP_PATH_PROPERTY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.STREAM_VERSION_OF_PROPERTY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getApiKey;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getApiKeyHeader;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.streamShapeProperty;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.streamTimestampPathProperty;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.streamVersionOfProperty;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -97,9 +107,11 @@ public class LdesClient extends AbstractProcessor {
 
 	private Ldes getLdes(String dataSourceUrl, Lang dataSourceFormat, RequestExecutor requestExecutor) {
 		StartingTreeNodeFinder startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
-		Optional<TreeNode> startingTreeNode = startingTreeNodeFinder
-				.determineStartingTreeNode(new Endpoint(dataSourceUrl, dataSourceFormat));
-		return new Ldes(startingTreeNode.get().getUrl(), dataSourceFormat);
+		TreeNode startingTreeNode = startingTreeNodeFinder
+				.determineStartingTreeNode(new Endpoint(dataSourceUrl, dataSourceFormat))
+				.orElseThrow(() ->
+						new IllegalArgumentException("Starting url could not be determined for fragmentId: " + dataSourceUrl));
+		return new Ldes(startingTreeNode.getUrl(), dataSourceFormat);
 	}
 
 	@Override
