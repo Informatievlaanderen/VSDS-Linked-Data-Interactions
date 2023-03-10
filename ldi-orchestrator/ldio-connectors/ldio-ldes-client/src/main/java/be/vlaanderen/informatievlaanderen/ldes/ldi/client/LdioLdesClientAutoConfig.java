@@ -29,7 +29,7 @@ import java.util.Optional;
 @EnableConfigurationProperties()
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioLdesClientAutoConfig {
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.LdesClientCli")
+	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient")
 	public LdioConfigurator ldioConfigurator(ComponentExecutor componentExecutor) {
 		return new LdioLdesClientConfigurator(componentExecutor);
 	}
