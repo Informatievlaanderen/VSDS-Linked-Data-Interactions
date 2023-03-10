@@ -45,6 +45,11 @@
             <artifactId>starting-node</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-dep</artifactId>
+            <version>1.14.1</version>
+        </dependency>
     </dependencies>
 
 </project>
