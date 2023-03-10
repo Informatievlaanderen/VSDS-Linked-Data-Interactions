@@ -40,6 +40,11 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.6.15.Final</version>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>starting-node</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

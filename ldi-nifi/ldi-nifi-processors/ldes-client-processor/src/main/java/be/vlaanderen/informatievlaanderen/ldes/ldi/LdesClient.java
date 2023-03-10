@@ -7,10 +7,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtrac
 import ldes.client.requestexecutor.domain.valueobjects.ApiKeyConfig;
 import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
 import ldes.client.requestexecutor.executor.RequestExecutor;
-import ldes.client.startingtreenode.StartingTreeNodeFinder;
-import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
-import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
+import ldes.client.treenodesupplier.LdesProvider;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.entities.SuppliedMember;
@@ -38,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.*;
@@ -75,12 +72,11 @@ public class LdesClient extends AbstractProcessor {
 		if (!apiKey.equals("")) {
 			requestExecutor = new ApiKeyConfig(apiKey, getApiKeyHeader(context)).createRequestExecutor();
 		}
-
-		Ldes ldes = getLdes(dataSourceUrl, dataSourceFormat, requestExecutor);
-
+		Ldes ldes = new LdesProvider(requestExecutor).getLdes(dataSourceUrl, dataSourceFormat);
 		treeNodeProcessor = new TreeNodeProcessor(ldes, new SqliteTreeNodeRepository(), new SqliteMemberRepository(),
 				new TreeNodeFetcher(requestExecutor), true);
 		memberSupplier = new MemberSupplier(treeNodeProcessor);
+
 		determineLdesProperties(ldes, requestExecutor, context);
 
 		LOGGER.info("LDES extraction processor {} with base url {} (expected LDES source format: {})",
@@ -93,13 +89,6 @@ public class LdesClient extends AbstractProcessor {
 		boolean shape = streamShapeProperty(context);
 		ldesProperties = new LdesPropertiesExtractor(requestExecutor).getLdesProperties(ldes, timestampPath,
 				versionOfPath, shape);
-	}
-
-	private Ldes getLdes(String dataSourceUrl, Lang dataSourceFormat, RequestExecutor requestExecutor) {
-		StartingTreeNodeFinder startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
-		Optional<TreeNode> startingTreeNode = startingTreeNodeFinder
-				.determineStartingTreeNode(new Endpoint(dataSourceUrl, dataSourceFormat));
-		return new Ldes(startingTreeNode.get().getUrl(), dataSourceFormat);
 	}
 
 	@Override
