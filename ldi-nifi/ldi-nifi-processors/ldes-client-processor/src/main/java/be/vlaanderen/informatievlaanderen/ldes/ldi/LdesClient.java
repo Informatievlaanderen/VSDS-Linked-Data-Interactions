@@ -107,8 +107,9 @@ public class LdesClient extends AbstractProcessor {
 		return switch (getAuthorizationStrategy(context)) {
 			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
 			case API_KEY -> requestExecutorFactory.createApiKeyExecutor(getApiKey(context), getApiKeyHeader(context));
-			case OAUTH2_CLIENT_CREDENTIALS -> requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
-					getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
+			case OAUTH2_CLIENT_CREDENTIALS ->
+				requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
+						getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
 		};
 	}
 

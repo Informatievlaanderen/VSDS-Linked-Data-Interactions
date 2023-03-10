@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 
 public enum AuthStrategy {
 
-    NO_AUTH, API_KEY, OAUTH2_CLIENT_CREDENTIALS;
+	NO_AUTH, API_KEY, OAUTH2_CLIENT_CREDENTIALS;
 
-    public static Optional<AuthStrategy> from(String s) {
-        return Stream.of(values()).filter(val -> val.name().equals(StringUtils.upperCase(s))).findFirst();
-    }
+	public static Optional<AuthStrategy> from(String s) {
+		return Stream.of(values()).filter(val -> val.name().equals(StringUtils.upperCase(s))).findFirst();
+	}
 }
