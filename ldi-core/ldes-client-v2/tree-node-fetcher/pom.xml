@@ -11,7 +11,7 @@
     <artifactId>tree-node-fetcher</artifactId>
     <dependencies>
         <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
             <artifactId>request-executor</artifactId>
             <version>${project.version}</version>
         </dependency>
