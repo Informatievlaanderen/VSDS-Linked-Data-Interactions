@@ -4,8 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorPropertie
 import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
-import ldes.client.requestexecutor.domain.valueobjects.ApiKeyConfig;
-import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.startingtreenode.StartingTreeNodeFinder;
 import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
@@ -44,11 +43,20 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorPr
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.DATA_SOURCE_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.DATA_SOURCE_URL;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.FRAGMENT_EXPIRATION_INTERVAL;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.OAUTH_CLIENT_ID;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.OAUTH_CLIENT_SECRET;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.OAUTH_SCOPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.OAUTH_TOKEN_ENDPOINT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.STREAM_SHAPE_PROPERTY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.STREAM_TIMESTAMP_PATH_PROPERTY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.STREAM_VERSION_OF_PROPERTY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getApiKey;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getApiKeyHeader;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getAuthorizationStrategy;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getOauthClientId;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getOauthClientSecret;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getOauthScope;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.getOauthTokenEndpoint;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.streamShapeProperty;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.streamTimestampPathProperty;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties.streamVersionOfProperty;
@@ -64,6 +72,7 @@ public class LdesClient extends AbstractProcessor {
 	TreeNodeProcessor treeNodeProcessor;
 	MemberSupplier memberSupplier;
 	private LdesProperties ldesProperties;
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -73,18 +82,15 @@ public class LdesClient extends AbstractProcessor {
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
 		return List.of(DATA_SOURCE_URL, DATA_SOURCE_FORMAT, DATA_DESTINATION_FORMAT, FRAGMENT_EXPIRATION_INTERVAL,
-				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY);
+				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY, OAUTH_CLIENT_ID,
+				OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, OAUTH_SCOPE);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		String dataSourceUrl = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
-		String apiKey = getApiKey(context);
-		RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
-		if (!apiKey.equals("")) {
-			requestExecutor = new ApiKeyConfig(apiKey, getApiKeyHeader(context)).createRequestExecutor();
-		}
+		final RequestExecutor requestExecutor = getRequestExecutor(context);
 
 		Ldes ldes = getLdes(dataSourceUrl, dataSourceFormat, requestExecutor);
 
@@ -95,6 +101,15 @@ public class LdesClient extends AbstractProcessor {
 
 		LOGGER.info("LDES extraction processor {} with base url {} (expected LDES source format: {})",
 				context.getName(), dataSourceUrl, dataSourceFormat);
+	}
+
+	private RequestExecutor getRequestExecutor(final ProcessContext context) {
+		return switch (getAuthorizationStrategy(context)) {
+			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
+			case API_KEY -> requestExecutorFactory.createApiKeyExecutor(getApiKey(context), getApiKeyHeader(context));
+			case OAUTH2_CLIENT_CREDENTIALS -> requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
+					getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
+		};
 	}
 
 	private void determineLdesProperties(Ldes ldes, RequestExecutor requestExecutor, ProcessContext context) {
@@ -109,8 +124,8 @@ public class LdesClient extends AbstractProcessor {
 		StartingTreeNodeFinder startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
 		TreeNode startingTreeNode = startingTreeNodeFinder
 				.determineStartingTreeNode(new Endpoint(dataSourceUrl, dataSourceFormat))
-				.orElseThrow(() ->
-						new IllegalArgumentException("Starting url could not be determined for fragmentId: " + dataSourceUrl));
+				.orElseThrow(() -> new IllegalArgumentException(
+						"Starting url could not be determined for fragmentId: " + dataSourceUrl));
 		return new Ldes(startingTreeNode.getUrl(), dataSourceFormat);
 	}
 
