@@ -4,8 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import ldes.client.requestexecutor.domain.valueobjects.ApiKeyConfig;
-import ldes.client.requestexecutor.domain.valueobjects.DefaultConfig;
+import ldes.client.requestexecutor.domain.valueobjects.AuthStrategy;
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.LdesProvider;
@@ -27,6 +27,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
+import static ldes.client.requestexecutor.domain.valueobjects.AuthStrategy.NO_AUTH;
+
 @Configuration
 @EnableConfigurationProperties()
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
@@ -38,6 +40,11 @@ public class LdioLdesClientAutoConfig {
 
 	public static class LdioLdesClientConfigurator implements LdioConfigurator {
 
+		public static final String CLIENT_ID = "clientId";
+		public static final String CLIENT_SECRET = "clientSecret";
+		public static final String TOKEN_ENDPOINT = "tokenEndpoint";
+		public static final String OAUTH_SCOPE = "oAuthScope";
+		public static final String AUTHENTICATION = "authentication";
 		Logger logger = LoggerFactory.getLogger(LdioLdesClientConfigurator.class);
 		public static final String URL = "url";
 		public static final String SOURCE_FORMAT = "sourceFormat";
@@ -62,12 +69,7 @@ public class LdioLdesClientAutoConfig {
 			boolean keepState = properties.getOptionalProperty(KEEP_STATE)
 					.map(Boolean::valueOf)
 					.orElse(false);
-			Optional<String> apiKey = properties.getOptionalProperty(API_KEY);
-			RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
-			if (apiKey.isPresent()) {
-				requestExecutor = new ApiKeyConfig(properties.getOptionalProperty(API_KEY_HEADER).orElse("X-API-KEY"),
-						apiKey.get()).createRequestExecutor();
-			}
+			RequestExecutor requestExecutor = getRequestExecutor(properties);
 			logger.info("Identifying starting node of LDES: {}", targetUrl);
 			Ldes ldes = new LdesProvider(requestExecutor).getLdes(targetUrl, sourceFormat);
 			logger.info("Identified starting node of LDES: {}", targetUrl);
@@ -84,6 +86,29 @@ public class LdioLdesClientAutoConfig {
 			MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor);
 			LdesClientRunner ldesClientRunner = new LdesClientRunner(memberSupplier, componentExecutor);
 			return new LdioLdesClient(componentExecutor, ldesClientRunner);
+		}
+
+		private RequestExecutor getRequestExecutor(ComponentProperties componentProperties) {
+			Optional<AuthStrategy> authentication = AuthStrategy
+					.from(componentProperties.getOptionalProperty(AUTHENTICATION).orElse(NO_AUTH.name()));
+			if (authentication.isPresent()) {
+				RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+				return switch (authentication.get()) {
+					case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
+					case API_KEY ->
+						requestExecutorFactory.createApiKeyExecutor(componentProperties.getProperty(API_KEY_HEADER),
+								componentProperties.getProperty(API_KEY));
+					case OAUTH2_CLIENT_CREDENTIALS ->
+						requestExecutorFactory.createClientCredentialsExecutor(
+								componentProperties.getProperty(CLIENT_ID),
+								componentProperties.getProperty(CLIENT_SECRET),
+								componentProperties.getProperty(TOKEN_ENDPOINT),
+								componentProperties.getProperty(OAUTH_SCOPE));
+
+				};
+			}
+			throw new UnsupportedOperationException(
+					"Requested authentication not available: " + authentication);
 		}
 	}
 
