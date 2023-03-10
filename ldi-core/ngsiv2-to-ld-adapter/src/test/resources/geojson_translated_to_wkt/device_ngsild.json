@@ -1,0 +1,109 @@
+{
+    "@context": [
+		"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+	],
+	"id": "urn:ngsi-v2:cot-imec-be:Device:imec-iow-UR5gEycRuaafxnhvjd9jnU",
+    "type": "Device",
+    "adminState": {
+        "type": "Property",
+        "value": "down"
+    },
+    "alternativeIds": {
+        "type": "Property",
+        "value": [
+            "simcard.206012902136977",
+            "octa_dec.2336861766884020237"
+        ]
+    },
+    "batteryLevel": {
+        "type": "Property",
+        "value": 0.32,
+        "rawValue": {
+            "type": "Property",
+            "value": "3192"
+        },
+        "rawValueUnitCode": {
+            "type": "Property",
+            "value": "2Z"
+        }
+    },
+    "calibrationParameters": {
+        "type": "Property",
+        "value": {
+            "battery": {
+                "gain": 600,
+                "offset": 3000
+            }
+        }
+    },
+    "copyObservationAttributes": {
+        "type": "Property",
+        "value": [
+            "batteryLevel"
+        ]
+    },
+    "dateLastValueReported": {
+        "type": "Property",
+        "value": {
+            "@type": "DateTime",
+            "@value": "2022-06-28T08:26:06.000Z"
+        }
+    },
+    "extraMeasurementAttributes": {
+        "type": "Property",
+        "value": {
+            "location": true,
+            "locationName": true,
+            "samplingPoint": true
+        }
+    },
+    "healthState": {
+        "type": "Property",
+        "value": "up"
+    },
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                5.4563,
+                51.41363
+            ]
+        },
+        "name": {
+            "type": "Property",
+            "value": "loc-00056-19"
+        },
+        "http://www.opengis.net/ont/geosparql#wktLiteral": "POINT(5.4563 51.41363)"
+    },
+    "locationName": {
+        "type": "Property",
+        "value": "loc-00056-19"
+    },
+    "maxTimeBetweenObservations": {
+        "type": "Property",
+        "value": 60
+    },
+    "name": {
+        "type": "Property",
+        "value": "box-00145-49"
+    },
+    "owner": {
+        "type": "Property",
+        "value": [
+            "imec"
+        ]
+    },
+    "refDeviceModel": {
+        "type": "Relationship",
+        "object": "urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-box-v0003"
+    },
+    "samplingPoint": {
+        "type": "Property",
+        "value": "spt-00000-87"
+    },
+    "source": {
+        "type": "Property",
+        "value": "cot.iow.observed"
+    }
+}

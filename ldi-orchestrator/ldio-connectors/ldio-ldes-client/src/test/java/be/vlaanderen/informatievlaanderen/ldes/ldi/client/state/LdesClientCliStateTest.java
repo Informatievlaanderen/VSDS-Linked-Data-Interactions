@@ -1,13 +1,13 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.client.state;
 
 import be.vlaanderen.informatievlaanderen.ldes.client.LdesClientImplFactory;
+import be.vlaanderen.informatievlaanderen.ldes.client.config.LdesClientConfig;
+import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
+import be.vlaanderen.informatievlaanderen.ldes.client.state.LdesStateManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.CliRunner;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.EndpointChecker;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.FragmentProcessor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.client.services.WaitingStrategy;
-import be.vlaanderen.informatievlaanderen.ldes.client.config.LdesClientConfig;
-import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
-import be.vlaanderen.informatievlaanderen.ldes.client.state.LdesStateManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import org.apache.jena.riot.Lang;
 import org.junit.jupiter.api.Disabled;

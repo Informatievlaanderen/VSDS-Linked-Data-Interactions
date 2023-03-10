@@ -1,0 +1,120 @@
+{
+    "id": "urn:ngsi-v2:cot-imec-be:Device:imec-iow-UR5gEycRuaafxnhvjd9jnU",
+    "type": "Device",
+    "adminState": {
+        "type": "Text",
+        "value": "down",
+        "metadata": {}
+    },
+    "alternativeIds": {
+        "type": "StructuredValue",
+        "value": [
+            "simcard.206012902136977",
+            "octa_dec.2336861766884020237"
+        ],
+        "metadata": {}
+    },
+    "batteryLevel": {
+        "type": "Number",
+        "value": 0.32,
+        "metadata": {
+            "rawValue": {
+                "type": "Number",
+                "value": "3192"
+            },
+            "rawValueUnitCode": {
+                "type": "Text",
+                "value": "2Z"
+            }
+        }
+    },
+    "calibrationParameters": {
+        "type": "StructuredValue",
+        "value": {
+            "battery": {
+                "gain": 600,
+                "offset": 3000
+            }
+        },
+        "metadata": {}
+    },
+    "copyObservationAttributes": {
+        "type": "StructuredValue",
+        "value": [
+            "batteryLevel"
+        ],
+        "metadata": {}
+    },
+    "dateLastValueReported": {
+        "type": "DateTime",
+        "value": "2022-06-28T08:26:06.000Z",
+        "metadata": {}
+    },
+    "extraMeasurementAttributes": {
+        "type": "StructuredValue",
+        "value": {
+            "location": true,
+            "locationName": true,
+            "samplingPoint": true
+        },
+        "metadata": {}
+    },
+    "healthState": {
+        "type": "Text",
+        "value": "up",
+        "metadata": {}
+    },
+    "location": {
+        "type": "geo:json",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                5.4563,
+                51.41363
+            ]
+        },
+        "metadata": {
+            "name": {
+                "type": "Text",
+                "value": "loc-00056-19"
+            }
+        }
+    },
+    "locationName": {
+        "type": "Text",
+        "value": "loc-00056-19",
+        "metadata": {}
+    },
+    "maxTimeBetweenObservations": {
+        "type": "Number",
+        "value": 60,
+        "metadata": {}
+    },
+    "name": {
+        "type": "Text",
+        "value": "box-00145-49",
+        "metadata": {}
+    },
+    "owner": {
+        "type": "StructuredValue",
+        "value": [
+            "imec"
+        ],
+        "metadata": {}
+    },
+    "refDeviceModel": {
+        "type": "Relationship",
+        "value": "urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-box-v0003",
+        "metadata": {}
+    },
+    "samplingPoint": {
+        "type": "Text",
+        "value": "spt-00000-87",
+        "metadata": {}
+    },
+    "source": {
+        "type": "Text",
+        "value": "cot.iow.observed",
+        "metadata": {}
+    }
+}
