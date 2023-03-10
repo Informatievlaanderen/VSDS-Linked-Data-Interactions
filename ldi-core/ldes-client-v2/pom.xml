@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
     <artifactId>ldes-client-v2</artifactId>
     <packaging>pom</packaging>
     <modules>
