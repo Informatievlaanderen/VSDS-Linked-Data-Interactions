@@ -70,9 +70,15 @@ public class LdioLdesClientAutoConfig {
 					.map(Boolean::valueOf)
 					.orElse(false);
 			RequestExecutor requestExecutor = getRequestExecutor(properties);
-			logger.info("Identifying starting node of LDES: {}", targetUrl);
 			Ldes ldes = new LdesProvider(requestExecutor).getLdes(targetUrl, sourceFormat);
-			logger.info("Identified starting node of LDES: {}", targetUrl);
+			TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, keepState, requestExecutor, ldes);
+			MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor);
+			LdesClientRunner ldesClientRunner = new LdesClientRunner(memberSupplier, componentExecutor);
+			return new LdioLdesClient(componentExecutor, ldesClientRunner);
+		}
+
+		private TreeNodeProcessor getTreeNodeProcessor(String state, boolean keepState, RequestExecutor requestExecutor,
+				Ldes ldes) {
 			TreeNodeProcessor treeNodeProcessor;
 			if (state.equals("sqlite")) {
 				treeNodeProcessor = new TreeNodeProcessor(ldes, new SqliteTreeNodeRepository(),
@@ -83,9 +89,7 @@ public class LdioLdesClientAutoConfig {
 						new InMemoryMemberRepository(),
 						new TreeNodeFetcher(requestExecutor), keepState);
 			}
-			MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor);
-			LdesClientRunner ldesClientRunner = new LdesClientRunner(memberSupplier, componentExecutor);
-			return new LdioLdesClient(componentExecutor, ldesClientRunner);
+			return treeNodeProcessor;
 		}
 
 		private RequestExecutor getRequestExecutor(ComponentProperties componentProperties) {
