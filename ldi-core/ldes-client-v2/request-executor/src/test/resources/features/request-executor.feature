@@ -5,22 +5,22 @@ Feature: RequestExecutor
   Scenario Outline: Obtaining the Response of Request
     Given I have a <requestExecutor>
     When I create RequestHeaders
-    And I add a RequestHeader with key "Accept" and value "application/ld+json"
+    And I add a RequestHeader with key "Accept" and value "application/n-quads"
     And I create a Request with the RequestHeaders and url: <endpoint>
     And I execute the request
     Then I obtain a response with status code 200
 
     Examples:
-      | requestExecutor                  | endpoint                                           |
-      | DefaultRequestExecutor           | http://localhost:10101/200-response-accept-json-ld |
-      | ClientCredentialsRequestExecutor | http://localhost:10101/200-response-with-token     |
+      | requestExecutor                  | endpoint                                          |
+      | DefaultRequestExecutor           | http://localhost:10101/200-response-accept-nquads |
+      | ClientCredentialsRequestExecutor | http://localhost:10101/200-response-with-token    |
 
 
   Scenario Outline: Obtaining the Response of a redirected Request
     Given I have a <requestExecutor>
     When I create RequestHeaders
-    And I add a RequestHeader with key "Accept" and value "application/ld+json"
-    And I create a Request with the RequestHeaders and url: http://localhost:10101/302-response-accept-json-ld
+    And I add a RequestHeader with key "Accept" and value "application/n-quads"
+    And I create a Request with the RequestHeaders and url: http://localhost:10101/302-response-accept-nquads
     And I execute the request
     Then I obtain a response with status code 302
     And I obtain a location header: "http://localhost:10101/redirect-location"

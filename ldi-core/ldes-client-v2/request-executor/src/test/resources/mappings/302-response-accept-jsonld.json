@@ -1,10 +1,10 @@
 {
   "request": {
     "method": "GET",
-    "url": "/302-response-accept-json-ld",
+    "url": "/302-response-accept-nquads",
     "headers": {
       "Accept": {
-        "contains": "application/ld+json"
+        "contains": "application/n-quads"
       }
     }
   },
