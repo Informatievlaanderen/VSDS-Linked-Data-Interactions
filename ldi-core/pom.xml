@@ -18,13 +18,13 @@
         <module>version-object-creator</module>
         <module>version-materialiser</module>
         <module>rdf-adapter</module>
+        <module>ngsiv2-to-ld-adapter</module>
     </modules>
 
     <properties>
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
         <byte-buddy.version>1.12.23</byte-buddy.version>
-        <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
     <dependencies>
