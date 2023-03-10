@@ -51,8 +51,9 @@ public class FlowAutoConfiguration {
 
 	@Bean
 	public LdiAdapter ldiAdapter(final OrchestratorConfig orchestratorConfig) {
-		return (LdiAdapter) getLdiComponent(orchestratorConfig.getInput().getConfig().getProperty("adapter"),
-				new ComponentProperties(Map.of()));
+		ComponentDefinition adapterDefinition = orchestratorConfig.getInput().getAdapter();
+
+		return (LdiAdapter) getLdiComponent(adapterDefinition.getName(), adapterDefinition.getConfig());
 	}
 
 	private LdiTransformer ldtoTransformer(ComponentDefinition componentDefinition) {

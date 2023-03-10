@@ -15,14 +15,15 @@
         <module>ldio-http-in</module>
         <module>ldio-ldes-client</module>
 
+        <module>ldio-rdf-adapter</module>
+        <module>ldio-ngsiv2-to-ld-adapter</module>
+
         <module>ldio-sparql-construct</module>
+        <module>ldio-version-object-creator</module>
+        <module>ldio-version-materialiser</module>
 
         <module>ldio-console-out</module>
         <module>ldio-http-out</module>
-        <module>ldio-version-object-creator</module>
-        <module>ldio-version-materialiser</module>
-        <module>ldio-rdf-adapter</module>
-        <module>ldio-ngsiv-to-ld-adapter</module>
     </modules>
 
     <dependencies>
