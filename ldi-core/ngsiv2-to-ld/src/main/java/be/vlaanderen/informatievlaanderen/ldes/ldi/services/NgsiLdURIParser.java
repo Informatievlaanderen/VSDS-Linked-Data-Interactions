@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdTranslatorDefaults;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping.*;
 
 public class NgsiLdURIParser {
 
@@ -20,19 +20,10 @@ public class NgsiLdURIParser {
 		}
 
 		if (uri == null || uri.getScheme() == null
-				|| !Arrays.asList(NgsiV2ToLdTranslatorDefaults.getAllowedSchemes()).contains(uri.getScheme())) {
-			return NgsiV2ToLdTranslatorDefaults.NGSI_LD_URI_PREFIX + ":" + entityType + ":" + entityId;
+				|| !Arrays.asList(NGSI_LD_ALLOWED_URI_SCHEMES).contains(uri.getScheme())) {
+			return NGSI_LD_URI_PREFIX + ":" + entityType + ":" + entityId;
 		}
 
 		return entityId;
-	}
-
-	public static String toNgsiLdObjectUri(String entityId, String value) {
-		String entityType = "";
-		if (entityId.toLowerCase().startsWith(NgsiV2ToLdTranslatorDefaults.NGSI_LD_REFERENCE_PREFIX)) {
-			entityType = entityId.substring(3);
-		}
-
-		return toNgsiLdUri(value, entityType);
 	}
 }

@@ -10,14 +10,12 @@ public class NgsiV2ToLdMapping {
 	public static final String NGSI_V2_KEY_ID = "id";
 	public static final String NGSI_V2_KEY_TYPE = "type";
 	public static final String NGSI_V2_KEY_VALUE = "value";
-	public static final String NGSI_V2_KEY_LOCATION = "location";
 	public static final String NGSI_V2_KEY_DATE_CREATED = "dateCreated";
 	public static final String NGSI_V2_KEY_DATE_MODIFIED = "dateModified";
 	public static final String NGSI_V2_KEY_DATE_OBSERVED = "dateObserved";
 	public static final String NGSI_V2_KEY_METADATA = "metadata";
 	public static final String NGSI_V2_KEY_TIMESTAMP = "timestamp";
 	public static final String NGSI_V2_KEY_UNIT_CODE = "unitCode";
-	public static final String NGSI_V2_KEY_COORDINATES = "coordinates";
 	public static final String NGSI_V2_TYPE_GEO = "geo:json";
 	public static final String NGSI_V2_TYPE_REFERENCE = "Reference";
 
@@ -38,6 +36,9 @@ public class NgsiV2ToLdMapping {
 	public static final String NGSI_LD_ATTRIBUTE_TYPE_GEOPROPERTY = "GeoProperty";
 	public static final String NGSI_LD_ATTRIBUTE_TYPE_DATETIME = "DateTime";
 	public static final String NGSI_LD_ATTRIBUTE_TYPE_POSTAL_ADDRESS = "PostalAddress";
+
+	public static final String NGSI_LD_URI_PREFIX = "urn:ngsi-ld";
+	public static final String[] NGSI_LD_ALLOWED_URI_SCHEMES = new String[] { "urn", "http", "https" };
 
 	private static final Map<String, String> MAPPINGS = Map.of(
 			NGSI_V2_KEY_DATE_CREATED, NGSI_LD_KEY_DATE_CREATED,

@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.properties;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MalformedNgsiReferencePropertyException;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,8 +24,7 @@ public class RelationshipAttribute extends LinkedDataAttribute {
 		if (value.getClass().equals(String.class)) {
 			this.object = (String) value;
 		} else {
-			throw new RuntimeException(
-					"property of type " + NGSI_LD_ATTRIBUTE_TYPE_RELATIONSHIP + "must contain a value of type String.");
+			throw new MalformedNgsiReferencePropertyException(value.getClass().getName(), value.toString());
 		}
 	}
 
