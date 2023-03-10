@@ -6,10 +6,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManag
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
 import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.RequestExecutor;
-import ldes.client.startingtreenode.StartingTreeNodeFinder;
-import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
-import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
+import ldes.client.treenodesupplier.LdesProvider;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.entities.SuppliedMember;
@@ -91,12 +89,11 @@ public class LdesClient extends AbstractProcessor {
 		String dataSourceUrl = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutor(context);
-
-		Ldes ldes = getLdes(dataSourceUrl, dataSourceFormat, requestExecutor);
-
+		Ldes ldes = new LdesProvider(requestExecutor).getLdes(dataSourceUrl, dataSourceFormat);
 		treeNodeProcessor = new TreeNodeProcessor(ldes, new SqliteTreeNodeRepository(), new SqliteMemberRepository(),
 				new TreeNodeFetcher(requestExecutor), true);
 		memberSupplier = new MemberSupplier(treeNodeProcessor);
+
 		determineLdesProperties(ldes, requestExecutor, context);
 
 		LOGGER.info("LDES extraction processor {} with base url {} (expected LDES source format: {})",
