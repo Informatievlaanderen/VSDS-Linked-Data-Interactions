@@ -22,6 +22,7 @@
         <module>ldio-version-object-creator</module>
         <module>ldio-version-materialiser</module>
         <module>ldio-rdf-adapter</module>
+        <module>ldio-ngsiv-to-ld-adapter</module>
     </modules>
 
     <dependencies>
