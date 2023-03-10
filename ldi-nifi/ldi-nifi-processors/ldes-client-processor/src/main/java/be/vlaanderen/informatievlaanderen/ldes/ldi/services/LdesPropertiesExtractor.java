@@ -1,7 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.LdesPropertyNotFoundException;
-import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesFragment;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesProperties;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
@@ -45,9 +43,9 @@ public class LdesPropertiesExtractor {
 				.lang(request.getLang())
 				.build()
 				.toModel();
-		String timestampPath = getProperty(needTimestampPath, getProperty(model), LdesFragment.LDES_TIMESTAMP_PATH);
-		String versionOfPath = getProperty(needVersionOfPath, getVersionOfPath(model), LdesFragment.LDES_VERSION_OF);
-		String shape = getProperty(needShape, getShaclShape(model), LdesFragment.TREE_SHAPE);
+		String timestampPath = getProperty(needTimestampPath, getProperty(model), LDES_TIMESTAMP_PATH);
+		String versionOfPath = getProperty(needVersionOfPath, getVersionOfPath(model), LDES_VERSION_OF);
+		String shape = getProperty(needShape, getShaclShape(model), TREE_SHAPE);
 		return new LdesProperties(timestampPath, versionOfPath, shape);
 	}
 
