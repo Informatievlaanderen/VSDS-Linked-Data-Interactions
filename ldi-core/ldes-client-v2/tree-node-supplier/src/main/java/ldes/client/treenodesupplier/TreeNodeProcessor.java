@@ -3,6 +3,7 @@ package ldes.client.treenodesupplier;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
+import ldes.client.treenodesupplier.domain.entities.SuppliedMember;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
@@ -11,7 +12,7 @@ import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
 import java.util.Optional;
 
-class Processor {
+public class TreeNodeProcessor {
 
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
@@ -19,7 +20,7 @@ class Processor {
 	private final boolean keepstate;
 	private final Ldes ldes;
 
-	public Processor(Ldes ldes,
+	public TreeNodeProcessor(Ldes ldes,
 			TreeNodeRecordRepository treeNodeRecordRepository,
 			MemberRepository memberRepository,
 			TreeNodeFetcher treeNodeFetcher, boolean keepstate) {
@@ -55,16 +56,17 @@ class Processor {
 
 	}
 
-	public MemberRecord getMember() {
+	public SuppliedMember getMember() {
 		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		while (unprocessedTreeMember.isEmpty()) {
 			processedTreeNode();
 			unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		}
 		MemberRecord treeMember = unprocessedTreeMember.get();
+		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
 		treeMember.processedMemberRecord();
 		memberRepository.saveTreeMember(treeMember);
-		return treeMember;
+		return suppliedMember;
 	}
 
 	public void destoryState() {

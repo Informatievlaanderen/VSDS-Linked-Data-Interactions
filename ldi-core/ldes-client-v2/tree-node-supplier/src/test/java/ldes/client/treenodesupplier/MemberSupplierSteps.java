@@ -20,16 +20,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MemberSupplierSteps {
 
-	private Processor processor;
+	private TreeNodeProcessor treeNodeProcessor;
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
 	private MemberSupplier memberSupplier;
+	private Ldes ldes;
 
 	@Given("A Processor with a TreeNodeRepository, a MemberRepository and a starting url {string}")
 	public void aProcessorWithATreeNodeRepositoryAMemberRepositoryAndAStartingUrl(String arg0) {
 		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
 		memberRepository = new InMemoryMemberRepository();
-		processor = new Processor(new Ldes(arg0, Lang.JSONLD), treeNodeRecordRepository, memberRepository,
+		treeNodeProcessor = new TreeNodeProcessor(new Ldes(arg0, Lang.JSONLD), treeNodeRecordRepository,
+				memberRepository,
 				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
 	}
 
@@ -40,9 +42,9 @@ public class MemberSupplierSteps {
 		}
 	}
 
-	@And("I create a MemberSupplier")
+	@When("I create a MemberSupplier")
 	public void iCreateAMemberSupplier() {
-		memberSupplier = new MemberSupplier(processor);
+		memberSupplier = new MemberSupplier(treeNodeProcessor);
 	}
 
 	@Then("The TreeNode is processed: {string}")
@@ -64,7 +66,33 @@ public class MemberSupplierSteps {
 	public void aProcessorWithATreeNodeRepositoryASqliteMemberRepositoryAndAStartingUrl(String arg0) {
 		treeNodeRecordRepository = new SqliteTreeNodeRepository();
 		memberRepository = new SqliteMemberRepository();
-		processor = new Processor(new Ldes(arg0, Lang.JSONLD), treeNodeRecordRepository, memberRepository,
+		treeNodeProcessor = new TreeNodeProcessor(new Ldes(arg0, Lang.JSONLD), treeNodeRecordRepository,
+				memberRepository,
+				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
+	}
+
+	@Given("A starting url {string}")
+	public void aStartingUrl(String arg0) {
+		ldes = new Ldes(arg0, Lang.JSONLD);
+	}
+
+	@And("a InMemoryMemberRepository and a InMemoryTreeNodeRecordRepository")
+	public void inMemoryRepositories() {
+		memberRepository = new InMemoryMemberRepository();
+		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
+
+	}
+
+	@And("a SqliteMemberRepository and a SqliteTreeNodeRepository")
+	public void sqliteRepositories() {
+		memberRepository = new SqliteMemberRepository();
+		treeNodeRecordRepository = new SqliteTreeNodeRepository();
+
+	}
+
+	@When("I create a Processor")
+	public void iCreateAProcessor() {
+		treeNodeProcessor = new TreeNodeProcessor(ldes, treeNodeRecordRepository, memberRepository,
 				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
 	}
 }
