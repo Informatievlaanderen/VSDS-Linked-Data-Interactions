@@ -15,7 +15,6 @@ The following configuration is supported:
  | auth.client-id      | The client identifier when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'            | No       | N/A                 | myId                          | String                                                        |
  | auth.client-secret  | The client secret when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'                | No       | N/A                 | mySecret                      | String                                                        |
  | auth.token-endpoint | The token endpoint when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'               | No       | N/A                 | http://localhost:8000/token   | HTTP and HTTPS urls                                           |
- | auth.scope          | The scope when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'                        | No       | N/A                 | myScope                       | String                                                        |
 
 Example config:
 
@@ -31,5 +30,4 @@ orchestrator:
         client-id: clientId
         client-secret: secret
         token-endpoint: http://localhost:8000/token
-        scope: myScope
 ```
