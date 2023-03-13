@@ -30,7 +30,7 @@ public class TreeNodeProcessor {
 		this.keepState = keepState;
 		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(ldes.getStartingNodeUrl()));
 		this.ldes = ldes;
-		Runtime.getRuntime().addShutdownHook(new Thread(this::destoryState));
+		Runtime.getRuntime().addShutdownHook(new Thread(this::destroyState));
 	}
 
 	private void processedTreeNode() {
@@ -69,7 +69,7 @@ public class TreeNodeProcessor {
 		return suppliedMember;
 	}
 
-	public void destoryState() {
+	public void destroyState() {
 		if (!keepState) {
 			memberRepository.destroyState();
 			treeNodeRecordRepository.destroyState();

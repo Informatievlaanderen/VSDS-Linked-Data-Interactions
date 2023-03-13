@@ -121,7 +121,7 @@ public class LdesClient extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		treeNodeProcessor.destoryState();
+		treeNodeProcessor.destroyState();
 	}
 
 	public static String convertModelToString(Model model, Lang dataDestinationFormat) {
