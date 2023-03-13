@@ -66,7 +66,7 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 
 	public Stream<Model> translate(String data) {
 		JsonObject parsedData = JSON.parse(data);
-		String value = String.valueOf(parsedData.get("value"));
+		String value = String.valueOf(parsedData.get("data"));
 		return translateJsonToLD(value).map(LinkedDataModel::toRDFModel);
 	}
 
