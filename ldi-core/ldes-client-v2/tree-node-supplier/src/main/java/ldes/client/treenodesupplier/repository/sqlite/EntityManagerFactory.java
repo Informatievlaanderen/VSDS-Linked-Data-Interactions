@@ -10,8 +10,8 @@ import javax.persistence.Persistence;
 public class EntityManagerFactory {
 
 	private static EntityManagerFactory instance = null;
-	private EntityManager em;
-	private javax.persistence.EntityManagerFactory emf;
+	private final EntityManager em;
+	private final javax.persistence.EntityManagerFactory emf;
 
 	private EntityManagerFactory() {
 		emf = Persistence.createEntityManagerFactory("pu-sqlite-jpa");
