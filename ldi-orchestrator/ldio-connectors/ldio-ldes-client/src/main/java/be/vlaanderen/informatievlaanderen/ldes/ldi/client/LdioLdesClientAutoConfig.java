@@ -43,13 +43,14 @@ public class LdioLdesClientAutoConfig {
 
 		private RequestExecutor getRequestExecutor(ComponentProperties componentProperties) {
 			Optional<AuthStrategy> authentication = AuthStrategy
-					.from(componentProperties.getOptionalProperty(AUTHENTICATION).orElse(NO_AUTH.name()));
+					.from(componentProperties.getOptionalProperty(AUTH_TYPE).orElse(NO_AUTH.name()));
 			if (authentication.isPresent()) {
 				RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 				return switch (authentication.get()) {
 					case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
 					case API_KEY ->
-						requestExecutorFactory.createApiKeyExecutor(componentProperties.getProperty(API_KEY_HEADER),
+						requestExecutorFactory.createApiKeyExecutor(
+								componentProperties.getOptionalProperty(API_KEY_HEADER).orElse("X-API-KEY"),
 								componentProperties.getProperty(API_KEY));
 					case OAUTH2_CLIENT_CREDENTIALS ->
 						requestExecutorFactory.createClientCredentialsExecutor(
@@ -57,7 +58,6 @@ public class LdioLdesClientAutoConfig {
 								componentProperties.getProperty(CLIENT_SECRET),
 								componentProperties.getProperty(TOKEN_ENDPOINT),
 								componentProperties.getProperty(OAUTH_SCOPE));
-
 				};
 			}
 			throw new UnsupportedOperationException(
