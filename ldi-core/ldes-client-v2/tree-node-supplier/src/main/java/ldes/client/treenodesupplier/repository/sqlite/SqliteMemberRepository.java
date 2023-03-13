@@ -16,10 +16,10 @@ public class SqliteMemberRepository implements MemberRepository {
 	public Optional<MemberRecord> getUnprocessedTreeMember() {
 
 		return entityManager
-				.createNamedQuery("Member.getByMemberStatus")
+				.createNamedQuery("Member.getByMemberStatus", MemberRecordEntity.class)
 				.setParameter("memberStatus", MemberStatus.UNPROCESSED)
 				.getResultStream()
-				.map(x -> ((MemberRecordEntity) x).toMemberRecord())
+				.map(MemberRecordEntity::toMemberRecord)
 				.findFirst();
 
 	}
@@ -27,7 +27,7 @@ public class SqliteMemberRepository implements MemberRepository {
 	@Override
 	public boolean isProcessed(MemberRecord member) {
 		return ((Number) entityManager
-				.createNamedQuery("Member.isProcessed")
+				.createNamedQuery("Member.countByMemberStatusAndId")
 				.setParameter("memberStatus", MemberStatus.PROCESSED)
 				.setParameter("id", member.getMemberId())
 				.getSingleResult()).longValue() > 0;

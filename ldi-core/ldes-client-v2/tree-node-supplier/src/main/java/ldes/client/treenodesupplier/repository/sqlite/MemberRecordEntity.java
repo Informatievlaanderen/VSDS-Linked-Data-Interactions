@@ -14,7 +14,7 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQuery(name = "Member.getByMemberStatus", query = "SELECT m FROM MemberRecordEntity m WHERE m.memberStatus = :memberStatus")
-@NamedQuery(name = "Member.isProcessed", query = "SELECT COUNT(m) FROM MemberRecordEntity m WHERE m.memberStatus = :memberStatus and m.id = :id")
+@NamedQuery(name = "Member.countByMemberStatusAndId", query = "SELECT COUNT(m) FROM MemberRecordEntity m WHERE m.memberStatus = :memberStatus and m.id = :id")
 public class MemberRecordEntity {
 	@Id
 	private String id;
