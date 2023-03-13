@@ -10,8 +10,8 @@ import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.LdesProvider;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.repository.sqlite.SqliteMemberRepository;
 import ldes.client.treenodesupplier.repository.sqlite.SqliteTreeNodeRepository;
 import org.apache.jena.rdf.model.Model;
@@ -47,8 +47,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Ldes
 public class LdesClient extends AbstractProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LdesClient.class);
-	TreeNodeProcessor treeNodeProcessor;
-	MemberSupplier memberSupplier;
+	private MemberSupplier memberSupplier;
 	private LdesProperties ldesProperties;
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
@@ -70,9 +69,10 @@ public class LdesClient extends AbstractProcessor {
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutor(context);
 		Ldes ldes = new LdesProvider(requestExecutor).getLdes(dataSourceUrl, dataSourceFormat);
-		treeNodeProcessor = new TreeNodeProcessor(ldes, new SqliteTreeNodeRepository(), new SqliteMemberRepository(),
-				new TreeNodeFetcher(requestExecutor), true);
-		memberSupplier = new MemberSupplier(treeNodeProcessor);
+		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldes, new SqliteTreeNodeRepository(),
+				new SqliteMemberRepository(),
+				new TreeNodeFetcher(requestExecutor));
+		memberSupplier = new MemberSupplier(treeNodeProcessor, true);
 
 		determineLdesProperties(ldes, requestExecutor, context);
 
@@ -121,7 +121,7 @@ public class LdesClient extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		treeNodeProcessor.destroyState();
+		memberSupplier.destroyState();
 	}
 
 	public static String convertModelToString(Model model, Lang dataDestinationFormat) {

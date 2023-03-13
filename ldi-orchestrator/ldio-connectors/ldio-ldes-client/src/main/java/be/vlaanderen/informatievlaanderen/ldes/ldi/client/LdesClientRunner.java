@@ -43,24 +43,24 @@ public class LdesClientRunner implements Runnable {
 				.map(Boolean::valueOf)
 				.orElse(false);
 		Ldes ldes = new LdesProvider(requestExecutor).getLdes(targetUrl, sourceFormat);
-		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, keepState, requestExecutor, ldes);
-		MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor);
+		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, ldes);
+		MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor, keepState);
 		while (threadRunning) {
 			componentExecutor.transformLinkedData(memberSupplier.get().getModel());
 		}
 	}
 
-	private TreeNodeProcessor getTreeNodeProcessor(String state, boolean keepState, RequestExecutor requestExecutor,
+	private TreeNodeProcessor getTreeNodeProcessor(String state, RequestExecutor requestExecutor,
 			Ldes ldes) {
 		TreeNodeProcessor treeNodeProcessor;
 		if (state.equals("sqlite")) {
 			treeNodeProcessor = new TreeNodeProcessor(ldes, new SqliteTreeNodeRepository(),
 					new SqliteMemberRepository(),
-					new TreeNodeFetcher(requestExecutor), keepState);
+					new TreeNodeFetcher(requestExecutor));
 		} else {
 			treeNodeProcessor = new TreeNodeProcessor(ldes, new InMemoryTreeNodeRecordRepository(),
 					new InMemoryMemberRepository(),
-					new TreeNodeFetcher(requestExecutor), keepState);
+					new TreeNodeFetcher(requestExecutor));
 		}
 		return treeNodeProcessor;
 	}

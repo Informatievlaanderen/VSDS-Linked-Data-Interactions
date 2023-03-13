@@ -3,9 +3,9 @@ package ldes.client.treenodesupplier;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodefetcher.domain.entities.TreeNode;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
-import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
@@ -17,20 +17,17 @@ public class TreeNodeProcessor {
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
 	private final TreeNodeFetcher treeNodeFetcher;
-	private final boolean keepState;
 	private final Ldes ldes;
 
 	public TreeNodeProcessor(Ldes ldes,
 			TreeNodeRecordRepository treeNodeRecordRepository,
 			MemberRepository memberRepository,
-			TreeNodeFetcher treeNodeFetcher, boolean keepState) {
+			TreeNodeFetcher treeNodeFetcher) {
 		this.treeNodeRecordRepository = treeNodeRecordRepository;
 		this.memberRepository = memberRepository;
 		this.treeNodeFetcher = treeNodeFetcher;
-		this.keepState = keepState;
 		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(ldes.getStartingNodeUrl()));
 		this.ldes = ldes;
-		Runtime.getRuntime().addShutdownHook(new Thread(this::destroyState));
 	}
 
 	private void processedTreeNode() {
@@ -70,9 +67,7 @@ public class TreeNodeProcessor {
 	}
 
 	public void destroyState() {
-		if (!keepState) {
-			memberRepository.destroyState();
-			treeNodeRecordRepository.destroyState();
-		}
+		memberRepository.destroyState();
+		treeNodeRecordRepository.destroyState();
 	}
 }
