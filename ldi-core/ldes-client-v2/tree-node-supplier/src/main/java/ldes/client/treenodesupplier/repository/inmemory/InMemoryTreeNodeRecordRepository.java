@@ -10,9 +10,9 @@ import java.util.stream.Stream;
 
 public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepository {
 
-	List<TreeNodeRecord> notVisited = new ArrayList<>();
-	PriorityQueue<TreeNodeRecord> mutableAndActive = new PriorityQueue<>(new TreeNodeRecordComparator());
-	List<TreeNodeRecord> immutable = new ArrayList<>();
+	private List<TreeNodeRecord> notVisited = new ArrayList<>();
+	private PriorityQueue<TreeNodeRecord> mutableAndActive = new PriorityQueue<>(new TreeNodeRecordComparator());
+	private List<TreeNodeRecord> immutable = new ArrayList<>();
 
 	public void saveTreeNodeRecord(TreeNodeRecord treeNodeRecord) {
 		switch (treeNodeRecord.getTreeNodeStatus()) {
@@ -44,7 +44,9 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 
 	@Override
 	public void destroyState() {
-
+		notVisited = new ArrayList<>();
+		mutableAndActive = new PriorityQueue<>(new TreeNodeRecordComparator());
+		immutable = new ArrayList<>();
 	}
 
 	public Optional<TreeNodeRecord> getOneTreeNodeRecordWithStatus(TreeNodeStatus treeNodeStatus) {

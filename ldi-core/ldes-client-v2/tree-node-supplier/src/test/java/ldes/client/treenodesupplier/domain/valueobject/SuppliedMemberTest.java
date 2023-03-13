@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SuppliedMemberTest {
 
-    @Test
-    void when_SuppliedMemberIsCreated_ModelIsDeepCopied() {
-        Model model = ModelFactory.createDefaultModel();
-        SuppliedMember suppliedMember = new SuppliedMember(model);
+	@Test
+	void when_SuppliedMemberIsCreated_ModelIsDeepCopied() {
+		Model model = ModelFactory.createDefaultModel();
+		SuppliedMember suppliedMember = new SuppliedMember(model);
 
-        model=null;
-        assertNotNull(suppliedMember.getModel());
-    }
+		model = null;
+		assertNotNull(suppliedMember.getModel());
+	}
 
 }

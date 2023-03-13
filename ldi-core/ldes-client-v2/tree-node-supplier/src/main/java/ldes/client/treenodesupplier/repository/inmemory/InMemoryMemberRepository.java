@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public class InMemoryMemberRepository implements MemberRepository {
 
-	List<MemberRecord> unprocessed = new ArrayList<>();
-	List<MemberRecord> processed = new ArrayList<>();
+	private List<MemberRecord> unprocessed = new ArrayList<>();
+	private List<MemberRecord> processed = new ArrayList<>();
 
 	public Optional<MemberRecord> getUnprocessedTreeMember() {
 		if (unprocessed.isEmpty()) {
@@ -34,7 +34,8 @@ public class InMemoryMemberRepository implements MemberRepository {
 
 	@Override
 	public void destroyState() {
-
+		processed = new ArrayList<>();
+		unprocessed = new ArrayList<>();
 	}
 
 }
