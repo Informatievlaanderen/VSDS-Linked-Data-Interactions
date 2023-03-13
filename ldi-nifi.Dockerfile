@@ -16,6 +16,7 @@ COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/create-vers
 COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/ldes-client-processor/target/*.nar /opt/nifi/nifi-current/lib/
 COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/sparql-interactions-processor/target/*.nar /opt/nifi/nifi-current/lib/
 COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/version-materialisation-processor/target/*.nar /opt/nifi/nifi-current/lib/
+COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/ngsiv2-to-ld-processor/target/*.nar /opt/nifi/nifi-current/lib/
 
 RUN rm -rf *.db *.db-* ldes-client-processor/*.db ldes-client-processor/*.db-*
 RUN chmod -R 664 /opt/nifi/nifi-current/lib/*.nar

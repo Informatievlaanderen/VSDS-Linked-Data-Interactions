@@ -1,5 +1,5 @@
 {
-    "value": [
+    "data": [
         {
             "id": "urn:ngsi-v2:cot-imec-be:WaterQualityObserved:dwg-iow-886nJGdroD857YjumSEuNj",
             "type": "WaterQualityObserved",

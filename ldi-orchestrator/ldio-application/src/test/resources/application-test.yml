@@ -1,8 +1,8 @@
 orchestrator:
   input:
     name: "dummyIn"
-    config:
-      adapter: "dummyAdapt"
+    adapter:
+      name: "dummyAdapt"
   transformers:
     - name: "dummyTransform"
   outputs:

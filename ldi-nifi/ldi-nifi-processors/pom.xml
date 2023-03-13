@@ -16,6 +16,7 @@
         <module>ldes-client-processor</module>
         <module>sparql-interactions-processor</module>
         <module>version-materialisation-processor</module>
+        <module>ngsiv2-to-ld-processor</module>
     </modules>
 
     <properties>

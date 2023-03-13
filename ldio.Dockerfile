@@ -22,6 +22,7 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-in/target/ldio-
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ldes-client/target/ldio-ldes-client-jar-with-dependencies.jar ./lib/
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-rdf-adapter/target/ldio-rdf-adapter-jar-with-dependencies.jar ./lib/
+COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ngsiv2-to-ld-adapter/target/ldio-ngsiv2-to-ld-adapter-jar-with-dependencies.jar ./lib/
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-sparql-construct/target/ldio-sparql-construct-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-version-materialiser/target/ldio-version-materialiser-jar-with-dependencies.jar ./lib/
