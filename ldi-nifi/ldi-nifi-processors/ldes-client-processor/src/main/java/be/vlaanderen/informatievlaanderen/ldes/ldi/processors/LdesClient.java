@@ -1,17 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesProperties;
-import be.vlaanderen.informatievlaanderen.ldes.client.LdesClientImplFactory;
-import be.vlaanderen.informatievlaanderen.ldes.client.config.LdesClientConfig;
-import be.vlaanderen.informatievlaanderen.ldes.client.converters.ModelConverter;
-import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.EndpointRequester;
-import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.ApiKey;
-import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.endpoint.Endpoint;
-import be.vlaanderen.informatievlaanderen.ldes.client.endpointrequester.startingnode.StartingNode;
-import be.vlaanderen.informatievlaanderen.ldes.client.exceptions.LdesPropertyNotFoundException;
-import be.vlaanderen.informatievlaanderen.ldes.client.services.LdesService;
-import be.vlaanderen.informatievlaanderen.ldes.client.valueobjects.LdesFragment;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
@@ -72,7 +61,7 @@ public class LdesClient extends AbstractProcessor {
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
 		return List.of(DATA_SOURCE_URL, DATA_SOURCE_FORMAT, DATA_DESTINATION_FORMAT, FRAGMENT_EXPIRATION_INTERVAL,
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY, OAUTH_CLIENT_ID,
-				OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, OAUTH_SCOPE);
+				OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, OAUTH_SCOPE, AUTHORIZATION_STRATEGY);
 	}
 
 	@OnScheduled

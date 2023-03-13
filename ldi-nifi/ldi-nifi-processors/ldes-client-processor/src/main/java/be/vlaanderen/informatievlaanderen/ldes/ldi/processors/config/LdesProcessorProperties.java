@@ -8,7 +8,9 @@ import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -107,7 +109,6 @@ public final class LdesProcessorProperties {
 			.name("API_KEY_PROPERTY")
 			.displayName("API key that should be used to access the API.")
 			.required(false)
-			.defaultValue("")
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
@@ -115,7 +116,6 @@ public final class LdesProcessorProperties {
 			.name("OAUTH_CLIENT_ID")
 			.displayName("Client id used for Oauth2 client credentials flow")
 			.required(false)
-			.defaultValue("")
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
@@ -124,7 +124,6 @@ public final class LdesProcessorProperties {
 			.displayName("Client secret used for Oauth2 client credentials flow")
 			.sensitive(true)
 			.required(false)
-			.defaultValue("")
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
@@ -132,7 +131,6 @@ public final class LdesProcessorProperties {
 			.name("OAUTH_SCOPE")
 			.displayName("Scope used for Oauth2 client credentials flow")
 			.required(false)
-			.defaultValue("")
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
@@ -140,7 +138,6 @@ public final class LdesProcessorProperties {
 			.name("OAUTH_TOKEN_ENDPOINT")
 			.displayName("Token endpoint used for Oauth2 client credentials flow.")
 			.required(false)
-			.defaultValue("")
 			.addValidator(StandardValidators.URL_VALIDATOR)
 			.build();
 
@@ -149,7 +146,7 @@ public final class LdesProcessorProperties {
 			.displayName("Authorization strategy for the internal http client.")
 			.required(true)
 			.defaultValue(AuthStrategy.NO_AUTH.name())
-			.allowableValues(AuthStrategy.values())
+			.allowableValues(Arrays.stream(AuthStrategy.values()).map(Enum::name).collect(Collectors.toSet()))
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
