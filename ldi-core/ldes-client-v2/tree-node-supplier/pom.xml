@@ -18,37 +18,38 @@
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
             <artifactId>tree-node-fetcher</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
+            <artifactId>starting-node</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Persistence -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.40.1.0</version>
+            <version>${sqlite-jdbc.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.gwenn</groupId>
             <artifactId>sqlite-dialect</artifactId>
-            <version>0.1.2</version>
+            <version>${sqlite-dialect.version}</version>
         </dependency>
 
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.6.15.Final</version>
+            <version>${hibernate.version}</version>
         </dependency>
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
-            <artifactId>starting-node</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy-dep</artifactId>
-            <version>1.14.1</version>
+            <version>${byte-buddy-dep.version}</version>
         </dependency>
     </dependencies>
 
