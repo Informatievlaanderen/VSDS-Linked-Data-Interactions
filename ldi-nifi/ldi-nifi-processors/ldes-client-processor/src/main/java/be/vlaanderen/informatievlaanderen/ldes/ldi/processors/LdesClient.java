@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesPrope
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.RequestExecutorFactory;
+import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.LdesProvider;

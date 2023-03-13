@@ -1,5 +1,8 @@
-package ldes.client.requestexecutor.domain.valueobjects.executorsupplier;
+package ldes.client.requestexecutor.domain.services;
 
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ApiKeyConfig;
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ClientCredentialsConfig;
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 
 public class RequestExecutorFactory {
