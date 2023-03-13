@@ -1,6 +1,7 @@
 package ldes.client.treenodesupplier.domain.entities;
 
 import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.Objects;
@@ -35,7 +36,7 @@ public class MemberRecord {
 	}
 
 	public SuppliedMember createSuppliedMember() {
-		return new SuppliedMember(memberId, model);
+		return new SuppliedMember(model);
 	}
 
 	public Model getModel() {

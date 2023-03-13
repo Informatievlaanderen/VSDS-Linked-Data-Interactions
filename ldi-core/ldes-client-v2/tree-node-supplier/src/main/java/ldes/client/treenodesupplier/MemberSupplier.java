@@ -1,6 +1,6 @@
 package ldes.client.treenodesupplier;
 
-import ldes.client.treenodesupplier.domain.entities.SuppliedMember;
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 
 import java.util.function.Supplier;
 

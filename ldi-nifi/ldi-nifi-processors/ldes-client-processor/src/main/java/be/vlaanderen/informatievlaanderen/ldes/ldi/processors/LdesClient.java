@@ -10,7 +10,7 @@ import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.LdesProvider;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.entities.SuppliedMember;
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
 import ldes.client.treenodesupplier.repository.sqlite.SqliteMemberRepository;
 import ldes.client.treenodesupplier.repository.sqlite.SqliteTreeNodeRepository;
