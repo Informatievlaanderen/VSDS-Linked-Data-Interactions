@@ -23,19 +23,19 @@ public class SqliteTreeNodeRepository implements TreeNodeRecordRepository {
 
 	@Override
 	public boolean existsById(String treeNodeId) {
-		return ((Number) entityManager
-				.createNamedQuery("TreeNode.countById")
+		return entityManager
+				.createNamedQuery("TreeNode.countById", Long.class)
 				.setParameter("id", treeNodeId)
-				.getSingleResult()).longValue() > 0;
+				.getSingleResult() > 0;
 	}
 
 	@Override
 	public Optional<TreeNodeRecord> getOneTreeNodeRecordWithStatus(TreeNodeStatus treeNodeStatus) {
 		return entityManager
-				.createNamedQuery("TreeNode.getByTreeNodeStatus")
+				.createNamedQuery("TreeNode.getByTreeNodeStatus", TreeNodeRecordEntity.class)
 				.setParameter("treeNodeStatus", treeNodeStatus)
 				.getResultStream()
-				.map(x -> ((TreeNodeRecordEntity) x).toTreenode())
+				.map(TreeNodeRecordEntity::toTreenode)
 				.findFirst();
 	}
 
