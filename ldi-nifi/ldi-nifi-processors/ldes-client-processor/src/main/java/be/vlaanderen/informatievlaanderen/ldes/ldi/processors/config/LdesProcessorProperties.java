@@ -127,13 +127,6 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
-	public static final PropertyDescriptor OAUTH_SCOPE = new PropertyDescriptor.Builder()
-			.name("OAUTH_SCOPE")
-			.displayName("Scope used for Oauth2 client credentials flow")
-			.required(false)
-			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
-			.build();
-
 	public static final PropertyDescriptor OAUTH_TOKEN_ENDPOINT = new PropertyDescriptor.Builder()
 			.name("OAUTH_TOKEN_ENDPOINT")
 			.displayName("Token endpoint used for Oauth2 client credentials flow.")
@@ -192,10 +185,6 @@ public final class LdesProcessorProperties {
 
 	public static String getOauthClientSecret(final ProcessContext context) {
 		return Objects.requireNonNullElse(context.getProperty(OAUTH_CLIENT_SECRET).getValue(), "");
-	}
-
-	public static String getOauthScope(final ProcessContext context) {
-		return Objects.requireNonNullElse(context.getProperty(OAUTH_SCOPE).getValue(), "");
 	}
 
 	public static String getOauthTokenEndpoint(final ProcessContext context) {

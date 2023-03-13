@@ -16,13 +16,11 @@ public class ClientCredentialsConfig implements RequestExecutorSupplier {
 	private final String clientId;
 	private final String secret;
 	private final String tokenEndpoint;
-	private final String scope;
 
-	public ClientCredentialsConfig(String clientId, String secret, String tokenEndpoint, String scope) {
+	public ClientCredentialsConfig(String clientId, String secret, String tokenEndpoint) {
 		this.clientId = clientId;
 		this.secret = secret;
 		this.tokenEndpoint = tokenEndpoint;
-		this.scope = scope;
 	}
 
 	public RequestExecutor createRequestExecutor() {
@@ -36,7 +34,6 @@ public class ClientCredentialsConfig implements RequestExecutorSupplier {
 		final DefaultApi20 authorizationApi = createAuthorizationApi(tokenEndpoint);
 		return new ServiceBuilder(clientId)
 				.apiSecret(secret)
-				.defaultScope(scope)
 				.httpClient(apacheHttpClient)
 				.build(authorizationApi);
 	}

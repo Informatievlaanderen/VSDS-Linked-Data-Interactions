@@ -16,8 +16,7 @@ public class RequestExecutorFactory {
 
 	public RequestExecutor createClientCredentialsExecutor(String clientId,
 			String secret,
-			String tokenEndpoint,
-			String scope) {
-		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint, scope).createRequestExecutor();
+			String tokenEndpoint) {
+		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint).createRequestExecutor();
 	}
 }

@@ -56,8 +56,7 @@ public class LdioLdesClientAutoConfig {
 						requestExecutorFactory.createClientCredentialsExecutor(
 								componentProperties.getProperty(CLIENT_ID),
 								componentProperties.getProperty(CLIENT_SECRET),
-								componentProperties.getProperty(TOKEN_ENDPOINT),
-								componentProperties.getProperty(OAUTH_SCOPE));
+								componentProperties.getProperty(TOKEN_ENDPOINT));
 				};
 			}
 			throw new UnsupportedOperationException(
