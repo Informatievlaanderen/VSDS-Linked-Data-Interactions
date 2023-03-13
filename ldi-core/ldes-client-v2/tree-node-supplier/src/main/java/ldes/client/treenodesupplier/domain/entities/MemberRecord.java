@@ -12,9 +12,7 @@ public class MemberRecord {
 	private Model model;
 
 	public MemberRecord(String memberId, Model model) {
-		this.memberId = memberId;
-		this.model = model;
-		this.memberStatus = MemberStatus.UNPROCESSED;
+		this(memberId, model, MemberStatus.UNPROCESSED);
 	}
 
 	public MemberRecord(String memberId, Model model, MemberStatus memberStatus) {
