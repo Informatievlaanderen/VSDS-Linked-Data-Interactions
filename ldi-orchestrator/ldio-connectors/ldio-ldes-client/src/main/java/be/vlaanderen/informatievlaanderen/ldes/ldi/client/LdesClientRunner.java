@@ -22,7 +22,7 @@ public class LdesClientRunner implements Runnable {
 	private final RequestExecutor requestExecutor;
 	private final ComponentProperties properties;
 
-	private boolean threadrunning = true;
+	private boolean threadRunning = true;
 
 	public LdesClientRunner(RequestExecutor requestExecutor, ComponentProperties properties,
 			ComponentExecutor componentExecutor) {
@@ -45,7 +45,7 @@ public class LdesClientRunner implements Runnable {
 		Ldes ldes = new LdesProvider(requestExecutor).getLdes(targetUrl, sourceFormat);
 		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, keepState, requestExecutor, ldes);
 		MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor);
-		while (threadrunning) {
+		while (threadRunning) {
 			componentExecutor.transformLinkedData(memberSupplier.get().getModel());
 		}
 	}
@@ -66,6 +66,6 @@ public class LdesClientRunner implements Runnable {
 	}
 
 	public void stopThread() {
-		threadrunning = false;
+		threadRunning = false;
 	}
 }
