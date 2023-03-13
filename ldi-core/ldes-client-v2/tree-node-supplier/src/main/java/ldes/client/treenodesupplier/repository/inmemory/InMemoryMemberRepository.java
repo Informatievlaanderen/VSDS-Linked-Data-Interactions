@@ -13,8 +13,9 @@ public class InMemoryMemberRepository implements MemberRepository {
 	List<MemberRecord> processed = new ArrayList<>();
 
 	public Optional<MemberRecord> getUnprocessedTreeMember() {
-		if (unprocessed.isEmpty())
+		if (unprocessed.isEmpty()) {
 			return Optional.empty();
+		}
 		return Optional.of(unprocessed.remove(0));
 	}
 
