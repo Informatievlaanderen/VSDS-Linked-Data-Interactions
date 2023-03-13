@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
 import ldes.client.requestexecutor.domain.valueobjects.AuthStrategy;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -24,15 +25,6 @@ public final class LdesProcessorProperties {
 	 * The desired RDF format for output
 	 */
 	public static final Lang DEFAULT_DATA_DESTINATION_FORMAT = Lang.NQUADS;
-
-	/**
-	 * The number of seconds to add to the current time before a fragment is
-	 * considered expired.
-	 * <p>
-	 * Only used when the HTTP request that contains the fragment does not have a
-	 * max-age element in the Cache-control header.
-	 */
-	public static final Long DEFAULT_FRAGMENT_EXPIRATION_INTERVAL = 604800L;
 
 	private LdesProcessorProperties() {
 	}
@@ -63,14 +55,20 @@ public final class LdesProcessorProperties {
 			.defaultValue(DEFAULT_DATA_DESTINATION_FORMAT.getHeaderString())
 			.build();
 
-	public static final PropertyDescriptor FRAGMENT_EXPIRATION_INTERVAL = new PropertyDescriptor.Builder()
-			.name("FRAGMENT_EXPIRATION_INTERVAL")
-			.displayName("Fragment expiration interval")
-			.description(
-					"The number of seconds to expire a mutable fragment when the Cache-control header contains no max-age value")
+	public static final PropertyDescriptor STATE_PERSISTENCE_STRATEGY = new PropertyDescriptor.Builder()
+			.name("STATE_PERSISTENCE_STRATEGY")
+			.displayName("How state is persisted (note that memory is volatile).")
 			.required(false)
-			.addValidator(StandardValidators.POSITIVE_LONG_VALIDATOR)
-			.defaultValue(DEFAULT_FRAGMENT_EXPIRATION_INTERVAL.toString())
+			.allowableValues(
+					Arrays.stream(StatePersistanceStrategy.values()).map(Enum::name).collect(Collectors.toSet()))
+			.defaultValue(StatePersistanceStrategy.MEMORY.name())
+			.build();
+	public static final PropertyDescriptor KEEP_STATE = new PropertyDescriptor.Builder()
+			.name("KEEP_STATE")
+			.displayName("Keep state when the processor is removed from the flow")
+			.required(false)
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.defaultValue(FALSE.toString())
 			.build();
 
 	public static final PropertyDescriptor STREAM_TIMESTAMP_PATH_PROPERTY = new PropertyDescriptor.Builder()
@@ -155,10 +153,6 @@ public final class LdesProcessorProperties {
 		return RDFLanguages.nameToLang(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
 	}
 
-	public static Long getFragmentExpirationInterval(final ProcessContext context) {
-		return Long.valueOf(context.getProperty(FRAGMENT_EXPIRATION_INTERVAL).getValue());
-	}
-
 	public static boolean streamTimestampPathProperty(final ProcessContext context) {
 		return TRUE.equals(context.getProperty(STREAM_TIMESTAMP_PATH_PROPERTY).asBoolean());
 	}
@@ -196,6 +190,14 @@ public final class LdesProcessorProperties {
 		return AuthStrategy
 				.from(authValue)
 				.orElseThrow(() -> new IllegalArgumentException("Unsupported authorization strategy: " + authValue));
+	}
+
+	public static StatePersistanceStrategy getStatePersistanceStrategy(final ProcessContext context) {
+		return StatePersistanceStrategy.valueOf(context.getProperty(STATE_PERSISTENCE_STRATEGY).getValue());
+	}
+
+	public static boolean stateKept(final ProcessContext context) {
+		return TRUE.equals(context.getProperty(KEEP_STATE).asBoolean());
 	}
 
 }

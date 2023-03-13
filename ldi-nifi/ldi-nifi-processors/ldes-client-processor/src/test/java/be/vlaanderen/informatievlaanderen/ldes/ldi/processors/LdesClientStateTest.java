@@ -20,7 +20,7 @@
 // "http://localhost:10101/exampleData?generatedAtTime=2022-05-05T00:00:00.000Z";
 //
 // private TestRunner testRunner;
-// TODO update TEST
+//
 // @BeforeEach
 // void setup() {
 // testRunner = TestRunners.newTestRunner(LdesClient.class);
