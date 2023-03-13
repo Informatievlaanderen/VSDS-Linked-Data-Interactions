@@ -17,17 +17,17 @@ public class TreeNodeProcessor {
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
 	private final TreeNodeFetcher treeNodeFetcher;
-	private final boolean keepstate;
+	private final boolean keepState;
 	private final Ldes ldes;
 
 	public TreeNodeProcessor(Ldes ldes,
 			TreeNodeRecordRepository treeNodeRecordRepository,
 			MemberRepository memberRepository,
-			TreeNodeFetcher treeNodeFetcher, boolean keepstate) {
+			TreeNodeFetcher treeNodeFetcher, boolean keepState) {
 		this.treeNodeRecordRepository = treeNodeRecordRepository;
 		this.memberRepository = memberRepository;
 		this.treeNodeFetcher = treeNodeFetcher;
-		this.keepstate = keepstate;
+		this.keepState = keepState;
 		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(ldes.getStartingNodeUrl()));
 		this.ldes = ldes;
 		Runtime.getRuntime().addShutdownHook(new Thread(this::destoryState));
@@ -70,7 +70,7 @@ public class TreeNodeProcessor {
 	}
 
 	public void destoryState() {
-		if (!keepstate) {
+		if (!keepState) {
 			memberRepository.destroyState();
 			treeNodeRecordRepository.destroyState();
 		}
