@@ -1,6 +1,7 @@
 package ldes.client.requestexecutor.domain.valueobjects.executorsupplier;
 
 import ldes.client.requestexecutor.executor.RequestExecutor;
+import ldes.client.requestexecutor.executor.retry.RetryExecutor;
 
 public class RequestExecutorFactory {
 	public RequestExecutor createApiKeyExecutor(String keyHeader, String key) {
@@ -16,5 +17,9 @@ public class RequestExecutorFactory {
 			String tokenEndpoint,
 			String scope) {
 		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint, scope).createRequestExecutor();
+	}
+
+	public RequestExecutor createRetryExecutor(RequestExecutor requestExecutor, ExponentialRandomBackoffConfig config) {
+		return new RetryExecutor(requestExecutor, config.createRetryConfig());
 	}
 }

@@ -62,3 +62,10 @@ Feature: RequestExecutor
       And I execute the request
       And I execute the request
       Then I will have called the token endpoint only once
+
+    Scenario: Obtaining the response with retries
+      Given I have a requestExecutor which does 3 retries
+      When I create RequestHeaders
+      And I create a Request with the RequestHeaders and url: http://localhost:10101/500-response
+      And I execute the request
+      Then I will have called "/500-response" 3 times

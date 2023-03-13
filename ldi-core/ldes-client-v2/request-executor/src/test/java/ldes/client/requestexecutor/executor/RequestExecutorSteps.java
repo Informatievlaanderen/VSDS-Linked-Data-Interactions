@@ -8,8 +8,8 @@ import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ClientCredentialsConfig;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ExponentialRandomBackoffConfig;
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.RequestExecutorFactory;
 import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.noauth.WireMockConfig;
 import org.apache.http.HttpHeaders;
@@ -17,6 +17,7 @@ import org.apache.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RequestExecutorSteps {
 
+	private final RequestExecutorFactory factory = new RequestExecutorFactory();
 	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
@@ -31,13 +33,13 @@ public class RequestExecutorSteps {
 
 	@Given("I have a ClientCredentialsRequestExecutor")
 	public void aClientCredentialsRequestExecutorIsAvailable() {
-		requestExecutor = new ClientCredentialsConfig("clientId", "clientSecret",
-				"http://localhost:10101/token", "simpleScope").createRequestExecutor();
+		requestExecutor = factory.createClientCredentialsExecutor("clientId", "clientSecret",
+				"http://localhost:10101/token", "simpleScope");
 	}
 
 	@Given("I have a DefaultRequestExecutor")
 	public void aDefaultRequestExecutorIsAvailable() {
-		requestExecutor = new DefaultConfig().createRequestExecutor();
+		requestExecutor = factory.createNoAuthExecutor();
 	}
 
 	@Then("I obtain a response with status code {int}")
@@ -85,5 +87,16 @@ public class RequestExecutorSteps {
 	@Then("I will have called the token endpoint only once")
 	public void iWillHaveCalledTheTokenEndpointOnlyOnce() {
 		WireMockConfig.wireMockServer.verify(1, postRequestedFor(urlEqualTo("/token")));
+	}
+
+	@Given("I have a requestExecutor which does {int} retries")
+	public void iHaveARequestExecutorWhichDoesRetries(int arg0) {
+		ExponentialRandomBackoffConfig config = new ExponentialRandomBackoffConfig(arg0);
+		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), config);
+	}
+
+	@Then("I will have called {string} {int} times")
+	public void iWillHaveCalledTimes(String arg0, int arg1) {
+		WireMockConfig.wireMockServer.verify(arg1, getRequestedFor(urlEqualTo(arg0)));
 	}
 }

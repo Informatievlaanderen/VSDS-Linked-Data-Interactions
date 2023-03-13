@@ -16,7 +16,6 @@ public class RetryExecutor implements RequestExecutor {
 		this.retryConfig = retryConfig;
 	}
 
-	// TODO VSDSPUB-521: 8/03/2023 test
 	@Override
 	public Response execute(Request request) {
 		return RetryRegistry
