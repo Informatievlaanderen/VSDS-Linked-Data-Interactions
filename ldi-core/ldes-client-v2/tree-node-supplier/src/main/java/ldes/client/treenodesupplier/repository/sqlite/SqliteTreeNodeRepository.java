@@ -35,7 +35,7 @@ public class SqliteTreeNodeRepository implements TreeNodeRecordRepository {
 				.createNamedQuery("TreeNode.getByTreeNodeStatus", TreeNodeRecordEntity.class)
 				.setParameter("treeNodeStatus", treeNodeStatus)
 				.getResultStream()
-				.map(TreeNodeRecordEntity::toTreenode)
+				.map(TreeNodeRecordEntity::toTreeNode)
 				.findFirst();
 	}
 

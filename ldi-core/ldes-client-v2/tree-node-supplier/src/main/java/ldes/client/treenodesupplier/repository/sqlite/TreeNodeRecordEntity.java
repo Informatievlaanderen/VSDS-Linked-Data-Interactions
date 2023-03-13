@@ -34,7 +34,7 @@ public class TreeNodeRecordEntity {
 				treeMember.getEarliestNextVisit());
 	}
 
-	public TreeNodeRecord toTreenode() {
+	public TreeNodeRecord toTreeNode() {
 		return new TreeNodeRecord(this.treeNodeUrl, this.treeNodeStatus, this.earliestNextVisit);
 	}
 }
