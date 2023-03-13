@@ -19,7 +19,7 @@ public class RequestExecutorFactory {
 		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint, scope).createRequestExecutor();
 	}
 
-	public RequestExecutor createRetryExecutor(RequestExecutor requestExecutor, ExponentialRandomBackoffConfig config) {
-		return new RetryExecutor(requestExecutor, config.createRetryConfig());
+	public RequestExecutor createRetryExecutor(RequestExecutor requestExecutor, int maxAttempts) {
+		return new RetryExecutor(requestExecutor, new ExponentialRandomBackoffConfig(maxAttempts).createRetryConfig());
 	}
 }
