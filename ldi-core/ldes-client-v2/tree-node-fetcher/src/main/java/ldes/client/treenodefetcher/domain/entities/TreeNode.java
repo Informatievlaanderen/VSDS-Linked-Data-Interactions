@@ -11,18 +11,12 @@ public class TreeNode {
 
 	private final MutabilityStatus mutabilityStatus;
 
-	// TODO extend with mutability of tree node (including max-age)
-
 	public TreeNode(String treeNodeId, List<String> relations, List<TreeMember> members,
 			MutabilityStatus mutabilityStatus) {
 		this.treeNodeId = treeNodeId;
 		this.relation = relations;
 		this.members = members;
 		this.mutabilityStatus = mutabilityStatus;
-	}
-
-	public String getTreeNodeId() {
-		return treeNodeId;
 	}
 
 	public List<String> getRelations() {
