@@ -4,12 +4,11 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ExponentialRandomBackoffConfig;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.RequestExecutorFactory;
 import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.noauth.WireMockConfig;
 import org.apache.http.HttpHeaders;
@@ -17,9 +16,7 @@ import org.apache.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -90,9 +87,8 @@ public class RequestExecutorSteps {
 	}
 
 	@Given("I have a requestExecutor which does {int} retries")
-	public void iHaveARequestExecutorWhichDoesRetries(int arg0) {
-		ExponentialRandomBackoffConfig config = new ExponentialRandomBackoffConfig(arg0);
-		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), config);
+	public void iHaveARequestExecutorWhichDoesRetries(int retryCount) {
+		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount);
 	}
 
 	@Then("I will have called {string} {int} times")
