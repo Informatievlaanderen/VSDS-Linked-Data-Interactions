@@ -4,16 +4,14 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesPrope
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.RequestExecutorFactory;
+import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.LdesProvider;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
-import ldes.client.treenodesupplier.repository.sqlite.SqliteMemberRepository;
-import ldes.client.treenodesupplier.repository.sqlite.SqliteTreeNodeRepository;
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -47,8 +45,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Ldes
 public class LdesClient extends AbstractProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LdesClient.class);
-	TreeNodeProcessor treeNodeProcessor;
-	MemberSupplier memberSupplier;
+	private MemberSupplier memberSupplier;
 	private LdesProperties ldesProperties;
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
@@ -59,9 +56,10 @@ public class LdesClient extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(DATA_SOURCE_URL, DATA_SOURCE_FORMAT, DATA_DESTINATION_FORMAT, FRAGMENT_EXPIRATION_INTERVAL,
+		return List.of(DATA_SOURCE_URL, DATA_SOURCE_FORMAT, DATA_DESTINATION_FORMAT, KEEP_STATE,
+				STATE_PERSISTENCE_STRATEGY,
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY, OAUTH_CLIENT_ID,
-				OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, OAUTH_SCOPE, AUTHORIZATION_STRATEGY);
+				OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY);
 	}
 
 	@OnScheduled
@@ -70,9 +68,10 @@ public class LdesClient extends AbstractProcessor {
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutor(context);
 		Ldes ldes = new LdesProvider(requestExecutor).getLdes(dataSourceUrl, dataSourceFormat);
-		treeNodeProcessor = new TreeNodeProcessor(ldes, new SqliteTreeNodeRepository(), new SqliteMemberRepository(),
-				new TreeNodeFetcher(requestExecutor), true);
-		memberSupplier = new MemberSupplier(treeNodeProcessor);
+		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldes,
+				LdesProcessorProperties.getStatePersistanceStrategy(context),
+				new TreeNodeFetcher(requestExecutor));
+		memberSupplier = new MemberSupplier(treeNodeProcessor, LdesProcessorProperties.stateKept(context));
 
 		determineLdesProperties(ldes, requestExecutor, context);
 
@@ -86,7 +85,7 @@ public class LdesClient extends AbstractProcessor {
 			case API_KEY -> requestExecutorFactory.createApiKeyExecutor(getApiKey(context), getApiKeyHeader(context));
 			case OAUTH2_CLIENT_CREDENTIALS ->
 				requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
-						getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
+						getOauthClientSecret(context), getOauthTokenEndpoint(context));
 		};
 	}
 
@@ -121,7 +120,7 @@ public class LdesClient extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		treeNodeProcessor.destroyState();
+		memberSupplier.destroyState();
 	}
 
 	public static String convertModelToString(Model model, Lang dataDestinationFormat) {

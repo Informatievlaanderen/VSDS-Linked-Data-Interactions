@@ -15,17 +15,17 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class LdesPropertiesExtractor {
 
-	public static final String LDES = "https://w3id.org/ldes#";
-	public static final Property LDES_VERSION_OF = createProperty(LDES, "versionOfPath");
-	public static final Property LDES_TIMESTAMP_PATH = createProperty(LDES, "timestampPath");
-	public static final Property TREE_SHAPE = createProperty("https://w3id.org/tree#", "shape");
+	private static final String LDES = "https://w3id.org/ldes#";
+	private static final Property LDES_VERSION_OF = createProperty(LDES, "versionOfPath");
+	private static final Property LDES_TIMESTAMP_PATH = createProperty(LDES, "timestampPath");
+	private static final Property TREE_SHAPE = createProperty("https://w3id.org/tree#", "shape");
 	private final RequestExecutor requestExecutor;
 
 	public LdesPropertiesExtractor(RequestExecutor requestExecutor) {
 		this.requestExecutor = requestExecutor;
 	}
 
-	protected Optional<String> getPropertyValue(Model model, Property property) {
+	private Optional<String> getPropertyValue(Model model, Property property) {
 		return model.listStatements(null, property, (Resource) null)
 				.nextOptional()
 				.map(Statement::getObject)
@@ -43,19 +43,19 @@ public class LdesPropertiesExtractor {
 				.lang(request.getLang())
 				.build()
 				.toModel();
-		String timestampPath = getProperty(needTimestampPath, getProperty(model), LDES_TIMESTAMP_PATH);
-		String versionOfPath = getProperty(needVersionOfPath, getVersionOfPath(model), LDES_VERSION_OF);
-		String shape = getProperty(needShape, getShaclShape(model), TREE_SHAPE);
+		String timestampPath = getResource(needTimestampPath, getResource(model), LDES_TIMESTAMP_PATH);
+		String versionOfPath = getResource(needVersionOfPath, getVersionOfPath(model), LDES_VERSION_OF);
+		String shape = getResource(needShape, getShaclShape(model), TREE_SHAPE);
 		return new LdesProperties(timestampPath, versionOfPath, shape);
 	}
 
-	private String getProperty(boolean needTimestampPath, Optional<String> model, Property ldesTimestampPath) {
-		return needTimestampPath ? model
-				.orElseThrow(() -> new LdesPropertyNotFoundException(ldesTimestampPath.toString()))
+	private String getResource(boolean resourceNeeded, Optional<String> resource, Property property) {
+		return resourceNeeded ? resource
+				.orElseThrow(() -> new LdesPropertyNotFoundException(property.toString()))
 				: null;
 	}
 
-	public Optional<String> getProperty(Model model) {
+	public Optional<String> getResource(Model model) {
 		return getPropertyValue(model, LDES_TIMESTAMP_PATH);
 	}
 

@@ -5,7 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import ldes.client.requestexecutor.domain.valueobjects.AuthStrategy;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.RequestExecutorFactory;
+import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -73,8 +73,7 @@ public class LdioLdesClientAutoConfig {
 							requestExecutorFactory.createClientCredentialsExecutor(
 									componentProperties.getProperty(CLIENT_ID),
 									componentProperties.getProperty(CLIENT_SECRET),
-									componentProperties.getProperty(TOKEN_ENDPOINT),
-									componentProperties.getProperty(OAUTH_SCOPE));
+									componentProperties.getProperty(TOKEN_ENDPOINT));
 				};
 			}
 			throw new UnsupportedOperationException(

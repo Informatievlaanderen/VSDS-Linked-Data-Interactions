@@ -1,4 +1,4 @@
-package ldes.client.startingtreenode;
+package ldes.client.treenodesupplier;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;

@@ -8,10 +8,7 @@ import ldes.client.treenodesupplier.LdesProvider;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
-import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
-import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.sqlite.SqliteMemberRepository;
-import ldes.client.treenodesupplier.repository.sqlite.SqliteTreeNodeRepository;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 
@@ -37,32 +34,25 @@ public class LdesClientRunner implements Runnable {
 		Lang sourceFormat = properties.getOptionalProperty(SOURCE_FORMAT)
 				.map(RDFLanguages::nameToLang)
 				.orElse(Lang.JSONLD);
-		String state = properties.getOptionalProperty(STATE)
-				.orElse("memory");
+		StatePersistanceStrategy state = StatePersistanceStrategy
+				.valueOf(properties.getOptionalProperty(STATE).orElse(StatePersistanceStrategy.MEMORY.name()));
 		boolean keepState = properties.getOptionalProperty(KEEP_STATE)
 				.map(Boolean::valueOf)
 				.orElse(false);
 		Ldes ldes = new LdesProvider(requestExecutor).getLdes(targetUrl, sourceFormat);
-		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, keepState, requestExecutor, ldes);
-		MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor);
+		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, ldes);
+		MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor, keepState);
 		while (threadRunning) {
 			componentExecutor.transformLinkedData(memberSupplier.get().getModel());
 		}
 	}
 
-	private TreeNodeProcessor getTreeNodeProcessor(String state, boolean keepState, RequestExecutor requestExecutor,
+	private TreeNodeProcessor getTreeNodeProcessor(StatePersistanceStrategy statePersistanceStrategy,
+			RequestExecutor requestExecutor,
 			Ldes ldes) {
-		TreeNodeProcessor treeNodeProcessor;
-		if (state.equals("sqlite")) {
-			treeNodeProcessor = new TreeNodeProcessor(ldes, new SqliteTreeNodeRepository(),
-					new SqliteMemberRepository(),
-					new TreeNodeFetcher(requestExecutor), keepState);
-		} else {
-			treeNodeProcessor = new TreeNodeProcessor(ldes, new InMemoryTreeNodeRecordRepository(),
-					new InMemoryMemberRepository(),
-					new TreeNodeFetcher(requestExecutor), keepState);
-		}
-		return treeNodeProcessor;
+
+		return new TreeNodeProcessor(ldes, statePersistanceStrategy,
+				new TreeNodeFetcher(requestExecutor));
 	}
 
 	public void stopThread() {

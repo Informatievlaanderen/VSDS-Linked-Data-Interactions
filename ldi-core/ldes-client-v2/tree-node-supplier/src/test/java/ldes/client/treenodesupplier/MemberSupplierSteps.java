@@ -32,7 +32,7 @@ public class MemberSupplierSteps {
 		memberRepository = new InMemoryMemberRepository();
 		treeNodeProcessor = new TreeNodeProcessor(new Ldes(arg0, Lang.JSONLD), treeNodeRecordRepository,
 				memberRepository,
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
+				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
 	}
 
 	@When("I request the {int} members from the MemberSupplier")
@@ -44,7 +44,7 @@ public class MemberSupplierSteps {
 
 	@When("I create a MemberSupplier")
 	public void iCreateAMemberSupplier() {
-		memberSupplier = new MemberSupplier(treeNodeProcessor);
+		memberSupplier = new MemberSupplier(treeNodeProcessor, false);
 	}
 
 	@Then("The TreeNode is processed: {string}")
@@ -68,7 +68,7 @@ public class MemberSupplierSteps {
 		memberRepository = new SqliteMemberRepository();
 		treeNodeProcessor = new TreeNodeProcessor(new Ldes(arg0, Lang.JSONLD), treeNodeRecordRepository,
 				memberRepository,
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
+				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
 	}
 
 	@Given("A starting url {string}")
@@ -93,6 +93,6 @@ public class MemberSupplierSteps {
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldes, treeNodeRecordRepository, memberRepository,
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()), false);
+				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
 	}
 }
