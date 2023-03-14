@@ -199,7 +199,7 @@
     },
     "headers": {
       "Content-Type": "application/ld+json",
-      "Cache-Control": "public, max-age=604800, immutable"
+      "Cache-Control": "public, max-age=60"
     }
   }
 }

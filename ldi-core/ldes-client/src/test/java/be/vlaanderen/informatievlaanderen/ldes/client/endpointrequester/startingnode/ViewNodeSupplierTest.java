@@ -18,13 +18,13 @@ class ViewNodeSupplierTest {
 
 	private Model model;
 	private String id;
-	private ViewNodeSupplier viewNodeSupplier;
+	private ViewNodeSupplier viewSupplier;
 
 	@BeforeEach
 	void setUp() {
 		model = ModelFactory.createDefaultModel();
 		id = "http://localhost:8080/mobility-hindrances";
-		viewNodeSupplier = new ViewNodeSupplier(null);
+		viewSupplier = new ViewNodeSupplier(null);
 	}
 
 	@Test
@@ -32,7 +32,7 @@ class ViewNodeSupplierTest {
 		model.add(createResource(id), RDF_SYNTAX_TYPE, TREE_NODE_RESOURCE);
 		model.add(createResource(id), TREE_VIEW, createResource(id + "/view1"));
 
-		Optional<StartingNode> result = viewNodeSupplier.getStartingNode(model);
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
 
 		assertTrue(result.isPresent());
 		assertEquals(id + "/view1", result.get().url());
@@ -44,7 +44,7 @@ class ViewNodeSupplierTest {
 		model.add(createResource(id), TREE_VIEW, createResource(id + "/view1"));
 		model.add(createResource(id), TREE_VIEW, createResource(id + "/view2"));
 
-		Optional<StartingNode> result = viewNodeSupplier.getStartingNode(model);
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
 
 		assertTrue(result.isPresent());
 		assertTrue(result.get().url().contains("view"));
@@ -54,7 +54,7 @@ class ViewNodeSupplierTest {
 	void whenHasNoViewStatement_shouldReturnEmpty() {
 		model.add(createResource(id), RDF_SYNTAX_TYPE, TREE_NODE_RESOURCE);
 
-		Optional<StartingNode> result = viewNodeSupplier.getStartingNode(model);
+		Optional<StartingNode> result = viewSupplier.getStartingNode(model);
 
 		assertTrue(result.isEmpty());
 	}

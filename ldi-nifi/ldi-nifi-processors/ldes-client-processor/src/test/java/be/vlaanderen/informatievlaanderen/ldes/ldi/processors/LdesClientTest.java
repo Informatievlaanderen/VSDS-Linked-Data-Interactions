@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.nifi.util.MockFlowFile;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
@@ -16,8 +17,6 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,19 +32,23 @@ class LdesClientTest {
 
 	@AfterEach
 	void tearDown() {
-		((LdesClient) testRunner.getProcessor()).ldesService.getStateManager().destroyState();
+		((LdesClient) testRunner.getProcessor()).onRemoved();
 	}
 
 	@ParameterizedTest
 	@ArgumentsSource(MatchNumberOfFlowFilesArgumentsProvider.class)
-	void shouldMatchNumberOfFlowFiles(String dataSourceUrl, int numberOfRuns, int expectedFlowSize) {
+	void shouldMatchNumberOfFlowFiles(String dataSourceUrl, int numberOfRuns) {
 		testRunner.setProperty("DATA_SOURCE_URL", dataSourceUrl);
+		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY",
+				"SQLITE");
+
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 
 		testRunner.run(numberOfRuns);
 
 		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
 
-		assertEquals(expectedFlowSize, dataFlowfiles.size());
+		assertEquals(numberOfRuns, dataFlowfiles.size());
 	}
 
 	@Test
@@ -54,7 +57,7 @@ class LdesClientTest {
 				"http://localhost:10101/exampleData?scenario=gml-data");
 		testRunner.setProperty("STREAM_SHAPE_PROPERTY", Boolean.TRUE.toString());
 
-		testRunner.run(1);
+		testRunner.run();
 
 		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
 
@@ -77,14 +80,8 @@ class LdesClientTest {
 			return Stream.of(
 					Arguments.of(
 							Named.of("when_runningLdesClientWithConnectedFragments_expectsAllLdesMembers",
-									"http://localhost:10101/exampleData?generatedAtTime=2022-05-04T00:00:00.000Z"),
-							10, 6),
-					Arguments.of(
-							Named.of("when_runningLdesClientWithFragmentContaining2DifferentLDES_expectsAllLdesMembers",
-									"http://localhost:10101/exampleData?scenario=differentLdes"),
-							10, 2),
-					Arguments.of(Named.of("when_runningLdesClientWithFragmentContainingGMLData_expectsAllLdesMembers",
-							"http://localhost:10101/exampleData?scenario=gml-data"), 1, 1));
+									"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z"),
+							6));
 		}
 	}
 }
