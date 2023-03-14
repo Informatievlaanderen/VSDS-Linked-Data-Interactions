@@ -25,18 +25,18 @@ public class StartingTreeNodeFinderSteps {
 	}
 
 	@Then("the starting Tree Node of the LDES Stream is the url of the View: {string}")
-	public void theStartingTreeNodeOfTheLDESStreamIsTheUrlOfTheView(String arg0) {
+	public void theStartingTreeNodeOfTheLDESStreamIsTheUrlOfTheView(String url) {
 		assertTrue(treeNode.isPresent());
-		assertEquals(new TreeNode(arg0), treeNode.get());
+		assertEquals(new TreeNode(url), treeNode.get());
 	}
 
 	@When("I provide the endpoint of a Tree Node that is also a View: {string}")
-	public void iProvideTheEndpointOfATreeNodeThatIsAlsoAView(String arg0) {
-		treeNode = calculator.determineStartingTreeNode(new Endpoint(arg0, Lang.JSONLD));
+	public void iProvideTheEndpointOfATreeNodeThatIsAlsoAView(String url) {
+		treeNode = calculator.determineStartingTreeNode(new Endpoint(url, Lang.JSONLD));
 	}
 
 	@When("I provide an endpoint that redirects to a Tree Node that is also a View: {string}")
-	public void iProvideAnEndpointThatRedirectsToATreeNodeThatIsAlsoAView(String arg0) {
-		treeNode = calculator.determineStartingTreeNode(new Endpoint(arg0, Lang.JSONLD));
+	public void iProvideAnEndpointThatRedirectsToATreeNodeThatIsAlsoAView(String url) {
+		treeNode = calculator.determineStartingTreeNode(new Endpoint(url, Lang.JSONLD));
 	}
 }

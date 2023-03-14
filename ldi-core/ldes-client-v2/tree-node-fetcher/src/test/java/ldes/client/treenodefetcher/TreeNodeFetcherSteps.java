@@ -23,8 +23,8 @@ public class TreeNodeFetcherSteps {
 	}
 
 	@When("I create a TreeNodeRequest with Lang {string} and url {string}")
-	public void iCreateATreeNodeRequestWithLangAndUrl(String arg0, String arg1) {
-		treeNodeRequest = new TreeNodeRequest(arg1, RDFLanguages.nameToLang(arg0));
+	public void iCreateATreeNodeRequestWithLangAndUrl(String lang, String url) {
+		treeNodeRequest = new TreeNodeRequest(url, RDFLanguages.nameToLang(lang));
 	}
 
 	@And("I fetch the TreeNode")
@@ -33,8 +33,8 @@ public class TreeNodeFetcherSteps {
 	}
 
 	@Then("the obtained TreeNode has {int} members and {int} relations")
-	public void theObtainedTreeNodeHasMembersAndRelations(int arg0, int arg1) {
-		assertEquals(arg0, treeNode.getMembers().size());
-		assertEquals(arg1, treeNode.getRelations().size());
+	public void theObtainedTreeNodeHasMembersAndRelations(int numberOfMembers, int numberOfRelations) {
+		assertEquals(numberOfMembers, treeNode.getMembers().size());
+		assertEquals(numberOfRelations, treeNode.getRelations().size());
 	}
 }
