@@ -14,7 +14,7 @@ import ldes.client.treenodesupplier.domain.valueobject.Ldes;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFWriter;
 import org.apache.nifi.annotation.behavior.Stateful;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -31,7 +31,6 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Set;
 
@@ -124,11 +123,7 @@ public class LdesClient extends AbstractProcessor {
 	}
 
 	public static String convertModelToString(Model model, Lang dataDestinationFormat) {
-		StringWriter out = new StringWriter();
-
-		RDFDataMgr.write(out, model, dataDestinationFormat);
-
-		return out.toString();
+		return RDFWriter.source(model).lang(dataDestinationFormat).asString();
 	}
 
 }
