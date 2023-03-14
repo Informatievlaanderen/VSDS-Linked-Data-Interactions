@@ -25,4 +25,12 @@ public class ComponentProperties {
 	public Optional<String> getOptionalProperty(String key) {
 		return Optional.ofNullable(config.get(key));
 	}
+
+	public Optional<Boolean> getOptionalBoolean(String key) {
+		return getOptionalProperty(key).map(Boolean::parseBoolean);
+	}
+
+	public Optional<Integer> getOptionalInteger(String key) {
+		return getOptionalProperty(key).map(Integer::valueOf);
+	}
 }
