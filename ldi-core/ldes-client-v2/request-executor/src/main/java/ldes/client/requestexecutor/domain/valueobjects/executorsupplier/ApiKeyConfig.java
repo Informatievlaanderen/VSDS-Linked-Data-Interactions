@@ -5,14 +5,16 @@ import org.apache.http.message.BasicHeader;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 public class ApiKeyConfig implements RequestExecutorSupplier {
 
 	private final String apiKeyHeader;
 	private final String apiKey;
 
 	public ApiKeyConfig(String apiKeyHeader, String apiKey) {
-		this.apiKeyHeader = apiKeyHeader;
-		this.apiKey = apiKey;
+		this.apiKeyHeader = notNull(apiKeyHeader, "apiKeyHeader cannot be null");
+		this.apiKey = notNull(apiKey, "apiKey cannot be null");
 	}
 
 	public RequestExecutor createRequestExecutor() {
