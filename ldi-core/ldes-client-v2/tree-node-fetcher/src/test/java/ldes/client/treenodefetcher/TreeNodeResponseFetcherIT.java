@@ -9,5 +9,5 @@ import org.junit.platform.suite.api.Suite;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
 @ConfigurationParameter(key = "ldes.client.treenodefetcher", value = "ldes.client.treenodefetcher")
-public class TreeNodeFetcherIT {
+public class TreeNodeResponseFetcherIT {
 }

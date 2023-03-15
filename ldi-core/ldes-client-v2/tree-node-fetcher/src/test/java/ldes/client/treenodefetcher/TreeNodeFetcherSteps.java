@@ -5,7 +5,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
-import ldes.client.treenodefetcher.domain.entities.TreeNode;
+import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import org.apache.jena.riot.RDFLanguages;
 
@@ -15,7 +15,7 @@ public class TreeNodeFetcherSteps {
 
 	private TreeNodeFetcher treeNodeFetcher;
 	private TreeNodeRequest treeNodeRequest;
-	private TreeNode treeNode;
+	private TreeNodeResponse treeNodeResponse;
 
 	@Given("I have a TreeNodeFetcher")
 	public void initializeCalculator() {
@@ -29,12 +29,12 @@ public class TreeNodeFetcherSteps {
 
 	@And("I fetch the TreeNode")
 	public void iFetchTheTreeNode() {
-		treeNode = treeNodeFetcher.fetchTreeNode(treeNodeRequest);
+		treeNodeResponse = treeNodeFetcher.fetchTreeNode(treeNodeRequest);
 	}
 
 	@Then("the obtained TreeNode has {int} members and {int} relations")
 	public void theObtainedTreeNodeHasMembersAndRelations(int numberOfMembers, int numberOfRelations) {
-		assertEquals(numberOfMembers, treeNode.getMembers().size());
-		assertEquals(numberOfRelations, treeNode.getRelations().size());
+		assertEquals(numberOfMembers, treeNodeResponse.getMembers().size());
+		assertEquals(numberOfRelations, treeNodeResponse.getRelations().size());
 	}
 }
