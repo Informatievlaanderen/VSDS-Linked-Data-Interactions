@@ -15,7 +15,7 @@ public class WireMockConfig {
 		wireMockServer = new WireMockServer(
 				WireMockConfiguration
 						.options()
-						.extensions(ApiKeyRequestFilter.class)
+						.extensions(new ApiKeyRequestFilter())
 						.port(WIREMOCK_PORT));
 		System.out.println("----- Starting Wiremock Server -----");
 		if (!wireMockServer.isRunning()) {
