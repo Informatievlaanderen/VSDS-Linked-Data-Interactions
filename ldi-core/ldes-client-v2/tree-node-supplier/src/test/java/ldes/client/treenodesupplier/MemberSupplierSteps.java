@@ -7,17 +7,17 @@ import io.cucumber.java.en.When;
 import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
+import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
+import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
-import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.sqlite.SqliteMemberRepository;
-import ldes.client.treenodesupplier.repository.sqlite.SqliteTreeNodeRepository;
 import org.apache.jena.riot.Lang;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MemberSupplierSteps {
 
@@ -26,15 +26,6 @@ public class MemberSupplierSteps {
 	private MemberRepository memberRepository;
 	private MemberSupplier memberSupplier;
 	private Ldes ldes;
-
-	@Given("A Processor with a TreeNodeRepository, a MemberRepository and a starting url {string}")
-	public void aProcessorWithATreeNodeRepositoryAMemberRepositoryAndAStartingUrl(String url) {
-		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
-		memberRepository = new InMemoryMemberRepository();
-		treeNodeProcessor = new TreeNodeProcessor(new Ldes(url, Lang.JSONLD), treeNodeRecordRepository,
-				memberRepository,
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
-	}
 
 	@When("I request the {int} members from the MemberSupplier")
 	public void iRequestTheMembersFromTheMemberSupplier(int numberOfFetchedNumbers) {
@@ -63,32 +54,9 @@ public class MemberSupplierSteps {
 		assertTrue(treeNodeRecordRepository.existsByIdAndStatus(treeNodeId, TreeNodeStatus.valueOf(treeNodeStatus)));
 	}
 
-	@Given("A Processor with a sqlite TreeNodeRepository, a sqlite MemberRepository and a starting url {string}")
-	public void aProcessorWithATreeNodeRepositoryASqliteMemberRepositoryAndAStartingUrl(String url) {
-		treeNodeRecordRepository = new SqliteTreeNodeRepository();
-		memberRepository = new SqliteMemberRepository();
-		treeNodeProcessor = new TreeNodeProcessor(new Ldes(url, Lang.JSONLD), treeNodeRecordRepository,
-				memberRepository,
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
-	}
-
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
 		ldes = new LdesProvider(new DefaultConfig().createRequestExecutor()).getLdes(url, Lang.JSONLD);
-	}
-
-	@And("a InMemoryMemberRepository and a InMemoryTreeNodeRecordRepository")
-	public void inMemoryRepositories() {
-		memberRepository = new InMemoryMemberRepository();
-		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
-
-	}
-
-	@And("a SqliteMemberRepository and a SqliteTreeNodeRepository")
-	public void sqliteRepositories() {
-		memberRepository = new SqliteMemberRepository();
-		treeNodeRecordRepository = new SqliteTreeNodeRepository();
-
 	}
 
 	@When("I create a Processor")
@@ -105,5 +73,19 @@ public class MemberSupplierSteps {
 	@Then("Member {string} is processed")
 	public void memberIsProcessed(String arg0) {
 		assertTrue(memberRepository.isProcessed(new MemberRecord(arg0, null)));
+	}
+
+	@And("a StatePersistenceStrategy MEMORY")
+	public void aMemoryStatePersistanceStrategy() {
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistanceStrategy.MEMORY);
+		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
+				.getTreeNodeRecordRepository(StatePersistanceStrategy.MEMORY);
+	}
+
+	@And("a StatePersistenceStrategy SQLITE")
+	public void aSqliteStatePersistanceStrategy() {
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistanceStrategy.SQLITE);
+		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
+				.getTreeNodeRecordRepository(StatePersistanceStrategy.SQLITE);
 	}
 }

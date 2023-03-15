@@ -4,7 +4,7 @@ Feature: MemberSupplier
 
   Scenario Outline: Obtaining the members from first three fragments including the starting node
     Given A starting url "http://localhost:10101/302-redirects-to-first-node"
-    And a <memberRepository> and a <treeNodeRecordRepository>
+    And a StatePersistenceStrategy <statePersistenceStrategy>
     When I create a Processor
     Then Status "NOT_VISITED" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/1" is not processed
@@ -31,6 +31,6 @@ Feature: MemberSupplier
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/3" is processed
 
     Examples:
-      | memberRepository         | treeNodeRecordRepository         |
-      | InMemoryMemberRepository | InMemoryTreeNodeRecordRepository |
-      | SqliteMemberRepository   | SqliteTreeNodeRepository         |
+      | statePersistenceStrategy |
+      | MEMORY                   |
+      | SQLITE                   |

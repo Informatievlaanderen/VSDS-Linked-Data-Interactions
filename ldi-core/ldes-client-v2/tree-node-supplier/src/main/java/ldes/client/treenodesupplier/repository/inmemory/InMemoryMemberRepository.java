@@ -1,6 +1,7 @@
 package ldes.client.treenodesupplier.repository.inmemory;
 
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
+import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
 import java.util.ArrayList;
@@ -26,9 +27,10 @@ public class InMemoryMemberRepository implements MemberRepository {
 
 	@Override
 	public void saveTreeMember(MemberRecord treeMember) {
-		switch (treeMember.getMemberStatus()) {
-			case PROCESSED -> processed.add(treeMember);
-			case UNPROCESSED -> unprocessed.add(treeMember);
+		if (treeMember.getMemberStatus() == MemberStatus.PROCESSED) {
+			processed.add(treeMember);
+		} else if (treeMember.getMemberStatus() == MemberStatus.UNPROCESSED) {
+			unprocessed.add(treeMember);
 		}
 	}
 

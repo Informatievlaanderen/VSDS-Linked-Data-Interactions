@@ -35,7 +35,8 @@ public class TreeNodeProcessor {
 
 	public TreeNodeProcessor(Ldes ldes, StatePersistanceStrategy statePersistanceStrategy,
 			TreeNodeFetcher treeNodeFetcher) {
-		this.treeNodeRecordRepository = TreeNodeRecordRepositoryFactory.getMemberRepository(statePersistanceStrategy);
+		this.treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
+				.getTreeNodeRecordRepository(statePersistanceStrategy);
 		this.memberRepository = MemberRepositoryFactory.getMemberRepository(statePersistanceStrategy);
 		this.treeNodeFetcher = treeNodeFetcher;
 		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(ldes.getStartingNodeUrl()));

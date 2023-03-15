@@ -6,8 +6,11 @@ import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRe
 import ldes.client.treenodesupplier.repository.sqlite.SqliteTreeNodeRepository;
 
 public class TreeNodeRecordRepositoryFactory {
+	private TreeNodeRecordRepositoryFactory() {
+	}
 
-	public static TreeNodeRecordRepository getMemberRepository(StatePersistanceStrategy statePersistanceStrategy) {
+	public static TreeNodeRecordRepository getTreeNodeRecordRepository(
+			StatePersistanceStrategy statePersistanceStrategy) {
 		return switch (statePersistanceStrategy) {
 			case SQLITE -> new SqliteTreeNodeRepository();
 			case MEMORY -> new InMemoryTreeNodeRecordRepository();

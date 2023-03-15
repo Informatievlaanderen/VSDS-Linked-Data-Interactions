@@ -7,6 +7,9 @@ import ldes.client.treenodesupplier.repository.sqlite.SqliteMemberRepository;
 
 public class MemberRepositoryFactory {
 
+	private MemberRepositoryFactory() {
+	}
+
 	public static MemberRepository getMemberRepository(StatePersistanceStrategy statePersistanceStrategy) {
 		return switch (statePersistanceStrategy) {
 			case SQLITE -> new SqliteMemberRepository();
