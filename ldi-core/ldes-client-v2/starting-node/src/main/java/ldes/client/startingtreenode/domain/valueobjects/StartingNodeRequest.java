@@ -12,10 +12,12 @@ public class StartingNodeRequest {
 
 	private final String url;
 	private final Lang lang;
+	private final RedirectHistory redirectHistory;
 
-	public StartingNodeRequest(String url, Lang lang) {
+	public StartingNodeRequest(String url, Lang lang, RedirectHistory redirectHistory) {
 		this.url = url;
 		this.lang = lang;
+		this.redirectHistory = redirectHistory;
 	}
 
 	public String contentType() {
@@ -31,7 +33,8 @@ public class StartingNodeRequest {
 	}
 
 	public StartingNodeRequest createRedirectedEndpoint(final String location) {
-		return new StartingNodeRequest(location, lang);
+		RedirectHistory updatedRedirectHistory = redirectHistory.addStartingNodeRequest(this);
+		return new StartingNodeRequest(location, lang, updatedRedirectHistory);
 	}
 
 	@Override

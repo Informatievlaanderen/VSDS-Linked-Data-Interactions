@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/302-redirects-infinite-loop-1",
+    "headers": {
+      "Accept": {
+        "contains": "application/ld+json"
+      }
+    }
+  },
+  "response": {
+    "status": 302,
+    "headers": {
+      "Location": "http://localhost:10101/302-redirects-infinite-loop-2"
+    }
+  }
+}
