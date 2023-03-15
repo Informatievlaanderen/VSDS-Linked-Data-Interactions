@@ -14,6 +14,7 @@ Feature: RequestExecutor
       | requestExecutor                  | endpoint                                          |
       | DefaultRequestExecutor           | http://localhost:10101/200-response-accept-nquads |
       | ClientCredentialsRequestExecutor | http://localhost:10101/200-response-with-token    |
+      | ApiKeyRequestExecutor            | http://localhost:10101/200-response-with-api-key  |
 
 
   Scenario Outline: Obtaining the Response of a redirected Request

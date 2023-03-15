@@ -1,10 +1,9 @@
-package ldes.client.requestexecutor.executor.noauth;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
+package ldes.client.requestexecutor.executor.wiremock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 
 public class WireMockConfig {
 
@@ -14,7 +13,10 @@ public class WireMockConfig {
 	@Before
 	public static void setupWireMock() {
 		wireMockServer = new WireMockServer(
-				WireMockConfiguration.options().port(WIREMOCK_PORT));
+				WireMockConfiguration
+						.options()
+						.extensions(ApiKeyRequestFilter.class)
+						.port(WIREMOCK_PORT));
 		System.out.println("----- Starting Wiremock Server -----");
 		if (!wireMockServer.isRunning()) {
 			wireMockServer.start();
@@ -26,5 +28,4 @@ public class WireMockConfig {
 		System.out.println("----- Stopping Wiremock Server -----");
 		wireMockServer.stop();
 	}
-
 }

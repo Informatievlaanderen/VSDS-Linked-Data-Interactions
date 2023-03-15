@@ -8,10 +8,11 @@ import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
+import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ApiKeyConfig;
 import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ClientCredentialsConfig;
 import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
 import ldes.client.requestexecutor.exceptions.HttpRequestException;
-import ldes.client.requestexecutor.executor.noauth.WireMockConfig;
+import ldes.client.requestexecutor.executor.wiremock.WireMockConfig;
 import org.apache.http.HttpHeaders;
 
 import java.util.ArrayList;
@@ -28,6 +29,11 @@ public class RequestExecutorSteps {
 	private Response response;
 	private Request request;
 	private RequestHeaders requestHeaders;
+
+	@Given("I have a ApiKeyRequestExecutor")
+	public void aApiKeyRequestExecutorIsAvailable() {
+		requestExecutor = new ApiKeyConfig("X-API-KEY", "test123").createRequestExecutor();
+	}
 
 	@Given("I have a ClientCredentialsRequestExecutor")
 	public void aClientCredentialsRequestExecutorIsAvailable() {
