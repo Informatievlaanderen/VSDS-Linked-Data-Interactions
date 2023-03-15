@@ -2,8 +2,8 @@ package ldes.client.treenodesupplier;
 
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.startingtreenode.StartingTreeNodeFinder;
-import ldes.client.startingtreenode.domain.valueobjects.Endpoint;
-import ldes.client.startingtreenode.domain.valueobjects.TreeNode;
+import ldes.client.startingtreenode.domain.valueobjects.StartingNodeRequest;
+import ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
 import ldes.client.treenodesupplier.exception.NoStartingNodeException;
 import org.apache.jena.riot.Lang;
@@ -20,9 +20,8 @@ public class LdesProvider {
 
 	public Ldes getLdes(String url, Lang lang) {
 		StartingTreeNodeFinder startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
-		Optional<TreeNode> startingTreeNode = startingTreeNodeFinder
-				.determineStartingTreeNode(new Endpoint(url, lang));
-		TreeNode treeNode = startingTreeNode.orElseThrow(() -> new NoStartingNodeException(url));
-		return new Ldes(treeNode.getUrl(), lang);
+		StartingTreeNode startingTreeNode = startingTreeNodeFinder
+				.determineStartingTreeNode(new StartingNodeRequest(url, lang));
+		return new Ldes(startingTreeNode.getUrl(), lang);
 	}
 }

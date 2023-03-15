@@ -26,10 +26,10 @@ public class TreeNodeSpecification implements StartingNodeSpecification {
 	}
 
 	@Override
-	public TreeNode extractStartingNode(Model model) {
+	public StartingTreeNode extractStartingNode(Model model) {
 		return getTreeNode(model)
 				.map(Resource::getURI)
-				.map(TreeNode::new)
+				.map(StartingTreeNode::new)
 				.orElseThrow(() -> new RuntimeException("a"));
 	}
 }

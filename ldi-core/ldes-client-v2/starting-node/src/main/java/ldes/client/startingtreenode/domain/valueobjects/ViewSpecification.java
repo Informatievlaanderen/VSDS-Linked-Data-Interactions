@@ -20,10 +20,10 @@ public class ViewSpecification implements StartingNodeSpecification {
 	}
 
 	@Override
-	public TreeNode extractStartingNode(Model model) {
+	public StartingTreeNode extractStartingNode(Model model) {
 		return model.listObjectsOfProperty(TREE_VIEW).nextOptional().map(RDFNode::asResource)
 				.map(Resource::getURI)
-				.map(TreeNode::new)
+				.map(StartingTreeNode::new)
 				.orElseThrow(() -> new RuntimeException("a"));
 	}
 }

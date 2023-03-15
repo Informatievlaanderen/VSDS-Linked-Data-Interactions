@@ -5,10 +5,10 @@ import java.util.Objects;
 /**
  * Contains the rootNode endpoint information to start the client.
  */
-public class TreeNode {
+public class StartingTreeNode {
 	private final String url;
 
-	public TreeNode(String url) {
+	public StartingTreeNode(String url) {
 		this.url = url;
 	}
 
@@ -20,7 +20,7 @@ public class TreeNode {
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (!(o instanceof TreeNode that))
+		if (!(o instanceof StartingTreeNode that))
 			return false;
 		return Objects.equals(url, that.url);
 	}

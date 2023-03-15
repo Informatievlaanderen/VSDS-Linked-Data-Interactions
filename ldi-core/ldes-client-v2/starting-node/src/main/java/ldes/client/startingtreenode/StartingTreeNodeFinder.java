@@ -6,6 +6,7 @@ import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.startingtreenode.domain.valueobjects.*;
+import ldes.client.startingtreenode.exception.StartingNodeNotFoundException;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.jena.rdf.model.Model;
@@ -27,45 +28,38 @@ public class StartingTreeNodeFinder {
 	/**
 	 * Determines the first node to be queued.
 	 *
-	 * @param endpoint
+	 * @param startingNodeRequest
 	 *            can contain a collection, view or treeNode.
 	 * @return the first node to be queued by the client
 	 */
-	public Optional<TreeNode> determineStartingTreeNode(final Endpoint endpoint) {
+	public StartingTreeNode determineStartingTreeNode(final StartingNodeRequest startingNodeRequest) {
 		RequestHeaders requestHeaders = new RequestHeaders(
-				List.of(new RequestHeader(HttpHeaders.ACCEPT, endpoint.contentType())));
-		Response response = requestExecutor.execute(new Request(endpoint.url(), requestHeaders));
-		if (responseIsOK(response)) {
-			return selectStartingNode(endpoint, response);
+				List.of(new RequestHeader(HttpHeaders.ACCEPT, startingNodeRequest.contentType())));
+		Response response = requestExecutor.execute(new Request(startingNodeRequest.url(), requestHeaders));
+		if (response.getHttpStatus() == HttpStatus.SC_OK) {
+			return selectStartingNode(startingNodeRequest, response);
 		}
-		if (responseIsRedirect(response)) {
-			Endpoint newEndpoint = endpoint
-					.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow());
-			return determineStartingTreeNode(newEndpoint);
+		if (response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY) {
+			StartingNodeRequest newStartingNodeRequest = startingNodeRequest
+					.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION)
+							.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest)));
+			return determineStartingTreeNode(newStartingNodeRequest);
 		}
-		return Optional.empty();
+		throw new StartingNodeNotFoundException(startingNodeRequest);
 	}
 
-	private Optional<TreeNode> selectStartingNode(Endpoint endpoint, Response response) {
+	private StartingTreeNode selectStartingNode(StartingNodeRequest startingNodeRequest, Response response) {
 		Model model = RDFParser
 				.fromString(response.getBody().orElseThrow())
-				.lang(endpoint.lang())
+				.lang(startingNodeRequest.lang())
 				.build()
 				.toModel();
 		return startingNodeSpecifications
 				.stream()
 				.filter(startingNodeSpecification -> startingNodeSpecification.test(model))
 				.map(startingNodeSpecification -> startingNodeSpecification.extractStartingNode(model))
-				.findFirst();
-	}
-
-	private boolean responseIsOK(Response response) {
-		return response.getHttpStatus() == HttpStatus.SC_OK;
-	}
-
-	private boolean responseIsRedirect(Response response) {
-		return response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY
-				&& response.getValueOfHeader(HttpHeaders.LOCATION).isPresent();
+				.findFirst()
+				.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest));
 	}
 
 }
