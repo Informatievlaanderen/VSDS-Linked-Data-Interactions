@@ -16,7 +16,12 @@ import org.apache.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -26,7 +31,7 @@ public class RequestExecutorSteps {
 	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
-	private RequestHeaders requestHeaders;
+	private RequestHeaders requestHeaders = new RequestHeaders(List.of());
 
 	@Given("I have a ClientCredentialsRequestExecutor")
 	public void aClientCredentialsRequestExecutorIsAvailable() {
@@ -94,5 +99,19 @@ public class RequestExecutorSteps {
 	@Then("I will have called {string} {int} times")
 	public void iWillHaveCalledTimes(String arg0, int arg1) {
 		WireMockConfig.wireMockServer.verify(arg1, getRequestedFor(urlEqualTo(arg0)));
+	}
+
+	@And("I mock {string} to fail the first time and succeed the second time")
+	public void iMockToFailTheFirstTimeAndSucceedTheSecondTime(String url) {
+		WireMockConfig.wireMockServer.stubFor(get(urlEqualTo(url))
+				.inScenario("Retry Scenario")
+				.whenScenarioStateIs(STARTED)
+				.willReturn(aResponse().withStatus(500))
+				.willSetStateTo("Cause Success"));
+
+		WireMockConfig.wireMockServer.stubFor(get(urlEqualTo(url))
+				.inScenario("Retry Scenario")
+				.whenScenarioStateIs("Cause Success")
+				.willReturn(aResponse().withStatus(200)));
 	}
 }

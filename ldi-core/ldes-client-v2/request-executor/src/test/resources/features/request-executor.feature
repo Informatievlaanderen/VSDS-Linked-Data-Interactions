@@ -46,8 +46,7 @@ Feature: RequestExecutor
 
   Scenario Outline: Obtaining a HttpRequestException of an invalid Request
     Given I have a <requestExecutor>
-    When I create RequestHeaders
-    And I create a Request with the RequestHeaders and url: https://not-real
+    When I create a Request with the RequestHeaders and url: https://not-real
     Then I get a HttpRequestException when executing the request
 
     Examples:
@@ -57,15 +56,19 @@ Feature: RequestExecutor
 
     Scenario: Obtaining a cached token when sending multiple authenticated requests
       Given I have a ClientCredentialsRequestExecutor
-      When I create RequestHeaders
-      And I create a Request with the RequestHeaders and url: http://localhost:10101/200-response-with-token
+      When I create a Request with the RequestHeaders and url: http://localhost:10101/200-response-with-token
       And I execute the request
       And I execute the request
       Then I will have called the token endpoint only once
 
     Scenario: Obtaining the response with retries
       Given I have a requestExecutor which does 3 retries
-      When I create RequestHeaders
-      And I create a Request with the RequestHeaders and url: http://localhost:10101/500-response
+      When I create a Request with the RequestHeaders and url: http://localhost:10101/500-response
       And I execute the request
       Then I will have called "/500-response" 3 times
+      And I obtain a response with status code 500
+      When I create a Request with the RequestHeaders and url: http://localhost:10101/fail-once
+      And I mock "/fail-once" to fail the first time and succeed the second time
+      And I execute the request
+      Then I will have called "/fail-once" 2 times
+      And I obtain a response with status code 200

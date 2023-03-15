@@ -59,14 +59,14 @@ public class LdesClient extends AbstractProcessor {
 		return List.of(DATA_SOURCE_URL, DATA_SOURCE_FORMAT, DATA_DESTINATION_FORMAT, KEEP_STATE,
 				STATE_PERSISTENCE_STRATEGY,
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY, OAUTH_CLIENT_ID,
-				OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY);
+				OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY, RETRIES_ENABLED);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		String dataSourceUrl = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
-		final RequestExecutor requestExecutor = getRequestExecutor(context);
+		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
 		Ldes ldes = new LdesProvider(requestExecutor).getLdes(dataSourceUrl, dataSourceFormat);
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldes,
 				LdesProcessorProperties.getStatePersistanceStrategy(context),
@@ -87,6 +87,13 @@ public class LdesClient extends AbstractProcessor {
 				requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
 						getOauthClientSecret(context), getOauthTokenEndpoint(context));
 		};
+	}
+
+	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {
+		final RequestExecutor requestExecutor = getRequestExecutor(context);
+		return retriesEnabled(context)
+				? requestExecutorFactory.createRetryExecutor(requestExecutor, getMaxRetries(context))
+				: requestExecutor;
 	}
 
 	private void determineLdesProperties(Ldes ldes, RequestExecutor requestExecutor, ProcessContext context) {
