@@ -1,19 +1,16 @@
-package ldes.client.treenodefetcher.domain.entities;
+package ldes.client.treenodefetcher.domain.valueobjects;
 
-import ldes.client.treenodefetcher.domain.valueobjects.MutabilityStatus;
+import ldes.client.treenodefetcher.domain.entities.TreeMember;
 
 import java.util.List;
 
-public class TreeNode {
-	private final String treeNodeId;
+public class TreeNodeResponse {
 	private final List<String> relation;
 	private final List<TreeMember> members;
-
 	private final MutabilityStatus mutabilityStatus;
 
-	public TreeNode(String treeNodeId, List<String> relations, List<TreeMember> members,
+	public TreeNodeResponse(List<String> relations, List<TreeMember> members,
 			MutabilityStatus mutabilityStatus) {
-		this.treeNodeId = treeNodeId;
 		this.relation = relations;
 		this.members = members;
 		this.mutabilityStatus = mutabilityStatus;

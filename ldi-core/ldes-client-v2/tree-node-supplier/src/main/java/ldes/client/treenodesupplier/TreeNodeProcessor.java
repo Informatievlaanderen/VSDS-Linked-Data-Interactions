@@ -1,7 +1,7 @@
 package ldes.client.treenodesupplier;
 
 import ldes.client.treenodefetcher.TreeNodeFetcher;
-import ldes.client.treenodefetcher.domain.entities.TreeNode;
+import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
@@ -48,7 +48,7 @@ public class TreeNodeProcessor {
 						() -> treeNodeRecordRepository.getOneTreeNodeRecordWithStatus(TreeNodeStatus.MUTABLE_AND_ACTIVE)
 								.orElseThrow(() -> new RuntimeException(
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
-		TreeNode treeNodeResponse = treeNodeFetcher
+		TreeNodeResponse treeNodeResponse = treeNodeFetcher
 				.fetchTreeNode(ldes.createRequest(treeNodeRecord.getTreeNodeUrl()));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
 		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
