@@ -3,22 +3,22 @@ Feature: MemberSupplier
   I want get a stream of Members from the MemberSupplier
 
   Scenario Outline: Obtaining the members from first three fragments including the starting node
-    Given A starting url "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances"
+    Given A starting url "http://localhost:10101/302-redirects-to-first-node"
     And a <memberRepository> and a <treeNodeRecordRepository>
     When I create a Processor
     When I create a MemberSupplier
     When I request the 1 members from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances"
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z"
-    Then Status "NOT_VISITED" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:37:18.577Z"
+    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/302-redirects-to-first-node"
+    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "NOT_VISITED" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     When I request the 249 members from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances"
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z"
-    Then Status "NOT_VISITED" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:37:18.577Z"
+    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/302-redirects-to-first-node"
+    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "NOT_VISITED" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     When I request the 1 members from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances"
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z"
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:37:18.577Z"
+    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/302-redirects-to-first-node"
+    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
 
     Examples:
       | memberRepository         | treeNodeRecordRepository         |

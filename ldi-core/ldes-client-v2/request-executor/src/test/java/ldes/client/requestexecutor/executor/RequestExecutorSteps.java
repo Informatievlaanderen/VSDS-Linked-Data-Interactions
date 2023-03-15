@@ -45,13 +45,13 @@ public class RequestExecutorSteps {
 	}
 
 	@Then("I obtain a response with status code {int}")
-	public void iObtainAResponseWithStatusCode(int arg0) {
-		assertEquals(arg0, response.getHttpStatus());
+	public void iObtainAResponseWithStatusCode(int statusCode) {
+		assertEquals(statusCode, response.getHttpStatus());
 	}
 
 	@And("I obtain a location header: {string}")
-	public void iObtainALocationHeader(String url) {
-		assertEquals(url, response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow());
+	public void iObtainALocationHeader(String locationHeader) {
+		assertEquals(locationHeader, response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow());
 	}
 
 	@Then("I get a HttpRequestException when executing the request")
@@ -70,13 +70,13 @@ public class RequestExecutorSteps {
 	}
 
 	@And("I add a RequestHeader with key {string} and value {string}")
-	public void iAddARequestHeaderWithKeyAndValue(String arg0, String arg1) {
-		addHeaderToRequestHeaders(arg0, arg1);
+	public void iAddARequestHeaderWithKeyAndValue(String headerKey, String headerValue) {
+		addHeaderToRequestHeaders(headerKey, headerValue);
 	}
 
 	@And("^I create a Request with the RequestHeaders and url: (.*)$")
-	public void iCreateARequestWithTheRequestHeadersAndUrl(String arg0) {
-		request = new Request(arg0, requestHeaders);
+	public void iCreateARequestWithTheRequestHeadersAndUrl(String url) {
+		request = new Request(url, requestHeaders);
 	}
 
 	private void addHeaderToRequestHeaders(String key, String value) {

@@ -27,17 +27,17 @@ public class MemberSupplierSteps {
 	private Ldes ldes;
 
 	@Given("A Processor with a TreeNodeRepository, a MemberRepository and a starting url {string}")
-	public void aProcessorWithATreeNodeRepositoryAMemberRepositoryAndAStartingUrl(String arg0) {
+	public void aProcessorWithATreeNodeRepositoryAMemberRepositoryAndAStartingUrl(String url) {
 		treeNodeRecordRepository = new InMemoryTreeNodeRecordRepository();
 		memberRepository = new InMemoryMemberRepository();
-		treeNodeProcessor = new TreeNodeProcessor(new Ldes(arg0, Lang.JSONLD), treeNodeRecordRepository,
+		treeNodeProcessor = new TreeNodeProcessor(new Ldes(url, Lang.JSONLD), treeNodeRecordRepository,
 				memberRepository,
 				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
 	}
 
 	@When("I request the {int} members from the MemberSupplier")
-	public void iRequestTheMembersFromTheMemberSupplier(int arg0) {
-		for (int i = 0; i < arg0; i++) {
+	public void iRequestTheMembersFromTheMemberSupplier(int numberOfFetchedNumbers) {
+		for (int i = 0; i < numberOfFetchedNumbers; i++) {
 			memberSupplier.get();
 		}
 	}
@@ -48,32 +48,32 @@ public class MemberSupplierSteps {
 	}
 
 	@Then("The TreeNode is processed: {string}")
-	public void theTreeNodeIsProcessed(String arg0) {
-		assertTrue(treeNodeRecordRepository.existsById(arg0));
+	public void theTreeNodeIsProcessed(String treeNodeId) {
+		assertTrue(treeNodeRecordRepository.existsById(treeNodeId));
 	}
 
 	@Then("The TreeNode is not processed: {string}")
-	public void theTreeNodeIsNotProcessed(String arg0) {
-		assertFalse(treeNodeRecordRepository.existsById(arg0));
+	public void theTreeNodeIsNotProcessed(String treeNodeId) {
+		assertFalse(treeNodeRecordRepository.existsById(treeNodeId));
 	}
 
 	@Then("Status {string} for TreeNodeRecord with identifier: {string}")
-	public void statusForTreeNodeRecordWithIdentifier(String arg0, String arg1) {
-		assertTrue(treeNodeRecordRepository.existsByIdAndStatus(arg1, TreeNodeStatus.valueOf(arg0)));
+	public void statusForTreeNodeRecordWithIdentifier(String treeNodeStatus, String treeNodeId) {
+		assertTrue(treeNodeRecordRepository.existsByIdAndStatus(treeNodeId, TreeNodeStatus.valueOf(treeNodeStatus)));
 	}
 
 	@Given("A Processor with a sqlite TreeNodeRepository, a sqlite MemberRepository and a starting url {string}")
-	public void aProcessorWithATreeNodeRepositoryASqliteMemberRepositoryAndAStartingUrl(String arg0) {
+	public void aProcessorWithATreeNodeRepositoryASqliteMemberRepositoryAndAStartingUrl(String url) {
 		treeNodeRecordRepository = new SqliteTreeNodeRepository();
 		memberRepository = new SqliteMemberRepository();
-		treeNodeProcessor = new TreeNodeProcessor(new Ldes(arg0, Lang.JSONLD), treeNodeRecordRepository,
+		treeNodeProcessor = new TreeNodeProcessor(new Ldes(url, Lang.JSONLD), treeNodeRecordRepository,
 				memberRepository,
 				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
 	}
 
 	@Given("A starting url {string}")
-	public void aStartingUrl(String arg0) {
-		ldes = new Ldes(arg0, Lang.JSONLD);
+	public void aStartingUrl(String url) {
+		ldes = new Ldes(url, Lang.JSONLD);
 	}
 
 	@And("a InMemoryMemberRepository and a InMemoryTreeNodeRecordRepository")

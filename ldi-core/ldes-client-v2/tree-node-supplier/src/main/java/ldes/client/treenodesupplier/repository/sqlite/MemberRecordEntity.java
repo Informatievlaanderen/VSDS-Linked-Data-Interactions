@@ -3,10 +3,8 @@ package ldes.client.treenodesupplier.repository.sqlite;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParserBuilder;
-
-import java.io.StringWriter;
+import org.apache.jena.riot.RDFWriter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,9 +31,7 @@ public class MemberRecordEntity {
 	public static MemberRecordEntity fromMemberRecord(MemberRecord treeMember) {
 		String ldesMemberString = null;
 		if (treeMember.getModel() != null) {
-			StringWriter outputStream = new StringWriter();
-			RDFDataMgr.write(outputStream, treeMember.getModel(), Lang.NQUADS);
-			ldesMemberString = outputStream.toString();
+			ldesMemberString = RDFWriter.source(treeMember.getModel()).lang(Lang.NQUADS).asString();
 		}
 		return new MemberRecordEntity(treeMember.getMemberId(), treeMember.getMemberStatus(), ldesMemberString);
 	}
