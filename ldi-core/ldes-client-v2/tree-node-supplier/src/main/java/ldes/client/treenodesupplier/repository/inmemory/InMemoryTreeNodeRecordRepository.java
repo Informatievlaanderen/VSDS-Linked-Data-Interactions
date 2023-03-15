@@ -24,7 +24,6 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 			case IMMUTABLE -> {
 				immutable.add(treeNodeRecord);
 				notVisited.remove(treeNodeRecord);
-				mutableAndActive.remove(treeNodeRecord);
 			}
 		}
 	}
@@ -53,7 +52,7 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 		return switch (treeNodeStatus) {
 			case NOT_VISITED -> notVisited.isEmpty() ? Optional.empty() : Optional.of(notVisited.get(0));
 			case MUTABLE_AND_ACTIVE ->
-				mutableAndActive.isEmpty() ? Optional.empty() : Optional.of(mutableAndActive.peek());
+				mutableAndActive.isEmpty() ? Optional.empty() : Optional.of(mutableAndActive.poll());
 			case IMMUTABLE -> immutable.isEmpty() ? Optional.empty() : Optional.of(immutable.get(0));
 		};
 	}

@@ -6,6 +6,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
+import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.valueobject.Ldes;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
@@ -73,7 +74,7 @@ public class MemberSupplierSteps {
 
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
-		ldes = new Ldes(url, Lang.JSONLD);
+		ldes = new LdesProvider(new DefaultConfig().createRequestExecutor()).getLdes(url, Lang.JSONLD);
 	}
 
 	@And("a InMemoryMemberRepository and a InMemoryTreeNodeRecordRepository")
@@ -94,5 +95,15 @@ public class MemberSupplierSteps {
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldes, treeNodeRecordRepository, memberRepository,
 				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
+	}
+
+	@Then("Member {string} is not processed")
+	public void memberIsNotProcessed(String arg0) {
+		assertFalse(memberRepository.isProcessed(new MemberRecord(arg0, null)));
+	}
+
+	@Then("Member {string} is processed")
+	public void memberIsProcessed(String arg0) {
+		assertTrue(memberRepository.isProcessed(new MemberRecord(arg0, null)));
 	}
 }
