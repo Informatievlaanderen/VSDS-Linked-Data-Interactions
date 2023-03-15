@@ -59,17 +59,17 @@ public class LdioLdesClientAutoConfig {
 					.map(authentication -> switch (authentication) {
 						case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
 						case API_KEY ->
-								requestExecutorFactory.createApiKeyExecutor(
-										componentProperties.getOptionalProperty(API_KEY_HEADER).orElse(DEFAULT_API_KEY_HEADER),
-										componentProperties.getProperty(API_KEY));
+							requestExecutorFactory.createApiKeyExecutor(
+									componentProperties.getOptionalProperty(API_KEY_HEADER)
+											.orElse(DEFAULT_API_KEY_HEADER),
+									componentProperties.getProperty(API_KEY));
 						case OAUTH2_CLIENT_CREDENTIALS ->
-								requestExecutorFactory.createClientCredentialsExecutor(
-										componentProperties.getProperty(CLIENT_ID),
-										componentProperties.getProperty(CLIENT_SECRET),
-										componentProperties.getProperty(TOKEN_ENDPOINT));
+							requestExecutorFactory.createClientCredentialsExecutor(
+									componentProperties.getProperty(CLIENT_ID),
+									componentProperties.getProperty(CLIENT_SECRET),
+									componentProperties.getProperty(TOKEN_ENDPOINT));
 					}).orElseThrow(() -> new UnsupportedOperationException("Requested authentication not available: "
-							+ componentProperties.getOptionalProperty(AUTH_TYPE).orElse(null))
-					);
+							+ componentProperties.getOptionalProperty(AUTH_TYPE).orElse(null)));
 		}
 
 	}
