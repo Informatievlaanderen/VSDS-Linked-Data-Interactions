@@ -1,10 +1,9 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.modules;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class DummyOut implements LdiOutput {

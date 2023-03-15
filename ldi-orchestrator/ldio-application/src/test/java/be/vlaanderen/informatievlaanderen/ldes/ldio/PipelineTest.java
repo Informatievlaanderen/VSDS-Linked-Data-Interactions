@@ -1,15 +1,14 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
+package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules.DummyIn;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules.DummyOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.LdiSenderImpl;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +21,12 @@ import java.util.stream.IntStream;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RESUMING;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-class FlowAutoConfigurationTest {
+class PipelineTest {
 
 	@Autowired
 	LdiInput ldiInput;
@@ -71,14 +69,17 @@ class FlowAutoConfigurationTest {
 		IntStream.range(0, 10)
 				.forEach(value -> dummyIn.sendData());
 		await().until(() -> ldiSender.getQueue().size() == 10);
-		assertEquals(10, dummyOut.output.size());
+		Assertions.assertEquals(10, dummyOut.output.size());
 
 		// Resume Pipeline
 		ldiSender.handlePipelineStatus(new PipelineStatusEvent(RESUMING));
 
-		await().until(() -> ldiSender.getQueue().isEmpty());
-		assertEquals(20, dummyOut.output.size());
+		// Whilst resuming add more members to pipeline
+		IntStream.range(0, 10)
+				.forEach(value -> dummyIn.sendData());
 
+		await().until(() -> ldiSender.getQueue().isEmpty());
+		Assertions.assertEquals(30, dummyOut.output.size());
 	}
 
 }
