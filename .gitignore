@@ -14,6 +14,11 @@
 **/application.yml
 
 ###
+### Test db's
+###
+member-database.db
+
+###
 ### Makefiles
 ###
 .makefiles
