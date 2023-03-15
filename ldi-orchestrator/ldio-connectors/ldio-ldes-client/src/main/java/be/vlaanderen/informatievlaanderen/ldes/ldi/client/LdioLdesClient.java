@@ -11,8 +11,8 @@ public class LdioLdesClient extends LdiInput {
 
 	public LdioLdesClient(ComponentExecutor executor, LdesClientRunner ldesClientRunner) {
 		super(executor, null);
-		ExecutorService executorService = newSingleThreadExecutor();
-		executorService.submit(ldesClientRunner);
-		executorService.shutdown();
+		try (ExecutorService executorService = newSingleThreadExecutor()) {
+			executorService.submit(ldesClientRunner);
+		}
 	}
 }
