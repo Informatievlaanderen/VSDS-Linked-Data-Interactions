@@ -34,8 +34,7 @@ public class LdiSenderImpl implements LdiSender {
 	public void accept(Model model) {
 		if (pipelineStatus == RUNNING) {
 			ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(model));
-		}
-		else {
+		} else {
 			queue.add(model);
 		}
 	}
@@ -46,7 +45,7 @@ public class LdiSenderImpl implements LdiSender {
 			this.pipelineStatus = HALTED;
 		}
 		if (statusEvent.getStatus() == RESUMING) {
-			while (!queue.isEmpty()){
+			while (!queue.isEmpty()) {
 				ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(queue.poll()));
 			}
 			applicationEventPublisher.publishEvent(new PipelineStatusEvent(RUNNING));

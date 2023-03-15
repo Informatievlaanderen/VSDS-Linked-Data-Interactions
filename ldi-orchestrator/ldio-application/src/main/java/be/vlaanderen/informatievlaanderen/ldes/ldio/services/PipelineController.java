@@ -24,7 +24,7 @@ public class PipelineController {
 		return ResponseEntity.ok(pipelineStatus);
 	}
 
-	@PostMapping(path ="/halt")
+	@PostMapping(path = "/halt")
 	ResponseEntity<PipelineStatus> haltPipeline() {
 		if (pipelineStatus != HALTED) {
 			applicationEventPublisher.publishEvent(new PipelineStatusEvent(HALTED));
@@ -33,7 +33,7 @@ public class PipelineController {
 		return ResponseEntity.ok(HALTED);
 	}
 
-	@PostMapping(path ="/resume")
+	@PostMapping(path = "/resume")
 	ResponseEntity<PipelineStatus> resumePipeline() {
 		if (pipelineStatus == RUNNING) {
 			return ResponseEntity.ok(RUNNING);
@@ -48,6 +48,5 @@ public class PipelineController {
 	public void handlePipelineStatusResponse(PipelineStatusEvent statusEvent) {
 		this.pipelineStatus = statusEvent.getStatus();
 	}
-
 
 }
