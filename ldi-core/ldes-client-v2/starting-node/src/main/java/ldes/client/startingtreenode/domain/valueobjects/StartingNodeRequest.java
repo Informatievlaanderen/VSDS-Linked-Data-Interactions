@@ -8,12 +8,12 @@ import java.util.Objects;
  * Contains the endpoint to connect to the server. This can be a collection,
  * view or subset.
  */
-public class Endpoint {
+public class StartingNodeRequest {
 
 	private final String url;
 	private final Lang lang;
 
-	public Endpoint(String url, Lang lang) {
+	public StartingNodeRequest(String url, Lang lang) {
 		this.url = url;
 		this.lang = lang;
 	}
@@ -30,18 +30,17 @@ public class Endpoint {
 		return lang;
 	}
 
-	public Endpoint createRedirectedEndpoint(final String location) {
-		return new Endpoint(location, lang);
+	public StartingNodeRequest createRedirectedEndpoint(final String location) {
+		return new StartingNodeRequest(location, lang);
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (!(o instanceof Endpoint))
+		if (!(o instanceof StartingNodeRequest startingNodeRequest))
 			return false;
-		Endpoint endpoint = (Endpoint) o;
-		return Objects.equals(url, endpoint.url) && Objects.equals(lang, endpoint.lang);
+		return Objects.equals(url, startingNodeRequest.url) && Objects.equals(lang, startingNodeRequest.lang);
 	}
 
 	@Override

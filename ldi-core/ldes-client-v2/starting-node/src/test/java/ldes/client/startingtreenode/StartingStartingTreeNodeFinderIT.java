@@ -9,5 +9,5 @@ import org.junit.platform.suite.api.Suite;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
 @ConfigurationParameter(key = "ldes.client.startingtreenode", value = "ldes.client.startingtreenode")
-public class StartingTreeNodeFinderIT {
+public class StartingStartingTreeNodeFinderIT {
 }

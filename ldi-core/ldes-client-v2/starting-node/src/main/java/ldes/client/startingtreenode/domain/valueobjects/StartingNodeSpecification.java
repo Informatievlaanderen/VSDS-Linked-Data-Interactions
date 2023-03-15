@@ -6,5 +6,5 @@ import java.util.function.Predicate;
 
 public interface StartingNodeSpecification extends Predicate<Model> {
 
-	TreeNode extractStartingNode(Model model);
+	StartingTreeNode extractStartingNode(Model model);
 }
