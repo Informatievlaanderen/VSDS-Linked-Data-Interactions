@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
@@ -17,27 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioHttpInAutoConfig {
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn")
-	public LdioConfigurator ldioConfigurator(LdiAdapter adapter, ComponentExecutor componentExecutor) {
-		return new LdioHttpInConfigurator(adapter, componentExecutor);
+	public LdioHttpInConfigurator ldioConfigurator() {
+		return new LdioHttpInConfigurator();
 	}
 
-	public static class LdioHttpInConfigurator implements LdioConfigurator {
-		private final LdiAdapter adapter;
-		private final ComponentExecutor executor;
-
-		public LdioHttpInConfigurator(LdiAdapter adapter, ComponentExecutor executor) {
-			this.adapter = adapter;
-			this.executor = executor;
-		}
+	public static class LdioHttpInConfigurator implements LdioInputConfigurator {
 
 		@Override
-		public LdiComponent configure(ComponentProperties config) {
+		public LdiComponent configure(LdiAdapter adapter,
+				ComponentExecutor executor,
+				ComponentProperties config) {
 			@RestController
 			class LdioHttpInBean extends LdioHttpIn {
+
 				public LdioHttpInBean() {
 					// Workaround to lazy load the LdtoHttpIn RestController only when configured as
 					// an LdtoInput
-					super(executor, adapter);
+					super(executor, adapter, config.getProperty("pipeline.name"));
 				}
 			}
 			return new LdioHttpInBean();
