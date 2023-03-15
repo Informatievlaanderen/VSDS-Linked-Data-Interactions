@@ -1,6 +1,5 @@
 package ldes.client.startingtreenode.exception;
 
-
 public class StartingNodeNotFoundException extends RuntimeException {
 	private final String url;
 	private final String comment;
