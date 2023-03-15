@@ -25,7 +25,7 @@ public class StartingTreeNodeFinderSteps {
 	@Then("the starting Tree Node of the LDES Stream is the url of the View: {string}")
 	public void theStartingTreeNodeOfTheLDESStreamIsTheUrlOfTheView(String url) {
 		StartingTreeNode startingTreeNode = startingTreeNodeFinder.determineStartingTreeNode(startingNodeRequest);
-		assertEquals(new StartingTreeNode(url), startingTreeNode);
+		assertEquals(url, startingTreeNode.getUrl());
 	}
 
 	@When("I provide the endpoint of a Tree Node that is also a View: {string}")
@@ -43,7 +43,7 @@ public class StartingTreeNodeFinderSteps {
 		StartingNodeNotFoundException startingNodeNotFoundException = assertThrows(StartingNodeNotFoundException.class,
 				() -> startingTreeNodeFinder.determineStartingTreeNode(startingNodeRequest));
 		assertEquals(
-				"Starting Node could not be identified from url http://localhost:10101/302-redirects-infinite-loop-1 and Content-Type application/ld+json\n"
+				"Starting Node could not be identified from url http://localhost:10101/302-redirects-infinite-loop-1.\n"
 						+
 						"Infite redirect loop.",
 				startingNodeNotFoundException.getMessage());
