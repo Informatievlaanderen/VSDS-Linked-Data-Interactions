@@ -11,6 +11,8 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.httpclient.apache.ApacheHttpClient;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 public class ClientCredentialsConfig implements RequestExecutorSupplier {
 
 	private final String clientId;
@@ -18,9 +20,9 @@ public class ClientCredentialsConfig implements RequestExecutorSupplier {
 	private final String tokenEndpoint;
 
 	public ClientCredentialsConfig(String clientId, String secret, String tokenEndpoint) {
-		this.clientId = clientId;
-		this.secret = secret;
-		this.tokenEndpoint = tokenEndpoint;
+		this.clientId = notNull(clientId);
+		this.secret = notNull(secret);
+		this.tokenEndpoint = notNull(tokenEndpoint);
 	}
 
 	public RequestExecutor createRequestExecutor() {

@@ -10,7 +10,6 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.FALSE;
@@ -183,23 +182,23 @@ public final class LdesProcessorProperties {
 	}
 
 	public static String getApiKeyHeader(final ProcessContext context) {
-		return Objects.requireNonNullElse(context.getProperty(API_KEY_HEADER_PROPERTY).getValue(), "");
+		return context.getProperty(API_KEY_HEADER_PROPERTY).getValue();
 	}
 
 	public static String getApiKey(final ProcessContext context) {
-		return Objects.requireNonNullElse(context.getProperty(API_KEY_PROPERTY).getValue(), "");
+		return context.getProperty(API_KEY_PROPERTY).getValue();
 	}
 
 	public static String getOauthClientId(final ProcessContext context) {
-		return Objects.requireNonNullElse(context.getProperty(OAUTH_CLIENT_ID).getValue(), "");
+		return context.getProperty(OAUTH_CLIENT_ID).getValue();
 	}
 
 	public static String getOauthClientSecret(final ProcessContext context) {
-		return Objects.requireNonNullElse(context.getProperty(OAUTH_CLIENT_SECRET).getValue(), "");
+		return context.getProperty(OAUTH_CLIENT_SECRET).getValue();
 	}
 
 	public static String getOauthTokenEndpoint(final ProcessContext context) {
-		return Objects.requireNonNullElse(context.getProperty(OAUTH_TOKEN_ENDPOINT).getValue(), "");
+		return context.getProperty(OAUTH_TOKEN_ENDPOINT).getValue();
 	}
 
 	public static AuthStrategy getAuthorizationStrategy(final ProcessContext context) {
