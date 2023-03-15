@@ -10,7 +10,7 @@ public class RDF4JRepositoryPutMaterialisationProcessorProperties {
 	}
 
 	public static final PropertyDescriptor SPARQL_HOST = new PropertyDescriptor.Builder()
-			.name("REF4J remote repository location").description("The hostname and port of the server.")
+			.name("RDF4J remote repository location").description("The hostname and port of the server.")
 			.defaultValue("http://graphdb:7200").required(true).addValidator(StandardValidators.URL_VALIDATOR).build();
 
 	public static final PropertyDescriptor REPOSITORY_ID = new PropertyDescriptor.Builder().name("Repository ID")
