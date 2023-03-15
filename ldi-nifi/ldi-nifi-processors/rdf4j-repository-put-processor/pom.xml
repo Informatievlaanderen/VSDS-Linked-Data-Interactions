@@ -37,7 +37,6 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<!-- RDF4J -->
-		<!-- @todo Make dependency on RDF4J more granular -->
 		<dependency>
 			<groupId>org.eclipse.rdf4j</groupId>
 			<artifactId>rdf4j-storage</artifactId>

@@ -28,15 +28,17 @@ import org.eclipse.rdf4j.rio.Rio;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.NAMED_GRAPH;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.REPOSITORY_ID;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.SIMULTANEOUS_FLOWFILES_TO_PROCESS;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.SPARQL_HOST;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
@@ -62,6 +64,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		properties.add(SPARQL_HOST);
 		properties.add(REPOSITORY_ID);
 		properties.add(NAMED_GRAPH);
+		properties.add(SIMULTANEOUS_FLOWFILES_TO_PROCESS);
 		return properties;
 	}
 
@@ -72,8 +75,8 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 	@Override
 	public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
-		// @todo Find out the ideal number of FlowFiles to process in one transaction.
-		final List<FlowFile> flowFiles = session.get(50);
+		final List<FlowFile> flowFiles = session.get(Integer.valueOf(
+				context.getProperty(SIMULTANEOUS_FLOWFILES_TO_PROCESS).getValue()));
 
 		Repository repository = repositoryManager.getRepository(context.getProperty(REPOSITORY_ID).getValue());
 		if (flowFiles.isEmpty()) {
@@ -144,7 +147,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 	 *            The DB connection.
 	 */
 	private static void deleteEntitiesFromRepo(Set<Resource> entityIds, RepositoryConnection connection) {
-		Stack<Resource> subjectStack = new Stack<>();
+		Deque<Resource> subjectStack = new ArrayDeque<>();
 		entityIds.forEach(subjectStack::push);
 		/*
 		 * Entities can contain blank node references. All statements with those blank

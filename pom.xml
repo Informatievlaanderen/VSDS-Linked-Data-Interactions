@@ -104,7 +104,6 @@
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
-                <version>${formatter-maven-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>net.revelc.code</groupId>
@@ -128,7 +127,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <skip>${unittestskip}</skip>
                     <environmentVariables>
@@ -139,7 +137,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-failsafe-plugin.version}</version>
                 <configuration>
                     <skip>${integrationtestskip}</skip>
                 </configuration>
@@ -350,5 +347,4 @@
             <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
         </repository>
     </distributionManagement>
-
 </project>

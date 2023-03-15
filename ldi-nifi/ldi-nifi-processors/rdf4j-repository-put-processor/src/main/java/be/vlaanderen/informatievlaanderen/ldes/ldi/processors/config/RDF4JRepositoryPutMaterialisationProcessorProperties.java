@@ -20,4 +20,12 @@ public class RDF4JRepositoryPutMaterialisationProcessorProperties {
 	public static final PropertyDescriptor NAMED_GRAPH = new PropertyDescriptor.Builder().name("Named graph")
 			.description("If set, the named graph the triples will be written to.").required(false)
 			.addValidator(StandardValidators.URI_VALIDATOR).build();
+
+	public static final PropertyDescriptor SIMULTANEOUS_FLOWFILES_TO_PROCESS = new PropertyDescriptor.Builder()
+			.name("Flowfiles to process simultaneously")
+			.description(
+					"An integer denoting the number of flowfiles to processs per transaction. (Fine-tune to find the ideal count)")
+			.required(false)
+			.defaultValue("50")
+			.addValidator(StandardValidators.NUMBER_VALIDATOR).build();
 }
