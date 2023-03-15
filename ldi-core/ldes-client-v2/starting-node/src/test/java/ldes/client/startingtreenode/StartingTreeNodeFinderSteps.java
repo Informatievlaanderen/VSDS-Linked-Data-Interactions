@@ -9,6 +9,7 @@ import ldes.client.startingtreenode.domain.valueobjects.StartingNodeRequest;
 import ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode;
 import ldes.client.startingtreenode.exception.StartingNodeNotFoundException;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,17 +29,12 @@ public class StartingTreeNodeFinderSteps {
 		assertEquals(url, startingTreeNode.getUrl());
 	}
 
-	@When("I provide the endpoint of a Tree Node that is also a View: {string}")
-	public void iProvideTheEndpointOfATreeNodeThatIsAlsoAView(String url) {
-		startingNodeRequest = new StartingNodeRequest(url, Lang.JSONLD, new RedirectHistory());
+	@When("I create a StartingNodeRequest with a lang {string} and url: {string}")
+	public void iProvideTheEndpointOfATreeNodeThatIsAlsoAView(String lang, String url) {
+		startingNodeRequest = new StartingNodeRequest(url, RDFLanguages.nameToLang(lang), new RedirectHistory());
 	}
 
-	@When("I provide an endpoint that redirects to a Tree Node that is also a View: {string}")
-	public void iProvideAnEndpointThatRedirectsToATreeNodeThatIsAlsoAView(String url) {
-		startingNodeRequest = new StartingNodeRequest(url, Lang.JSONLD, new RedirectHistory());
-	}
-
-	@Then("An StartingNodeNotFoundException is Thrown indicating that I'm in an infite loop;")
+	@Then("An StartingNodeNotFoundException is Thrown indicating that I'm in an infinite loop")
 	public void anStartingNodeNotFoundExceptionIsThrownIndicatingThatIMInAnInfiteLoop() {
 		StartingNodeNotFoundException startingNodeNotFoundException = assertThrows(StartingNodeNotFoundException.class,
 				() -> startingTreeNodeFinder.determineStartingTreeNode(startingNodeRequest));
@@ -49,9 +45,4 @@ public class StartingTreeNodeFinderSteps {
 				startingNodeNotFoundException.getMessage());
 	}
 
-	@When("I provide an endpoint that redirects to an infinite loop: {string}")
-	public void iProvideAnEndpointThatRedirectsToAnInfiniteLoop(String url) {
-		startingNodeRequest = new StartingNodeRequest(url, Lang.JSONLD, new RedirectHistory());
-
-	}
 }
