@@ -12,9 +12,12 @@ import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.processor.io.InputStreamCallback;
-import org.apache.nifi.processor.util.StandardValidators;
 import org.eclipse.rdf4j.common.transaction.IsolationLevels;
-import org.eclipse.rdf4j.model.*;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.base.AbstractIRI;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
@@ -25,34 +28,42 @@ import org.eclipse.rdf4j.rio.Rio;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.NAMED_GRAPH;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.REPOSITORY_ID;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.SPARQL_HOST;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
+
+@SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
 @Tags({ "ldes, rdf4j-repository, vsds" })
 @CapabilityDescription("Materialises LDES events into an RDF4J repository")
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
-public class RDF4JRepositoryMaterialisation extends AbstractProcessor {
+public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 	private RepositoryManager repositoryManager;
 
-	static final Relationship REL_SUCCESS = new Relationship.Builder().name("success")
-			.description("A FlowFile is routed to this relationship after the database is successfully updated")
-			.build();
-	static final Relationship REL_FAILURE = new Relationship.Builder().name("failure").description(
-			"A FlowFile is routed to this relationship if the database cannot be updated and retrying the operation will also fail, "
-					+ "such as an invalid query or an integrity constraint violation")
-			.build();
+	@Override
+	public Set<Relationship> getRelationships() {
+		final Set<Relationship> relationships = new HashSet<>();
+		relationships.add(SUCCESS);
+		relationships.add(FAILURE);
+		return relationships;
+	}
 
-	static final PropertyDescriptor SPARQL_HOST = new PropertyDescriptor.Builder()
-			.name("REF4J remote repository location").description("The hostname and port of the server.")
-			.defaultValue("http://graphdb:7200").required(true).addValidator(StandardValidators.URL_VALIDATOR).build();
-
-	static final PropertyDescriptor REPOSITORY_ID = new PropertyDescriptor.Builder().name("Repository ID")
-			.description("The repository to connect to.").required(true)
-			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR).build();
-
-	static final PropertyDescriptor NAMED_GRAPH = new PropertyDescriptor.Builder().name("Named graph")
-			.description("If set, the named graph the triples will be written to.").required(false)
-			.addValidator(StandardValidators.URI_VALIDATOR).build();
+	@Override
+	protected List<PropertyDescriptor> getSupportedPropertyDescriptors() {
+		final List<PropertyDescriptor> properties = new ArrayList<>();
+		properties.add(SPARQL_HOST);
+		properties.add(REPOSITORY_ID);
+		properties.add(NAMED_GRAPH);
+		return properties;
+	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
@@ -100,9 +111,9 @@ public class RDF4JRepositoryMaterialisation extends AbstractProcessor {
 		}
 		for (FlowFile flowFile : flowFiles) {
 			if (committed.get())
-				session.transfer(flowFile, REL_SUCCESS);
+				session.transfer(flowFile, SUCCESS);
 			else
-				session.transfer(flowFile, REL_FAILURE);
+				session.transfer(flowFile, FAILURE);
 		}
 		session.commit();
 	}
@@ -151,22 +162,5 @@ public class RDF4JRepositoryMaterialisation extends AbstractProcessor {
 			});
 			connection.remove(subject, null, null);
 		}
-	}
-
-	@Override
-	public Set<Relationship> getRelationships() {
-		final Set<Relationship> relationships = new HashSet<>();
-		relationships.add(REL_SUCCESS);
-		relationships.add(REL_FAILURE);
-		return relationships;
-	}
-
-	@Override
-	protected List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		final List<PropertyDescriptor> properties = new ArrayList<>();
-		properties.add(SPARQL_HOST);
-		properties.add(REPOSITORY_ID);
-		properties.add(NAMED_GRAPH);
-		return properties;
 	}
 }

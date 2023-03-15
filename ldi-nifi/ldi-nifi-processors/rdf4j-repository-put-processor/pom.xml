@@ -20,6 +20,13 @@
 	</properties>
 
 	<dependencies>
+		<!-- VSDS -->
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-nifi-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
 		<!-- Jena -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
