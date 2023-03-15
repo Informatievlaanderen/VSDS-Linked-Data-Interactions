@@ -36,9 +36,7 @@ public class LdesClientRunner implements Runnable {
 				.orElse(Lang.JSONLD);
 		StatePersistanceStrategy state = StatePersistanceStrategy
 				.valueOf(properties.getOptionalProperty(STATE).orElse(StatePersistanceStrategy.MEMORY.name()));
-		boolean keepState = properties.getOptionalProperty(KEEP_STATE)
-				.map(Boolean::valueOf)
-				.orElse(false);
+		boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 		Ldes ldes = new LdesProvider(requestExecutor).getLdes(targetUrl, sourceFormat);
 		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, ldes);
 		MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor, keepState);
