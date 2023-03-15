@@ -12,22 +12,33 @@ public class TreeNodeRequest {
 	private final String treeNodeUrl;
 	private final Lang lang;
 
-	public TreeNodeRequest(String treeNodeUrl, Lang lang) {
+	private final String etag;
+
+	public TreeNodeRequest(String treeNodeUrl, Lang lang, String etag) {
 		this.treeNodeUrl = treeNodeUrl;
 		this.lang = lang;
+		this.etag = etag;
 	}
 
 	public Request createRequest() {
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, lang.getHeaderString())));
+		if (etag != null) {
+			requestHeaders = requestHeaders.addRequestHeader(new RequestHeader(HttpHeaders.IF_NONE_MATCH, etag));
+		}
 		return new Request(treeNodeUrl, requestHeaders);
-	}
-
-	public String getTreeNodeId() {
-		return treeNodeUrl;
 	}
 
 	public Lang getLang() {
 		return lang;
+	}
+
+	@Override
+	public String toString() {
+		return "TreeNodeRequest{" +
+				"treeNodeUrl='" + treeNodeUrl + '\'' +
+				", lang=" + lang +
+				", etag='" + etag + '\'' +
+				'}';
 	}
 }
