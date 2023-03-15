@@ -18,6 +18,6 @@ public class Ldes {
 	}
 
 	public TreeNodeRequest createRequest(String treeNodeUrl) {
-		return new TreeNodeRequest(treeNodeUrl, lang);
+		return new TreeNodeRequest(treeNodeUrl, lang, null);
 	}
 }

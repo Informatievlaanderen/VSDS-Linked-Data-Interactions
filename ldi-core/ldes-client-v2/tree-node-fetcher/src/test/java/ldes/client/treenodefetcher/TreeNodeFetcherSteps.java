@@ -10,6 +10,7 @@ import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import org.apache.jena.riot.RDFLanguages;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TreeNodeFetcherSteps {
 
@@ -24,7 +25,7 @@ public class TreeNodeFetcherSteps {
 
 	@When("I create a TreeNodeRequest with Lang {string} and url {string}")
 	public void iCreateATreeNodeRequestWithLangAndUrl(String lang, String url) {
-		treeNodeRequest = new TreeNodeRequest(url, RDFLanguages.nameToLang(lang));
+		treeNodeRequest = new TreeNodeRequest(url, RDFLanguages.nameToLang(lang), null);
 	}
 
 	@And("I fetch the TreeNode")
@@ -36,5 +37,19 @@ public class TreeNodeFetcherSteps {
 	public void theObtainedTreeNodeHasMembersAndRelations(int numberOfMembers, int numberOfRelations) {
 		assertEquals(numberOfMembers, treeNodeResponse.getMembers().size());
 		assertEquals(numberOfRelations, treeNodeResponse.getRelations().size());
+	}
+
+	@When("I create a TreeNodeRequest with Lang {string} and url {string} and etag {string}")
+	public void iCreateATreeNodeRequestWithLangAndUrlAndEtag(String lang, String url, String etag) {
+		treeNodeRequest = new TreeNodeRequest(url, RDFLanguages.nameToLang(lang), etag.equals("") ? null : etag);
+	}
+
+	@Then("An UnSupportedOperationException is thrown")
+	public void anUnSupportedOperationExceptionIsThrown() {
+		UnsupportedOperationException unsupportedOperationException = assertThrows(UnsupportedOperationException.class,
+				() -> treeNodeFetcher.fetchTreeNode(treeNodeRequest));
+		assertEquals(
+				"Cannot handle response 404 of TreeNodeRequest TreeNodeRequest{treeNodeUrl='http://localhost:10101/404-not-found', lang=Lang:Turtle, etag='null'}",
+				unsupportedOperationException.getMessage());
 	}
 }

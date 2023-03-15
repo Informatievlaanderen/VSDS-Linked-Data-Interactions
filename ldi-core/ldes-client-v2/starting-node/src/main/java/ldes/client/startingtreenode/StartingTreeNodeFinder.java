@@ -13,7 +13,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 
 import java.util.List;
-import java.util.Optional;
 
 public class StartingTreeNodeFinder {
 
@@ -42,10 +41,12 @@ public class StartingTreeNodeFinder {
 		if (response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY) {
 			StartingNodeRequest newStartingNodeRequest = startingNodeRequest
 					.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION)
-							.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest)));
+							.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest.url(),
+									"No Location Header in redirect.")));
 			return determineStartingTreeNode(newStartingNodeRequest);
 		}
-		throw new StartingNodeNotFoundException(startingNodeRequest);
+		throw new StartingNodeNotFoundException(startingNodeRequest.url(),
+				"Unable to hande response " + response.getHttpStatus());
 	}
 
 	private StartingTreeNode selectStartingNode(StartingNodeRequest startingNodeRequest, Response response) {
@@ -59,7 +60,8 @@ public class StartingTreeNodeFinder {
 				.filter(startingNodeSpecification -> startingNodeSpecification.test(model))
 				.map(startingNodeSpecification -> startingNodeSpecification.extractStartingNode(model))
 				.findFirst()
-				.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest));
+				.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest.url(),
+						"Starting Node could not be extracted from model."));
 	}
 
 }

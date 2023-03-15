@@ -41,7 +41,7 @@ public class TreeNodeFetcher {
 		if (response.getHttpStatus() == HttpStatus.SC_NOT_MODIFIED) {
 			return new TreeNodeResponse(List.of(), List.of(), mutabilityStatus);
 		}
-		// to do proper exception
-		throw new UnsupportedOperationException("a");
+		throw new UnsupportedOperationException(
+				"Cannot handle response " + response.getHttpStatus() + " of TreeNodeRequest " + treeNodeRequest);
 	}
 }
