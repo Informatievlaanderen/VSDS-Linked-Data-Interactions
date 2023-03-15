@@ -17,6 +17,7 @@
         <module>sparql-interactions-processor</module>
         <module>version-materialisation-processor</module>
         <module>ngsiv2-to-ld-processor</module>
+        <module>rdf4j-repository-put-processor</module>
     </modules>
 
     <properties>
