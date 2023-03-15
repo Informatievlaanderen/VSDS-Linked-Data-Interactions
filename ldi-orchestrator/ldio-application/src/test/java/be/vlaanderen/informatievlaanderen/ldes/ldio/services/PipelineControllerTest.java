@@ -29,7 +29,6 @@ public class PipelineControllerTest {
 
 	private final String base_url = "/admin/api/v1/pipeline";
 
-
 	@Test
 	void when_PipeLineIsHalted_EventIsSent() throws Exception {
 		mockMvc.perform(post(base_url + "/halt"))
