@@ -6,6 +6,9 @@ import java.util.Optional;
 public class ComponentProperties {
 	private final Map<String, String> config;
 
+	public ComponentProperties() {
+		this.config = Map.of();
+	}
 	public ComponentProperties(Map<String, String> config) {
 		this.config = config;
 	}

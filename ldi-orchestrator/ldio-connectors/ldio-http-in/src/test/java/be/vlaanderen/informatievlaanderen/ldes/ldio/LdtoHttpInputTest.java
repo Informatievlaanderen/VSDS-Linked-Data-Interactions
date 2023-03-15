@@ -14,7 +14,7 @@ public class LdtoHttpInputTest {
 	// Bean gets a @RestController
 	// Annotation on Autoconfiguration
 	void assert_NoRestControllerAnnotationisSet() {
-		LdioHttpIn ldtoHttpIn = new LdioHttpIn(null, null);
+		LdioHttpIn ldtoHttpIn = new LdioHttpIn(null, null, "endpointName");
 
 		assertTrue(Arrays.stream(ldtoHttpIn.getClass().getAnnotations())
 				.anyMatch(annotation -> annotation.annotationType().equals(RequestMapping.class)));
