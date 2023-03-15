@@ -4,13 +4,11 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeader;
 import ldes.client.requestexecutor.domain.valueobjects.RequestHeaders;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ApiKeyConfig;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.ClientCredentialsConfig;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
 import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.wiremock.WireMockConfig;
 import org.apache.http.HttpHeaders;
@@ -24,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RequestExecutorSteps {
-
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
@@ -32,18 +30,18 @@ public class RequestExecutorSteps {
 
 	@Given("I have a ApiKeyRequestExecutor")
 	public void aApiKeyRequestExecutorIsAvailable() {
-		requestExecutor = new ApiKeyConfig("X-API-KEY", "test123").createRequestExecutor();
+		requestExecutor = requestExecutorFactory.createApiKeyExecutor("X-API-KEY", "test123");
 	}
 
 	@Given("I have a ClientCredentialsRequestExecutor")
 	public void aClientCredentialsRequestExecutorIsAvailable() {
-		requestExecutor = new ClientCredentialsConfig("clientId", "clientSecret",
-				"http://localhost:10101/token").createRequestExecutor();
+		requestExecutor = requestExecutorFactory.createClientCredentialsExecutor("clientId", "clientSecret",
+				"http://localhost:10101/token");
 	}
 
 	@Given("I have a DefaultRequestExecutor")
 	public void aDefaultRequestExecutorIsAvailable() {
-		requestExecutor = new DefaultConfig().createRequestExecutor();
+		requestExecutor = requestExecutorFactory.createNoAuthExecutor();
 	}
 
 	@Then("I obtain a response with status code {int}")
