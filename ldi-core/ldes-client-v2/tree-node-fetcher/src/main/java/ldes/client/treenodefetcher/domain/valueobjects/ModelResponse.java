@@ -58,19 +58,12 @@ public class ModelResponse {
 		String id = memberStatement.getObject().toString();
 		memberModel.add(memberStatement);
 
-		// Add reverse properties
-		Set<Statement> otherLdesMembers = treeNodeModel
-				.listStatements(memberStatement.getSubject(), W3ID_TREE_MEMBER, ANY_RESOURCE).toSet().stream()
-				.filter(statement -> !memberStatement.equals(statement)).collect(Collectors.toSet());
-
 		treeNodeModel.listStatements(ANY_RESOURCE, ANY_PROPERTY, memberStatement.getResource())
 				.filterKeep(statement -> statement.getSubject().isURIResource()).filterDrop(memberStatement::equals)
 				.forEach(statement -> {
 					Model reversePropertyModel = modelExtract.extract(statement.getSubject(), treeNodeModel);
 					List<Statement> otherMembers = reversePropertyModel
 							.listStatements(statement.getSubject(), statement.getPredicate(), ANY_RESOURCE).toList();
-					otherLdesMembers.forEach(otherLdesMember -> reversePropertyModel
-							.listStatements(ANY_RESOURCE, ANY_PROPERTY, otherLdesMember.getResource()).toList());
 					otherMembers.forEach(otherMember -> reversePropertyModel
 							.remove(modelExtract.extract(otherMember.getResource(), reversePropertyModel)));
 
