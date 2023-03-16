@@ -19,6 +19,10 @@ public class Response {
 		return httpStatus;
 	}
 
+	public boolean hasStatus(int status) {
+		return getHttpStatus() == status;
+	}
+
 	public Optional<String> getBody() {
 		return Optional.ofNullable(body);
 	}

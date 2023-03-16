@@ -21,23 +21,22 @@ public class TreeNodeFetcher {
 	}
 
 	public TreeNodeResponse fetchTreeNode(TreeNodeRequest treeNodeRequest) {
-		Response response = requestExecutor
-				.execute(treeNodeRequest.createRequest());
+		final Response response = requestExecutor.execute(treeNodeRequest.createRequest());
 		MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
-		if (response.getHttpStatus() == HttpStatus.SC_OK) {
+		if (response.hasStatus(HttpStatus.SC_OK)) {
 			ModelResponse modelResponse = new ModelResponse(
 					RDFParser.fromString(response.getBody().orElseThrow()).forceLang(treeNodeRequest.getLang())
 							.toModel());
 			return new TreeNodeResponse(modelResponse.getRelations(),
 					modelResponse.getMembers(), mutabilityStatus);
 		}
-		if (response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY) {
+		if (response.hasStatus(HttpStatus.SC_MOVED_TEMPORARILY)) {
 			return new TreeNodeResponse(
 					List.of(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow()),
 					List.of(),
 					new MutabilityStatus(false, LocalDateTime.MAX));
 		}
-		if (response.getHttpStatus() == HttpStatus.SC_NOT_MODIFIED) {
+		if (response.hasStatus(HttpStatus.SC_NOT_MODIFIED)) {
 			return new TreeNodeResponse(List.of(), List.of(), mutabilityStatus);
 		}
 		throw new UnsupportedOperationException(

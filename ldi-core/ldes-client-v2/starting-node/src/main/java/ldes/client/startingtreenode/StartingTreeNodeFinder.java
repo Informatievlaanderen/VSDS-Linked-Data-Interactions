@@ -35,10 +35,10 @@ public class StartingTreeNodeFinder {
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, startingNodeRequest.contentType())));
 		Response response = requestExecutor.execute(new Request(startingNodeRequest.url(), requestHeaders));
-		if (response.getHttpStatus() == HttpStatus.SC_OK) {
+		if (response.hasStatus(HttpStatus.SC_OK)) {
 			return selectStartingNode(startingNodeRequest, response);
 		}
-		if (response.getHttpStatus() == HttpStatus.SC_MOVED_TEMPORARILY) {
+		if (response.hasStatus(HttpStatus.SC_MOVED_TEMPORARILY)) {
 			StartingNodeRequest newStartingNodeRequest = startingNodeRequest
 					.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION)
 							.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest.url(),
