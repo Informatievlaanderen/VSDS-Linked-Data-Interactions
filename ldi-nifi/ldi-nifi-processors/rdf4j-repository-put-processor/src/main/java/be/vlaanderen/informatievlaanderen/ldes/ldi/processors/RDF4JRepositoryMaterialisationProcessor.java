@@ -48,6 +48,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 @CapabilityDescription("Materialises LDES events into an RDF4J repository")
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
+
 	private RepositoryManager repositoryManager;
 
 	@Override
@@ -78,11 +79,13 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		final List<FlowFile> flowFiles = session.get(Integer.valueOf(
 				context.getProperty(SIMULTANEOUS_FLOWFILES_TO_PROCESS).getValue()));
 
-		Repository repository = repositoryManager.getRepository(context.getProperty(REPOSITORY_ID).getValue());
 		if (flowFiles.isEmpty()) {
 			return;
 		}
+
+		Repository repository = repositoryManager.getRepository(context.getProperty(REPOSITORY_ID).getValue());
 		final AtomicBoolean committed = new AtomicBoolean(false);
+
 		try (RepositoryConnection dbConnection = repository.getConnection()) {
 			// As we are bulk-loading, set isolation level to none for improved performance.
 			dbConnection.setIsolationLevel(IsolationLevels.NONE);
@@ -104,19 +107,23 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 						if (!namedGraph.isEmpty()) {
 							IRI namedGraphIRI = dbConnection.getValueFactory().createIRI(namedGraph);
 							dbConnection.add(updateModel, namedGraphIRI);
-						} else
+						} else {
 							dbConnection.add(updateModel);
+						}
 					}
 				});
 			}
+
 			dbConnection.commit();
 			committed.set(true);
 		}
+
 		for (FlowFile flowFile : flowFiles) {
-			if (committed.get())
+			if (committed.get()) {
 				session.transfer(flowFile, SUCCESS);
-			else
+			} else {
 				session.transfer(flowFile, FAILURE);
+			}
 		}
 		session.commit();
 	}
@@ -130,11 +137,13 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 	 */
 	private static Set<Resource> getSubjectsFromModel(Model model) {
 		Set<Resource> entityIds = new HashSet<>();
+
 		model.subjects().forEach((Resource subject) -> {
 			if (subject instanceof AbstractIRI) {
 				entityIds.add(subject);
 			}
 		});
+
 		return entityIds;
 	}
 
@@ -149,6 +158,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 	private static void deleteEntitiesFromRepo(Set<Resource> entityIds, RepositoryConnection connection) {
 		Deque<Resource> subjectStack = new ArrayDeque<>();
 		entityIds.forEach(subjectStack::push);
+
 		/*
 		 * Entities can contain blank node references. All statements with those blank
 		 * node identifiers need to be removed as well. As blank nodes can be nested
@@ -157,12 +167,14 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		 */
 		while (!subjectStack.isEmpty()) {
 			Resource subject = subjectStack.pop();
+
 			connection.getStatements(subject, null, null).forEach((Statement statement) -> {
 				Value object = statement.getObject();
 				if (object.isBNode()) {
 					subjectStack.push((Resource) object);
 				}
 			});
+
 			connection.remove(subject, null, null);
 		}
 	}
