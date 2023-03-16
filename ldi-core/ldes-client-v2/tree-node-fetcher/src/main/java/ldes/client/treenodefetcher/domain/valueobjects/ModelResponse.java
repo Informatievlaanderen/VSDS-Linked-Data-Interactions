@@ -2,7 +2,13 @@ package ldes.client.treenodefetcher.domain.valueobjects;
 
 import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import org.apache.jena.graph.TripleBoundary;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelExtract;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StatementTripleBoundary;
+import org.apache.jena.rdf.model.StmtIterator;
 
 import java.util.Iterator;
 import java.util.List;
@@ -36,12 +42,12 @@ public class ModelResponse {
 	}
 
 	public List<TreeMember> getMembers() {
-		return extractMembers(model).map(memberStatement -> processMember(model, memberStatement))
+		return extractMembers().map(memberStatement -> processMember(model, memberStatement))
 				.toList();
 	}
 
-	private Stream<Statement> extractMembers(Model treeNodeModel) {
-		StmtIterator memberIterator = treeNodeModel.listStatements(ANY_RESOURCE, W3ID_TREE_MEMBER, ANY_RESOURCE);
+	private Stream<Statement> extractMembers() {
+		StmtIterator memberIterator = model.listStatements(ANY_RESOURCE, W3ID_TREE_MEMBER, ANY_RESOURCE);
 
 		return Stream.iterate(memberIterator, Iterator::hasNext, UnaryOperator.identity())
 				.map(Iterator::next);
