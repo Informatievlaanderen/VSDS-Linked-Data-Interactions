@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = PipelineController.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @RecordApplicationEvents
-public class PipelineControllerTest {
+class PipelineControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
