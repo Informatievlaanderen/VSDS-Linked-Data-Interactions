@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/404-not-found",
+    "headers": {
+      "Accept": {
+        "contains": "text/turtle"
+      }
+    }
+  },
+  "response": {
+    "status": 404
+  }
+}

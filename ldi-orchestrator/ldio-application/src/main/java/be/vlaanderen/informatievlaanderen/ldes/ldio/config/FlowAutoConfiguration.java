@@ -15,9 +15,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 @ComponentScan
@@ -31,12 +31,13 @@ public class FlowAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(LdiInput.class)
+	@DependsOn({ "componentExecutor" })
 	public LdiInput ldtoInput(OrchestratorConfig orchestratorConfig) {
 		return (LdiInput) getLdiComponent(orchestratorConfig.getInput().getName(),
 				orchestratorConfig.getInput().getConfig());
 	}
 
-	@Bean
+	@Bean("componentExecutor")
 	public ComponentExecutor componentExecutor(final OrchestratorConfig orchestratorConfig) {
 		List<LdiTransformer> ldiTransformers = orchestratorConfig.getTransformers()
 				.stream()

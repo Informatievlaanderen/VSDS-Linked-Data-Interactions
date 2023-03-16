@@ -15,22 +15,20 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldes-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>ldi-nifi-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8</artifactId>
-            <version>2.35.0</version>
-            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
+            <artifactId>tree-node-supplier</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
