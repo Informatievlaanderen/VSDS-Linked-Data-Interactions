@@ -9,7 +9,7 @@ import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
-import ldes.client.treenodesupplier.domain.valueobject.Ldes;
+import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
@@ -25,7 +25,7 @@ public class MemberSupplierSteps {
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
 	private MemberSupplier memberSupplier;
-	private Ldes ldes;
+	private StartingTreeNode startingTreeNode;
 
 	@When("I request the {int} members from the MemberSupplier")
 	public void iRequestTheMembersFromTheMemberSupplier(int numberOfFetchedNumbers) {
@@ -56,12 +56,13 @@ public class MemberSupplierSteps {
 
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
-		ldes = new LdesProvider(new DefaultConfig().createRequestExecutor()).getLdes(url, Lang.JSONLD);
+		startingTreeNode = new StartingTreeNodeSupplier(new DefaultConfig().createRequestExecutor()).getLdes(url,
+				Lang.JSONLD);
 	}
 
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
-		treeNodeProcessor = new TreeNodeProcessor(ldes, treeNodeRecordRepository, memberRepository,
+		treeNodeProcessor = new TreeNodeProcessor(startingTreeNode, treeNodeRecordRepository, memberRepository,
 				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
 	}
 

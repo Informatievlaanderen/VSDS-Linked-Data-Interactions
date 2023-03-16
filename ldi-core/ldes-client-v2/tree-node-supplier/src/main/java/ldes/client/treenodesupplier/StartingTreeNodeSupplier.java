@@ -4,22 +4,21 @@ import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.startingtreenode.StartingTreeNodeFinder;
 import ldes.client.startingtreenode.domain.valueobjects.RedirectHistory;
 import ldes.client.startingtreenode.domain.valueobjects.StartingNodeRequest;
-import ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode;
-import ldes.client.treenodesupplier.domain.valueobject.Ldes;
+import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import org.apache.jena.riot.Lang;
 
-public class LdesProvider {
+public class StartingTreeNodeSupplier {
 
 	private final RequestExecutor requestExecutor;
 
-	public LdesProvider(RequestExecutor requestExecutor) {
+	public StartingTreeNodeSupplier(RequestExecutor requestExecutor) {
 		this.requestExecutor = requestExecutor;
 	}
 
-	public Ldes getLdes(String url, Lang lang) {
+	public StartingTreeNode getLdes(String url, Lang lang) {
 		StartingTreeNodeFinder startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
-		StartingTreeNode startingTreeNode = startingTreeNodeFinder
+		ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode startingTreeNode = startingTreeNodeFinder
 				.determineStartingTreeNode(new StartingNodeRequest(url, lang, new RedirectHistory()));
-		return new Ldes(startingTreeNode.getUrl(), lang);
+		return new StartingTreeNode(startingTreeNode.getUrl(), lang);
 	}
 }

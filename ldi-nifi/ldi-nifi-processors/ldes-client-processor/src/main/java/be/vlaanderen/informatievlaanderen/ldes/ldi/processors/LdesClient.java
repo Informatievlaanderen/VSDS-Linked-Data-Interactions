@@ -7,10 +7,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtrac
 import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
-import ldes.client.treenodesupplier.LdesProvider;
+import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.valueobject.Ldes;
+import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -89,13 +89,14 @@ public class LdesClient extends AbstractProcessor {
 		String dataSourceUrl = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutor(context);
-		Ldes ldes = new LdesProvider(requestExecutor).getLdes(dataSourceUrl, dataSourceFormat);
-		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldes,
+		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getLdes(dataSourceUrl,
+				dataSourceFormat);
+		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(startingTreeNode,
 				LdesProcessorProperties.getStatePersistanceStrategy(context),
 				new TreeNodeFetcher(requestExecutor));
 		memberSupplier = new MemberSupplier(treeNodeProcessor, LdesProcessorProperties.stateKept(context));
 
-		determineLdesProperties(ldes, requestExecutor, context);
+		determineLdesProperties(startingTreeNode, requestExecutor, context);
 
 		LOGGER.info("LDES extraction processor {} with base url {} (expected LDES source format: {})",
 				context.getName(), dataSourceUrl, dataSourceFormat);
@@ -111,11 +112,12 @@ public class LdesClient extends AbstractProcessor {
 		};
 	}
 
-	private void determineLdesProperties(Ldes ldes, RequestExecutor requestExecutor, ProcessContext context) {
+	private void determineLdesProperties(StartingTreeNode startingTreeNode, RequestExecutor requestExecutor,
+			ProcessContext context) {
 		boolean timestampPath = streamTimestampPathProperty(context);
 		boolean versionOfPath = streamVersionOfProperty(context);
 		boolean shape = streamShapeProperty(context);
-		ldesProperties = new LdesPropertiesExtractor(requestExecutor).getLdesProperties(ldes, timestampPath,
+		ldesProperties = new LdesPropertiesExtractor(requestExecutor).getLdesProperties(startingTreeNode, timestampPath,
 				versionOfPath, shape);
 	}
 

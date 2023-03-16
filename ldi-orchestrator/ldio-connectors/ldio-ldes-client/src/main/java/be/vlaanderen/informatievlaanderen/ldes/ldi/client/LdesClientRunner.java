@@ -4,10 +4,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
-import ldes.client.treenodesupplier.LdesProvider;
+import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.valueobject.Ldes;
+import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
@@ -39,8 +39,9 @@ public class LdesClientRunner implements Runnable {
 		boolean keepState = properties.getOptionalProperty(KEEP_STATE)
 				.map(Boolean::valueOf)
 				.orElse(false);
-		Ldes ldes = new LdesProvider(requestExecutor).getLdes(targetUrl, sourceFormat);
-		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, ldes);
+		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getLdes(targetUrl,
+				sourceFormat);
+		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, startingTreeNode);
 		MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor, keepState);
 		while (threadRunning) {
 			componentExecutor.transformLinkedData(memberSupplier.get().getModel());
@@ -49,9 +50,9 @@ public class LdesClientRunner implements Runnable {
 
 	private TreeNodeProcessor getTreeNodeProcessor(StatePersistanceStrategy statePersistanceStrategy,
 			RequestExecutor requestExecutor,
-			Ldes ldes) {
+			StartingTreeNode startingTreeNode) {
 
-		return new TreeNodeProcessor(ldes, statePersistanceStrategy,
+		return new TreeNodeProcessor(startingTreeNode, statePersistanceStrategy,
 				new TreeNodeFetcher(requestExecutor));
 	}
 

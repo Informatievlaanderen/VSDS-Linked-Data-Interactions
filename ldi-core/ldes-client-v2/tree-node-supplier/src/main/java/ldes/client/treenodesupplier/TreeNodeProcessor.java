@@ -6,7 +6,7 @@ import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
-import ldes.client.treenodesupplier.domain.valueobject.Ldes;
+import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
@@ -20,27 +20,27 @@ public class TreeNodeProcessor {
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
 	private final TreeNodeFetcher treeNodeFetcher;
-	private final Ldes ldes;
+	private final StartingTreeNode startingTreeNode;
 
-	public TreeNodeProcessor(Ldes ldes,
+	public TreeNodeProcessor(StartingTreeNode startingTreeNode,
 			TreeNodeRecordRepository treeNodeRecordRepository,
 			MemberRepository memberRepository,
 			TreeNodeFetcher treeNodeFetcher) {
 		this.treeNodeRecordRepository = treeNodeRecordRepository;
 		this.memberRepository = memberRepository;
 		this.treeNodeFetcher = treeNodeFetcher;
-		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(ldes.getStartingNodeUrl()));
-		this.ldes = ldes;
+		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(startingTreeNode.getStartingNodeUrl()));
+		this.startingTreeNode = startingTreeNode;
 	}
 
-	public TreeNodeProcessor(Ldes ldes, StatePersistanceStrategy statePersistanceStrategy,
+	public TreeNodeProcessor(StartingTreeNode startingTreeNode, StatePersistanceStrategy statePersistanceStrategy,
 			TreeNodeFetcher treeNodeFetcher) {
 		this.treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(statePersistanceStrategy);
 		this.memberRepository = MemberRepositoryFactory.getMemberRepository(statePersistanceStrategy);
 		this.treeNodeFetcher = treeNodeFetcher;
-		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(ldes.getStartingNodeUrl()));
-		this.ldes = ldes;
+		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(startingTreeNode.getStartingNodeUrl()));
+		this.startingTreeNode = startingTreeNode;
 	}
 
 	private void processTreeNode() {
@@ -50,7 +50,7 @@ public class TreeNodeProcessor {
 								.orElseThrow(() -> new RuntimeException(
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
 		TreeNodeResponse treeNodeResponse = treeNodeFetcher
-				.fetchTreeNode(ldes.createRequest(treeNodeRecord.getTreeNodeUrl()));
+				.fetchTreeNode(startingTreeNode.createRequest(treeNodeRecord.getTreeNodeUrl()));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
 		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		treeNodeResponse.getRelations()
