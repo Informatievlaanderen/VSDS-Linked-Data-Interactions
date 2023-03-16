@@ -43,7 +43,7 @@ public class TreeNodeProcessor {
 		this.ldes = ldes;
 	}
 
-	private void processedTreeNode() {
+	private void processTreeNode() {
 		TreeNodeRecord treeNodeRecord = treeNodeRecordRepository
 				.getOneTreeNodeRecordWithStatus(TreeNodeStatus.NOT_VISITED).orElseGet(
 						() -> treeNodeRecordRepository.getOneTreeNodeRecordWithStatus(TreeNodeStatus.MUTABLE_AND_ACTIVE)
@@ -69,7 +69,7 @@ public class TreeNodeProcessor {
 	public SuppliedMember getMember() {
 		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		while (unprocessedTreeMember.isEmpty()) {
-			processedTreeNode();
+			processTreeNode();
 			unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		}
 		MemberRecord treeMember = unprocessedTreeMember.get();
