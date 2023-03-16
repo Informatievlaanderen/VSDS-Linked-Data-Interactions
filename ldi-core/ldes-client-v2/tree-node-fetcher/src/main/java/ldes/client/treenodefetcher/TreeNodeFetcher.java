@@ -2,18 +2,20 @@ package ldes.client.treenodefetcher;
 
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.executor.RequestExecutor;
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodefetcher.domain.valueobjects.ModelResponse;
 import ldes.client.treenodefetcher.domain.valueobjects.MutabilityStatus;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
+import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class TreeNodeFetcher {
+
 	private final RequestExecutor requestExecutor;
 
 	public TreeNodeFetcher(RequestExecutor requestExecutor) {
@@ -22,25 +24,33 @@ public class TreeNodeFetcher {
 
 	public TreeNodeResponse fetchTreeNode(TreeNodeRequest treeNodeRequest) {
 		final Response response = requestExecutor.execute(treeNodeRequest.createRequest());
-		MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
-		if (response.hasStatus(HttpStatus.SC_OK)) {
-			ModelResponse modelResponse = new ModelResponse(
-					RDFParser.fromString(response.getBody().orElseThrow()).forceLang(treeNodeRequest.getLang())
-							.toModel());
-			return new TreeNodeResponse(modelResponse.getRelations(),
-					modelResponse.getMembers(), mutabilityStatus);
-		}
-		if (response.hasStatus(HttpStatus.SC_MOVED_TEMPORARILY)) {
-			return new TreeNodeResponse(
-					List.of(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow()),
-					List.of(),
-					new MutabilityStatus(false, LocalDateTime.MAX));
-		}
-		if (response.hasStatus(HttpStatus.SC_NOT_MODIFIED)) {
-			return new TreeNodeResponse(List.of(), List.of(), mutabilityStatus);
-		}
-		throw new UnsupportedOperationException(
-				"Cannot handle response " + response.getHttpStatus() + " of TreeNodeRequest " + treeNodeRequest);
+
+		return switch (response.getHttpStatus()) {
+			case HttpStatus.SC_OK -> createOkResponse(treeNodeRequest, response);
+			case HttpStatus.SC_MOVED_TEMPORARILY -> createMovedTemporarilyResponse(response);
+			case HttpStatus.SC_NOT_MODIFIED -> createNotModifiedResponse(response);
+			default -> throw new UnsupportedOperationException(
+					"Cannot handle response " + response.getHttpStatus() + " of TreeNodeRequest " + treeNodeRequest);
+		};
+	}
+
+	private TreeNodeResponse createOkResponse(TreeNodeRequest treeNodeRequest, Response response) {
+		final String responseBody = response.getBody().orElseThrow();
+		final Model model = RDFParser.fromString(responseBody).forceLang(treeNodeRequest.getLang()).toModel();
+		final ModelResponse modelResponse = new ModelResponse(model);
+		final MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
+		return new TreeNodeResponse(modelResponse.getRelations(), modelResponse.getMembers(), mutabilityStatus);
+	}
+
+	private static TreeNodeResponse createMovedTemporarilyResponse(Response response) {
+		return new TreeNodeResponse(
+				List.of(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow()),
+				List.of(),
+				new MutabilityStatus(false, LocalDateTime.MAX));
+	}
+
+	private static TreeNodeResponse createNotModifiedResponse(Response response) {
+		return new TreeNodeResponse(List.of(), List.of(), getMutabilityStatus(response));
 	}
 
 	private static MutabilityStatus getMutabilityStatus(Response response) {
@@ -48,4 +58,5 @@ public class TreeNodeFetcher {
 				.map(MutabilityStatus::ofHeader)
 				.orElseGet(MutabilityStatus::empty);
 	}
+
 }
