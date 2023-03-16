@@ -14,7 +14,6 @@
     <modules>
         <module>sparql-construct</module>
         <module>ldes-client</module>
-        <module>ldes-client-v2</module>
         <module>version-object-creator</module>
         <module>version-materialiser</module>
         <module>rdf-adapter</module>

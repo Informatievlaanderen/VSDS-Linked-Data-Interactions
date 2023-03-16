@@ -7,8 +7,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtrac
 import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
-import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.MemberSupplier;
+import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
