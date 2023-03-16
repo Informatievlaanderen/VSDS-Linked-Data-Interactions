@@ -2,42 +2,49 @@ package ldes.client.treenodesupplier.repository.sqlite;
 
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RDFWriter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+
+import static org.apache.commons.lang3.Validate.notNull;
 
 @Entity
 @NamedQuery(name = "Member.getByMemberStatus", query = "SELECT m FROM MemberRecordEntity m WHERE m.memberStatus = :memberStatus")
 @NamedQuery(name = "Member.countByMemberStatusAndId", query = "SELECT COUNT(m) FROM MemberRecordEntity m WHERE m.memberStatus = :memberStatus and m.id = :id")
 public class MemberRecordEntity {
+
 	@Id
 	private String id;
+
 	private MemberStatus memberStatus;
-	private String model;
+
+	@Column(name = "model")
+	private String modelAsString;
 
 	public MemberRecordEntity() {
 	}
 
-	public MemberRecordEntity(String id, MemberStatus memberStatus, String model) {
+	public MemberRecordEntity(String id, MemberStatus memberStatus, String modelAsString) {
 		this.id = id;
 		this.memberStatus = memberStatus;
-		this.model = model;
+		this.modelAsString = modelAsString;
 	}
 
 	public static MemberRecordEntity fromMemberRecord(MemberRecord treeMember) {
-		String ldesMemberString = null;
-		if (treeMember.getModel() != null) {
-			ldesMemberString = RDFWriter.source(treeMember.getModel()).lang(Lang.NQUADS).asString();
-		}
-		return new MemberRecordEntity(treeMember.getMemberId(), treeMember.getMemberStatus(), ldesMemberString);
+		final Model model = notNull(treeMember.getModel(),
+				"MemberRecord cannot be converted to an entity without a model.");
+		final String localModalString = RDFWriter.source(model).lang(Lang.NQUADS).asString();
+		return new MemberRecordEntity(treeMember.getMemberId(), treeMember.getMemberStatus(), localModalString);
 	}
 
 	public MemberRecord toMemberRecord() {
-		return new MemberRecord(this.id, RDFParserBuilder.create().fromString(this.model).lang(Lang.NQUADS).toModel(),
-				this.memberStatus);
+		final Model model = RDFParserBuilder.create().fromString(modelAsString).lang(Lang.NQUADS).toModel();
+		return new MemberRecord(id, model, memberStatus);
 	}
 }
