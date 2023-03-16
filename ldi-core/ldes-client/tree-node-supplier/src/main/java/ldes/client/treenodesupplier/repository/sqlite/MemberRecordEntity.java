@@ -37,9 +37,8 @@ public class MemberRecordEntity {
 	}
 
 	public static MemberRecordEntity fromMemberRecord(MemberRecord treeMember) {
-		final Model model = notNull(treeMember.getModel(),
-				"MemberRecord cannot be converted to an entity without a model.");
-		final String localModalString = RDFWriter.source(model).lang(Lang.NQUADS).asString();
+		final Model model = treeMember.getModel();
+		final String localModalString = model != null ? RDFWriter.source(model).lang(Lang.NQUADS).asString() : null;
 		return new MemberRecordEntity(treeMember.getMemberId(), treeMember.getMemberStatus(), localModalString);
 	}
 
