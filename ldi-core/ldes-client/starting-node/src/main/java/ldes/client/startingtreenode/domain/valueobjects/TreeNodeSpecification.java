@@ -30,6 +30,6 @@ public class TreeNodeSpecification implements StartingNodeSpecification {
 		return getTreeNode(model)
 				.map(Resource::getURI)
 				.map(StartingTreeNode::new)
-				.orElseThrow(() -> new RuntimeException("a"));
+				.orElseThrow(() -> new RuntimeException("No Node found"));
 	}
 }
