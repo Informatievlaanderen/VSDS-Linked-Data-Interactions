@@ -8,7 +8,7 @@ import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
@@ -48,8 +48,8 @@ public class LdesClientRunner implements Runnable {
 		Lang sourceFormat = properties.getOptionalProperty(SOURCE_FORMAT)
 				.map(RDFLanguages::nameToLang)
 				.orElse(Lang.JSONLD);
-		StatePersistanceStrategy state = StatePersistanceStrategy
-				.valueOf(properties.getOptionalProperty(STATE).orElse(StatePersistanceStrategy.MEMORY.name()));
+		StatePersistenceStrategy state = StatePersistenceStrategy
+				.valueOf(properties.getOptionalProperty(STATE).orElse(StatePersistenceStrategy.MEMORY.name()));
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(targetUrl,
 				sourceFormat);
 		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, startingTreeNode);
@@ -59,11 +59,11 @@ public class LdesClientRunner implements Runnable {
 		return new MemberSupplier(treeNodeProcessor, keepState);
 	}
 
-	private TreeNodeProcessor getTreeNodeProcessor(StatePersistanceStrategy statePersistanceStrategy,
-			RequestExecutor requestExecutor,
-			StartingTreeNode startingTreeNode) {
+	private TreeNodeProcessor getTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy,
+                                                   RequestExecutor requestExecutor,
+                                                   StartingTreeNode startingTreeNode) {
 
-		return new TreeNodeProcessor(startingTreeNode, statePersistanceStrategy,
+		return new TreeNodeProcessor(startingTreeNode, statePersistenceStrategy,
 				new TreeNodeFetcher(requestExecutor));
 	}
 

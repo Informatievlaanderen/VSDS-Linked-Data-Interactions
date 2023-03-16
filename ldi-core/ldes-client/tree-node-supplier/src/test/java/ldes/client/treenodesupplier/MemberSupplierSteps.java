@@ -10,7 +10,7 @@ import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
@@ -78,15 +78,15 @@ public class MemberSupplierSteps {
 
 	@And("a StatePersistenceStrategy MEMORY")
 	public void aMemoryStatePersistanceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistanceStrategy.MEMORY);
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY);
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistanceStrategy.MEMORY);
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY);
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
 	public void aSqliteStatePersistanceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistanceStrategy.SQLITE);
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE);
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistanceStrategy.SQLITE);
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE);
 	}
 }

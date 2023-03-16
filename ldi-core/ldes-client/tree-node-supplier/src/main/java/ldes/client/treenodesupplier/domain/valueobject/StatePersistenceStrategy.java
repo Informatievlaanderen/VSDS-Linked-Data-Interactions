@@ -1,5 +1,5 @@
 package ldes.client.treenodesupplier.domain.valueobject;
 
-public enum StatePersistanceStrategy {
+public enum StatePersistenceStrategy {
 	MEMORY, SQLITE
 }

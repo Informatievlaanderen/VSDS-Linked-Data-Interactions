@@ -7,7 +7,7 @@ import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
@@ -33,11 +33,11 @@ public class TreeNodeProcessor {
 		this.startingTreeNode = startingTreeNode;
 	}
 
-	public TreeNodeProcessor(StartingTreeNode startingTreeNode, StatePersistanceStrategy statePersistanceStrategy,
+	public TreeNodeProcessor(StartingTreeNode startingTreeNode, StatePersistenceStrategy statePersistenceStrategy,
 			TreeNodeFetcher treeNodeFetcher) {
 		this.treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(statePersistanceStrategy);
-		this.memberRepository = MemberRepositoryFactory.getMemberRepository(statePersistanceStrategy);
+				.getTreeNodeRecordRepository(statePersistenceStrategy);
+		this.memberRepository = MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy);
 		this.treeNodeFetcher = treeNodeFetcher;
 		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(startingTreeNode.getStartingNodeUrl()));
 		this.startingTreeNode = startingTreeNode;
