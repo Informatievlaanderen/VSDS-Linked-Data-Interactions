@@ -60,8 +60,8 @@ public class LdesClientRunner implements Runnable {
 	}
 
 	private TreeNodeProcessor getTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy,
-                                                   RequestExecutor requestExecutor,
-                                                   StartingTreeNode startingTreeNode) {
+			RequestExecutor requestExecutor,
+			StartingTreeNode startingTreeNode) {
 
 		return new TreeNodeProcessor(startingTreeNode, statePersistenceStrategy,
 				new TreeNodeFetcher(requestExecutor));
