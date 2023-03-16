@@ -89,7 +89,7 @@ public class LdesClient extends AbstractProcessor {
 		String dataSourceUrl = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutor(context);
-		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getLdes(dataSourceUrl,
+		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(dataSourceUrl,
 				dataSourceFormat);
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(startingTreeNode,
 				LdesProcessorProperties.getStatePersistanceStrategy(context),

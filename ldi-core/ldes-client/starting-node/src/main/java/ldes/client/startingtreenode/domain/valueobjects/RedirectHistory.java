@@ -21,7 +21,7 @@ public class RedirectHistory {
 		if (!updatedUrls.contains(startingNodeRequest.url())) {
 			updatedUrls.add(startingNodeRequest.url());
 		} else {
-			throw new StartingNodeNotFoundException(startingNodeRequest.url(), "Infite redirect loop.");
+			throw new StartingNodeNotFoundException(startingNodeRequest.url(), "Infinite redirect loop.");
 		}
 		return new RedirectHistory(updatedUrls);
 	}

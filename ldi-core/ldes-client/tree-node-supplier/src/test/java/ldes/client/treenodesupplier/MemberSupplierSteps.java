@@ -56,7 +56,7 @@ public class MemberSupplierSteps {
 
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
-		startingTreeNode = new StartingTreeNodeSupplier(new DefaultConfig().createRequestExecutor()).getLdes(url,
+		startingTreeNode = new StartingTreeNodeSupplier(new DefaultConfig().createRequestExecutor()).getStart(url,
 				Lang.JSONLD);
 	}
 

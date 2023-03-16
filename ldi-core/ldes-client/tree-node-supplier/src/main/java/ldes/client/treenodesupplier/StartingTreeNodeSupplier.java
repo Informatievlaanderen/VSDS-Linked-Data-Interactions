@@ -15,7 +15,7 @@ public class StartingTreeNodeSupplier {
 		this.requestExecutor = requestExecutor;
 	}
 
-	public StartingTreeNode getLdes(String url, Lang lang) {
+	public StartingTreeNode getStart(String url, Lang lang) {
 		StartingTreeNodeFinder startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
 		ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode startingTreeNode = startingTreeNodeFinder
 				.determineStartingTreeNode(new StartingNodeRequest(url, lang, new RedirectHistory()));

@@ -11,10 +11,14 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class StartingTreeNodeFinder {
+
+	private final Logger log = LoggerFactory.getLogger(StartingTreeNodeFinder.class);
 
 	private final RequestExecutor requestExecutor;
 	private final List<StartingNodeSpecification> startingNodeSpecifications;
@@ -32,6 +36,7 @@ public class StartingTreeNodeFinder {
 	 * @return the first node to be queued by the client
 	 */
 	public StartingTreeNode determineStartingTreeNode(final StartingNodeRequest startingNodeRequest) {
+		log.atInfo().log("determineStartingTreeNode for: " + startingNodeRequest.url());
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, startingNodeRequest.contentType())));
 		Response response = requestExecutor.execute(new Request(startingNodeRequest.url(), requestHeaders));
@@ -50,6 +55,7 @@ public class StartingTreeNodeFinder {
 	}
 
 	private StartingTreeNode selectStartingNode(StartingNodeRequest startingNodeRequest, Response response) {
+		log.atInfo().log("Parsing response for: " + startingNodeRequest.url());
 		Model model = RDFParser
 				.fromString(response.getBody().orElseThrow())
 				.lang(startingNodeRequest.lang())
