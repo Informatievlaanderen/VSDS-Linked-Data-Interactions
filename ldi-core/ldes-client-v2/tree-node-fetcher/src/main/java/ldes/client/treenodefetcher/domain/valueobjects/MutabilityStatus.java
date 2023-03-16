@@ -2,9 +2,11 @@ package ldes.client.treenodefetcher.domain.valueobjects;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Optional;
 
 public class MutabilityStatus {
+
+	public final static int DEFAULT_MAX_AGE = 60;
+
 	private final boolean mutable;
 	private final LocalDateTime earliestNextVisit;
 
@@ -13,19 +15,19 @@ public class MutabilityStatus {
 		this.earliestNextVisit = earliestNextVisit;
 	}
 
-	public static MutabilityStatus ofHeader(Optional<String> cacheControlHeader) {
-		boolean immutable = cacheControlHeader
-				.stream()
-				.noneMatch(headerValue -> headerValue.contains("immutable"));
-		long maxAge = cacheControlHeader
-				.stream()
-				.flatMap(header -> Arrays.stream(header.split(", ")))
+	public static MutabilityStatus empty() {
+		return new MutabilityStatus(true, LocalDateTime.now().plusSeconds(DEFAULT_MAX_AGE));
+	}
+
+	public static MutabilityStatus ofHeader(String cacheControlHeader) {
+		boolean mutable = !cacheControlHeader.contains("immutable");
+		long maxAge = Arrays.stream(cacheControlHeader.split(", "))
 				.filter(headerValue -> headerValue.startsWith("max-age"))
 				.mapToLong(headerValue -> Long.parseLong(headerValue.split("=")[1]))
 				.findAny()
-				.orElse(60);
+				.orElse(DEFAULT_MAX_AGE);
 
-		return new MutabilityStatus(immutable, LocalDateTime.now().plusSeconds(maxAge));
+		return new MutabilityStatus(mutable, LocalDateTime.now().plusSeconds(maxAge));
 	}
 
 	public boolean isMutable() {

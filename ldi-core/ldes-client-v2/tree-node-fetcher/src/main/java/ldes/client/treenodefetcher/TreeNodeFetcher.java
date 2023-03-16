@@ -23,8 +23,7 @@ public class TreeNodeFetcher {
 	public TreeNodeResponse fetchTreeNode(TreeNodeRequest treeNodeRequest) {
 		Response response = requestExecutor
 				.execute(treeNodeRequest.createRequest());
-		MutabilityStatus mutabilityStatus = MutabilityStatus
-				.ofHeader(response.getValueOfHeader(HttpHeaders.CACHE_CONTROL));
+		MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
 		if (response.getHttpStatus() == HttpStatus.SC_OK) {
 			ModelResponse modelResponse = new ModelResponse(
 					RDFParser.fromString(response.getBody().orElseThrow()).forceLang(treeNodeRequest.getLang())
@@ -43,5 +42,11 @@ public class TreeNodeFetcher {
 		}
 		throw new UnsupportedOperationException(
 				"Cannot handle response " + response.getHttpStatus() + " of TreeNodeRequest " + treeNodeRequest);
+	}
+
+	private static MutabilityStatus getMutabilityStatus(Response response) {
+		return response.getValueOfHeader(HttpHeaders.CACHE_CONTROL)
+				.map(MutabilityStatus::ofHeader)
+				.orElseGet(MutabilityStatus::empty);
 	}
 }
