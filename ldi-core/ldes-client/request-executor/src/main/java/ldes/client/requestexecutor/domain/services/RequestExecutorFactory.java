@@ -6,6 +6,7 @@ import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultC
 import ldes.client.requestexecutor.executor.RequestExecutor;
 
 public class RequestExecutorFactory {
+
 	public RequestExecutor createApiKeyExecutor(String keyHeader, String key) {
 		return new ApiKeyConfig(keyHeader, key).createRequestExecutor();
 	}
@@ -19,4 +20,5 @@ public class RequestExecutorFactory {
 			String tokenEndpoint) {
 		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint).createRequestExecutor();
 	}
+
 }
