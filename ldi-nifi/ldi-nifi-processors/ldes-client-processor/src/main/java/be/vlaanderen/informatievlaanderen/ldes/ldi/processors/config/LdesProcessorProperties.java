@@ -191,7 +191,7 @@ public final class LdesProcessorProperties {
 				.orElseThrow(() -> new IllegalArgumentException("Unsupported authorization strategy: " + authValue));
 	}
 
-	public static StatePersistenceStrategy getStatePersistanceStrategy(final ProcessContext context) {
+	public static StatePersistenceStrategy getStatePersistenceStrategy(final ProcessContext context) {
 		return StatePersistenceStrategy.valueOf(context.getProperty(STATE_PERSISTENCE_STRATEGY).getValue());
 	}
 
