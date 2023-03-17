@@ -50,6 +50,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 	private RepositoryManager repositoryManager;
+	private Repository repository;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -72,6 +73,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		this.repositoryManager = new RemoteRepositoryManager(context.getProperty(SPARQL_HOST).getValue());
+		this.repository = repositoryManager.getRepository(context.getProperty(REPOSITORY_ID).getValue());
 	}
 
 	@Override
@@ -83,13 +85,14 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			return;
 		}
 
-		Repository repository = repositoryManager.getRepository(context.getProperty(REPOSITORY_ID).getValue());
+		
 		final AtomicBoolean committed = new AtomicBoolean(false);
 
 		try (RepositoryConnection dbConnection = repository.getConnection()) {
 			// As we are bulk-loading, set isolation level to none for improved performance.
-			dbConnection.setIsolationLevel(IsolationLevels.NONE);
-			dbConnection.begin();
+			dbConnection.begin(IsolationLevels.NONE);
+			
+			int test = 0;
 
 			for (FlowFile flowFile : flowFiles) {
 				session.read(flowFile, new InputStreamCallback() {
