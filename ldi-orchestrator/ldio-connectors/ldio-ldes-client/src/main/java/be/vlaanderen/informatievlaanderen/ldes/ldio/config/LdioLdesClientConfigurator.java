@@ -19,54 +19,54 @@ import static ldes.client.requestexecutor.domain.valueobjects.AuthStrategy.NO_AU
 
 public class LdioLdesClientConfigurator implements LdioConfigurator {
 
-    public static final String DEFAULT_API_KEY_HEADER = "X-API-KEY";
+	public static final String DEFAULT_API_KEY_HEADER = "X-API-KEY";
 
-    private final ComponentExecutor componentExecutor;
-    private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+	private final ComponentExecutor componentExecutor;
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
-    public LdioLdesClientConfigurator(ComponentExecutor componentExecutor) {
-        this.componentExecutor = componentExecutor;
-    }
+	public LdioLdesClientConfigurator(ComponentExecutor componentExecutor) {
+		this.componentExecutor = componentExecutor;
+	}
 
-    @Override
-    public LdiComponent configure(ComponentProperties properties) {
-        RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(properties);
-        LdesClientRunner ldesClientRunner = new LdesClientRunner(requestExecutor, properties, componentExecutor);
-        return new LdioLdesClient(componentExecutor, ldesClientRunner);
-    }
+	@Override
+	public LdiComponent configure(ComponentProperties properties) {
+		RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(properties);
+		LdesClientRunner ldesClientRunner = new LdesClientRunner(requestExecutor, properties, componentExecutor);
+		return new LdioLdesClient(componentExecutor, ldesClientRunner);
+	}
 
-    private RequestExecutor getRequestExecutorWithPossibleRetry(ComponentProperties props) {
-        final RequestExecutor requestExecutor = getRequestExecutor(props);
-        boolean retriesEnabled = props.getOptionalBoolean(RETRIES_ENABLED).orElse(Boolean.FALSE);
-        if (retriesEnabled) {
-            int maxRetries = props.getOptionalInteger(MAX_RETRIES).orElse(Integer.MAX_VALUE);
-            return requestExecutorFactory.createRetryExecutor(requestExecutor, maxRetries);
-        } else {
-            return requestExecutor;
-        }
-    }
+	private RequestExecutor getRequestExecutorWithPossibleRetry(ComponentProperties props) {
+		final RequestExecutor requestExecutor = getRequestExecutor(props);
+		boolean retriesEnabled = props.getOptionalBoolean(RETRIES_ENABLED).orElse(Boolean.FALSE);
+		if (retriesEnabled) {
+			int maxRetries = props.getOptionalInteger(MAX_RETRIES).orElse(Integer.MAX_VALUE);
+			return requestExecutorFactory.createRetryExecutor(requestExecutor, maxRetries);
+		} else {
+			return requestExecutor;
+		}
+	}
 
-    private RequestExecutor getRequestExecutor(ComponentProperties componentProperties) {
-        Optional<AuthStrategy> authentication = AuthStrategy
-                .from(componentProperties.getOptionalProperty(LdioLdesClientProperties.AUTH_TYPE)
-                        .orElse(NO_AUTH.name()));
-        if (authentication.isPresent()) {
-            return switch (authentication.get()) {
-                case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
-                case API_KEY ->
-                        requestExecutorFactory.createApiKeyExecutor(
-                                componentProperties.getOptionalProperty(LdioLdesClientProperties.API_KEY_HEADER)
-                                        .orElse(DEFAULT_API_KEY_HEADER),
-                                componentProperties.getProperty(LdioLdesClientProperties.API_KEY));
-                case OAUTH2_CLIENT_CREDENTIALS ->
-                        requestExecutorFactory.createClientCredentialsExecutor(
-                                componentProperties.getProperty(LdioLdesClientProperties.CLIENT_ID),
-                                componentProperties.getProperty(LdioLdesClientProperties.CLIENT_SECRET),
-                                componentProperties.getProperty(LdioLdesClientProperties.TOKEN_ENDPOINT));
-            };
-        }
-        throw new UnsupportedOperationException(
-                "Requested authentication not available: " + authentication);
-    }
+	private RequestExecutor getRequestExecutor(ComponentProperties componentProperties) {
+		Optional<AuthStrategy> authentication = AuthStrategy
+				.from(componentProperties.getOptionalProperty(LdioLdesClientProperties.AUTH_TYPE)
+						.orElse(NO_AUTH.name()));
+		if (authentication.isPresent()) {
+			return switch (authentication.get()) {
+				case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
+				case API_KEY ->
+					requestExecutorFactory.createApiKeyExecutor(
+							componentProperties.getOptionalProperty(LdioLdesClientProperties.API_KEY_HEADER)
+									.orElse(DEFAULT_API_KEY_HEADER),
+							componentProperties.getProperty(LdioLdesClientProperties.API_KEY));
+				case OAUTH2_CLIENT_CREDENTIALS ->
+					requestExecutorFactory.createClientCredentialsExecutor(
+							componentProperties.getProperty(LdioLdesClientProperties.CLIENT_ID),
+							componentProperties.getProperty(LdioLdesClientProperties.CLIENT_SECRET),
+							componentProperties.getProperty(LdioLdesClientProperties.TOKEN_ENDPOINT));
+			};
+		}
+		throw new UnsupportedOperationException(
+				"Requested authentication not available: " + authentication);
+	}
 
 }
