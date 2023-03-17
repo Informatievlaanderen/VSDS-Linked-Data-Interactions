@@ -9,8 +9,14 @@ import java.util.List;
 public class DummyOut implements LdiOutput {
 	public List<Model> output = new ArrayList<>();
 
+	private final MockVault mockVault;
+
+	public DummyOut(MockVault mockVault) {
+		this.mockVault = mockVault;
+	}
+
 	@Override
 	public void accept(Model model) {
-		this.output.add(model);
+		this.mockVault.receiveData(model);
 	}
 }

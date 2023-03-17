@@ -1,8 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdiSender;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import org.apache.jena.rdf.model.Model;
 

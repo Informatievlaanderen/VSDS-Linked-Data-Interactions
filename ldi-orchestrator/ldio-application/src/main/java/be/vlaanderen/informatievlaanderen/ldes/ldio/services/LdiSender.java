@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdiSender;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
@@ -9,21 +8,20 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.function.Consumer;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RUNNING;
 
-public class LdiSenderImpl implements LdiSender {
+public class LdiSender implements Consumer<Model> {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private PipelineStatus pipelineStatus;
 	private final List<LdiOutput> ldiOutputs;
-	private final Queue<Model> queue = new LinkedList<>();
+	private final Queue<Model> queue = new ArrayDeque<>();
 
-	public LdiSenderImpl(ApplicationEventPublisher applicationEventPublisher,
+	public LdiSender(ApplicationEventPublisher applicationEventPublisher,
 			List<LdiOutput> ldiOutputs) {
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.ldiOutputs = ldiOutputs;
@@ -41,25 +39,17 @@ public class LdiSenderImpl implements LdiSender {
 
 	@EventListener
 	public void handlePipelineStatus(PipelineStatusEvent statusEvent) {
-		if (statusEvent.getStatus() == HALTED) {
-			this.pipelineStatus = HALTED;
-		}
-		if (statusEvent.getStatus() == RESUMING) {
-			while (!queue.isEmpty()) {
-				ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(queue.poll()));
+		switch (statusEvent.getStatus()) {
+			case RESUMING -> {
+				while (!queue.isEmpty()) {
+					ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(queue.poll()));
+				}
+				this.pipelineStatus = RUNNING;
+				applicationEventPublisher.publishEvent(new PipelineStatusEvent(RUNNING));
 			}
-			applicationEventPublisher.publishEvent(new PipelineStatusEvent(RUNNING));
+			case HALTED -> this.pipelineStatus = HALTED;
+			case RUNNING -> {
+			}
 		}
-		if (statusEvent.getStatus() == RUNNING) {
-			this.pipelineStatus = RUNNING;
-		}
-	}
-
-	public List<LdiOutput> getLdiOutputs() {
-		return ldiOutputs;
-	}
-
-	public Queue<Model> getQueue() {
-		return queue;
 	}
 }

@@ -6,6 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -66,9 +67,12 @@ public class MockFlowConfiguration {
 	}
 
 	static class DummyOutConfigurator implements LdioConfigurator {
+		@Autowired
+		MockVault mockVault;
+
 		@Override
 		public LdiComponent configure(ComponentProperties properties) {
-			return new DummyOut();
+			return new DummyOut(mockVault);
 		}
 	}
 }
