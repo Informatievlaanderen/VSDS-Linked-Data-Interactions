@@ -30,9 +30,7 @@ public class LdioVersionMaterialiserAutoConfig {
 			Property versionOfProperty = config.getOptionalProperty("versionOf-property")
 					.map(initModel::createProperty)
 					.orElse(initModel.createProperty("http://purl.org/dc/terms/isVersionOf"));
-			boolean restrictToMembers = config.getOptionalProperty("restrict-to-members")
-					.map(Boolean::parseBoolean)
-					.orElse(false);
+			boolean restrictToMembers = config.getOptionalBoolean("restrict-to-members").orElse(false);
 			return new VersionMaterialiser(versionOfProperty, restrictToMembers);
 		}
 	}
