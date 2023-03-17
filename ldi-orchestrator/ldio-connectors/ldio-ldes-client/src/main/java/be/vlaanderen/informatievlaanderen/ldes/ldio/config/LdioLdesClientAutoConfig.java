@@ -17,14 +17,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.API_KEY;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.API_KEY_HEADER;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.AUTH_TYPE;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.CLIENT_ID;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.CLIENT_SECRET;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.MAX_RETRIES;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.RETRIES_ENABLED;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.TOKEN_ENDPOINT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.MAX_RETRIES;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.RETRIES_ENABLED;
 import static ldes.client.requestexecutor.domain.valueobjects.AuthStrategy.NO_AUTH;
 
 @Configuration
