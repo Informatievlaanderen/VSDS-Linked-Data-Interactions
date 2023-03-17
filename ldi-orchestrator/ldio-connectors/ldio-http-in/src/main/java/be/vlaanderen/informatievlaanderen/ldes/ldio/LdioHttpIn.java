@@ -2,17 +2,13 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter.Content;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 public class LdioHttpIn extends LdiInput {
 	private final String endpoint;
@@ -22,5 +18,15 @@ public class LdioHttpIn extends LdiInput {
 		this.endpoint = endpoint;
 	}
 
+	public RouterFunction<ServerResponse> mapping() {
+		return route(POST("/%s".formatted(endpoint)),
+				req -> {
+					String contentType = req.headers().contentType().orElseThrow().toString();
+					return req.bodyToMono(String.class)
+							.doOnNext(content -> getAdapter().apply(Content.of(content, contentType))
+									.forEach(getExecutor()::transformLinkedData))
+							.flatMap(body -> ServerResponse.noContent().build());
+				});
+	}
 
 }

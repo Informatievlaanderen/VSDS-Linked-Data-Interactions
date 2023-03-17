@@ -30,7 +30,7 @@ public class FlowAutoConfiguration {
 	@Bean
 	public List<Object> ldtoInput(OrchestratorConfig config) {
 		return config.getPipelines()
-				.parallelStream()
+				.stream()
 				.map(this::getLdiInput)
 				.collect(Collectors.toList());
 	}
@@ -61,7 +61,6 @@ public class FlowAutoConfiguration {
 		LdiAdapter adapter = (LdiAdapter) getLdiComponent(config.getInput().getAdapter().getName(),
 				config.getInput().getAdapter().getConfig());
 		ComponentExecutor executor = componentExecutor(config);
-
 
 		Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
 		inputConfig.put("pipeline.name", config.getName());
