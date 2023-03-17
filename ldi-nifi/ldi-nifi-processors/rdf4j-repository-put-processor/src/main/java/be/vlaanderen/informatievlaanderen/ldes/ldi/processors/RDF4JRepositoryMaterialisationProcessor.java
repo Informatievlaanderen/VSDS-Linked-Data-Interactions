@@ -85,13 +85,12 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			return;
 		}
 
-		
 		final AtomicBoolean committed = new AtomicBoolean(false);
 
 		try (RepositoryConnection dbConnection = repository.getConnection()) {
 			// As we are bulk-loading, set isolation level to none for improved performance.
 			dbConnection.begin(IsolationLevels.NONE);
-			
+
 			int test = 0;
 
 			for (FlowFile flowFile : flowFiles) {
@@ -107,7 +106,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 						// Save the new data to the DB.
 						String namedGraph = context.getProperty(NAMED_GRAPH).getValue();
-						if (!namedGraph.isEmpty()) {
+						if (namedGraph != null && !namedGraph.isEmpty()) {
 							IRI namedGraphIRI = dbConnection.getValueFactory().createIRI(namedGraph);
 							dbConnection.add(updateModel, namedGraphIRI);
 						} else {
@@ -128,7 +127,6 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 				session.transfer(flowFile, FAILURE);
 			}
 		}
-		session.commit();
 	}
 
 	/**
