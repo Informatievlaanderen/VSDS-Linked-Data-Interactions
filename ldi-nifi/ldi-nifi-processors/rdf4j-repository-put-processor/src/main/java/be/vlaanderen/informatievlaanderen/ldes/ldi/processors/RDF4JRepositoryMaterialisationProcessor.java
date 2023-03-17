@@ -13,7 +13,6 @@ import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.processor.io.InputStreamCallback;
 import org.eclipse.rdf4j.common.transaction.IsolationLevels;
-import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
@@ -85,7 +84,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			return;
 		}
 
-		final AtomicBoolean committed = new AtomicBoolean(false);
+		final var committed = new AtomicBoolean(false);
 
 		try (RepositoryConnection dbConnection = repository.getConnection()) {
 			// As we are bulk-loading, set isolation level to none for improved performance.
@@ -97,7 +96,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 				session.read(flowFile, new InputStreamCallback() {
 					@Override
 					public void process(InputStream in) throws IOException {
-						Model updateModel = Rio.parse(in, "", RDFFormat.NQUADS);
+						var updateModel = Rio.parse(in, "", RDFFormat.NQUADS);
 
 						Set<Resource> entityIds = getSubjectsFromModel(updateModel);
 
@@ -107,7 +106,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 						// Save the new data to the DB.
 						String namedGraph = context.getProperty(NAMED_GRAPH).getValue();
 						if (namedGraph != null && !namedGraph.isEmpty()) {
-							IRI namedGraphIRI = dbConnection.getValueFactory().createIRI(namedGraph);
+							var namedGraphIRI = dbConnection.getValueFactory().createIRI(namedGraph);
 							dbConnection.add(updateModel, namedGraphIRI);
 						} else {
 							dbConnection.add(updateModel);
