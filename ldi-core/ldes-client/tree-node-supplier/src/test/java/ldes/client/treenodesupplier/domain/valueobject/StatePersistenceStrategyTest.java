@@ -9,15 +9,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StatePersistenceStrategyTest {
 
-    @ParameterizedTest
-    @EnumSource(StatePersistenceStrategy.class)
-    void from_ShouldReturnAValueForExistingAuthStrategies(StatePersistenceStrategy authStrategy) {
-        assertTrue(StatePersistenceStrategy.from(authStrategy.name()).isPresent());
-    }
+	@ParameterizedTest
+	@EnumSource(StatePersistenceStrategy.class)
+	void from_ShouldReturnAValueForExistingAuthStrategies(StatePersistenceStrategy authStrategy) {
+		assertTrue(StatePersistenceStrategy.from(authStrategy.name()).isPresent());
+	}
 
-    @Test
-    void from_ShouldReturnEmptyOptionalForNonExistingAuthStrategies() {
-        assertTrue(StatePersistenceStrategy.from("nonExisting").isEmpty());
-    }
+	@Test
+	void from_ShouldReturnEmptyOptionalForNonExistingAuthStrategies() {
+		assertTrue(StatePersistenceStrategy.from("nonExisting").isEmpty());
+	}
 
 }
