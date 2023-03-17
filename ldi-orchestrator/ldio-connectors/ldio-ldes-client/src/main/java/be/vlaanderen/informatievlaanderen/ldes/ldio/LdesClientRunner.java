@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.client;
+package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
@@ -13,8 +13,6 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.*;
 
 public class LdesClientRunner implements Runnable {
 
@@ -35,25 +33,30 @@ public class LdesClientRunner implements Runnable {
 
 	@Override
 	public void run() {
-		log.info("Starting LdesClientRunner run setup");
-		MemberSupplier memberSupplier = getMemberSupplier();
-		log.info("LdesClientRunner setup finished");
-		while (threadRunning) {
-			componentExecutor.transformLinkedData(memberSupplier.get().getModel());
+		try {
+			log.info("Starting LdesClientRunner run setup");
+			MemberSupplier memberSupplier = getMemberSupplier();
+			log.info("LdesClientRunner setup finished");
+			while (threadRunning) {
+				componentExecutor.transformLinkedData(memberSupplier.get().getModel());
+			}
+		} catch (Exception e) {
+			log.error("LdesClientRunner FAILURE", e);
 		}
 	}
 
 	private MemberSupplier getMemberSupplier() {
-		String targetUrl = properties.getProperty(URL);
-		Lang sourceFormat = properties.getOptionalProperty(SOURCE_FORMAT)
+		String targetUrl = properties.getProperty(LdioLdesClientProperties.URL);
+		Lang sourceFormat = properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
 				.map(RDFLanguages::nameToLang)
 				.orElse(Lang.JSONLD);
 		StatePersistenceStrategy state = StatePersistenceStrategy
-				.valueOf(properties.getOptionalProperty(STATE).orElse(StatePersistenceStrategy.MEMORY.name()));
+				.valueOf(properties.getOptionalProperty(LdioLdesClientProperties.STATE)
+						.orElse(StatePersistenceStrategy.MEMORY.name()));
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(targetUrl,
 				sourceFormat);
 		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, startingTreeNode);
-		boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
+		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
 		return new MemberSupplier(treeNodeProcessor, keepState);
 	}
 

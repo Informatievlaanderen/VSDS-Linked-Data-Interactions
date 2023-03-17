@@ -1,9 +1,12 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.client;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdesClientRunner;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
 import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.domain.valueobjects.AuthStrategy;
 import ldes.client.requestexecutor.executor.RequestExecutor;
@@ -65,19 +68,21 @@ public class LdioLdesClientAutoConfig {
 
 		private RequestExecutor getRequestExecutor(ComponentProperties componentProperties) {
 			Optional<AuthStrategy> authentication = AuthStrategy
-					.from(componentProperties.getOptionalProperty(AUTH_TYPE).orElse(NO_AUTH.name()));
+					.from(componentProperties.getOptionalProperty(LdioLdesClientProperties.AUTH_TYPE)
+							.orElse(NO_AUTH.name()));
 			if (authentication.isPresent()) {
 				return switch (authentication.get()) {
 					case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
 					case API_KEY ->
 						requestExecutorFactory.createApiKeyExecutor(
-								componentProperties.getOptionalProperty(API_KEY_HEADER).orElse(DEFAULT_API_KEY_HEADER),
-								componentProperties.getProperty(API_KEY));
+								componentProperties.getOptionalProperty(LdioLdesClientProperties.API_KEY_HEADER)
+										.orElse(DEFAULT_API_KEY_HEADER),
+								componentProperties.getProperty(LdioLdesClientProperties.API_KEY));
 					case OAUTH2_CLIENT_CREDENTIALS ->
 						requestExecutorFactory.createClientCredentialsExecutor(
-								componentProperties.getProperty(CLIENT_ID),
-								componentProperties.getProperty(CLIENT_SECRET),
-								componentProperties.getProperty(TOKEN_ENDPOINT));
+								componentProperties.getProperty(LdioLdesClientProperties.CLIENT_ID),
+								componentProperties.getProperty(LdioLdesClientProperties.CLIENT_SECRET),
+								componentProperties.getProperty(LdioLdesClientProperties.TOKEN_ENDPOINT));
 				};
 			}
 			throw new UnsupportedOperationException(
