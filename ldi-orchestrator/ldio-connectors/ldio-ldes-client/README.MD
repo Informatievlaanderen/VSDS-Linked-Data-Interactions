@@ -21,7 +21,7 @@ Example config:
 ```agsl
 orchestrator:
   input:
-    name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient
+    name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient
     config:
       url: http://localhost:8080/my-ldes
       sourceFormat: text/turtle

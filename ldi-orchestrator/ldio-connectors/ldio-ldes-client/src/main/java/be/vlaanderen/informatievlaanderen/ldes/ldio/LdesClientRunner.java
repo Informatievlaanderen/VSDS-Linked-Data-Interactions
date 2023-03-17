@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.client;
+package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
@@ -37,26 +37,30 @@ public class LdesClientRunner implements Runnable {
 
 	@Override
 	public void run() {
-		log.info("Starting LdesClientRunner run setup");
-		MemberSupplier memberSupplier = getMemberSupplier();
-		log.info("LdesClientRunner setup finished");
-		while (threadRunning) {
-			componentExecutor.transformLinkedData(memberSupplier.get().getModel());
+		try {
+			log.info("Starting LdesClientRunner run setup");
+			MemberSupplier memberSupplier = getMemberSupplier();
+			log.info("LdesClientRunner setup finished");
+			while (threadRunning) {
+				componentExecutor.transformLinkedData(memberSupplier.get().getModel());
+			}
+		} catch (Exception e) {
+			log.error("LdesClientRunner FAILURE", e);
 		}
 	}
 
 	private MemberSupplier getMemberSupplier() {
-		String targetUrl = properties.getProperty(URL);
-		Lang sourceFormat = properties.getOptionalProperty(SOURCE_FORMAT)
+		String targetUrl = properties.getProperty(LdioLdesClientProperties.URL);
+		Lang sourceFormat = properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
 				.map(RDFLanguages::nameToLang)
 				.orElse(Lang.JSONLD);
-		StatePersistenceStrategy state = properties.getOptionalProperty(STATE)
+		StatePersistenceStrategy state = properties.getOptionalProperty(LdioLdesClientProperties.STATE)
 				.flatMap(StatePersistenceStrategy::from)
 				.orElse(StatePersistenceStrategy.MEMORY);
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(targetUrl,
 				sourceFormat);
 		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, startingTreeNode);
-		boolean keepState = properties.getOptionalProperty(KEEP_STATE)
+		boolean keepState = properties.getOptionalProperty(LdioLdesClientProperties.KEEP_STATE)
 				.map(Boolean::valueOf)
 				.orElse(false);
 		return new MemberSupplier(treeNodeProcessor, keepState);
