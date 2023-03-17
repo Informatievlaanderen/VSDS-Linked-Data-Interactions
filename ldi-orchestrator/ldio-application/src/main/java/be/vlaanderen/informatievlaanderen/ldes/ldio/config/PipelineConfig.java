@@ -53,7 +53,8 @@ public class PipelineConfig {
 		this.outputs = outputs;
 	}
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return "PipelineConfig{" +
 				"name='" + name + '\'' +
 				", description='" + description + '\'' +

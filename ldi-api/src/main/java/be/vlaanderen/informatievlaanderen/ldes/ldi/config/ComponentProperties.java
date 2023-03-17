@@ -9,6 +9,7 @@ public class ComponentProperties {
 	public ComponentProperties() {
 		this.config = Map.of();
 	}
+
 	public ComponentProperties(Map<String, String> config) {
 		this.config = config;
 	}
