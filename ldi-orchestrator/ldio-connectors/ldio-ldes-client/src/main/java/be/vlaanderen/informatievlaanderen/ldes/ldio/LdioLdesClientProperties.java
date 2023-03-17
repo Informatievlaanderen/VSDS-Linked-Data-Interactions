@@ -1,6 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 public class LdioLdesClientProperties {
+
+	private LdioLdesClientProperties() {
+	}
+
 	// general properties
 	public static final String URL = "url";
 	public static final String SOURCE_FORMAT = "source-format";

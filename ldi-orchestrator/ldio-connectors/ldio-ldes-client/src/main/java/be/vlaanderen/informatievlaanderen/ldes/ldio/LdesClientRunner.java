@@ -33,11 +33,15 @@ public class LdesClientRunner implements Runnable {
 
 	@Override
 	public void run() {
-		log.info("Starting LdesClientRunner run setup");
-		MemberSupplier memberSupplier = getMemberSupplier();
-		log.info("LdesClientRunner setup finished");
-		while (threadRunning) {
-			componentExecutor.transformLinkedData(memberSupplier.get().getModel());
+		try {
+			log.info("Starting LdesClientRunner run setup");
+			MemberSupplier memberSupplier = getMemberSupplier();
+			log.info("LdesClientRunner setup finished");
+			while (threadRunning) {
+				componentExecutor.transformLinkedData(memberSupplier.get().getModel());
+			}
+		} catch (Exception e) {
+			log.error("LdesClientRunner FAILURE", e);
 		}
 	}
 
