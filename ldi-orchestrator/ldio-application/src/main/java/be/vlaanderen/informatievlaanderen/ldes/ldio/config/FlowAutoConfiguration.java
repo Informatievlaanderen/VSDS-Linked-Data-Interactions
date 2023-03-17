@@ -55,7 +55,7 @@ public class FlowAutoConfiguration {
 		return (LdiOutput) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
-	public List<LdiComponent> getLdiInput(PipelineConfig config) {
+	public Object getLdiInput(PipelineConfig config) {
 		LdioInputConfigurator configurator = (LdioInputConfigurator) applicationContext.getBean(
 				config.getInput().getName());
 		LdiAdapter adapter = (LdiAdapter) getLdiComponent(config.getInput().getAdapter().getName(),
