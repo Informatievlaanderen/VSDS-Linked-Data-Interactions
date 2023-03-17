@@ -44,14 +44,16 @@ public class LdioLdesClientAutoConfig {
 
 		private RequestExecutor getRequestExecutor(ComponentProperties componentProperties) {
 			Optional<AuthStrategy> authentication = AuthStrategy
-					.from(componentProperties.getOptionalProperty(LdioLdesClientProperties.AUTH_TYPE).orElse(NO_AUTH.name()));
+					.from(componentProperties.getOptionalProperty(LdioLdesClientProperties.AUTH_TYPE)
+							.orElse(NO_AUTH.name()));
 			if (authentication.isPresent()) {
 				RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 				return switch (authentication.get()) {
 					case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
 					case API_KEY ->
 						requestExecutorFactory.createApiKeyExecutor(
-								componentProperties.getOptionalProperty(LdioLdesClientProperties.API_KEY_HEADER).orElse("X-API-KEY"),
+								componentProperties.getOptionalProperty(LdioLdesClientProperties.API_KEY_HEADER)
+										.orElse("X-API-KEY"),
 								componentProperties.getProperty(LdioLdesClientProperties.API_KEY));
 					case OAUTH2_CLIENT_CREDENTIALS ->
 						requestExecutorFactory.createClientCredentialsExecutor(
