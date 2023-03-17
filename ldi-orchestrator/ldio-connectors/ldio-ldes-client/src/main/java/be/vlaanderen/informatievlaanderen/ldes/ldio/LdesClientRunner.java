@@ -14,10 +14,6 @@ import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.*;
-
 public class LdesClientRunner implements Runnable {
 
 	private final Logger log = LoggerFactory.getLogger(LdesClientRunner.class);
