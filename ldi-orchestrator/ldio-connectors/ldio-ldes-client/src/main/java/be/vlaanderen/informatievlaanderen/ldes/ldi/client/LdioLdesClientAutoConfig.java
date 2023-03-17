@@ -12,8 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Optional;
+
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.*;
-import static ldes.client.requestexecutor.domain.valueobjects.AuthStrategy.NO_AUTH;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClientProperties.API_KEY;
+import static ldes.client.requestexecutor.domain.valueobjects.AuthStrategy.*;
 
 @Configuration
 @EnableConfigurationProperties()

@@ -6,7 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ModelHttpConverter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,11 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableConfigurationProperties()
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioHttpInAutoConfig {
-	@Bean
-	public ModelHttpConverter memberConverter() {
-		return new ModelHttpConverter();
-	}
-
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn")
 	public LdioConfigurator ldioConfigurator(LdiAdapter adapter, ComponentExecutor componentExecutor) {
 		return new LdioHttpInConfigurator(adapter, componentExecutor);

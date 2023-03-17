@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
 import ldes.client.requestexecutor.domain.valueobjects.AuthStrategy;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistanceStrategy;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -59,8 +59,8 @@ public final class LdesProcessorProperties {
 			.displayName("How state is persisted (note that memory is volatile).")
 			.required(false)
 			.allowableValues(
-					Arrays.stream(StatePersistanceStrategy.values()).map(Enum::name).collect(Collectors.toSet()))
-			.defaultValue(StatePersistanceStrategy.MEMORY.name())
+					Arrays.stream(StatePersistenceStrategy.values()).map(Enum::name).collect(Collectors.toSet()))
+			.defaultValue(StatePersistenceStrategy.MEMORY.name())
 			.build();
 	public static final PropertyDescriptor KEEP_STATE = new PropertyDescriptor.Builder()
 			.name("KEEP_STATE")
@@ -208,8 +208,8 @@ public final class LdesProcessorProperties {
 				.orElseThrow(() -> new IllegalArgumentException("Unsupported authorization strategy: " + authValue));
 	}
 
-	public static StatePersistanceStrategy getStatePersistanceStrategy(final ProcessContext context) {
-		return StatePersistanceStrategy.valueOf(context.getProperty(STATE_PERSISTENCE_STRATEGY).getValue());
+	public static StatePersistenceStrategy getStatePersistanceStrategy(final ProcessContext context) {
+		return StatePersistenceStrategy.valueOf(context.getProperty(STATE_PERSISTENCE_STRATEGY).getValue());
 	}
 
 	public static boolean stateKept(final ProcessContext context) {
