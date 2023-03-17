@@ -28,7 +28,7 @@ public class FlowAutoConfiguration {
 	}
 
 	@Bean
-	public List<LdiInput> ldtoInput(OrchestratorConfig config) {
+	public List<Object> ldtoInput(OrchestratorConfig config) {
 		return config.getPipelines()
 				.parallelStream()
 				.map(this::getLdiInput)
@@ -55,7 +55,7 @@ public class FlowAutoConfiguration {
 		return (LdiOutput) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
-	public LdiInput getLdiInput(PipelineConfig config) {
+	public List<LdiComponent> getLdiInput(PipelineConfig config) {
 		LdioInputConfigurator configurator = (LdioInputConfigurator) applicationContext.getBean(
 				config.getInput().getName());
 		LdiAdapter adapter = (LdiAdapter) getLdiComponent(config.getInput().getAdapter().getName(),
@@ -66,7 +66,7 @@ public class FlowAutoConfiguration {
 		Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
 		inputConfig.put("pipeline.name", config.getName());
 
-		return (LdiInput) configurator.configure(adapter, executor, new ComponentProperties(inputConfig));
+		return configurator.configure(adapter, executor, new ComponentProperties(inputConfig));
 	}
 
 	private LdiComponent getLdiComponent(String beanName, ComponentProperties config) {

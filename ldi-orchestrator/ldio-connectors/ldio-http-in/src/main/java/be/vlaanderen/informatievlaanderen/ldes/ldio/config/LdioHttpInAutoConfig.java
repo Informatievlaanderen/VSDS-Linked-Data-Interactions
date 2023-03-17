@@ -10,7 +10,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties()
@@ -24,7 +30,7 @@ public class LdioHttpInAutoConfig {
 	public static class LdioHttpInConfigurator implements LdioInputConfigurator {
 
 		@Override
-		public LdiComponent configure(LdiAdapter adapter,
+		public List<LdiComponent> configure(LdiAdapter adapter,
 				ComponentExecutor executor,
 				ComponentProperties config) {
 			@RestController
@@ -36,7 +42,12 @@ public class LdioHttpInAutoConfig {
 					super(executor, adapter, config.getProperty("pipeline.name"));
 				}
 			}
-			return new LdioHttpInBean();
+
+			
+			LdioHttpIn ldioHttpIn = new LdioHttpInBean();
+
+			return List.of(new UrlHandlerMapping(config.getProperty("pipeline.name"), ldioHttpIn), ldioHttpIn);
 		}
+
 	}
 }
