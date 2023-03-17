@@ -50,9 +50,9 @@ public class LdesClientRunner implements Runnable {
 		Lang sourceFormat = properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
 				.map(RDFLanguages::nameToLang)
 				.orElse(Lang.JSONLD);
-		StatePersistenceStrategy state = StatePersistenceStrategy
-				.valueOf(properties.getOptionalProperty(LdioLdesClientProperties.STATE)
-						.orElse(StatePersistenceStrategy.MEMORY.name()));
+		StatePersistenceStrategy state = properties.getOptionalProperty(LdioLdesClientProperties.STATE)
+				.flatMap(StatePersistenceStrategy::from)
+				.orElse(StatePersistenceStrategy.MEMORY);
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(targetUrl,
 				sourceFormat);
 		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, startingTreeNode);
