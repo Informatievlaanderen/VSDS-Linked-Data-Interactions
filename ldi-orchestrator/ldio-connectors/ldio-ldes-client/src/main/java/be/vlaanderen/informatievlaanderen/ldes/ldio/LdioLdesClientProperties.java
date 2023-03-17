@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.client;
+package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 public class LdioLdesClientProperties {
 	// general properties
