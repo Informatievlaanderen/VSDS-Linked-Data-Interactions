@@ -55,8 +55,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldThrowExceptionWhenPropertyIsNotAnInteger() {
-			assertThrows(NumberFormatException.class,
-					() -> componentProperties.getOptionalInteger("string").orElseThrow());
+			assertThrows(NumberFormatException.class, () -> componentProperties.getOptionalInteger("string"));
 		}
 
 		@Test
