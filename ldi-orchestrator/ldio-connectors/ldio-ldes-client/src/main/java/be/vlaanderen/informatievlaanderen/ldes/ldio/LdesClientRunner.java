@@ -56,9 +56,7 @@ public class LdesClientRunner implements Runnable {
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(targetUrl,
 				sourceFormat);
 		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, startingTreeNode);
-		boolean keepState = properties.getOptionalProperty(LdioLdesClientProperties.KEEP_STATE)
-				.map(Boolean::valueOf)
-				.orElse(false);
+		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
 		return new MemberSupplier(treeNodeProcessor, keepState);
 	}
 

@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/500-response"
+  },
+  "response": {
+    "status": 500
+  }
+}
