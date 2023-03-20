@@ -12,4 +12,5 @@ public enum AuthStrategy {
 	public static Optional<AuthStrategy> from(String s) {
 		return Stream.of(values()).filter(val -> val.name().equals(StringUtils.upperCase(s))).findFirst();
 	}
+
 }

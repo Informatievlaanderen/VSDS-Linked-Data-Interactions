@@ -41,9 +41,11 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Ldes
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.DATA_SOURCE_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.DATA_SOURCE_URL;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.KEEP_STATE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.MAX_RETRIES;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.OAUTH_CLIENT_ID;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.OAUTH_CLIENT_SECRET;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.OAUTH_TOKEN_ENDPOINT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.RETRIES_ENABLED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.STATE_PERSISTENCE_STRATEGY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.STREAM_SHAPE_PROPERTY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.STREAM_TIMESTAMP_PATH_PROPERTY;
@@ -51,9 +53,11 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Ldes
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getApiKey;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getApiKeyHeader;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getAuthorizationStrategy;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getMaxRetries;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getOauthClientId;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getOauthClientSecret;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getOauthTokenEndpoint;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.retriesEnabled;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.streamShapeProperty;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.streamTimestampPathProperty;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.streamVersionOfProperty;
@@ -81,14 +85,15 @@ public class LdesClient extends AbstractProcessor {
 				STATE_PERSISTENCE_STRATEGY,
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY,
 				API_KEY_HEADER_PROPERTY,
-				API_KEY_PROPERTY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY);
+				API_KEY_PROPERTY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY,
+				RETRIES_ENABLED, MAX_RETRIES);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		String dataSourceUrl = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
-		final RequestExecutor requestExecutor = getRequestExecutor(context);
+		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(dataSourceUrl,
 				dataSourceFormat);
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(startingTreeNode,
@@ -100,6 +105,13 @@ public class LdesClient extends AbstractProcessor {
 
 		LOGGER.info("LDES extraction processor {} with base url {} (expected LDES source format: {})",
 				context.getName(), dataSourceUrl, dataSourceFormat);
+	}
+
+	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {
+		final RequestExecutor requestExecutor = getRequestExecutor(context);
+		return retriesEnabled(context)
+				? requestExecutorFactory.createRetryExecutor(requestExecutor, getMaxRetries(context))
+				: requestExecutor;
 	}
 
 	private RequestExecutor getRequestExecutor(final ProcessContext context) {

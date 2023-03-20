@@ -12,6 +12,9 @@ public class LdioLdesClientProperties {
 	public static final String STATE = "state";
 	public static final String KEEP_STATE = "keep-state";
 
+	public static final String RETRIES_ENABLED = "retries.enabled";
+	public static final String MAX_RETRIES = "retries.max";
+
 	// authorization properties
 	public static final String AUTH_TYPE = "auth.type";
 	public static final String API_KEY = "auth.api-key";

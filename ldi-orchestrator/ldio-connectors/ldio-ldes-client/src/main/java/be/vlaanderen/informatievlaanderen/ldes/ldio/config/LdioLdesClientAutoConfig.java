@@ -23,6 +23,7 @@ import static ldes.client.requestexecutor.domain.valueobjects.AuthStrategy.NO_AU
 @EnableConfigurationProperties()
 @ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioLdesClientAutoConfig {
+
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient")
 	public LdioInputConfigurator ldioConfigurator() {
 		return new LdioLdesClientConfigurator();
@@ -61,5 +62,4 @@ public class LdioLdesClientAutoConfig {
 					"Requested authentication not available: " + authentication);
 		}
 	}
-
 }
