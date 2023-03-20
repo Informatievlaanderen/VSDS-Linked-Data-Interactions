@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +51,7 @@ public class LdtoHttpInputTest {
 				.expectStatus()
 				.isNoContent();
 
-		verify(adapter).apply(eq(LdiAdapter.Content.of(content, contentType)));
+		verify(adapter).apply(LdiAdapter.Content.of(content, contentType));
 	}
 
 }

@@ -37,6 +37,7 @@ public class LdiSender implements Consumer<Model> {
 		}
 	}
 
+	@SuppressWarnings({"java:S131", "java:S1301"})
 	@EventListener
 	public void handlePipelineStatus(PipelineStatusEvent statusEvent) {
 		switch (statusEvent.getStatus()) {
