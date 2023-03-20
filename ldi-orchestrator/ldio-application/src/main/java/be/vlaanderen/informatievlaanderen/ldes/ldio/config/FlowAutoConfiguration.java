@@ -40,20 +40,20 @@ public class FlowAutoConfiguration {
 	public ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
 		List<LdiTransformer> ldiTransformers = pipelineConfig.getTransformers()
 				.stream()
-				.map(this::ldtoTransformer)
+				.map(this::getLdioTransformer)
 				.toList();
 		List<LdiOutput> ldiOutputs = pipelineConfig.getOutputs()
 				.stream()
-				.map(this::ldtoOutput)
+				.map(this::getLdioOutput)
 				.toList();
 		return new ComponentExecutorImpl(ldiTransformers, ldiOutputs);
 	}
 
-	private LdiTransformer ldtoTransformer(ComponentDefinition componentDefinition) {
+	private LdiTransformer getLdioTransformer(ComponentDefinition componentDefinition) {
 		return (LdiTransformer) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
-	private LdiOutput ldtoOutput(ComponentDefinition componentDefinition) {
+	private LdiOutput getLdioOutput(ComponentDefinition componentDefinition) {
 		return (LdiOutput) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
