@@ -10,8 +10,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.services.LdiSender;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,11 +27,13 @@ import java.util.Map;
 public class FlowAutoConfiguration {
 	private final OrchestratorConfig config;
 	private final ConfigurableApplicationContext configContext;
+	private final ApplicationEventPublisher eventPublisher;
 
 	public FlowAutoConfiguration(OrchestratorConfig config,
-			ConfigurableApplicationContext configContext) {
+			ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
 		this.config = config;
 		this.configContext = configContext;
+		this.eventPublisher = eventPublisher;
 	}
 
 	@PostConstruct
@@ -46,7 +50,7 @@ public class FlowAutoConfiguration {
 				.stream()
 				.map(this::getLdioOutput)
 				.toList();
-		return new ComponentExecutorImpl(ldiTransformers, ldiOutputs);
+		return new ComponentExecutorImpl(ldiTransformers, new LdiSender(eventPublisher, ldiOutputs));
 	}
 
 	private LdiTransformer getLdioTransformer(ComponentDefinition componentDefinition) {

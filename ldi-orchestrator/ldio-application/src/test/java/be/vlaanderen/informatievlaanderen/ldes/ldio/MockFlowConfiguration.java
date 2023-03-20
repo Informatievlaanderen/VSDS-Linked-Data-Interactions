@@ -2,9 +2,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
 public class MockFlowConfiguration {
 	@Bean
 	@Qualifier("dummyIn")
-	public LdioConfigurator dummyIn(ComponentExecutor executor, LdiAdapter adapter) {
-		return new DummyInConfigurator(adapter, executor);
+	public LdioInputConfigurator dummyIn() {
+		return new DummyInConfigurator();
 	}
 
 	@Bean
@@ -37,17 +39,12 @@ public class MockFlowConfiguration {
 		return new DummyOutConfigurator();
 	}
 
-	static class DummyInConfigurator implements LdioConfigurator {
-		ComponentExecutor executor;
-		LdiAdapter adapter;
-
-		public DummyInConfigurator(LdiAdapter adapter, ComponentExecutor executor) {
-			this.executor = executor;
-			this.adapter = adapter;
-		}
+	static class DummyInConfigurator implements LdioInputConfigurator {
 
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
+		public LdiInput configure(LdiAdapter adapter,
+				ComponentExecutor executor,
+				ComponentProperties config) {
 			return new DummyIn(executor, adapter);
 		}
 	}

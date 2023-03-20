@@ -47,7 +47,7 @@ public class LdtoHttpInputTest {
 		client.post()
 				.uri("/%s".formatted(endpoint))
 				.body(Mono.just(content), String.class)
-				.header("Content-Type",contentType)
+				.header("Content-Type", contentType)
 				.exchange()
 				.expectStatus()
 				.isNoContent();

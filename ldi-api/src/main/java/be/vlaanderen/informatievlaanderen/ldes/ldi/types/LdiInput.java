@@ -2,8 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.types;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 
-import java.util.Map;
-
 /**
  * Base class for the start of a LDIO workflow.
  *
