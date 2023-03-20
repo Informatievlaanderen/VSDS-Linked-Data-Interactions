@@ -5,7 +5,7 @@ orchestrator:
         name: "dummyIn"
         adapter:
           name: "dummyAdapt"
-        transformers:
-          - name: "dummyTransform"
-        outputs:
-          - name: "dummyOut"
+      transformers:
+        - name: "dummyTransform"
+      outputs:
+        - name: "dummyOut"

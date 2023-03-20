@@ -52,15 +52,4 @@ public class PipelineConfig {
 	public void setOutputs(List<ComponentDefinition> outputs) {
 		this.outputs = outputs;
 	}
-
-	@Override
-	public String toString() {
-		return "PipelineConfig{" +
-				"name='" + name + '\'' +
-				", description='" + description + '\'' +
-				", input=" + input +
-				", transformers=" + transformers +
-				", outputs=" + outputs +
-				'}';
-	}
 }

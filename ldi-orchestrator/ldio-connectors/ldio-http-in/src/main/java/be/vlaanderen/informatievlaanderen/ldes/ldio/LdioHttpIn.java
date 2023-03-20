@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter.Content;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -18,6 +19,7 @@ public class LdioHttpIn extends LdiInput {
 		this.endpoint = endpoint;
 	}
 
+	@Bean
 	public RouterFunction<ServerResponse> mapping() {
 		return route(POST("/%s".formatted(endpoint)),
 				req -> {
