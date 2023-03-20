@@ -1,0 +1,19 @@
+<http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Bill Reid" .
+<http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid13 .
+_:genid13 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Reid" .
+_:genid13 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "William" .
+
+<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Missy Reid" .
+<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid14 .
+_:genid14 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Reid" .
+_:genid14 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Missy" .
+
+<http://somewhere/RebeccaSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Linus Torvalds" .
+<http://somewhere/RebeccaSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid15 .
+_:genid15 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Torvalds" .
+_:genid15 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Linus" .
+
+<http://somewhere/JohnSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Taylor Kennedy" .
+<http://somewhere/JohnSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid16 .
+_:genid16 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Kennedy" .
+_:genid16 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Taylor" .

@@ -1,0 +1,19 @@
+<http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Dick Jones" .
+<http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid5 .
+_:genid5 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Jones" .
+_:genid5 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Richard" .
+
+<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Martha Jones" .
+<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid6 .
+_:genid6 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Jones" .
+_:genid6 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Martha" .
+
+<http://somewhere/RebeccaSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Andrew Wiles" .
+<http://somewhere/RebeccaSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid7 .
+_:genid7 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Wiles" .
+_:genid7 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Andrew" .
+
+<http://somewhere/JohnSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Sam Wiles" .
+<http://somewhere/JohnSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid8 .
+_:genid8 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Wiles" .
+_:genid8 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Samantha" .
