@@ -7,7 +7,7 @@ public class ComponentProperties {
 	private final Map<String, String> config;
 
 	public ComponentProperties() {
-		this.config = Map.of();
+		this(Map.of());
 	}
 
 	public ComponentProperties(Map<String, String> config) {
