@@ -48,8 +48,6 @@ public class LdiSender implements Consumer<Model> {
 				applicationEventPublisher.publishEvent(new PipelineStatusEvent(RUNNING));
 			}
 			case HALTED -> this.pipelineStatus = HALTED;
-			case RUNNING -> {
-			}
 		}
 	}
 }
