@@ -15,20 +15,24 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class LdtoHttpInputTest {
 	private WebTestClient client;
+	private LdiAdapter adapter;
+	private final String endpoint = "endpoint";
 
 	@BeforeEach
 	void setup() {
-		LdiAdapter adapter = Mockito.mock(LdiAdapter.class);
+		adapter = Mockito.mock(LdiAdapter.class);
 		ComponentExecutor executor = Mockito.mock(ComponentExecutor.class);
 
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
 		RouterFunction<?> routerFunction = (RouterFunction<?>) new LdioHttpInAutoConfig.LdioHttpInConfigurator()
-				.configure(adapter, executor, new ComponentProperties(Map.of("pipeline.name", "testEndpoint")));
+				.configure(adapter, executor, new ComponentProperties(Map.of("pipeline.name", endpoint)));
 
 		client = WebTestClient
 				.bindToRouterFunction(routerFunction)
@@ -37,12 +41,18 @@ public class LdtoHttpInputTest {
 
 	@Test
 	void testHttpEndpoint() {
+		String content = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
+		String contentType = "application/n-quads";
+
 		client.post()
-				.uri("/testEndpoint")
-				.body(Mono.just("testData"), String.class)
+				.uri("/%s".formatted(endpoint))
+				.body(Mono.just(content), String.class)
+				.header("Content-Type",contentType)
 				.exchange()
 				.expectStatus()
 				.isNoContent();
+
+		verify(adapter).apply(eq(LdiAdapter.Content.of(content, contentType)));
 	}
 
 }
