@@ -1,0 +1,110 @@
+{
+  "@graph": [
+    {
+      "@id": "https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10617709/zones/b45a1891-dd86-4de5-9089-46c2861eca4d",
+      "https://data.vlaanderen.be/ns/mobiliteit#Zone.type": {
+        "@id": "https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250"
+      },
+      "locn:geometry": {
+        "@id": "_:a1"
+      },
+      "@type": "https://data.vlaanderen.be/ns/mobiliteit#Zone"
+    },
+    {
+      "@id": "_:a1",
+      "geosparql:asWKT": {
+        "@value": "MULTIPOLYGON (((34440.704186722 173155.34188915, 34450.8702929739 173166.371407892, 34449.399690475 173167.726888725, 34439.233584223 173156.697369983, 34440.704186722 173155.34188915)), ((34434.255365738 173141.969323664, 34461.2766213133 173170.422177323, 34460.2625802933 173171.436220618, 34433.4202725444 173142.923721931, 34434.255365738 173141.969323664)))",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "point",
+      "geosparql:asWKT": {
+        "@value": "POINT (-83.4 34.3)",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "polygon",
+      "geosparql:asWKT": {
+        "@value": "POLYGON ((-83.6 34.1, -83.4 34.1, -83.4 34.3,-83.6 34.3, -83.6 34.1))",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "lineString",
+      "geosparql:asWKT": {
+        "@value": "LINESTRING (-83.4 34.0, -83.3 34.3)",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "multiPoint1",
+      "geosparql:asWKT": {
+        "@value": "MULTIPOINT ((10 40), (40 30), (20 20), (30 10))",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "multiPoint2",
+      "geosparql:asWKT": {
+        "@value": "MULTIPOINT (10 40, 40 30, 20 20, 30 10)",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "multiLineString",
+      "geosparql:asWKT": {
+        "@value": "MULTILINESTRING ((10 10, 20 20, 10 40),(40 40, 30 30, 40 20, 30 10))",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "multiPolygon1",
+      "geosparql:asWKT": {
+        "@value": "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "multiPolygon2",
+      "geosparql:asWKT": {
+        "@value": "MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)),((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20)))",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    },
+    {
+      "@id": "geometryCollection",
+      "geosparql:asWKT": {
+        "@value": "GEOMETRYCOLLECTION (POINT (40 10), LINESTRING (10 10, 20 20, 10 40), POLYGON ((40 40, 20 45, 45 30, 40 40)))",
+        "@type": "geosparql:wktLiteral"
+      },
+      "@type": "locn:Geometry"
+    }
+  ],
+  "@context": {
+    "adms": "http://www.w3.org/ns/adms#",
+    "org": "http://www.w3.org/ns/org#",
+    "tree": "https://w3id.org/tree#",
+    "zones": "https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10600992/zones/",
+    "core": "http://www.w3.org/2004/02/skos/core#",
+    "geosparql": "http://www.opengis.net/ont/geosparql#",
+    "ldes": "https://w3id.org/ldes#",
+    "terms": "http://purl.org/dc/terms/",
+    "statuses": "https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/statuses/",
+    "consequencetypes": "https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/mobility-hindrance/consequencetypes/",
+    "locn": "http://www.w3.org/ns/locn#",
+    "m8g": "http://data.europa.eu/m8g/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "gipod": "https://gipod.vlaanderen.be/ns/gipod#"
+  }
+}
