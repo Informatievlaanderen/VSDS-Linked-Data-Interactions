@@ -12,7 +12,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,14 +23,11 @@ import java.util.Map;
 @Configuration
 @ComponentScan
 public class FlowAutoConfiguration {
-	private final ApplicationContext applicationContext;
 	private final OrchestratorConfig config;
 	private final ConfigurableApplicationContext configContext;
 
-	public FlowAutoConfiguration(ApplicationContext applicationContext,
-			OrchestratorConfig config,
+	public FlowAutoConfiguration(OrchestratorConfig config,
 			ConfigurableApplicationContext configContext) {
-		this.applicationContext = applicationContext;
 		this.config = config;
 		this.configContext = configContext;
 	}
@@ -62,8 +58,8 @@ public class FlowAutoConfiguration {
 	}
 
 	public void initialiseLdiInput(PipelineConfig config) {
-		final SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
-		LdioInputConfigurator configurator = (LdioInputConfigurator) applicationContext.getBean(
+		SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
+		LdioInputConfigurator configurator = (LdioInputConfigurator) configContext.getBean(
 				config.getInput().getName());
 		LdiAdapter adapter = (LdiAdapter) getLdiComponent(config.getInput().getAdapter().getName(),
 				config.getInput().getAdapter().getConfig());
@@ -82,7 +78,7 @@ public class FlowAutoConfiguration {
 	}
 
 	private LdiComponent getLdiComponent(String beanName, ComponentProperties config) {
-		LdioConfigurator ldioConfigurator = (LdioConfigurator) applicationContext.getBean(beanName);
+		LdioConfigurator ldioConfigurator = (LdioConfigurator) configContext.getBean(beanName);
 		return ldioConfigurator.configure(config);
 	}
 
