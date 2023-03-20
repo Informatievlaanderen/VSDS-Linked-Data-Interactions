@@ -10,32 +10,35 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Configuration
 @ComponentScan
 public class FlowAutoConfiguration {
-
 	private final ApplicationContext applicationContext;
+	private final OrchestratorConfig config;
+	private final ConfigurableApplicationContext configContext;
 
-	public FlowAutoConfiguration(ApplicationContext applicationContext) {
+	public FlowAutoConfiguration(ApplicationContext applicationContext,
+			OrchestratorConfig config,
+			ConfigurableApplicationContext configContext) {
 		this.applicationContext = applicationContext;
+		this.config = config;
+		this.configContext = configContext;
 	}
 
-	@Bean
-	public List<Object> ldtoInput(OrchestratorConfig config) {
-		return config.getPipelines()
-				.stream()
-				.map(this::getLdiInput)
-				.collect(Collectors.toList());
+	@PostConstruct
+	public void registerInputBeans() {
+		config.getPipelines().forEach(this::initialiseLdiInput);
 	}
 
 	public ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
@@ -58,17 +61,24 @@ public class FlowAutoConfiguration {
 		return (LdiOutput) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
-	public Object getLdiInput(PipelineConfig config) {
+	public void initialiseLdiInput(PipelineConfig config) {
+		final SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
 		LdioInputConfigurator configurator = (LdioInputConfigurator) applicationContext.getBean(
 				config.getInput().getName());
 		LdiAdapter adapter = (LdiAdapter) getLdiComponent(config.getInput().getAdapter().getName(),
 				config.getInput().getAdapter().getConfig());
 		ComponentExecutor executor = componentExecutor(config);
 
-		Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
-		inputConfig.put("pipeline.name", config.getName());
+		String pipeLineName = config.getName();
 
-		return configurator.configure(adapter, executor, new ComponentProperties(inputConfig));
+		Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
+		inputConfig.put("pipeline.name", pipeLineName);
+
+		Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(inputConfig));
+
+		if (!beanRegistry.containsSingleton(pipeLineName)) {
+			beanRegistry.registerSingleton(pipeLineName, ldiInput);
+		}
 	}
 
 	private LdiComponent getLdiComponent(String beanName, ComponentProperties config) {
