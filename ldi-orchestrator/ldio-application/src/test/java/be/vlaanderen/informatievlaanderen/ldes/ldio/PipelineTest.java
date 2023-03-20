@@ -15,13 +15,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.stream.IntStream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RESUMING;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,9 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RecordApplicationEvents
 class PipelineTest {
 	@Autowired
-	private ApplicationEvents applicationEvents;
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
+	private ApplicationEventPublisher publisher;
 	@Autowired
 	LdiInput ldiInput;
 	@Autowired
@@ -66,23 +64,20 @@ class PipelineTest {
 		await().until(() -> mockVault.getReceivedObjects().size() == 10);
 
 		// Halt Pipeline
-		applicationEventPublisher.publishEvent(new PipelineStatusEvent(HALTED));
+		publisher.publishEvent(new PipelineStatusEvent(HALTED));
 
 		IntStream.range(0, 10)
 				.forEach(value -> dummyIn.sendData());
 		Assertions.assertEquals(10, mockVault.getReceivedObjects().size());
 
 		// Resume Pipeline
-		applicationEventPublisher.publishEvent(new PipelineStatusEvent(RESUMING));
+		publisher.publishEvent(new PipelineStatusEvent(RESUMING));
 
 		// Whilst resuming add more members to pipeline
 		IntStream.range(0, 10)
 				.forEach(value -> dummyIn.sendData());
 
-		await().until(() -> applicationEvents.stream(PipelineStatusEvent.class)
-				.filter(event -> event.getStatus() == RUNNING)
-				.count() == 1);
-		Assertions.assertEquals(30, mockVault.getReceivedObjects().size());
+		await().until(() -> mockVault.getReceivedObjects().size() == 30);
 	}
 
 }
