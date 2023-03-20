@@ -35,6 +35,7 @@ public class FlowAutoConfiguration {
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
 	}
+
 	@PostConstruct
 	public void registerInputBeans() {
 		config.getPipelines().forEach(this::initialiseLdiInput);
@@ -51,7 +52,7 @@ public class FlowAutoConfiguration {
 				.toList();
 
 		LdiSender ldiSender = new LdiSender(eventPublisher, ldiOutputs);
-		registerBean(pipelineConfig.getName()+"-ldiSender", ldiSender);
+		registerBean(pipelineConfig.getName() + "-ldiSender", ldiSender);
 
 		return new ComponentExecutorImpl(ldiTransformers, new LdiSender(eventPublisher, ldiOutputs));
 	}
