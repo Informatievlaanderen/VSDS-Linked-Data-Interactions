@@ -49,7 +49,6 @@ import org.eclipse.rdf4j.rio.Rio;
 public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 	private RepositoryManager repositoryManager;
-	private Repository repository;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -69,10 +68,15 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		return properties;
 	}
 
+	protected void setRepositoryManager(RepositoryManager repositoryManager) {
+		this.repositoryManager = repositoryManager;
+	}
+
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		this.repositoryManager = new RemoteRepositoryManager(context.getProperty(SPARQL_HOST).getValue());
-		this.repository = repositoryManager.getRepository(context.getProperty(REPOSITORY_ID).getValue());
+		if (repositoryManager == null) {
+			setRepositoryManager(new RemoteRepositoryManager(context.getProperty(SPARQL_HOST).getValue()));
+		}
 	}
 
 	@Override
@@ -84,11 +88,13 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			return;
 		}
 
+		final Repository repository = repositoryManager.getRepository(context.getProperty(REPOSITORY_ID).getValue());
 		final var committed = new AtomicBoolean(false);
 
 		try (RepositoryConnection dbConnection = repository.getConnection()) {
 			// As we are bulk-loading, set isolation level to none for improved performance.
-			dbConnection.begin(IsolationLevels.NONE);
+			dbConnection.setIsolationLevel(IsolationLevels.NONE);
+			dbConnection.begin();
 
 			for (FlowFile flowFile : flowFiles) {
 				session.read(flowFile, new InputStreamCallback() {

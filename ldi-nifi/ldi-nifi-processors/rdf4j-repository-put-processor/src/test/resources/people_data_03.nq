@@ -1,19 +1,19 @@
-<http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Tommy Wiles" .
-<http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid9 .
+<http://somewhere/TommyWiles/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Tommy Wiles" .
+<http://somewhere/TommyWiles/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid9 .
 _:genid9 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Wiles" .
 _:genid9 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Thomas" .
 
-<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Sophie Wiles" .
-<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid10 .
+<http://somewhere/SophieWiles/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Sophie Wiles" .
+<http://somewhere/SophieWiles/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid10 .
 _:genid10 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Wiles" .
 _:genid10 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Sophie" .
 
-<http://somewhere/RebeccaSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Tim Dickinson" .
-<http://somewhere/RebeccaSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid11 .
+<http://somewhere/TimDickinson/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Tim Dickinson" .
+<http://somewhere/TimDickinson/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid11 .
 _:genid11 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Dickinson" .
 _:genid11 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Timothy" .
 
-<http://somewhere/JohnSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Sarah Dickinson" .
-<http://somewhere/JohnSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid12 .
+<http://somewhere/SarahDickinson/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Sarah Dickinson" .
+<http://somewhere/SarahDickinson/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid12 .
 _:genid12 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Dickinson" .
 _:genid12 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Sarah" .
