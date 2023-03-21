@@ -12,6 +12,15 @@
     <artifactId>geojson-to-wkt</artifactId>
 
     <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-geosparql -->
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-geosparql</artifactId>
+            <version>4.7.0</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/org.geotools/gt-main -->
         <!-- https://mvnrepository.com/artifact/org.geotools/gt-main -->
         <dependency>

@@ -19,66 +19,57 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFWriter;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.geojson.GeoJSON;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.io.WKTWriter;
 
-import org.geotools.geojson.geom.GeometryJSON;
-import org.locationtech.jts.io.WKTWriter;
-import org.opengis.feature.Feature;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
-import static org.junit.jupiter.api.Assertions.*;
 
 class GeoJsonToWktTransformerTest {
 
+    private final GeoJsonToWktTransformer transformer = new GeoJsonToWktTransformer();
+
     @Test
     void shouldFooToBar() throws Exception {
-        Model geojson = RDFParser.source("geojson.json").lang(Lang.JSONLD).build().toModel();
+        transformer.apply(
+                RDFParser.source("geojson-point.json").lang(Lang.JSONLD).build().toModel()
+        );
+        transformer.apply(
+                RDFParser.source("geojson-linestring.json").lang(Lang.JSONLD).build().toModel()
+        );
+        transformer.apply(
+                RDFParser.source("geojson-polygon.json").lang(Lang.JSONLD).build().toModel()
+        );
 
-        RDFNode geometry = geojson.listStatements(null, createProperty("https://purl.org/geojson/vocab#geometry"), (RDFNode) null)
-                .toList()
-                .stream()
-                .map(Statement::getObject)
-                .findFirst()
-                .orElseThrow();
 
-        List<Statement> geometryStatements = geojson.listStatements(geometry.asResource(), null, (RDFNode) null).toList();
 
-        RDFNode coordinates = geojson.listStatements(null, createProperty("https://purl.org/geojson/vocab#coordinates"), (RDFNode) null)
-                .toList()
-                .stream()
-                .map(Statement::getObject)
-                .findFirst()
-                .orElseThrow();
-
-        List<Statement> coordinatesStatements = geojson.listStatements(coordinates.asResource(), null, (RDFNode) null).toList();
-
-        Model model = RDFParser.source("result.json").lang(Lang.JSONLD).build().toModel();
+//        RDFNode coordinates = geojson.listStatements(null, createProperty("https://purl.org/geojson/vocab#coordinates"), (RDFNode) null)
+//                .toList()
+//                .stream()
+//                .map(Statement::getObject)
+//                .findFirst()
+//                .orElseThrow();
+//
+//        List<Statement> coordinatesStatements = geojson.listStatements(coordinates.asResource(), null, (RDFNode) null).toList();
+//
+//        Model model = RDFParser.source("result.json").lang(Lang.JSONLD).build().toModel();
 
 
     }
 
+
     @Test
     void foo() throws Exception {
 
-        Model geojson = RDFParser.source("geojson.json").lang(Lang.JSONLD).build().toModel();
+        Model geojson = RDFParser.source("geojson-point.json").lang(Lang.JSONLD).build().toModel();
         String geoJsonString = RDFWriter.source(geojson).lang(Lang.JSONLD).build().asString();
 
 
@@ -132,7 +123,7 @@ class GeoJsonToWktTransformerTest {
         // First, you need to load the GeoSPARQL vocabulary
 //        GeoSPARQL.registerAll();
 
-        Model model = RDFParser.source("geojson.json").lang(Lang.JSONLD).build().toModel();
+        Model model = RDFParser.source("geojson-point.json").lang(Lang.JSONLD).build().toModel();
 
 // Then, you can create a query that selects the spatial data from the model
         String queryString =
@@ -179,7 +170,7 @@ class GeoJsonToWktTransformerTest {
 
     @Test
     void fooba4r() {
-        Model model = RDFParser.source("geojson.json").lang(Lang.JSONLD).build().toModel();
+        Model model = RDFParser.source("geojson-point.json").lang(Lang.JSONLD).build().toModel();
 
         Resource geoJsonRes = model.listSubjectsWithProperty(createProperty("https://purl.org/geojson/vocab#geometry")).next();
         Resource geometryRes = geoJsonRes.getPropertyResourceValue(createProperty("https://purl.org/geojson/vocab#geometry"));

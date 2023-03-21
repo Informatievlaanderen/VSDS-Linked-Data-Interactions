@@ -1,0 +1,43 @@
+package be.vlaanderen.informatievlaanderen.ldes.ldi;
+
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class MyWktConverterTest {
+
+    private final MyWktConverter wktConverter = new MyWktConverter();
+
+    @ParameterizedTest
+    @ArgumentsSource(GeoJsonProvider.class)
+    void name(String source, String expectedResult) {
+        final String result = wktConverter.getWktFromModel(
+                RDFParser.source(source).lang(Lang.JSONLD).build().toModel()
+        );
+
+        assertEquals(expectedResult, result);
+    }
+
+    static class GeoJsonProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            // values calculated from defaults in
+            // io.github.resilience4j.core.IntervalFunction
+            return Stream.of(
+                    Arguments.of("geojson-point.json", "POINT (100 0)"),
+                    Arguments.of("geojson-linestring.json", "LINESTRING (100 0, 101 1, 102 2)"),
+                    Arguments.of("geojson-polygon.json", "POLYGON ((100 0, 101 0, 101 1, 100 1, 100 0), (100.8 0.8, 100.8 0.2, 100.2 0.2, 100.2 0.8, 100.8 0.8), (100.95 0.9, 100.95 0.5, 100.9 0.2, 100.9 0.5, 100.95 0.9))")
+            );
+        }
+    }
+
+}

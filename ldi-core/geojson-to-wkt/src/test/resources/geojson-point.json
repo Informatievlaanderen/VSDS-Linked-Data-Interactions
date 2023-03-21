@@ -32,9 +32,7 @@
   },
   "type": "Feature",
   "id": "http://example.com/features/1",
-  "geometry": {"type": "Point", "coordinates": [
-    [ [-83.6, 34.1], [-83.4, 34.1], [-83.4, 34.3], [-83.6, 34.3], [-83.6, 34.1] ]
-  ]},
+  "geometry": {"type": "Point", "coordinates": [100.0, 0.0]},
   "properties": {
     "title": "Null Island",
     "description": "A fictional island in the Gulf of Guinea"

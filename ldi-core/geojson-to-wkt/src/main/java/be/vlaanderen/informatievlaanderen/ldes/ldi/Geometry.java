@@ -5,8 +5,7 @@ import java.util.List;
 public class Geometry {
 
     GeoType type;
-    List<Geometry> geometries;
-
     List<Double> coordinates;
+    List<Geometry> geometries;
 
 }
