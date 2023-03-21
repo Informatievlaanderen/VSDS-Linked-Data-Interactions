@@ -4,17 +4,14 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
 
-@WebFluxTest()
-@RecordApplicationEvents
+@WebFluxTest
 class PipelineControllerTest {
 	@Autowired
 	WebTestClient client;
-
 	private final String base_url = "/admin/api/v1/pipeline/";
 	private final String resume_url = base_url + "resume";
 	private final String halt_url = base_url + "halt";
