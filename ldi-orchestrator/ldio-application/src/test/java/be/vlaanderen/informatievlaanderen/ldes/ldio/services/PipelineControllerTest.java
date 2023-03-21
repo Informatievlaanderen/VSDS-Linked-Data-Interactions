@@ -45,7 +45,7 @@ class PipelineControllerTest {
 	}
 
 	@Test
-	void whenPipelineIsResumedWhenHalted_ReturnsResuming() {
+	void when_PipelineIsResumedWhenHalted_ReturnsResuming() {
 		client.post()
 				.uri(halt_url)
 				.exchange()
@@ -70,7 +70,7 @@ class PipelineControllerTest {
 	}
 
 	@Test
-	void whenPipelineIsResumedWhenRunning_EventIsNotSent() {
+	void when_PipelineIsResumedWhenRunning_EventIsNotSent() {
 		client.post().uri(resume_url)
 				.exchange()
 				.expectStatus()
