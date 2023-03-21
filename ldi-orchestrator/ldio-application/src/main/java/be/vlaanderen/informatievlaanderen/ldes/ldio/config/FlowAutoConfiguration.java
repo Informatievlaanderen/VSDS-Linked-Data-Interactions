@@ -50,19 +50,14 @@ public class FlowAutoConfiguration {
 				.stream()
 				.map(this::getLdioOutput)
 				.toList();
-		return new ComponentExecutorImpl(ldiTransformers, new LdiSender(eventPublisher, ldiOutputs));
-	}
 
-	private LdiTransformer getLdioTransformer(ComponentDefinition componentDefinition) {
-		return (LdiTransformer) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
-	}
+		LdiSender ldiSender = new LdiSender(eventPublisher, ldiOutputs);
+		registerBean(pipelineConfig.getName() + "-ldiSender", ldiSender);
 
-	private LdiOutput getLdioOutput(ComponentDefinition componentDefinition) {
-		return (LdiOutput) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
+		return new ComponentExecutorImpl(ldiTransformers, ldiSender);
 	}
 
 	public void initialiseLdiInput(PipelineConfig config) {
-		SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
 		LdioInputConfigurator configurator = (LdioInputConfigurator) configContext.getBean(
 				config.getInput().getName());
 		LdiAdapter adapter = (LdiAdapter) getLdiComponent(config.getInput().getAdapter().getName(),
@@ -76,14 +71,27 @@ public class FlowAutoConfiguration {
 
 		Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(inputConfig));
 
-		if (!beanRegistry.containsSingleton(pipeLineName)) {
-			beanRegistry.registerSingleton(pipeLineName, ldiInput);
-		}
+		registerBean(pipeLineName, ldiInput);
+	}
+
+	private LdiTransformer getLdioTransformer(ComponentDefinition componentDefinition) {
+		return (LdiTransformer) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
+	}
+
+	private LdiOutput getLdioOutput(ComponentDefinition componentDefinition) {
+		return (LdiOutput) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
 	}
 
 	private LdiComponent getLdiComponent(String beanName, ComponentProperties config) {
 		LdioConfigurator ldioConfigurator = (LdioConfigurator) configContext.getBean(beanName);
 		return ldioConfigurator.configure(config);
+	}
+
+	private void registerBean(String pipelineName, Object bean) {
+		SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
+		if (!beanRegistry.containsSingleton(pipelineName)) {
+			beanRegistry.registerSingleton(pipelineName, bean);
+		}
 	}
 
 }

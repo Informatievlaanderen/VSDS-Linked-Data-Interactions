@@ -23,12 +23,12 @@ public class PipelineController {
 	private PipelineStatus pipelineStatus = PipelineStatus.RUNNING;
 
 	@GetMapping(path = "/status")
-	ResponseEntity<PipelineStatus> getPipelineStatus() {
+	public ResponseEntity<PipelineStatus> getPipelineStatus() {
 		return ResponseEntity.ok(pipelineStatus);
 	}
 
 	@PostMapping(path = "/halt")
-	ResponseEntity<PipelineStatus> haltPipeline() {
+	public ResponseEntity<PipelineStatus> haltPipeline() {
 		return switch (pipelineStatus) {
 			case RUNNING, RESUMING -> haltRunningPipeline();
 			case HALTED -> ResponseEntity.ok(HALTED);
@@ -36,7 +36,7 @@ public class PipelineController {
 	}
 
 	@PostMapping(path = "/resume")
-	ResponseEntity<PipelineStatus> resumePipeline() {
+	public ResponseEntity<PipelineStatus> resumePipeline() {
 		return switch (pipelineStatus) {
 			case RUNNING -> ResponseEntity.ok(RUNNING);
 			case HALTED -> resumeHaltedPipeline();

@@ -1,79 +1,82 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.event.ApplicationEvents;
-import org.springframework.test.context.event.RecordApplicationEvents;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = PipelineController.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@RecordApplicationEvents
+@WebFluxTest
 class PipelineControllerTest {
 	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ApplicationEvents applicationEvents;
-
-	private final String base_url = "/admin/api/v1/pipeline";
+	WebTestClient client;
+	private final String base_url = "/admin/api/v1/pipeline/";
+	private final String resume_url = base_url + "resume";
+	private final String halt_url = base_url + "halt";
 
 	@Test
-	void when_PipeLineIsHalted_EventIsSent() throws Exception {
-		mockMvc.perform(post(base_url + "/halt"))
-				.andExpect(status().isOk())
-				.andReturn();
+	void when_PipeLineIsHalted_EventIsSent() {
+		client.post()
+				.uri(halt_url)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(PipelineStatus.class)
+				.isEqualTo(HALTED);
 
-		mockMvc.perform(post(base_url + "/halt"))
-				.andExpect(status().isOk());
+		client.post()
+				.uri(halt_url)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(PipelineStatus.class)
+				.isEqualTo(HALTED);
 
-		MvcResult result = mockMvc.perform(get(base_url + "/status"))
-				.andExpect(status().isOk())
-				.andReturn();
-
-		assertTrue(result.getResponse().getContentAsString().contains(HALTED.name()));
-		assertEquals(1, applicationEvents.stream(PipelineStatusEvent.class)
-				.filter(statusEvent -> statusEvent.getStatus() == HALTED)
-				.count());
+		String status_url = base_url + "status";
+		client.get()
+				.uri(status_url)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(PipelineStatus.class)
+				.isEqualTo(HALTED);
 	}
 
 	@Test
-	void whenPipelineIsResumedWhenHalted_EventIsSent() throws Exception {
-		mockMvc.perform(post(base_url + "/halt"))
-				.andExpect(status().isOk());
+	void when_PipelineIsResumedWhenHalted_ReturnsResuming() {
+		client.post()
+				.uri(halt_url)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(PipelineStatus.class)
+				.isEqualTo(HALTED);
 
-		MvcResult result = mockMvc.perform(post(base_url + "/resume"))
-				.andExpect(status().isOk())
-				.andReturn();
+		client.post().uri(resume_url)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(PipelineStatus.class)
+				.isEqualTo(RESUMING);
 
-		mockMvc.perform(post(base_url + "/resume"))
-				.andExpect(status().isOk())
-				.andReturn();
-
-		assertTrue(result.getResponse().getContentAsString().contains(RESUMING.name()));
-		assertEquals(1, applicationEvents.stream(PipelineStatusEvent.class)
-				.filter(statusEvent -> statusEvent.getStatus() == RESUMING)
-				.count());
+		client.post().uri(resume_url)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(PipelineStatus.class)
+				.isEqualTo(RESUMING);
 	}
 
 	@Test
-	void whenPipelineIsResumedWhenRunning_EventIsNotSent() throws Exception {
-		MvcResult result = mockMvc.perform(post(base_url + "/resume"))
-				.andExpect(status().isOk())
-				.andReturn();
-
-		assertTrue(result.getResponse().getContentAsString().contains(RUNNING.name()));
+	void when_PipelineIsResumedWhenRunning_EventIsNotSent() {
+		client.post().uri(resume_url)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(PipelineStatus.class)
+				.isEqualTo(RUNNING);
 	}
 
 }
