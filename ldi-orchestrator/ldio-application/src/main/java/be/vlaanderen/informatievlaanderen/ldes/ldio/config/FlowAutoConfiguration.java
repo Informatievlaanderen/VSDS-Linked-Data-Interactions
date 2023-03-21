@@ -54,7 +54,7 @@ public class FlowAutoConfiguration {
 		LdiSender ldiSender = new LdiSender(eventPublisher, ldiOutputs);
 		registerBean(pipelineConfig.getName() + "-ldiSender", ldiSender);
 
-		return new ComponentExecutorImpl(ldiTransformers, new LdiSender(eventPublisher, ldiOutputs));
+		return new ComponentExecutorImpl(ldiTransformers, ldiSender);
 	}
 
 	public void initialiseLdiInput(PipelineConfig config) {
