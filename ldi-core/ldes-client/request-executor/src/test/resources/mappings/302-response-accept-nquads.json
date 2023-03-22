@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/302-response-accept-nquads",
+    "headers": {
+      "Accept": {
+        "contains": "application/n-quads"
+      }
+    }
+  },
+  "response": {
+    "status": 302,
+    "headers": {
+      "Location": "http://localhost:10101/redirect-location"
+    }
+  }
+}
