@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
-public class MyWktConverter {
+public class WktConverter {
 
     public static final Property GEOMETRY = createProperty("https://purl.org/geojson/vocab#geometry");
     public static final Property COORDINATES = createProperty("https://purl.org/geojson/vocab#coordinates");

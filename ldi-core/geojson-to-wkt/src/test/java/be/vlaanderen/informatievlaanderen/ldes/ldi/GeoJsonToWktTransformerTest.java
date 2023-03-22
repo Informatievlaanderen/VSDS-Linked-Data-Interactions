@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.MyWktConverter.COORDINATES;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.MyWktConverter.GEOMETRY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.COORDINATES;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOMETRY;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

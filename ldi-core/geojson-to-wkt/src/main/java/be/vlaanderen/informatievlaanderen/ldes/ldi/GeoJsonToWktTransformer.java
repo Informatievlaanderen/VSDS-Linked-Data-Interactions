@@ -14,11 +14,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.MyWktConverter.GEOMETRY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOMETRY;
 
 public class GeoJsonToWktTransformer implements LdiTransformer {
 
-    private final MyWktConverter wktConverter = new MyWktConverter();
+    private final WktConverter wktConverter = new WktConverter();
 
     // TODO: 21/03/2023 support geometry
     @Override
