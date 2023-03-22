@@ -30,8 +30,6 @@ class MyWktConverterTest {
     static class GeoJsonProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            // values calculated from defaults in
-            // io.github.resilience4j.core.IntervalFunction
             return Stream.of(
                     Arguments.of("geojson-point.json", "POINT (100 0)"),
                     Arguments.of("geojson-linestring.json", "LINESTRING (100 0, 101 1, 102 2)"),
