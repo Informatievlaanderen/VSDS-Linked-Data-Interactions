@@ -1,18 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.REPOSITORY_ID;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.SIMULTANEOUS_FLOWFILES_TO_PROCESS;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.SPARQL_HOST;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Set;
-
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.eclipse.rdf4j.model.Resource;
@@ -32,9 +19,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Set;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.REPOSITORY_ID;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.SIMULTANEOUS_FLOWFILES_TO_PROCESS;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryPutMaterialisationProcessorProperties.SPARQL_HOST;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Tests the RDF4JRepositoryMaterialisationProcessor
- * 
+ *
  * @see https://github.com/eclipse/rdf4j/blob/main/compliance/repository/src/test/java/org/eclipse/rdf4j/repository/manager/LocalRepositoryManagerIntegrationTest.java
  *
  */
@@ -69,7 +69,7 @@ public class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManag
 		testRunner.setProperty(SPARQL_HOST, LOCAL_SERVER_URL);
 		testRunner.setProperty(REPOSITORY_ID, LOCAL_REPOSITORY_ID);
 		testRunner.setProperty(SIMULTANEOUS_FLOWFILES_TO_PROCESS, SIMULTANEOUS_FLOWFILES + "");
-		
+
 		((RDF4JRepositoryMaterialisationProcessor) (testRunner.getProcessor())).setRepositoryManager(subject);
 	}
 
@@ -117,9 +117,9 @@ public class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManag
 	void testGetSubjectsFromModel() throws Exception {
 		for (String testFile : TEST_FILES) {
 			var updateModel = Rio.parse(new FileInputStream(new File(testFile)), "", RDFFormat.NQUADS);
-			
+
 			Set<Resource> entityIds = RDF4JRepositoryMaterialisationProcessor.getSubjectsFromModel(updateModel);
-			
+
 			assertEquals(4, entityIds.size(), "Expected all subjects from test data");
 		}
 	}
@@ -128,44 +128,47 @@ public class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManag
 	void testDeleteSubjectsFromRepo() throws Exception {
 		for (String testFile : TEST_FILES) {
 			var updateModel = Rio.parse(new FileInputStream(new File(testFile)), "", RDFFormat.NQUADS);
-			
+
 			Set<Resource> entityIds = RDF4JRepositoryMaterialisationProcessor.getSubjectsFromModel(updateModel);
-			
-			RDF4JRepositoryMaterialisationProcessor.deleteEntitiesFromRepo(entityIds, subject.getRepository(LOCAL_REPOSITORY_ID).getConnection());
+
+			RDF4JRepositoryMaterialisationProcessor.deleteEntitiesFromRepo(entityIds,
+					subject.getRepository(LOCAL_REPOSITORY_ID).getConnection());
 		}
 	}
-	
+
 	@Test
 	void recordsAreUpdated() throws Exception {
 		for (String testFile : TEST_FILES) {
 			testRunner.enqueue(new FileInputStream(new File(testFile)));
 		}
-		
+
 		testRunner.run(2);
-		
+
 		RepositoryConnection connection = subject.getRepository(LOCAL_REPOSITORY_ID).getConnection();
 		String queryString = "select ?given_name where { " +
 				"<http://somewhere/TaylorKennedy/> <http://www.w3.org/2001/vcard-rdf/3.0#N> ?id . " +
 				"?id <http://www.w3.org/2001/vcard-rdf/3.0#Given> ?given_name " +
-			"}";
+				"}";
 		TupleQuery tupleQuery = connection.prepareTupleQuery(queryString);
-		
+
 		try (TupleQueryResult result = tupleQuery.evaluate()) {
 			if (result.hasNext()) {
 				BindingSet bindingSet = result.next();
-				
-				assertEquals("Taylor", bindingSet.getValue("given_name").stringValue(), "Expecting original value for first name of Taylor Kennedy");
+
+				assertEquals("Taylor", bindingSet.getValue("given_name").stringValue(),
+						"Expecting original value for first name of Taylor Kennedy");
 			}
 		}
-		
+
 		testRunner.enqueue(new FileInputStream(new File(CHANGED_FILE)));
 		testRunner.run(1);
-		
+
 		try (TupleQueryResult result = tupleQuery.evaluate()) {
 			if (result.hasNext()) {
 				BindingSet bindingSet = result.next();
-				
-				assertEquals("CHANGED", bindingSet.getValue("given_name").stringValue(), "Expecting changed value for first name of Taylor Kennedy");
+
+				assertEquals("CHANGED", bindingSet.getValue("given_name").stringValue(),
+						"Expecting changed value for first name of Taylor Kennedy");
 			}
 		}
 	}

@@ -10,11 +10,6 @@
  *******************************************************************************/
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -30,6 +25,11 @@ import org.eclipse.rdf4j.sail.memory.config.MemoryStoreConfig;
 import org.eclipse.rdf4j.sail.shacl.config.ShaclSailConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * @author Herko ter Horst
@@ -118,7 +118,7 @@ public class TestServer {
 		sailRepConfig = new SailRepositoryConfig(shaclConfig);
 		repConfig = new RepositoryConfig(TEST_SHACL_REPO_ID, sailRepConfig);
 		manager.addRepositoryConfig(repConfig);
-		
+
 		HTTPRepositoryConfig httpConfig = new HTTPRepositoryConfig();
 		RepositoryConfig remoteConfig = new RepositoryConfig(TEST_REPO_ID, httpConfig);
 		manager.addRepositoryConfig(remoteConfig);

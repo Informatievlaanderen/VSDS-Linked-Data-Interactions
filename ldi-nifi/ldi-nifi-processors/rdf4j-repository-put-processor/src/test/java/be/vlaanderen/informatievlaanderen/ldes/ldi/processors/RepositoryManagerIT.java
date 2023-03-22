@@ -1,9 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collection;
-
 import org.apache.http.client.HttpClient;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryException;
@@ -12,6 +8,10 @@ import org.eclipse.rdf4j.repository.config.RepositoryConfigException;
 import org.eclipse.rdf4j.repository.manager.RepositoryInfo;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.junit.jupiter.api.BeforeEach;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
 
 public class RepositoryManagerIT {
 
