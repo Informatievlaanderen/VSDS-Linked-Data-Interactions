@@ -28,40 +28,85 @@ public class MyWktConverter {
 
     final GeometryFactory factory = new GeometryFactory();
 
-    public String getWktFromModel(Model model) {
-        final Resource geometryId = getGeometryId(model);
-        final GeoType type = getType(model, geometryId);
-
-        Resource coordinates = model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
-
+    /**
+     * Takes a model with one 'geometry' property and returns geosparql:asWKT String value that can be used to
+     * replace the 'geometry.coordinates' node.
+     */
+    public String getWktFromModel(Resource coordinatesResource, Model coordinatesModel, GeoType type) {
         final Geometry geom = switch (type) {
             case POINT -> {
-                Coordinate point = createPoint(model, coordinates);
+                Coordinate point = createPoint(coordinatesModel, coordinatesResource);
                 yield factory.createPoint(point);
             }
             case LINESTRING -> {
                 List<Coordinate> result = new ArrayList<>();
-                List<Coordinate> lineString = createLineString(model, coordinates, result);
+                List<Coordinate> lineString = createLineString(coordinatesModel, coordinatesResource, result);
                 yield factory.createLineString(lineString.toArray(new Coordinate[0]));
             }
             case POLYGON -> {
                 List<List<Coordinate>> result = new ArrayList<>();
-                List<List<Coordinate>> lineString = createPolygon(model, coordinates, result);
+                List<List<Coordinate>> lineString = createPolygon(coordinatesModel, coordinatesResource, result);
                 yield mapToPolygon(lineString);
             }
             case MULTIPOINT -> {
                 List<Coordinate> result = new ArrayList<>();
-                List<Coordinate> lineString = createLineString(model, coordinates, result);
+                List<Coordinate> lineString = createLineString(coordinatesModel, coordinatesResource, result);
                 yield factory.createMultiPoint(lineString.stream().map(factory::createPoint).toArray(Point[]::new));
             }
             case MULTILINESTRING -> {
                 List<List<Coordinate>> result = new ArrayList<>();
-                List<List<Coordinate>> lineString = createPolygon(model, coordinates, result);
+                List<List<Coordinate>> lineString = createPolygon(coordinatesModel, coordinatesResource, result);
                 LineString[] lineStrings = lineString.stream().map(ls -> ls.toArray(Coordinate[]::new)).map(factory::createLineString).toArray(LineString[]::new);
                 yield factory.createMultiLineString(lineStrings);
             }
             case MULTIPOLYGON -> {
-                List<List<List<Coordinate>>> multiPolygon = createMultiPolygon(model, coordinates, new ArrayList<>());
+                List<List<List<Coordinate>>> multiPolygon = createMultiPolygon(coordinatesModel, coordinatesResource, new ArrayList<>());
+                yield factory.createMultiPolygon(multiPolygon.stream().map(this::mapToPolygon).toArray(Polygon[]::new));
+            }
+            case GEOMETRYCOLLECTION -> null;
+        };
+
+        return new WKTWriter().write(geom);
+    }
+
+    /**
+     * Takes a model with one 'geometry' property and returns geosparql:asWKT String value that can be used to
+     * replace the 'geometry.coordinates' node.
+     */
+    public String getWktFromModel(Model model) {
+        final Resource geometryId = getGeometryId(model);
+        final GeoType type = getType(model, geometryId);
+
+        Resource coordinatesNode = model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
+
+        final Geometry geom = switch (type) {
+            case POINT -> {
+                Coordinate point = createPoint(model, coordinatesNode);
+                yield factory.createPoint(point);
+            }
+            case LINESTRING -> {
+                List<Coordinate> result = new ArrayList<>();
+                List<Coordinate> lineString = createLineString(model, coordinatesNode, result);
+                yield factory.createLineString(lineString.toArray(new Coordinate[0]));
+            }
+            case POLYGON -> {
+                List<List<Coordinate>> result = new ArrayList<>();
+                List<List<Coordinate>> lineString = createPolygon(model, coordinatesNode, result);
+                yield mapToPolygon(lineString);
+            }
+            case MULTIPOINT -> {
+                List<Coordinate> result = new ArrayList<>();
+                List<Coordinate> lineString = createLineString(model, coordinatesNode, result);
+                yield factory.createMultiPoint(lineString.stream().map(factory::createPoint).toArray(Point[]::new));
+            }
+            case MULTILINESTRING -> {
+                List<List<Coordinate>> result = new ArrayList<>();
+                List<List<Coordinate>> lineString = createPolygon(model, coordinatesNode, result);
+                LineString[] lineStrings = lineString.stream().map(ls -> ls.toArray(Coordinate[]::new)).map(factory::createLineString).toArray(LineString[]::new);
+                yield factory.createMultiLineString(lineStrings);
+            }
+            case MULTIPOLYGON -> {
+                List<List<List<Coordinate>>> multiPolygon = createMultiPolygon(model, coordinatesNode, new ArrayList<>());
                 yield factory.createMultiPolygon(multiPolygon.stream().map(this::mapToPolygon).toArray(Polygon[]::new));
             }
             case GEOMETRYCOLLECTION -> null;
@@ -129,7 +174,8 @@ public class MyWktConverter {
     }
 
     private Resource getGeometryId(Model geojson) {
-        return geojson.listStatements(null, createProperty("https://purl.org/geojson/vocab#geometry"), (RDFNode) null)
+        // TODO: 22/03/2023 add check there is only one?
+        return geojson.listStatements(null, GEOMETRY, (RDFNode) null)
                 .toList()
                 .stream()
                 .map(Statement::getObject)
