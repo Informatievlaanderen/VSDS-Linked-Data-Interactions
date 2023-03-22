@@ -1,10 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.WKTWriter;
 
 import java.util.ArrayList;
@@ -31,23 +37,36 @@ public class MyWktConverter {
 
         Resource coordinates = model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
 
-        final Geometry geom;
-        final String resultString;
-        if (GeoType.POINT.equals(type)) {
-            Coordinate point = createPoint(model, coordinates);
-            geom = factory.createPoint(point);
-        } else if (GeoType.LINESTRING.equals(type)) {
-            List<Coordinate> result = new ArrayList<>();
-            List<Coordinate> lineString = createLineString(model, coordinates, result);
-            geom = factory.createLineString(lineString.toArray(new Coordinate[0]));
-        } else if (GeoType.POLYGON.equals(type)) {
-            List<List<Coordinate>> result = new ArrayList<>();
-            List<List<Coordinate>> lineString = createPolygon(model, coordinates, result);
-            List<LinearRing> linearRings = lineString.stream().map(l -> factory.createLinearRing(l.toArray(new Coordinate[0]))).collect(Collectors.toList());
-            geom = factory.createPolygon(linearRings.remove(0), linearRings.toArray(new LinearRing[0]));
-        } else {
-            throw new IllegalArgumentException();
-        }
+        final Geometry geom = switch (type) {
+            case POINT -> {
+                Coordinate point = createPoint(model, coordinates);
+                yield factory.createPoint(point);
+            }
+            case LINESTRING -> {
+                List<Coordinate> result = new ArrayList<>();
+                List<Coordinate> lineString = createLineString(model, coordinates, result);
+                yield factory.createLineString(lineString.toArray(new Coordinate[0]));
+            }
+            case POLYGON -> {
+                List<List<Coordinate>> result = new ArrayList<>();
+                List<List<Coordinate>> lineString = createPolygon(model, coordinates, result);
+                List<LinearRing> linearRings = lineString.stream().map(l -> factory.createLinearRing(l.toArray(new Coordinate[0]))).collect(Collectors.toList());
+                yield  factory.createPolygon(linearRings.remove(0), linearRings.toArray(new LinearRing[0]));
+            }
+            case MULTIPOINT -> {
+                List<Coordinate> result = new ArrayList<>();
+                List<Coordinate> lineString = createLineString(model, coordinates, result);
+                yield factory.createMultiPoint(lineString.stream().map(factory::createPoint).toArray(Point[]::new));
+            }
+            case MULTILINESTRING -> {
+                List<List<Coordinate>> result = new ArrayList<>();
+                List<List<Coordinate>> lineString = createPolygon(model, coordinates, result);
+                LineString[] lineStrings = lineString.stream().map(ls -> ls.toArray(Coordinate[]::new)).map(factory::createLineString).toArray(LineString[]::new);
+                yield factory.createMultiLineString(lineStrings);
+            }
+            case MULTIPOLYGON -> null;
+            case GEOMETRYCOLLECTION -> null;
+        };
 
         return new WKTWriter().write(geom);
     }
