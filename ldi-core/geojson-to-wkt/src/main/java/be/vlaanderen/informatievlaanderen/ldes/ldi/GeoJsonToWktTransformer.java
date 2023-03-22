@@ -36,8 +36,6 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
         List<Statement> geometryNodes = model.listStatements(null, GEOMETRY, (RDFNode) null).toList();
         Map<Statement, Statement> geometries = new HashMap<>(); // key
         geometryNodes.forEach(geometryStatement -> {
-            GeoType type = getType(model, geometryStatement.getObject().asResource());
-//            Statement coordinatesStatement = model.listStatements(geometryNode.getObject().asResource(), COORDINATES, (RDFNode) null).nextStatement();
             Model geometryModel = getNodeWithChildren(model, geometryStatement);
             final String wktString = wktConverter.getWktFromModel(geometryModel);
 
@@ -45,7 +43,6 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
             Statement newCoords = ResourceFactory.createStatement(geometryStatement.getSubject(), ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry"), wkt);
 
             geometries.put(geometryStatement, newCoords);
-//            modelsToRemove.add(coordinatesModel);
 //            model.remove(coordinatesModel);
             model.add(newCoords);
             System.out.println(wktString);

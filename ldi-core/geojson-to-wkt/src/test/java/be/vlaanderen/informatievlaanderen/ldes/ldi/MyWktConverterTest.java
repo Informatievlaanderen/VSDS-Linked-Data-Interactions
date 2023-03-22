@@ -1,10 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -13,50 +8,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.MyWktConverter.COORDINATES;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MyWktConverterTest {
 
     private final MyWktConverter wktConverter = new MyWktConverter();
-
-    @ParameterizedTest
-    @ArgumentsSource(GeoJsonProvider.class)
-    void newName(String source, String expectedResult) {
-        Model model = RDFParser.source(source).lang(Lang.JSONLD).build().toModel();
-        Statement statement = model.listStatements(null, COORDINATES, (RDFNode) null).nextStatement();
-        Model nodeWithChildren = getNodeWithChildren(model, statement);
-        final String result = wktConverter.getWktFromModel(
-                statement.getObject().asResource(), nodeWithChildren, GeoType.MULTIPOLYGON
-        );
-
-        assertEquals(expectedResult, result);
-    }
-
-    private Model getNodeWithChildren(Model model, Statement node) {
-        Set<Statement> statements = getNodeWithChildren(model, node.getObject().asResource(), new HashSet<>());
-        statements.add(node);
-
-        Model newModel = ModelFactory.createDefaultModel();
-        newModel.add(statements.stream().toList());
-        return newModel;
-    }
-
-    private Set<Statement> getNodeWithChildren(Model model, Resource node, Set<Statement> statements) {
-        List<Statement> list = model.listStatements(node, null, (RDFNode) null).toList();
-        list.forEach(i -> {
-            if (i.getObject().isAnon()) {
-                getNodeWithChildren(model, i.getObject().asResource(), statements);
-            }
-            statements.add(i);
-        });
-        return statements;
-    }
 
     @ParameterizedTest
     @ArgumentsSource(GeoJsonProvider.class)

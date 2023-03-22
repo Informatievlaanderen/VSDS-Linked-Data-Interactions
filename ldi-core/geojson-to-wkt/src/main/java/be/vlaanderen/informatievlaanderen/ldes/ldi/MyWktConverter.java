@@ -32,47 +32,6 @@ public class MyWktConverter {
      * Takes a model with one 'geometry' property and returns geosparql:asWKT String value that can be used to
      * replace the 'geometry.coordinates' node.
      */
-    public String getWktFromModel(Resource coordinatesResource, Model coordinatesModel, GeoType type) {
-        final Geometry geom = switch (type) {
-            case POINT -> {
-                Coordinate point = createPoint(coordinatesModel, coordinatesResource);
-                yield factory.createPoint(point);
-            }
-            case LINESTRING -> {
-                List<Coordinate> result = new ArrayList<>();
-                List<Coordinate> lineString = createLineString(coordinatesModel, coordinatesResource, result);
-                yield factory.createLineString(lineString.toArray(new Coordinate[0]));
-            }
-            case POLYGON -> {
-                List<List<Coordinate>> result = new ArrayList<>();
-                List<List<Coordinate>> lineString = createPolygon(coordinatesModel, coordinatesResource, result);
-                yield mapToPolygon(lineString);
-            }
-            case MULTIPOINT -> {
-                List<Coordinate> result = new ArrayList<>();
-                List<Coordinate> lineString = createLineString(coordinatesModel, coordinatesResource, result);
-                yield factory.createMultiPoint(lineString.stream().map(factory::createPoint).toArray(Point[]::new));
-            }
-            case MULTILINESTRING -> {
-                List<List<Coordinate>> result = new ArrayList<>();
-                List<List<Coordinate>> lineString = createPolygon(coordinatesModel, coordinatesResource, result);
-                LineString[] lineStrings = lineString.stream().map(ls -> ls.toArray(Coordinate[]::new)).map(factory::createLineString).toArray(LineString[]::new);
-                yield factory.createMultiLineString(lineStrings);
-            }
-            case MULTIPOLYGON -> {
-                List<List<List<Coordinate>>> multiPolygon = createMultiPolygon(coordinatesModel, coordinatesResource, new ArrayList<>());
-                yield factory.createMultiPolygon(multiPolygon.stream().map(this::mapToPolygon).toArray(Polygon[]::new));
-            }
-            case GEOMETRYCOLLECTION -> null;
-        };
-
-        return new WKTWriter().write(geom);
-    }
-
-    /**
-     * Takes a model with one 'geometry' property and returns geosparql:asWKT String value that can be used to
-     * replace the 'geometry.coordinates' node.
-     */
     public String getWktFromModel(Model model) {
         final Resource geometryId = getGeometryId(model);
         final GeoType type = getType(model, geometryId);
