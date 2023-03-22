@@ -11,6 +11,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKTWriter;
 
 import java.util.ArrayList;
@@ -50,8 +51,7 @@ public class MyWktConverter {
             case POLYGON -> {
                 List<List<Coordinate>> result = new ArrayList<>();
                 List<List<Coordinate>> lineString = createPolygon(model, coordinates, result);
-                List<LinearRing> linearRings = lineString.stream().map(l -> factory.createLinearRing(l.toArray(new Coordinate[0]))).collect(Collectors.toList());
-                yield  factory.createPolygon(linearRings.remove(0), linearRings.toArray(new LinearRing[0]));
+                yield mapToPolygon(lineString);
             }
             case MULTIPOINT -> {
                 List<Coordinate> result = new ArrayList<>();
@@ -64,11 +64,19 @@ public class MyWktConverter {
                 LineString[] lineStrings = lineString.stream().map(ls -> ls.toArray(Coordinate[]::new)).map(factory::createLineString).toArray(LineString[]::new);
                 yield factory.createMultiLineString(lineStrings);
             }
-            case MULTIPOLYGON -> null;
+            case MULTIPOLYGON -> {
+                List<List<List<Coordinate>>> multiPolygon = createMultiPolygon(model, coordinates, new ArrayList<>());
+                yield factory.createMultiPolygon(multiPolygon.stream().map(this::mapToPolygon).toArray(Polygon[]::new));
+            }
             case GEOMETRYCOLLECTION -> null;
         };
 
         return new WKTWriter().write(geom);
+    }
+
+    private Polygon mapToPolygon(List<List<Coordinate>> coords) {
+        List<LinearRing> linearRings = coords.stream().map(l -> factory.createLinearRing(l.toArray(new Coordinate[0]))).collect(Collectors.toList());
+        return factory.createPolygon(linearRings.remove(0), linearRings.toArray(new LinearRing[0]));
     }
 
     private Coordinate createPoint(Model model, Resource coordinates) {
@@ -98,6 +106,17 @@ public class MyWktConverter {
             return result;
         } else {
             return createPolygon(model, nextRing, result);
+        }
+    }
+
+    private List<List<List<Coordinate>>> createMultiPolygon(Model model, Resource coordinates, List<List<List<Coordinate>>> result) {
+        Resource firstPolygon = model.listStatements(coordinates, RDF_FIRST, (RDFNode) null).nextStatement().getObject().asResource();
+        result.add(createPolygon(model, firstPolygon, new ArrayList<>()));
+        Resource nextPolygon = model.listStatements(coordinates, RDF_REST, (RDFNode) null).nextStatement().getObject().asResource();
+        if (RDF_NIL.getURI().equals(nextPolygon.getURI())) {
+            return result;
+        } else {
+            return createMultiPolygon(model, nextPolygon, result);
         }
     }
 
