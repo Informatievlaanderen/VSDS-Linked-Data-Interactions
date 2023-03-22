@@ -48,7 +48,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
-	private RepositoryManager repositoryManager;
+	protected RepositoryManager repositoryManager;
 
 	@Override
 	public Set<Relationship> getRelationships() {

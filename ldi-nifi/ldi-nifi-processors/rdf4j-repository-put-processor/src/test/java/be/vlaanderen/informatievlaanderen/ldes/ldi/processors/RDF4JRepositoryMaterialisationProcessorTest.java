@@ -10,6 +10,7 @@ import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.repository.manager.LocalRepositoryManager;
+import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.sail.config.SailRepositoryConfig;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
@@ -30,6 +31,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -38,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @see https://github.com/eclipse/rdf4j/blob/main/compliance/repository/src/test/java/org/eclipse/rdf4j/repository/manager/LocalRepositoryManagerIntegrationTest.java
  *
  */
-public class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManagerIT {
+class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManagerIT {
 
 	private static final String LOCAL_SERVER_URL = "http://localhost:8080/rdf4j-server";
 	private static final String LOCAL_REPOSITORY_ID = "test";
@@ -64,18 +66,35 @@ public class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManag
 		subject.addRepositoryConfig(
 				new RepositoryConfig(LOCAL_REPOSITORY_ID, new SailRepositoryConfig(new MemoryStoreConfig(true))));
 
-		testRunner = TestRunners.newTestRunner(RDF4JRepositoryMaterialisationProcessor.class);
-
-		testRunner.setProperty(SPARQL_HOST, LOCAL_SERVER_URL);
-		testRunner.setProperty(REPOSITORY_ID, LOCAL_REPOSITORY_ID);
-		testRunner.setProperty(SIMULTANEOUS_FLOWFILES_TO_PROCESS, SIMULTANEOUS_FLOWFILES + "");
-
-		((RDF4JRepositoryMaterialisationProcessor) (testRunner.getProcessor())).setRepositoryManager(subject);
+		testRunner = newTestRunner();
 	}
 
 	@AfterEach
 	public void tearDown() throws Exception {
 		subject.shutDown();
+	}
+
+	@Test
+	void repositoryManagerIsInitialisedIfNotSet() {
+		assertNull(getProcessor().repositoryManager, "RepositoryManager is null on initialisation");
+
+		testRunner.run(1);
+		assertTrue(getProcessor().repositoryManager instanceof RemoteRepositoryManager,
+				"RepositoryManager is instance of RemoteRepositoryManager");
+
+		getProcessor().setRepositoryManager(subject);
+
+		testRunner.run(1);
+		assertTrue(getProcessor().repositoryManager instanceof LocalRepositoryManager,
+				"RepositoryManager is instance of LocalRepositoryManager");
+
+		testRunner = newTestRunner();
+
+		getProcessor().setRepositoryManager(subject);
+
+		testRunner.run(1);
+		assertTrue(getProcessor().repositoryManager instanceof LocalRepositoryManager,
+				"RepositoryManager is instance of LocalRepositoryManager");
 	}
 
 	@Test
@@ -95,7 +114,18 @@ public class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManag
 	}
 
 	@Test
+	void whenNoFlowFilesPresentThenTriggerDoesNothing() {
+		assertEquals(0, testRunner.getQueueSize().getObjectCount());
+		testRunner.run(1);
+
+		assertEquals(0, testRunner.getFlowFilesForRelationship(SUCCESS).size());
+		assertEquals(0, testRunner.getFlowFilesForRelationship(FAILURE).size());
+	}
+
+	@Test
 	void transferRecords() throws Exception {
+		getProcessor().setRepositoryManager(subject);
+
 		for (String testFile : TEST_FILES) {
 			testRunner.enqueue(new FileInputStream(new File(testFile)));
 		}
@@ -126,18 +156,35 @@ public class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManag
 
 	@Test
 	void testDeleteSubjectsFromRepo() throws Exception {
+		RepositoryConnection connection = subject.getRepository(LOCAL_REPOSITORY_ID).getConnection();
+
 		for (String testFile : TEST_FILES) {
 			var updateModel = Rio.parse(new FileInputStream(new File(testFile)), "", RDFFormat.NQUADS);
 
 			Set<Resource> entityIds = RDF4JRepositoryMaterialisationProcessor.getSubjectsFromModel(updateModel);
 
-			RDF4JRepositoryMaterialisationProcessor.deleteEntitiesFromRepo(entityIds,
-					subject.getRepository(LOCAL_REPOSITORY_ID).getConnection());
+			for (Resource subject : entityIds) {
+				String query = "select (count(?p) as ?count) where { <" + subject.stringValue().replaceAll("\"", "")
+						+ "> ?p ?o . }";
+				TupleQuery tupleQuery = connection.prepareTupleQuery(query);
+				try (TupleQueryResult result = tupleQuery.evaluate()) {
+					if (result.hasNext()) {
+						BindingSet bindingSet = result.next();
+
+						assertEquals(0 + "", bindingSet.getValue("count").stringValue(),
+								"No records in the rdf4j db");
+					}
+				}
+			}
+
+			RDF4JRepositoryMaterialisationProcessor.deleteEntitiesFromRepo(entityIds, connection);
 		}
 	}
 
 	@Test
 	void recordsAreUpdated() throws Exception {
+		getProcessor().setRepositoryManager(subject);
+
 		for (String testFile : TEST_FILES) {
 			testRunner.enqueue(new FileInputStream(new File(testFile)));
 		}
@@ -171,5 +218,19 @@ public class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManag
 						"Expecting changed value for first name of Taylor Kennedy");
 			}
 		}
+	}
+
+	private TestRunner newTestRunner() {
+		TestRunner testRunner = TestRunners.newTestRunner(RDF4JRepositoryMaterialisationProcessor.class);
+
+		testRunner.setProperty(SPARQL_HOST, LOCAL_SERVER_URL);
+		testRunner.setProperty(REPOSITORY_ID, LOCAL_REPOSITORY_ID);
+		testRunner.setProperty(SIMULTANEOUS_FLOWFILES_TO_PROCESS, SIMULTANEOUS_FLOWFILES + "");
+
+		return testRunner;
+	}
+
+	private RDF4JRepositoryMaterialisationProcessor getProcessor() {
+		return (RDF4JRepositoryMaterialisationProcessor) testRunner.getProcessor();
 	}
 }
