@@ -25,6 +25,7 @@ public class WktConverter {
 
     public static final Property GEOMETRY = createProperty("https://purl.org/geojson/vocab#geometry");
     public static final Property COORDINATES = createProperty("https://purl.org/geojson/vocab#coordinates");
+    public static final Property GEOMETRIES = createProperty("https://purl.org/geojson/vocab#geometries");
 
     final GeometryFactory factory = new GeometryFactory();
 
@@ -34,11 +35,18 @@ public class WktConverter {
      */
     public String getWktFromModel(Model model) {
         final Resource geometryId = getGeometryId(model);
+
+        final Geometry geom = createGeometry(model, geometryId);
+        return new WKTWriter().write(geom);
+    }
+
+    private Geometry createGeometry(Model model, Resource geometryId) {
         final GeoType type = getType(model, geometryId);
 
-        Resource coordinatesNode = model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
+        Resource coordinatesNode = model.listStatements(geometryId, GEOMETRIES, (RDFNode) null).nextStatement().getObject().asResource();
+//        Resource coordinatesNode = model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
 
-        final Geometry geom = switch (type) {
+        return switch (type) {
             case POINT -> {
                 Coordinate point = createPoint(model, coordinatesNode);
                 yield factory.createPoint(point);
@@ -46,7 +54,7 @@ public class WktConverter {
             case LINESTRING -> {
                 List<Coordinate> result = new ArrayList<>();
                 List<Coordinate> lineString = createLineString(model, coordinatesNode, result);
-                yield factory.createLineString(lineString.toArray(new Coordinate[0]));
+                yield factory.createLineString(lineString.toArray(Coordinate[]::new));
             }
             case POLYGON -> {
                 List<List<Coordinate>> result = new ArrayList<>();
@@ -68,15 +76,16 @@ public class WktConverter {
                 List<List<List<Coordinate>>> multiPolygon = createMultiPolygon(model, coordinatesNode, new ArrayList<>());
                 yield factory.createMultiPolygon(multiPolygon.stream().map(this::mapToPolygon).toArray(Polygon[]::new));
             }
-            case GEOMETRYCOLLECTION -> null;
+            case GEOMETRYCOLLECTION -> {
+                yield factory.createGeometryCollection(createGeometryCollection(model, coordinatesNode, new ArrayList<>())
+                        .toArray(Geometry[]::new));
+            }
         };
-
-        return new WKTWriter().write(geom);
     }
 
     private Polygon mapToPolygon(List<List<Coordinate>> coords) {
-        List<LinearRing> linearRings = coords.stream().map(l -> factory.createLinearRing(l.toArray(new Coordinate[0]))).collect(Collectors.toList());
-        return factory.createPolygon(linearRings.remove(0), linearRings.toArray(new LinearRing[0]));
+        List<LinearRing> linearRings = coords.stream().map(l -> factory.createLinearRing(l.toArray(Coordinate[]::new))).collect(Collectors.toList());
+        return factory.createPolygon(linearRings.remove(0), linearRings.toArray(LinearRing[]::new));
     }
 
     private Coordinate createPoint(Model model, Resource coordinates) {
@@ -117,6 +126,17 @@ public class WktConverter {
             return result;
         } else {
             return createMultiPolygon(model, nextPolygon, result);
+        }
+    }
+
+    private List<Geometry> createGeometryCollection(Model model, Resource coordinates, List<Geometry> result) {
+        Resource firstGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asResource();
+        result.add(createGeometry(model, firstGeo));
+        Resource nextGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asResource();
+        if (RDF.nil.getURI().equals(nextGeo.getURI())) {
+            return result;
+        } else {
+            return createGeometryCollection(model, nextGeo, result);
         }
     }
 

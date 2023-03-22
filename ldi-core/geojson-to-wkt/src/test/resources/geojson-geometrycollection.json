@@ -24,6 +24,7 @@
       "@id": "geojson:features"
     },
     "geometry": "geojson:geometry",
+    "geometries": "geojson:geometries",
     "id": "@id",
     "properties": "geojson:properties",
     "type": "@type",
