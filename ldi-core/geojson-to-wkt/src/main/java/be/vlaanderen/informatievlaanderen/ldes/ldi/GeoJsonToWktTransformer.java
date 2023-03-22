@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -8,6 +9,8 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.vocabulary.RDF;
 
 import java.util.HashMap;
@@ -26,18 +29,22 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
     // TODO: 21/03/2023 support geometry
     @Override
     public Model apply(Model model) {
+
+        System.out.println(RDFWriter.source(model).lang(Lang.JSONLD).build().asString());
+
+
         List<Statement> geometryNodes = model.listStatements(null, GEOMETRY, (RDFNode) null).toList();
         Map<Statement, Statement> geometries = new HashMap<>(); // key
-        geometryNodes.forEach(geometryNode -> {
-            GeoType type = getType(model, geometryNode.getObject().asResource());
-            Statement coordinatesStatement = model.listStatements(geometryNode.getObject().asResource(), COORDINATES, (RDFNode) null).nextStatement();
-            Model coordinatesModel = getNodeWithChildren(model, coordinatesStatement);
-            final String wktString = wktConverter.getWktFromModel(coordinatesStatement.getObject().asResource(), coordinatesModel, type);
+        geometryNodes.forEach(geometryStatement -> {
+            GeoType type = getType(model, geometryStatement.getObject().asResource());
+//            Statement coordinatesStatement = model.listStatements(geometryNode.getObject().asResource(), COORDINATES, (RDFNode) null).nextStatement();
+            Model geometryModel = getNodeWithChildren(model, geometryStatement);
+            final String wktString = wktConverter.getWktFromModel(geometryModel);
 
             Literal wkt = ResourceFactory.createTypedLiteral(wktString, new WktLiteral());
-            Statement newCoords = ResourceFactory.createStatement(coordinatesStatement.getSubject(), coordinatesStatement.getPredicate(), wkt);
+            Statement newCoords = ResourceFactory.createStatement(geometryStatement.getSubject(), ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry"), wkt);
 
-            geometries.put(geometryNode, newCoords);
+            geometries.put(geometryStatement, newCoords);
 //            modelsToRemove.add(coordinatesModel);
 //            model.remove(coordinatesModel);
             model.add(newCoords);
@@ -47,7 +54,8 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 
         geometries.keySet().stream().map(k -> getNodeWithChildren(model, k)).forEach(model::remove);
 
-        return null;
+        System.out.println(RDFWriter.source(model).lang(Lang.JSONLD).build().asString());
+        return model;
     }
 
     private Model getNodeWithChildren(Model model, Statement node) {
