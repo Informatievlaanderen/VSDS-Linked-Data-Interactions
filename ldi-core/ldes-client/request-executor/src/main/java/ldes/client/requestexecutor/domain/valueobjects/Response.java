@@ -1,9 +1,13 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 public class Response {
 
@@ -30,7 +34,9 @@ public class Response {
 	}
 
 	public Optional<String> getValueOfHeader(final String key) {
-		return headers.stream().filter(header -> header.getName().equals(key)).map(Header::getValue).findFirst();
+		return headers.stream()
+				.filter(header -> Objects.equals(lowerCase(header.getName()), lowerCase(key)))
+				.map(Header::getValue).findFirst();
 	}
 
 }
