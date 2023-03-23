@@ -19,7 +19,8 @@ public class WktConverter {
 	private final WKTWriter writer = new WKTWriter();
 
 	/**
-	 * Locates the geojson:geometry from the provided model and returns the WKT translation
+	 * Locates the geojson:geometry from the provided model and returns the WKT
+	 * translation
 	 */
 	public String getWktFromModel(Model model) {
 		final Geometry geom = geometryExtractor.createGeometry(model, getGeometryId(model));

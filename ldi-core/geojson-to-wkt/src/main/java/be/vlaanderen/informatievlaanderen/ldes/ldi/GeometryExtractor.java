@@ -20,8 +20,11 @@ public class GeometryExtractor {
 
 	/**
 	 * Extracts a `Geometry` object from a model.
-	 * @param model a model containing a geojson:geometry
-	 * @param geometrySubject the subject of the geojson:geometry
+	 *
+	 * @param model
+	 *            a model containing a geojson:geometry
+	 * @param geometrySubject
+	 *            the subject of the geojson:geometry
 	 * @return the geojson:geometry mapped to a java Geometry object
 	 */
 	public Geometry createGeometry(Model model, Resource geometrySubject) {
@@ -91,7 +94,8 @@ public class GeometryExtractor {
 
 	private GeometryCollection createGeometryCollection(Model model, Resource subject) {
 		List<Statement> geos = model.listStatements(subject, GEOMETRIES, (RDFNode) null).toList();
-		var geometries = geos.stream().map(geo -> createGeometry(model, geo.getObject().asResource())).toArray(Geometry[]::new);
+		var geometries = geos.stream().map(geo -> createGeometry(model, geo.getObject().asResource()))
+				.toArray(Geometry[]::new);
 		return factory.createGeometryCollection(geometries);
 	}
 
