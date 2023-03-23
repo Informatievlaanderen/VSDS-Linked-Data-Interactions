@@ -4,17 +4,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.LinearRing;
-import org.locationtech.jts.geom.MultiLineString;
-import org.locationtech.jts.geom.MultiPoint;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,9 +82,8 @@ public class GeometryExtractor {
 
 	private List<List<Coordinate>> createPolygonCoordinates(Model model, Resource subject,
 			List<List<Coordinate>> result) {
-		Resource exteriorRing = model.listObjectsOfProperty(subject, RDF.first).mapWith(RDFNode::asResource).next();
-		List<Coordinate> exRing = new ArrayList<>();
-		result.add(createLineStringCoordinates(model, exteriorRing, exRing));
+		Resource firstRing = model.listObjectsOfProperty(subject, RDF.first).mapWith(RDFNode::asResource).next();
+		result.add(createLineStringCoordinates(model, firstRing, new ArrayList<>()));
 		Resource nextRing = model.listObjectsOfProperty(subject, RDF.rest).mapWith(RDFNode::asResource).next();
 		return RDF.nil.getURI().equals(nextRing.getURI())
 				? result
@@ -103,22 +92,18 @@ public class GeometryExtractor {
 
 	private List<List<List<Coordinate>>> createMultiPolygonCoordinates(Model model, Resource coordinates,
 			List<List<List<Coordinate>>> result) {
-		Resource firstPolygon = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
-				.asResource();
+		Resource firstPolygon = model.listObjectsOfProperty(coordinates, RDF.first).mapWith(RDFNode::asResource).next();
 		result.add(createPolygonCoordinates(model, firstPolygon, new ArrayList<>()));
-		Resource nextPolygon = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject()
-				.asResource();
+		Resource nextPolygon = model.listObjectsOfProperty(coordinates, RDF.rest).mapWith(RDFNode::asResource).next();
         return RDF.nil.getURI().equals(nextPolygon.getURI())
                 ? result
                 : createMultiPolygonCoordinates(model, nextPolygon, result);
 	}
 
 	private List<Geometry> createGeometryCollection(Model model, Resource coordinates, List<Geometry> result) {
-		Resource firstGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
-				.asResource();
+		Resource firstGeo = model.listObjectsOfProperty(coordinates, RDF.first).mapWith(RDFNode::asResource).next();
 		// result.add(createGeometry(model, firstGeo));
-		Resource nextGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
-				.asResource();
+		Resource nextGeo = model.listObjectsOfProperty(coordinates, RDF.first).mapWith(RDFNode::asResource).next();
 		if (RDF.nil.getURI().equals(nextGeo.getURI())) {
 			return result;
 		} else {
