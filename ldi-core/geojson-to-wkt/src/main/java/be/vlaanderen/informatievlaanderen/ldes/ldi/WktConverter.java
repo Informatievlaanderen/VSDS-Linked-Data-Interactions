@@ -33,11 +33,6 @@ public class WktConverter {
 
 	final GeometryFactory factory = new GeometryFactory();
 
-	/**
-	 * Takes a model with one 'geometry' property and returns geosparql:asWKT String
-	 * value that can be used to
-	 * replace the 'geometry.coordinates' node.
-	 */
 	public String getWktFromModel(Model model) {
 		final Resource geometryId = getGeometryId(model);
 		final GeoType type = getType(model, geometryId);
