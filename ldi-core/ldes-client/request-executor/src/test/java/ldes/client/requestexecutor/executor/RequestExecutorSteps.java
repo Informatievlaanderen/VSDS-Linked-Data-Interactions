@@ -56,7 +56,7 @@ public class RequestExecutorSteps {
 
 	@And("I obtain a location header: {string}")
 	public void iObtainALocationHeader(String locationHeader) {
-		assertEquals(locationHeader, response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow());
+		assertEquals(locationHeader, response.getFirstHeaderValue(HttpHeaders.LOCATION).orElseThrow());
 	}
 
 	@Then("I get a HttpRequestException when executing the request")
