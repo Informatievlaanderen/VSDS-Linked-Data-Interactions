@@ -102,6 +102,7 @@ public class GeometryExtractor {
 	}
 
 	private List<Geometry> createGeometryCollection(Model model, Resource subject, List<Geometry> result) {
+		// TODO: 23/03/2023 cleanup
 		List<Statement> geos = model
 				.listStatements(subject, createProperty("https://purl.org/geojson/vocab#geometries"), (RDFNode) null)
 				.toList();
@@ -111,17 +112,6 @@ public class GeometryExtractor {
 			Statement next = model.listStatements(geo.getObject().asResource(), COORDINATES, (RDFNode) null).next();
 			return createGeometry(model, GeoType.fromUri(type).orElseThrow(), next.getObject().asResource());
 		}).toList();
-
-		// Resource firstGeo = model.listObjectsOfProperty(subject,
-		// RDF.first).mapWith(RDFNode::asResource).next();
-		// // result.add(createGeometry(model, firstGeo));
-		// Resource nextGeo = model.listObjectsOfProperty(subject,
-		// RDF.first).mapWith(RDFNode::asResource).next();
-		// if (RDF.nil.getURI().equals(nextGeo.getURI())) {
-		// return result;
-		// } else {
-		// return createGeometryCollection(model, nextGeo, result);
-		// }
 	}
 
 }

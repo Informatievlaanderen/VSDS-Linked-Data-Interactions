@@ -22,7 +22,6 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 
 	private final WktConverter wktConverter = new WktConverter();
 
-	// TODO: 21/03/2023 support geometry
 	@Override
 	public Model apply(Model model) {
 		final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)

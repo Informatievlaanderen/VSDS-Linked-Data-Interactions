@@ -47,6 +47,14 @@
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
       },
       "@type": "geojson:Feature"
+    },
+    {
+      "@id": "http://example.com/features/geometrycollection",
+      "http://www.w3.org/ns/locn#geometry": {
+        "@value": "GEOMETRYCOLLECTION (LINESTRING (101 0, 102 1), POINT (100 0))",
+        "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
+      },
+      "@type": "geojson:Feature"
     }
   ],
   "@context": {

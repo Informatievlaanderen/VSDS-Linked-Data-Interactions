@@ -15,13 +15,12 @@ public enum GeoType {
     GEOMETRYCOLLECTION("https://purl.org/geojson/vocab#GeometryCollection");
 	// @formatter:on
 
-	private final String uri;
+	final String uri;
 
 	GeoType(String uri) {
 		this.uri = uri;
 	}
 
-	// TODO: 21/03/2023 test
 	public static Optional<GeoType> fromUri(String type) {
 		return Arrays.stream(values()).filter(value -> value.uri.equals(type)).findFirst();
 	}

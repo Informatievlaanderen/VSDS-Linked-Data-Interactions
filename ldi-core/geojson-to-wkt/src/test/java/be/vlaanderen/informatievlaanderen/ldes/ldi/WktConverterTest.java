@@ -16,8 +16,6 @@ class WktConverterTest {
 
 	private final WktConverter wktConverter = new WktConverter();
 
-	// TODO: 23/03/2023 geocollection
-
 	@ParameterizedTest
 	@ArgumentsSource(GeoJsonProvider.class)
 	void test_getWktFromModel(String source, String expectedResult) {
