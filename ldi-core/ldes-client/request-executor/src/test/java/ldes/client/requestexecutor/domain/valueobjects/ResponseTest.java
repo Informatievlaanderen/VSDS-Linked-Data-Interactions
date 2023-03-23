@@ -18,8 +18,7 @@ class ResponseTest {
 
 	@Test
 	void getValueOfHeader() {
-		Response response =
-				new Response(List.of(new BasicHeader("location", "value")), 302, null);
+		Response response = new Response(List.of(new BasicHeader("location", "value")), 302, null);
 		assertEquals("value", response.getFirstHeaderValue("LOCATION").orElseThrow());
 		assertEquals("value", response.getFirstHeaderValue("lOcAtIon").orElseThrow());
 		assertEquals("value", response.getFirstHeaderValue("location").orElseThrow());
