@@ -8,23 +8,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.COORDINATES;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOJSON_GEOMETRY;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class GeometryExtractor {
 
+	public static final Property COORDINATES = createProperty("https://purl.org/geojson/vocab#coordinates");
+	public static final Property GEOMETRIES = createProperty("https://purl.org/geojson/vocab#geometries");
+
 	final GeometryFactory factory = new GeometryFactory();
 
-	public Geometry createGeometry(Model model, GeoType type, Resource subject) {
+	/**
+	 * Extracts a `Geometry` object from a model.
+	 * @param model a model containing a geojson:geometry
+	 * @param geometrySubject the subject of the geojson:geometry
+	 * @return the geojson:geometry mapped to a java Geometry object
+	 */
+	public Geometry createGeometry(Model model, Resource geometrySubject) {
+		final GeoType type = getType(model, geometrySubject);
+
+		final Resource coordinates = GeoType.GEOMETRYCOLLECTION.equals(type)
+				? geometrySubject
+				: model.listObjectsOfProperty(geometrySubject, COORDINATES).mapWith(RDFNode::asResource).next();
+
 		return switch (type) {
-			case POINT -> factory.createPoint(createPointCoordinate(model, subject));
-			case LINESTRING -> createLineString(model, subject);
-			case POLYGON -> createPolygon(model, subject);
-			case MULTIPOINT -> createMultiPoint(model, subject);
-			case MULTILINESTRING -> createMultiLineString(model, subject);
-			case MULTIPOLYGON -> createMultiPolygon(model, subject);
-			case GEOMETRYCOLLECTION -> createGeometryCollection(model, subject);
+			case POINT -> factory.createPoint(createPointCoordinate(model, coordinates));
+			case LINESTRING -> createLineString(model, coordinates);
+			case POLYGON -> createPolygon(model, coordinates);
+			case MULTIPOINT -> createMultiPoint(model, coordinates);
+			case MULTILINESTRING -> createMultiLineString(model, coordinates);
+			case MULTIPOLYGON -> createMultiPolygon(model, coordinates);
+			case GEOMETRYCOLLECTION -> createGeometryCollection(model, coordinates);
 		};
+	}
+
+	private GeoType getType(Model model, Resource geometryId) {
+		final List<RDFNode> typeList = model.listObjectsOfProperty(geometryId, RDF.type).toList();
+		if (typeList.size() != 1) {
+			final String errorMsg = "Could not determine %s of %s".formatted(RDF.type.getURI(),
+					GEOJSON_GEOMETRY.getURI());
+			throw new IllegalArgumentException(errorMsg);
+		}
+
+		final String type = typeList.get(0).asResource().getURI();
+		return GeoType
+				.fromUri(type)
+				.orElseThrow(() -> new IllegalArgumentException("Geotype %s not supported".formatted(type)));
 	}
 
 	private LineString createLineString(Model model, Resource subject) {
@@ -61,8 +90,9 @@ public class GeometryExtractor {
 	}
 
 	private GeometryCollection createGeometryCollection(Model model, Resource subject) {
-		return factory.createGeometryCollection(createGeometryCollection(model, subject, new ArrayList<>())
-				.toArray(Geometry[]::new));
+		List<Statement> geos = model.listStatements(subject, GEOMETRIES, (RDFNode) null).toList();
+		var geometries = geos.stream().map(geo -> createGeometry(model, geo.getObject().asResource())).toArray(Geometry[]::new);
+		return factory.createGeometryCollection(geometries);
 	}
 
 	private Coordinate createPointCoordinate(Model model, Resource subject) {
@@ -99,19 +129,6 @@ public class GeometryExtractor {
 		return RDF.nil.getURI().equals(nextPolygon.getURI())
 				? result
 				: createMultiPolygonCoordinates(model, nextPolygon, result);
-	}
-
-	private List<Geometry> createGeometryCollection(Model model, Resource subject, List<Geometry> result) {
-		// TODO: 23/03/2023 cleanup
-		List<Statement> geos = model
-				.listStatements(subject, createProperty("https://purl.org/geojson/vocab#geometries"), (RDFNode) null)
-				.toList();
-		return geos.stream().map(geo -> {
-			String type = model.listObjectsOfProperty(geo.getObject().asResource(), RDF.type)
-					.mapWith(RDFNode::asResource).mapWith(Resource::getURI).next();
-			Statement next = model.listStatements(geo.getObject().asResource(), COORDINATES, (RDFNode) null).next();
-			return createGeometry(model, GeoType.fromUri(type).orElseThrow(), next.getObject().asResource());
-		}).toList();
 	}
 
 }

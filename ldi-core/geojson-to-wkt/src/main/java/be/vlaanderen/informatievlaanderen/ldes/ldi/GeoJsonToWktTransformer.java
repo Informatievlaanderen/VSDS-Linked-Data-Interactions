@@ -22,6 +22,9 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 
 	private final WktConverter wktConverter = new WktConverter();
 
+	/**
+	 * Replaces all geojson:geometry statements with locn:geometry statements containing geosparql#wktLiteral
+	 */
 	@Override
 	public Model apply(Model model) {
 		final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)

@@ -9,17 +9,9 @@
       "@type": "geojson:Feature"
     },
     {
-      "@id": "http://example.com/features/multipolygon",
+      "@id": "http://example.com/features/geometrycollection",
       "http://www.w3.org/ns/locn#geometry": {
-        "@value": "MULTIPOLYGON (((102 2, 103 2, 103 3, 102 3, 102 2)), ((100 0, 101 0, 101 1, 100 1, 100 0), (100.2 0.2, 100.2 0.8, 100.8 0.8, 100.8 0.2, 100.2 0.2)))",
-        "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
-      },
-      "@type": "geojson:Feature"
-    },
-    {
-      "@id": "http://example.com/features/multipoint",
-      "http://www.w3.org/ns/locn#geometry": {
-        "@value": "MULTIPOINT ((100 0), (101 1), (102 2))",
+        "@value": "GEOMETRYCOLLECTION (POINT (100 0), POINT (100 0))",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
       },
       "@type": "geojson:Feature"
@@ -33,9 +25,9 @@
       "@type": "geojson:Feature"
     },
     {
-      "@id": "http://example.com/features/point",
+      "@id": "http://example.com/features/multipoint",
       "http://www.w3.org/ns/locn#geometry": {
-        "@value": "POINT (100 0)",
+        "@value": "MULTIPOINT ((100 0), (101 1), (102 2))",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
       },
       "@type": "geojson:Feature"
@@ -49,9 +41,17 @@
       "@type": "geojson:Feature"
     },
     {
-      "@id": "http://example.com/features/geometrycollection",
+      "@id": "http://example.com/features/point",
       "http://www.w3.org/ns/locn#geometry": {
-        "@value": "GEOMETRYCOLLECTION (LINESTRING (101 0, 102 1), POINT (100 0))",
+        "@value": "POINT (100 0)",
+        "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
+      },
+      "@type": "geojson:Feature"
+    },
+    {
+      "@id": "http://example.com/features/multipolygon",
+      "http://www.w3.org/ns/locn#geometry": {
+        "@value": "MULTIPOLYGON (((102 2, 103 2, 103 3, 102 3, 102 2)), ((100 0, 101 0, 101 1, 100 1, 100 0), (100.2 0.2, 100.2 0.8, 100.8 0.8, 100.8 0.2, 100.2 0.2)))",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
       },
       "@type": "geojson:Feature"
