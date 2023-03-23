@@ -1,15 +1,17 @@
 package ldes.client.requestexecutor.domain.valueobjects;
 
-import java.util.Map;
+import org.apache.http.Header;
+
+import java.util.List;
 import java.util.Optional;
 
 public class Response {
 
 	private final int httpStatus;
-	private final Map<String, String> headers;
+	private final List<Header> headers;
 	private final String body;
 
-	public Response(Map<String, String> headers, int httpStatus, String body) {
+	public Response(List<Header> headers, int httpStatus, String body) {
 		this.httpStatus = httpStatus;
 		this.headers = headers;
 		this.body = body;
@@ -28,7 +30,7 @@ public class Response {
 	}
 
 	public Optional<String> getValueOfHeader(final String key) {
-		return Optional.ofNullable(headers.get(key));
+		return headers.stream().filter(header -> header.getName().equals(key)).map(Header::getValue).findFirst();
 	}
 
 }

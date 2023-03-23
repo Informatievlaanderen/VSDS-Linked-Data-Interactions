@@ -4,8 +4,12 @@ import ldes.client.requestexecutor.domain.valueobjects.Request;
 import ldes.client.requestexecutor.domain.valueobjects.Response;
 import ldes.client.requestexecutor.exceptions.HttpRequestException;
 import ldes.client.requestexecutor.executor.RequestExecutor;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -29,13 +33,20 @@ public class ClientCredentialsRequestExecutor implements RequestExecutor {
 		oAuthService.signRequest(token, oAuthRequest);
 
 		try (com.github.scribejava.core.model.Response response = oAuthService.execute(oAuthRequest)) {
-			return new Response(response.getHeaders(), response.getCode(), response.getBody());
+			final List<Header> headers = extractHeaders(response.getHeaders());
+			return new Response(headers, response.getCode(), response.getBody());
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw new HttpRequestException(e);
 		} catch (IOException | ExecutionException e) {
 			throw new HttpRequestException(e);
 		}
+	}
+
+	private List<Header> extractHeaders(Map<String, String> headers) {
+		return headers.entrySet().stream()
+				.map(entry -> new BasicHeader(entry.getKey(), entry.getValue()))
+				.map(Header.class::cast).toList();
 	}
 
 }
