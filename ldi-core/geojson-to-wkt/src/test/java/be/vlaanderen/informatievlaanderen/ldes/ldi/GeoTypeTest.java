@@ -8,15 +8,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GeoTypeTest {
 
-    @ParameterizedTest
-    @EnumSource(GeoType.class)
-    void from_ShouldReturnAValueForExistingAuthStrategies(GeoType authStrategy) {
-        assertTrue(GeoType.fromUri(authStrategy.uri).isPresent());
-    }
+	@ParameterizedTest
+	@EnumSource(GeoType.class)
+	void from_ShouldReturnAValueForExistingAuthStrategies(GeoType authStrategy) {
+		assertTrue(GeoType.fromUri(authStrategy.uri).isPresent());
+	}
 
-    @Test
-    void from_ShouldReturnEmptyOptionalForNonExistingAuthStrategies() {
-        assertTrue(GeoType.fromUri("nonExisting").isEmpty());
-    }
+	@Test
+	void from_ShouldReturnEmptyOptionalForNonExistingAuthStrategies() {
+		assertTrue(GeoType.fromUri("nonExisting").isEmpty());
+	}
 
 }
