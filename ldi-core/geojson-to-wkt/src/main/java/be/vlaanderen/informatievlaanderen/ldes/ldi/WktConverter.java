@@ -19,14 +19,15 @@ public class WktConverter {
 	public static final Property GEOMETRIES = createProperty("https://purl.org/geojson/vocab#geometries");
 
 	private final GeometryExtractor geometryExtractor = new GeometryExtractor();
+	private final WKTWriter writer = new WKTWriter();
 
 	public String getWktFromModel(Model model) {
 		final Resource geometryId = getGeometryId(model);
 		final GeoType type = getType(model, geometryId);
-		Resource coordinatesNode = model.listObjectsOfProperty(geometryId, COORDINATES).mapWith(RDFNode::asResource)
-				.next();
+		Resource coordinatesNode =
+				model.listObjectsOfProperty(geometryId, COORDINATES).mapWith(RDFNode::asResource).next();
 		final Geometry geom = geometryExtractor.createGeometry(model, type, coordinatesNode);
-		return new WKTWriter().write(geom);
+		return writer.write(geom);
 	}
 
 	private Resource getGeometryId(Model model) {
