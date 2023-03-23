@@ -24,8 +24,11 @@ public class WktConverter {
 	public String getWktFromModel(Model model) {
 		final Resource geometryId = getGeometryId(model);
 		final GeoType type = getType(model, geometryId);
-		Resource coordinatesNode =
-				model.listObjectsOfProperty(geometryId, COORDINATES).mapWith(RDFNode::asResource).next();
+
+		final Resource coordinatesNode = GeoType.GEOMETRYCOLLECTION.equals(type)
+				? geometryId
+				: model.listObjectsOfProperty(geometryId, COORDINATES).mapWith(RDFNode::asResource).next();
+
 		final Geometry geom = geometryExtractor.createGeometry(model, type, coordinatesNode);
 		return writer.write(geom);
 	}

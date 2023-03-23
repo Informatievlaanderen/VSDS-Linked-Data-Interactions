@@ -1,14 +1,15 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.locationtech.jts.geom.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.COORDINATES;
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class GeometryExtractor {
 
@@ -90,25 +91,37 @@ public class GeometryExtractor {
 				: createPolygonCoordinates(model, nextRing, result);
 	}
 
-	private List<List<List<Coordinate>>> createMultiPolygonCoordinates(Model model, Resource coordinates,
+	private List<List<List<Coordinate>>> createMultiPolygonCoordinates(Model model, Resource subject,
 			List<List<List<Coordinate>>> result) {
-		Resource firstPolygon = model.listObjectsOfProperty(coordinates, RDF.first).mapWith(RDFNode::asResource).next();
+		Resource firstPolygon = model.listObjectsOfProperty(subject, RDF.first).mapWith(RDFNode::asResource).next();
 		result.add(createPolygonCoordinates(model, firstPolygon, new ArrayList<>()));
-		Resource nextPolygon = model.listObjectsOfProperty(coordinates, RDF.rest).mapWith(RDFNode::asResource).next();
-        return RDF.nil.getURI().equals(nextPolygon.getURI())
-                ? result
-                : createMultiPolygonCoordinates(model, nextPolygon, result);
+		Resource nextPolygon = model.listObjectsOfProperty(subject, RDF.rest).mapWith(RDFNode::asResource).next();
+		return RDF.nil.getURI().equals(nextPolygon.getURI())
+				? result
+				: createMultiPolygonCoordinates(model, nextPolygon, result);
 	}
 
-	private List<Geometry> createGeometryCollection(Model model, Resource coordinates, List<Geometry> result) {
-		Resource firstGeo = model.listObjectsOfProperty(coordinates, RDF.first).mapWith(RDFNode::asResource).next();
-		// result.add(createGeometry(model, firstGeo));
-		Resource nextGeo = model.listObjectsOfProperty(coordinates, RDF.first).mapWith(RDFNode::asResource).next();
-		if (RDF.nil.getURI().equals(nextGeo.getURI())) {
-			return result;
-		} else {
-			return createGeometryCollection(model, nextGeo, result);
-		}
+	private List<Geometry> createGeometryCollection(Model model, Resource subject, List<Geometry> result) {
+		List<Statement> geos = model
+				.listStatements(subject, createProperty("https://purl.org/geojson/vocab#geometries"), (RDFNode) null)
+				.toList();
+		return geos.stream().map(geo -> {
+			String type = model.listObjectsOfProperty(geo.getObject().asResource(), RDF.type)
+					.mapWith(RDFNode::asResource).mapWith(Resource::getURI).next();
+			Statement next = model.listStatements(geo.getObject().asResource(), COORDINATES, (RDFNode) null).next();
+			return createGeometry(model, GeoType.fromUri(type).orElseThrow(), next.getObject().asResource());
+		}).toList();
+
+		// Resource firstGeo = model.listObjectsOfProperty(subject,
+		// RDF.first).mapWith(RDFNode::asResource).next();
+		// // result.add(createGeometry(model, firstGeo));
+		// Resource nextGeo = model.listObjectsOfProperty(subject,
+		// RDF.first).mapWith(RDFNode::asResource).next();
+		// if (RDF.nil.getURI().equals(nextGeo.getURI())) {
+		// return result;
+		// } else {
+		// return createGeometryCollection(model, nextGeo, result);
+		// }
 	}
 
 }
