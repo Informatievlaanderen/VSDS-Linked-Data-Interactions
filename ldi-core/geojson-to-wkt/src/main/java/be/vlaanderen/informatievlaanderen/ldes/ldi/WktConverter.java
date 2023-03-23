@@ -23,28 +23,28 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class WktConverter {
 
-    public static final Property GEOMETRY = createProperty("https://purl.org/geojson/vocab#geometry");
-    public static final Property COORDINATES = createProperty("https://purl.org/geojson/vocab#coordinates");
-    public static final Property GEOMETRIES = createProperty("https://purl.org/geojson/vocab#geometries");
+	public static final Property GEOMETRY = createProperty("https://purl.org/geojson/vocab#geometry");
+	public static final Property COORDINATES = createProperty("https://purl.org/geojson/vocab#coordinates");
+	public static final Property GEOMETRIES = createProperty("https://purl.org/geojson/vocab#geometries");
 
-    final GeometryFactory factory = new GeometryFactory();
+	final GeometryFactory factory = new GeometryFactory();
 
-    /**
-     * Takes a model with one 'geometry' property and returns geosparql:asWKT String value that can be used to
-     * replace the 'geometry.coordinates' node.
-     */
-    public String getWktFromModel(Model model) {
-        final Resource geometryId = getGeometryId(model);
+	/**
+	 * Takes a model with one 'geometry' property and returns geosparql:asWKT String
+	 * value that can be used to
+	 * replace the 'geometry.coordinates' node.
+	 */
+	public String getWktFromModel(Model model) {
+		final Resource geometryId = getGeometryId(model);
 
-        final Geometry geom = createGeometry(model, geometryId);
-        return new WKTWriter().write(geom);
-    }
+		final Geometry geom = createGeometry(model, geometryId);
+		return new WKTWriter().write(geom);
+	}
 
-    private Geometry createGeometry(Model model, Resource geometryId) {
+	private Geometry createGeometry(Model model, Resource geometryId) {
         final GeoType type = getType(model, geometryId);
 
-        Resource coordinatesNode = model.listStatements(geometryId, GEOMETRIES, (RDFNode) null).nextStatement().getObject().asResource();
-//        Resource coordinatesNode = model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
+        Resource coordinatesNode = model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
 
         return switch (type) {
             case POINT -> {
@@ -83,84 +83,97 @@ public class WktConverter {
         };
     }
 
-    private Polygon mapToPolygon(List<List<Coordinate>> coords) {
-        List<LinearRing> linearRings = coords.stream().map(l -> factory.createLinearRing(l.toArray(Coordinate[]::new))).collect(Collectors.toList());
-        return factory.createPolygon(linearRings.remove(0), linearRings.toArray(LinearRing[]::new));
-    }
+	private Polygon mapToPolygon(List<List<Coordinate>> coords) {
+		List<LinearRing> linearRings = coords.stream().map(l -> factory.createLinearRing(l.toArray(Coordinate[]::new)))
+				.collect(Collectors.toList());
+		return factory.createPolygon(linearRings.remove(0), linearRings.toArray(LinearRing[]::new));
+	}
 
-    private Coordinate createPoint(Model model, Resource coordinates) {
-        double first = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asLiteral().getDouble();
-        Resource restId = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject().asResource();
-        double second = model.listStatements(restId, RDF.first, (RDFNode) null).nextStatement().getObject().asLiteral().getDouble();
-        return new Coordinate(first, second);
-    }
+	private Coordinate createPoint(Model model, Resource coordinates) {
+		double first = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
+				.asLiteral().getDouble();
+		Resource restId = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		double second = model.listStatements(restId, RDF.first, (RDFNode) null).nextStatement().getObject().asLiteral()
+				.getDouble();
+		return new Coordinate(first, second);
+	}
 
-    private List<Coordinate> createLineString(Model model, Resource coordinates, List<Coordinate> result) {
-        Resource firstPoint = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asResource();
-        result.add(createPoint(model, firstPoint));
-        Resource nextPoint = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject().asResource();
-        if (RDF.nil.getURI().equals(nextPoint.getURI())) {
-            return result;
-        } else {
-            return createLineString(model, nextPoint, result);
-        }
-    }
+	private List<Coordinate> createLineString(Model model, Resource coordinates, List<Coordinate> result) {
+		Resource firstPoint = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		result.add(createPoint(model, firstPoint));
+		Resource nextPoint = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		if (RDF.nil.getURI().equals(nextPoint.getURI())) {
+			return result;
+		} else {
+			return createLineString(model, nextPoint, result);
+		}
+	}
 
-    private List<List<Coordinate>> createPolygon(Model model, Resource coordinates, List<List<Coordinate>> result) {
-        Resource exteriorRing = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asResource();
-        List<Coordinate> exRing = new ArrayList<>();
-        result.add(createLineString(model, exteriorRing, exRing));
-        Resource nextRing = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject().asResource();
-        if (RDF.nil.getURI().equals(nextRing.getURI())) {
-            return result;
-        } else {
-            return createPolygon(model, nextRing, result);
-        }
-    }
+	private List<List<Coordinate>> createPolygon(Model model, Resource coordinates, List<List<Coordinate>> result) {
+		Resource exteriorRing = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		List<Coordinate> exRing = new ArrayList<>();
+		result.add(createLineString(model, exteriorRing, exRing));
+		Resource nextRing = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		if (RDF.nil.getURI().equals(nextRing.getURI())) {
+			return result;
+		} else {
+			return createPolygon(model, nextRing, result);
+		}
+	}
 
-    private List<List<List<Coordinate>>> createMultiPolygon(Model model, Resource coordinates, List<List<List<Coordinate>>> result) {
-        Resource firstPolygon = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asResource();
-        result.add(createPolygon(model, firstPolygon, new ArrayList<>()));
-        Resource nextPolygon = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject().asResource();
-        if (RDF.nil.getURI().equals(nextPolygon.getURI())) {
-            return result;
-        } else {
-            return createMultiPolygon(model, nextPolygon, result);
-        }
-    }
+	private List<List<List<Coordinate>>> createMultiPolygon(Model model, Resource coordinates,
+			List<List<List<Coordinate>>> result) {
+		Resource firstPolygon = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		result.add(createPolygon(model, firstPolygon, new ArrayList<>()));
+		Resource nextPolygon = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		if (RDF.nil.getURI().equals(nextPolygon.getURI())) {
+			return result;
+		} else {
+			return createMultiPolygon(model, nextPolygon, result);
+		}
+	}
 
-    private List<Geometry> createGeometryCollection(Model model, Resource coordinates, List<Geometry> result) {
-        Resource firstGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asResource();
-        result.add(createGeometry(model, firstGeo));
-        Resource nextGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asResource();
-        if (RDF.nil.getURI().equals(nextGeo.getURI())) {
-            return result;
-        } else {
-            return createGeometryCollection(model, nextGeo, result);
-        }
-    }
+	private List<Geometry> createGeometryCollection(Model model, Resource coordinates, List<Geometry> result) {
+		Resource firstGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		result.add(createGeometry(model, firstGeo));
+		Resource nextGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
+				.asResource();
+		if (RDF.nil.getURI().equals(nextGeo.getURI())) {
+			return result;
+		} else {
+			return createGeometryCollection(model, nextGeo, result);
+		}
+	}
 
-    private GeoType getType(Model geojson, Resource geometryId) {
-        final List<Statement> typeList = geojson.listStatements(geometryId, RDF.type, (RDFNode) null).toList();
-        if (typeList.size() != 1) {
-            final String errorMsg = "Could not determine %s of %s".formatted(RDF.type.getURI(), GEOMETRY.getURI());
-            throw new IllegalArgumentException(errorMsg);
-        }
+	private GeoType getType(Model geojson, Resource geometryId) {
+		final List<Statement> typeList = geojson.listStatements(geometryId, RDF.type, (RDFNode) null).toList();
+		if (typeList.size() != 1) {
+			final String errorMsg = "Could not determine %s of %s".formatted(RDF.type.getURI(), GEOMETRY.getURI());
+			throw new IllegalArgumentException(errorMsg);
+		}
 
-        final String type = typeList.get(0).getObject().asResource().getURI();
-        return GeoType.fromUri(type)
-                .orElseThrow(() -> new IllegalArgumentException("Geotype %s not supported".formatted(type)));
-    }
+		final String type = typeList.get(0).getObject().asResource().getURI();
+		return GeoType.fromUri(type)
+				.orElseThrow(() -> new IllegalArgumentException("Geotype %s not supported".formatted(type)));
+	}
 
-    private Resource getGeometryId(Model geojson) {
-        // TODO: 22/03/2023 add check there is only one?
-        return geojson.listStatements(null, GEOMETRY, (RDFNode) null)
-                .toList()
-                .stream()
-                .map(Statement::getObject)
-                .map(RDFNode::asResource)
-                .findFirst()
-                .orElseThrow();
-    }
+	private Resource getGeometryId(Model geojson) {
+		// TODO: 22/03/2023 add check there is only one?
+		return geojson.listStatements(null, GEOMETRY, (RDFNode) null)
+				.toList()
+				.stream()
+				.map(Statement::getObject)
+				.map(RDFNode::asResource)
+				.findFirst()
+				.orElseThrow();
+	}
 
 }

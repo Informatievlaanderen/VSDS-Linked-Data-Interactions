@@ -18,46 +18,47 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOMETRY;
 
 public class GeoJsonToWktTransformer implements LdiTransformer {
 
-    private final WktConverter wktConverter = new WktConverter();
+	private final WktConverter wktConverter = new WktConverter();
 
-    // TODO: 21/03/2023 support geometry
-    @Override
-    public Model apply(Model model) {
-        final List<Statement> geometryStatements = model.listStatements(null, GEOMETRY, (RDFNode) null).toList();
-        geometryStatements.forEach(oldGeometryStatement -> {
-            final Model geometryModel = createModelWithChildStatements(model, oldGeometryStatement);
-            final Statement newGeometryStatement = createNewGeometryStatement(oldGeometryStatement, geometryModel);
-            model.remove(createModelWithChildStatements(model, oldGeometryStatement));
-            model.add(newGeometryStatement);
-        });
-        return model;
-    }
+	// TODO: 21/03/2023 support geometry
+	@Override
+	public Model apply(Model model) {
+		final List<Statement> geometryStatements = model.listStatements(null, GEOMETRY, (RDFNode) null).toList();
+		geometryStatements.forEach(oldGeometryStatement -> {
+			final Model geometryModel = createModelWithChildStatements(model, oldGeometryStatement);
+			final Statement newGeometryStatement = createNewGeometryStatement(oldGeometryStatement, geometryModel);
+			model.remove(createModelWithChildStatements(model, oldGeometryStatement));
+			model.add(newGeometryStatement);
+		});
+		return model;
+	}
 
-    private Statement createNewGeometryStatement(Statement oldStatement, Model geometryModel) {
-        final String wktString = wktConverter.getWktFromModel(geometryModel);
-        Literal wkt = ResourceFactory.createTypedLiteral(wktString, new WktLiteral());
-        Property geometry = ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry");
-        return ResourceFactory.createStatement(oldStatement.getSubject(), geometry, wkt);
-    }
+	private Statement createNewGeometryStatement(Statement oldStatement, Model geometryModel) {
+		final String wktString = wktConverter.getWktFromModel(geometryModel);
+		Literal wkt = ResourceFactory.createTypedLiteral(wktString, new WktLiteral());
+		Property geometry = ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry");
+		return ResourceFactory.createStatement(oldStatement.getSubject(), geometry, wkt);
+	}
 
-    private Model createModelWithChildStatements(Model model, Statement node) {
-        Set<Statement> statements = createModelWithChildStatements(model, node.getObject().asResource(), new HashSet<>());
-        statements.add(node);
+	private Model createModelWithChildStatements(Model model, Statement node) {
+		Set<Statement> statements = createModelWithChildStatements(model, node.getObject().asResource(),
+				new HashSet<>());
+		statements.add(node);
 
-        Model newModel = ModelFactory.createDefaultModel();
-        newModel.add(statements.stream().toList());
-        return newModel;
-    }
+		Model newModel = ModelFactory.createDefaultModel();
+		newModel.add(statements.stream().toList());
+		return newModel;
+	}
 
-    private Set<Statement> createModelWithChildStatements(Model model, Resource node, Set<Statement> statements) {
-        List<Statement> list = model.listStatements(node, null, (RDFNode) null).toList();
-        list.forEach(i -> {
-            if (i.getObject().isAnon()) {
-                createModelWithChildStatements(model, i.getObject().asResource(), statements);
-            }
-            statements.add(i);
-        });
-        return statements;
-    }
+	private Set<Statement> createModelWithChildStatements(Model model, Resource node, Set<Statement> statements) {
+		List<Statement> list = model.listStatements(node, null, (RDFNode) null).toList();
+		list.forEach(i -> {
+			if (i.getObject().isAnon()) {
+				createModelWithChildStatements(model, i.getObject().asResource(), statements);
+			}
+			statements.add(i);
+		});
+		return statements;
+	}
 
 }
