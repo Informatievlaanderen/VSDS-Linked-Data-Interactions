@@ -8,9 +8,13 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKTWriter;
@@ -36,52 +40,56 @@ public class WktConverter {
 	 */
 	public String getWktFromModel(Model model) {
 		final Resource geometryId = getGeometryId(model);
-
-		final Geometry geom = createGeometry(model, geometryId);
+		final GeoType type = getType(model, geometryId);
+		Resource coordinatesNode =
+				model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
+		final Geometry geom = createGeometry(model, type, coordinatesNode);
 		return new WKTWriter().write(geom);
 	}
 
-	private Geometry createGeometry(Model model, Resource geometryId) {
-        final GeoType type = getType(model, geometryId);
+	private Geometry createGeometry(Model model, GeoType type, Resource coordinatesNode) {
+		return switch (type) {
+			case POINT -> factory.createPoint(createPointCoordinate(model, coordinatesNode));
+			case LINESTRING -> createLineString(model, coordinatesNode);
+			case POLYGON -> createPolygon(model, coordinatesNode);
+			case MULTIPOINT -> createMultiPoint(model, coordinatesNode);
+			case MULTILINESTRING -> createMultiLineString(model, coordinatesNode);
+			case MULTIPOLYGON -> createMultiPolygon(model, coordinatesNode);
+			case GEOMETRYCOLLECTION -> createGeometryCollection(model, coordinatesNode);
+		};
+	}
 
-        Resource coordinatesNode = model.listStatements(geometryId, COORDINATES, (RDFNode) null).nextStatement().getObject().asResource();
+	private GeometryCollection createGeometryCollection(Model model, Resource coordinatesNode) {
+		return factory.createGeometryCollection(createGeometryCollection(model, coordinatesNode, new ArrayList<>())
+				.toArray(Geometry[]::new));
+	}
 
-        return switch (type) {
-            case POINT -> {
-                Coordinate point = createPoint(model, coordinatesNode);
-                yield factory.createPoint(point);
-            }
-            case LINESTRING -> {
-                List<Coordinate> result = new ArrayList<>();
-                List<Coordinate> lineString = createLineString(model, coordinatesNode, result);
-                yield factory.createLineString(lineString.toArray(Coordinate[]::new));
-            }
-            case POLYGON -> {
-                List<List<Coordinate>> result = new ArrayList<>();
-                List<List<Coordinate>> lineString = createPolygon(model, coordinatesNode, result);
-                yield mapToPolygon(lineString);
-            }
-            case MULTIPOINT -> {
-                List<Coordinate> result = new ArrayList<>();
-                List<Coordinate> lineString = createLineString(model, coordinatesNode, result);
-                yield factory.createMultiPoint(lineString.stream().map(factory::createPoint).toArray(Point[]::new));
-            }
-            case MULTILINESTRING -> {
-                List<List<Coordinate>> result = new ArrayList<>();
-                List<List<Coordinate>> lineString = createPolygon(model, coordinatesNode, result);
-                LineString[] lineStrings = lineString.stream().map(ls -> ls.toArray(Coordinate[]::new)).map(factory::createLineString).toArray(LineString[]::new);
-                yield factory.createMultiLineString(lineStrings);
-            }
-            case MULTIPOLYGON -> {
-                List<List<List<Coordinate>>> multiPolygon = createMultiPolygon(model, coordinatesNode, new ArrayList<>());
-                yield factory.createMultiPolygon(multiPolygon.stream().map(this::mapToPolygon).toArray(Polygon[]::new));
-            }
-            case GEOMETRYCOLLECTION -> {
-                yield factory.createGeometryCollection(createGeometryCollection(model, coordinatesNode, new ArrayList<>())
-                        .toArray(Geometry[]::new));
-            }
-        };
-    }
+	private MultiPolygon createMultiPolygon(Model model, Resource coordinatesNode) {
+		List<List<List<Coordinate>>> multiPolygon = createMultiPolygon(model, coordinatesNode, new ArrayList<>());
+		return factory.createMultiPolygon(multiPolygon.stream().map(this::mapToPolygon).toArray(Polygon[]::new));
+	}
+
+	private MultiLineString createMultiLineString(Model model, Resource coordinatesNode) {
+		List<List<Coordinate>> lineString = createPolygon(model, coordinatesNode, new ArrayList<>());
+		LineString[] lineStrings = lineString.stream().map(ls -> ls.toArray(Coordinate[]::new))
+				.map(factory::createLineString).toArray(LineString[]::new);
+		return factory.createMultiLineString(lineStrings);
+	}
+
+	private MultiPoint createMultiPoint(Model model, Resource coordinatesNode) {
+		List<Coordinate> lineString = createLineStringCoordinates(model, coordinatesNode, new ArrayList<>());
+		return factory.createMultiPoint(lineString.stream().map(factory::createPoint).toArray(Point[]::new));
+	}
+
+	private Polygon createPolygon(Model model, Resource coordinatesNode) {
+		List<List<Coordinate>> lineString = createPolygon(model, coordinatesNode, new ArrayList<>());
+		return mapToPolygon(lineString);
+	}
+
+	private LineString createLineString(Model model, Resource coordinatesNode) {
+		List<Coordinate> coordinates = createLineStringCoordinates(model, coordinatesNode, new ArrayList<>());
+		return factory.createLineString(coordinates.toArray(Coordinate[]::new));
+	}
 
 	private Polygon mapToPolygon(List<List<Coordinate>> coords) {
 		List<LinearRing> linearRings = coords.stream().map(l -> factory.createLinearRing(l.toArray(Coordinate[]::new)))
@@ -89,26 +97,21 @@ public class WktConverter {
 		return factory.createPolygon(linearRings.remove(0), linearRings.toArray(LinearRing[]::new));
 	}
 
-	private Coordinate createPoint(Model model, Resource coordinates) {
-		double first = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
-				.asLiteral().getDouble();
-		Resource restId = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject()
-				.asResource();
-		double second = model.listStatements(restId, RDF.first, (RDFNode) null).nextStatement().getObject().asLiteral()
-				.getDouble();
+	private Coordinate createPointCoordinate(Model model, Resource subject) {
+		double first = model.listObjectsOfProperty(subject, RDF.first).mapWith(RDFNode::asLiteral).next().getDouble();
+		Resource restId = model.listObjectsOfProperty(subject, RDF.rest).mapWith(RDFNode::asResource).next();
+		double second = model.listObjectsOfProperty(restId, RDF.first).mapWith(RDFNode::asLiteral).next().getDouble();
 		return new Coordinate(first, second);
 	}
 
-	private List<Coordinate> createLineString(Model model, Resource coordinates, List<Coordinate> result) {
-		Resource firstPoint = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
-				.asResource();
-		result.add(createPoint(model, firstPoint));
-		Resource nextPoint = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject()
-				.asResource();
+	private List<Coordinate> createLineStringCoordinates(Model model, Resource coordinates, List<Coordinate> result) {
+		Resource firstPoint = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject().asResource();
+		result.add(createPointCoordinate(model, firstPoint));
+		Resource nextPoint = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject().asResource();
 		if (RDF.nil.getURI().equals(nextPoint.getURI())) {
 			return result;
 		} else {
-			return createLineString(model, nextPoint, result);
+			return createLineStringCoordinates(model, nextPoint, result);
 		}
 	}
 
@@ -116,7 +119,7 @@ public class WktConverter {
 		Resource exteriorRing = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
 				.asResource();
 		List<Coordinate> exRing = new ArrayList<>();
-		result.add(createLineString(model, exteriorRing, exRing));
+		result.add(createLineStringCoordinates(model, exteriorRing, exRing));
 		Resource nextRing = model.listStatements(coordinates, RDF.rest, (RDFNode) null).nextStatement().getObject()
 				.asResource();
 		if (RDF.nil.getURI().equals(nextRing.getURI())) {
@@ -143,7 +146,7 @@ public class WktConverter {
 	private List<Geometry> createGeometryCollection(Model model, Resource coordinates, List<Geometry> result) {
 		Resource firstGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
 				.asResource();
-		result.add(createGeometry(model, firstGeo));
+//		result.add(createGeometry(model, firstGeo));
 		Resource nextGeo = model.listStatements(coordinates, RDF.first, (RDFNode) null).nextStatement().getObject()
 				.asResource();
 		if (RDF.nil.getURI().equals(nextGeo.getURI())) {
