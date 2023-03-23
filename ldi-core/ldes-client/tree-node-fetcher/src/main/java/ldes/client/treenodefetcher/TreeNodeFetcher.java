@@ -44,7 +44,7 @@ public class TreeNodeFetcher {
 
 	private static TreeNodeResponse createMovedTemporarilyResponse(Response response) {
 		return new TreeNodeResponse(
-				List.of(response.getValueOfHeader(HttpHeaders.LOCATION).orElseThrow()),
+				List.of(response.getFirstHeaderValue(HttpHeaders.LOCATION).orElseThrow()),
 				List.of(),
 				new MutabilityStatus(false, LocalDateTime.MAX));
 	}
@@ -54,7 +54,7 @@ public class TreeNodeFetcher {
 	}
 
 	private static MutabilityStatus getMutabilityStatus(Response response) {
-		return response.getValueOfHeader(HttpHeaders.CACHE_CONTROL)
+		return response.getFirstHeaderValue(HttpHeaders.CACHE_CONTROL)
 				.map(MutabilityStatus::ofHeader)
 				.orElseGet(MutabilityStatus::empty);
 	}

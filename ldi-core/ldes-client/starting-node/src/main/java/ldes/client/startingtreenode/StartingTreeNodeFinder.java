@@ -45,7 +45,7 @@ public class StartingTreeNodeFinder {
 		}
 		if (response.hasStatus(HttpStatus.SC_MOVED_TEMPORARILY)) {
 			StartingNodeRequest newStartingNodeRequest = startingNodeRequest
-					.createRedirectedEndpoint(response.getValueOfHeader(HttpHeaders.LOCATION)
+					.createRedirectedEndpoint(response.getFirstHeaderValue(HttpHeaders.LOCATION)
 							.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest.url(),
 									"No Location Header in redirect.")));
 			return determineStartingTreeNode(newStartingNodeRequest);
