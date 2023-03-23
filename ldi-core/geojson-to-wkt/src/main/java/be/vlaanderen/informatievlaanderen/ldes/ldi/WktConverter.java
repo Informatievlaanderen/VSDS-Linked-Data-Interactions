@@ -23,15 +23,15 @@ public class WktConverter {
 	public String getWktFromModel(Model model) {
 		final Resource geometryId = getGeometryId(model);
 		final GeoType type = getType(model, geometryId);
-		Resource coordinatesNode =
-				model.listObjectsOfProperty(geometryId, COORDINATES).mapWith(RDFNode::asResource).next();
+		Resource coordinatesNode = model.listObjectsOfProperty(geometryId, COORDINATES).mapWith(RDFNode::asResource)
+				.next();
 		final Geometry geom = geometryExtractor.createGeometry(model, type, coordinatesNode);
 		return new WKTWriter().write(geom);
 	}
 
 	private Resource getGeometryId(Model model) {
-		final List<Resource> geometryStatements =
-				model.listObjectsOfProperty( GEOJSON_GEOMETRY).mapWith(RDFNode::asResource).toList();
+		final List<Resource> geometryStatements = model.listObjectsOfProperty(GEOJSON_GEOMETRY)
+				.mapWith(RDFNode::asResource).toList();
 
 		if (geometryStatements.size() > 1) {
 			throw new IllegalArgumentException("Ambiguous request: multiple geojson:geometry found.");
@@ -43,7 +43,8 @@ public class WktConverter {
 	private GeoType getType(Model model, Resource geometryId) {
 		final List<RDFNode> typeList = model.listObjectsOfProperty(geometryId, RDF.type).toList();
 		if (typeList.size() != 1) {
-			final String errorMsg = "Could not determine %s of %s".formatted(RDF.type.getURI(), GEOJSON_GEOMETRY.getURI());
+			final String errorMsg = "Could not determine %s of %s".formatted(RDF.type.getURI(),
+					GEOJSON_GEOMETRY.getURI());
 			throw new IllegalArgumentException(errorMsg);
 		}
 

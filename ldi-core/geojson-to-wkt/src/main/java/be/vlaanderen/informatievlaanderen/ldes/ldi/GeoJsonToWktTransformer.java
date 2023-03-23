@@ -25,7 +25,8 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 	// TODO: 21/03/2023 support geometry
 	@Override
 	public Model apply(Model model) {
-		final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null).toList();
+		final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)
+				.toList();
 		geometryStatements.forEach(oldGeometryStatement -> {
 			final Model geometryModel = createModelWithChildStatements(model, oldGeometryStatement);
 			final Statement newGeometryStatement = createNewGeometryStatement(oldGeometryStatement, geometryModel);
