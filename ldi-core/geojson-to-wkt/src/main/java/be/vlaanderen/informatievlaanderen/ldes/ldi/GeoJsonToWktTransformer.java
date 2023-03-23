@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -35,7 +36,7 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 
 	private Statement createNewGeometryStatement(Statement oldStatement, Model geometryModel) {
 		final String wktString = wktConverter.getWktFromModel(geometryModel);
-		Literal wkt = ResourceFactory.createTypedLiteral(wktString, new WktLiteral());
+		Literal wkt = ResourceFactory.createTypedLiteral(wktString, WKTDatatype.INSTANCE);
 		Property geometry = ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry");
 		return ResourceFactory.createStatement(oldStatement.getSubject(), geometry, wkt);
 	}

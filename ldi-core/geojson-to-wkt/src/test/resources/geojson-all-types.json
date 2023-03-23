@@ -34,11 +34,7 @@
     {
       "type": "Feature",
       "id": "http://example.com/features/point",
-      "geometry": {"type": "Point", "coordinates": [100.0, 0.0]},
-      "properties": {
-        "title": "Null Island",
-        "description": "A fictional island in the Gulf of Guinea"
-      }
+      "geometry": {"type": "Point", "coordinates": [100.0, 0.0]}
     },
     {
       "type": "Feature",
@@ -50,10 +46,6 @@
           [101.0, 1.0],
           [102.0, 2.0]
         ]
-      },
-      "properties": {
-        "title": "Null Island",
-        "description": "A fictional island in the Gulf of Guinea"
       }
     },
     {
@@ -84,10 +76,6 @@
             [100.95, 0.9]
           ]
         ]
-      },
-      "properties": {
-        "title": "Null Island",
-        "description": "A fictional island in the Gulf of Guinea"
       }
     },
     {
@@ -100,10 +88,6 @@
           [101.0, 1.0],
           [102.0, 2.0]
         ]
-      },
-      "properties": {
-        "title": "Null Island",
-        "description": "A fictional island in the Gulf of Guinea"
       }
     },
     {
@@ -122,10 +106,6 @@
             [104.0, 4.0]
           ]
         ]
-      },
-      "properties": {
-        "title": "Null Island",
-        "description": "A fictional island in the Gulf of Guinea"
       }
     },
     {
@@ -159,11 +139,7 @@
               [100.2, 0.2]
             ]
           ]
-        ]},
-      "properties": {
-        "title": "Null Island",
-        "description": "A fictional island in the Gulf of Guinea"
-      }
+        ]}
     }
   ]
 }
