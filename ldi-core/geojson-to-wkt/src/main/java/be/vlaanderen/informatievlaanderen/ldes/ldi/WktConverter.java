@@ -27,7 +27,7 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class WktConverter {
 
-	public static final Property GEOMETRY = createProperty("https://purl.org/geojson/vocab#geometry");
+	public static final Property GEOJSON_GEOMETRY = createProperty("https://purl.org/geojson/vocab#geometry");
 	public static final Property COORDINATES = createProperty("https://purl.org/geojson/vocab#coordinates");
 	public static final Property GEOMETRIES = createProperty("https://purl.org/geojson/vocab#geometries");
 
@@ -159,7 +159,7 @@ public class WktConverter {
 	private GeoType getType(Model geojson, Resource geometryId) {
 		final List<Statement> typeList = geojson.listStatements(geometryId, RDF.type, (RDFNode) null).toList();
 		if (typeList.size() != 1) {
-			final String errorMsg = "Could not determine %s of %s".formatted(RDF.type.getURI(), GEOMETRY.getURI());
+			final String errorMsg = "Could not determine %s of %s".formatted(RDF.type.getURI(), GEOJSON_GEOMETRY.getURI());
 			throw new IllegalArgumentException(errorMsg);
 		}
 
@@ -170,7 +170,7 @@ public class WktConverter {
 
 	private Resource getGeometryId(Model geojson) {
 		// TODO: 22/03/2023 add check there is only one?
-		return geojson.listStatements(null, GEOMETRY, (RDFNode) null)
+		return geojson.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)
 				.toList()
 				.stream()
 				.map(Statement::getObject)
