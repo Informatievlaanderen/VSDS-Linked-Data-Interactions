@@ -11,6 +11,7 @@ class GeoJsonToWktTransformerTest {
 
 	private final GeoJsonToWktTransformer transformer = new GeoJsonToWktTransformer();
 
+	// TODO: 23/03/2023 add geometry collection
 	@Test
 	void testApply() {
 		Model result = transformer.apply(
