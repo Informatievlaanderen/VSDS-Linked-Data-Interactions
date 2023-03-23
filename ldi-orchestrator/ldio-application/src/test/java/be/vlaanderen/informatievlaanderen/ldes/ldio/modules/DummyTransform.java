@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config.modules;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.modules;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import org.apache.jena.rdf.model.Model;

@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import org.apache.jena.rdf.model.Model;
 
@@ -13,12 +12,12 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 
 	private final ExecutorService executorService;
 	private final List<LdiTransformer> ldiTransformers;
-	private final List<LdiOutput> ldiOutputs;
+	private final LdiSender ldiSender;
 
-	public ComponentExecutorImpl(List<LdiTransformer> ldiTransformers, List<LdiOutput> ldiOutputs) {
+	public ComponentExecutorImpl(List<LdiTransformer> ldiTransformers, LdiSender ldiSender) {
 		this.executorService = Executors.newSingleThreadExecutor();
 		this.ldiTransformers = ldiTransformers;
-		this.ldiOutputs = ldiOutputs;
+		this.ldiSender = ldiSender;
 	}
 
 	@Override
@@ -29,8 +28,7 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 				transformedLinkedDataModel = component.apply(transformedLinkedDataModel);
 			}
 
-			Model finalTransformedLinkedDataModel = transformedLinkedDataModel;
-			ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(finalTransformedLinkedDataModel));
+			ldiSender.accept(transformedLinkedDataModel);
 		});
 	}
 
@@ -38,7 +36,7 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 		return ldiTransformers;
 	}
 
-	public List<LdiOutput> getLdiOutputs() {
-		return ldiOutputs;
+	public LdiSender getLdiSender() {
+		return ldiSender;
 	}
 }

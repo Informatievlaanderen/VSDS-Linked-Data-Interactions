@@ -52,8 +52,8 @@ class ClientCredentialsRequestExecutorTest {
 			assertEquals(scribeResponse.getCode(), response.getHttpStatus());
 			assertTrue(response.getBody().isPresent());
 			assertEquals(scribeResponse.getBody(), response.getBody().get());
-			assertTrue(response.getValueOfHeader("key").isPresent());
-			assertEquals(scribeResponse.getHeader("key"), response.getValueOfHeader("key").get());
+			assertTrue(response.getFirstHeaderValue("key").isPresent());
+			assertEquals(scribeResponse.getHeader("key"), response.getFirstHeaderValue("key").get());
 		}
 
 		@Test
