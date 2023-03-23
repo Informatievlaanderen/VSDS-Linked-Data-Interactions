@@ -58,9 +58,43 @@
     },
     {
       "type": "Feature",
-      "id": "http://example.com/features/linestring",
+      "id": "http://example.com/features/polygon",
       "geometry": {
-        "type": "LineString",
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [100.0, 0.0],
+            [101.0, 0.0],
+            [101.0, 1.0],
+            [100.0, 1.0],
+            [100.0, 0.0]
+          ],
+          [
+            [100.8, 0.8],
+            [100.8, 0.2],
+            [100.2, 0.2],
+            [100.2, 0.8],
+            [100.8, 0.8]
+          ],
+          [
+            [100.95, 0.9],
+            [100.95, 0.5],
+            [100.9, 0.2],
+            [100.9, 0.5],
+            [100.95, 0.9]
+          ]
+        ]
+      },
+      "properties": {
+        "title": "Null Island",
+        "description": "A fictional island in the Gulf of Guinea"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "http://example.com/features/multipoint",
+      "geometry": {
+        "type": "MultiPoint",
         "coordinates": [
           [100.0, 0.0],
           [101.0, 1.0],
@@ -74,13 +108,19 @@
     },
     {
       "type": "Feature",
-      "id": "http://example.com/features/linestring",
+      "id": "http://example.com/features/multilinestring",
       "geometry": {
-        "type": "LineString",
+        "type": "MultiLineString",
         "coordinates": [
-          [100.0, 0.0],
-          [101.0, 1.0],
-          [102.0, 2.0]
+          [
+            [100.0, 0.0],
+            [101.0, 1.0]
+          ],
+          [
+            [102.0, 2.0],
+            [103.0, 3.0],
+            [104.0, 4.0]
+          ]
         ]
       },
       "properties": {
@@ -90,47 +130,36 @@
     },
     {
       "type": "Feature",
-      "id": "http://example.com/features/linestring",
+      "id": "http://example.com/features/multipolygon",
       "geometry": {
-        "type": "LineString",
+        "type": "MultiPolygon",
         "coordinates": [
-          [100.0, 0.0],
-          [101.0, 1.0],
-          [102.0, 2.0]
-        ]
-      },
-      "properties": {
-        "title": "Null Island",
-        "description": "A fictional island in the Gulf of Guinea"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "http://example.com/features/linestring",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [100.0, 0.0],
-          [101.0, 1.0],
-          [102.0, 2.0]
-        ]
-      },
-      "properties": {
-        "title": "Null Island",
-        "description": "A fictional island in the Gulf of Guinea"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "http://example.com/features/linestring",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [100.0, 0.0],
-          [101.0, 1.0],
-          [102.0, 2.0]
-        ]
-      },
+          [
+            [
+              [102.0, 2.0],
+              [103.0, 2.0],
+              [103.0, 3.0],
+              [102.0, 3.0],
+              [102.0, 2.0]
+            ]
+          ],
+          [
+            [
+              [100.0, 0.0],
+              [101.0, 0.0],
+              [101.0, 1.0],
+              [100.0, 1.0],
+              [100.0, 0.0]
+            ],
+            [
+              [100.2, 0.2],
+              [100.2, 0.8],
+              [100.8, 0.8],
+              [100.8, 0.2],
+              [100.2, 0.2]
+            ]
+          ]
+        ]},
       "properties": {
         "title": "Null Island",
         "description": "A fictional island in the Gulf of Guinea"
