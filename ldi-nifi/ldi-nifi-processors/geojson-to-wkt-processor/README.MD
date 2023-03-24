@@ -22,4 +22,6 @@ becomes:
 }
 ```
 
-No config is required. A valid geojson+ld as input is the only requirement.
+Requirements:
+- The expected input format (e.g. `application/n-quads`, `application/ld+json`, etc.) should be configured as `DATA_SOURCE_FORMAT`. 
+- The model should contain valid geojson+ld.
