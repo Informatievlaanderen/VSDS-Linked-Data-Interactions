@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
@@ -63,8 +62,6 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		Model initModel = ModelFactory.createDefaultModel();
-
 		Property dateObservedProperty = getDateObservedValueJsonPath(context);
 		Resource memberType = getMemberRdfSyntaxType(context);
 		String delimiter = getDelimiter(context);

@@ -23,7 +23,7 @@ public class LdioConsoleOutAutoConfig {
 	}
 
 	public static class LdioConsoleOutConfigurator implements LdioConfigurator {
-		private final Lang DEFAULT_OUTPUT_LANG = Lang.NQUADS;
+		private static final Lang DEFAULT_OUTPUT_LANG = Lang.NQUADS;
 
 		@Override
 		public LdiComponent configure(ComponentProperties properties) {

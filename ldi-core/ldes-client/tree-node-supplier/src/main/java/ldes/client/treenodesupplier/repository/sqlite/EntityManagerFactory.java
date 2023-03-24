@@ -1,5 +1,7 @@
 package ldes.client.treenodesupplier.repository.sqlite;
 
+import ldes.client.treenodesupplier.repository.exception.DestroyDbFailedException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +42,7 @@ public class EntityManagerFactory {
 				databaseDeleted = true;
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new DestroyDbFailedException(e);
 		}
 	}
 
