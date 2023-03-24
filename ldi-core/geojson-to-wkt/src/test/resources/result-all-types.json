@@ -1,6 +1,11 @@
 {
   "@graph": [
     {
+      "@id": "http://example.com/features/random",
+      "http://purl.org/dc/terms/description": "random node to verify it is not lost after transformation",
+      "@type": "geojson:Feature"
+    },
+    {
       "@id": "http://example.com/features/linestring",
       "http://www.w3.org/ns/locn#geometry": {
         "@value": "LINESTRING (100 0, 101 1, 102 2)",
