@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class MutabilityStatus {
 
-	public final static int DEFAULT_MAX_AGE = 60;
+	public static final int DEFAULT_MAX_AGE = 60;
 
 	private final boolean mutable;
 	private final LocalDateTime earliestNextVisit;

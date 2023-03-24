@@ -13,7 +13,7 @@ import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
 @SuppressWarnings("java:S2629")
 public class LdiConsoleOut implements LdiOutput {
-	private final Logger LOGGER = LoggerFactory.getLogger(LdiConsoleOut.class);
+	private final Logger log = LoggerFactory.getLogger(LdiConsoleOut.class);
 
 	private final Lang outputLanguage;
 
@@ -23,7 +23,7 @@ public class LdiConsoleOut implements LdiOutput {
 
 	@Override
 	public void accept(Model model) {
-		LOGGER.info(RDFWriter.source(model)
+		log.info(RDFWriter.source(model)
 				.lang(outputLanguage)
 				.asString());
 	}
