@@ -1,12 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.locationtech.jts.geom.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOJSON_GEOMETRY;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
@@ -35,12 +35,12 @@ public class GeometryExtractor {
 				: model.listObjectsOfProperty(geometrySubject, COORDINATES).mapWith(RDFNode::asResource).next();
 
 		return switch (type) {
-			case POINT -> factory.createPoint(createPointCoordinate(model, coordinates));
-			case LINESTRING -> createLineString(model, coordinates);
-			case POLYGON -> createPolygon(model, coordinates);
-			case MULTIPOINT -> createMultiPoint(model, coordinates);
-			case MULTILINESTRING -> createMultiLineString(model, coordinates);
-			case MULTIPOLYGON -> createMultiPolygon(model, coordinates);
+			case POINT -> new LdiPoint(model, coordinates).createPoint(factory);
+			case LINESTRING -> new LdiLineString(model, coordinates).createLineString(factory);
+			case POLYGON -> new LdiPolygon(model, coordinates, new ArrayList<>()).createPolygon(factory);
+			case MULTIPOINT -> new LdiMultiPoint(model, coordinates).createMultiPoint(factory);
+			case MULTILINESTRING -> new LdiMultiLineString(model, coordinates).createMultiLineString(factory);
+			case MULTIPOLYGON -> new LdiMultiPolygon(model, coordinates, new ArrayList<>()).createMultiPolygon(factory);
 			case GEOMETRYCOLLECTION -> createGeometryCollection(model, coordinates);
 		};
 	}
@@ -59,80 +59,13 @@ public class GeometryExtractor {
 				.orElseThrow(() -> new IllegalArgumentException("Geotype %s not supported".formatted(type)));
 	}
 
-	private LineString createLineString(Model model, Resource subject) {
-		List<Coordinate> coordinates = createLineStringCoordinates(model, subject, new ArrayList<>());
-		return factory.createLineString(coordinates.toArray(Coordinate[]::new));
-	}
-
-	private Polygon createPolygon(Model model, Resource subject) {
-		List<List<Coordinate>> coordinates = createPolygonCoordinates(model, subject, new ArrayList<>());
-		return mapToPolygon(coordinates);
-	}
-
-	private MultiPoint createMultiPoint(Model model, Resource subject) {
-		List<Coordinate> coordinates = createLineStringCoordinates(model, subject, new ArrayList<>());
-		return factory.createMultiPoint(coordinates.stream().map(factory::createPoint).toArray(Point[]::new));
-	}
-
-	private MultiLineString createMultiLineString(Model model, Resource subject) {
-		List<List<Coordinate>> coordinates = createPolygonCoordinates(model, subject, new ArrayList<>());
-		LineString[] lineStrings = coordinates.stream().map(ls -> ls.toArray(Coordinate[]::new))
-				.map(factory::createLineString).toArray(LineString[]::new);
-		return factory.createMultiLineString(lineStrings);
-	}
-
-	private MultiPolygon createMultiPolygon(Model model, Resource subject) {
-		List<List<List<Coordinate>>> multiPolygon = createMultiPolygonCoordinates(model, subject, new ArrayList<>());
-		return factory.createMultiPolygon(multiPolygon.stream().map(this::mapToPolygon).toArray(Polygon[]::new));
-	}
-
-	private Polygon mapToPolygon(List<List<Coordinate>> coords) {
-		List<LinearRing> linearRings = coords.stream().map(l -> factory.createLinearRing(l.toArray(Coordinate[]::new)))
-				.collect(Collectors.toList());
-		return factory.createPolygon(linearRings.remove(0), linearRings.toArray(LinearRing[]::new));
-	}
-
 	private GeometryCollection createGeometryCollection(Model model, Resource subject) {
-		List<Statement> geos = model.listStatements(subject, GEOMETRIES, (RDFNode) null).toList();
-		var geometries = geos.stream().map(geo -> createGeometry(model, geo.getObject().asResource()))
+		var geometries = model.listStatements(subject, GEOMETRIES, (RDFNode) null).toList()
+				.stream()
+				.map(geo -> createGeometry(model, geo.getObject().asResource()))
 				.toArray(Geometry[]::new);
+
 		return factory.createGeometryCollection(geometries);
-	}
-
-	private Coordinate createPointCoordinate(Model model, Resource subject) {
-		double first = model.listObjectsOfProperty(subject, RDF.first).mapWith(RDFNode::asLiteral).next().getDouble();
-		Resource restId = model.listObjectsOfProperty(subject, RDF.rest).mapWith(RDFNode::asResource).next();
-		double second = model.listObjectsOfProperty(restId, RDF.first).mapWith(RDFNode::asLiteral).next().getDouble();
-		return new Coordinate(first, second);
-	}
-
-	private List<Coordinate> createLineStringCoordinates(Model model, Resource coordinates, List<Coordinate> result) {
-		Resource firstPoint = model.listObjectsOfProperty(coordinates, RDF.first).mapWith(RDFNode::asResource).next();
-		result.add(createPointCoordinate(model, firstPoint));
-		Resource nextPoint = model.listObjectsOfProperty(coordinates, RDF.rest).mapWith(RDFNode::asResource).next();
-		return RDF.nil.getURI().equals(nextPoint.getURI())
-				? result
-				: createLineStringCoordinates(model, nextPoint, result);
-	}
-
-	private List<List<Coordinate>> createPolygonCoordinates(Model model, Resource subject,
-			List<List<Coordinate>> result) {
-		Resource firstRing = model.listObjectsOfProperty(subject, RDF.first).mapWith(RDFNode::asResource).next();
-		result.add(createLineStringCoordinates(model, firstRing, new ArrayList<>()));
-		Resource nextRing = model.listObjectsOfProperty(subject, RDF.rest).mapWith(RDFNode::asResource).next();
-		return RDF.nil.getURI().equals(nextRing.getURI())
-				? result
-				: createPolygonCoordinates(model, nextRing, result);
-	}
-
-	private List<List<List<Coordinate>>> createMultiPolygonCoordinates(Model model, Resource subject,
-			List<List<List<Coordinate>>> result) {
-		Resource firstPolygon = model.listObjectsOfProperty(subject, RDF.first).mapWith(RDFNode::asResource).next();
-		result.add(createPolygonCoordinates(model, firstPolygon, new ArrayList<>()));
-		Resource nextPolygon = model.listObjectsOfProperty(subject, RDF.rest).mapWith(RDFNode::asResource).next();
-		return RDF.nil.getURI().equals(nextPolygon.getURI())
-				? result
-				: createMultiPolygonCoordinates(model, nextPolygon, result);
 	}
 
 }

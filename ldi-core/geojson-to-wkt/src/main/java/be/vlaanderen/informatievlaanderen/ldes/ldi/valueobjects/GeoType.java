@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects;
 
 import java.util.Arrays;
 import java.util.Optional;
