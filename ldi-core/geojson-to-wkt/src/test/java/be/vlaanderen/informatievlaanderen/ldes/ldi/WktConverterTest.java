@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.Test;

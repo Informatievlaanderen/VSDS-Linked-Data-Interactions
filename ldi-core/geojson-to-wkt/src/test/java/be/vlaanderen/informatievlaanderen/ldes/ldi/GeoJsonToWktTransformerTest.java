@@ -6,8 +6,6 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
