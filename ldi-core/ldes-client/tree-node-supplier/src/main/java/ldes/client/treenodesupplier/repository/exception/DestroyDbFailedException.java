@@ -1,7 +1,7 @@
 package ldes.client.treenodesupplier.repository.exception;
 
 public class DestroyDbFailedException extends RuntimeException {
-    public DestroyDbFailedException(Throwable cause) {
-        super(cause);
-    }
+	public DestroyDbFailedException(Throwable cause) {
+		super(cause);
+	}
 }
