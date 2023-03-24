@@ -8,6 +8,9 @@ import org.apache.nifi.processor.util.StandardValidators;
 
 public class GeoJsonToWktProcessorProperties {
 
+	private GeoJsonToWktProcessorProperties() {
+	}
+
 	public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
 			.name("DATA_SOURCE_FORMAT")
 			.displayName("Data source format")
