@@ -18,34 +18,34 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GeoJsonToWktProcessorTest {
 
-    private TestRunner testRunner;
+	private TestRunner testRunner;
 
-    @BeforeEach
-    void init() {
-        testRunner = TestRunners.newTestRunner(GeoJsonToWktProcessor.class);
-    }
+	@BeforeEach
+	void init() {
+		testRunner = TestRunners.newTestRunner(GeoJsonToWktProcessor.class);
+	}
 
-    @Test
-    void testProcessor() {
-        Model inputModel = RDFParser.source("geojson-all-types.json").lang(Lang.JSONLD).build().toModel();
-        String inputModelString = RDFWriter.source(inputModel).lang(Lang.JSONLD).build().asString();
+	@Test
+	void testProcessor() {
+		Model inputModel = RDFParser.source("geojson-all-types.json").lang(Lang.JSONLD).build().toModel();
+		String inputModelString = RDFWriter.source(inputModel).lang(Lang.JSONLD).build().asString();
 
-        testRunner.setProperty(DATA_SOURCE_FORMAT, Lang.JSONLD.getHeaderString());
-        testRunner.enqueue(inputModelString);
-        testRunner.run();
+		testRunner.setProperty(DATA_SOURCE_FORMAT, Lang.JSONLD.getHeaderString());
+		testRunner.enqueue(inputModelString);
+		testRunner.run();
 
-        MockFlowFile result = testRunner.getFlowFilesForRelationship(SUCCESS).get(0);
-        Model resultModel = RDFParser.fromString(result.getContent()).lang(Lang.JSONLD).build().toModel();
-        Model expectedModel = RDFParser.source("result-all-types.json").lang(Lang.JSONLD).build().toModel();
-        assertTrue(expectedModel.isIsomorphicWith(resultModel));
-    }
+		MockFlowFile result = testRunner.getFlowFilesForRelationship(SUCCESS).get(0);
+		Model resultModel = RDFParser.fromString(result.getContent()).lang(Lang.JSONLD).build().toModel();
+		Model expectedModel = RDFParser.source("result-all-types.json").lang(Lang.JSONLD).build().toModel();
+		assertTrue(expectedModel.isIsomorphicWith(resultModel));
+	}
 
-    @Test
-    void testFailure() {
-        testRunner.enqueue("random");
-        testRunner.run();
+	@Test
+	void testFailure() {
+		testRunner.enqueue("random");
+		testRunner.run();
 
-        assertTrue(testRunner.getFlowFilesForRelationship(SUCCESS).isEmpty());
-        assertFalse(testRunner.getFlowFilesForRelationship(FAILURE).isEmpty());
-    }
+		assertTrue(testRunner.getFlowFilesForRelationship(SUCCESS).isEmpty());
+		assertFalse(testRunner.getFlowFilesForRelationship(FAILURE).isEmpty());
+	}
 }

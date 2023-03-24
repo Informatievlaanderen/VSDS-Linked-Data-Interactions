@@ -8,16 +8,16 @@ import org.apache.nifi.processor.util.StandardValidators;
 
 public class GeoJsonToWktProcessorProperties {
 
-    public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
-            .name("DATA_SOURCE_FORMAT")
-            .displayName("Data source format")
-            .required(true)
-            .defaultValue(Lang.NQUADS.getHeaderString())
-            .addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
-            .build();
+	public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
+			.name("DATA_SOURCE_FORMAT")
+			.displayName("Data source format")
+			.required(true)
+			.defaultValue(Lang.NQUADS.getHeaderString())
+			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+			.build();
 
-    public static Lang getDataSourceFormat(final ProcessContext context) {
-        return RDFLanguages.nameToLang(context.getProperty(DATA_SOURCE_FORMAT).getValue());
-    }
+	public static Lang getDataSourceFormat(final ProcessContext context) {
+		return RDFLanguages.nameToLang(context.getProperty(DATA_SOURCE_FORMAT).getValue());
+	}
 
 }
