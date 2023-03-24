@@ -9,7 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>nifi-rdf4j-repository-put-processor</artifactId>
+	<artifactId>nifi-rdf4j-repository-materialisation-processor</artifactId>
 	<packaging>nar</packaging>
 
 	<properties>

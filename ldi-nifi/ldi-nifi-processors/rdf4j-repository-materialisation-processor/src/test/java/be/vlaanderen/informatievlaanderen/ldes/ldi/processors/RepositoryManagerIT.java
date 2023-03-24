@@ -23,8 +23,7 @@ public class RepositoryManagerIT {
 
 			@Override
 			public void setHttpClient(HttpClient httpClient) {
-				// TODO Auto-generated method stub
-
+				return;
 			}
 
 			@Override

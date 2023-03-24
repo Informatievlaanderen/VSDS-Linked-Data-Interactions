@@ -51,4 +51,3 @@ jobs:
             NIFI_DOCKER_IMAGE_VERSION=${{ vars.NIFI_DOCKER_IMAGE_VERSION }}
           platforms: linux/amd64,linux/arm64
  
- 

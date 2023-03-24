@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.processor.util.StandardValidators;
 
-public final class RDF4JRepositoryPutMaterialisationProcessorProperties {
+public final class RDF4JRepositoryMaterialisationProcessorProperties {
 
 	public static final int SIMULTANEOUS_FLOWFILE_COUNT = 50;
 
@@ -38,7 +38,7 @@ public final class RDF4JRepositoryPutMaterialisationProcessorProperties {
 			.addValidator(StandardValidators.NUMBER_VALIDATOR)
 			.build();
 
-	private RDF4JRepositoryPutMaterialisationProcessorProperties() {
+	private RDF4JRepositoryMaterialisationProcessorProperties() {
 
 	}
 }

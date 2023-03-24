@@ -1,14 +1,7 @@
-# RDF4J repository sink
+# RDF4J repository materialisation processor
 ## About
 An Apache NiFi processor that materialises an LDES stream into a triplestore.
 Any triplestore that supports the RDF4J remote repository API can be used.
-
-## Build
-This NiFi plugin can be build with Maven (needs maven installed):
-```
-mvn package
-```
-The NAR file is copied to the 'nifi-extentions' folder, in the root of the repository.
 
 ## Install
 Either copy the NAR file to the NiFi extentions folder or bind-mount the 'nifi-extentions' folder in docker-compose.yml.
@@ -35,4 +28,4 @@ Processor configuration for the above example:
 
 `SPARQL_HOST: http://localhost:8080/rdf4j-server`
 
-`REPOSITORY_ID: test-db`
+`REPOSITORY_ID: test`
