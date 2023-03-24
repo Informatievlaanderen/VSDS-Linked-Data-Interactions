@@ -43,7 +43,7 @@
         <!-- Testing -->
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <byte-buddy.version>1.12.23</byte-buddy.version>
+        <byte-buddy.version>1.14.2</byte-buddy.version>
         <wiremock-jre8.version>2.35.0</wiremock-jre8.version>
         <mockito-core.version>5.1.1</mockito-core.version>
         <mockito-junit.version>4.8.1</mockito-junit.version>
