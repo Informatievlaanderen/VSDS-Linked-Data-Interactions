@@ -18,6 +18,7 @@
         <module>version-materialiser</module>
         <module>rdf-adapter</module>
         <module>ngsiv2-to-ld-adapter</module>
+        <module>geojson-to-wkt</module>
     </modules>
 
     <properties>

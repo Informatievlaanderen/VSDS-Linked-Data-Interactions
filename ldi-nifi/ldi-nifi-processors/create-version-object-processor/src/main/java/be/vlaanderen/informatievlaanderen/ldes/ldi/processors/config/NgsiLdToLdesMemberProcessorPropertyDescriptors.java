@@ -16,7 +16,6 @@ public final class NgsiLdToLdesMemberProcessorPropertyDescriptors {
 	private static final Model initModel = ModelFactory.createDefaultModel();
 
 	private static final String DEFAULT_DATE_OBSERVED_VALUE_JSON_PATH = "$.dateObserved.value['@value']";
-	private static final String DEFAULT_ID_JSON_PATH = "$.id";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
 	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "n-quads";

@@ -40,7 +40,7 @@ public class StartingTreeNodeFinderSteps {
 		assertEquals(
 				"Starting Node could not be identified from url http://localhost:10101/302-redirects-infinite-loop-1.\n"
 						+
-						"Infite redirect loop.",
+						"Infinite redirect loop.",
 				startingNodeNotFoundException.getMessage());
 	}
 
