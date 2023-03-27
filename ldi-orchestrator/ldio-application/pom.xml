@@ -126,6 +126,16 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ldio-geojson-to-wkt</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-geojson-to-wkt</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>ldio-version-object-creator</id>
             <dependencies>
                 <dependency>
