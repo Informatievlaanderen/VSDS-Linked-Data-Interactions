@@ -86,6 +86,16 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ldio-kafka-in</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-kakfa-in</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>ldio-ldes-client</id>
             <dependencies>
                 <dependency>

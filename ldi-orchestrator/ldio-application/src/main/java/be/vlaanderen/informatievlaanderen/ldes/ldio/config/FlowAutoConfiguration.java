@@ -39,6 +39,7 @@ public class FlowAutoConfiguration {
 	@PostConstruct
 	public void registerInputBeans() {
 		config.getPipelines().forEach(this::initialiseLdiInput);
+		System.out.println();
 	}
 
 	public ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
