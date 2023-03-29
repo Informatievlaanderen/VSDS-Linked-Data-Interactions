@@ -2,10 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.LangBuilder;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -23,14 +22,19 @@ public class LdioKafkaOutAutoConfig {
 
     @Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut")
     public LdioConfigurator ldiHttpOutConfigurator() {
-        return new LdioConfigurator() {
-            @Override
-            public LdiComponent configure(ComponentProperties config) {
-                config.getOptionalProperty("content-type").orElse(DEFAULT_OUTPUT_LANG)
-                LangBuilder.create().contentType("bla").build();
-                return new LdioKafkaOut(createKafkaTemplate("localhost:9092"), outputLang);
-            }
+        return config -> {
+            final Lang lang = getLang(config);
+            final String topicName = config.getProperty("topic-name");
+            final String bootstrapServer = config.getProperty("bootstrap-server");
+            return new LdioKafkaOut(createKafkaTemplate(bootstrapServer), lang, topicName);
         };
+    }
+
+    private static Lang getLang(ComponentProperties config) {
+        return config
+                .getOptionalProperty("content-type")
+                .map(RDFLanguages::contentTypeToLang)
+                .orElse(DEFAULT_OUTPUT_LANG);
     }
 
     private KafkaTemplate<String, String> createKafkaTemplate(String bootstrapServer) {
