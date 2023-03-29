@@ -4,21 +4,20 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFWriter;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.io.StringWriter;
 
-import static java.util.Optional.ofNullable;
-import static org.apache.jena.riot.RDFLanguages.nameToLang;
-
 public class LdioKafkaOut implements LdiOutput {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final Lang outputLang;
+    private final String topicName;
 
-    public LdioKafkaOut(KafkaTemplate<String, String> kafkaTemplate) {
+    public LdioKafkaOut(KafkaTemplate<String, String> kafkaTemplate, Lang outputLang) {
         this.kafkaTemplate = kafkaTemplate;
+        this.outputLang = outputLang;
     }
 
     @Override
