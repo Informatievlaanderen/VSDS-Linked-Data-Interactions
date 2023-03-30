@@ -8,7 +8,16 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties(prefix = "orchestrator")
 public class OrchestratorConfig {
+	private String name;
 	private List<PipelineConfig> pipelines;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public List<PipelineConfig> getPipelines() {
 		return pipelines;

@@ -40,14 +40,14 @@ public class LdioKafkaInAutoConfig {
 		public Object configure(LdiAdapter adapter,
 				ComponentExecutor executor,
 				ComponentProperties config) {
-			String bootstrapServer = config.getProperty("bootstrap.servers");
-			String groupId = config.getOptionalProperty("group.id").orElse("group");
-			String autoOffsetReset = config.getOptionalProperty("auto.offset.reset").orElse("earliest");
-			String topic = config.getProperty("topic");
+			String bootstrapServer = config.getProperty("bootstrap-servers");
+			String groupId = config.getOptionalProperty("group-id").orElse(defineUniqueGroupName(config));
+			String autoOffsetReset = config.getOptionalProperty("auto-offset-reset").orElse("earliest");
+			String[] topics = config.getProperty("topics").split(",");
 
 			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(executor, adapter, Lang.NQUADS.getHeaderString());
 
-			ContainerProperties containerProps = new ContainerProperties(topic);
+			ContainerProperties containerProps = new ContainerProperties(topics);
 			containerProps.setMessageListener(ldioKafkaIn);
 			DefaultKafkaConsumerFactory<Integer, String> cf = new DefaultKafkaConsumerFactory<>(
 					consumerProps(bootstrapServer, groupId, autoOffsetReset));
@@ -62,6 +62,11 @@ public class LdioKafkaInAutoConfig {
 			props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 			props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 			return props;
+		}
+
+		private String defineUniqueGroupName(ComponentProperties config) {
+			return String.format("ldio-%s-%s", config.getProperty("orchestrator.name"),
+					config.getProperty("pipeline.name"));
 		}
 	}
 }
