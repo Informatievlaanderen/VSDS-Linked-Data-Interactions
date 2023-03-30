@@ -19,10 +19,10 @@ import java.util.HashMap;
 @Configuration
 public class LdioKafkaOutAutoConfig {
 
-	static class ConfigKeys {
-		public static String TOPIC = "topic";
-		public static String BOOTSTRAP_SERVERS = "bootstrap-servers";
-		public static String CONTENT_TYPE = "content-type";
+	static final class ConfigKeys {
+		public static final String TOPIC = "topic";
+		public static final String BOOTSTRAP_SERVERS = "bootstrap-servers";
+		public static final String CONTENT_TYPE = "content-type";
 	}
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut")
