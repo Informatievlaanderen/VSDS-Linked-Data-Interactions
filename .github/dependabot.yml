@@ -4,3 +4,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "org.apache.maven.plugins:maven-install-plugin"
+        # For Maven Install Plugin, ignore all updates. https://stackoverflow.com/a/55073528
