@@ -14,6 +14,7 @@
     <modules>
         <module>ldio-application</module>
         <module>ldio-connectors</module>
+        <module>ldio-integration</module>
     </modules>
 
     <properties>
