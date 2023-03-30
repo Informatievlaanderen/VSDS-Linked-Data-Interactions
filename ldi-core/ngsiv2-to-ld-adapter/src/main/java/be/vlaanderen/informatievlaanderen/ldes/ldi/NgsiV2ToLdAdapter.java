@@ -30,7 +30,7 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 		if (dataIdentifier == null) {
 			throw new InvalidNgsiLdContextException("Can't identify data with the data array key");
 		}
-		
+
 		if (coreContext == null) {
 			throw new InvalidNgsiLdContextException("Core context can't be null");
 		}
