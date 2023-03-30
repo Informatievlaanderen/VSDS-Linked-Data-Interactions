@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>ldio-ngsiv2-to-ld-adapter</artifactId>
-    <packaging>pom</packaging>
     
     <dependencies>
         <dependency>
@@ -20,5 +19,4 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
 </project>

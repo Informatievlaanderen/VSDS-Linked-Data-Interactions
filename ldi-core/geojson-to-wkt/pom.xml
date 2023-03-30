@@ -38,5 +38,4 @@
             <releases><enabled>true</enabled></releases>
         </repository>
     </repositories>
-
 </project>

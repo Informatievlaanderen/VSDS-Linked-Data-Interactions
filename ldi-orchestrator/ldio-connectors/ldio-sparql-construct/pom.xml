@@ -8,7 +8,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ldio-sparql-construct</artifactId>
-    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>

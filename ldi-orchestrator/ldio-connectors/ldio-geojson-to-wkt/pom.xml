@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>ldio-geojson-to-wkt</artifactId>
-    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
@@ -19,5 +18,4 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-
 </project>

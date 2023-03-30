@@ -8,7 +8,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ldio-http-in</artifactId>
-    <packaging>pom</packaging>
 
     <properties>
         <relative-formatter-path>../../..</relative-formatter-path>
@@ -41,5 +40,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

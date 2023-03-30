@@ -8,7 +8,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ldio-http-out</artifactId>
-    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
@@ -16,5 +15,4 @@
             <artifactId>spring-web</artifactId>
         </dependency>
     </dependencies>
-
 </project>
