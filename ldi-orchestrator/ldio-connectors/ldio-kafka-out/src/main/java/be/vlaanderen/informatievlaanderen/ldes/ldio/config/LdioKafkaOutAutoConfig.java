@@ -19,12 +19,18 @@ import java.util.HashMap;
 @Configuration
 public class LdioKafkaOutAutoConfig {
 
+	static final class ConfigKeys {
+		public static final String TOPIC = "topic";
+		public static final String BOOTSTRAP_SERVERS = "bootstrap-servers";
+		public static final String CONTENT_TYPE = "content-type";
+	}
+
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut")
 	public LdioConfigurator ldiKafkaOutConfigurator() {
 		return config -> {
 			final Lang lang = getLang(config);
-			final String topic = config.getProperty(KafkaOutConfigKeys.TOPIC);
-			final var kafkaTemplate = createKafkaTemplate(config.getProperty(KafkaOutConfigKeys.BOOTSTRAP_SERVERS));
+			final String topic = config.getProperty(ConfigKeys.TOPIC);
+			final var kafkaTemplate = createKafkaTemplate(config.getProperty(ConfigKeys.BOOTSTRAP_SERVERS));
 			return (LdiOutput) model -> kafkaTemplate.send(topic, toString(lang, model));
 		};
 	}
@@ -35,7 +41,7 @@ public class LdioKafkaOutAutoConfig {
 
 	private Lang getLang(ComponentProperties config) {
 		return config
-				.getOptionalProperty(KafkaOutConfigKeys.CONTENT_TYPE)
+				.getOptionalProperty(ConfigKeys.CONTENT_TYPE)
 				.map(RDFLanguages::contentTypeToLang)
 				.orElse(Lang.NQUADS);
 	}
