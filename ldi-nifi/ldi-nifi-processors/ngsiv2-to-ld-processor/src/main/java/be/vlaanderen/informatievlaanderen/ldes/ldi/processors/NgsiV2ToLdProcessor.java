@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.NgsiV2ToLdProcessorProperties.CORE_CONTEXT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.NgsiV2ToLdProcessorProperties.DATA_IDENTIFIER;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.NgsiV2ToLdProcessorProperties.LD_CONTEXT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
@@ -30,6 +31,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 public class NgsiV2ToLdProcessor extends AbstractProcessor {
 	protected NgsiV2ToLdAdapter ngsiV2ToLdAdapter;
 
+	protected String dataIdentifier;
 	protected String coreContext;
 	protected String ldContext;
 
@@ -40,15 +42,16 @@ public class NgsiV2ToLdProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(CORE_CONTEXT, LD_CONTEXT);
+		return List.of(DATA_IDENTIFIER, CORE_CONTEXT, LD_CONTEXT);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
+		dataIdentifier = NgsiV2ToLdProcessorProperties.getDataIdentifier(context);
 		coreContext = NgsiV2ToLdProcessorProperties.getCoreContext(context);
 		ldContext = NgsiV2ToLdProcessorProperties.getLdContext(context);
 
-		ngsiV2ToLdAdapter = new NgsiV2ToLdAdapter(coreContext, ldContext);
+		ngsiV2ToLdAdapter = new NgsiV2ToLdAdapter(dataIdentifier, coreContext, ldContext);
 	}
 
 	@Override

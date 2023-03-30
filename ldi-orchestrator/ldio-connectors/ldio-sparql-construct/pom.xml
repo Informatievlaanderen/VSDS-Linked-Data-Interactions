@@ -9,7 +9,6 @@
 
     <artifactId>ldio-sparql-construct</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
