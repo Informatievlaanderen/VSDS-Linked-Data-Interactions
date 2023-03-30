@@ -22,9 +22,10 @@ public class LdioNgsiv2ToLdAdapterAutoConfig {
 	public static class LdioSparqlConstructConfigurator implements LdioConfigurator {
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
+			String dataIdentifier = config.getProperty("dataIdentifier");
 			String coreContext = config.getProperty("coreContext");
 			String ldContext = config.getOptionalProperty("ldContext").orElse(null);
-			return new NgsiV2ToLdAdapter(coreContext, ldContext);
+			return new NgsiV2ToLdAdapter(dataIdentifier, coreContext, ldContext);
 		}
 	}
 }

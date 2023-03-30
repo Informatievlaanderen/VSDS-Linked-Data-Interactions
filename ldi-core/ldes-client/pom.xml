@@ -12,6 +12,7 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
     <artifactId>ldes-client</artifactId>
     <packaging>pom</packaging>
+    
     <modules>
         <module>starting-node</module>
         <module>request-executor</module>
@@ -60,5 +61,4 @@
             <version>${jackson-xml.version}</version>
         </dependency>
     </dependencies>
-
 </project>
