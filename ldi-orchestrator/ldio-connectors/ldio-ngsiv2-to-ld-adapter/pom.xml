@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>ldio-ngsiv2-to-ld-adapter</artifactId>
+    <packaging>pom</packaging>
+    
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>

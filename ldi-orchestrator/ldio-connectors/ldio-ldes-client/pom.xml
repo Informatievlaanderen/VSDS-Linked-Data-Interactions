@@ -8,6 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ldio-ldes-client</artifactId>
+    <packaging>pom</packaging>
 
     <properties>
         <relative-formatter-path>../../..</relative-formatter-path>

@@ -1,20 +1,19 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
-import org.apache.jena.atlas.json.JSON;
-import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.rdf.model.Model;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.DeserializationFromJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidNgsiLdContextException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.rdf.model.Model;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class NgsiV2ToLdAdapter implements LdiAdapter {
 

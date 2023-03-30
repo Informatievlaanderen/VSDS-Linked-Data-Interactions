@@ -1,14 +1,13 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-
 import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties()

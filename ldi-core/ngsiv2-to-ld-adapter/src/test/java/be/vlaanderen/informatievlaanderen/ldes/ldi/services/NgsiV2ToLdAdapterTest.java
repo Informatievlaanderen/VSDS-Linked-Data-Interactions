@@ -1,17 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.stream.Stream;
-
+import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidNgsiLdContextException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -20,12 +12,19 @@ import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidNgsiLdContextException;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @WireMockTest(httpPort = 10101)
 class NgsiV2ToLdAdapterTest {
