@@ -23,8 +23,8 @@ public class LdioKafkaOutAutoConfig {
 	public LdioConfigurator ldiKafkaOutConfigurator() {
 		return config -> {
 			final Lang lang = getLang(config);
-			final String topic = config.getProperty("topic-name");
-			final var kafkaTemplate = createKafkaTemplate(config.getProperty("bootstrap-server"));
+			final String topic = config.getProperty("topic");
+			final var kafkaTemplate = createKafkaTemplate(config.getProperty("bootstrap-servers"));
 			return (LdiOutput) model -> kafkaTemplate.send(topic, toString(lang, model));
 		};
 	}
