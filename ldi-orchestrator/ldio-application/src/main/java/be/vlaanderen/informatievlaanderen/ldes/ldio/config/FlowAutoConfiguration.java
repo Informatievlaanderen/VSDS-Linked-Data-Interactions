@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.UUID.randomUUID;
-
 @Configuration
 @ComponentScan
 public class FlowAutoConfiguration {
@@ -40,9 +38,6 @@ public class FlowAutoConfiguration {
 
 	@PostConstruct
 	public void registerInputBeans() {
-		if (orchestratorConfig.getName() == null) {
-			orchestratorConfig.setName(randomUUID().toString());
-		}
 		orchestratorConfig.getPipelines().forEach(this::initialiseLdiInput);
 	}
 

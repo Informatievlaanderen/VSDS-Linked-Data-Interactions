@@ -5,10 +5,12 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+import static java.util.UUID.randomUUID;
+
 @Configuration
 @ConfigurationProperties(prefix = "orchestrator")
 public class OrchestratorConfig {
-	private String name;
+	private String name = randomUUID().toString();
 	private List<PipelineConfig> pipelines;
 
 	public String getName() {

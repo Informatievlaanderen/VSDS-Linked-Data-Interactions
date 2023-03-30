@@ -13,13 +13,14 @@
 
     <properties>
         <relative-formatter-path>../../..</relative-formatter-path>
+        <spring-kafka.version>3.0.5</spring-kafka.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-            <version>3.0.5</version>
+            <version>${spring-kafka.version}</version>
         </dependency>
     </dependencies>
 </project>

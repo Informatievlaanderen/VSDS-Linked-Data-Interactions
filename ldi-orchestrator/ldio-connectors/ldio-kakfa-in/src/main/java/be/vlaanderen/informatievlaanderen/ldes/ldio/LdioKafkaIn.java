@@ -10,7 +10,7 @@ public class LdioKafkaIn extends LdiInput implements MessageListener<String, Str
 	private final String contentType;
 
 	/**
-	 * Creates a LdiInput with its Component Executor and LDI Adapter
+	 * Creates a Kafka Listener with its Component Executor and LDI Adapter
 	 *
 	 * @param executor
 	 *            Instance of the Component Executor. Allows the LDI Input to pass
