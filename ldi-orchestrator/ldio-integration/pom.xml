@@ -29,25 +29,24 @@
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
             <artifactId>ldio-kafka-out</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
             <artifactId>ldio-kakfa-in</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
             <artifactId>ldio-rdf-adapter</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
