@@ -25,7 +25,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EmbeddedKafka(brokerProperties = { "listeners=PLAINTEXT://localhost:9095", "port=9095" })
-public class KafkaIntegrationTest {
+class KafkaIntegrationTest {
 
 	final LdioKafkaOutAutoConfig autoConfig = new LdioKafkaOutAutoConfig();
 
@@ -41,7 +41,7 @@ public class KafkaIntegrationTest {
 	}
 
 	@Test
-	public void givenEmbeddedKafkaBroker_whenSendingWithSimpleProducer_thenMessageReceived() {
+	void givenEmbeddedKafkaBroker_whenSendingWithSimpleProducer_thenMessageReceived() {
 		var kafkaListener = createKafkaListener();
 		kafkaListener.start();
 
