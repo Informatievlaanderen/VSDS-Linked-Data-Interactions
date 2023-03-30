@@ -25,20 +25,20 @@ import java.util.Map;
 @Configuration
 @ComponentScan
 public class FlowAutoConfiguration {
-	private final OrchestratorConfig config;
+	private final OrchestratorConfig orchestratorConfig;
 	private final ConfigurableApplicationContext configContext;
 	private final ApplicationEventPublisher eventPublisher;
 
-	public FlowAutoConfiguration(OrchestratorConfig config,
+	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
 			ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
-		this.config = config;
+		this.orchestratorConfig = orchestratorConfig;
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
 	}
 
 	@PostConstruct
 	public void registerInputBeans() {
-		config.getPipelines().forEach(this::initialiseLdiInput);
+		orchestratorConfig.getPipelines().forEach(this::initialiseLdiInput);
 	}
 
 	public ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
@@ -67,6 +67,7 @@ public class FlowAutoConfiguration {
 		String pipeLineName = config.getName();
 
 		Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
+		inputConfig.put("orchestrator.name", orchestratorConfig.getName());
 		inputConfig.put("pipeline.name", pipeLineName);
 
 		Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(inputConfig));

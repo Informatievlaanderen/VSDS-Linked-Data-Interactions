@@ -19,15 +19,15 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
 
-        <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+        <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
         <maven-surefire-plugin.version>3.0.0</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
-        <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.5.0</maven-assembly-plugin.version>
         <unittestskip>false</unittestskip>
         <integrationtestskip>false</integrationtestskip>
 
@@ -43,7 +43,7 @@
         <!-- Testing -->
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <byte-buddy.version>1.14.2</byte-buddy.version>
+        <byte-buddy.version>1.14.3</byte-buddy.version>
         <wiremock-jre8.version>2.35.0</wiremock-jre8.version>
         <mockito-core.version>5.2.0</mockito-core.version>
         <mockito-junit.version>5.2.0</mockito-junit.version>
