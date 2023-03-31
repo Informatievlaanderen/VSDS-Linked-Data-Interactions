@@ -45,21 +45,16 @@ public class HttpInputPollerAutoConfig {
 			} catch (DateTimeParseException e) {
 				throw new IllegalArgumentException("Invalid argument for iso 8601 duration");
 			}
-			WebClient client = WebClient.create(endpoint);
 
-			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, client);
+			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
 
+			ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-			try (ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()
-			) {
-				return scheduler.scheduleAtFixedRate(httpInputPoller::poll, 0, seconds, TimeUnit.SECONDS)
-						.get();
-			} catch (ExecutionException e) {
-				throw new SchedulerExecutionException(e);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw new SchedulerInterruptedException(e);
-			}
+			scheduler.scheduleAtFixedRate(httpInputPoller::poll, 0, seconds, TimeUnit.SECONDS);
+
+			scheduler.shutdown();
+
+			return null;
 		}
 	}
 }
