@@ -82,7 +82,8 @@ class KafkaIntegrationTest {
 		config.put("orchestrator.name", "orchestratorName");
 		config.put("pipeline.name", "pipelineName");
 		ComponentProperties componentProperties = new ComponentProperties(config);
-		final ComponentExecutor componentExecutor = linkedDataModel -> {};
+		final ComponentExecutor componentExecutor = linkedDataModel -> {
+		};
 		final LdiAdapter adapter = content -> {
 			result.add(content);
 			return Stream.of(toModel(content));
