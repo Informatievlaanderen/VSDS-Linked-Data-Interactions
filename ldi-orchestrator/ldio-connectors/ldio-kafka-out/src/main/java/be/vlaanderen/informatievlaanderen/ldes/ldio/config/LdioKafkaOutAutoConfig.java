@@ -8,6 +8,8 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.HashMap;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.BOOTSTRAP_SERVERS;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.CONTENT_TYPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.TOPIC;
+
 @Configuration
 public class LdioKafkaOutAutoConfig {
 
@@ -23,10 +29,16 @@ public class LdioKafkaOutAutoConfig {
 	public LdioConfigurator ldiKafkaOutConfigurator() {
 		return config -> {
 			final Lang lang = getLang(config);
-			final String topic = config.getProperty(KafkaOutConfigKeys.TOPIC);
-			final var kafkaTemplate = createKafkaTemplate(config.getProperty(KafkaOutConfigKeys.BOOTSTRAP_SERVERS));
-			return (LdiOutput) model -> kafkaTemplate.send(topic, toString(lang, model));
+			final String topic = config.getProperty(TOPIC);
+			final var kafkaTemplate = createKafkaTemplate(config.getProperty(BOOTSTRAP_SERVERS));
+			return (LdiOutput) model -> kafkaTemplate.send(createProducerRecord(lang, topic, model));
 		};
+	}
+
+	private ProducerRecord<String, String> createProducerRecord(Lang lang, String topic, Model model) {
+		final String message = toString(lang, model);
+		final var headers = new RecordHeaders().add(CONTENT_TYPE, lang.getHeaderString().getBytes());
+		return new ProducerRecord<>(topic, null, (String) null, message, headers);
 	}
 
 	private String toString(Lang lang, Model model) {
@@ -35,7 +47,7 @@ public class LdioKafkaOutAutoConfig {
 
 	private Lang getLang(ComponentProperties config) {
 		return config
-				.getOptionalProperty(KafkaOutConfigKeys.CONTENT_TYPE)
+				.getOptionalProperty(CONTENT_TYPE)
 				.map(RDFLanguages::contentTypeToLang)
 				.orElse(Lang.NQUADS);
 	}
