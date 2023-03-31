@@ -8,6 +8,8 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +27,14 @@ public class LdioKafkaOutAutoConfig {
 			final Lang lang = getLang(config);
 			final String topic = config.getProperty(KafkaOutConfigKeys.TOPIC);
 			final var kafkaTemplate = createKafkaTemplate(config.getProperty(KafkaOutConfigKeys.BOOTSTRAP_SERVERS));
-			return (LdiOutput) model -> kafkaTemplate.send(topic, toString(lang, model));
+			return (LdiOutput) model -> kafkaTemplate.send(createProducerRecord(lang, topic, model));
 		};
+	}
+
+	private ProducerRecord<String, String> createProducerRecord(Lang lang, String topic, Model model) {
+		final String message = toString(lang, model);
+		final var headers = new RecordHeaders().add(KafkaOutConfigKeys.CONTENT_TYPE, lang.getHeaderString().getBytes());
+		return new ProducerRecord<>(topic, null, (String) null, message, headers);
 	}
 
 	private String toString(Lang lang, Model model) {
