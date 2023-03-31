@@ -6,6 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,12 @@ import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.AUTO_OFFSET_RESET;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.BOOTSTRAP_SERVERS;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.CONTENT_TYPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.GROUP_ID;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.TOPICS;
 
 @Configuration
 public class LdioKafkaInAutoConfig {
@@ -31,18 +38,27 @@ public class LdioKafkaInAutoConfig {
 		public Object configure(LdiAdapter adapter,
 				ComponentExecutor executor,
 				ComponentProperties config) {
-			String bootstrapServer = config.getProperty("bootstrap-servers");
-			String groupId = config.getOptionalProperty("group-id").orElse(defineUniqueGroupName(config));
-			String autoOffsetReset = config.getOptionalProperty("auto-offset-reset").orElse("earliest");
-			String[] topics = config.getProperty("topics").split(",");
+			String bootstrapServer = config.getProperty(BOOTSTRAP_SERVERS);
+			String groupId = config.getOptionalProperty(GROUP_ID).orElse(defineUniqueGroupName(config));
+			String autoOffsetReset = config.getOptionalProperty(AUTO_OFFSET_RESET).orElse("earliest");
+			String[] topics = config.getProperty(TOPICS).split(",");
+			String contentType = getContentType(config);
 
-			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(executor, adapter, Lang.NQUADS.getHeaderString());
+			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(executor, adapter, contentType);
 
 			ContainerProperties containerProps = new ContainerProperties(topics);
 			containerProps.setMessageListener(ldioKafkaIn);
 			var consumerFactory = new DefaultKafkaConsumerFactory<>(
 					consumerProps(bootstrapServer, groupId, autoOffsetReset));
 			return new KafkaMessageListenerContainer<>(consumerFactory, containerProps);
+		}
+
+		private String getContentType(ComponentProperties config) {
+			return config
+					.getOptionalProperty(CONTENT_TYPE)
+					.map(RDFLanguages::contentTypeToLang)
+					.map(Lang::getHeaderString)
+					.orElse(Lang.NQUADS.getHeaderString());
 		}
 
 		private Map<String, Object> consumerProps(String bootstrapServers, String groupId, String offsetReset) {
