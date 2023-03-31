@@ -4,13 +4,15 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.poller.HttpInputPoller;
+import be.vlaanderen.informatievlaanderen.ldes.HttpInputPoller;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 
 
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,9 +33,17 @@ public class HttpInputPollerConfig {
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
-			String endpoint = properties.getProperty("pipelines.input.config.targetUrl");
+			long seconds;
+			try {
+				seconds = Duration.parse(ISO_8601_DURATION).getSeconds();
+			} catch (DateTimeParseException e) {
+				throw new IllegalArgumentException("Invalid argument for iso 8601 duration");
+			}
 
-			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
+			String endpoint = properties.getProperty("pipelines.input.config.targetUrl");
+			WebClient client = WebClient.create(endpoint);
+
+			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, client);
 
 
 			try (ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()
