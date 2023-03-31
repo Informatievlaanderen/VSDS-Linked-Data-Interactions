@@ -1,14 +1,15 @@
 package be.vlaanderen.informatievlaanderen.ldes;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioKafkaInAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioKafkaOutAutoConfig;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.RDFParserBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
@@ -18,10 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
+import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EmbeddedKafka(brokerProperties = { "listeners=PLAINTEXT://localhost:9095", "port=9095" })
@@ -31,9 +35,9 @@ class KafkaIntegrationTest {
 
 	private final String topic = "embedded-test-topic";
 	private final String bootstrapServer = "localhost:9095";
-	private final String contentType = "text/turtle";
+	private final String kafkaOutContentType = "text/turtle";
 
-	private List<Model> result;
+	private List<LdiAdapter.Content> result;
 
 	@BeforeEach
 	void setUp() {
@@ -51,7 +55,8 @@ class KafkaIntegrationTest {
 		output.accept(model);
 
 		await().until(() -> result.size() == 1);
-		assertTrue(model.isIsomorphicWith(result.get(0)));
+		assertTrue(model.isIsomorphicWith(toModel(result.get(0))));
+		assertEquals(kafkaOutContentType, result.get(0).mimeType());
 	}
 
 	private Model createModelWithStatement() {
@@ -62,7 +67,7 @@ class KafkaIntegrationTest {
 
 	private LdiOutput createKafkaOutput() {
 		final Map<String, String> config = new HashMap<>();
-		config.put(KafkaOutConfigKeys.CONTENT_TYPE, contentType);
+		config.put(KafkaOutConfigKeys.CONTENT_TYPE, kafkaOutContentType);
 		config.put(KafkaOutConfigKeys.BOOTSTRAP_SERVERS, bootstrapServer);
 		config.put(KafkaOutConfigKeys.TOPIC, topic);
 		ComponentProperties componentProperties = new ComponentProperties(config);
@@ -72,15 +77,23 @@ class KafkaIntegrationTest {
 	@SuppressWarnings("unchecked")
 	private KafkaMessageListenerContainer<String, String> createKafkaListener() {
 		final Map<String, String> config = new HashMap<>();
-		config.put("content-type", contentType);
 		config.put("bootstrap-servers", bootstrapServer);
 		config.put("topics", topic);
 		config.put("orchestrator.name", "orchestratorName");
 		config.put("pipeline.name", "pipelineName");
 		ComponentProperties componentProperties = new ComponentProperties(config);
-		final ComponentExecutor componentExecutor = model -> result.add(model);
+		final ComponentExecutor componentExecutor = linkedDataModel -> {};
+		final LdiAdapter adapter = content -> {
+			result.add(content);
+			return Stream.of(toModel(content));
+		};
 		return (KafkaMessageListenerContainer<String, String>) new LdioKafkaInAutoConfig().ldioConfigurator()
-				.configure(new RdfAdapter(), componentExecutor, componentProperties);
+				.configure(adapter, componentExecutor, componentProperties);
+	}
+
+	private Model toModel(LdiAdapter.Content content) {
+		return RDFParserBuilder.create()
+				.fromString(content.content()).lang(nameToLang(content.mimeType())).toModel();
 	}
 
 }
