@@ -18,6 +18,12 @@ import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.AUTO_OFFSET_RESET;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.BOOTSTRAP_SERVERS;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.CONTENT_TYPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.GROUP_ID;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.TOPICS;
+
 @Configuration
 public class LdioKafkaInAutoConfig {
 
@@ -32,11 +38,10 @@ public class LdioKafkaInAutoConfig {
 		public Object configure(LdiAdapter adapter,
 				ComponentExecutor executor,
 				ComponentProperties config) {
-			String bootstrapServer = config.getProperty(KafkaInConfigKeys.BOOTSTRAP_SERVERS);
-			String groupId = config.getOptionalProperty(KafkaInConfigKeys.GROUP_ID)
-					.orElse(defineUniqueGroupName(config));
-			String autoOffsetReset = config.getOptionalProperty(KafkaInConfigKeys.AUTO_OFFSET_RESET).orElse("earliest");
-			String[] topics = config.getProperty(KafkaInConfigKeys.TOPICS).split(",");
+			String bootstrapServer = config.getProperty(BOOTSTRAP_SERVERS);
+			String groupId = config.getOptionalProperty(GROUP_ID).orElse(defineUniqueGroupName(config));
+			String autoOffsetReset = config.getOptionalProperty(AUTO_OFFSET_RESET).orElse("earliest");
+			String[] topics = config.getProperty(TOPICS).split(",");
 			String contentType = getContentType(config);
 
 			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(executor, adapter, contentType);
@@ -50,7 +55,7 @@ public class LdioKafkaInAutoConfig {
 
 		private String getContentType(ComponentProperties config) {
 			return config
-					.getOptionalProperty(KafkaInConfigKeys.CONTENT_TYPE)
+					.getOptionalProperty(CONTENT_TYPE)
 					.map(RDFLanguages::contentTypeToLang)
 					.map(Lang::getHeaderString)
 					.orElse(Lang.NQUADS.getHeaderString());

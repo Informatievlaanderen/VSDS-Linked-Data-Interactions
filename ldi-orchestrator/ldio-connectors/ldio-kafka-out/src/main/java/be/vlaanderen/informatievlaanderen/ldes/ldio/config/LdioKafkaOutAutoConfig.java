@@ -15,9 +15,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
 
 import java.util.HashMap;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.BOOTSTRAP_SERVERS;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.CONTENT_TYPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.TOPIC;
 
 @Configuration
 public class LdioKafkaOutAutoConfig {
@@ -26,15 +29,15 @@ public class LdioKafkaOutAutoConfig {
 	public LdioConfigurator ldiKafkaOutConfigurator() {
 		return config -> {
 			final Lang lang = getLang(config);
-			final String topic = config.getProperty(KafkaOutConfigKeys.TOPIC);
-			final var kafkaTemplate = createKafkaTemplate(config.getProperty(KafkaOutConfigKeys.BOOTSTRAP_SERVERS));
+			final String topic = config.getProperty(TOPIC);
+			final var kafkaTemplate = createKafkaTemplate(config.getProperty(BOOTSTRAP_SERVERS));
 			return (LdiOutput) model -> kafkaTemplate.send(createProducerRecord(lang, topic, model));
 		};
 	}
 
 	private ProducerRecord<String, String> createProducerRecord(Lang lang, String topic, Model model) {
 		final String message = toString(lang, model);
-		final var headers = new RecordHeaders().add(KafkaOutConfigKeys.CONTENT_TYPE, lang.getHeaderString().getBytes());
+		final var headers = new RecordHeaders().add(CONTENT_TYPE, lang.getHeaderString().getBytes());
 		return new ProducerRecord<>(topic, null, (String) null, message, headers);
 	}
 
@@ -44,7 +47,7 @@ public class LdioKafkaOutAutoConfig {
 
 	private Lang getLang(ComponentProperties config) {
 		return config
-				.getOptionalProperty(KafkaOutConfigKeys.CONTENT_TYPE)
+				.getOptionalProperty(CONTENT_TYPE)
 				.map(RDFLanguages::contentTypeToLang)
 				.orElse(Lang.NQUADS);
 	}
