@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.poller.exceptions;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions;
 
 public class SchedulerInterruptedException extends RuntimeException{
 
