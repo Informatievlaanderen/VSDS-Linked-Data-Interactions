@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes;
 
 import be.vlaanderen.informatievlaanderen.ldes.config.HttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsuccesfullPollingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import okhttp3.mockwebserver.MockResponse;
@@ -126,7 +127,10 @@ class HttpInputPollerTest {
 				.setBody("_:b0 <http://schema.org/name> \"Jane Doe\" .")
 		);
 
-		httpInputPoller.poll();
+		//httpInputPoller.poll();
+
+		assertThrows(UnsuccesfullPollingException.class, () -> httpInputPoller.poll());
+		verifyNoInteractions(adapter);
 
 
 	}
