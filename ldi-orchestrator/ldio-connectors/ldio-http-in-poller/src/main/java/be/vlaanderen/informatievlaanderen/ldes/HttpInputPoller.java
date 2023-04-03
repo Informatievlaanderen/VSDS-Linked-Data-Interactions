@@ -10,15 +10,19 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.concurrent.CountDownLatch;
+
 public class HttpInputPoller extends LdiInput {
 	private final WebClient client;
+	private final Boolean continueOnFail;
 	private final String endpoint;
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpInputPoller.class);
 
-	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, String endpoint) {
+	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, String endpoint, Boolean continueOnFail) {
 		super(executor, adapter);
 		this.endpoint = endpoint;
 		this.client = WebClient.create(endpoint);
+		this.continueOnFail = continueOnFail;
 	}
 
 	public Mono<String> handleResponse(ClientResponse response) {
@@ -33,12 +37,17 @@ public class HttpInputPoller extends LdiInput {
 	}
 
 	public void poll() {
-		client.get()
-				.exchangeToMono(this::handleResponse)
-				.doOnError(throwable -> {
-					LOGGER.error(throwable.getMessage());
-				})
-				.subscribe();
-	}
+		try{
+			client.get()
+					.exchangeToMono(this::handleResponse)
+					.doOnError(throwable -> {
+						LOGGER.error(throwable.getMessage());
+					}).block();
+		} catch (Exception e) {
+			if(Boolean.FALSE.equals(continueOnFail)) {
+				throw e;
+			}
+		}
 
+	}
 }

@@ -32,6 +32,7 @@ public class HttpInputPollerAutoConfig {
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
 			String endpoint = properties.getProperty("pipelines.input.config.targetUrl");
 			String pollingInterval = properties.getProperty("pipelines.input.config.interval");
+			Boolean continueOnFail = Boolean.valueOf(properties.getOptionalProperty("pipelines.input.config.continueOnFail").orElse("true"));
 
 			long seconds;
 			try {
@@ -40,7 +41,7 @@ public class HttpInputPollerAutoConfig {
 				throw new IllegalArgumentException("Invalid argument for iso 8601 duration");
 			}
 
-			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
+			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint, continueOnFail);
 
 			ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 

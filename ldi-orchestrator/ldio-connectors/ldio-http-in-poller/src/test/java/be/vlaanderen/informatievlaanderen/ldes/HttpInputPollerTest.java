@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -54,7 +55,7 @@ class HttpInputPollerTest {
 		mockBackEnd = new MockWebServer();
 		mockBackEnd.start();
 		endpoint = String.format("http://localhost:%s", mockBackEnd.getPort());
-		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
+		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint, true);
 	}
 
 	@Test
@@ -116,7 +117,7 @@ class HttpInputPollerTest {
 	}
 
 	@Test
-	void whenPeriodPollingReturnsNot2xx_thenKeepPolling() {
+	void when_OnContinueIsTrueAndPeriodPollingReturnsNot2xx_thenKeepPolling() {
 		mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
 		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
 
@@ -128,12 +129,24 @@ class HttpInputPollerTest {
 	}
 
 	@Test
+	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling() {
+		mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
+		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
+
+
+		new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
+				new ComponentProperties(Map.of("pipelines.input.config.targetUrl", endpoint,
+						"pipelines.input.config.interval", "PT1S","pipelines.input.config.continueOnFail", "false")));
+
+		verify(adapter, after(2000).never()).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+	}
+
+	@Test
 	void when_EndpointDoesNotExist_Then_NoDataIsSent() throws InterruptedException {
 
 		String wrongEndpoint = endpoint = String.format("http://localhst:%s",
 				mockBackEnd.getPort());
-
-		httpInputPoller = new HttpInputPoller(executor, adapter, wrongEndpoint);
+		httpInputPoller = new HttpInputPoller(executor, adapter, wrongEndpoint, true);
 
 		mockBackEnd.enqueue(new MockResponse()
 				.addHeader("Content-Type", CONTENT_TYPE)
@@ -148,7 +161,6 @@ class HttpInputPollerTest {
 	@Test
 	void when_ResponseIsNot200_Then_NoDataIsSent() throws InterruptedException {
 
-		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
 		mockBackEnd.enqueue(new MockResponse().setResponseCode(405)
 				.addHeader("Content-Type", CONTENT_TYPE)
 				.setBody(CONTENT));
