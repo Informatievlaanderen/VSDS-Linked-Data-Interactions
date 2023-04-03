@@ -15,11 +15,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static org.awaitility.Awaitility.await;
@@ -37,6 +40,7 @@ class HttpInputPollerTest {
 	private ComponentExecutor executor;
 
 	public static MockWebServer mockBackEnd;
+
 
 	@BeforeAll
 	static void beforeAll() throws IOException {
@@ -89,9 +93,8 @@ class HttpInputPollerTest {
 
 		httpInputPoller.poll();
 
-		Thread.sleep(1000);
+		verify(adapter, timeout(100)).apply(LdiAdapter.Content.of("_:b0 <http://schema.org/name> \"Jane Doe\" .", "application/n-quads"));
 
-		verify(adapter, times(1)).apply(LdiAdapter.Content.of("_:b0 <http://schema.org/name> \"Jane Doe\" .", "application/n-quads"));
 		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 		assertEquals("GET", recordedRequest.getMethod());
 	}
