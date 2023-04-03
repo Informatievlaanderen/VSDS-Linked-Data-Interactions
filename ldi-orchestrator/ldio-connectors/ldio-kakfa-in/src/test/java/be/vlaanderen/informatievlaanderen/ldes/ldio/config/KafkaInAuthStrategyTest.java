@@ -10,12 +10,12 @@ class KafkaInAuthStrategyTest {
 
 	@ParameterizedTest
 	@EnumSource(KafkaInAuthStrategy.class)
-	void from_ShouldReturnAValueForExistingAuthStrategies(KafkaInAuthStrategy authStrategy) {
+	void shouldReturnAValueForExistingAuthStrategies(KafkaInAuthStrategy authStrategy) {
 		assertTrue(KafkaInAuthStrategy.from(authStrategy.name()).isPresent());
 	}
 
 	@Test
-	void from_ShouldReturnEmptyOptionalForNonExistingAuthStrategies() {
+	void shouldReturnEmptyOptionalForNonExistingAuthStrategies() {
 		assertTrue(KafkaInAuthStrategy.from("nonExisting").isEmpty());
 	}
 
