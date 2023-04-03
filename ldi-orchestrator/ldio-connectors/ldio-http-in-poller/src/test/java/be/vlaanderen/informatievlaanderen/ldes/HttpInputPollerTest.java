@@ -116,6 +116,18 @@ class HttpInputPollerTest {
 	}
 
 	@Test
+	void whenPeriodPollingReturnsNot2xx_thenKeepPolling() {
+		mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
+		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
+
+		new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
+				new ComponentProperties(Map.of("pipelines.input.config.targetUrl", endpoint,
+						"pipelines.input.config.interval", "PT1S")));
+
+		verify(adapter, timeout(2000).times(1)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+	}
+
+	@Test
 	void when_EndpointDoesNotExist_Then_NoDataIsSent() throws InterruptedException {
 
 		String wrongEndpoint = endpoint = String.format("http://localhst:%s",
@@ -125,8 +137,9 @@ class HttpInputPollerTest {
 
 		mockBackEnd.enqueue(new MockResponse()
 				.addHeader("Content-Type", CONTENT_TYPE)
-				.setBody(CONTENT)
-		);
+				.setBody(CONTENT));
+
+		mockBackEnd.enqueue(new MockResponse());
 
 		httpInputPoller.poll();
 		verify(adapter,after(1000).never()).apply(any());
