@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes;
 
 import be.vlaanderen.informatievlaanderen.ldes.config.HttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsuccesfullPollingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import okhttp3.mockwebserver.MockResponse;
@@ -27,6 +28,9 @@ class HttpInputPollerTest {
 	private ComponentExecutor executor;
 	private HttpInputPoller httpInputPoller;
 
+	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
+	private static final String CONTENT_TYPE = "application/n-quads";
+
 	public static MockWebServer mockBackEnd;
 
 	@BeforeAll
@@ -45,13 +49,11 @@ class HttpInputPollerTest {
 		adapter = mock(LdiAdapter.class);
 		executor = mock(ComponentExecutor.class);
 
-
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
 		mockBackEnd = new MockWebServer();
 		mockBackEnd.start();
-		endpoint = String.format("http://localhost:%s",
-				mockBackEnd.getPort());
+		endpoint = String.format("http://localhost:%s", mockBackEnd.getPort());
 		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
 	}
 
@@ -59,13 +61,13 @@ class HttpInputPollerTest {
 	void testClientPolling() throws InterruptedException {
 
 		mockBackEnd.enqueue(new MockResponse()
-				.addHeader("Content-Type", "application/n-quads")
-				.setBody("_:b0 <http://schema.org/name> \"Jane Doe\" ."));
+				.addHeader("Content-Type", CONTENT_TYPE)
+				.setBody(CONTENT));
 
 		httpInputPoller.poll();
 
 		verify(adapter, timeout(1000).times(1))
-				.apply(LdiAdapter.Content.of("_:b0 <http://schema.org/name> \"Jane Doe\" .", "application/n-quads"));
+				.apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 
 		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 		assertEquals("GET", recordedRequest.getMethod());
@@ -74,41 +76,41 @@ class HttpInputPollerTest {
 	@Test
 	void whenPeriodicPolling_thenReturnTwoTimesTheSameResponse() throws InterruptedException {
 		mockBackEnd.enqueue(new MockResponse()
-				.addHeader("Content-Type", "application/n-quads")
-				.setBody("_:b0 <http://schema.org/name> \"Jane Doe\" ."));
+				.addHeader("Content-Type", CONTENT_TYPE)
+				.setBody(CONTENT));
 
 		mockBackEnd.enqueue(new MockResponse()
-				.addHeader("Content-Type", "application/n-quads")
-				.setBody("_:b0 <http://schema.org/name> \"Jane Doe\" ."));
+				.addHeader("Content-Type", CONTENT_TYPE)
+				.setBody(CONTENT));
 
 		new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
 				new ComponentProperties(Map.of("pipelines.input.config.targetUrl", endpoint,
 						"pipelines.input.config.interval", "PT1S")));
 
 		verify(adapter, timeout(3000).atLeast(2))
-				.apply(LdiAdapter.Content.of("_:b0 <http://schema.org/name> \"Jane Doe\" .", "application/n-quads"));
+				.apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 		assertEquals("GET", recordedRequest.getMethod());
 	}
 
 	@Test
 	void whenPeriodicPolling_thenReturnDifferentResponses() throws InterruptedException {
+		final String alternativeContent = "_:b0 <http://schema.org/name> \"John Doe\" .";
 		mockBackEnd.enqueue(new MockResponse()
-				.addHeader("Content-Type", "application/n-quads")
-				.setBody("_:b0 <http://schema.org/name> \"Jane Doe\" ."));
+				.addHeader("Content-Type", CONTENT_TYPE)
+				.setBody(CONTENT));
 
 		mockBackEnd.enqueue(new MockResponse()
-				.addHeader("Content-Type", "application/n-quads")
-				.setBody("_:b0 <http://schema.org/name> \"John Doe\" ."));
+				.addHeader("Content-Type", CONTENT_TYPE)
+				.setBody(alternativeContent));
 
 		new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
 				new ComponentProperties(Map.of("pipelines.input.config.targetUrl", endpoint,
 						"pipelines.input.config.interval", "PT1S")));
 
+		verify(adapter, timeout(1500).times(1)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		verify(adapter, timeout(1500).times(1))
-				.apply(LdiAdapter.Content.of("_:b0 <http://schema.org/name> \"Jane Doe\" .", "application/n-quads"));
-		verify(adapter, timeout(1500).times(1))
-				.apply(LdiAdapter.Content.of("_:b0 <http://schema.org/name> \"John Doe\" .", "application/n-quads"));
+				.apply(LdiAdapter.Content.of(alternativeContent, CONTENT_TYPE));
 		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 		assertEquals("GET", recordedRequest.getMethod());
 	}
@@ -122,8 +124,8 @@ class HttpInputPollerTest {
 		httpInputPoller = new HttpInputPoller(executor, adapter, wrongEndpoint);
 
 		mockBackEnd.enqueue(new MockResponse()
-				.addHeader("Content-Type", "application/n-quads")
-				.setBody("_:b0 <http://schema.org/name> \"Jane Doe\" .")
+				.addHeader("Content-Type", CONTENT_TYPE)
+				.setBody(CONTENT)
 		);
 
 		httpInputPoller.poll();
