@@ -16,9 +16,10 @@ class LdioKafkaInAutoConfigTest {
 
 		Map<String, String> config = getBasicConfig();
 		config.put(KafkaInConfigKeys.SECURITY_PROTOCOL, "Fantasy protocol");
+		ComponentProperties componentProperties = new ComponentProperties(config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-				() -> configurator.configure(null, null, new ComponentProperties(config)));
+				() -> configurator.configure(null, null, componentProperties));
 
 		assertEquals("Invalid 'security-protocol', the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]",
 				exception.getMessage());
