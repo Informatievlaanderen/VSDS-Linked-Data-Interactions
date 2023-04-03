@@ -36,6 +36,9 @@ public class HttpInputPoller extends LdiInput {
 	public void poll() {
 		client.get()
 				.exchangeToMono(this::handleResponse)
+				.doOnError(throwable -> {
+					LOGGER.error(throwable.getMessage());
+				})
 				.subscribe();
 	}
 

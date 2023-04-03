@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes;
 
 import be.vlaanderen.informatievlaanderen.ldes.config.HttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsuccesfullPollingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import okhttp3.mockwebserver.MockResponse;
@@ -115,7 +114,7 @@ class HttpInputPollerTest {
 	}
 
 	@Test
-	void when_EndpointDoesNotExist() throws InterruptedException {
+	void when_EndpointDoesNotExist_Then_NoDataIsSent() throws InterruptedException {
 
 		String wrongEndpoint = endpoint = String.format("http://localhst:%s",
 				mockBackEnd.getPort());
@@ -127,11 +126,17 @@ class HttpInputPollerTest {
 				.setBody("_:b0 <http://schema.org/name> \"Jane Doe\" .")
 		);
 
-		//httpInputPoller.poll();
+		httpInputPoller.poll();
+		verify(adapter,after(1000).never()).apply(any());
+	}
 
-		assertThrows(UnsuccesfullPollingException.class, () -> httpInputPoller.poll());
-		verifyNoInteractions(adapter);
+	@Test
+	void when_ResponseIsNot200_Then_NoDataIsSent() throws InterruptedException {
 
+		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
+		mockBackEnd.enqueue(new MockResponse().setResponseCode(405));
 
+		httpInputPoller.poll();
+		verify(adapter,after(1000).never()).apply(any());
 	}
 }

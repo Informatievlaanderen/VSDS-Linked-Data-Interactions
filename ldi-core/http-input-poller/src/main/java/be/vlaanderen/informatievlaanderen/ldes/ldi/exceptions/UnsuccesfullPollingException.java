@@ -13,6 +13,6 @@ public class UnsuccesfullPollingException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Error while polling endpoint: " + endpoint + System.lineSeparator() + "Response has status code: " + httpStatusCode;
+        return "Error while polling endpoint: " + endpoint + " Response has status code: " + httpStatusCode;
     }
 }
