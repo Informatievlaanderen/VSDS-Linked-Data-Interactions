@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes;
+package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsuccesfullPollingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.concurrent.CountDownLatch;
 
 public class HttpInputPoller extends LdiInput {
 	private final WebClient client;
@@ -40,9 +38,8 @@ public class HttpInputPoller extends LdiInput {
 		try{
 			client.get()
 					.exchangeToMono(this::handleResponse)
-					.doOnError(throwable -> {
-						LOGGER.error(throwable.getMessage());
-					}).block();
+					.doOnError(throwable -> LOGGER.error(throwable.getMessage()))
+					.block();
 		} catch (Exception e) {
 			if(Boolean.FALSE.equals(continueOnFail)) {
 				throw e;

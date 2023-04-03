@@ -19,4 +19,5 @@ orchestrator:
     config:
       url: http://localhost:8080/get
       interval: PT1M
+      continueOnFail: true
 ```
