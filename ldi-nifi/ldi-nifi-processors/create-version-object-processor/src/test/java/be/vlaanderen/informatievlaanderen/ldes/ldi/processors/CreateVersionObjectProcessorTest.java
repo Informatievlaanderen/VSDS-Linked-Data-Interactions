@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.NgsiLdToLdesMemberProcessorRelationships.DATA_RELATIONSHIP;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.NgsiLdToLdesMemberProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CreateVersionObjectProcessorTest {
 
-	private static final String DEFAULT_DATE_OBSERVED_VALUE_JSON_PATH = "https://uri.etsi.org/ngsi-ld/observedAt";
+	private static final String DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY = "https://uri.etsi.org/ngsi-ld/observedAt";
 	private static final String DEFAULT_MEMBER_TYPE_WQO = "https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
@@ -42,7 +42,7 @@ class CreateVersionObjectProcessorTest {
 
 	@Test
 	void when_InputIsValidJsonLD_ExpectedVersionObjectIsReturned() throws IOException, URISyntaxException {
-		testRunner.setProperty("DATE_OBSERVED_VALUE_JSON_PATH", DEFAULT_DATE_OBSERVED_VALUE_JSON_PATH);
+		testRunner.setProperty("DATE_OBSERVED_VALUE_RDF_PROPERTY", DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY);
 		testRunner.setProperty("MEMBER_RDF_SYNTAX_TYPE", DEFAULT_MEMBER_TYPE_WQO);
 		testRunner.setProperty("DELIMITER", DEFAULT_DELIMITER);
 		testRunner.setProperty("VERSION_OF_KEY", DEFAULT_VERSION_OF_KEY);
@@ -66,7 +66,7 @@ class CreateVersionObjectProcessorTest {
 
 	@Test
 	void when_InputIsInvalidJsonLD_ExpectedVersionObjectIsReturned() throws IOException, URISyntaxException {
-		testRunner.setProperty("DATE_OBSERVED_VALUE_JSON_PATH", DEFAULT_DATE_OBSERVED_VALUE_JSON_PATH);
+		testRunner.setProperty("DATE_OBSERVED_VALUE_RDF_PROPERTY", DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY);
 		testRunner.setProperty("MEMBER_RDF_SYNTAX_TYPE", DEFAULT_MEMBER_TYPE_WQO);
 		testRunner.setProperty("DELIMITER", DEFAULT_DELIMITER);
 		testRunner.setProperty("VERSION_OF_KEY", DEFAULT_VERSION_OF_KEY);
@@ -87,7 +87,7 @@ class CreateVersionObjectProcessorTest {
 	@Test
 	void when_InputIsValidJsonLDAndContainsGMLData_ExpectedVersionObjectIsReturned()
 			throws URISyntaxException, IOException {
-		testRunner.setProperty("DATE_OBSERVED_VALUE_JSON_PATH", DEFAULT_DATE_OBSERVED_VALUE_JSON_PATH);
+		testRunner.setProperty("DATE_OBSERVED_VALUE_RDF_PROPERTY", DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY);
 		testRunner.setProperty("MEMBER_RDF_SYNTAX_TYPE", "https://data.vlaanderen.be/ns/adres#Adres");
 		testRunner.setProperty("DELIMITER", DEFAULT_DELIMITER);
 		testRunner.setProperty("VERSION_OF_KEY", DEFAULT_VERSION_OF_KEY);

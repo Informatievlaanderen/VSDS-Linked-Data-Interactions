@@ -12,16 +12,16 @@ import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
-public final class NgsiLdToLdesMemberProcessorPropertyDescriptors {
+public final class CreateVersionObjectProcessorPropertyDescriptors {
 	private static final Model initModel = ModelFactory.createDefaultModel();
 
-	private static final String DEFAULT_DATE_OBSERVED_VALUE_JSON_PATH = "$.dateObserved.value['@value']";
+	private static final String DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY = "https://uri.etsi.org/ngsi-ld/observedAt";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
 	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "n-quads";
 	private static final String DEFAULT_PROV_GENERATED_AT_TIME = "http://www.w3.org/ns/prov#generatedAtTime";
 
-	private NgsiLdToLdesMemberProcessorPropertyDescriptors() {
+	private CreateVersionObjectProcessorPropertyDescriptors() {
 	}
 
 	public static final PropertyDescriptor MEMBER_RDF_SYNTAX_TYPE = new PropertyDescriptor.Builder()
@@ -41,15 +41,15 @@ public final class NgsiLdToLdesMemberProcessorPropertyDescriptors {
 			.defaultValue(DEFAULT_DELIMITER)
 			.build();
 
-	public static final PropertyDescriptor DATE_OBSERVED_VALUE_JSON_PATH = new PropertyDescriptor.Builder()
-			.name("DATE_OBSERVED_VALUE_JSON_PATH")
-			.displayName("JSON path to a timestamp value")
+	public static final PropertyDescriptor DATE_OBSERVED_VALUE_RDF_PROPERTY = new PropertyDescriptor.Builder()
+			.name("DATE_OBSERVED_VALUE_RDF_PROPERTY")
+			.displayName("RDF property to find the timestamp value")
 			.description(
-					"JSON path to a timestamp value (for object version ID), e.g. "
-							+ DEFAULT_DATE_OBSERVED_VALUE_JSON_PATH)
+					"RDF property to a timestamp value (for object version ID), e.g. "
+							+ DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY)
 			.required(false)
 			.addValidator(Validator.VALID)
-			.defaultValue(DEFAULT_DATE_OBSERVED_VALUE_JSON_PATH)
+			.defaultValue(DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY)
 			.build();
 
 	public static final PropertyDescriptor VERSION_OF_KEY = new PropertyDescriptor.Builder()
@@ -79,8 +79,8 @@ public final class NgsiLdToLdesMemberProcessorPropertyDescriptors {
 			.defaultValue(DEFAULT_PROV_GENERATED_AT_TIME)
 			.build();
 
-	public static Property getDateObservedValueJsonPath(ProcessContext context) {
-		return initModel.createProperty(context.getProperty(DATE_OBSERVED_VALUE_JSON_PATH).getValue());
+	public static Property getDateObservedValueRdfProperty(ProcessContext context) {
+		return initModel.createProperty(context.getProperty(DATE_OBSERVED_VALUE_RDF_PROPERTY).getValue());
 	}
 
 	public static Resource getMemberRdfSyntaxType(ProcessContext context) {
