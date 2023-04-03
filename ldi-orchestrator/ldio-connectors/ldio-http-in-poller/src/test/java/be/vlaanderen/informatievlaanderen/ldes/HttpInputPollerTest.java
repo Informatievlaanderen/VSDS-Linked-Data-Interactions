@@ -25,6 +25,8 @@ class HttpInputPollerTest {
 	private LdiAdapter adapter;
 	private String endpoint;
 	private ComponentExecutor executor;
+	private HttpInputPoller httpInputPoller;
+
 	public static MockWebServer mockBackEnd;
 
 	@BeforeAll
@@ -42,6 +44,8 @@ class HttpInputPollerTest {
 	void setUp() throws IOException {
 		adapter = mock(LdiAdapter.class);
 		executor = mock(ComponentExecutor.class);
+		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
+
 
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
@@ -53,8 +57,6 @@ class HttpInputPollerTest {
 
 	@Test
 	void testClientPolling() throws InterruptedException {
-
-		HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
 
 		mockBackEnd.enqueue(new MockResponse()
 				.addHeader("Content-Type", "application/n-quads")
@@ -109,5 +111,23 @@ class HttpInputPollerTest {
 				.apply(LdiAdapter.Content.of("_:b0 <http://schema.org/name> \"John Doe\" .", "application/n-quads"));
 		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
 		assertEquals("GET", recordedRequest.getMethod());
+	}
+
+	@Test
+	void when_EndpointDoesNotExist() throws InterruptedException {
+
+		String wrongEndpoint = endpoint = String.format("http://localhst:%s",
+				mockBackEnd.getPort());
+
+		httpInputPoller = new HttpInputPoller(executor, adapter, wrongEndpoint);
+
+		mockBackEnd.enqueue(new MockResponse()
+				.addHeader("Content-Type", "application/n-quads")
+				.setBody("_:b0 <http://schema.org/name> \"Jane Doe\" .")
+		);
+
+		httpInputPoller.poll();
+
+
 	}
 }
