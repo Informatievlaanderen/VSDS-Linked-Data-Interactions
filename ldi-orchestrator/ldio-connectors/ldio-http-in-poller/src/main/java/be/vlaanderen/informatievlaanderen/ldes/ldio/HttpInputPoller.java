@@ -35,13 +35,13 @@ public class HttpInputPoller extends LdiInput {
 	}
 
 	public void poll() {
-		try{
+		try {
 			client.get()
 					.exchangeToMono(this::handleResponse)
 					.doOnError(throwable -> LOGGER.error(throwable.getMessage()))
 					.block();
 		} catch (Exception e) {
-			if(Boolean.FALSE.equals(continueOnFail)) {
+			if (Boolean.FALSE.equals(continueOnFail)) {
 				throw e;
 			}
 		}

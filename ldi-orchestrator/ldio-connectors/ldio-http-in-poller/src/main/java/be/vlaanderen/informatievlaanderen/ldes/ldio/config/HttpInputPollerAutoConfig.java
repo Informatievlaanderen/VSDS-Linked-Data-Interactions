@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -32,7 +32,8 @@ public class HttpInputPollerAutoConfig {
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
 			String endpoint = properties.getProperty("pipelines.input.config.targetUrl");
 			String pollingInterval = properties.getProperty("pipelines.input.config.interval");
-			Boolean continueOnFail = Boolean.valueOf(properties.getOptionalProperty("pipelines.input.config.continueOnFail").orElse("true"));
+			Boolean continueOnFail = Boolean
+					.valueOf(properties.getOptionalProperty("pipelines.input.config.continueOnFail").orElse("true"));
 
 			long seconds;
 			try {

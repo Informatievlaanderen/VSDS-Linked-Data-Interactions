@@ -1,10 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -132,10 +131,9 @@ class HttpInputPollerTest {
 		mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
 		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
 
-
 		new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
 				new ComponentProperties(Map.of("pipelines.input.config.targetUrl", endpoint,
-						"pipelines.input.config.interval", "PT1S","pipelines.input.config.continueOnFail", "false")));
+						"pipelines.input.config.interval", "PT1S", "pipelines.input.config.continueOnFail", "false")));
 
 		verify(adapter, after(2000).never()).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 	}
@@ -154,7 +152,7 @@ class HttpInputPollerTest {
 		mockBackEnd.enqueue(new MockResponse());
 
 		httpInputPoller.poll();
-		verify(adapter,after(1000).never()).apply(any());
+		verify(adapter, after(1000).never()).apply(any());
 	}
 
 	@Test
@@ -165,6 +163,6 @@ class HttpInputPollerTest {
 				.setBody(CONTENT));
 
 		httpInputPoller.poll();
-		verify(adapter,after(1000).never()).apply(any());
+		verify(adapter, after(1000).never()).apply(any());
 	}
 }
