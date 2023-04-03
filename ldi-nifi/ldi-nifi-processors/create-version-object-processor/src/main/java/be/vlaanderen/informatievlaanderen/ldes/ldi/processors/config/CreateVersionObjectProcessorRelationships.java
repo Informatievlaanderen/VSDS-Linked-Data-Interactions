@@ -2,9 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
 import org.apache.nifi.processor.Relationship;
 
-public class NgsiLdToLdesMemberProcessorRelationships {
+public class CreateVersionObjectProcessorRelationships {
 
-	private NgsiLdToLdesMemberProcessorRelationships() {
+	private CreateVersionObjectProcessorRelationships() {
 	}
 
 	public static final Relationship DATA_RELATIONSHIP = new Relationship.Builder().name("data")

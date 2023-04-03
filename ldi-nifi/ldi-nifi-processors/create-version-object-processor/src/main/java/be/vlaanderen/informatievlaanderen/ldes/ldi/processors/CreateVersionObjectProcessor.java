@@ -18,13 +18,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.NgsiLdToLdesMemberProcessorPropertyDescriptors.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.NgsiLdToLdesMemberProcessorRelationships.DATA_RELATIONSHIP;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.NgsiLdToLdesMemberProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorPropertyDescriptors.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
-@Tags({ "ngsild", "ldes", "vsds" })
-@CapabilityDescription("Converts NGSI-LD to LdesMembers and send them to the next processor")
+@Tags({ "ldes", "vsds" })
+@CapabilityDescription("Converts state objects to version objects")
 public class CreateVersionObjectProcessor extends AbstractProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateVersionObjectProcessor.class);
@@ -38,7 +38,7 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		descriptors = new ArrayList<>();
 		descriptors.add(MEMBER_RDF_SYNTAX_TYPE);
 		descriptors.add(DELIMITER);
-		descriptors.add(DATE_OBSERVED_VALUE_JSON_PATH);
+		descriptors.add(DATE_OBSERVED_VALUE_RDF_PROPERTY);
 		descriptors.add(VERSION_OF_KEY);
 		descriptors.add(DATA_DESTINATION_FORMAT);
 		descriptors.add(GENERATED_AT_TIME_PROPERTY);
@@ -62,7 +62,7 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		Property dateObservedProperty = getDateObservedValueJsonPath(context);
+		Property dateObservedProperty = getDateObservedValueRdfProperty(context);
 		Resource memberType = getMemberRdfSyntaxType(context);
 		String delimiter = getDelimiter(context);
 		Property versionOfKey = getVersionOfKey(context);
