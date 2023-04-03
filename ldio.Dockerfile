@@ -33,6 +33,8 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-geojson-to-wkt/targe
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-console-out/target/ldio-console-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-out/target/ldio-http-out-jar-with-dependencies.jar ./lib/
 
+COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-in-poller/target/ldio-http-in-poller-jar-with-dependencies.jar ./lib/
+
 RUN dir -s
 
 RUN useradd -u 2000 ldes
