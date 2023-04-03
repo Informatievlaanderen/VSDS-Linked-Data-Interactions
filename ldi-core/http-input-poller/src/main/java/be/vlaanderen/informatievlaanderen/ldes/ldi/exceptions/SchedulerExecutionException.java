@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions;
 
-public class SchedulerExecutionException extends RuntimeException{
+public class SchedulerExecutionException extends RuntimeException {
 
-    public SchedulerExecutionException(Throwable cause) {
-        super(cause);
-    }
+	public SchedulerExecutionException(Throwable cause) {
+		super(cause);
+	}
 }

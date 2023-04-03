@@ -1,22 +1,17 @@
 package be.vlaanderen.informatievlaanderen.ldes.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.HttpInputPoller;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.HttpInputPoller;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.SchedulerExecutionException;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.SchedulerInterruptedException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
-
 
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +27,6 @@ public class HttpInputPollerAutoConfig {
 	}
 
 	public static class HttpInputPollerConfigurator implements LdioInputConfigurator {
-
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
@@ -51,8 +45,6 @@ public class HttpInputPollerAutoConfig {
 			ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 			scheduler.scheduleAtFixedRate(httpInputPoller::poll, 0, seconds, TimeUnit.SECONDS);
-
-			scheduler.shutdown();
 
 			return null;
 		}
