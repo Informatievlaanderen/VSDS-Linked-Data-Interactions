@@ -44,7 +44,6 @@ class HttpInputPollerTest {
 	void setUp() throws IOException {
 		adapter = mock(LdiAdapter.class);
 		executor = mock(ComponentExecutor.class);
-		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
 
 
 		when(adapter.apply(any())).thenReturn(Stream.empty());
@@ -53,6 +52,7 @@ class HttpInputPollerTest {
 		mockBackEnd.start();
 		endpoint = String.format("http://localhost:%s",
 				mockBackEnd.getPort());
+		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
 	}
 
 	@Test
