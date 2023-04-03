@@ -7,10 +7,10 @@ import java.util.stream.Stream;
 
 public enum KafkaInAuthStrategy {
 
-    NO_AUTH, SASL_SSL_PLAIN;
+	NO_AUTH, SASL_SSL_PLAIN;
 
-    public static Optional<KafkaInAuthStrategy> from(String s) {
-        return Stream.of(values()).filter(val -> val.name().equals(StringUtils.upperCase(s))).findFirst();
-    }
+	public static Optional<KafkaInAuthStrategy> from(String s) {
+		return Stream.of(values()).filter(val -> val.name().equals(StringUtils.upperCase(s))).findFirst();
+	}
 
 }

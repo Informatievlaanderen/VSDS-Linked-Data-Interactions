@@ -8,15 +8,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KafkaInAuthStrategyTest {
 
-    @ParameterizedTest
-    @EnumSource(KafkaInAuthStrategy.class)
-    void from_ShouldReturnAValueForExistingAuthStrategies(KafkaInAuthStrategy authStrategy) {
-        assertTrue(KafkaInAuthStrategy.from(authStrategy.name()).isPresent());
-    }
+	@ParameterizedTest
+	@EnumSource(KafkaInAuthStrategy.class)
+	void from_ShouldReturnAValueForExistingAuthStrategies(KafkaInAuthStrategy authStrategy) {
+		assertTrue(KafkaInAuthStrategy.from(authStrategy.name()).isPresent());
+	}
 
-    @Test
-    void from_ShouldReturnEmptyOptionalForNonExistingAuthStrategies() {
-        assertTrue(KafkaInAuthStrategy.from("nonExisting").isEmpty());
-    }
+	@Test
+	void from_ShouldReturnEmptyOptionalForNonExistingAuthStrategies() {
+		assertTrue(KafkaInAuthStrategy.from("nonExisting").isEmpty());
+	}
 
 }
