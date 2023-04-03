@@ -149,7 +149,9 @@ class HttpInputPollerTest {
 	void when_ResponseIsNot200_Then_NoDataIsSent() throws InterruptedException {
 
 		httpInputPoller = new HttpInputPoller(executor, adapter, endpoint);
-		mockBackEnd.enqueue(new MockResponse().setResponseCode(405));
+		mockBackEnd.enqueue(new MockResponse().setResponseCode(405)
+				.addHeader("Content-Type", CONTENT_TYPE)
+				.setBody(CONTENT));
 
 		httpInputPoller.poll();
 		verify(adapter,after(1000).never()).apply(any());
