@@ -36,8 +36,8 @@ class HttpInputPollerTest {
 	private static final String CONTENT_TYPE = "application/n-quads";
 
 	private static ComponentProperties createConfig(String endpoint, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of("pipelines.input.config.targetUrl", endpoint,
-				"pipelines.input.config.interval", interval, "pipelines.input.config.continueOnFail", continueOnFail));
+		return new ComponentProperties(Map.of("url", endpoint,
+				"interval", interval, "continueOnFail", continueOnFail));
 	}
 
 	private static ComponentProperties createDefaultTestConfig() {
