@@ -34,6 +34,18 @@ class LdioKafkaInAutoConfigTest {
 		assertDoesNotThrow(() -> configurator.configure(null, null, new ComponentProperties(config)));
 	}
 
+	@Test
+	void shouldNotThrowExceptionWhenSaslSslPlain() {
+		var configurator = new LdioKafkaInAutoConfig.LdioKafkaInConfigurator();
+
+		Map<String, String> config = getBasicConfig();
+		config.put(KafkaInConfigKeys.SECURITY_PROTOCOL, KafkaInAuthStrategy.SASL_SSL_PLAIN.name());
+		config.put(KafkaInConfigKeys.SASL_JAAS_USER, "user");
+		config.put(KafkaInConfigKeys.SASL_JAAS_PASSWORD, "secret");
+
+		assertDoesNotThrow(() -> configurator.configure(null, null, new ComponentProperties(config)));
+	}
+
 	private Map<String, String> getBasicConfig() {
 		Map<String, String> config = new HashMap<>();
 		config.put(KafkaInConfigKeys.BOOTSTRAP_SERVERS, "servers");
