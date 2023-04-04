@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.InvalidPollerConfigException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.InvalidPollerConfigException;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -45,12 +45,6 @@ class HttpInputPollerTest {
 	}
 
 	public static MockWebServer mockBackEnd;
-
-	@BeforeAll
-	static void beforeAll() throws IOException {
-		mockBackEnd = new MockWebServer();
-		mockBackEnd.start();
-	}
 
 	@AfterAll
 	static void afterAll() throws IOException {

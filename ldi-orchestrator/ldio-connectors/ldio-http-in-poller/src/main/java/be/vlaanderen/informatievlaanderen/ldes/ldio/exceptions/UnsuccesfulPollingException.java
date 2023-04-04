@@ -1,11 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions;
 
-public class UnsuccesfullPollingException extends RuntimeException {
+public class UnsuccesfulPollingException extends RuntimeException {
 
 	final int httpStatusCode;
 	final String endpoint;
 
-	public UnsuccesfullPollingException(int httpStatusCode, String endpoint) {
+	public UnsuccesfulPollingException(int httpStatusCode, String endpoint) {
 		this.httpStatusCode = httpStatusCode;
 		this.endpoint = endpoint;
 	}
