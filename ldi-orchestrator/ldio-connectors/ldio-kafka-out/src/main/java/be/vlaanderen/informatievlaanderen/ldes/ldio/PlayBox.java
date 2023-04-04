@@ -34,10 +34,10 @@ public class PlayBox {
         System.out.println(
                 model.listStatements(ResourceFactory.createProperty(uri), null, (RDFNode) null).toList());
 
-        final Query query = QueryFactory.create("SELECT ?t where { ?x <http://example/ns#myType> ?t }");
+        final Query query = QueryFactory.create("SELECT * where { ?s <http://example/ns#myType> ?o }");
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             ResultSet resultSet = queryExecution.execSelect();
-            RDFNode node = resultSet.next().get("t");
+            RDFNode node = resultSet.next().get("o");
             System.out.println(node.toString());
         }
 
