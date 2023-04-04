@@ -16,8 +16,8 @@ outputs:
     config:
       content-type: { any content type supported by Apache Jena }
       topics: { comma separated list of topics }
-      bootstrap-servers: { uri of the bootstrap server }
-      group-id: { optional group identifier }
+      bootstrap-servers: { comma separated list of uris of the bootstrap servers }
+      group-id: { optional group identifier - if missing a random group id is generated (ldio-[orchestrator.name]-[pipeline.name]) }
 ```
 
 Example:
