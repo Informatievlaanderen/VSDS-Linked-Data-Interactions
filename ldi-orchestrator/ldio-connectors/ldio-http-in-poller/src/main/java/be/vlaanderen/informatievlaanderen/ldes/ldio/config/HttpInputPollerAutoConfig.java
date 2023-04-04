@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidPollerConfigException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
@@ -29,7 +30,7 @@ public class HttpInputPollerAutoConfig {
 	public static class HttpInputPollerConfigurator implements LdioInputConfigurator {
 
 		@Override
-		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
+		public ScheduledExecutorService configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
 			String endpoint = properties.getProperty("pipelines.input.config.targetUrl");
 			String pollingInterval = properties.getProperty("pipelines.input.config.interval");
 			Boolean continueOnFail = Boolean
@@ -39,7 +40,7 @@ public class HttpInputPollerAutoConfig {
 			try {
 				seconds = Duration.parse(pollingInterval).getSeconds();
 			} catch (DateTimeParseException e) {
-				throw new IllegalArgumentException("Invalid argument for iso 8601 duration");
+				throw new InvalidPollerConfigException("pipelines.input.config.interval", pollingInterval);
 			}
 
 			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint, continueOnFail);
@@ -48,7 +49,7 @@ public class HttpInputPollerAutoConfig {
 
 			scheduler.scheduleAtFixedRate(httpInputPoller::poll, 0, seconds, TimeUnit.SECONDS);
 
-			return null;
+			return scheduler;
 		}
 	}
 }
