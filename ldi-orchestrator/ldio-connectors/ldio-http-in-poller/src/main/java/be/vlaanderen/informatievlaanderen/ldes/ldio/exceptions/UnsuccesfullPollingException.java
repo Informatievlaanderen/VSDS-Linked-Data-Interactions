@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions;
 
 public class UnsuccesfullPollingException extends RuntimeException {
 
