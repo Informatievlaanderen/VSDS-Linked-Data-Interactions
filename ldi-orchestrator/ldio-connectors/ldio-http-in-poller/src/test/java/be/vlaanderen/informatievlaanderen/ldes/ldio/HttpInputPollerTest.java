@@ -72,7 +72,7 @@ class HttpInputPollerTest {
 
 	@AfterEach
 	void tearDown() {
-		if(scheduledExecutorService != null && !scheduledExecutorService.isShutdown()) {
+		if (scheduledExecutorService != null && !scheduledExecutorService.isShutdown()) {
 			scheduledExecutorService.shutdown();
 		}
 	}
@@ -95,7 +95,8 @@ class HttpInputPollerTest {
 	@ParameterizedTest
 	@ArgumentsSource(InvalidIntervalArgumentsProvider.class)
 	void whenInvalidIntervalConfigured_thenCatchException(String interval) {
-		Executable configurePoller = () -> scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator()
+		Executable configurePoller = () -> scheduledExecutorService = new HttpInputPollerAutoConfig()
+				.httpInputPollerConfigurator()
 				.configure(adapter, executor, createConfig(endpoint, interval, "false"));
 
 		assertThrows(InvalidPollerConfigException.class, configurePoller);
@@ -111,7 +112,8 @@ class HttpInputPollerTest {
 				.addHeader("Content-Type", CONTENT_TYPE)
 				.setBody(CONTENT));
 
-		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
+		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
+				executor,
 				createDefaultTestConfig());
 
 		verify(adapter, timeout(3000).atLeast(2))
@@ -131,7 +133,8 @@ class HttpInputPollerTest {
 				.addHeader("Content-Type", CONTENT_TYPE)
 				.setBody(alternativeContent));
 
-		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
+		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
+				executor,
 				createDefaultTestConfig());
 
 		verify(adapter, timeout(1500).times(1)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
@@ -146,7 +149,8 @@ class HttpInputPollerTest {
 		mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
 		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
 
-		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
+		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
+				executor,
 				createConfig(endpoint, "PT1S", "true"));
 
 		verify(adapter, timeout(2000).times(1)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
@@ -157,7 +161,8 @@ class HttpInputPollerTest {
 		mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
 		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
 
-		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter, executor,
+		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
+				executor,
 				createDefaultTestConfig());
 
 		verify(adapter, after(2000).never()).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));

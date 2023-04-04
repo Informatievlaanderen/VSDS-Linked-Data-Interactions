@@ -86,6 +86,16 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ldio-http-in-poller</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-http-in-poller</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>ldio-kafka-in</id>
             <dependencies>
                 <dependency>

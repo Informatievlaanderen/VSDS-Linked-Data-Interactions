@@ -30,11 +30,12 @@ public class HttpInputPollerAutoConfig {
 	public static class HttpInputPollerConfigurator implements LdioInputConfigurator {
 
 		@Override
-		public ScheduledExecutorService configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
-			String endpoint = properties.getProperty("pipelines.input.config.targetUrl");
-			String pollingInterval = properties.getProperty("pipelines.input.config.interval");
+		public ScheduledExecutorService configure(LdiAdapter adapter, ComponentExecutor executor,
+				ComponentProperties properties) {
+			String endpoint = properties.getProperty("url");
+			String pollingInterval = properties.getProperty("interval");
 			Boolean continueOnFail = Boolean
-					.valueOf(properties.getOptionalProperty("pipelines.input.config.continueOnFail").orElse("true"));
+					.valueOf(properties.getOptionalProperty("continueOnFail").orElse("true"));
 
 			long seconds;
 			try {
