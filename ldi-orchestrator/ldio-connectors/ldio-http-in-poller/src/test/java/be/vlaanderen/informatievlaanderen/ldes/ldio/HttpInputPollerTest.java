@@ -5,11 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.InvalidPollerConfigException;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.function.Executable;
@@ -17,11 +12,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-
+import org.mockito.Mockito;
 
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Stream;
+
+import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,9 +30,8 @@ import static org.mockito.Mockito.*;
 @WireMockTest(httpPort = 10101)
 class HttpInputPollerTest {
 	private LdiAdapter adapter;
-//	private static final String BASE_URL = "http://localhost:10101";
+	private static final String BASE_URL = "http://localhost:10101";
 	private static final String ENDPOINT = "/resource";
-	private static String endpoint = "";
 	private ComponentExecutor executor;
 	private HttpInputPoller httpInputPoller;
 	private ScheduledExecutorService scheduledExecutorService;
@@ -41,25 +39,22 @@ class HttpInputPollerTest {
 	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 	private static final String CONTENT_TYPE = "application/n-quads";
 
-	private static ComponentProperties createConfig(String endpoint, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of("url", endpoint, "interval", interval, "continueOnFail", continueOnFail));
+	private static ComponentProperties createConfig(String url, String interval, String continueOnFail) {
+		return new ComponentProperties(Map.of("url", url, "interval", interval, "continueOnFail", continueOnFail));
 	}
 
 	private static ComponentProperties createDefaultTestConfig() {
-		return createConfig(endpoint, "PT1S", "false");
+		return createConfig(BASE_URL + ENDPOINT, "PT1S", "false");
 	}
-
-	public static MockWebServer mockBackEnd;
 
 	@BeforeEach
 	void setUp() {
-		final String baseUrl = "http://localhost:10101";
 		adapter = mock(LdiAdapter.class);
 		executor = mock(ComponentExecutor.class);
 
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
-		httpInputPoller = new HttpInputPoller(executor, adapter, baseUrl + ENDPOINT, true);
+		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, true);
 	}
 
 	@AfterEach
@@ -71,7 +66,7 @@ class HttpInputPollerTest {
 
 	@Test
 	void testClientPolling() {
-		stubFor(get(urlEqualTo(ENDPOINT)).willReturn(ok().withHeader("Content-Type",
+		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type",
 				CONTENT_TYPE).withBody(CONTENT)));
 
 		httpInputPoller.poll();
@@ -80,94 +75,68 @@ class HttpInputPollerTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(InvalidIntervalArgumentsProvider.class)
-	@Disabled
 	void whenInvalidIntervalConfigured_thenCatchException(String interval) {
 		Executable configurePoller = () -> scheduledExecutorService = new HttpInputPollerAutoConfig()
-				.httpInputPollerConfigurator().configure(adapter, executor, createConfig(endpoint, interval, "false"));
+				.httpInputPollerConfigurator()
+				.configure(adapter, executor, createConfig(BASE_URL + ENDPOINT, interval, "false"));
 
 		assertThrows(InvalidPollerConfigException.class, configurePoller);
 	}
 
 	@Test
-	@Disabled
 	void whenPeriodicPolling_thenReturnTwoTimesTheSameResponse() throws InterruptedException {
-		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
-
-		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
+		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 
 		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
 				executor, createDefaultTestConfig());
 
-		verify(adapter, timeout(3000).atLeast(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
-		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
-		assertEquals("GET", recordedRequest.getMethod());
+		Mockito.verify(adapter, timeout(2500).atLeast(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+		WireMock.verify(2, getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
 	@Test
-	@Disabled
-	void whenPeriodicPolling_thenReturnDifferentResponses() throws InterruptedException {
-		final String alternativeContent = "_:b0 <http://schema.org/name> \"John Doe\" .";
-		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
-
-		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(alternativeContent));
-
-		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
-				executor, createDefaultTestConfig());
-
-		verify(adapter, timeout(1500).times(1)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
-		verify(adapter, timeout(1500).times(1)).apply(LdiAdapter.Content.of(alternativeContent, CONTENT_TYPE));
-		RecordedRequest recordedRequest = mockBackEnd.takeRequest();
-		assertEquals("GET", recordedRequest.getMethod());
-	}
-
-	@Test
-	@Disabled
 	void when_OnContinueIsTrueAndPeriodPollingReturnsNot2xx_thenKeepPolling() {
-		mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
-		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
+		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
 		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
-				executor, createConfig(endpoint, "PT1S", "true"));
+				executor, createConfig(BASE_URL + ENDPOINT, "PT1S", "true"));
 
-		verify(adapter, timeout(2000).times(1)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+		Mockito.verify(adapter, after(2000).never()).apply(any());
+		WireMock.verify(new CountMatchingStrategy(CountMatchingStrategy.GREATER_THAN_OR_EQUAL, 2),
+				getRequestedFor(urlEqualTo(ENDPOINT)));
+
 	}
 
 	@Test
-	@Disabled
 	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling() {
-		mockBackEnd.enqueue(new MockResponse().setResponseCode(404));
-		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
+		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
 		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
 				executor, createDefaultTestConfig());
 
-		verify(adapter, after(2000).never()).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+		Mockito.verify(adapter, after(2000).never()).apply(any());
+		WireMock.verify(1, getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
 	@Test
-	@Disabled
 	void when_EndpointDoesNotExist_Then_NoDataIsSent() {
-
-		String wrongEndpoint = endpoint = String.format("http://localhst:%s", mockBackEnd.getPort());
-		httpInputPoller = new HttpInputPoller(executor, adapter, wrongEndpoint, true);
-
-		mockBackEnd.enqueue(new MockResponse().addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
-
-		mockBackEnd.enqueue(new MockResponse());
+		String wrongEndpoint = "/non-existing-resource";
+		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + wrongEndpoint, true);
 
 		httpInputPoller.poll();
-		verify(adapter, after(1000).never()).apply(any());
+
+		WireMock.verify(getRequestedFor(urlEqualTo(wrongEndpoint)));
+		Mockito.verifyNoInteractions(adapter);
 	}
 
 	@Test
-	@Disabled
 	void when_ResponseIsNot200_Then_NoDataIsSent() {
-
-		mockBackEnd.enqueue(
-				new MockResponse().setResponseCode(405).addHeader("Content-Type", CONTENT_TYPE).setBody(CONTENT));
+		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
 		httpInputPoller.poll();
-		verify(adapter, after(1000).never()).apply(any());
+
+		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
+		Mockito.verifyNoInteractions(adapter);
 	}
 
 	static class InvalidIntervalArgumentsProvider implements ArgumentsProvider {
