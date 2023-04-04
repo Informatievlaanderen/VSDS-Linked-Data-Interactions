@@ -14,7 +14,7 @@ outputs:
   - name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut
     config:
       content-type: { any content type supported by Apache Jena }
-      bootstrap-servers: { uri of the bootstrap server }
+      bootstrap-servers: { comma separated list of uris of the bootstrap servers }
       topic: { name of the topic }
 ```
 
