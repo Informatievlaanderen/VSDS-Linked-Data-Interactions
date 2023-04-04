@@ -13,7 +13,11 @@ import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+
+import static java.lang.Thread.sleep;
 
 public class TreeNodeProcessor {
 
@@ -49,6 +53,7 @@ public class TreeNodeProcessor {
 						() -> treeNodeRecordRepository.getOneTreeNodeRecordWithStatus(TreeNodeStatus.MUTABLE_AND_ACTIVE)
 								.orElseThrow(() -> new RuntimeException(
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
+		waitUntilNextVisit(treeNodeRecord);
 		TreeNodeResponse treeNodeResponse = treeNodeFetcher
 				.fetchTreeNode(startingTreeNode.createRequest(treeNodeRecord.getTreeNodeUrl()));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
@@ -64,6 +69,18 @@ public class TreeNodeProcessor {
 				.filter(member -> !memberRepository.isProcessed(member))
 				.forEach(memberRepository::saveTreeMember);
 
+	}
+
+	private void waitUntilNextVisit(TreeNodeRecord treeNodeRecord) {
+		try {
+			LocalDateTime earliestNextVisit = treeNodeRecord.getEarliestNextVisit();
+			if (earliestNextVisit.isAfter(LocalDateTime.now())) {
+				long sleepDuration = LocalDateTime.now().until(earliestNextVisit, ChronoUnit.MILLIS);
+				sleep(sleepDuration);
+			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	public SuppliedMember getMember() {
