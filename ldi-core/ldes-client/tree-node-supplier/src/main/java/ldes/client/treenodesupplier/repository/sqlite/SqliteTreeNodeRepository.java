@@ -1,6 +1,7 @@
 package ldes.client.treenodesupplier.repository.sqlite;
 
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
+import ldes.client.treenodesupplier.domain.services.TreeNodeRecordComparator;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
@@ -36,7 +37,7 @@ public class SqliteTreeNodeRepository implements TreeNodeRecordRepository {
 				.setParameter("treeNodeStatus", treeNodeStatus)
 				.getResultStream()
 				.map(TreeNodeRecordEntity::toTreeNode)
-				.findFirst();
+				.min(new TreeNodeRecordComparator());
 	}
 
 	@Override
