@@ -20,7 +20,7 @@ public class LdioKafkaOut implements LdiOutput {
 	private final KafkaKeyExtractor keyExtractor;
 
 	public LdioKafkaOut(KafkaTemplate<String, String> kafkaTemplate, Lang lang, String topic,
-						KafkaKeyExtractor keyExtractor) {
+			KafkaKeyExtractor keyExtractor) {
 		this.kafkaTemplate = kafkaTemplate;
 		this.lang = lang;
 		this.topic = topic;
