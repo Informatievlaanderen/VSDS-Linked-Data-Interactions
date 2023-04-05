@@ -13,6 +13,7 @@
 
     <modules>
         <module>ldio-http-in</module>
+        <module>ldio-http-in-poller</module>
         <module>ldio-ldes-client</module>
 
         <module>ldio-rdf-adapter</module>
