@@ -3,13 +3,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ObjectIdentifierException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.StatementImpl;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class VersionMaterialiser implements LdiTransformer {
 	private final Property versionPredicate;
@@ -22,36 +20,39 @@ public class VersionMaterialiser implements LdiTransformer {
 
 	@Override
 	public Model apply(Model linkedDataModel) {
-		Model versionMaterialisedModel = ModelFactory.createDefaultModel();
+		final Model versionMaterialisedModel = ModelFactory.createDefaultModel();
 
 		Map<Resource, Resource> versionIDEntityIDMap = getVersionIDEntityIDMap(linkedDataModel, versionPredicate);
 
-		linkedDataModel.listStatements().forEach(statement -> {
-			Resource subject = statement.getSubject();
-			Property predicate = statement.getPredicate();
-			RDFNode object = statement.getObject();
+		List<Statement> deversionedStatements = linkedDataModel.listStatements()
+				.toList().stream()
+				.filter(statement -> !statement.getPredicate().equals(versionPredicate)) // drop isVersionOf stmts
+				.map(statement -> deversionStatement(versionIDEntityIDMap, statement))
+				.toList();
 
-			// Statement needs 'de-versioning', replacing the subject.
-			if (versionIDEntityIDMap.containsKey(statement.getSubject()))
-				subject = versionIDEntityIDMap.get(statement.getSubject());
+		versionMaterialisedModel.add(deversionedStatements);
 
-			// Object references a versioned entity, replace it with the 'de-versioned'
-			// identifier.
-			if (statement.getObject().isResource()
-					&& versionIDEntityIDMap.containsKey(statement.getObject()))
-				object = versionIDEntityIDMap.get(statement.getObject());
-
-			// Don't add isVersionOf statements.
-			if (statement.getPredicate().equals(versionPredicate))
-				return;
-
-			versionMaterialisedModel.add(new StatementImpl(subject, predicate, object));
-		});
-		Model finalVersionMaterialisedModel = versionMaterialisedModel;
 		if (restrictToMembers) {
-			finalVersionMaterialisedModel = reduceToLDESMemberOnlyModel(finalVersionMaterialisedModel);
+			return reduceToLDESMemberOnlyModel(versionMaterialisedModel);
 		}
-		return finalVersionMaterialisedModel;
+		return versionMaterialisedModel;
+	}
+
+	private Statement deversionStatement(Map<Resource, Resource> versionIdEntityIdMap, Statement statement) {
+		Resource subject = statement.getSubject();
+		RDFNode object = statement.getObject();
+
+		// Statement needs 'de-versioning', replacing the subject.
+		if (versionIdEntityIdMap.containsKey(subject))
+			subject = versionIdEntityIdMap.get(subject);
+
+		// Object references a versioned entity, replace it with the 'de-versioned'
+		// identifier.
+		if (statement.getObject().isResource()
+				&& versionIdEntityIdMap.containsKey(object))
+			object = versionIdEntityIdMap.get(object);
+
+		return new StatementImpl(subject, statement.getPredicate(), object);
 	}
 
 	private static Map<Resource, Resource> getVersionIDEntityIDMap(Model model, Property isVersionOfPredicate) {
@@ -79,7 +80,7 @@ public class VersionMaterialiser implements LdiTransformer {
 		Model ldesMemberModel = ModelFactory.createDefaultModel();
 
 		// LDES Member statements
-		inputModel.listStatements(null, new PropertyImpl(Tree.MEMBER.toString()), (RDFNode) null)
+		inputModel.listStatements(null, createProperty(Tree.MEMBER.toString()), (RDFNode) null)
 				.forEach(memberStatement -> subjectsOfIncludedStatements.push((Resource) memberStatement.getObject()));
 
 		/*
