@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.InvalidPollerConfigException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -42,7 +41,8 @@ public class HttpInputPollerAutoConfig {
 			try {
 				seconds = Duration.parse(pollingInterval).getSeconds();
 			} catch (DateTimeParseException e) {
-				throw new InvalidPollerConfigException(INTERVAL, pollingInterval);
+				throw new IllegalArgumentException("Invalid config for the ldio http in poller: " + INTERVAL
+						+ " cannot have following value: " + pollingInterval);
 			}
 
 			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint, continueOnFail);

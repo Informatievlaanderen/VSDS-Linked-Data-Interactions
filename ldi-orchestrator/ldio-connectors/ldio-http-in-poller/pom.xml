@@ -11,7 +11,7 @@
     <artifactId>ldio-http-in-poller</artifactId>
 
     <properties>
-        <io-projectreactor>3.0.5</io-projectreactor>
+        <projectreactor.version>3.5.4</projectreactor.version>
     </properties>
 
     <dependencies>
@@ -30,7 +30,7 @@
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
-            <version>3.5.4</version>
+            <version>${projectreactor.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

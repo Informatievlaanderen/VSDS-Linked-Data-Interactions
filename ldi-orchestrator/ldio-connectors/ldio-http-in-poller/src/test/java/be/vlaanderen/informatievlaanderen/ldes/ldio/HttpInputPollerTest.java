@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.InvalidPollerConfigException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.function.Executable;
@@ -30,29 +29,17 @@ import static org.mockito.Mockito.*;
 
 @WireMockTest(httpPort = 10101)
 class HttpInputPollerTest {
-	private LdiAdapter adapter;
+	private final LdiAdapter adapter = mock(LdiAdapter.class);
+	private final ComponentExecutor executor = mock(ComponentExecutor.class);
 	private static final String BASE_URL = "http://localhost:10101";
 	private static final String ENDPOINT = "/resource";
-	private ComponentExecutor executor;
+	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
+	private static final String CONTENT_TYPE = "application/n-quads";
 	private HttpInputPoller httpInputPoller;
 	private ScheduledExecutorService scheduledExecutorService;
 
-	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
-	private static final String CONTENT_TYPE = "application/n-quads";
-
-	private static ComponentProperties createConfig(String url, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of(URL, url, INTERVAL, interval, CONTINUE_ON_FAIL, continueOnFail));
-	}
-
-	private static ComponentProperties createDefaultTestConfig() {
-		return createConfig(BASE_URL + ENDPOINT, "PT1S", "false");
-	}
-
 	@BeforeEach
 	void setUp() {
-		adapter = mock(LdiAdapter.class);
-		executor = mock(ComponentExecutor.class);
-
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
 		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, true);
@@ -81,11 +68,11 @@ class HttpInputPollerTest {
 				.httpInputPollerConfigurator()
 				.configure(adapter, executor, createConfig(BASE_URL + ENDPOINT, interval, "false"));
 
-		assertThrows(InvalidPollerConfigException.class, configurePoller);
+		assertThrows(IllegalArgumentException.class, configurePoller);
 	}
 
 	@Test
-	void whenPeriodicPolling_thenReturnTwoTimesTheSameResponse() throws InterruptedException {
+	void whenPeriodicPolling_thenReturnTwoTimesTheSameResponse() {
 		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 
 		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
@@ -140,10 +127,19 @@ class HttpInputPollerTest {
 		Mockito.verifyNoInteractions(adapter);
 	}
 
+	private static ComponentProperties createConfig(String url, String interval, String continueOnFail) {
+		return new ComponentProperties(Map.of(URL, url, INTERVAL, interval, CONTINUE_ON_FAIL, continueOnFail));
+	}
+
+	private static ComponentProperties createDefaultTestConfig() {
+		return createConfig(BASE_URL + ENDPOINT, "PT1S", "false");
+	}
+
 	static class InvalidIntervalArgumentsProvider implements ArgumentsProvider {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(Arguments.of("P12S"), Arguments.of("Invalid time"), Arguments.of("0 * * * * ?"));
 		}
 	}
+
 }
