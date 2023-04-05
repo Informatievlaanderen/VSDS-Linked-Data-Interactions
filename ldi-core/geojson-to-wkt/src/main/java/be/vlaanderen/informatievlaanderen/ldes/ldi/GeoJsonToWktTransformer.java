@@ -1,16 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
-import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.rdf.model.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -41,9 +34,13 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 
 	private Statement createNewGeometryStatement(Statement oldStatement, Model geometryModel) {
 		final String wktString = wktConverter.getWktFromModel(geometryModel);
-		final Literal wktLiteral = ResourceFactory.createTypedLiteral(wktString, WKTDatatype.INSTANCE);
+		final Literal wktLiteral = ResourceFactory.createTypedLiteral(wktString, getWktLiteralDataType());
 		final Property geometryPredicate = ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry");
 		return ResourceFactory.createStatement(oldStatement.getSubject(), geometryPredicate, wktLiteral);
+	}
+
+	private RDFDatatype getWktLiteralDataType() {
+		return TypeMapper.getInstance().getSafeTypeByName("http://www.opengis.net/ont/geosparql#wktLiteral");
 	}
 
 	private Model createModelWithChildStatements(Model model, Statement statement) {
