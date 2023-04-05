@@ -17,6 +17,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
+
 @Configuration
 @EnableConfigurationProperties
 @ComponentScan(value = "be.vlaanderen.informatievlaanderen.ldes")
@@ -32,16 +34,15 @@ public class HttpInputPollerAutoConfig {
 		@Override
 		public ScheduledExecutorService configure(LdiAdapter adapter, ComponentExecutor executor,
 				ComponentProperties properties) {
-			String endpoint = properties.getProperty("url");
-			String pollingInterval = properties.getProperty("interval");
-			Boolean continueOnFail = Boolean
-					.valueOf(properties.getOptionalProperty("continueOnFail").orElse("true"));
+			String endpoint = properties.getProperty(URL);
+			String pollingInterval = properties.getProperty(INTERVAL);
+			boolean continueOnFail = properties.getOptionalBoolean(CONTINUE_ON_FAIL).orElse(true);
 
 			long seconds;
 			try {
 				seconds = Duration.parse(pollingInterval).getSeconds();
 			} catch (DateTimeParseException e) {
-				throw new InvalidPollerConfigException("pipelines.input.config.interval", pollingInterval);
+				throw new InvalidPollerConfigException(INTERVAL, pollingInterval);
 			}
 
 			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint, continueOnFail);

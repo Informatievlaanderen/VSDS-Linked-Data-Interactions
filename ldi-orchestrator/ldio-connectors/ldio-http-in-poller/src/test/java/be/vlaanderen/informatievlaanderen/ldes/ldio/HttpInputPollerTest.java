@@ -22,6 +22,7 @@ import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +41,7 @@ class HttpInputPollerTest {
 	private static final String CONTENT_TYPE = "application/n-quads";
 
 	private static ComponentProperties createConfig(String url, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of("url", url, "interval", interval, "continueOnFail", continueOnFail));
+		return new ComponentProperties(Map.of(URL, url, INTERVAL, interval, CONTINUE_ON_FAIL, continueOnFail));
 	}
 
 	private static ComponentProperties createDefaultTestConfig() {

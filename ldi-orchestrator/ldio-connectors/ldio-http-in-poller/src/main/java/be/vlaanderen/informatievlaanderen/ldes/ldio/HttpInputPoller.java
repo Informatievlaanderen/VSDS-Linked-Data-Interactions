@@ -12,18 +12,18 @@ import reactor.core.publisher.Mono;
 
 public class HttpInputPoller extends LdiInput {
 	private final WebClient client;
-	private final Boolean continueOnFail;
+	private final boolean continueOnFail;
 	private final String endpoint;
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpInputPoller.class);
 
-	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, String endpoint, Boolean continueOnFail) {
+	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, String endpoint, boolean continueOnFail) {
 		super(executor, adapter);
 		this.endpoint = endpoint;
 		this.client = WebClient.create(endpoint);
 		this.continueOnFail = continueOnFail;
 	}
 
-	public Mono<String> handleResponse(ClientResponse response) {
+	private Mono<String> handleResponse(ClientResponse response) {
 		if (response.statusCode().is2xxSuccessful()) {
 			var contentType = response.headers().contentType().orElseThrow().toString();
 			return response.bodyToMono(String.class)
@@ -41,7 +41,7 @@ public class HttpInputPoller extends LdiInput {
 					.doOnError(throwable -> LOGGER.error(throwable.getMessage()))
 					.block();
 		} catch (Exception e) {
-			if (Boolean.FALSE.equals(continueOnFail)) {
+			if (!continueOnFail) {
 				throw e;
 			}
 		}
