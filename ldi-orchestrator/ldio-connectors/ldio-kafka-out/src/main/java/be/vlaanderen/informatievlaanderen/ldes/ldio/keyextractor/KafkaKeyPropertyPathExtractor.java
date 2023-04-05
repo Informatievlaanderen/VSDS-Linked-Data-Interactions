@@ -8,7 +8,7 @@ public class KafkaKeyPropertyPathExtractor implements KafkaKeyExtractor {
 	private final String queryString;
 
 	public KafkaKeyPropertyPathExtractor(String propertyPath) {
-		queryString = "SELECT * where { ?s %s ?o }".formatted(propertyPath);
+		queryString = "SELECT * where { ?subject %s ?object }".formatted(propertyPath);
 	}
 
 	@Override
@@ -16,7 +16,7 @@ public class KafkaKeyPropertyPathExtractor implements KafkaKeyExtractor {
 		final Query query = QueryFactory.create(queryString);
 		try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
 			ResultSet resultSet = queryExecution.execSelect();
-			return resultSet.hasNext() ? resultSet.next().get("o").toString() : null;
+			return resultSet.hasNext() ? resultSet.next().get("object").toString() : null;
 		}
 	}
 
