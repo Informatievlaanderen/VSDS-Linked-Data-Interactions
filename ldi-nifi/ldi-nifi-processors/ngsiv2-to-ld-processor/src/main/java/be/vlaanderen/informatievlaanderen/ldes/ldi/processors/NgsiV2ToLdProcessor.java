@@ -64,6 +64,7 @@ public class NgsiV2ToLdProcessor extends AbstractProcessor {
 			ngsiV2ToLdAdapter.apply(LdiAdapter.Content.of(content, mimeType))
 					.forEach(model -> FlowManager.sendRDFToRelation(session, flowFile, model, SUCCESS, Lang.JSONLD));
 		} catch (Exception e) {
+			getLogger().error("Error transforming input to json-ld: {}", e.getMessage());
 			FlowManager.sendRDFToRelation(session, flowFile, content, FAILURE, Lang.JSONLD);
 		}
 	}
