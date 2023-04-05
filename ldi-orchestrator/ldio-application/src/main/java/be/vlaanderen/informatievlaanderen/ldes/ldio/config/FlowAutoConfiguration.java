@@ -1,16 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentDefinition;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.LdiSender;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,6 +21,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @Configuration
 @ComponentScan
@@ -67,8 +70,8 @@ public class FlowAutoConfiguration {
 		String pipeLineName = config.getName();
 
 		Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
-		inputConfig.put("orchestrator.name", orchestratorConfig.getName());
-		inputConfig.put("pipeline.name", pipeLineName);
+		inputConfig.put(ORCHESTRATOR_NAME, orchestratorConfig.getName());
+		inputConfig.put(PIPELINE_NAME, pipeLineName);
 
 		Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(inputConfig));
 

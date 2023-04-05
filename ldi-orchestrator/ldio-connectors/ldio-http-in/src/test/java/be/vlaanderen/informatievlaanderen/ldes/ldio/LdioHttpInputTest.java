@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInAutoConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +32,7 @@ class LdioHttpInputTest {
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
 		RouterFunction<?> routerFunction = (RouterFunction<?>) new LdioHttpInAutoConfig.LdioHttpInConfigurator()
-				.configure(adapter, executor, new ComponentProperties(Map.of("pipeline.name", endpoint)));
+				.configure(adapter, executor, new ComponentProperties(Map.of(PIPELINE_NAME, endpoint)));
 
 		client = WebTestClient
 				.bindToRouterFunction(routerFunction)

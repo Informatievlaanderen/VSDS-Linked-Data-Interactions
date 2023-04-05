@@ -1,11 +1,13 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdioKafkaOutAutoConfigTest {
@@ -38,8 +40,8 @@ class LdioKafkaOutAutoConfigTest {
 		Map<String, String> config = new HashMap<>();
 		config.put(KafkaOutConfigKeys.BOOTSTRAP_SERVERS, "servers");
 		config.put(KafkaOutConfigKeys.TOPIC, "topic1");
-		config.put("orchestrator.name", "orchestrator.name");
-		config.put("pipeline.name", "pipeline.name");
+		config.put(ORCHESTRATOR_NAME, "orchestrator.name");
+		config.put(PIPELINE_NAME, "pipeline.name");
 		return config;
 	}
 

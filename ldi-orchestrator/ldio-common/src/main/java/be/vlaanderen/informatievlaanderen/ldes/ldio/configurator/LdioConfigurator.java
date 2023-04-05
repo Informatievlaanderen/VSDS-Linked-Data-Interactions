@@ -1,6 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.config;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.configurator;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 
 public interface LdioConfigurator {
 	LdiComponent configure(ComponentProperties properties);

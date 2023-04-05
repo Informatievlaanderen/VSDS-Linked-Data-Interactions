@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -21,14 +21,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.AUTO_OFFSET_RESET;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.BOOTSTRAP_SERVERS;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.CONTENT_TYPE;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.GROUP_ID;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.SASL_JAAS_PASSWORD;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.SASL_JAAS_USER;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.SECURITY_PROTOCOL;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.TOPICS;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @Configuration
 public class LdioKafkaInAutoConfig {
@@ -93,8 +88,8 @@ public class LdioKafkaInAutoConfig {
 		}
 
 		private String defineUniqueGroupName(ComponentProperties config) {
-			return String.format("ldio-%s-%s", config.getProperty("orchestrator.name"),
-					config.getProperty("pipeline.name"));
+			return String.format("ldio-%s-%s", config.getProperty(ORCHESTRATOR_NAME),
+					config.getProperty(PIPELINE_NAME));
 		}
 	}
 }
