@@ -10,10 +10,29 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
     <artifactId>ldi-api</artifactId>
 
+    <properties>
+        <sis-epsg.version>1.3</sis-epsg.version>
+        <derby.version>10.14.2.0</derby.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
+        </dependency>
+
+        <!-- Jena dependencies to support exotic Coordinate Systems -->
+        <dependency>
+            <groupId>org.apache.sis.non-free</groupId>
+            <artifactId>sis-epsg</artifactId>
+            <version>${sis-epsg.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${derby.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- TESTING-->
