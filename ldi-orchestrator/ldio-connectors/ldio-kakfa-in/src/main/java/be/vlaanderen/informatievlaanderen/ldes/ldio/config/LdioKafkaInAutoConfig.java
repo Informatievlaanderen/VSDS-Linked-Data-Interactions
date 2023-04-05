@@ -24,6 +24,7 @@ import java.util.Map;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
 public class LdioKafkaInAutoConfig {
@@ -37,6 +38,8 @@ public class LdioKafkaInAutoConfig {
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties config) {
+			verifyAdapterPresent(config.getProperty(PIPELINE_NAME), adapter);
+
 			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(executor, adapter, getContentType(config));
 			var consumerFactory = new DefaultKafkaConsumerFactory<>(getConsumerConfig(config));
 			ContainerProperties containerProps = new ContainerProperties(config.getProperty(TOPICS).split(","));

@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
 @EnableConfigurationProperties()
@@ -34,6 +35,7 @@ public class LdioHttpInAutoConfig {
 				ComponentExecutor executor,
 				ComponentProperties config) {
 			String pipelineName = config.getProperty(PIPELINE_NAME);
+			verifyAdapterPresent(pipelineName, adapter);
 
 			LdioHttpIn ldioHttpIn = new LdioHttpIn(executor, adapter, pipelineName);
 
