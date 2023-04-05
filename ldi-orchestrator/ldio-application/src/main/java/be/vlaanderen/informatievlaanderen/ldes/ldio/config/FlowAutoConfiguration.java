@@ -12,6 +12,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.services.LdiSender;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -21,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
@@ -28,6 +31,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Configuration
 @ComponentScan
 public class FlowAutoConfiguration {
+	private static final Logger LOGGER = LoggerFactory.getLogger(FlowAutoConfiguration.class);
 	private final OrchestratorConfig orchestratorConfig;
 	private final ConfigurableApplicationContext configContext;
 	private final ApplicationEventPublisher eventPublisher;
@@ -63,8 +67,16 @@ public class FlowAutoConfiguration {
 	public void initialiseLdiInput(PipelineConfig config) {
 		LdioInputConfigurator configurator = (LdioInputConfigurator) configContext.getBean(
 				config.getInput().getName());
-		LdiAdapter adapter = (LdiAdapter) getLdiComponent(config.getInput().getAdapter().getName(),
-				config.getInput().getAdapter().getConfig());
+
+		LdiAdapter adapter = Optional.ofNullable(config.getInput().getAdapter())
+				.map(adapterConfig -> (LdiAdapter) getLdiComponent(adapterConfig.getName(), adapterConfig.getConfig()))
+				.orElseGet(() -> {
+					LOGGER.warn(
+							"No adapter configured for pipeline %s. Please verify this is a desired scenario."
+									.formatted(config.getName()));
+					return null;
+				});
+
 		ComponentExecutor executor = componentExecutor(config);
 
 		String pipeLineName = config.getName();
