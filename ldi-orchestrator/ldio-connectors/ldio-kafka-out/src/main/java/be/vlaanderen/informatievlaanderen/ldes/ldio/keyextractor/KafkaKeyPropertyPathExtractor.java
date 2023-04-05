@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor;
 
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathLib;
@@ -30,8 +29,7 @@ public class KafkaKeyPropertyPathExtractor implements KafkaKeyExtractor {
         final Query query = QueryFactory.create(queryString);
         try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
             ResultSet resultSet = queryExecution.execSelect();
-            RDFNode node = resultSet.next().get("o");
-            return node.toString();
+            return resultSet.hasNext() ? resultSet.next().get("o").toString() : null;
         }
     }
 

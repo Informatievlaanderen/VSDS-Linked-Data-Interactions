@@ -6,11 +6,13 @@ import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class KafkaKeyPropertyPathExtractorTest {
 
     @Test
-    void shouldFollowTheLinkedPath() {
+    void shouldReturnLiteralStringWhenLinkedPath() {
         String modelString = """
             <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
             <https://example.com/hindrances/zones/a> <https://data.com/ns/mobiliteit#Zone.type> 'my-zone-type' .
@@ -26,7 +28,7 @@ class KafkaKeyPropertyPathExtractorTest {
     }
 
     @Test
-    void name2() {
+    void shouldReturnLiteralStringWhenSimplePath() {
         String modelString = """
             <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> 'my-zone-type' .
             """;
@@ -41,7 +43,23 @@ class KafkaKeyPropertyPathExtractorTest {
     }
 
     @Test
-    void name3() {
+    void shouldReturnAnyResultStringWhenMultipleResults() {
+        String modelString = """
+            <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> 'my-zone-type' .
+            <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> 'other-zone-type' .
+            """;
+        Model model = RDFParser.fromString(modelString).lang(Lang.NQUADS).build().toModel();
+
+        KafkaKeyPropertyPathExtractor extractor =
+                KafkaKeyPropertyPathExtractor.from("<https://data.com/ns/mobiliteit#zone>");
+
+        String result = extractor.getKey(model);
+
+        assertTrue(result.contains("-zone-type"));
+    }
+
+    @Test
+    void shouldReturnUriAsStringWhenObjectIsResource() {
         String modelString = """
             <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
             """;
@@ -56,7 +74,7 @@ class KafkaKeyPropertyPathExtractorTest {
     }
 
     @Test
-    void name4() {
+    void shouldReturnNullIfPathIsNotFound() {
         String modelString = """
             <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
             """;
@@ -65,8 +83,6 @@ class KafkaKeyPropertyPathExtractorTest {
         KafkaKeyPropertyPathExtractor extractor =
                 KafkaKeyPropertyPathExtractor.from("<https://not-existing>");
 
-        String result = extractor.getKey(model);
-
-        assertEquals("https://example.com/hindrances/zones/a", result);
+        assertNull(extractor.getKey(model));
     }
 }
