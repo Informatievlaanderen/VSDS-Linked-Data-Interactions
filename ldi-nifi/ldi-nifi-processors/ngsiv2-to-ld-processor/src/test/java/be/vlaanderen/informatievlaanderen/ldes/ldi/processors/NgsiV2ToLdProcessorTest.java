@@ -20,11 +20,11 @@ class NgsiV2ToLdProcessorTest {
 
 	@Test
 	void when_translatingNgsiV2ToLD_expectSuccess() throws IOException {
-		String DATA_IDENTIFIER = "data";
-		String CORE_CONTEXT = "http://localhost:10101/ngsi-ld-core-context.json";
-		String LD_CONTEXT = "http://localhost:10101/water-quality-observed-context.json";
+		final String DATA_IDENTIFIER = "data";
+		final String CORE_CONTEXT = "http://localhost:10101/ngsi-ld-core-context.json";
+		final String LD_CONTEXT = "http://localhost:10101/water-quality-observed-context.json";
 
-		String ngsiV2Content = Files.readString(Path.of("src/test/resources/ngsiV2_wqo_input.json"));
+		final String ngsiV2Content = Files.readString(Path.of("src/test/resources/ngsiV2_wqo_input.json"));
 
 		testRunner.setProperty("DATA_IDENTIFIER", DATA_IDENTIFIER);
 		testRunner.setProperty("CORE_CONTEXT", CORE_CONTEXT);
@@ -39,11 +39,11 @@ class NgsiV2ToLdProcessorTest {
 
 	@Test
 	void testFailFlow() throws Exception {
-		String DATA_IDENTIFIER = "data";
-		String CORE_CONTEXT = "http://localhost:10101/ngsi-ld-core-context.json";
-		String LD_CONTEXT = "http://localhost:10101/water-quality-observed-context.json";
+		final String DATA_IDENTIFIER = "data";
+		final String CORE_CONTEXT = "http://localhost:10101/ngsi-ld-core-context.json";
+		final String LD_CONTEXT = "http://localhost:10101/water-quality-observed-context.json";
 
-		String ngsiV2Content = Files.readString(Path.of("src/test/resources/ngsiV2_wqo_input.json"));
+		final String ngsiV2Content = Files.readString(Path.of("src/test/resources/ngsiV2_wqo_input.json"));
 
 		testRunner.setProperty("DATA_IDENTIFIER", DATA_IDENTIFIER);
 		testRunner.setProperty("CORE_CONTEXT", CORE_CONTEXT);
