@@ -50,7 +50,7 @@ class LdioHttpInputTest {
 				.header("Content-Type", contentType)
 				.exchange()
 				.expectStatus()
-				.isNoContent();
+				.isOk();
 
 		verify(adapter).apply(LdiAdapter.Content.of(content, contentType));
 	}
