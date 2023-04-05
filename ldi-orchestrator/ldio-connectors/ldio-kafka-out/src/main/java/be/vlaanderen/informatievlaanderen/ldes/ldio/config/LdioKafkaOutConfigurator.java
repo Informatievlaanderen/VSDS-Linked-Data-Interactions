@@ -44,7 +44,7 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 	private KafkaKeyExtractor determineKafkaKeyExtractor(ComponentProperties config) {
 		final String propertyPath = config.getOptionalProperty(KEY_PROPERTY_PATH).orElse(null);
 		if (propertyPath != null) {
-			return KafkaKeyPropertyPathExtractor.from(propertyPath);
+			return new KafkaKeyPropertyPathExtractor(propertyPath);
 		} else {
 			return new EmptyKafkaKeyExtractor();
 		}

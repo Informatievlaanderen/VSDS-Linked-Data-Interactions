@@ -20,7 +20,7 @@ class KafkaKeyPropertyPathExtractorTest {
         Model model = RDFParser.fromString(modelString).lang(Lang.NQUADS).build().toModel();
 
         KafkaKeyPropertyPathExtractor extractor =
-                KafkaKeyPropertyPathExtractor.from("<https://data.com/ns/mobiliteit#zone>/<https://data.com/ns/mobiliteit#Zone.type>");
+                new KafkaKeyPropertyPathExtractor("<https://data.com/ns/mobiliteit#zone>/<https://data.com/ns/mobiliteit#Zone.type>");
 
         String result = extractor.getKey(model);
 
@@ -35,7 +35,7 @@ class KafkaKeyPropertyPathExtractorTest {
         Model model = RDFParser.fromString(modelString).lang(Lang.NQUADS).build().toModel();
 
         KafkaKeyPropertyPathExtractor extractor =
-                KafkaKeyPropertyPathExtractor.from("<https://data.com/ns/mobiliteit#zone>");
+                new KafkaKeyPropertyPathExtractor("<https://data.com/ns/mobiliteit#zone>");
 
         String result = extractor.getKey(model);
 
@@ -51,7 +51,7 @@ class KafkaKeyPropertyPathExtractorTest {
         Model model = RDFParser.fromString(modelString).lang(Lang.NQUADS).build().toModel();
 
         KafkaKeyPropertyPathExtractor extractor =
-                KafkaKeyPropertyPathExtractor.from("<https://data.com/ns/mobiliteit#zone>");
+                new KafkaKeyPropertyPathExtractor("<https://data.com/ns/mobiliteit#zone>");
 
         String result = extractor.getKey(model);
 
@@ -66,7 +66,7 @@ class KafkaKeyPropertyPathExtractorTest {
         Model model = RDFParser.fromString(modelString).lang(Lang.NQUADS).build().toModel();
 
         KafkaKeyPropertyPathExtractor extractor =
-                KafkaKeyPropertyPathExtractor.from("<https://data.com/ns/mobiliteit#zone>");
+                new KafkaKeyPropertyPathExtractor("<https://data.com/ns/mobiliteit#zone>");
 
         String result = extractor.getKey(model);
 
@@ -81,7 +81,7 @@ class KafkaKeyPropertyPathExtractorTest {
         Model model = RDFParser.fromString(modelString).lang(Lang.NQUADS).build().toModel();
 
         KafkaKeyPropertyPathExtractor extractor =
-                KafkaKeyPropertyPathExtractor.from("<https://not-existing>");
+                new KafkaKeyPropertyPathExtractor("<https://not-existing>");
 
         assertNull(extractor.getKey(model));
     }
