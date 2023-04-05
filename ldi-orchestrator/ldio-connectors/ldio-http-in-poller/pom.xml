@@ -16,11 +16,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>http-input-poller</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
             <version>${spring-boot.version}</version>
