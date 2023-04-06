@@ -1,12 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdesClientRunner;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.requestexecutor.domain.services.RequestExecutorFactory;
 import ldes.client.requestexecutor.domain.valueobjects.AuthStrategy;
 import ldes.client.requestexecutor.executor.RequestExecutor;
@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 import static ldes.client.requestexecutor.domain.valueobjects.AuthStrategy.NO_AUTH;
 
 @Configuration
@@ -31,9 +33,11 @@ public class LdioLdesClientAutoConfig {
 	public static class LdioLdesClientConfigurator implements LdioInputConfigurator {
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor,
-				ComponentProperties properties) {
-			RequestExecutor requestExecutor = getRequestExecutor(properties);
-			LdesClientRunner ldesClientRunner = new LdesClientRunner(requestExecutor, properties, executor);
+				ComponentProperties config) {
+			verifyAdapterPresent(config.getProperty(PIPELINE_NAME), adapter);
+
+			RequestExecutor requestExecutor = getRequestExecutor(config);
+			LdesClientRunner ldesClientRunner = new LdesClientRunner(requestExecutor, config, executor);
 			return new LdioLdesClient(executor, ldesClientRunner);
 		}
 

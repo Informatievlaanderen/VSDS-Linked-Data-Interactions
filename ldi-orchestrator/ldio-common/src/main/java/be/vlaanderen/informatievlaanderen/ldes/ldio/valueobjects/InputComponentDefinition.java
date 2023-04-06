@@ -1,7 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.config;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
 public class InputComponentDefinition extends ComponentDefinition {
-	ComponentDefinition adapter;
+	private ComponentDefinition adapter;
 
 	public ComponentDefinition getAdapter() {
 		return adapter;
