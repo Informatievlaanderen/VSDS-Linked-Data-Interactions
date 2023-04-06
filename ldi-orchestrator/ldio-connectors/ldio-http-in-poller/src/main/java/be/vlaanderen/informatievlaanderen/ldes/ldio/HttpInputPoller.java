@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.UnsuccesfulPollingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +32,18 @@ public class HttpInputPoller extends LdiInput {
 		try {
 			Response response = requestExecutor.execute(request);
 			if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
-				String contentType = response.getFirstHeaderValue("Content-Type").orElseThrow();
+				String contentType = response.getFirstHeaderValue("Content-Type")
+						.orElseThrow(() -> new MissingHeaderException(response.getHttpStatus(), request.getUrl()));
 				String content = response.getBody().orElseThrow();
 				getAdapter().apply(LdiAdapter.Content.of(content, contentType))
 						.forEach(getExecutor()::transformLinkedData);
 			} else {
 				throw new UnsuccesfulPollingException(response.getHttpStatus(), request.getUrl());
+			}
+		} catch (MissingHeaderException e) {
+			LOGGER.error("Headers does not contain 'Content-Type'");
+			if (!continueOnFail) {
+				throw e;
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
