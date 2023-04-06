@@ -26,7 +26,7 @@ class LdioKafkaInAutoConfigTest {
 				() -> configurator.configure((content) -> Stream.of(), null, componentProperties));
 
 		assertEquals("java.lang.IllegalArgumentException: Invalid 'security-protocol', " +
-						"the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]", exception.getMessage());
+				"the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]", exception.getMessage());
 	}
 
 	@Test
