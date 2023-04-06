@@ -10,9 +10,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioKafkaOutAutoConfi
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParserBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
+import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import java.util.ArrayList;
@@ -28,16 +30,26 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@EmbeddedKafka(brokerProperties = { "listeners=PLAINTEXT://localhost:9095", "port=9095" })
+//@EmbeddedKafka(brokerProperties = { "listeners=PLAINTEXT://localhost:9095", "port=9095" })
 class KafkaIntegrationTest {
 
 	final LdioKafkaOutAutoConfig autoConfig = new LdioKafkaOutAutoConfig();
 
-	private final String topic = "embedded-test-topic";
+	private static final String topic = "embedded-test-topic";
 	private final String bootstrapServer = "localhost:9095";
 	private final String kafkaOutContentType = "text/turtle";
 
 	private List<LdiAdapter.Content> result;
+
+	private static EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaBroker(1, true, 1);
+
+	@BeforeAll
+	static void foo() {
+		embeddedKafkaBroker.kafkaPorts(9095);
+		embeddedKafkaBroker.ad
+		embeddedKafkaBroker.afterPropertiesSet();
+		embeddedKafkaBroker.addTopics(topic);
+	}
 
 	@BeforeEach
 	void setUp() {
