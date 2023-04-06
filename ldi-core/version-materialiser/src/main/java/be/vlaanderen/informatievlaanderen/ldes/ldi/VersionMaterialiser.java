@@ -43,14 +43,16 @@ public class VersionMaterialiser implements LdiTransformer {
 		RDFNode object = statement.getObject();
 
 		// Statement needs 'de-versioning', replacing the subject.
-		if (versionIdEntityIdMap.containsKey(subject))
+		if (versionIdEntityIdMap.containsKey(subject)) {
 			subject = versionIdEntityIdMap.get(subject);
+		}
 
 		// Object references a versioned entity, replace it with the 'de-versioned'
 		// identifier.
 		if (statement.getObject().isResource()
-				&& versionIdEntityIdMap.containsKey(object))
+				&& versionIdEntityIdMap.containsKey(object)) {
 			object = versionIdEntityIdMap.get(object);
+		}
 
 		return new StatementImpl(subject, statement.getPredicate(), object);
 	}
