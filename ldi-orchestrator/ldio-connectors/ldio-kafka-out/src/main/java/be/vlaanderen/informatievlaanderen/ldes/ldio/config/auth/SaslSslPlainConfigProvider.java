@@ -12,7 +12,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfig
 
 public class SaslSslPlainConfigProvider {
 
-	public Map<String, ?> createSaslSslPlainConfig(ComponentProperties config) {
+	public Map<String, Object> createSaslSslPlainConfig(ComponentProperties config) {
 		final Map<String, Object> properties = new HashMap<>();
 		properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
 		properties.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
