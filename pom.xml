@@ -266,6 +266,8 @@
                             <excludes>
                                 <exclude>META-INF/**</exclude>
                             </excludes>
+                            <destFile>${sonar.coverage.jacoco.xmlReportPaths}</destFile>
+                            <append>true</append>
                         </configuration>
                         <executions>
                             <execution>
