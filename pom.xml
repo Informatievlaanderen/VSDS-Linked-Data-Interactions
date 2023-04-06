@@ -285,6 +285,7 @@
                                     <formats>
                                         <format>XML</format>
                                     </formats>
+                                    <append>true</append>
                                 </configuration>
                             </execution>
                         </executions>
