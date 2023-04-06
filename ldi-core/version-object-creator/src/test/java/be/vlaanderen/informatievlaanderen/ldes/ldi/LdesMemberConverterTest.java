@@ -61,7 +61,7 @@ class LdesMemberConverterTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(JsonLDFileArgumentsProvider.class)
-	void shouldMatchCountOfObjects(String fileName, String expectedId, String memberType)
+	void shouldMatchCountOfObjects(String fileName, String expectedId, LocalDateTime startTestTime, String memberType)
 			throws IOException, URISyntaxException {
 
 		Model model = RDFParserBuilder.create().fromString(getJsonString(fileName)).lang(Lang.JSONLD).toModel();
@@ -71,11 +71,17 @@ class LdesMemberConverterTest {
 
 		Model versionObject = versionObjectCreator.apply(model);
 
-		assertTrue(
-				versionObject.listStatements()
-						.toList()
-						.stream()
-						.anyMatch(stmt -> stmt.getSubject().toString().contains(expectedId)));
+		final String minuteTheTestStarted = getPartOfLocalDateTime(startTestTime);
+		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(startTestTime.plusMinutes(1));
+		assertTrue(versionObject.listStatements()
+				.toList()
+				.stream()
+				.anyMatch(stmt -> stmt.getSubject().toString().contains(expectedId + minuteTheTestStarted) ||
+						stmt.getSubject().toString().contains(expectedId + minuteAfterTheTestStarted)));
+	}
+
+	private String getPartOfLocalDateTime(LocalDateTime time) {
+		return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:"));
 	}
 
 	private String getJsonString(String resource) throws URISyntaxException, IOException {
@@ -88,22 +94,20 @@ class LdesMemberConverterTest {
 
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+			final LocalDateTime now = LocalDateTime.now();
 			return Stream.of(
 					Arguments.of("example-waterqualityobserved.json",
-							"urn:ngsi-v2:cot-imec-be:WaterQualityObserved:imec-iow-3orY3reQDK5n3TMpPnLVYR/"
-									+ getPartOfLocalDateTime(),
+							"urn:ngsi-v2:cot-imec-be:WaterQualityObserved:imec-iow-3orY3reQDK5n3TMpPnLVYR/",
+							now,
 							"https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved"),
 					Arguments.of("example-device.json",
-							"urn:ngsi-v2:cot-imec-be:Device:imec-iow-UR5gEycRuaafxnhvjd9jnU/"
-									+ getPartOfLocalDateTime(),
+							"urn:ngsi-v2:cot-imec-be:Device:imec-iow-UR5gEycRuaafxnhvjd9jnU/",
+							now,
 							"https://uri.etsi.org/ngsi-ld/default-context/Device"),
 					Arguments.of("example-device-model.json",
-							"urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005/" + getPartOfLocalDateTime(),
+							"urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005/",
+							now,
 							"https://uri.etsi.org/ngsi-ld/default-context/DeviceModel"));
-		}
-
-		private String getPartOfLocalDateTime() {
-			return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:"));
 		}
 	}
 

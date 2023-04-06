@@ -1,31 +1,28 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.KafkaOutAuthStrategy;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.SaslSslPlainConfigProvider;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.EmptyKafkaKeyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.KafkaKeyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.KafkaKeyPropertyPathExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.BOOTSTRAP_SERVERS;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.CONTENT_TYPE;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.KEY_PROPERTY_PATH;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.SECURITY_PROTOCOL;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.TOPIC;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.KafkaOutAuthStrategy.NO_AUTH;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.KafkaOutAuthStrategy.SASL_SSL_PLAIN;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutAuthStrategy.NO_AUTH;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutAuthStrategy.SASL_SSL_PLAIN;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.*;
 
 public class LdioKafkaOutConfigurator implements LdioConfigurator {
 

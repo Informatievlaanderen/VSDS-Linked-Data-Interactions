@@ -7,6 +7,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import java.util.NoSuchElementException;
+
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
@@ -21,11 +23,13 @@ public class LdioHttpIn extends LdiInput {
 	public RouterFunction<ServerResponse> mapping() {
 		return route(POST("/%s".formatted(endpoint)),
 				req -> {
-					String contentType = req.headers().contentType().orElseThrow().toString();
+					String contentType = req.headers().contentType()
+							.orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
+							.toString();
 					return req.bodyToMono(String.class)
 							.doOnNext(content -> getAdapter().apply(Content.of(content, contentType))
 									.forEach(getExecutor()::transformLinkedData))
-							.flatMap(body -> ServerResponse.noContent().build());
+							.flatMap(body -> ServerResponse.ok().build());
 				});
 	}
 
