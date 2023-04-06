@@ -29,7 +29,7 @@ public class LdioHttpIn extends LdiInput {
 					return req.bodyToMono(String.class)
 							.doOnNext(content -> getAdapter().apply(Content.of(content, contentType))
 									.forEach(getExecutor()::transformLinkedData))
-							.flatMap((body) -> ServerResponse.ok().build());
+							.flatMap(body -> ServerResponse.ok().build());
 				});
 	}
 
