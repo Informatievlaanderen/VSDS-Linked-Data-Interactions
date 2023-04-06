@@ -33,11 +33,10 @@ public class LdioKafkaOut implements LdiOutput {
 
 	private ProducerRecord<String, String> createProducerRecord(Lang lang, String topic, Model model) {
 		final String value = mapModelToString(lang, model);
-		final String key = keyExtractor.getKey(model);
-		// testing
+		final String keyChangedFORTESTING_REVERSE = keyExtractor.getKey(model);
 
 		final var headers = new RecordHeaders().add(CONTENT_TYPE, lang.getHeaderString().getBytes());
-		return new ProducerRecord<>(topic, null, key, value, headers);
+		return new ProducerRecord<>(topic, null, keyChangedFORTESTING_REVERSE, value, headers);
 	}
 
 	private String mapModelToString(Lang lang, Model model) {
