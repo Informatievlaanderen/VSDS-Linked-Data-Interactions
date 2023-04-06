@@ -29,6 +29,7 @@
         <byte-buddy.version>1.12.23</byte-buddy.version>
         <cucumber.version>7.11.2</cucumber.version>
         <junit-platform-suite.version>1.9.2</junit-platform-suite.version>
+        <jackson-xml.version>2.14.2</jackson-xml.version>
     </properties>
 
     <dependencies>

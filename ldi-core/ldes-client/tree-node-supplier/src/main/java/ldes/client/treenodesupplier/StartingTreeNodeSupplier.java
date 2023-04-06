@@ -1,6 +1,6 @@
 package ldes.client.treenodesupplier;
 
-import ldes.client.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import ldes.client.startingtreenode.StartingTreeNodeFinder;
 import ldes.client.startingtreenode.domain.valueobjects.RedirectHistory;
 import ldes.client.startingtreenode.domain.valueobjects.StartingNodeRequest;
