@@ -50,7 +50,6 @@ class KafkaIntegrationTest {
 		var model = createModelWithStatement();
 		kafkaListener.start();
 
-
 		var output = createKafkaOutput();
 		output.accept(model);
 
