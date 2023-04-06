@@ -47,9 +47,9 @@ class KafkaIntegrationTest {
 	@Test
 	void givenEmbeddedKafkaBroker_whenSendingWithSimpleProducer_thenMessageReceived() {
 		var kafkaListener = createKafkaListener();
+		var model = createModelWithStatement();
 		kafkaListener.start();
 
-		var model = createModelWithStatement();
 
 		var output = createKafkaOutput();
 		output.accept(model);
