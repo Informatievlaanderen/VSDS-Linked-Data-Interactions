@@ -45,10 +45,18 @@ class KafkaIntegrationTest {
 
 	@BeforeAll
 	static void foo() {
-		embeddedKafkaBroker.kafkaPorts(9095);
-		embeddedKafkaBroker.ad
+//		embeddedKafkaBroker.kafkaPorts(9095);
+		embeddedKafkaBroker
+				.brokerProperty("listeners", "PLAINTEXT://%s".formatted("localhost:9095"))
+				.brokerProperty("port", 9095);
+//				.brokerProperty("security.inter.broker.protocol", "PLAINTEXT")
+//				.brokerProperty("sasl.enabled.mechanisms", "PLAIN")
+//				.brokerProperty("sasl.mechanism.inter.broker.protocol", "PLAIN");
+//		embeddedKafkaBroker.afterPropertiesSet();
 		embeddedKafkaBroker.afterPropertiesSet();
 		embeddedKafkaBroker.addTopics(topic);
+
+
 	}
 
 	@BeforeEach
