@@ -3,10 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,12 +20,16 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Stream;
 
+import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.after;
 
 @WireMockTest(httpPort = 10101)
 class HttpInputPollerTest {
@@ -41,11 +43,11 @@ class HttpInputPollerTest {
 	private ScheduledExecutorService scheduledExecutorService;
 
 	@BeforeEach
-	void setUp() {
-		when(adapter.apply(any())).thenReturn(Stream.empty());
+    void setUp() {
+        when(adapter.apply(any())).thenReturn(Stream.empty());
 
-		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, true);
-	}
+        httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, true);
+    }
 
 	@AfterEach
 	void tearDown() {
@@ -71,6 +73,18 @@ class HttpInputPollerTest {
 				.configure(adapter, executor, createConfig(BASE_URL + ENDPOINT, interval, "false"));
 
 		assertThrows(IllegalArgumentException.class, configurePoller);
+	}
+
+	@Test
+	void whenPolling_andMissesHeader() {
+		stubFor(get(ENDPOINT).willReturn(ok().withBody(CONTENT)));
+
+		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, false);
+		Executable polling = () -> httpInputPoller.poll();
+
+		assertThrows(MissingHeaderException.class, polling);
+		Mockito.verifyNoInteractions(adapter);
+		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
 	@Test
