@@ -23,7 +23,6 @@
         <sqlite-jdbc.version>3.41.2.1</sqlite-jdbc.version>
         <sqlite-dialect.version>0.1.2</sqlite-dialect.version>
         <junit-platform-suite.version>1.9.2</junit-platform-suite.version>
-        <jackson-xml.version>2.14.2</jackson-xml.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <byte-buddy-dep.version>1.14.4</byte-buddy-dep.version>
     </properties>
@@ -57,11 +56,6 @@
             <artifactId>junit-platform-suite</artifactId>
             <version>${junit-platform-suite.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-            <version>${jackson-xml.version}</version>
         </dependency>
     </dependencies>
 </project>
