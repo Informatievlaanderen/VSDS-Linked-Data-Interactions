@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.config;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
 import java.util.Map;
 

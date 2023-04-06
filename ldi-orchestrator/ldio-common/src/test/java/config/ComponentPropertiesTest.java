@@ -1,5 +1,6 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.config;
+package config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

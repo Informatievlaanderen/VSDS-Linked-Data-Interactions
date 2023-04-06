@@ -1,11 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdioKafkaInAutoConfigTest {
@@ -19,7 +22,7 @@ class LdioKafkaInAutoConfigTest {
 		ComponentProperties componentProperties = new ComponentProperties(config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-				() -> configurator.configure(null, null, componentProperties));
+				() -> configurator.configure((content) -> Stream.of(), null, componentProperties));
 
 		assertEquals("Invalid 'security-protocol', the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]",
 				exception.getMessage());
@@ -31,7 +34,8 @@ class LdioKafkaInAutoConfigTest {
 
 		Map<String, String> config = getBasicConfig();
 
-		assertDoesNotThrow(() -> configurator.configure(null, null, new ComponentProperties(config)));
+		assertDoesNotThrow(
+				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties(config)));
 	}
 
 	@Test
@@ -43,15 +47,16 @@ class LdioKafkaInAutoConfigTest {
 		config.put(KafkaInConfigKeys.SASL_JAAS_USER, "user");
 		config.put(KafkaInConfigKeys.SASL_JAAS_PASSWORD, "secret");
 
-		assertDoesNotThrow(() -> configurator.configure(null, null, new ComponentProperties(config)));
+		assertDoesNotThrow(
+				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties(config)));
 	}
 
 	private Map<String, String> getBasicConfig() {
 		Map<String, String> config = new HashMap<>();
 		config.put(KafkaInConfigKeys.BOOTSTRAP_SERVERS, "servers");
 		config.put(KafkaInConfigKeys.TOPICS, "topic1");
-		config.put("orchestrator.name", "orchestrator.name");
-		config.put("pipeline.name", "pipeline.name");
+		config.put(ORCHESTRATOR_NAME, "orchestrator.name");
+		config.put(PIPELINE_NAME, "pipeline.name");
 		return config;
 	}
 
