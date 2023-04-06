@@ -1,11 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioKafkaOutAutoConfig;
-import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -16,7 +14,6 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
@@ -112,8 +109,8 @@ public class KafkaOutIntegrationTestSteps {
 
 	@And("The result header will contain the content-type")
 	public void theResultHeaderWillContainTheContentType() {
-		result.get(0).headers().headers(KafkaOutConfigKeys.CONTENT_TYPE).forEach(header ->
-				assertEquals(contentType.getHeaderString(), new String(header.value())));
+		result.get(0).headers().headers(KafkaOutConfigKeys.CONTENT_TYPE)
+				.forEach(header -> assertEquals(contentType.getHeaderString(), new String(header.value())));
 	}
 
 	@And("The result value will contain the model")
