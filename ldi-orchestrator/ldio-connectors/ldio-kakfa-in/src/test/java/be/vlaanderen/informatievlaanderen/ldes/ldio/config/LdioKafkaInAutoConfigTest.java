@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +25,8 @@ class LdioKafkaInAutoConfigTest {
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
 				() -> configurator.configure((content) -> Stream.of(), null, componentProperties));
 
-		assertEquals("Invalid 'security-protocol', the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]",
-				exception.getMessage());
+		assertEquals("java.lang.IllegalArgumentException: Invalid 'security-protocol', " +
+						"the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]", exception.getMessage());
 	}
 
 	@Test
@@ -43,7 +44,7 @@ class LdioKafkaInAutoConfigTest {
 		var configurator = new LdioKafkaInAutoConfig.LdioKafkaInConfigurator();
 
 		Map<String, String> config = getBasicConfig();
-		config.put(KafkaInConfigKeys.SECURITY_PROTOCOL, KafkaInAuthStrategy.SASL_SSL_PLAIN.name());
+		config.put(KafkaInConfigKeys.SECURITY_PROTOCOL, KafkaAuthStrategy.SASL_SSL_PLAIN.name());
 		config.put(KafkaInConfigKeys.SASL_JAAS_USER, "user");
 		config.put(KafkaInConfigKeys.SASL_JAAS_PASSWORD, "secret");
 

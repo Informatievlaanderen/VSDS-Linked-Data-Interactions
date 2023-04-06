@@ -1,9 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.KafkaAuthStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.SaslSslPlainConfigProvider;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.exceptions.SecurityProtocolNotSupported;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.KafkaOutAuthStrategy;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.SaslSslPlainConfigProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.EmptyKafkaKeyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.KafkaKeyExtractor;
@@ -16,16 +17,17 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.KafkaAuthStrategy.NO_AUTH;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.KafkaAuthStrategy.SASL_SSL_PLAIN;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.BOOTSTRAP_SERVERS;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.CONTENT_TYPE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.KEY_PROPERTY_PATH;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.SASL_JAAS_PASSWORD;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.SASL_JAAS_USER;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.SECURITY_PROTOCOL;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.TOPIC;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.KafkaOutAuthStrategy.NO_AUTH;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.KafkaOutAuthStrategy.SASL_SSL_PLAIN;
 
 public class LdioKafkaOutConfigurator implements LdioConfigurator {
 
@@ -60,19 +62,17 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
-		var authStrategy = KafkaOutAuthStrategy.from(config.getOptionalProperty(SECURITY_PROTOCOL)
-				.orElse(NO_AUTH.name())).orElseThrow(this::securityProtocolNotSupported);
+		var authStrategy = KafkaAuthStrategy.from(config.getOptionalProperty(SECURITY_PROTOCOL)
+				.orElse(NO_AUTH.name()))
+				.orElseThrow(() -> new SecurityProtocolNotSupported(SECURITY_PROTOCOL));
+
 		if (SASL_SSL_PLAIN.equals(authStrategy)) {
-			configProps.putAll(new SaslSslPlainConfigProvider().createSaslSslPlainConfig(config));
+			final String user = config.getProperty(SASL_JAAS_USER);
+			final String password = config.getProperty(SASL_JAAS_PASSWORD);
+			configProps.putAll(new SaslSslPlainConfigProvider().createSaslSslPlainConfig(user, password));
 		}
 
 		return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(configProps));
-	}
-
-	private IllegalArgumentException securityProtocolNotSupported() {
-		return new IllegalArgumentException("Invalid '%s', the supported protocols are: %s".formatted(
-				SECURITY_PROTOCOL,
-				Arrays.stream(KafkaOutAuthStrategy.values()).map(Enum::name).toList()));
 	}
 
 }

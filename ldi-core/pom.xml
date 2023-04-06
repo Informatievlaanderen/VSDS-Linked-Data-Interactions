@@ -19,6 +19,7 @@
         <module>rdf-adapter</module>
         <module>ngsiv2-to-ld-adapter</module>
         <module>geojson-to-wkt</module>
+        <module>kafka-common</module>
     </modules>
 
     <properties>
