@@ -4,6 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioKafkaOutAutoConfig;
+import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -36,33 +38,29 @@ public class KafkaOutIntegrationTestSteps {
 
 	private LdiOutput ldioKafkaOut;
 	private Model inputModel;
+	private Map<String, String> config;
+	private String topic;
+	private List<ConsumerRecord<String, String>> result;
 
-	private final List<ConsumerRecord<String, String>> result = new ArrayList<>();
-
+	private static final Lang contentType = Lang.TURTLE;
 	private static final String bootstrapServer = "localhost:9095";
-	private final Lang contentType = Lang.TURTLE;
-
-	@BeforeEach
-	void setUp() {
-		result.clear();
-	}
-
-	@Given("I start a kafka broker with topic {string}")
-	public void iHaveAKafkaBroker(String topic) {
-		EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaBroker(1, true, 1);
+	private static final EmbeddedKafkaBroker embeddedKafkaBroker;
+	static {
+		embeddedKafkaBroker = new EmbeddedKafkaBroker(1, true, 1);
 		embeddedKafkaBroker
 				.brokerProperty("listeners", "PLAINTEXT://%s".formatted(bootstrapServer))
 				.brokerProperty("port", 9095);
 		embeddedKafkaBroker.afterPropertiesSet();
+	}
+
+	@Given("I create a topic for my scenario: {string}")
+	public void iCreateATopic(String topic) {
+		this.topic = topic;
 		embeddedKafkaBroker.addTopics(topic);
 	}
 
-	@And("I create an LdioKafkaOut component for topic {string}")
-	public void iCreateAnLdioKafkaOutComponent(String topic) {
-		final Map<String, String> config = new HashMap<>();
-		config.put(KafkaOutConfigKeys.CONTENT_TYPE, contentType.getHeaderString());
-		config.put(KafkaOutConfigKeys.BOOTSTRAP_SERVERS, bootstrapServer);
-		config.put(KafkaOutConfigKeys.TOPIC, topic);
+	@And("I create an LdioKafkaOut component")
+	public void iCreateAnLdioKafkaOutComponent() {
 		ComponentProperties properties = new ComponentProperties(config);
 		ldioKafkaOut = (LdiOutput) new LdioKafkaOutAutoConfig().ldiKafkaOutConfigurator().configure(properties);
 	}
@@ -73,29 +71,39 @@ public class KafkaOutIntegrationTestSteps {
 		inputModel.add(createResource("http://data-from-source/"), createProperty("http://test/"), "Data!");
 	}
 
-	@And("I start a kafka listener for topic {string}")
-	public void iCreateAKafkaListener(String topic) {
-		var consumerFactory = new DefaultKafkaConsumerFactory<>(getConsumerConfig());
-		ContainerProperties containerProps = new ContainerProperties(topic);
-		containerProps.setMessageListener((MessageListener<String, String>) data -> result.add(data));
-		new KafkaMessageListenerContainer<>(consumerFactory, containerProps).start();
+	@And("I create default config for LdioKafkaOut")
+	public void iCreateDefaultConfigForLdioKafkaOut() {
+		config = new HashMap<>();
+		config.put(KafkaOutConfigKeys.CONTENT_TYPE, contentType.getHeaderString());
+		config.put(KafkaOutConfigKeys.BOOTSTRAP_SERVERS, bootstrapServer);
+		config.put(KafkaOutConfigKeys.TOPIC, topic);
 	}
 
-	private Map<String, Object> getConsumerConfig() {
+	@And("I configure a key property path {string}")
+	public void iConfigureAKeyPropertyPath(String propertyPath) {
+		config.put(KafkaOutConfigKeys.KEY_PROPERTY_PATH, propertyPath);
+	}
+
+	@And("I start a kafka listener")
+	public void iCreateAKafkaListener() {
 		final Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "my-group");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-		return props;
+
+		var consumerFactory = new DefaultKafkaConsumerFactory<>(props);
+		ContainerProperties containerProps = new ContainerProperties(topic);
+		result = new ArrayList<>();
+		containerProps.setMessageListener((MessageListener<String, String>) x -> result.add(x));
+		new KafkaMessageListenerContainer<>(consumerFactory, containerProps).start();
 	}
 
 	@Then("I send the model to the LdioKafkaOut component")
 	public void iCanSendTheModelToTheLdioKafkaOutComponent() {
 		ldioKafkaOut.accept(inputModel);
 	}
-
 
 	@Then("The listener will wait for the message")
 	public void theListenerWillWaitForTheMessage() {
@@ -112,5 +120,15 @@ public class KafkaOutIntegrationTestSteps {
 	public void theResultValueWillContainTheModel() {
 		Model resultModel = RDFParser.fromString(result.get(0).value()).lang(contentType).build().toModel();
 		assertTrue(resultModel.isIsomorphicWith(inputModel));
+	}
+
+	@And("I add an n-quad to the model: {string}")
+	public void iAddATripleToTheModel(String triple) {
+		inputModel.add(RDFParser.fromString(triple).lang(Lang.NQUADS).toModel());
+	}
+
+	@And("The result key will be {string}")
+	public void theResultKeyWillBe(String expectedKey) {
+		assertEquals(expectedKey, result.get(0).key());
 	}
 }
