@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth.KafkaOutAuthStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

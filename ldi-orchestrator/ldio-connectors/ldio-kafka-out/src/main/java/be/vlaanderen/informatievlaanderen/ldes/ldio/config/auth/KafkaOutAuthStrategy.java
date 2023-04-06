@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.config.auth;
 
 import org.apache.commons.lang3.StringUtils;
 
