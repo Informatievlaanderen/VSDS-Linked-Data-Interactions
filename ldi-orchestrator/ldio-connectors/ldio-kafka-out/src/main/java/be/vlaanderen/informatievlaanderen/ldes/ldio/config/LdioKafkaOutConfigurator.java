@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.SaslSslPlainConfigProvider;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.exceptions.SecurityProtocolNotSupported;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.exceptions.SecurityProtocolNotSupportedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
@@ -64,7 +64,7 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 
 		var authStrategy = KafkaAuthStrategy.from(config.getOptionalProperty(SECURITY_PROTOCOL)
 				.orElse(NO_AUTH.name()))
-				.orElseThrow(() -> new SecurityProtocolNotSupported(SECURITY_PROTOCOL));
+				.orElseThrow(() -> new SecurityProtocolNotSupportedException(SECURITY_PROTOCOL));
 
 		if (SASL_SSL_PLAIN.equals(authStrategy)) {
 			final String user = config.getProperty(SASL_JAAS_USER);
