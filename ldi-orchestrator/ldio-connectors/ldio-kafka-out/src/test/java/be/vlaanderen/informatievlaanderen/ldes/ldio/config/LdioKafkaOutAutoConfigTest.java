@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +9,9 @@ import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LdioKafkaOutAutoConfigTest {
 
@@ -23,8 +26,8 @@ class LdioKafkaOutAutoConfigTest {
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
 				() -> configurator.configure(componentProperties));
 
-		assertEquals("Invalid 'security-protocol', the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]",
-				exception.getMessage());
+		assertEquals("java.lang.IllegalArgumentException: Invalid 'security-protocol', " +
+				"the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]", exception.getMessage());
 	}
 
 	@Test
@@ -50,7 +53,7 @@ class LdioKafkaOutAutoConfigTest {
 		var configurator = new LdioKafkaOutAutoConfig().ldiKafkaOutConfigurator();
 
 		Map<String, String> config = getBasicConfig();
-		config.put(KafkaOutConfigKeys.SECURITY_PROTOCOL, KafkaOutAuthStrategy.SASL_SSL_PLAIN.name());
+		config.put(KafkaOutConfigKeys.SECURITY_PROTOCOL, KafkaAuthStrategy.SASL_SSL_PLAIN.name());
 		config.put(KafkaOutConfigKeys.SASL_JAAS_USER, "user");
 		config.put(KafkaOutConfigKeys.SASL_JAAS_PASSWORD, "secret");
 
