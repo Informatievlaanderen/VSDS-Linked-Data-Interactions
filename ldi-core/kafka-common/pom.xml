@@ -11,11 +11,15 @@
 
     <artifactId>kafka-common</artifactId>
 
+    <properties>
+        <kafka-clients.version>3.4.0</kafka-clients.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>3.4.0</version>
+            <version>${kafka-clients.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
