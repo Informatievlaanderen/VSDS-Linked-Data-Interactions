@@ -30,7 +30,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//@EmbeddedKafka(brokerProperties = { "listeners=PLAINTEXT://localhost:9095", "port=9095" })
+@EmbeddedKafka(brokerProperties = { "listeners=PLAINTEXT://localhost:9095", "port=9095" })
 class KafkaIntegrationTest {
 
 	final LdioKafkaOutAutoConfig autoConfig = new LdioKafkaOutAutoConfig();
@@ -40,23 +40,6 @@ class KafkaIntegrationTest {
 	private final String kafkaOutContentType = "text/turtle";
 
 	private List<LdiAdapter.Content> result;
-
-	private static EmbeddedKafkaBroker embeddedKafkaBroker = new EmbeddedKafkaBroker(1, true, 1);
-
-	@BeforeAll
-	static void foo() {
-		// embeddedKafkaBroker.kafkaPorts(9095);
-		embeddedKafkaBroker
-				.brokerProperty("listeners", "PLAINTEXT://%s".formatted("localhost:9095"))
-				.brokerProperty("port", 9095);
-		// .brokerProperty("security.inter.broker.protocol", "PLAINTEXT")
-		// .brokerProperty("sasl.enabled.mechanisms", "PLAIN")
-		// .brokerProperty("sasl.mechanism.inter.broker.protocol", "PLAIN");
-		// embeddedKafkaBroker.afterPropertiesSet();
-		embeddedKafkaBroker.afterPropertiesSet();
-		embeddedKafkaBroker.addTopics(topic);
-
-	}
 
 	@BeforeEach
 	void setUp() {

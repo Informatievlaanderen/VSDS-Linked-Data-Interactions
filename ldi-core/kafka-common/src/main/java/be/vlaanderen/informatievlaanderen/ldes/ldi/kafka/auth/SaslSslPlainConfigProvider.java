@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class SaslSslPlainConfigProvider {
 
-	public static final String PLAIN_LOGIN_BASE_STRING = "org.apache.kafka.common.security.plain.PlainLoginModule" +
+	private static final String PLAIN_LOGIN_BASE_STRING = "org.apache.kafka.common.security.plain.PlainLoginModule" +
 			" required username='%s' password='%s';";
-	public static final String SASL_SSL = "SASL_SSL";
-	public static final String PLAIN = "PLAIN";
+	private static final String SASL_SSL = "SASL_SSL";
+	private static final String PLAIN = "PLAIN";
 
 	public Map<String, Object> createSaslSslPlainConfig(String user, String password) {
 		final Map<String, Object> properties = new HashMap<>();
