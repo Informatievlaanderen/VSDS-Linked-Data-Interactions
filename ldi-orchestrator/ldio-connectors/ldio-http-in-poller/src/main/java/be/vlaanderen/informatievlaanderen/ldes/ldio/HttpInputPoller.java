@@ -12,7 +12,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderExce
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.UnsuccesfulPollingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatusCode;
 
 public class HttpInputPoller extends LdiInput {
 	private final RequestExecutor requestExecutor;
@@ -31,7 +30,8 @@ public class HttpInputPoller extends LdiInput {
 	public void poll() {
 		try {
 			Response response = requestExecutor.execute(request);
-			if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
+			int httpStatus = response.getHttpStatus();
+			if (httpStatus >= 200 && httpStatus < 300) {
 				String contentType = response.getFirstHeaderValue("Content-Type")
 						.orElseThrow(() -> new MissingHeaderException(response.getHttpStatus(), request.getUrl()));
 				String content = response.getBody().orElseThrow();
@@ -39,11 +39,6 @@ public class HttpInputPoller extends LdiInput {
 						.forEach(getExecutor()::transformLinkedData);
 			} else {
 				throw new UnsuccesfulPollingException(response.getHttpStatus(), request.getUrl());
-			}
-		} catch (MissingHeaderException e) {
-			LOGGER.error("Headers does not contain 'Content-Type'");
-			if (!continueOnFail) {
-				throw e;
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
