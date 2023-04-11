@@ -17,7 +17,7 @@
     </modules>
 
     <properties>
-        <nifi.version>1.20.0</nifi.version>
+        <nifi.version>1.21.0</nifi.version>
         <relative-formatter-path>..</relative-formatter-path>
     </properties>
 
