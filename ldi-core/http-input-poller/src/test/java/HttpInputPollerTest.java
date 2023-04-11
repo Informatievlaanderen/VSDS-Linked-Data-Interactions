@@ -1,9 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio;
-
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MissingHeaderException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -144,7 +142,7 @@ class HttpInputPollerTest {
 	}
 
 	private static ComponentProperties createConfig(String url, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of(URL, url, INTERVAL, interval, CONTINUE_ON_FAIL, continueOnFail));
+		return new ComponentProperties(Map.of(HttpInputPollerProperties.URL, url, HttpInputPollerProperties.INTERVAL, interval, HttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
 	}
 
 	private static ComponentProperties createDefaultTestConfig() {

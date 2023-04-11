@@ -4,16 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-        <artifactId>ldio-connectors</artifactId>
+        <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+        <artifactId>ldi-core</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>ldio-http-in-poller</artifactId>
+
+    <artifactId>http-input-poller</artifactId>
 
     <properties>
+        <maven.compiler.source>19</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <projectreactor.version>3.5.4</projectreactor.version>
         <spring-boot.version>3.0.5</spring-boot.version>
         <spring-test.version>6.0.7</spring-test.version>
-        <projectreactor.version>3.5.5</projectreactor.version>
     </properties>
 
     <dependencies>
@@ -31,11 +35,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock-jre8-standalone</artifactId>
-            <version>${wiremock-jre8.version}</version>
         </dependency>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>

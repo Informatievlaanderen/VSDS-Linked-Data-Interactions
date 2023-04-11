@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions;
 
 public class MissingHeaderException extends RuntimeException {
 	private final int httpStatusCode;
