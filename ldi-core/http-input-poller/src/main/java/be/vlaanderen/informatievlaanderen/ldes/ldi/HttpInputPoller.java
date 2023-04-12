@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MissingHeaderException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsuccesfulPollingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.RequestHeaders;
@@ -8,13 +10,16 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MissingHeaderException;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsuccesfulPollingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class HttpInputPoller extends LdiInput {
+	private final ScheduledExecutorService scheduler;
 	private final RequestExecutor requestExecutor;
 	private final Request request;
 	private final boolean continueOnFail;
@@ -26,6 +31,11 @@ public class HttpInputPoller extends LdiInput {
 		this.requestExecutor = requestExecutorFactory.createNoAuthExecutor();
 		this.request = new Request(endpoint, RequestHeaders.empty());
 		this.continueOnFail = continueOnFail;
+		this.scheduler = Executors.newSingleThreadScheduledExecutor();
+	}
+
+	public void schedulePoller(long interval) {
+		scheduler.scheduleAtFixedRate(this::poll, 0, interval, TimeUnit.SECONDS);
 	}
 
 	public void poll() {
@@ -39,11 +49,6 @@ public class HttpInputPoller extends LdiInput {
 						.forEach(getExecutor()::transformLinkedData);
 			} else {
 				throw new UnsuccesfulPollingException(response.getHttpStatus(), request.getUrl());
-			}
-		} catch (MissingHeaderException e) {
-			LOGGER.error("Headers does not contain 'Content-Type'");
-			if (!continueOnFail) {
-				throw e;
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

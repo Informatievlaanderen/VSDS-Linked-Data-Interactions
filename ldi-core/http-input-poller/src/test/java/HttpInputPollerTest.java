@@ -1,28 +1,18 @@
+import be.vlaanderen.informatievlaanderen.ldes.ldi.HttpInputPoller;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MissingHeaderException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MissingHeaderException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.function.Executable;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.ArgumentsProvider;
-import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.Mockito;
 
-import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Stream;
 
 import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +28,6 @@ class HttpInputPollerTest {
 	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 	private static final String CONTENT_TYPE = "application/n-quads";
 	private HttpInputPoller httpInputPoller;
-	private ScheduledExecutorService scheduledExecutorService;
 
 	@BeforeEach
     void setUp() {
@@ -47,13 +36,6 @@ class HttpInputPollerTest {
         httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, true);
     }
 
-	@AfterEach
-	void tearDown() {
-		if (scheduledExecutorService != null && !scheduledExecutorService.isShutdown()) {
-			scheduledExecutorService.shutdown();
-		}
-	}
-
 	@Test
 	void testClientPolling() {
 		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type",
@@ -61,16 +43,6 @@ class HttpInputPollerTest {
 
 		httpInputPoller.poll();
 		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
-	}
-
-	@ParameterizedTest
-	@ArgumentsSource(InvalidIntervalArgumentsProvider.class)
-	void whenInvalidIntervalConfigured_thenCatchException(String interval) {
-		Executable configurePoller = () -> scheduledExecutorService = new HttpInputPollerAutoConfig()
-				.httpInputPollerConfigurator()
-				.configure(adapter, executor, createConfig(BASE_URL + ENDPOINT, interval, "false"));
-
-		assertThrows(IllegalArgumentException.class, configurePoller);
 	}
 
 	@Test
@@ -89,10 +61,9 @@ class HttpInputPollerTest {
 	void whenPeriodicPolling_thenReturnTwoTimesTheSameResponse() {
 		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 
-		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
-				executor, createDefaultTestConfig());
+		httpInputPoller.schedulePoller(1);
 
-		Mockito.verify(adapter, timeout(2500).atLeast(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+		Mockito.verify(adapter, timeout(1500).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		WireMock.verify(2, getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
@@ -100,8 +71,7 @@ class HttpInputPollerTest {
 	void when_OnContinueIsTrueAndPeriodPollingReturnsNot2xx_thenKeepPolling() {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
-				executor, createConfig(BASE_URL + ENDPOINT, "PT1S", "true"));
+		httpInputPoller.schedulePoller(1);
 
 		Mockito.verify(adapter, after(2000).never()).apply(any());
 		WireMock.verify(new CountMatchingStrategy(CountMatchingStrategy.GREATER_THAN_OR_EQUAL, 2),
@@ -113,8 +83,8 @@ class HttpInputPollerTest {
 	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling() {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		scheduledExecutorService = new HttpInputPollerAutoConfig().httpInputPollerConfigurator().configure(adapter,
-				executor, createDefaultTestConfig());
+		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, false);
+		httpInputPoller.schedulePoller(1);
 
 		Mockito.verify(adapter, after(2000).never()).apply(any());
 		WireMock.verify(1, getRequestedFor(urlEqualTo(ENDPOINT)));
@@ -139,21 +109,6 @@ class HttpInputPollerTest {
 
 		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
 		Mockito.verifyNoInteractions(adapter);
-	}
-
-	private static ComponentProperties createConfig(String url, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of(HttpInputPollerProperties.URL, url, HttpInputPollerProperties.INTERVAL, interval, HttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
-	}
-
-	private static ComponentProperties createDefaultTestConfig() {
-		return createConfig(BASE_URL + ENDPOINT, "PT1S", "false");
-	}
-
-	static class InvalidIntervalArgumentsProvider implements ArgumentsProvider {
-		@Override
-		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
-			return Stream.of(Arguments.of("P12S"), Arguments.of("Invalid time"), Arguments.of("0 * * * * ?"));
-		}
 	}
 
 }
