@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidNgsiLdConte
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
+import org.apache.http.entity.ContentType;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
@@ -78,9 +79,13 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 
 	@Override
 	public Stream<Model> apply(Content content) {
-		if (!content.mimeType().equalsIgnoreCase("application/json")) {
+		if (!validateMimeType(content.mimeType())) {
 			throw new UnsupportedMimeTypeException("application/json", content.mimeType());
 		}
 		return translate(content.content());
+	}
+
+	public boolean validateMimeType(String mimeType) {
+		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase("application/json");
 	}
 }
