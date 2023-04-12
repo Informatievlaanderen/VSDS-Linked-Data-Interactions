@@ -11,7 +11,7 @@
     <artifactId>ldio-http-in-poller</artifactId>
 
     <properties>
-        <projectreactor.version>3.5.4</projectreactor.version>
+        <projectreactor.version>3.5.5</projectreactor.version>
     </properties>
 
     <dependencies>
