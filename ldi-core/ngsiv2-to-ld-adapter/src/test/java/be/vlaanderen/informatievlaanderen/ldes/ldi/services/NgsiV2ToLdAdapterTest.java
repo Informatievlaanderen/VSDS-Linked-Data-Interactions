@@ -11,6 +11,8 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -21,10 +23,7 @@ import java.util.stream.Stream;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest(httpPort = 10101)
 class NgsiV2ToLdAdapterTest {
@@ -54,6 +53,20 @@ class NgsiV2ToLdAdapterTest {
 	void setup() {
 		data.put(NgsiV2ToLdMapping.NGSI_V2_KEY_ID, idV2);
 		data.put(NgsiV2ToLdMapping.NGSI_V2_KEY_TYPE, type);
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "application/json", "application/json;charset=utf-8" })
+	void when_CorrectMimeType(String mimeType) {
+		translator = new NgsiV2ToLdAdapter(dataIdentifier, localCoreContext, localLdContext);
+		assertTrue(translator.validateMimeType(mimeType));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "text/plain", "nonsense" })
+	void when_InCorrectMimeType(String mimeType) {
+		translator = new NgsiV2ToLdAdapter(dataIdentifier, localCoreContext, localLdContext);
+		assertFalse(translator.validateMimeType(mimeType));
 	}
 
 	@Test
@@ -124,7 +137,7 @@ class NgsiV2ToLdAdapterTest {
 	}
 
 	@Test
-	void whenCoreContextIsNull_thenInvalidNgsiLdContextExceptionIsThrown() throws Exception {
+	void whenCoreContextIsNull_thenInvalidNgsiLdContextExceptionIsThrown() {
 		String coreContext = null;
 		assertThrows(InvalidNgsiLdContextException.class, () -> new NgsiV2ToLdAdapter(dataIdentifier, coreContext));
 	}
