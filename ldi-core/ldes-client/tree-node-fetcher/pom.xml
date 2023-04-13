@@ -9,11 +9,4 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tree-node-fetcher</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
-            <artifactId>request-executor</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 </project>
