@@ -1,9 +1,9 @@
 package ldes.client.startingtreenode;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ldes.client.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
 import ldes.client.startingtreenode.domain.valueobjects.RedirectHistory;
 import ldes.client.startingtreenode.domain.valueobjects.StartingNodeRequest;
 import ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode;
