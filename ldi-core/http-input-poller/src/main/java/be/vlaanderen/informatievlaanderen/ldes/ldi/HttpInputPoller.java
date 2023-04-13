@@ -24,6 +24,7 @@ public class HttpInputPoller extends LdiInput {
 	private final Request request;
 	private final boolean continueOnFail;
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpInputPoller.class);
+	private static final String CONTENT_TYPE = "Content-Type";
 
 	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, String endpoint, boolean continueOnFail) {
 		super(executor, adapter);
@@ -42,7 +43,7 @@ public class HttpInputPoller extends LdiInput {
 		try {
 			Response response = requestExecutor.execute(request);
 			if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
-				String contentType = response.getFirstHeaderValue("Content-Type")
+				String contentType = response.getFirstHeaderValue(CONTENT_TYPE)
 						.orElseThrow(() -> new MissingHeaderException(response.getHttpStatus(), request.getUrl()));
 				String content = response.getBody().orElseThrow();
 				getAdapter().apply(LdiAdapter.Content.of(content, contentType))
