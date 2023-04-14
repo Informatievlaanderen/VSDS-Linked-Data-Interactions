@@ -4,6 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter.Content;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDataEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -13,10 +15,13 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 public class LdioHttpIn extends LdiInput {
+	private final ApplicationEventPublisher applicationEventPublisher;
 	private final String endpoint;
 
-	public LdioHttpIn(ComponentExecutor executor, LdiAdapter adapter, String endpoint) {
+	public LdioHttpIn(ComponentExecutor executor, LdiAdapter adapter,
+			ApplicationEventPublisher applicationEventPublisher, String endpoint) {
 		super(executor, adapter);
+		this.applicationEventPublisher = applicationEventPublisher;
 		this.endpoint = endpoint;
 	}
 
@@ -28,7 +33,10 @@ public class LdioHttpIn extends LdiInput {
 							.toString();
 					return req.bodyToMono(String.class)
 							.doOnNext(content -> getAdapter().apply(Content.of(content, contentType))
-									.forEach(getExecutor()::transformLinkedData))
+									.forEach(model -> {
+										applicationEventPublisher.publishEvent(new PipelineDataEvent("name", model));
+										getExecutor().transformLinkedData(model);
+									}))
 							.flatMap(body -> ServerResponse.ok().build());
 				});
 	}

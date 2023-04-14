@@ -1,0 +1,33 @@
+@prefix ldio: <http://example.com/ldio#> .
+
+<ldio>
+    a   ldio:LinkedDataInteractionsOrchestrator
+    ldio:pipeline <gipod-pipeline> .
+
+<gipod-pipeline>
+    a   ldio:pipeline
+    ldio:pipelineName "gipod-pipeline"
+    rdf:description "Basic GIPOD pipeline"
+    ldio:input  [
+        ldio:name "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn"
+        ldio:adapter [
+            ldio:name "be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter"
+        ]
+    ]
+    ldio:transformers [
+        a   rdf:Seq
+        ldio:transformer [
+            ldio:name "be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator"
+        ], [
+            ldio:name "be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer"
+            ldio:query "CONSTRUCT { ?s ?p ?o }"
+        ] .
+    ]
+    ldio:output [
+        ldio:name "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut"
+        ldio:endpoint "http://localhost:8080/mobility-hindrances"
+        ldio:contentType "application/n-quads"
+    ], [
+        ldio:name "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut"
+        ldio:contentType "application/n-quads"
+    ]

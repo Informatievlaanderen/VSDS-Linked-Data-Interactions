@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfig
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,6 +31,8 @@ public class LdioHttpInAutoConfig {
 		@Autowired
 		ConfigurableApplicationContext configContext;
 
+		@Autowired ApplicationEventPublisher eventPublisher;
+
 		@Override
 		public Object configure(LdiAdapter adapter,
 				ComponentExecutor executor,
@@ -37,7 +40,7 @@ public class LdioHttpInAutoConfig {
 			String pipelineName = config.getProperty(PIPELINE_NAME);
 			verifyAdapterPresent(pipelineName, adapter);
 
-			LdioHttpIn ldioHttpIn = new LdioHttpIn(executor, adapter, pipelineName);
+			LdioHttpIn ldioHttpIn = new LdioHttpIn(executor, adapter, eventPublisher, pipelineName);
 
 			return ldioHttpIn.mapping();
 		}
