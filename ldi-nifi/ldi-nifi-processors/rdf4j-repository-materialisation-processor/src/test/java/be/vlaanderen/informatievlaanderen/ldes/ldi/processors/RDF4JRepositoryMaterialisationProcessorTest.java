@@ -179,6 +179,8 @@ class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManagerIT {
 
 			RDF4JRepositoryMaterialisationProcessor.deleteEntitiesFromRepo(entityIds, connection);
 		}
+
+		connection.close();
 	}
 
 	@Test
@@ -218,6 +220,8 @@ class RDF4JRepositoryMaterialisationProcessorTest extends RepositoryManagerIT {
 						"Expecting changed value for first name of Taylor Kennedy");
 			}
 		}
+
+		connection.close();
 	}
 
 	private TestRunner newTestRunner() {
