@@ -11,6 +11,7 @@
 
     <properties>
         <relative-formatter-path>../../..</relative-formatter-path>
+        <byte-buddy-dep.version>1.14.3</byte-buddy-dep.version>
     </properties>
 
     <dependencies>
@@ -23,6 +24,31 @@
             <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
             <artifactId>tree-node-supplier</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-dep</artifactId>
+            <version>${byte-buddy-dep.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.bytebuddy</groupId>
+                    <artifactId>byte-buddy</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

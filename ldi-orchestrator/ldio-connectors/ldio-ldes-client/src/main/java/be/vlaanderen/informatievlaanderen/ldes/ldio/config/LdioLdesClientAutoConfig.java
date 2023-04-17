@@ -18,8 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.AuthStrategy.NO_AUTH;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
 @EnableConfigurationProperties()
@@ -34,8 +32,6 @@ public class LdioLdesClientAutoConfig {
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor,
 				ComponentProperties config) {
-			verifyAdapterPresent(config.getProperty(PIPELINE_NAME), adapter);
-
 			RequestExecutor requestExecutor = getRequestExecutor(config);
 			LdesClientRunner ldesClientRunner = new LdesClientRunner(requestExecutor, config, executor);
 			return new LdioLdesClient(executor, ldesClientRunner);

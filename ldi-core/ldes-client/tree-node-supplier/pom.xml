@@ -46,11 +46,7 @@
             <version>${hibernate.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy-dep</artifactId>
-            <version>${byte-buddy-dep.version}</version>
-        </dependency>
+
     </dependencies>
 
 </project>
