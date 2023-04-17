@@ -1,6 +1,6 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.exceptions;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.auth.KafkaAuthStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
 
 import java.util.Arrays;
 

@@ -1,5 +1,6 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.kafka.exceptions;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.config.exceptions;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
