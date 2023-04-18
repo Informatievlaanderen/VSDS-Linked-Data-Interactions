@@ -77,6 +77,14 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 		return translateJsonToLD(value).map(LinkedDataModel::toRDFModel);
 	}
 
+	/**
+	 *
+	 * @param content
+	 *            contains the to be translated string and the received MIME type.
+	 *
+	 * @return a stream of the translated JSON objects in jena rdf models.
+	 *
+	 */
 	@Override
 	public Stream<Model> apply(Content content) {
 		if (!validateMimeType(content.mimeType())) {

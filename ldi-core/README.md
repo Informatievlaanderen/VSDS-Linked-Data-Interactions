@@ -31,7 +31,8 @@ To support the creation of version objects, e.g. when transforming data in the [
 
 As a counterpart to the Version Object Creator, this processor will turn a  [versioned LDES stream](https://w3id.org/ldes/specification#version-materializations) into an unversioned LDES stream.
 
-## 5. NgsiV2 to LD Transformer
+## 5. NgsiV2 to LD Adapter
 
 To support the ingestion of input data in [NGSI V2 format](https://fiware-tutorials.readthedocs.io/en/stable/getting-started/),
 the NgsiV2ToLd processor will take the inputted NGSI V2 data and transform it to [NGSI LD](https://vloca-kennishub.vlaanderen.be/NGSI_(LD)).
+More information can be found [here](ngsiv2-to-ld-adapter/README.md).
