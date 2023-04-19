@@ -7,7 +7,6 @@ import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.repository.config.RepositoryConfigException;
 import org.eclipse.rdf4j.repository.manager.RepositoryInfo;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,7 +16,6 @@ public class RepositoryManagerIT {
 
 	protected RepositoryManager subject;
 
-	@BeforeEach
 	public void setUp() throws Exception {
 		subject = new RepositoryManager() {
 
