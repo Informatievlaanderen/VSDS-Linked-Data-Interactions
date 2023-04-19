@@ -27,8 +27,7 @@
 
         <module>ldio-console-out</module>
         <module>ldio-http-out</module>
-        <module>ldio-kafka-out</module>
-        <module>ldio-kakfa-in</module>
+        <module>ldio-kafka</module>
     </modules>
 
     <properties>

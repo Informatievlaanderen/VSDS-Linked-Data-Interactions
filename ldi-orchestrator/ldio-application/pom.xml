@@ -97,11 +97,11 @@
             </dependencies>
         </profile>
         <profile>
-            <id>ldio-kafka-in</id>
+            <id>ldio-kafka</id>
             <dependencies>
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-kakfa-in</artifactId>
+                    <artifactId>ldio-kafka</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>
@@ -192,16 +192,6 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-console-out</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>ldio-kafka-out</id>
-            <dependencies>
-                <dependency>
-                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-kafka-out</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>
