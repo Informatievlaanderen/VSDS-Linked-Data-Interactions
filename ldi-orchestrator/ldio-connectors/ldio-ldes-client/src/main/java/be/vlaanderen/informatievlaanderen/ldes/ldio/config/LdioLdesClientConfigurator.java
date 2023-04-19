@@ -4,38 +4,34 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.servic
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.AuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdesClientRunner;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 
 import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.AuthStrategy.NO_AUTH;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.MAX_RETRIES;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.RETRIES_ENABLED;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
 
-public class LdioLdesClientConfigurator implements LdioConfigurator {
+public class LdioLdesClientConfigurator implements LdioInputConfigurator {
 
 	public static final String DEFAULT_API_KEY_HEADER = "X-API-KEY";
 
-	private final ComponentExecutor componentExecutor;
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
-	public LdioLdesClientConfigurator(ComponentExecutor componentExecutor) {
-		this.componentExecutor = componentExecutor;
-	}
-
 	@Override
-	public LdiComponent configure(ComponentProperties properties) {
+	public LdiComponent configure(LdiAdapter adapter, ComponentExecutor componentExecutor,
+			ComponentProperties properties) {
 		RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(properties);
 		LdesClientRunner ldesClientRunner = new LdesClientRunner(requestExecutor, properties, componentExecutor);
 		return new LdioLdesClient(componentExecutor, ldesClientRunner);
 	}
 
-	private RequestExecutor getRequestExecutorWithPossibleRetry(ComponentProperties props) {
+	protected RequestExecutor getRequestExecutorWithPossibleRetry(ComponentProperties props) {
 		final RequestExecutor requestExecutor = getRequestExecutor(props);
 		boolean retriesEnabled = props.getOptionalBoolean(RETRIES_ENABLED).orElse(Boolean.FALSE);
 		if (retriesEnabled) {
@@ -66,7 +62,8 @@ public class LdioLdesClientConfigurator implements LdioConfigurator {
 			};
 		}
 		throw new UnsupportedOperationException(
-				"Requested authentication not available: " + authentication);
+				"Requested authentication not available: "
+						+ componentProperties.getOptionalProperty(AUTH_TYPE).orElse("No auth type provided"));
 	}
 
 }
