@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retr
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -28,16 +29,22 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class LdioLdesClientAutoConfigTest {
 	private static final String ENDPOINT = "http://localhost:8080/endpoint";
+	private LdioLdesClientConfigurator configurator;
 	@Mock
 	private LdiAdapter adapter;
 
 	@Mock
 	private ComponentExecutor componentExecutor;
 
+	@BeforeEach
+	void setUp() {
+		LdioLdesClientAutoConfig autoConfig = new LdioLdesClientAutoConfig();
+		configurator = (LdioLdesClientConfigurator) autoConfig.ldioConfigurator();
+	}
+
 	@Test
 	void when_invalidConfigProvided_then_noInteractionsExpected() {
-		LdioLdesClientAutoConfig autoConfig = new LdioLdesClientAutoConfig();
-		autoConfig.ldioConfigurator().configure(adapter, componentExecutor, new ComponentProperties());
+		configurator.configure(adapter, componentExecutor, new ComponentProperties());
 
 		verifyNoInteractions(componentExecutor);
 	}
@@ -45,10 +52,10 @@ class LdioLdesClientAutoConfigTest {
 	@ParameterizedTest
 	@ArgumentsSource(RequestExecutorConfigArgumentsProvider.class)
 	void when_validConfigProvided_then_requestExecutorCreated(ComponentProperties props, Class<RequestExecutor> cls) {
-		LdioLdesClientAutoConfig autoConfig = new LdioLdesClientAutoConfig();
-		LdioLdesClientConfigurator configurator = (LdioLdesClientConfigurator) autoConfig.ldioConfigurator();
 		LdioLdesClientConfigurator spyConfigurator = spy(configurator);
 
+		// validate if the getRequestExecutorWithPossibleRetry method is called when
+		// configure is called
 		spyConfigurator.configure(adapter, componentExecutor, props);
 		verify(spyConfigurator).getRequestExecutorWithPossibleRetry(props);
 
@@ -60,8 +67,6 @@ class LdioLdesClientAutoConfigTest {
 	@ValueSource(strings = { "api_key", "oauth2_client_credentials" })
 	void when_autTypeProvided_and_additionalKeysAreMissing_then_throwException(String authType) {
 		ComponentProperties props = new ComponentProperties(Map.of(URL, ENDPOINT, AUTH_TYPE, authType));
-		LdioLdesClientAutoConfig autoConfig = new LdioLdesClientAutoConfig();
-		LdioLdesClientConfigurator configurator = (LdioLdesClientConfigurator) autoConfig.ldioConfigurator();
 
 		assertThrows(IllegalArgumentException.class, () -> configurator.configure(adapter, componentExecutor, props));
 	}
@@ -70,8 +75,6 @@ class LdioLdesClientAutoConfigTest {
 	void when_unsupportedAuthTypeProvided_then_throwException() {
 		final String INVALID_AUTH_TYPE = "invalid_auth_type";
 		ComponentProperties props = new ComponentProperties(Map.of(URL, ENDPOINT, AUTH_TYPE, INVALID_AUTH_TYPE));
-		LdioLdesClientAutoConfig autoConfig = new LdioLdesClientAutoConfig();
-		LdioLdesClientConfigurator configurator = (LdioLdesClientConfigurator) autoConfig.ldioConfigurator();
 
 		Exception e = assertThrows(UnsupportedOperationException.class,
 				() -> configurator.configure(adapter, componentExecutor, props));
