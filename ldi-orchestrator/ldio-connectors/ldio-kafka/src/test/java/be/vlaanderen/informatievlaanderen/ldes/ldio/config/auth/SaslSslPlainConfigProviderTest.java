@@ -25,7 +25,7 @@ class SaslSslPlainConfigProviderTest {
 		assertEquals("SASL_SSL", saslSslPlainConfig.get(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG));
 		assertEquals("PLAIN", saslSslPlainConfig.get(SaslConfigs.SASL_MECHANISM));
 		assertEquals("org.apache.kafka.common.security.plain.PlainLoginModule" +
-						" required username='user' password='secret';",
+				" required username='user' password='secret';",
 				saslSslPlainConfig.get(SaslConfigs.SASL_JAAS_CONFIG));
 	}
 

@@ -57,7 +57,7 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 		configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
 		var authStrategy = KafkaAuthStrategy.from(config.getOptionalProperty(SECURITY_PROTOCOL)
-						.orElse(NO_AUTH.name()))
+				.orElse(NO_AUTH.name()))
 				.orElseThrow(() -> new SecurityProtocolNotSupportedException(SECURITY_PROTOCOL));
 
 		if (SASL_SSL_PLAIN.equals(authStrategy)) {

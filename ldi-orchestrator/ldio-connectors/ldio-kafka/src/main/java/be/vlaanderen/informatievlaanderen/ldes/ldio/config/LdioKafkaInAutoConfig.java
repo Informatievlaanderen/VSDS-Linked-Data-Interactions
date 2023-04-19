@@ -66,7 +66,7 @@ public class LdioKafkaInAutoConfig {
 			props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
 			var authStrategy = KafkaAuthStrategy.from(config.getOptionalProperty(SECURITY_PROTOCOL)
-							.orElse(KafkaAuthStrategy.NO_AUTH.name()))
+					.orElse(KafkaAuthStrategy.NO_AUTH.name()))
 					.orElseThrow(() -> new SecurityProtocolNotSupportedException(SECURITY_PROTOCOL));
 
 			if (KafkaAuthStrategy.SASL_SSL_PLAIN.equals(authStrategy)) {

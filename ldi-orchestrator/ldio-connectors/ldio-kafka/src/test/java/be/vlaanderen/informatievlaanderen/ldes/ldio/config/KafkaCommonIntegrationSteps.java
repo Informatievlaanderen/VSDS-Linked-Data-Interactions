@@ -21,5 +21,4 @@ public class KafkaCommonIntegrationSteps {
 		embeddedKafkaBroker.addTopics(topic);
 	}
 
-
 }
