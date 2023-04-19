@@ -54,8 +54,6 @@ class LdioLdesClientAutoConfigTest {
 	void when_validConfigProvided_then_requestExecutorCreated(ComponentProperties props, Class<RequestExecutor> cls) {
 		LdioLdesClientConfigurator spyConfigurator = spy(configurator);
 
-		// validate if the getRequestExecutorWithPossibleRetry method is called when
-		// configure is called
 		spyConfigurator.configure(adapter, componentExecutor, props);
 		verify(spyConfigurator).getRequestExecutorWithPossibleRetry(props);
 
