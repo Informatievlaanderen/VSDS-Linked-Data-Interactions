@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.bootstrapServer;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.topic;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.CONTENT_TYPE;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaIntegrationSteps.bootstrapServer;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaIntegrationSteps.topic;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;

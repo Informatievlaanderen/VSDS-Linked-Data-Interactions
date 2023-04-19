@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaIntegrationSteps.bootstrapServer;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaIntegrationSteps.topic;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.bootstrapServer;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.topic;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 import static org.awaitility.Awaitility.await;
