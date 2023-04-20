@@ -24,7 +24,7 @@
         <sqlite-dialect.version>0.1.2</sqlite-dialect.version>
         <junit-platform-suite.version>1.9.2</junit-platform-suite.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
-        <byte-buddy-dep.version>1.14.4</byte-buddy-dep.version>
+
     </properties>
 
     <dependencies>
