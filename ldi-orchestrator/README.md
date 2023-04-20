@@ -1,6 +1,6 @@
 # Linked Data Interactions Orchestrator
 
-To provide and alternative for extensive data orchestration frameworks, we provide a lightweight Spring Boot based framework for basic use of our Linked Data Interactions SDKs.
+To provide and alternative for extensive data orchestration frameworks, we provide a lightweight Spring Boot based framework for basic use of our Linked Data Interaction Components.
 
 ## Basic configuration
 
@@ -72,7 +72,7 @@ To configure this processor, the following config can be added:
 
 ## LDI Wrappers
 
-Each LDI SDK will be wrapped as a LDIO component. For further details on the functionality of each SDK, please refer to the [main LDI readme](../ldi-core/README.md).
+Each LDI Component will be wrapped as a LDIO component. For further details on the functionality of each Component, please refer to the [main LDI readme](../ldi-core/README.md).
 
 ### 1. Transformers
 

@@ -1,6 +1,6 @@
 # LDI Core
 
-This module contains all Linked Data Interactions SDKs
+This module contains all Linked Data Interaction Components
 
 ## 1. Ldes Client
 
