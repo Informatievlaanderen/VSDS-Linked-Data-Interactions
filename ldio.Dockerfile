@@ -16,9 +16,9 @@ RUN mvn clean install -DskipTests
 FROM openjdk:18-ea-bullseye
 RUN apt-get update & apt-get upgrade
 
-RUN useradd -u 2000 ldes
-USER ldes
-WORKDIR /ldes
+RUN useradd -u 2000 ldio
+USER ldio
+WORKDIR /ldio
 
 COPY --from=app-stage ldi-orchestrator/ldio-application/target/ldio-application.jar ./
 
