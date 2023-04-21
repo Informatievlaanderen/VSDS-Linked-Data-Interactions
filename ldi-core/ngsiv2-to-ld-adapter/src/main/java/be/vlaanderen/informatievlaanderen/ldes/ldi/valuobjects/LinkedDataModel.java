@@ -19,6 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.services.NgsiLdURIParser.toNgsiLdUri;
 
+/**
+ * LinkedDataModel is the main class used for transforming NGSI V2 TO NGSI LD.
+ * A jackson object mapper can deserialize a NGSI V2 JSON string into an object
+ * of this class.
+ * To serialize an object of this class into a NGSI LD JSON string the toString
+ * method can be used.
+ *
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LinkedDataModel extends LinkedDataAttributeBase {
 
@@ -34,7 +42,11 @@ public class LinkedDataModel extends LinkedDataAttributeBase {
 		this.contexts = new ArrayList<>();
 	}
 
-	// deserialize from NGSI_V2
+	/**
+	 * The constructor to be used by jackson to deserialize an input in the NGSI V2
+	 * format.
+	 *
+	 */
 	@JsonCreator
 	public LinkedDataModel(@JsonProperty(NGSI_V2_KEY_ID) String id,
 			@JsonProperty(NGSI_V2_KEY_TYPE) String type,

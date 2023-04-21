@@ -12,6 +12,15 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMappi
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping.NGSI_V2_KEY_TIMESTAMP;
 import static java.util.Objects.isNull;
 
+/**
+ * LinkedDataAttribute and its subclasses are used to determine how certain
+ * types of properties are interpreted and transformed.
+ * When using this class with a jackson object mapper, the correct subclass will
+ * be assigned based on the value of the property "type".
+ * When this value has no corresponding subclass, this class is assigned by
+ * default.
+ *
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true, defaultImpl = LinkedDataAttribute.class)
 @JsonSubTypes({
