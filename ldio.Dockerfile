@@ -16,6 +16,10 @@ RUN mvn clean install -DskipTests
 FROM openjdk:18-ea-bullseye
 RUN apt-get update & apt-get upgrade
 
+RUN useradd -u 2000 ldes
+USER ldes
+WORKDIR /ldes
+
 COPY --from=app-stage ldi-orchestrator/ldio-application/target/ldio-application.jar ./
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-in/target/ldio-http-in-jar-with-dependencies.jar ./lib/
@@ -37,8 +41,5 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-out/target/ldio
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-kafka-out/target/ldio-kafka-out-jar-with-dependencies.jar ./lib/
 
 RUN dir -s
-
-RUN useradd -u 2000 ldes
-USER ldes
 
 CMD ["java", "-cp", "ldio-application.jar", "-Dloader.path=lib/", "org.springframework.boot.loader.PropertiesLauncher"]

@@ -45,5 +45,4 @@ public class EntityManagerFactory {
 			throw new DestroyDbFailedException(e);
 		}
 	}
-
 }
