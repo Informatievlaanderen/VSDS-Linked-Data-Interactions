@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:ns0="https://uri.etsi.org/ngsi-ld/default-context/"
+         xmlns:ns1="https://uri.etsi.org/ngsi-ld/">
+
+    <rdf:Description rdf:about="urn:ngsi-v2:cot-imec-be:WaterQualityObserved:imec-iow-3orY3reQDK5n3TMpPnLVYR">
+        <rdf:type rdf:resource="https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved"/>
+        <ns0:batteryLevel>
+            <rdf:Description>
+                <rdf:type rdf:resource="https://uri.etsi.org/ngsi-ld/Property"/>
+                <ns0:rawValue>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="https://uri.etsi.org/ngsi-ld/Property"/>
+                        <ns1:hasValue rdf:nodeID="genid13"/>
+                    </rdf:Description>
+                </ns0:rawValue>
+
+                <ns0:statusCode>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</ns1:hasValue>
+                    </ns1:Property>
+                </ns0:statusCode>
+
+                <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#double">7.5E-1</ns1:hasValue>
+                <ns1:observedAt rdf:datatype="https://uri.etsi.org/ngsi-ld/DateTime">2022-04-19T11:40:42.000Z</ns1:observedAt>
+            </rdf:Description>
+        </ns0:batteryLevel>
+
+        <ns0:conductivity>
+            <ns1:Property>
+                <ns0:phase>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:nodeID="genid17"/>
+                    </ns1:Property>
+                </ns0:phase>
+
+                <ns0:rawValue>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:nodeID="genid18"/>
+                    </ns1:Property>
+                </ns0:rawValue>
+
+                <ns0:statusCode>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</ns1:hasValue>
+                    </ns1:Property>
+                </ns0:statusCode>
+
+                <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#double">2.56702E3</ns1:hasValue>
+                <ns1:observedAt rdf:datatype="https://uri.etsi.org/ngsi-ld/DateTime">2022-04-19T11:40:42.000Z</ns1:observedAt>
+                <ns1:unitCode rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G42</ns1:unitCode>
+            </ns1:Property>
+        </ns0:conductivity>
+
+        <ns0:dateObserved>
+            <ns1:Property>
+                <ns1:hasValue rdf:datatype="https://uri.etsi.org/ngsi-ld/DateTime">2022-04-19T11:40:42.000Z</ns1:hasValue>
+            </ns1:Property>
+        </ns0:dateObserved>
+
+        <ns0:depth>
+            <ns1:Property>
+                <ns0:rawValue>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:nodeID="genid21"/>
+                    </ns1:Property>
+                </ns0:rawValue>
+
+                <ns0:statusCode>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</ns1:hasValue>
+                    </ns1:Property>
+                </ns0:statusCode>
+
+                <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1.14211328E3</ns1:hasValue>
+                <ns1:observedAt rdf:datatype="https://uri.etsi.org/ngsi-ld/DateTime">2022-04-19T11:40:42.000Z</ns1:observedAt>
+                <ns1:unitCode rdf:datatype="http://www.w3.org/2001/XMLSchema#string">HP</ns1:unitCode>
+            </ns1:Property>
+        </ns0:depth>
+
+        <ns0:locationName>
+            <ns1:Property>
+                <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">loc-00014-48</ns1:hasValue>
+            </ns1:Property>
+        </ns0:locationName>
+
+        <ns0:refDevice>
+            <ns1:Relationship>
+                <ns1:hasObject rdf:resource="urn:ngsi-v2:cot-imec-be:Device:imec-iow-eoP3fQDo577EmZz3nvVrJd"/>
+            </ns1:Relationship>
+        </ns0:refDevice>
+
+        <ns0:refDevices>
+            <ns1:Property>
+                <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">urn:ngsi-v2:cot-imec-be:Device:imec-iow-eoP3fQDo577EmZz3nvVrJd</ns1:hasValue>
+            </ns1:Property>
+        </ns0:refDevices>
+
+        <ns0:samplingPoint>
+            <ns1:Property>
+                <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">spt-00025-12</ns1:hasValue>
+            </ns1:Property>
+        </ns0:samplingPoint>
+
+        <ns0:temperature>
+            <ns1:Property>
+                <ns0:rawValue>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:nodeID="genid24"/>
+                    </ns1:Property>
+                </ns0:rawValue>
+
+                <ns0:statusCode>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</ns1:hasValue>
+                    </ns1:Property>
+                </ns0:statusCode>
+
+                <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1.518E1</ns1:hasValue>
+                <ns1:observedAt rdf:datatype="https://uri.etsi.org/ngsi-ld/DateTime">2022-04-19T11:40:42.000Z</ns1:observedAt>
+                <ns1:unitCode rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CEL</ns1:unitCode>
+            </ns1:Property>
+        </ns0:temperature>
+
+        <ns1:location>
+            <ns1:GeoProperty>
+                <ns1:hasValue>
+                    <ns0:Point>
+                        <ns1:coordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#double">3.22100827E0</ns1:coordinates>
+                        <ns1:coordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#double">5.122159735E1</ns1:coordinates>
+                    </ns0:Point>
+                </ns1:hasValue>
+
+                <ns1:name>
+                    <ns1:Property>
+                        <ns1:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">loc-00014-48</ns1:hasValue>
+                    </ns1:Property>
+                </ns1:name>
+
+            </ns1:GeoProperty>
+        </ns1:location>
+
+    </rdf:Description>
+
+</rdf:RDF>
