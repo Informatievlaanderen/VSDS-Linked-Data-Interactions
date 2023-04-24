@@ -1,28 +1,35 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.types;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDataEvent;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDataOutputEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDataTransformEvent;
+import org.apache.jena.rdf.model.Model;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
-@Component
-public class LdioComponent {
-	private final Logger log = LoggerFactory.getLogger(LdioComponent.class);
+public abstract class LdioComponent {
 	private final String name;
+	private final ApplicationEventPublisher eventPublisher;
 
-	protected LdioComponent() {
-		this.name = "name";
+	protected LdioComponent(String name, ApplicationEventPublisher eventPublisher) {
+		this.name = name;
+		this.eventPublisher = eventPublisher;
 	}
 
 	@EventListener
-	public void handleLdioEvent(PipelineDataEvent event) {
+	public void handleLdioEvent(PipelineDataTransformEvent event) {
 		if (name.equals(event.targetComponent())) {
-			log.info(RDFWriter.source(event.data())
-					.lang(Lang.TURTLE)
-					.asString());
+			sendPipelineDataEvent(event.ldiOrder(), event.data());
+		}
+	}
+
+	void sendPipelineDataEvent(LdiOrder ldiOrder, Model model) {
+		if (!ldiOrder.transformations().isEmpty()) {
+			eventPublisher.publishEvent(new PipelineDataTransformEvent(ldiOrder.transformations().poll(), ldiOrder, model));;
+		}
+		else {
+			ldiOrder.outputs().parallelStream().forEach(output -> {
+				eventPublisher.publishEvent(new PipelineDataOutputEvent(output, model));
+			});
 		}
 	}
 }

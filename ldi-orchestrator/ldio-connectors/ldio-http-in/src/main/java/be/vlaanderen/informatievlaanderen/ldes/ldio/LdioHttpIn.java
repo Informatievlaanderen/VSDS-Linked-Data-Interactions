@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter.Content;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDataEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDataTransformEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -34,7 +34,7 @@ public class LdioHttpIn extends LdiInput {
 					return req.bodyToMono(String.class)
 							.doOnNext(content -> getAdapter().apply(Content.of(content, contentType))
 									.forEach(model -> {
-										applicationEventPublisher.publishEvent(new PipelineDataEvent("name", model));
+										applicationEventPublisher.publishEvent(new PipelineDataTransformEvent("name", model));
 										getExecutor().transformLinkedData(model);
 									}))
 							.flatMap(body -> ServerResponse.ok().build());
