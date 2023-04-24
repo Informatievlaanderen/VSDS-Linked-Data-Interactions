@@ -36,7 +36,7 @@ class CreateVersionObjectProcessorTest {
 	private static final String DEFAULT_MEMBER_TYPE_WQO = "https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
-	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "n-quads";
+	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "application/n-quads";
 	private static final String DEFAULT_PROV_GENERATED_AT_TIME = "http://www.w3.org/ns/prov#generatedAtTime";
 
 	private TestRunner testRunner;
@@ -131,9 +131,9 @@ class CreateVersionObjectProcessorTest {
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(
 					Arguments.of("example-waterqualityobserved.json",
-							"json-ld"),
+							"application/ld+json"),
 					Arguments.of("example-waterqualityobserved.nq",
-							"N-triples"),
+							"application/n-quads"),
 					Arguments.of("example-waterqualityobserved.xml",
 							"RDFXML"));
 		}
