@@ -8,6 +8,11 @@ import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_RELATIONSHIP;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
@@ -30,7 +36,7 @@ class CreateVersionObjectProcessorTest {
 	private static final String DEFAULT_MEMBER_TYPE_WQO = "https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
-	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "n-quads";
+	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "application/n-quads";
 	private static final String DEFAULT_PROV_GENERATED_AT_TIME = "http://www.w3.org/ns/prov#generatedAtTime";
 
 	private TestRunner testRunner;
@@ -40,17 +46,20 @@ class CreateVersionObjectProcessorTest {
 		testRunner = TestRunners.newTestRunner(CreateVersionObjectProcessor.class);
 	}
 
-	@Test
-	void when_InputIsValidJsonLD_ExpectedVersionObjectIsReturned() throws IOException, URISyntaxException {
+	@ParameterizedTest
+	@ArgumentsSource(RDFTypeAndFileArgumentsProvider.class)
+	void when_InputIsValid_ExpectedVersionObjectIsReturned(String file, String mimeType)
+			throws IOException, URISyntaxException {
 		testRunner.setProperty("DATE_OBSERVED_VALUE_RDF_PROPERTY", DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY);
 		testRunner.setProperty("MEMBER_RDF_SYNTAX_TYPE", DEFAULT_MEMBER_TYPE_WQO);
 		testRunner.setProperty("DELIMITER", DEFAULT_DELIMITER);
 		testRunner.setProperty("VERSION_OF_KEY", DEFAULT_VERSION_OF_KEY);
 		testRunner.setProperty("DATA_DESTINATION_FORMAT", DEFAULT_DATA_DESTINATION_FORMAT);
+		testRunner.setProperty("DATA_INPUT_FORMAT", mimeType);
 		testRunner.setProperty("GENERATED_AT_TIME_PROPERTY", "");
 
 		final Path JSON_SNIPPET = Paths.get(String.valueOf(new File(
-				Objects.requireNonNull(getClass().getClassLoader().getResource("example-waterqualityobserved.json"))
+				Objects.requireNonNull(getClass().getClassLoader().getResource(file))
 						.toURI())));
 		testRunner.enqueue(JSON_SNIPPET);
 		testRunner.run(1);
@@ -114,6 +123,20 @@ class CreateVersionObjectProcessorTest {
 		return RDFParserBuilder.create()
 				.fromString(s).lang(lang)
 				.toModel();
+	}
+
+	static class RDFTypeAndFileArgumentsProvider implements ArgumentsProvider {
+
+		@Override
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+			return Stream.of(
+					Arguments.of("example-waterqualityobserved.json",
+							"application/ld+json"),
+					Arguments.of("example-waterqualityobserved.nq",
+							"application/n-quads"),
+					Arguments.of("example-waterqualityobserved.xml",
+							"RDFXML"));
+		}
 	}
 
 }

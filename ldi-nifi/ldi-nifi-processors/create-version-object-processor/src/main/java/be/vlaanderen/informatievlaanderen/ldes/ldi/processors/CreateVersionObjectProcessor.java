@@ -21,6 +21,7 @@ import java.util.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorPropertyDescriptors.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_RELATIONSHIP;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
+import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
 @Tags({ "ldes", "vsds" })
@@ -41,6 +42,7 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		descriptors.add(DATE_OBSERVED_VALUE_RDF_PROPERTY);
 		descriptors.add(VERSION_OF_KEY);
 		descriptors.add(DATA_DESTINATION_FORMAT);
+		descriptors.add(DATA_INPUT_FORMAT);
 		descriptors.add(GENERATED_AT_TIME_PROPERTY);
 		descriptors = Collections.unmodifiableList(descriptors);
 
@@ -78,10 +80,11 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 	public void onTrigger(final ProcessContext context, final ProcessSession session) {
 		LOGGER.info("On Trigger");
 		FlowFile flowFile = session.get();
+		Lang lang = nameToLang(context.getProperty(DATA_INPUT_FORMAT).getValue());
 
 		String content = FlowManager.receiveData(session, flowFile);
 		try {
-			Model input = RDFParserBuilder.create().fromString(content).lang(Lang.JSONLD).toModel();
+			Model input = RDFParserBuilder.create().fromString(content).lang(lang).toModel();
 			Model versionObject = versionObjectCreator.apply(input);
 
 			FlowManager.sendRDFToRelation(session, flowFile, versionObject, DATA_RELATIONSHIP, dataDestinationFormat);

@@ -18,7 +18,8 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 	private static final String DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY = "https://uri.etsi.org/ngsi-ld/observedAt";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
-	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "n-quads";
+	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "application/n-quads";
+	private static final String DEFAULT_DATA_INPUT_FORMAT = "application/ld+json";
 	private static final String DEFAULT_PROV_GENERATED_AT_TIME = "http://www.w3.org/ns/prov#generatedAtTime";
 
 	private CreateVersionObjectProcessorPropertyDescriptors() {
@@ -59,6 +60,15 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 			.required(false)
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.defaultValue(DEFAULT_VERSION_OF_KEY)
+			.build();
+
+	public static final PropertyDescriptor DATA_INPUT_FORMAT = new PropertyDescriptor.Builder()
+			.name("DATA_INPUT_FORMAT")
+			.displayName("Data input format")
+			.description("RDF format identifier of the input data")
+			.required(false)
+			.addValidator(new RDFLanguageValidator())
+			.defaultValue(DEFAULT_DATA_INPUT_FORMAT)
 			.build();
 
 	public static final PropertyDescriptor DATA_DESTINATION_FORMAT = new PropertyDescriptor.Builder()
