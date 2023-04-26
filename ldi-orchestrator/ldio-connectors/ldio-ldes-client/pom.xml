@@ -11,7 +11,7 @@
 
     <properties>
         <relative-formatter-path>../../..</relative-formatter-path>
-        <byte-buddy-dep.version>1.14.3</byte-buddy-dep.version>
+        <byte-buddy-dep.version>1.14.4</byte-buddy-dep.version>
     </properties>
 
     <dependencies>
