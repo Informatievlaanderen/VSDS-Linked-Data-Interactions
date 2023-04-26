@@ -77,12 +77,22 @@ class ComponentPropertiesTest {
 	@Nested
 	class GetOptionalPropertyFromFile {
 		
+		ComponentProperties componentProperties = new ComponentProperties(
+				Map.of("non-existant", "non-existant-file", "bom", "src/test/resources/bom.rq", "query", "src/test/resources/query.rq"));
+		
 		@Test
-		void shouldReturnEmptyWhenFileMissing() {
-			ComponentProperties componentProperties = new ComponentProperties(
-					Map.of("query", "src/test/resources/query.rq"));
-			
-			assertEquals("sparql", componentProperties.getOptionalPropertyFromFileIfPresent("query").get());
+		void shouldThrowExceptionIfFileMissingOrNotReadable() {
+			assertThrows(IllegalArgumentException.class, () -> componentProperties.getOptionalPropertyFromFile("non-existant"));
+		}
+		
+		@Test
+		void shouldThrowExceptionIfIOExceptionOccurs() {
+			assertThrows(IllegalArgumentException.class, () -> componentProperties.getOptionalPropertyFromFile("bom"));
+		}
+		
+		@Test
+		void shouldReturnFileContentsWhenFileExistsAndIsReadable() {
+			assertEquals("sparql", componentProperties.getOptionalPropertyFromFile("query").get());
 		}
 	}
 
