@@ -1,5 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,5 +40,15 @@ public class ComponentProperties {
 	public Optional<Integer> getOptionalInteger(String key) {
 		return getOptionalProperty(key).map(Integer::valueOf);
 	}
-
+	
+	/**
+	 * Returns the configuration value from a file.
+	 * 
+	 * @param key the name of a file that contains the configuration value 
+	 * @return the configuration value from the file.
+	 * @throws IOException if the file doesn't exist or isn't readable.
+	 */
+	public Optional<String> getOptionalPropertyFromFile(String key) throws IOException {
+		return Optional.ofNullable(Files.readString(Path.of(key)));
+	}
 }

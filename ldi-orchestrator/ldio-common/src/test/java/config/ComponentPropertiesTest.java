@@ -1,12 +1,16 @@
 package config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 
 class ComponentPropertiesTest {
 
@@ -67,6 +71,18 @@ class ComponentPropertiesTest {
 		@Test
 		void shouldReturnEmptyWhenPropertyIsMissing() {
 			assertTrue(componentProperties.getOptionalInteger("notPresent").isEmpty());
+		}
+	}
+	
+	@Nested
+	class GetOptionalPropertyFromFile {
+		
+		@Test
+		void shouldReturnEmptyWhenFileMissing() {
+			ComponentProperties componentProperties = new ComponentProperties(
+					Map.of("query", "src/test/resources/query.rq"));
+			
+			assertEquals("sparql", componentProperties.getOptionalPropertyFromFileIfPresent("query").get());
 		}
 	}
 
