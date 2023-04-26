@@ -41,7 +41,7 @@
         <jena.version>4.7.0</jena.version>
 
         <!-- Testing -->
-        <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <junit-jupiter.version>5.9.3</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
         <byte-buddy.version>1.14.4</byte-buddy.version>
         <wiremock-jre8.version>2.35.0</wiremock-jre8.version>
