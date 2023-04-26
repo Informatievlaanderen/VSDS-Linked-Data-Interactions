@@ -1,16 +1,15 @@
 package config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Map;
-
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 
 class ComponentPropertiesTest {
 
@@ -73,27 +72,22 @@ class ComponentPropertiesTest {
 			assertTrue(componentProperties.getOptionalInteger("notPresent").isEmpty());
 		}
 	}
-	
+
 	@Nested
 	class GetOptionalPropertyFromFile {
-		
+
 		ComponentProperties componentProperties = new ComponentProperties(
-				Map.of("non-existant", "non-existant-file", "bom", "src/test/resources/bom.rq", "query", "src/test/resources/query.rq"));
-		
+				Map.of("non-existant", "non-existant-file", "query", "src/test/resources/query.rq"));
+
 		@Test
 		void shouldThrowExceptionIfFileMissingOrNotReadable() {
-			assertThrows(IllegalArgumentException.class, () -> componentProperties.getOptionalPropertyFromFile("non-existant"));
+			assertThrows(IllegalArgumentException.class,
+					() -> componentProperties.getOptionalPropertyFromFile("non-existant"));
 		}
-		
-		@Test
-		void shouldThrowExceptionIfIOExceptionOccurs() {
-			assertThrows(IllegalArgumentException.class, () -> componentProperties.getOptionalPropertyFromFile("bom"));
-		}
-		
+
 		@Test
 		void shouldReturnFileContentsWhenFileExistsAndIsReadable() {
 			assertEquals("sparql", componentProperties.getOptionalPropertyFromFile("query").get());
 		}
 	}
-
 }

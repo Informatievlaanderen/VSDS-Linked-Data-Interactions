@@ -40,26 +40,27 @@ public class ComponentProperties {
 	public Optional<Integer> getOptionalInteger(String key) {
 		return getOptionalProperty(key).map(Integer::valueOf);
 	}
-	
+
 	/**
 	 * Returns the configuration value from a file.
-	 * 
-	 * @param key the name of a file that contains the configuration value 
+	 *
+	 * @param key
+	 *            the name of a file that contains the configuration value
 	 * @return the configuration value from the file.
-	 * @throws IllegalArgumentException if the file doesn't exist or isn't readable.
+	 * @throws IllegalArgumentException
+	 *             if the file doesn't exist or isn't readable.
 	 */
 	public Optional<String> getOptionalPropertyFromFile(String key) {
 		String file = getProperty(key);
 		Path path = Path.of(file);
-		
+
 		try {
 			if (!Files.isReadable(path)) {
 				throw new IllegalArgumentException("File doesn't exist or isn't readable: " + file);
 			}
-			
+
 			return Optional.ofNullable(Files.readString(path));
-		}
-		catch (IOException ioe) {
+		} catch (IOException ioe) {
 			throw new IllegalArgumentException("Unreadable file: " + file);
 		}
 	}
