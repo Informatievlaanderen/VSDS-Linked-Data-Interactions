@@ -42,17 +42,23 @@ public class ComponentProperties {
 	}
 
 	/**
-	 * Returns the configuration value from a file.
+	 * Returns the configuration value from a file if it exists or an empty Optional
+	 * otherwise
 	 *
 	 * @param key
 	 *            the name of a file that contains the configuration value
-	 * @return the configuration value from the file.
+	 * @return the configuration value from the file if it exists and is readable,
+	 *         an empty Optional otherwise.
 	 * @throws IllegalArgumentException
 	 *             if the file doesn't exist or isn't readable.
 	 */
 	public Optional<String> getOptionalPropertyFromFile(String key) {
 		String file = getProperty(key);
 		Path path = Path.of(file);
+
+		if (!Files.exists(path)) {
+			return Optional.empty();
+		}
 
 		try {
 			if (!Files.isReadable(path)) {

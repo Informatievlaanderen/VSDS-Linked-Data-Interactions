@@ -4,6 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,12 +79,22 @@ class ComponentPropertiesTest {
 	class GetOptionalPropertyFromFile {
 
 		ComponentProperties componentProperties = new ComponentProperties(
-				Map.of("non-existant", "non-existant-file", "query", "src/test/resources/query.rq"));
+				Map.of(
+						"non-existant", "non-existant-file",
+						"query", "src/test/resources/query.rq"));
 
 		@Test
-		void shouldThrowExceptionIfFileMissingOrNotReadable() {
+		void shouldReturnEmptyIfFileMissing() {
+			assertTrue(componentProperties.getOptionalPropertyFromFile("non-existant").isEmpty());
+		}
+
+		@Test
+		void shouldThrowExceptionIfUnreadableFile() throws IOException {
+			ComponentProperties componentProperties = new ComponentProperties(
+					Map.of("non-regular-file", Files.createTempDirectory("queryDir").toFile().getAbsolutePath()));
+
 			assertThrows(IllegalArgumentException.class,
-					() -> componentProperties.getOptionalPropertyFromFile("non-existant"));
+					() -> componentProperties.getOptionalPropertyFromFile("non-regular-file"));
 		}
 
 		@Test

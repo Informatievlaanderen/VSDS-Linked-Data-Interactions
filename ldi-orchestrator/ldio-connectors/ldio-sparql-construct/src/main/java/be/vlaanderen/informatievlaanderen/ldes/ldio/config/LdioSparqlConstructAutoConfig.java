@@ -27,7 +27,8 @@ public class LdioSparqlConstructAutoConfig {
 
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
-			Query query = QueryFactory.create(config.getProperty(QUERY));
+			String queryContents = config.getOptionalPropertyFromFile(QUERY).orElse(config.getProperty(QUERY));
+			Query query = QueryFactory.create(queryContents);
 			boolean inferMode = config.getOptionalBoolean(INFER).orElse(false);
 			return new SparqlConstructTransformer(query, inferMode);
 		}
