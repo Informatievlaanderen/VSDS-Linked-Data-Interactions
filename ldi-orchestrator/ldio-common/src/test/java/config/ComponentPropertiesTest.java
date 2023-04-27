@@ -4,11 +4,36 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ComponentPropertiesTest {
+
+	@Nested
+	class GetConfig {
+
+		Map<String, String> config = Map.of("test", "test");
+
+		@Test
+		void shouldHaveEmptyConfigWithNoArgumentConstructor() {
+			ComponentProperties componentProperties = new ComponentProperties();
+
+			assertTrue(componentProperties.getConfig().isEmpty());
+		}
+
+		@Test
+		void shouldHaveConfigWithArgumentConstructor() {
+			ComponentProperties componentProperties = new ComponentProperties(config);
+
+			assertEquals(config, componentProperties.getConfig());
+		}
+	}
 
 	@Nested
 	class GetProperty {
@@ -70,4 +95,31 @@ class ComponentPropertiesTest {
 		}
 	}
 
+	@Nested
+	class GetOptionalPropertyFromFile {
+
+		ComponentProperties componentProperties = new ComponentProperties(
+				Map.of(
+						"non-existant", "non-existant-file",
+						"query", "src/test/resources/query.rq"));
+
+		@Test
+		void shouldReturnEmptyIfFileMissing() {
+			assertTrue(componentProperties.getOptionalPropertyFromFile("non-existant").isEmpty());
+		}
+
+		@Test
+		void shouldThrowExceptionIfUnreadableFile() throws IOException {
+			ComponentProperties componentProperties = new ComponentProperties(
+					Map.of("non-regular-file", Files.createTempDirectory("queryDir").toFile().getAbsolutePath()));
+
+			assertThrows(IllegalArgumentException.class,
+					() -> componentProperties.getOptionalPropertyFromFile("non-regular-file"));
+		}
+
+		@Test
+		void shouldReturnFileContentsWhenFileExistsAndIsReadable() {
+			assertEquals("sparql", componentProperties.getOptionalPropertyFromFile("query").get());
+		}
+	}
 }
