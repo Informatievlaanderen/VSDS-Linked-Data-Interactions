@@ -1,19 +1,40 @@
 package config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Map;
+
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+
 class ComponentPropertiesTest {
+	
+	@Nested
+	class GetConfig {
+		
+		Map<String, String> config = Map.of("test", "test");
+		
+		@Test
+		void shouldHaveEmptyConfigWithNoArgumentConstructor() {
+			ComponentProperties componentProperties = new ComponentProperties();
+			
+			assertTrue(componentProperties.getConfig().isEmpty());
+		}
+		
+		@Test
+		void shouldHaveConfigWithArgumentConstructor() {
+			ComponentProperties componentProperties = new ComponentProperties(config);
+			
+			assertEquals(config, componentProperties.getConfig());
+		}
+	}
 
 	@Nested
 	class GetProperty {
