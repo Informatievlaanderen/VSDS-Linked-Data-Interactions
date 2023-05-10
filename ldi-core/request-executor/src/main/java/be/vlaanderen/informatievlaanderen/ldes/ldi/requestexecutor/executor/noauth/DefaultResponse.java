@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Response;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -12,8 +13,10 @@ import java.util.List;
 public class DefaultResponse {
 
 	private final HttpResponse httpResponse;
+	private final Request request;
 
-	public DefaultResponse(HttpResponse httpResponse) {
+	public DefaultResponse(Request request, HttpResponse httpResponse) {
+		this.request = request;
 		this.httpResponse = httpResponse;
 	}
 
@@ -21,7 +24,7 @@ public class DefaultResponse {
 		final List<Header> headers = Arrays.stream(httpResponse.getAllHeaders()).toList();
 		final int statusCode = httpResponse.getStatusLine().getStatusCode();
 		final String body = httpResponse.getEntity() != null ? EntityUtils.toString(httpResponse.getEntity()) : null;
-		return new Response(headers, statusCode, body);
+		return new Response(request, headers, statusCode, body);
 	}
 
 }

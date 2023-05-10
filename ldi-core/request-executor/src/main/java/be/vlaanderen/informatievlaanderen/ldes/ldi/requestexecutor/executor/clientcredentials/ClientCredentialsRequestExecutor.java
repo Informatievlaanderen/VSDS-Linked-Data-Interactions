@@ -34,7 +34,7 @@ public class ClientCredentialsRequestExecutor implements RequestExecutor {
 
 		try (com.github.scribejava.core.model.Response response = oAuthService.execute(oAuthRequest)) {
 			final List<Header> headers = extractHeaders(response.getHeaders());
-			return new Response(headers, response.getCode(), response.getBody());
+			return new Response(request, headers, response.getCode(), response.getBody());
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw new HttpRequestException(e);

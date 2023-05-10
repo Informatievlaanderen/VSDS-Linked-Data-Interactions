@@ -21,7 +21,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 	public Response execute(Request request) {
 		try {
 			HttpUriRequest httpRequest = new DefaultRequest(request).getHttpRequest();
-			return new DefaultResponse(httpClient.execute(httpRequest)).getResponse();
+			return new DefaultResponse(request, httpClient.execute(httpRequest)).getResponse();
 		} catch (IOException e) {
 			throw new HttpRequestException(e);
 		}

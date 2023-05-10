@@ -7,7 +7,6 @@ import ldes.client.treenodefetcher.domain.valueobjects.MutabilityStatus;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpStatus;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 
@@ -25,13 +24,20 @@ public class TreeNodeFetcher {
 	public TreeNodeResponse fetchTreeNode(TreeNodeRequest treeNodeRequest) {
 		final Response response = requestExecutor.execute(treeNodeRequest.createRequest());
 
-		return switch (response.getHttpStatus()) {
-			case HttpStatus.SC_OK -> createOkResponse(treeNodeRequest, response);
-			case HttpStatus.SC_MOVED_TEMPORARILY -> createMovedTemporarilyResponse(response);
-			case HttpStatus.SC_NOT_MODIFIED -> createNotModifiedResponse(response);
-			default -> throw new UnsupportedOperationException(
-					"Cannot handle response " + response.getHttpStatus() + " of TreeNodeRequest " + treeNodeRequest);
-		};
+		if (response.isOk()) {
+			return createOkResponse(treeNodeRequest, response);
+		}
+
+		if (response.isRedirect()) {
+			return createRedirectResponse(response);
+		}
+
+		if (response.isNotModified()) {
+			return createNotModifiedResponse(response);
+		}
+
+		throw new UnsupportedOperationException(
+				"Cannot handle response " + response.getHttpStatus() + " of TreeNodeRequest " + treeNodeRequest);
 	}
 
 	private TreeNodeResponse createOkResponse(TreeNodeRequest treeNodeRequest, Response response) {
@@ -42,9 +48,10 @@ public class TreeNodeFetcher {
 		return new TreeNodeResponse(modelResponse.getRelations(), modelResponse.getMembers(), mutabilityStatus);
 	}
 
-	private static TreeNodeResponse createMovedTemporarilyResponse(Response response) {
+	private static TreeNodeResponse createRedirectResponse(Response response) {
 		return new TreeNodeResponse(
-				List.of(response.getFirstHeaderValue(HttpHeaders.LOCATION).orElseThrow()),
+				List.of(response.getRedirectLocation()
+						.orElseThrow(() -> new IllegalStateException("No Location Header in redirect."))),
 				List.of(),
 				new MutabilityStatus(false, LocalDateTime.MAX));
 	}
