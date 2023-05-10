@@ -6,11 +6,18 @@ import org.apache.http.HttpStatus;
 import org.apache.http.message.BasicHeader;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ResponseTest {
@@ -56,31 +63,25 @@ class ResponseTest {
 			assertTrue(response.getRedirectLocation().isEmpty());
 		}
 
-		@Test
-		void shouldReturnLocationUrl_whenAbsolute() {
+		@ParameterizedTest
+		@ArgumentsSource(LocationProvider.class)
+		void foo(String testName, String location) {
+			assertNotNull(testName);
 			Request request = new Request("https://example.com/blog/article", RequestHeaders.empty());
-			Header header = new BasicHeader(HttpHeaders.LOCATION, "https://example.org/blog/chat");
-			Response response = new Response(request, List.of(header), 302, null);
-
-			assertEquals("https://example.org/blog/chat", response.getRedirectLocation().orElseThrow());
-		}
-
-		@Test
-		void shouldAddBaseUrlToLocationUrl_whenRelativeAbsolute() {
-			Request request = new Request("https://example.com/blog/article", RequestHeaders.empty());
-			Header header = new BasicHeader(HttpHeaders.LOCATION, "/chat");
-			Response response = new Response(request, List.of(header), 302, null);
-
-			assertEquals("https://example.com/chat", response.getRedirectLocation().orElseThrow());
-		}
-
-		@Test
-		void shouldAddUrlToLocationUrl_whenRelativeRelative() {
-			Request request = new Request("https://example.com/blog/article", RequestHeaders.empty());
-			Header header = new BasicHeader(HttpHeaders.LOCATION, "chat");
+			Header header = new BasicHeader(HttpHeaders.LOCATION, location);
 			Response response = new Response(request, List.of(header), 302, null);
 
 			assertEquals("https://example.com/blog/chat", response.getRedirectLocation().orElseThrow());
+		}
+
+		static class LocationProvider implements ArgumentsProvider {
+			@Override
+			public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+				return Stream.of(
+						Arguments.of("shouldReturnLocationUrl_whenAbsolute", "https://example.com/blog/chat"),
+						Arguments.of("shouldAddBaseUrlToLocationUrl_whenRelativeAbsolute", "/blog/chat"),
+						Arguments.of("shouldAddUrlToLocationUrl_whenRelativeRelative", "chat"));
+			}
 		}
 	}
 
