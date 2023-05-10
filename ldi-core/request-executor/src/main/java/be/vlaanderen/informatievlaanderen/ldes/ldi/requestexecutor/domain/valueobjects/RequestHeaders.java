@@ -12,7 +12,6 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 		this.headers = requestHeaders;
 	}
 
-	// TODO: 10/05/2023 test
 	public RequestHeaders addRequestHeader(RequestHeader requestHeader) {
 		ArrayList<RequestHeader> updatedRequestHeaders = new ArrayList<>(headers);
 		updatedRequestHeaders.add(requestHeader);

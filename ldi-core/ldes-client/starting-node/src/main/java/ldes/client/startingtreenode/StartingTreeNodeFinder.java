@@ -49,7 +49,6 @@ public class StartingTreeNodeFinder {
 									"No Location Header in redirect.")));
 			return determineStartingTreeNode(newStartingNodeRequest);
 		}
-		// TODO: 10/05/2023 test
 		throw new StartingNodeNotFoundException(startingNodeRequest.url(),
 				"Unable to hande response " + response.getHttpStatus());
 	}

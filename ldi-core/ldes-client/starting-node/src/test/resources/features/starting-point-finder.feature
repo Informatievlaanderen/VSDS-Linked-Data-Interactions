@@ -21,3 +21,8 @@ Feature: StartingTreeNodeFinder
     Given I have a StartingTreeNodeFinder
     When I create a StartingNodeRequest with a lang "jsonld" and url: "http://localhost:10101/302-redirects-infinite-loop-1"
     Then An StartingNodeNotFoundException is Thrown indicating that I'm in an infinite loop
+
+  Scenario: Determining the starting TreeNode Starting from an endpoint that redirects to an infinite loop
+    Given I have a StartingTreeNodeFinder
+    When I create a StartingNodeRequest with a lang "jsonld" and url: "http://localhost:10101/303-unsupported-status"
+    Then An StartingNodeNotFoundException is Thrown indicating that status 303 cannot be handled
