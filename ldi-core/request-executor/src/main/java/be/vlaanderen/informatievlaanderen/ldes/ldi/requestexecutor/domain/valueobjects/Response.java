@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
-// TODO: 10/05/2023 add testing
 public class Response {
 
 	private final Request request;
