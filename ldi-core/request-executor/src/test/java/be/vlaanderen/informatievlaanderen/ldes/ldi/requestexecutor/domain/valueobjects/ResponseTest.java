@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
 
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.message.BasicHeader;
 import org.junit.jupiter.api.Nested;
@@ -46,26 +48,40 @@ class ResponseTest {
 
 	@Nested
 	class TestGetRedirectLocation {
+		@Test
+		void shouldReturnEmpty_whenNoLocationHeader() {
+			Request request = new Request("https://example.com", RequestHeaders.empty());
+			Response response = new Response(request, List.of(), 302, null);
 
+			assertTrue(response.getRedirectLocation().isEmpty());
+		}
+
+		@Test
+		void shouldReturnLocationUrl_whenAbsolute() {
+			Request request = new Request("https://example.com/blog/article", RequestHeaders.empty());
+			Header header = new BasicHeader(HttpHeaders.LOCATION, "https://example.org/blog/chat");
+			Response response = new Response(request, List.of(header), 302, null);
+
+			assertEquals("https://example.org/blog/chat", response.getRedirectLocation().orElseThrow());
+		}
+
+		@Test
+		void shouldAddBaseUrlToLocationUrl_whenRelativeAbsolute() {
+			Request request = new Request("https://example.com/blog/article", RequestHeaders.empty());
+			Header header = new BasicHeader(HttpHeaders.LOCATION, "/chat");
+			Response response = new Response(request, List.of(header), 302, null);
+
+			assertEquals("https://example.com/chat", response.getRedirectLocation().orElseThrow());
+		}
+
+		@Test
+		void shouldAddUrlToLocationUrl_whenRelativeRelative() {
+			Request request = new Request("https://example.com/blog/article", RequestHeaders.empty());
+			Header header = new BasicHeader(HttpHeaders.LOCATION, "chat");
+			Response response = new Response(request, List.of(header), 302, null);
+
+			assertEquals("https://example.com/blog/chat", response.getRedirectLocation().orElseThrow());
+		}
 	}
-
-	// public static void main(String[] args) {
-	// Response response1 = new Response(new
-	// Request("https://example.com/blog/article", RequestHeaders.empty()), List.of(
-	// new BasicHeader(HttpHeaders.LOCATION, "/chat")
-	// ), 302, null);
-	// Response response2 = new Response(new
-	// Request("https://example.com/blog/article", RequestHeaders.empty()), List.of(
-	// new BasicHeader(HttpHeaders.LOCATION, "https://example.org/blog/chat")
-	// ), 302, null);
-	// Response response3 = new Response(new
-	// Request("https://example.com/blog/article", RequestHeaders.empty()), List.of(
-	// new BasicHeader(HttpHeaders.LOCATION, "chat")
-	// ), 302, null);
-	//
-	// System.out.println(getRedirect(response1));
-	// System.out.println(getRedirect(response2));
-	// System.out.println(getRedirect(response3));
-	// }
 
 }
