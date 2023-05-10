@@ -8,7 +8,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import ldes.client.startingtreenode.domain.valueobjects.*;
 import ldes.client.startingtreenode.exception.StartingNodeNotFoundException;
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpStatus;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.slf4j.Logger;
@@ -40,12 +39,12 @@ public class StartingTreeNodeFinder {
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, startingNodeRequest.contentType())));
 		Response response = requestExecutor.execute(new Request(startingNodeRequest.url(), requestHeaders));
-		if (response.hasStatus(HttpStatus.SC_OK)) {
+		if (response.isOk()) {
 			return selectStartingNode(startingNodeRequest, response);
 		}
-		if (response.hasStatus(HttpStatus.SC_MOVED_TEMPORARILY)) {
+		if (response.isRedirect()) {
 			StartingNodeRequest newStartingNodeRequest = startingNodeRequest
-					.createRedirectedEndpoint(response.getFirstHeaderValue(HttpHeaders.LOCATION)
+					.createRedirectedEndpoint(response.getRedirectLocation()
 							.orElseThrow(() -> new StartingNodeNotFoundException(startingNodeRequest.url(),
 									"No Location Header in redirect.")));
 			return determineStartingTreeNode(newStartingNodeRequest);

@@ -44,4 +44,13 @@ public class StartingTreeNodeFinderSteps {
 				startingNodeNotFoundException.getMessage());
 	}
 
+	@Then("An StartingNodeNotFoundException is Thrown indicating that status {int} cannot be handled")
+	public void anStartingNodeNotFoundExceptionIsThrownIndicatingThatIMInAnInfiteLoop(int status) {
+		StartingNodeNotFoundException startingNodeNotFoundException = assertThrows(StartingNodeNotFoundException.class,
+				() -> startingTreeNodeFinder.determineStartingTreeNode(startingNodeRequest));
+		assertEquals("Starting Node could not be identified from url http://localhost:10101/303-unsupported-status.\n" +
+				"Unable to hande response " + status,
+				startingNodeNotFoundException.getMessage());
+	}
+
 }

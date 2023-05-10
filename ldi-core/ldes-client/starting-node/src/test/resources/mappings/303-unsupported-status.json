@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/303-unsupported-status",
+    "headers": {
+      "Accept": {
+        "contains": "application/ld+json"
+      }
+    }
+  },
+  "response": {
+    "status": 303
+  }
+}
