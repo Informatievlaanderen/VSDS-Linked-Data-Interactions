@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldi-common</artifactId>
+            <artifactId>ldio-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
