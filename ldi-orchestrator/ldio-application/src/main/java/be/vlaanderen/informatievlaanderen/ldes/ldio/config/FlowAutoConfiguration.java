@@ -29,7 +29,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorCo
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @Configuration
-@ComponentScan
+@ComponentScan("be.vlaanderen.informatievlaanderen")
 public class FlowAutoConfiguration {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlowAutoConfiguration.class);
 	private final OrchestratorConfig orchestratorConfig;

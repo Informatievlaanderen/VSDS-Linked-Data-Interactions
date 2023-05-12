@@ -6,18 +6,14 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
-@EnableConfigurationProperties()
-@ComponentScan(value = "be.vlaanderen.informatievlaanderen.ldes")
 public class LdioHttpInAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn")

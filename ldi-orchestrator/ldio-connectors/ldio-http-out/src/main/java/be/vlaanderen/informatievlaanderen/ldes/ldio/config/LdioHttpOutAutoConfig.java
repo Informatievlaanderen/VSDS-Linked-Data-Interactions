@@ -5,9 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.riot.Lang;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,8 +18,6 @@ import java.util.Objects;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut.getLang;
 
 @Configuration
-@EnableConfigurationProperties()
-@ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioHttpOutAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut")

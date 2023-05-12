@@ -8,16 +8,12 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
 @Configuration
-@EnableConfigurationProperties()
-@ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioVersionObjectCreatorAutoConfig {
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator")
 	public LdioConfigurator ldioConfigurator() {

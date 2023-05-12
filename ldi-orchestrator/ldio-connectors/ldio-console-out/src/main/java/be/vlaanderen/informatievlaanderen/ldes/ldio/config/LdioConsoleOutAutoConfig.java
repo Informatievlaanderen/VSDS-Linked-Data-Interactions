@@ -5,17 +5,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdiConsoleOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.riot.Lang;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdiConsoleOut.getLang;
 
 @Configuration
-@EnableConfigurationProperties()
-@ComponentScan("be.vlaanderen.informatievlaanderen.ldes.ldio")
 public class LdioConsoleOutAutoConfig {
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut")
 	public LdioConfigurator ldioConfigurator() {
