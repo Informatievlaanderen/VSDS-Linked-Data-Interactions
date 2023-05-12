@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 public class LdioSparqlConstructAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer")
-	public LdioConfigurator ldiHttpOutConfigurator() {
+	public LdioConfigurator ldioConfigurator() {
 		return new LdioSparqlConstructConfigurator();
 	}
 
