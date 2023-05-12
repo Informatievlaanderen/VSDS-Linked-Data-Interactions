@@ -4,14 +4,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties()
-@ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioNgsiv2ToLdAdapterAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter")

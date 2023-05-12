@@ -7,14 +7,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties()
-@ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioVersionMaterialiserAutoConfig {
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser")
 	public LdioConfigurator ldioConfigurator() {

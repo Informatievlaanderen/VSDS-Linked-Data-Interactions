@@ -6,14 +6,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurato
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties()
-@ComponentScan("be.vlaanderen.informatievlaanderen.ldes")
 public class LdioSparqlConstructAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer")
