@@ -15,8 +15,8 @@ The following configuration is supported:
 | auth.client-id      | The client identifier when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'                     | No       | N/A                 | myId                          | String                                                        |
 | auth.client-secret  | The client secret when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'                         | No       | N/A                 | mySecret                      | String                                                        |
 | auth.token-endpoint | The token endpoint when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'                        | No       | N/A                 | http://localhost:8000/token   | HTTP and HTTPS urls                                           |
-| retries.enabled     | Indicates if the http client should retry http requests when the server cannot be reached. | No       | false               | true                          | true or false                                                 |
-| retries.max         | Max number of retries the http client should do when retries.enabled = true                | No       | Integer.MAX         | 100                           | Integer                                                       |
+| retries.enabled     | Indicates if the http client should retry http requests when the server cannot be reached. | No       | true                | true                          | true or false                                                 |
+| retries.max         | Max number of retries the http client should do when retries.enabled = true                | No       | 5                   | 100                           | Integer                                                       |
 
 Example config:
 

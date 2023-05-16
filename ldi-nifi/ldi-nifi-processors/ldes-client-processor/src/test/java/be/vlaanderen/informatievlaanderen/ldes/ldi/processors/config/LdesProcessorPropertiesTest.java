@@ -11,23 +11,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LdesProcessorPropertiesTest {
 
-    @Test
-    void test_retriesEnabled() {
-        // default is true
-        assertTrue(LdesProcessorProperties.retriesEnabled(getBooleanMockContext(null)));
-        assertTrue(LdesProcessorProperties.retriesEnabled(getBooleanMockContext("true")));
-        assertTrue(LdesProcessorProperties.retriesEnabled(getBooleanMockContext("trUe")));
-        assertFalse(LdesProcessorProperties.retriesEnabled(getBooleanMockContext("false")));
-        assertFalse(LdesProcessorProperties.retriesEnabled(getBooleanMockContext("FALSE")));
-    }
+	@Test
+	void test_retriesEnabled() {
+		// default is true
+		assertTrue(LdesProcessorProperties.retriesEnabled(getBooleanMockContext(null)));
+		assertTrue(LdesProcessorProperties.retriesEnabled(getBooleanMockContext("true")));
+		assertTrue(LdesProcessorProperties.retriesEnabled(getBooleanMockContext("trUe")));
+		assertFalse(LdesProcessorProperties.retriesEnabled(getBooleanMockContext("false")));
+		assertFalse(LdesProcessorProperties.retriesEnabled(getBooleanMockContext("FALSE")));
+	}
 
-    private static MockProcessContext getBooleanMockContext(String bool) {
-        return new MockProcessContext() {
-            @Override
-            public PropertyValue getProperty(PropertyDescriptor descriptor) {
-                return new MockPropertyValue(bool);
-            }
-        };
-    }
+	private static MockProcessContext getBooleanMockContext(String bool) {
+		return new MockProcessContext() {
+			@Override
+			public PropertyValue getProperty(PropertyDescriptor descriptor) {
+				return new MockPropertyValue(bool);
+			}
+		};
+	}
 
 }

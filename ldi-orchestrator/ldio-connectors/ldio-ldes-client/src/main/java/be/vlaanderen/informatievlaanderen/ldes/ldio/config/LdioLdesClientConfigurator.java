@@ -33,9 +33,9 @@ public class LdioLdesClientConfigurator implements LdioInputConfigurator {
 
 	protected RequestExecutor getRequestExecutorWithPossibleRetry(ComponentProperties props) {
 		final RequestExecutor requestExecutor = getRequestExecutor(props);
-		boolean retriesEnabled = props.getOptionalBoolean(RETRIES_ENABLED).orElse(Boolean.FALSE);
+		boolean retriesEnabled = props.getOptionalBoolean(RETRIES_ENABLED).orElse(Boolean.TRUE);
 		if (retriesEnabled) {
-			int maxRetries = props.getOptionalInteger(MAX_RETRIES).orElse(Integer.MAX_VALUE);
+			int maxRetries = props.getOptionalInteger(MAX_RETRIES).orElse(5);
 			return requestExecutorFactory.createRetryExecutor(requestExecutor, maxRetries);
 		} else {
 			return requestExecutor;
