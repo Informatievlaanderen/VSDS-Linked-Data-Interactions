@@ -7,6 +7,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueo
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryExecutor;
 
+import java.util.ArrayList;
+
 public class RequestExecutorFactory {
 
 	public RequestExecutor createApiKeyExecutor(String keyHeader, String key) {
@@ -23,8 +25,10 @@ public class RequestExecutorFactory {
 		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint).createRequestExecutor();
 	}
 
+	// TODO: 16/05/2023 implement custom status list
 	public RequestExecutor createRetryExecutor(RequestExecutor requestExecutor, int maxAttempts) {
-		return new RetryExecutor(requestExecutor, new ExponentialRandomBackoffConfig(maxAttempts).createRetryConfig());
+		return new RetryExecutor(requestExecutor, new ExponentialRandomBackoffConfig(maxAttempts, new ArrayList<>())
+				.createRetryConfig());
 	}
 
 }

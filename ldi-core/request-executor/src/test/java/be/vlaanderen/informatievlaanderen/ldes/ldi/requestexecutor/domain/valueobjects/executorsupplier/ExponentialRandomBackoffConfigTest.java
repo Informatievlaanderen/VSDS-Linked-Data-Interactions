@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +17,7 @@ class ExponentialRandomBackoffConfigTest {
 	@ParameterizedTest
 	@ArgumentsSource(ExponentialRandomBackoffTestProvider.class)
 	void testExponentialRandomBackoff(int nrOfAttempts, int min, int max) {
-		var config = new ExponentialRandomBackoffConfig(5).createRetryConfig();
+		var config = new ExponentialRandomBackoffConfig(5, new ArrayList<>()).createRetryConfig();
 
 		assertEquals(5, config.getMaxAttempts());
 

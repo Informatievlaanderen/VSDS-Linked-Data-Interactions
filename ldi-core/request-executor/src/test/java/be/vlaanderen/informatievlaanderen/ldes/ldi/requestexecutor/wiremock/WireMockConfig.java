@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.wiremock;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.wiremock;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;

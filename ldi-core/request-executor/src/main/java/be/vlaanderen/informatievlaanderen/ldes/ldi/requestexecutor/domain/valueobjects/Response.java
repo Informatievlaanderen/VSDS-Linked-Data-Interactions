@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.http.HttpStatus.SC_SERVICE_UNAVAILABLE;
 
 public class Response {
 
@@ -29,7 +30,8 @@ public class Response {
 		return httpStatus;
 	}
 
-	private boolean hasStatus(List<Integer> statusList) {
+	// TODO: 16/05/2023 test
+	public boolean hasStatus(List<Integer> statusList) {
 		return statusList.contains(getHttpStatus());
 	}
 
@@ -76,5 +78,9 @@ public class Response {
 		return headers.stream()
 				.filter(header -> Objects.equals(lowerCase(header.getName()), lowerCase(key)))
 				.map(Header::getValue).findFirst();
+	}
+
+	public String getRequestedUrl() {
+		return request.getUrl();
 	}
 }
