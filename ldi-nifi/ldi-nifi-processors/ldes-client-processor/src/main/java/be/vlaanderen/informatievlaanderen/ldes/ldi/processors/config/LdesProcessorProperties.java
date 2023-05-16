@@ -143,8 +143,8 @@ public final class LdesProcessorProperties {
 	public static final PropertyDescriptor RETRIES_ENABLED = new PropertyDescriptor.Builder()
 			.name("RETRIES_ENABLED")
 			.displayName("Indicates of retries are enabled when the http request fails.")
-			.required(true)
-			.defaultValue(FALSE.toString())
+			.required(false)
+			.defaultValue(TRUE.toString())
 			.allowableValues(FALSE.toString(), TRUE.toString())
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.build();
@@ -153,7 +153,7 @@ public final class LdesProcessorProperties {
 			.name("MAX_RETRIES")
 			.displayName("Indicates max number of retries when retries are enabled.")
 			.required(false)
-			.defaultValue(String.valueOf(Integer.MAX_VALUE))
+			.defaultValue(String.valueOf(5))
 			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 			.build();
 
@@ -217,7 +217,7 @@ public final class LdesProcessorProperties {
 	}
 
 	public static boolean retriesEnabled(final ProcessContext context) {
-		return TRUE.equals(context.getProperty(RETRIES_ENABLED).asBoolean());
+		return !FALSE.equals(context.getProperty(RETRIES_ENABLED).asBoolean());
 	}
 
 	public static int getMaxRetries(final ProcessContext context) {
