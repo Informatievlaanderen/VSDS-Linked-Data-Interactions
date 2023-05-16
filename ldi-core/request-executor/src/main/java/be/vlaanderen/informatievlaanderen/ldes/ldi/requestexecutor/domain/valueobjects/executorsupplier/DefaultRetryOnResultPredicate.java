@@ -9,20 +9,20 @@ import java.util.function.Predicate;
 
 public class DefaultRetryOnResultPredicate implements Predicate<Response> {
 
-    public static final int HTTP_TOO_MANY_REQUESTS = 429; // not included in apache HttpStatus
+	public static final int HTTP_TOO_MANY_REQUESTS = 429; // not included in apache HttpStatus
 
-    private final List<Integer> customStatusList;
+	private final List<Integer> customStatusList;
 
-    public DefaultRetryOnResultPredicate(List<Integer> customStatusList) {
-        this.customStatusList = Objects.requireNonNullElse(customStatusList, new ArrayList<>());
-    }
+	public DefaultRetryOnResultPredicate(List<Integer> customStatusList) {
+		this.customStatusList = Objects.requireNonNullElse(customStatusList, new ArrayList<>());
+	}
 
-    @Override
-    public boolean test(Response response) {
-        return response == null
-                || response.getHttpStatus() >= 500
-                || response.hasStatus(List.of(HTTP_TOO_MANY_REQUESTS))
-                || response.hasStatus(customStatusList);
-    }
+	@Override
+	public boolean test(Response response) {
+		return response == null
+				|| response.getHttpStatus() >= 500
+				|| response.hasStatus(List.of(HTTP_TOO_MANY_REQUESTS))
+				|| response.hasStatus(customStatusList);
+	}
 
 }
