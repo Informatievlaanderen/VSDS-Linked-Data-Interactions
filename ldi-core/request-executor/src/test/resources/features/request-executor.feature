@@ -72,3 +72,5 @@ Feature: RequestExecutor
     And I execute the request
     Then I will have called "/fail-once" 2 times
     And I obtain a response with status code 200
+
+  Scenario: Retry-After header works

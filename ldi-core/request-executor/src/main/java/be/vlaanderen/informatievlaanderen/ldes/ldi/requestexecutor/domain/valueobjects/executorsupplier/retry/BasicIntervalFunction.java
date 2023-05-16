@@ -1,7 +1,6 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Response;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.headers.RetryAfter;
 import io.github.resilience4j.core.IntervalBiFunction;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.core.functions.Either;
@@ -12,17 +11,16 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class DefaultIntervalFunction implements IntervalBiFunction<Response> {
+public class BasicIntervalFunction implements IntervalBiFunction<Response> {
 
-	private final Logger log = LoggerFactory.getLogger(DefaultIntervalFunction.class);
+	private final Logger log = LoggerFactory.getLogger(BasicIntervalFunction.class);
 
 	private final IntervalFunction intervalFunction;
 
-	public DefaultIntervalFunction(IntervalFunction intervalFunction) {
+	public BasicIntervalFunction(IntervalFunction intervalFunction) {
 		this.intervalFunction = intervalFunction;
 	}
 
-	// TODO: 16/05/2023 test
 	@Override
 	public Long apply(Integer attempt, Either<Throwable, Response> eitherResponse) {
 		final Response response = eitherResponse.isRight() ? eitherResponse.get() : null;

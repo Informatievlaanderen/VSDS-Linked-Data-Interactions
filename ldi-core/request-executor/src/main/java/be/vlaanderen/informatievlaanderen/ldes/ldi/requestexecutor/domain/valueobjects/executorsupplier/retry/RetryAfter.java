@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.headers;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.utils.DateUtils;
@@ -16,7 +16,6 @@ public class RetryAfter {
 		this.retryAfterTimeStamp = localDateTime;
 	}
 
-	// TODO: 16/05/2023 test
 	/**
 	 * Per <a href=
 	 * "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After">specification</a>
@@ -35,7 +34,6 @@ public class RetryAfter {
 		}
 	}
 
-	// TODO: 16/05/2023 test
 	/**
 	 * Returns the number of millis until a retry can be done.
 	 * Return value is always positive.

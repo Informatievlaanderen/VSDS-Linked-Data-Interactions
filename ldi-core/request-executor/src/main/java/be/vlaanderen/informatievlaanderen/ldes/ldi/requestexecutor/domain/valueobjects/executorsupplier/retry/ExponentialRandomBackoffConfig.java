@@ -1,6 +1,8 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry.BasicIntervalFunction;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry.BasicRetryOnResultPredicate;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.RetryConfig;
@@ -21,8 +23,8 @@ public class ExponentialRandomBackoffConfig {
 	public RetryConfig createRetryConfig() {
 		return RetryConfig.<Response>custom()
 				.maxAttempts(maxAttempts)
-				.intervalBiFunction(new DefaultIntervalFunction(IntervalFunction.ofExponentialRandomBackoff()))
-				.retryOnResult(new DefaultRetryOnResultPredicate(statusesToRetry))
+				.intervalBiFunction(new BasicIntervalFunction(IntervalFunction.ofExponentialRandomBackoff()))
+				.retryOnResult(new BasicRetryOnResultPredicate(statusesToRetry))
 				.retryOnException(HttpRequestException.class::isInstance)
 				.build();
 	}
