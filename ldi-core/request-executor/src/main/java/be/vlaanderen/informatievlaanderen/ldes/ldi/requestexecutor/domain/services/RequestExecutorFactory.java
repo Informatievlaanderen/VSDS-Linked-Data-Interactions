@@ -7,7 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueo
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryExecutor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RequestExecutorFactory {
 
@@ -25,10 +25,11 @@ public class RequestExecutorFactory {
 		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint).createRequestExecutor();
 	}
 
-	// TODO: 16/05/2023 implement custom status list
-	public RequestExecutor createRetryExecutor(RequestExecutor requestExecutor, int maxAttempts) {
-		return new RetryExecutor(requestExecutor, new ExponentialRandomBackoffConfig(maxAttempts, new ArrayList<>())
-				.createRetryConfig());
+	// TODO: 17/05/2023 feature test new config param
+	public RequestExecutor createRetryExecutor(RequestExecutor requestExecutor, int maxAttempts,
+											   List<Integer> statusesToRetry) {
+		var exponentialRandomBackoffConfig = new ExponentialRandomBackoffConfig(maxAttempts, statusesToRetry);
+		return new RetryExecutor(requestExecutor, exponentialRandomBackoffConfig.createRetryConfig());
 	}
 
 }

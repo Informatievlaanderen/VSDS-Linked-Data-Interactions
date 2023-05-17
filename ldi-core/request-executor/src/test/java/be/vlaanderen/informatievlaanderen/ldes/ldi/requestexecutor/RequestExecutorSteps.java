@@ -99,7 +99,7 @@ public class RequestExecutorSteps {
 
 	@Given("I have a requestExecutor which does {int} retries")
 	public void iHaveARequestExecutorWhichDoesRetries(int retryCount) {
-		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount);
+		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount, List.of());
 	}
 
 	@Then("I will have called {string} {int} times")

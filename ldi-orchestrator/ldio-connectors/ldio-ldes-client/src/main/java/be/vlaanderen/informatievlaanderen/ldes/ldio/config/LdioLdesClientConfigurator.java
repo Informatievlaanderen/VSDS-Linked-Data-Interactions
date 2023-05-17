@@ -12,10 +12,16 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.AuthStrategy.NO_AUTH;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.AUTH_TYPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.MAX_RETRIES;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.RETRIES_ENABLED;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.STATUSES_TO_RETRY;
 
 public class LdioLdesClientConfigurator implements LdioInputConfigurator {
 
@@ -36,7 +42,10 @@ public class LdioLdesClientConfigurator implements LdioInputConfigurator {
 		boolean retriesEnabled = props.getOptionalBoolean(RETRIES_ENABLED).orElse(Boolean.TRUE);
 		if (retriesEnabled) {
 			int maxRetries = props.getOptionalInteger(MAX_RETRIES).orElse(5);
-			return requestExecutorFactory.createRetryExecutor(requestExecutor, maxRetries);
+			List<Integer> statusesToRetry = props.getOptionalProperty(STATUSES_TO_RETRY)
+					.map(csv -> Stream.of(csv.split(",")).map(String::trim).map(Integer::parseInt).toList())
+					.orElse(new ArrayList<>());
+			return requestExecutorFactory.createRetryExecutor(requestExecutor, maxRetries, statusesToRetry);
 		} else {
 			return requestExecutor;
 		}
