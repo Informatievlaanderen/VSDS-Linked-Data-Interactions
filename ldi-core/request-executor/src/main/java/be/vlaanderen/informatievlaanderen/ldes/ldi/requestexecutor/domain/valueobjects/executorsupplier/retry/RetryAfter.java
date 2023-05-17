@@ -12,8 +12,8 @@ public class RetryAfter {
 
 	private final LocalDateTime retryAfterTimeStamp;
 
-	public RetryAfter(LocalDateTime localDateTime) {
-		this.retryAfterTimeStamp = localDateTime;
+	public RetryAfter(LocalDateTime retryAfterTimeStamp) {
+		this.retryAfterTimeStamp = retryAfterTimeStamp;
 	}
 
 	/**
