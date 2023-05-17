@@ -17,7 +17,6 @@ public class ExponentialRandomBackoffConfig {
 		this.statusesToRetry = statusesToRetry;
 	}
 
-	// TODO: 16/05/2023 test
 	public RetryConfig createRetryConfig() {
 		return RetryConfig.<Response>custom()
 				.maxAttempts(maxAttempts)
