@@ -53,7 +53,14 @@ class ResponseTest {
 		assertFalse(new Response(null, List.of(), HttpStatus.SC_OK, null).isNotModified());
 	}
 
-	@Nested
+    @Test
+    void test_hasStatus() {
+    	assertTrue(new Response(null, List.of(), 500, null).hasStatus(List.of(500)));
+    	assertTrue(new Response(null, List.of(), 500, null).hasStatus(List.of(400, 500)));
+    	assertFalse(new Response(null, List.of(), 500, null).hasStatus(List.of(200, 204)));
+	}
+
+    @Nested
 	class TestGetRedirectLocation {
 		@Test
 		void shouldReturnEmpty_whenNoLocationHeader() {

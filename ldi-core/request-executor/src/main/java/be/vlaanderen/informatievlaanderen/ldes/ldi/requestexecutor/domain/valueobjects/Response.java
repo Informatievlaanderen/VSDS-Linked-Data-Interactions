@@ -30,7 +30,6 @@ public class Response {
 		return httpStatus;
 	}
 
-	// TODO: 16/05/2023 test
 	public boolean hasStatus(List<Integer> statusList) {
 		return statusList.contains(getHttpStatus());
 	}
