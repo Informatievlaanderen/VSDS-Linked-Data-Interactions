@@ -9,7 +9,7 @@
         "url": "/retry"
       },
       "response": {
-        "status": 500
+        "status": 418
       }
     },
     {

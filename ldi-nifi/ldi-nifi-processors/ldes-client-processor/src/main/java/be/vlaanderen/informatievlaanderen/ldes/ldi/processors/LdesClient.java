@@ -60,7 +60,7 @@ public class LdesClient extends AbstractProcessor {
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY,
 				API_KEY_HEADER_PROPERTY,
 				API_KEY_PROPERTY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY,
-				RETRIES_ENABLED, MAX_RETRIES);
+				RETRIES_ENABLED, MAX_RETRIES, STATUSES_TO_RETRY);
 	}
 
 	@OnScheduled
@@ -84,7 +84,8 @@ public class LdesClient extends AbstractProcessor {
 	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {
 		final RequestExecutor requestExecutor = getRequestExecutor(context);
 		return retriesEnabled(context)
-				? requestExecutorFactory.createRetryExecutor(requestExecutor, getMaxRetries(context), List.of())
+				? requestExecutorFactory.createRetryExecutor(requestExecutor, getMaxRetries(context),
+						getStatusesToRetry(context))
 				: requestExecutor;
 	}
 

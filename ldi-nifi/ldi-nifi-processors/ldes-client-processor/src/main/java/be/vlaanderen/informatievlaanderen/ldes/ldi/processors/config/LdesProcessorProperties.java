@@ -9,8 +9,11 @@ import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -157,6 +160,14 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 			.build();
 
+	public static final PropertyDescriptor STATUSES_TO_RETRY = new PropertyDescriptor.Builder()
+			.name("STATUSES_TO_RETRY")
+			.displayName(
+					"Custom comma seperated list of http status codes that can trigger a retry in the http client.")
+			.required(false)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
 	public static String getDataSourceUrl(final ProcessContext context) {
 		return context.getProperty(DATA_SOURCE_URL).getValue();
 	}
@@ -222,6 +233,15 @@ public final class LdesProcessorProperties {
 
 	public static int getMaxRetries(final ProcessContext context) {
 		return context.getProperty(MAX_RETRIES).asInteger();
+	}
+
+	public static List<Integer> getStatusesToRetry(final ProcessContext context) {
+		String csv = context.getProperty(STATUSES_TO_RETRY).getValue();
+		if (csv != null) {
+			return Stream.of(csv.split(",")).map(String::trim).map(Integer::parseInt).toList();
+		} else {
+			return new ArrayList<>();
+		}
 	}
 
 }
