@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public class BasicRetryOnResultPredicate implements Predicate<Response> {
+public class HttpStatusRetryPredicate implements Predicate<Response> {
 
 	public static final int HTTP_TOO_MANY_REQUESTS = 429; // not included in apache HttpStatus
 
-	private final List<Integer> customStatusList;
+	private final List<Integer> statusesToRetry;
 
-	// TODO: 16/05/2023 test
-	public BasicRetryOnResultPredicate(List<Integer> customStatusList) {
-		this.customStatusList = Objects.requireNonNullElse(customStatusList, new ArrayList<>());
+	public HttpStatusRetryPredicate(List<Integer> statusesToRetry) {
+		this.statusesToRetry = Objects.requireNonNullElse(statusesToRetry, new ArrayList<>());
 	}
 
 	@Override
@@ -23,7 +22,7 @@ public class BasicRetryOnResultPredicate implements Predicate<Response> {
 		return response == null
 				|| response.getHttpStatus() >= 500
 				|| response.hasStatus(List.of(HTTP_TOO_MANY_REQUESTS))
-				|| response.hasStatus(customStatusList);
+				|| response.hasStatus(statusesToRetry);
 	}
 
 }
