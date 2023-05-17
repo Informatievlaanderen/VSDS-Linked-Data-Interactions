@@ -25,7 +25,6 @@ public class RequestExecutorFactory {
 		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint).createRequestExecutor();
 	}
 
-	// TODO: 17/05/2023 feature test new config param
 	public RequestExecutor createRetryExecutor(RequestExecutor requestExecutor, int maxAttempts,
 			List<Integer> statusesToRetry) {
 		var exponentialRandomBackoffConfig = new ExponentialRandomBackoffConfig(maxAttempts, statusesToRetry);

@@ -102,6 +102,11 @@ public class RequestExecutorSteps {
 		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount, List.of());
 	}
 
+	@Given("I have a requestExecutor which does {int} retries with custom http status code {int}")
+	public void iHaveARequestExecutorWhichDoesRetries(int retryCount, int httpStatus) {
+		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount, List.of(httpStatus));
+	}
+
 	@Then("I will have called {string} {int} times")
 	public void iWillHaveCalledTimes(String arg0, int arg1) {
 		WireMockConfig.wireMockServer.verify(arg1, getRequestedFor(urlEqualTo(arg0)));
