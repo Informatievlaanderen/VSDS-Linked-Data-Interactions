@@ -236,9 +236,9 @@ public final class LdesProcessorProperties {
 	}
 
 	public static List<Integer> getStatusesToRetry(final ProcessContext context) {
-		String csv = context.getProperty(STATUSES_TO_RETRY).getValue();
-		if (csv != null) {
-			return Stream.of(csv.split(",")).map(String::trim).map(Integer::parseInt).toList();
+		String commaSeperatedValues = context.getProperty(STATUSES_TO_RETRY).getValue();
+		if (commaSeperatedValues != null) {
+			return Stream.of(commaSeperatedValues.split(",")).map(String::trim).map(Integer::parseInt).toList();
 		} else {
 			return new ArrayList<>();
 		}
