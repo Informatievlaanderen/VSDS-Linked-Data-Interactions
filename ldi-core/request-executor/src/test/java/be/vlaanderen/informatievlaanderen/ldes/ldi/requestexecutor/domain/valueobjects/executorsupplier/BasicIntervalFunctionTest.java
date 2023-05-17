@@ -27,66 +27,66 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BasicIntervalFunctionTest {
 
-    @Mock
-    private IntervalFunction intervalFunction;
-    
-    @InjectMocks
-    private BasicIntervalFunction basicIntervalFunction;
+	@Mock
+	private IntervalFunction intervalFunction;
 
-    @Test
-    void should_callIntervalFunction_when_EitherContainsNoResponse() {
-        int attempt = 10;
-        long interval = 25L;
-        when(intervalFunction.apply(attempt)).thenReturn(interval);
+	@InjectMocks
+	private BasicIntervalFunction basicIntervalFunction;
 
-        Long result = basicIntervalFunction.apply(attempt, Either.left(null));
+	@Test
+	void should_callIntervalFunction_when_EitherContainsNoResponse() {
+		int attempt = 10;
+		long interval = 25L;
+		when(intervalFunction.apply(attempt)).thenReturn(interval);
 
-        assertEquals(interval, result);
-    }
+		Long result = basicIntervalFunction.apply(attempt, Either.left(null));
 
-    @Test
-    void should_callIntervalFunction_when_ResponseContainsNoRetryAfterHeader() {
-        int attempt = 10;
-        long interval = 50L;
-        when(intervalFunction.apply(attempt)).thenReturn(interval);
-        Response response = new Response(null, List.of(), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
+		assertEquals(interval, result);
+	}
 
-        Long result = basicIntervalFunction.apply(attempt, Either.right(response));
+	@Test
+	void should_callIntervalFunction_when_ResponseContainsNoRetryAfterHeader() {
+		int attempt = 10;
+		long interval = 50L;
+		when(intervalFunction.apply(attempt)).thenReturn(interval);
+		Response response = new Response(null, List.of(), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
-        assertEquals(interval, result);
-    }
+		Long result = basicIntervalFunction.apply(attempt, Either.right(response));
 
-    @Test
-    void should_returnMilliSecondsBasedOnRetryAfterHeader_when_retryAfterHeaderIsPresentWithSeconds() {
-        BasicHeader basicHeader = new BasicHeader(HttpHeaders.RETRY_AFTER, "25");
-        Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
+		assertEquals(interval, result);
+	}
 
-        Long result = basicIntervalFunction.apply(5, Either.right(response));
+	@Test
+	void should_returnMilliSecondsBasedOnRetryAfterHeader_when_retryAfterHeaderIsPresentWithSeconds() {
+		BasicHeader basicHeader = new BasicHeader(HttpHeaders.RETRY_AFTER, "25");
+		Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
-        // we allow a margin of 1000ms for the code to be executed.
-        assertTrue(result > 24000 && result <= 25000);
-        verifyNoInteractions(intervalFunction);
-    }
+		Long result = basicIntervalFunction.apply(5, Either.right(response));
 
-    @Test
-    void should_returnMilliSecondsBasedOnRetryAfterHeader_when_retryAfterHeaderIsPresentWithDate() {
-        Header basicHeader = new BasicHeader(HttpHeaders.RETRY_AFTER, getHttpDateString(25));
-        Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
+		// we allow a margin of 1000ms for the code to be executed.
+		assertTrue(result > 24000 && result <= 25000);
+		verifyNoInteractions(intervalFunction);
+	}
 
-        Long result = basicIntervalFunction.apply(5, Either.right(response));
+	@Test
+	void should_returnMilliSecondsBasedOnRetryAfterHeader_when_retryAfterHeaderIsPresentWithDate() {
+		Header basicHeader = new BasicHeader(HttpHeaders.RETRY_AFTER, getHttpDateString(25));
+		Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
-        // we allow a margin of 1000ms for the code to be executed.
-        assertTrue(result > 24000 && result <= 25000);
-        verifyNoInteractions(intervalFunction);
-    }
+		Long result = basicIntervalFunction.apply(5, Either.right(response));
 
-    @SuppressWarnings("SameParameterValue")
-    private String getHttpDateString(int secondsOffset) {
-        // Format for valid http date format
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, d MMM yyyy HH:mm:ss 'GMT'");
+		// we allow a margin of 1000ms for the code to be executed.
+		assertTrue(result > 24000 && result <= 25000);
+		verifyNoInteractions(intervalFunction);
+	}
 
-        return LocalDateTime.now(ZoneOffset.UTC).plusSeconds(secondsOffset).format(formatter);
-    }
+	@SuppressWarnings("SameParameterValue")
+	private String getHttpDateString(int secondsOffset) {
+		// Format for valid http date format
+		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, d MMM yyyy HH:mm:ss 'GMT'");
+
+		return LocalDateTime.now(ZoneOffset.UTC).plusSeconds(secondsOffset).format(formatter);
+	}
 
 }
