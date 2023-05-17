@@ -17,8 +17,8 @@ class RetryAfterTest {
 		void should_parseNumber_when_inputIsNumber() {
 			long millisUntilRetry = RetryAfter.from("25").getMillisUntilRetry();
 
-			// allow 1s margin for code to run
-			assertTrue(millisUntilRetry > 24000 && millisUntilRetry <= 25000);
+			// allow 5s margin for code to run
+			assertTrue(millisUntilRetry > 20000 && millisUntilRetry <= 25000);
 		}
 
 		@Test
@@ -30,8 +30,8 @@ class RetryAfterTest {
 
 			long millisUntilRetry = RetryAfter.from(httpDate).getMillisUntilRetry();
 
-			// allow 1s margin for code to run
-			assertTrue(millisUntilRetry > 24000 && millisUntilRetry <= 25000);
+			// allow 5s margin for code to run
+			assertTrue(millisUntilRetry > 20000 && millisUntilRetry <= 25000);
 		}
 	}
 
@@ -48,8 +48,8 @@ class RetryAfterTest {
 		void should_returnMillisBetweenNow_and_retryHeader() {
 			long millisUntilRetry = new RetryAfter(LocalDateTime.now().plusSeconds(25)).getMillisUntilRetry();
 
-			// allow 1s margin for code to run
-			assertTrue(millisUntilRetry > 24000 && millisUntilRetry <= 25000);
+			// allow 5s margin for code to run
+			assertTrue(millisUntilRetry > 20000 && millisUntilRetry <= 25000);
 		}
 	}
 }

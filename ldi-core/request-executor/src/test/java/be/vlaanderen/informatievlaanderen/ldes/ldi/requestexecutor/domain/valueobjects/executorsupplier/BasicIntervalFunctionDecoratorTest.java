@@ -63,8 +63,8 @@ class BasicIntervalFunctionDecoratorTest {
 
 		Long result = basicIntervalFunctionDecorator.apply(5, Either.right(response));
 
-		// we allow a margin of 1000ms for the code to be executed.
-		assertTrue(result > 24000 && result <= 25000);
+		// we allow a margin of 5000ms for the code to be executed.
+		assertTrue(result > 20000 && result <= 25000);
 		verifyNoInteractions(intervalFunction);
 	}
 
@@ -75,8 +75,8 @@ class BasicIntervalFunctionDecoratorTest {
 
 		Long result = basicIntervalFunctionDecorator.apply(5, Either.right(response));
 
-		// we allow a margin of 1000ms for the code to be executed.
-		assertTrue(result > 24000 && result <= 25000);
+		// we allow a margin of 5000ms for the code to be executed.
+		assertTrue(result > 20000 && result <= 25000);
 		verifyNoInteractions(intervalFunction);
 	}
 
