@@ -11,14 +11,16 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class BasicIntervalFunction implements IntervalBiFunction<Response> {
+import static org.apache.commons.lang3.Validate.notNull;
 
-	private final Logger log = LoggerFactory.getLogger(BasicIntervalFunction.class);
+public class BasicIntervalFunctionDecorator implements IntervalBiFunction<Response> {
+
+	private final Logger log = LoggerFactory.getLogger(BasicIntervalFunctionDecorator.class);
 
 	private final IntervalFunction intervalFunction;
 
-	public BasicIntervalFunction(IntervalFunction intervalFunction) {
-		this.intervalFunction = intervalFunction;
+	public BasicIntervalFunctionDecorator(IntervalFunction intervalFunction) {
+		this.intervalFunction = notNull(intervalFunction);
 	}
 
 	@Override

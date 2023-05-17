@@ -20,7 +20,7 @@ public class ExponentialRandomBackoffConfig {
 	public RetryConfig createRetryConfig() {
 		return RetryConfig.<Response>custom()
 				.maxAttempts(maxAttempts)
-				.intervalBiFunction(new BasicIntervalFunction(IntervalFunction.ofExponentialRandomBackoff()))
+				.intervalBiFunction(new BasicIntervalFunctionDecorator(IntervalFunction.ofExponentialRandomBackoff()))
 				.retryOnResult(new HttpStatusRetryPredicate(statusesToRetry))
 				.retryOnException(HttpRequestException.class::isInstance)
 				.build();

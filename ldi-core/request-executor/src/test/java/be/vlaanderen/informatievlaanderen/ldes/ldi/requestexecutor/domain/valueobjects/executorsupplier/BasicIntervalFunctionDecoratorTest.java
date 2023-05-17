@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Response;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry.BasicIntervalFunction;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry.BasicIntervalFunctionDecorator;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.core.functions.Either;
 import org.apache.http.Header;
@@ -25,13 +25,13 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BasicIntervalFunctionTest {
+class BasicIntervalFunctionDecoratorTest {
 
 	@Mock
 	private IntervalFunction intervalFunction;
 
 	@InjectMocks
-	private BasicIntervalFunction basicIntervalFunction;
+	private BasicIntervalFunctionDecorator basicIntervalFunctionDecorator;
 
 	@Test
 	void should_callIntervalFunction_when_EitherContainsNoResponse() {
@@ -39,7 +39,7 @@ class BasicIntervalFunctionTest {
 		long interval = 25L;
 		when(intervalFunction.apply(attempt)).thenReturn(interval);
 
-		Long result = basicIntervalFunction.apply(attempt, Either.left(null));
+		Long result = basicIntervalFunctionDecorator.apply(attempt, Either.left(null));
 
 		assertEquals(interval, result);
 	}
@@ -51,7 +51,7 @@ class BasicIntervalFunctionTest {
 		when(intervalFunction.apply(attempt)).thenReturn(interval);
 		Response response = new Response(null, List.of(), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
-		Long result = basicIntervalFunction.apply(attempt, Either.right(response));
+		Long result = basicIntervalFunctionDecorator.apply(attempt, Either.right(response));
 
 		assertEquals(interval, result);
 	}
@@ -61,7 +61,7 @@ class BasicIntervalFunctionTest {
 		BasicHeader basicHeader = new BasicHeader(HttpHeaders.RETRY_AFTER, "25");
 		Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
-		Long result = basicIntervalFunction.apply(5, Either.right(response));
+		Long result = basicIntervalFunctionDecorator.apply(5, Either.right(response));
 
 		// we allow a margin of 1000ms for the code to be executed.
 		assertTrue(result > 24000 && result <= 25000);
@@ -73,7 +73,7 @@ class BasicIntervalFunctionTest {
 		Header basicHeader = new BasicHeader(HttpHeaders.RETRY_AFTER, getHttpDateString(25));
 		Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
-		Long result = basicIntervalFunction.apply(5, Either.right(response));
+		Long result = basicIntervalFunctionDecorator.apply(5, Either.right(response));
 
 		// we allow a margin of 1000ms for the code to be executed.
 		assertTrue(result > 24000 && result <= 25000);
