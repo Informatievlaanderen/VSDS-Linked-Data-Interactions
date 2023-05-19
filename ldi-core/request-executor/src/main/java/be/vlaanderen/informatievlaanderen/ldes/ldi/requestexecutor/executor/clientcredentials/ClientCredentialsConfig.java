@@ -1,6 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials.ClientCredentialsRequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials.OAuth20ServiceTokenCacheWrapper;
 import org.apache.http.client.config.RequestConfig;

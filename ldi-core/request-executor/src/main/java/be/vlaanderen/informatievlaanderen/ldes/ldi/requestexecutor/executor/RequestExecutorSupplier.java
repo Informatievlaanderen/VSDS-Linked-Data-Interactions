@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 

@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.utils.DateUtils;

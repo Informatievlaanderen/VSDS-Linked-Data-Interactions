@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
-import static org.apache.http.HttpStatus.SC_SERVICE_UNAVAILABLE;
 
 public class Response {
 

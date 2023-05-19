@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.ExponentialRandomBackoffConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.ExponentialRandomBackoffConfig;
 import io.github.resilience4j.core.functions.Either;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;

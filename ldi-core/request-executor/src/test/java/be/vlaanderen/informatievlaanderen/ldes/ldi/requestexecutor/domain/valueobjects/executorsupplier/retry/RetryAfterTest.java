@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.RetryAfter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryAfter;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
