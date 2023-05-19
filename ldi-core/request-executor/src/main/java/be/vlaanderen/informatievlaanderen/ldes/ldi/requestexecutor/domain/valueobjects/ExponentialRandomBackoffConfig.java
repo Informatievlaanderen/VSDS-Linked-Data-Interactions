@@ -1,7 +1,9 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.BasicIntervalFunctionDecorator;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.HttpStatusRetryPredicate;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.RetryConfig;
 

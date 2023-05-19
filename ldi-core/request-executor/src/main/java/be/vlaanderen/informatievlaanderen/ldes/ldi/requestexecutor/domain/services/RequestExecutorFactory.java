@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.ApiKeyConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.ClientCredentialsConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.DefaultConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier.retry.ExponentialRandomBackoffConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.ApiKeyConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.ClientCredentialsConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.DefaultConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.ExponentialRandomBackoffConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryExecutor;
 
