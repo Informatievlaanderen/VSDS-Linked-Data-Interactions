@@ -1,5 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -51,6 +54,13 @@ class ResponseTest {
 		assertTrue(new Response(null, List.of(), HttpStatus.SC_NOT_MODIFIED, null).isNotModified());
 		assertFalse(new Response(null, List.of(), HttpStatus.SC_MOVED_TEMPORARILY, null).isNotModified());
 		assertFalse(new Response(null, List.of(), HttpStatus.SC_OK, null).isNotModified());
+	}
+
+	@Test
+	void test_hasStatus() {
+		assertTrue(new Response(null, List.of(), 500, null).hasStatus(List.of(500)));
+		assertTrue(new Response(null, List.of(), 500, null).hasStatus(List.of(400, 500)));
+		assertFalse(new Response(null, List.of(), 500, null).hasStatus(List.of(200, 204)));
 	}
 
 	@Nested

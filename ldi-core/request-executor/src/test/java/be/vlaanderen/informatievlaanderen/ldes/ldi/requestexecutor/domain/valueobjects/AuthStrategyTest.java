@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;

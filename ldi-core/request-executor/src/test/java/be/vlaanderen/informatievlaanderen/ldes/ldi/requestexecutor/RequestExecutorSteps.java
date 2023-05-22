@@ -1,12 +1,13 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.services.RequestExecutorFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Request;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.RequestHeader;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.RequestHeaders;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.wiremock.WireMockConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.wiremock.WireMockConfig;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -98,7 +99,12 @@ public class RequestExecutorSteps {
 
 	@Given("I have a requestExecutor which does {int} retries")
 	public void iHaveARequestExecutorWhichDoesRetries(int retryCount) {
-		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount);
+		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount, List.of());
+	}
+
+	@Given("I have a requestExecutor which does {int} retries with custom http status code {int}")
+	public void iHaveARequestExecutorWhichDoesRetries(int retryCount, int httpStatus) {
+		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount, List.of(httpStatus));
 	}
 
 	@Then("I will have called {string} {int} times")

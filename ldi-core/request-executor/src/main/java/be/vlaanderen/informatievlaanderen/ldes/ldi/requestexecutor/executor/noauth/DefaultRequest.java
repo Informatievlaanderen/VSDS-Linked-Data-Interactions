@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Request;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 

@@ -72,3 +72,10 @@ Feature: RequestExecutor
     And I execute the request
     Then I will have called "/fail-once" 2 times
     And I obtain a response with status code 200
+
+  Scenario: Obtaining the response with retries after adding custom retry status codes
+    Given I have a requestExecutor which does 3 retries with custom http status code 418
+    When I create a Request with the RequestHeaders and url: http://localhost:10101/418-response
+    And I execute the request
+    Then I will have called "/418-response" 3 times
+    And I obtain a response with status code 418

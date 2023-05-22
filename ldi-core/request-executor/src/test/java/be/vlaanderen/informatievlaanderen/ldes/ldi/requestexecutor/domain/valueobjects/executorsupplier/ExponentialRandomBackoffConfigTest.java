@@ -1,11 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.ExponentialRandomBackoffConfig;
+import io.github.resilience4j.core.functions.Either;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,11 +19,11 @@ class ExponentialRandomBackoffConfigTest {
 	@ParameterizedTest
 	@ArgumentsSource(ExponentialRandomBackoffTestProvider.class)
 	void testExponentialRandomBackoff(int nrOfAttempts, int min, int max) {
-		var config = new ExponentialRandomBackoffConfig(5).createRetryConfig();
+		var config = new ExponentialRandomBackoffConfig(5, new ArrayList<>()).createRetryConfig();
 
 		assertEquals(5, config.getMaxAttempts());
 
-		long intervalTime = config.getIntervalBiFunction().apply(nrOfAttempts, null);
+		long intervalTime = config.getIntervalBiFunction().apply(nrOfAttempts, Either.right(null));
 		// We need to assert an interval because of the randomization factor
 		assertTrue(intervalTime >= min && intervalTime <= max);
 	}

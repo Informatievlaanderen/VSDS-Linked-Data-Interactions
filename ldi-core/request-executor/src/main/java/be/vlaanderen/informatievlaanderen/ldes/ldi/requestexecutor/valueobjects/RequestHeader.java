@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects;
 
 import static org.apache.commons.lang3.Validate.notNull;
 

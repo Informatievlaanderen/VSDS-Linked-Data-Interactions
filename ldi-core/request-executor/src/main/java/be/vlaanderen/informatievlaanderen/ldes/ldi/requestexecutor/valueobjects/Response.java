@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -29,7 +29,7 @@ public class Response {
 		return httpStatus;
 	}
 
-	private boolean hasStatus(List<Integer> statusList) {
+	public boolean hasStatus(List<Integer> statusList) {
 		return statusList.contains(getHttpStatus());
 	}
 
@@ -76,5 +76,9 @@ public class Response {
 		return headers.stream()
 				.filter(header -> Objects.equals(lowerCase(header.getName()), lowerCase(key)))
 				.map(Header::getValue).findFirst();
+	}
+
+	public String getRequestedUrl() {
+		return request.getUrl();
 	}
 }

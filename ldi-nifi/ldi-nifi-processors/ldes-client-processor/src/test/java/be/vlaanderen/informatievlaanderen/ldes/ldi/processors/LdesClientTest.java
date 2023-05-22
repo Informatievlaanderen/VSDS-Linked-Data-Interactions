@@ -79,6 +79,7 @@ class LdesClientTest {
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("RETRIES_ENABLED", Boolean.TRUE.toString());
 		testRunner.setProperty("MAX_RETRIES", "3");
+		testRunner.setProperty("STATUSES_TO_RETRY", "418");
 
 		testRunner.run(6);
 

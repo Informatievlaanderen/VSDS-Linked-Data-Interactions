@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Request;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.RequestHeaders;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

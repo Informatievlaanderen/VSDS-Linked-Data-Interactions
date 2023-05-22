@@ -14,6 +14,7 @@ public class LdioLdesClientProperties {
 
 	public static final String RETRIES_ENABLED = "retries.enabled";
 	public static final String MAX_RETRIES = "retries.max";
+	public static final String STATUSES_TO_RETRY = "retries.statuses-to-retry";
 
 	// authorization properties
 	public static final String AUTH_TYPE = "auth.type";

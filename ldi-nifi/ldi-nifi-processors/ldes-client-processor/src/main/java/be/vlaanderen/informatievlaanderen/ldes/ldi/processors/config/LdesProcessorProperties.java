@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.AuthStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
@@ -9,8 +9,11 @@ import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -143,8 +146,8 @@ public final class LdesProcessorProperties {
 	public static final PropertyDescriptor RETRIES_ENABLED = new PropertyDescriptor.Builder()
 			.name("RETRIES_ENABLED")
 			.displayName("Indicates of retries are enabled when the http request fails.")
-			.required(true)
-			.defaultValue(FALSE.toString())
+			.required(false)
+			.defaultValue(TRUE.toString())
 			.allowableValues(FALSE.toString(), TRUE.toString())
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.build();
@@ -153,8 +156,16 @@ public final class LdesProcessorProperties {
 			.name("MAX_RETRIES")
 			.displayName("Indicates max number of retries when retries are enabled.")
 			.required(false)
-			.defaultValue(String.valueOf(Integer.MAX_VALUE))
+			.defaultValue(String.valueOf(5))
 			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor STATUSES_TO_RETRY = new PropertyDescriptor.Builder()
+			.name("STATUSES_TO_RETRY")
+			.displayName(
+					"Custom comma seperated list of http status codes that can trigger a retry in the http client.")
+			.required(false)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static String getDataSourceUrl(final ProcessContext context) {
@@ -217,11 +228,20 @@ public final class LdesProcessorProperties {
 	}
 
 	public static boolean retriesEnabled(final ProcessContext context) {
-		return TRUE.equals(context.getProperty(RETRIES_ENABLED).asBoolean());
+		return !FALSE.equals(context.getProperty(RETRIES_ENABLED).asBoolean());
 	}
 
 	public static int getMaxRetries(final ProcessContext context) {
 		return context.getProperty(MAX_RETRIES).asInteger();
+	}
+
+	public static List<Integer> getStatusesToRetry(final ProcessContext context) {
+		String commaSeperatedValues = context.getProperty(STATUSES_TO_RETRY).getValue();
+		if (commaSeperatedValues != null) {
+			return Stream.of(commaSeperatedValues.split(",")).map(String::trim).map(Integer::parseInt).toList();
+		} else {
+			return new ArrayList<>();
+		}
 	}
 
 }

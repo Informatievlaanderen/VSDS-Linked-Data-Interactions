@@ -82,13 +82,17 @@ class LdioLdesClientAutoConfigTest {
 	private static class RequestExecutorConfigArgumentsProvider implements ArgumentsProvider {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
-			return Stream.of(Arguments.of(new ComponentProperties(Map.of(URL, ENDPOINT)), DefaultRequestExecutor.class),
+			return Stream.of(
+					Arguments.of(new ComponentProperties(Map.of(RETRIES_ENABLED, "FALSE", URL, ENDPOINT)),
+							DefaultRequestExecutor.class),
 					Arguments.of(
 							new ComponentProperties(
-									Map.of(URL, ENDPOINT, AUTH_TYPE, "api_key", API_KEY, "my_secret_key")),
+									Map.of(RETRIES_ENABLED, "false", URL, ENDPOINT, AUTH_TYPE, "api_key", API_KEY,
+											"my_secret_key")),
 							DefaultRequestExecutor.class),
 					Arguments.of(
 							new ComponentProperties(Map.of(
+									RETRIES_ENABLED, "false",
 									URL, ENDPOINT,
 									AUTH_TYPE, "oauth2_client_credentials",
 									CLIENT_ID, "client_id",

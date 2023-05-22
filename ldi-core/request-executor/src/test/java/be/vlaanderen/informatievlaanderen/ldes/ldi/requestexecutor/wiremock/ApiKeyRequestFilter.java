@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.wiremock;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.wiremock;
 
 import com.github.tomakehurst.wiremock.extension.requestfilter.RequestFilterAction;
 import com.github.tomakehurst.wiremock.extension.requestfilter.StubRequestFilter;
