@@ -1,15 +1,15 @@
 name: 2.b Build NiFi Workbench Docker
 
 on:
-  workflow_run:
-    workflows: [ 2.a Build Project ]
-    types: [ completed ]
-    conclusion: success
+  push:
+    branches:
+      - main
+      - develop
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  LDES_NIFI_DOCKER_IMAGE_NAME: ldi-workbench-nifi
+  IMAGE_NAME: ldi-workbench-nifi
 
 jobs:
   job-build-docker-workbench-nifi:
@@ -44,11 +44,12 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "IMAGE_TAG=${{ env.version }}" >> $GITHUB_ENV
             echo "IMAGES=ldes/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+            if [[ "${{ env.version }}" != *"SNAPSHOT"* ]]; then
+              echo "LATEST=latest" >> $GITHUB_ENV
+            fi
           else
             echo "IMAGE_TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
             echo "IMAGES=${{ env.REGISTRY }}/Informatievlaanderen/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
-          fi
-          if [[ "${{ env.version }}" != *"SNAPSHOT"* ]]; then
             echo "LATEST=latest" >> $GITHUB_ENV
           fi
       - name: Log in to the DockerHub Container registry
