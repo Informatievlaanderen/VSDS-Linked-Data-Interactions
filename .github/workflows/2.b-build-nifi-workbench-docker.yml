@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  LDES_NIFI_DOCKER_IMAGE_NAME: ghcr.io/informatievlaanderen/ldi-workbench-nifi
+  LDES_NIFI_DOCKER_IMAGE_NAME: ldi-workbench-nifi
 
 jobs:
   job-build-docker-workbench-nifi:
@@ -30,23 +30,55 @@ jobs:
           # See: https://github.com/docker/build-push-action/issues/761#issuecomment-1383822381
           driver-opts: |
             image=moby/buildkit:v0.10.6
-      - name: set release date
+      - name: Set up JDK 18
+          uses: actions/setup-java@v3
+          with:
+            distribution: zulu
+            java-version: 18
+      - name: Determine version
         run: |
-          echo "BUILD_DATE=$(date +'%Y%m%dT%H%M%S')" >> ${GITHUB_ENV}
-      - name: Log in to the Container registry
+          export VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
+          echo "version=$VERSION" >> $GITHUB_ENV
+      - name: Define docker variables
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "IMAGE_TAG=${{ env.version }}" >> $GITHUB_ENV
+            echo "IMAGES=ldes/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+          else
+            echo "IMAGE_TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.REGISTRY }}/Informatievlaanderen/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+          fi
+          if [[ "${{ env.version }}" != *"SNAPSHOT"* ]]; then
+            echo "LATEST=latest" >> $GITHUB_ENV
+          fi
+      - name: Log in to the DockerHub Container registry
+        if: github.ref_name == 'main'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Log in to the GitHub Container registry
+        if: github.ref_name != 'main'
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: Informatievlaanderen
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.IMAGES }}
+          tags: |
+            type=raw,value=${{env.IMAGE_TAG}}
+            type=raw,value=${{env.LATEST}}
       - name: Build LDES Workbench NiFi Docker image
         uses: docker/build-push-action@v3
         with:
           context: .
           file: ldi-nifi.Dockerfile
           push: true
-          tags: |
-            ${{ env.LDES_NIFI_DOCKER_IMAGE_NAME }}:latest , ${{ env.LDES_NIFI_DOCKER_IMAGE_NAME }}:${{ env.BUILD_DATE }}
+          tags: ${{ steps.meta.outputs.tags }}
           build-args: |
             NIFI_DOCKER_IMAGE_VERSION=${{ vars.NIFI_DOCKER_IMAGE_VERSION }}
           platforms: linux/amd64,linux/arm64
