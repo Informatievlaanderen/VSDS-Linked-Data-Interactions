@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
+@SuppressWarnings("java:S2696")
 public class EntityManagerFactory {
 
 	private static EntityManagerFactory instance = null;
@@ -37,6 +38,7 @@ public class EntityManagerFactory {
 		try {
 			em.close();
 			emf.close();
+			instance = null;
 			if (!databaseDeleted) {
 				Files.delete(Path.of("database.db"));
 				databaseDeleted = true;
