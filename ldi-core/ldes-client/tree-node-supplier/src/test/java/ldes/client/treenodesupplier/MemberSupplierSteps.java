@@ -10,6 +10,7 @@ import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
@@ -44,7 +45,7 @@ public class MemberSupplierSteps {
 		assertTrue(treeNodeRecordRepository.existsById(treeNodeId));
 	}
 
-	@Then("The TreeNode is not processed: {string}")
+	@And("The TreeNode is not processed: {string}")
 	public void theTreeNodeIsNotProcessed(String treeNodeId) {
 		assertFalse(treeNodeRecordRepository.existsById(treeNodeId));
 	}
@@ -62,7 +63,8 @@ public class MemberSupplierSteps {
 
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
-		treeNodeProcessor = new TreeNodeProcessor(startingTreeNode, treeNodeRecordRepository, memberRepository,
+		treeNodeProcessor = new TreeNodeProcessor(startingTreeNode,
+				new StatePersistence(memberRepository, treeNodeRecordRepository),
 				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
 	}
 
@@ -88,5 +90,10 @@ public class MemberSupplierSteps {
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE);
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE);
+	}
+
+	@Then("MemberSupplier is destroyed")
+	public void membersupplierIsDestroyed() {
+		memberSupplier.destroyState();
 	}
 }

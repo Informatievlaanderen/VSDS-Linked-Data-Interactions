@@ -8,6 +8,7 @@ import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
@@ -64,7 +65,7 @@ public class LdesClientRunner implements Runnable {
 			RequestExecutor requestExecutor,
 			StartingTreeNode startingTreeNode) {
 
-		return new TreeNodeProcessor(startingTreeNode, statePersistenceStrategy,
+		return new TreeNodeProcessor(startingTreeNode, StatePersistence.from(statePersistenceStrategy),
 				new TreeNodeFetcher(requestExecutor));
 	}
 

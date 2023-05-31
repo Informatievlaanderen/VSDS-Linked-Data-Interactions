@@ -53,4 +53,5 @@ public class SqliteTreeNodeRepository implements TreeNodeRecordRepository {
 	public void destroyState() {
 		entityManagerFactory.destroyState();
 	}
+
 }

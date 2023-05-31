@@ -15,4 +15,5 @@ public interface TreeNodeRecordRepository {
 	boolean existsByIdAndStatus(String treeNodeId, TreeNodeStatus treeNodeStatus);
 
 	void destroyState();
+
 }

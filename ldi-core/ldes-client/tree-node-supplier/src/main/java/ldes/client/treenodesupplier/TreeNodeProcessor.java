@@ -4,10 +4,8 @@ import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
-import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
-import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
@@ -26,24 +24,14 @@ public class TreeNodeProcessor {
 	private final TreeNodeFetcher treeNodeFetcher;
 	private final StartingTreeNode startingTreeNode;
 
-	public TreeNodeProcessor(StartingTreeNode startingTreeNode,
-			TreeNodeRecordRepository treeNodeRecordRepository,
-			MemberRepository memberRepository,
+	public TreeNodeProcessor(StartingTreeNode startingTreeNode, StatePersistence statePersistence,
 			TreeNodeFetcher treeNodeFetcher) {
-		this.treeNodeRecordRepository = treeNodeRecordRepository;
-		this.memberRepository = memberRepository;
+		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
+		this.memberRepository = statePersistence.getMemberRepository();
 		this.treeNodeFetcher = treeNodeFetcher;
-		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(startingTreeNode.getStartingNodeUrl()));
-		this.startingTreeNode = startingTreeNode;
-	}
-
-	public TreeNodeProcessor(StartingTreeNode startingTreeNode, StatePersistenceStrategy statePersistenceStrategy,
-			TreeNodeFetcher treeNodeFetcher) {
-		this.treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(statePersistenceStrategy);
-		this.memberRepository = MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy);
-		this.treeNodeFetcher = treeNodeFetcher;
-		this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(startingTreeNode.getStartingNodeUrl()));
+		if (!treeNodeRecordRepository.existsById(startingTreeNode.getStartingNodeUrl())) {
+			this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(startingTreeNode.getStartingNodeUrl()));
+		}
 		this.startingTreeNode = startingTreeNode;
 	}
 
