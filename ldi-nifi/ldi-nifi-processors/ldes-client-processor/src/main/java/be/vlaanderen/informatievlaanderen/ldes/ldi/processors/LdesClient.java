@@ -11,6 +11,7 @@ import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -71,7 +72,7 @@ public class LdesClient extends AbstractProcessor {
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(dataSourceUrl,
 				dataSourceFormat);
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(startingTreeNode,
-				LdesProcessorProperties.getStatePersistenceStrategy(context),
+				StatePersistence.from(LdesProcessorProperties.getStatePersistenceStrategy(context)),
 				new TreeNodeFetcher(requestExecutor));
 		memberSupplier = new MemberSupplier(treeNodeProcessor, LdesProcessorProperties.stateKept(context));
 
