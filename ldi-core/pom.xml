@@ -26,7 +26,7 @@
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
         <byte-buddy.version>1.12.23</byte-buddy.version>
-        <cucumber.version>7.12.0</cucumber.version>
+        <cucumber.version>7.12.1</cucumber.version>
         <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
         <jackson-xml.version>2.15.1</jackson-xml.version>
     </properties>
