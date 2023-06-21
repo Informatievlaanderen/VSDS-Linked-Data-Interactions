@@ -24,6 +24,8 @@ public class TreeNodeProcessor {
 	private final TreeNodeFetcher treeNodeFetcher;
 	private final StartingTreeNode startingTreeNode;
 
+	private MemberRecord memberRecord;
+
 	public TreeNodeProcessor(StartingTreeNode startingTreeNode, StatePersistence statePersistence,
 			TreeNodeFetcher treeNodeFetcher) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
@@ -72,6 +74,9 @@ public class TreeNodeProcessor {
 	}
 
 	public SuppliedMember getMember() {
+		if (memberRecord != null) {
+			memberRepository.saveTreeMember(memberRecord);
+		}
 		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		while (unprocessedTreeMember.isEmpty()) {
 			processTreeNode();
@@ -80,7 +85,7 @@ public class TreeNodeProcessor {
 		MemberRecord treeMember = unprocessedTreeMember.get();
 		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
 		treeMember.processedMemberRecord();
-		memberRepository.saveTreeMember(treeMember);
+		memberRecord = treeMember;
 		return suppliedMember;
 	}
 
