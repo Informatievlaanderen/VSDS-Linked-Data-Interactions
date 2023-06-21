@@ -1,0 +1,35 @@
+prefixes:
+  ex: "http://example.com/"
+
+sources:
+  personcart-source:
+    access: "persons.json"
+    referenceFormulation: jsonpath
+
+mappings:
+  cart:
+    sources:
+      - ['persons.json~jsonpath', '$.carts[*]']
+    s: http://example.com/cart/$(id)
+    g: http://example.com/cart/$(id)
+
+    po:
+      - [a, foaf:Cart]
+      - [ex:totalQuantity, $(totalQuantity)]
+      - p: ex:cartOwner
+        o:
+         - mapping: people
+           condition:
+            function: equal
+            parameters:
+              - [str1, $(userId)]
+              - [str2, $(id)]
+  people:
+    sources:
+      - ['persons.json~jsonpath', '$.users[*]']
+    s: http://example.com/person/$(username)
+    po:
+      - [a, foaf:Person]
+      - [schema:firstName, $(firstName)]
+      - [schema:lastName, $(lastName)]
+      - [ex:age, $(age)]
