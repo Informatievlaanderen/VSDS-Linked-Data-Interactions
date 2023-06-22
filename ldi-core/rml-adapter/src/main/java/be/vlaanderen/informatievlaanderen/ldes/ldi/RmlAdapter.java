@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rmlFunctions.ReplaceFunctions;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rmlFunctions.WktFunctions;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import io.carml.engine.rdf.RdfRmlMapper;
 import io.carml.logicalsourceresolver.CsvResolver;
@@ -29,6 +31,7 @@ public class RmlAdapter implements LdiAdapter {
 				.setLogicalSourceResolver(Rdf.Ql.JsonPath, JsonPathResolver::getInstance)
 				.setLogicalSourceResolver(Rdf.Ql.XPath, XPathResolver::getInstance)
 				.setLogicalSourceResolver(Rdf.Ql.Csv, CsvResolver::getInstance)
+				.addFunctions(new WktFunctions(), new ReplaceFunctions())
 				.build();
 	}
 

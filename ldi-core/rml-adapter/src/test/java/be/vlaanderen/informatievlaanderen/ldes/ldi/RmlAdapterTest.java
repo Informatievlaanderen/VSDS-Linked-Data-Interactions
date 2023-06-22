@@ -6,6 +6,7 @@ import io.carml.util.RmlMappingLoader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFWriter;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
@@ -25,31 +26,45 @@ import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RmlAdapterTest {
 	@Test
 	void test_smartphonesMapping() throws IOException {
-		String mappingString = getFileContent("smartphones/mapping.ttl");
-
-		Set<TriplesMap> mapping = RmlMappingLoader.build()
-				.load(convertToCarmlMappingModel(mappingString));
-
-		RmlAdapter rmlAdapter = new RmlAdapter(mapping);
-
-		List<org.apache.jena.rdf.model.Model> models = rmlAdapter.apply(LdiAdapter.Content.of(getFileContent(
-				"smartphones/data.json"), "application/json")).toList();
-
-		models.forEach(model -> {
-			System.out.println("new member");
-			RDFWriter.source(model).lang(Lang.TTL).output(System.out);
-		});
+		var models = runRmlTest("smartphones/data.json", "smartphones/mapping.ttl", "application/json");
 
 		assertEquals(5, models.size());
 	}
 
 	@Test
 	void test_userCarts() throws IOException {
-		String mappingString = getFileContent("usercarts/mapping.ttl");
+		var models = runRmlTest("usercarts/data.json", "usercarts/mapping.ttl", "application/json");
+
+		assertEquals(20, models.size());
+	}
+
+	@Test
+	void test_awv_location() throws IOException {
+		var models = runRmlTest("awv/location/data.xml", "awv/location/mapping.ttl", "application/xml");
+
+		var expected = RDFParser.source("awv/location/expected.nt").lang(Lang.NQUADS).toModel();
+
+		assertEquals(1, models.size());
+		assertTrue(models.get(0).isIsomorphicWith(expected));
+	}
+
+	@Test
+	void test_awv_observation() throws IOException {
+		var models = runRmlTest("awv/observation/data.xml", "awv/observation/mapping.ttl", "application/xml");
+
+//		var expected = RDFParser.source("awv/observation/expected.nt").lang(Lang.NQUADS).toModel();
+
+		assertEquals(1, models.size());
+//		assertTrue(models.get(0).isIsomorphicWith(expected));
+	}
+
+	private List<org.apache.jena.rdf.model.Model> runRmlTest(String dataPath, String mappingPath, String mimeType) throws IOException {
+		String mappingString = getFileContent(mappingPath);
 
 		Set<TriplesMap> mapping = RmlMappingLoader.build()
 				.load(convertToCarmlMappingModel(mappingString));
@@ -57,14 +72,14 @@ public class RmlAdapterTest {
 		RmlAdapter rmlAdapter = new RmlAdapter(mapping);
 
 		List<org.apache.jena.rdf.model.Model> models = rmlAdapter.apply(LdiAdapter.Content.of(getFileContent(
-				"usercarts/data.json"), "application/json")).toList();
+				dataPath), mimeType)).toList();
 
 		models.forEach(model -> {
-			System.out.println("new member");
+			System.out.println("New member");
 			RDFWriter.source(model).lang(Lang.TTL).output(System.out);
 		});
 
-		assertEquals(20, models.size());
+		return models;
 	}
 
 	private Model convertToCarmlMappingModel(String mappingString) throws IOException {

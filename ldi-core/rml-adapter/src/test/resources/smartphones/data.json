@@ -89,23 +89,6 @@
       ]
     }
   ],
-  "movies" : [
-    {
-      "slug": "sw",
-      "title": "Star Wars",
-      "year": 1977
-    },
-    {
-      "slug": "fotr",
-      "title": "The Fellowship of the Ring",
-      "year": 2001
-    },
-    {
-      "slug": "wam",
-      "title": "We Are Marshall",
-      "year": 2006
-    }
-  ],
   "total": 5,
   "skip": 0,
   "limit": 5
