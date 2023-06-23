@@ -1,29 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import io.carml.model.TriplesMap;
-import io.carml.util.RmlMappingLoader;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFWriter;
-import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
-import org.eclipse.rdf4j.model.vocabulary.RDF;
-import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.rio.Rio;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -63,13 +50,8 @@ public class RmlAdapterTest {
 //		assertTrue(models.get(0).isIsomorphicWith(expected));
 	}
 
-	private List<org.apache.jena.rdf.model.Model> runRmlTest(String dataPath, String mappingPath, String mimeType) throws IOException {
-		String mappingString = getFileContent(mappingPath);
-
-		Set<TriplesMap> mapping = RmlMappingLoader.build()
-				.load(convertToCarmlMappingModel(mappingString));
-
-		RmlAdapter rmlAdapter = new RmlAdapter(mapping);
+	private List<org.apache.jena.rdf.model.Model> runRmlTest(String dataPath, String mappingPath, String mimeType) {
+		RmlAdapter rmlAdapter = new RmlAdapter(getFileContent(mappingPath));
 
 		List<org.apache.jena.rdf.model.Model> models = rmlAdapter.apply(LdiAdapter.Content.of(getFileContent(
 				dataPath), mimeType)).toList();
@@ -80,36 +62,6 @@ public class RmlAdapterTest {
 		});
 
 		return models;
-	}
-
-	private Model convertToCarmlMappingModel(String mappingString) throws IOException {
-		Model mappingModel = Rio.parse(IOUtils.toInputStream(mappingString), RDFFormat.TURTLE);
-
-		ValueFactory vf = SimpleValueFactory.getInstance();
-		var logicalSourceStmts = mappingModel.getStatements(null, RDF.TYPE,
-				vf.createIRI("http://semweb.mmlab.be/ns/rml#LogicalSource"));
-
-		List<Resource> sourcesToClean = new ArrayList<>();
-		List<Statement> newStatements = new ArrayList<>();
-
-		for (Statement logicalSourceStmt : logicalSourceStmts) {
-			Resource sourceSubject = logicalSourceStmt.getSubject();
-			sourcesToClean.add(sourceSubject);
-
-			Statement statement = vf.createStatement(vf.createBNode(), RDF.TYPE,
-					vf.createIRI("http://carml.taxonic.com/carml/", "Stream"));
-			newStatements.add(vf.createStatement(sourceSubject, vf.createIRI("http://semweb.mmlab.be/ns/rml#source"),
-					statement.getSubject()));
-			newStatements.add(statement);
-		}
-
-		sourcesToClean.forEach(source -> {
-			mappingModel.remove(source, RDF.TYPE, vf.createIRI("http://semweb.mmlab.be/ns/rml#LogicalSource"));
-			mappingModel.remove(source, vf.createIRI("http://semweb.mmlab.be/ns/rml#source"), null);
-		});
-		mappingModel.addAll(newStatements);
-
-		return mappingModel;
 	}
 
 	private String getFileContent(String fileName) {

@@ -28,6 +28,7 @@
         <module>ldio-console-out</module>
         <module>ldio-http-out</module>
         <module>ldio-kafka</module>
+        <module>ldio-rml-adapter</module>
     </modules>
 
     <properties>
