@@ -17,21 +17,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RmlAdapterTest {
 	@Test
-	void test_smartphonesMapping() throws IOException {
+	void test_smartphonesMapping() {
 		var models = runRmlTest("smartphones/data.json", "smartphones/mapping.ttl", "application/json");
 
 		assertEquals(5, models.size());
 	}
 
 	@Test
-	void test_userCarts() throws IOException {
+	void test_userCarts() {
 		var models = runRmlTest("usercarts/data.json", "usercarts/mapping.ttl", "application/json");
 
 		assertEquals(20, models.size());
 	}
 
 	@Test
-	void test_awv_location() throws IOException {
+	void test_awv_location() {
 		var models = runRmlTest("awv/location/data.xml", "awv/location/mapping.ttl", "application/xml");
 
 		var expected = RDFParser.source("awv/location/expected.nt").lang(Lang.NQUADS).toModel();
@@ -41,7 +41,7 @@ class RmlAdapterTest {
 	}
 
 	@Test
-	void test_awv_observation() throws IOException {
+	void test_awv_observation() {
 		var models = runRmlTest("awv/observation/data.xml", "awv/observation/mapping.ttl", "application/xml");
 
 		// var expected =
