@@ -18,8 +18,8 @@ class WktFunctionsTest {
 
 	@Test
 	void testPointWkt_ShouldBeOnlyTwoCoordinates() {
-		assertThrows(IllegalArgumentException.class, () ->
-				wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436 55,18460764", "POINT"));
+		assertThrows(IllegalArgumentException.class,
+				() -> wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436 55,18460764", "POINT"));
 	}
 
 	@Test
