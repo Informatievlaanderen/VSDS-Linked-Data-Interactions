@@ -15,7 +15,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RmlAdapterTest {
+class RmlAdapterTest {
 	@Test
 	void test_smartphonesMapping() throws IOException {
 		var models = runRmlTest("smartphones/data.json", "smartphones/mapping.ttl", "application/json");

@@ -99,7 +99,7 @@ public class RmlAdapter implements LdiAdapter {
 	}
 
 	private Model enrichModel(Model input, Dataset completeDataset) {
-		Stack<Statement> statementsToProcess = new Stack<>();
+		Deque<Statement> statementsToProcess = new ArrayDeque<>();
 		List<Statement> newStatements = new ArrayList<>();
 
 		input.listStatements().forEach(statementsToProcess::push);
