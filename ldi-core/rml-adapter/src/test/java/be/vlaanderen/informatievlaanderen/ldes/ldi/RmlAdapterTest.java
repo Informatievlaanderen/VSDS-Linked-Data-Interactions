@@ -44,10 +44,11 @@ public class RmlAdapterTest {
 	void test_awv_observation() throws IOException {
 		var models = runRmlTest("awv/observation/data.xml", "awv/observation/mapping.ttl", "application/xml");
 
-//		var expected = RDFParser.source("awv/observation/expected.nt").lang(Lang.NQUADS).toModel();
+		// var expected =
+		// RDFParser.source("awv/observation/expected.nt").lang(Lang.NQUADS).toModel();
 
 		assertEquals(1, models.size());
-//		assertTrue(models.get(0).isIsomorphicWith(expected));
+		// assertTrue(models.get(0).isIsomorphicWith(expected));
 	}
 
 	private List<org.apache.jena.rdf.model.Model> runRmlTest(String dataPath, String mappingPath, String mimeType) {

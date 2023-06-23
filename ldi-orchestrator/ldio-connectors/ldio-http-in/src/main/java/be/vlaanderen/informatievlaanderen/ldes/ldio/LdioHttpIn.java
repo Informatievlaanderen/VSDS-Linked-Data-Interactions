@@ -30,8 +30,9 @@ public class LdioHttpIn extends LdiInput {
 							.orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
 							.toString();
 					return req.bodyToMono(String.class)
-							.doOnNext(content -> executorService.execute(() -> getAdapter().apply(Content.of(content, contentType))
-									.forEach(getExecutor()::transformLinkedData)))
+							.doOnNext(content -> executorService
+									.execute(() -> getAdapter().apply(Content.of(content, contentType))
+											.forEach(getExecutor()::transformLinkedData)))
 							.flatMap(body -> ServerResponse.accepted().build());
 				});
 	}

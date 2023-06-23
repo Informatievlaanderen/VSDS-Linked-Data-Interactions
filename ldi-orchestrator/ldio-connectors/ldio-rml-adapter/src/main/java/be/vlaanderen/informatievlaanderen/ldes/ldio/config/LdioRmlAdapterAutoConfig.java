@@ -17,6 +17,7 @@ public class LdioRmlAdapterAutoConfig {
 
 	public static class LdioRmlAdapterConfigurator implements LdioConfigurator {
 		public static final String MAPPING = "mapping";
+
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
 			String rmlMapping = config.getOptionalPropertyFromFile(MAPPING).orElse(config.getProperty(MAPPING));

@@ -54,7 +54,7 @@ public class WktFunctions {
 		for (int i = 0; i < coordinates.size(); i += 2) {
 			wktString.append("%s %s,".formatted(coordinates.get(i), coordinates.get(i + 1)));
 		}
-		wktString.deleteCharAt(wktString.length()-1);
+		wktString.deleteCharAt(wktString.length() - 1);
 		return wktString.toString();
 	}
 

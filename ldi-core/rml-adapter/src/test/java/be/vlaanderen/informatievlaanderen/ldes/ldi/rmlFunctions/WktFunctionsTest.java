@@ -52,13 +52,13 @@ public class WktFunctionsTest {
 
 	@Test
 	void testLinestringWkt_CoordinatesShouldBeInPairs() {
-		assertThrows(IllegalArgumentException.class, () ->
-				wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436", "LINESTRING"));
+		assertThrows(IllegalArgumentException.class,
+				() -> wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436", "LINESTRING"));
 
-		assertThrows(IllegalArgumentException.class, () ->
-				wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436", "MULTIPOINT"));
+		assertThrows(IllegalArgumentException.class,
+				() -> wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436", "MULTIPOINT"));
 
-		assertThrows(IllegalArgumentException.class, () ->
-				wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436", "POLYGON"));
+		assertThrows(IllegalArgumentException.class,
+				() -> wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436", "POLYGON"));
 	}
 }
