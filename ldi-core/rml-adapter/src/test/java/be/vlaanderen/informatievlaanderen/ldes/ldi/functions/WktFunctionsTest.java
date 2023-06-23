@@ -1,11 +1,11 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.rmlFunctions;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.functions;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class WktFunctionsTest {
+class WktFunctionsTest {
 	WktFunctions wktFunctions = new WktFunctions();
 
 	@Test
@@ -18,9 +18,8 @@ public class WktFunctionsTest {
 
 	@Test
 	void testPointWkt_ShouldBeOnlyTwoCoordinates() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436 55,18460764", "POINT");
-		});
+		assertThrows(IllegalArgumentException.class, () ->
+				wktFunctions.toWktFunction("4,289731136 51,18460764 4,289731436 55,18460764", "POINT"));
 	}
 
 	@Test

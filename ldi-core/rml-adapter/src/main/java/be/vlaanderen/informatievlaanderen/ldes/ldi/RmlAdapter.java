@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.rmlFunctions.ReplaceFunctions;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.rmlFunctions.WktFunctions;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.functions.ReplaceFunctions;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.functions.WktFunctions;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import io.carml.engine.rdf.RdfRmlMapper;
 import io.carml.logicalsourceresolver.CsvResolver;

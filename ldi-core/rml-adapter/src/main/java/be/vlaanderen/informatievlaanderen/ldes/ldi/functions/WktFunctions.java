@@ -1,22 +1,21 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.rmlFunctions;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.functions;
 
 import io.carml.engine.function.FnoFunction;
 import io.carml.engine.function.FnoParam;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class WktFunctions {
-	@FnoFunction(LDI.toWktFunction)
-	public String toWktFunction(@FnoParam(LDI.coordinates) String coordinates,
-			@FnoParam(LDI.wktType) String wktType) {
+	@FnoFunction(LDI.TO_WKT_FUNCTION)
+	public String toWktFunction(@FnoParam(LDI.COORDINATES) String coordinates,
+			@FnoParam(LDI.WKT_TYPE) String wktType) {
 		List<String> coordinateList = Arrays.stream(coordinates.split("\\s+")).toList();
 		StringBuilder wktString = new StringBuilder("<http://www.opengis.net/def/crs/OGC/1.3/CRS84>");
 
 		coordinateList = coordinateList.stream()
 				.map(s -> s.replace(',', '.'))
-				.collect(Collectors.toList());
+				.toList();
 
 		switch (wktType) {
 			case ("POINT") -> {
@@ -44,6 +43,7 @@ public class WktFunctions {
 				wktString.append(createPointGroupString(coordinateList));
 				wktString.append("))");
 			}
+			default -> throw new IllegalArgumentException("Not a valid/supported WKT type: " + wktType);
 		}
 
 		return wktString.toString();

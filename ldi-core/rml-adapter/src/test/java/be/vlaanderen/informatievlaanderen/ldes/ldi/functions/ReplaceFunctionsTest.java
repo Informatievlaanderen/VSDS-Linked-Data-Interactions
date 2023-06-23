@@ -1,10 +1,10 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.rmlFunctions;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.functions;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ReplaceFunctionsTest {
+class ReplaceFunctionsTest {
 	ReplaceFunctions replaceFunctions = new ReplaceFunctions();
 
 	@Test
