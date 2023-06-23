@@ -1,0 +1,68 @@
+prefixes:
+  sosa: "http://www.w3.org/ns/sosa/"
+  dct: "http://purl.org/dc/terms/"
+  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+  miv: "https://www.wegenenverkeer.be/ns/verkeersmetingen#"
+  locn: "https://www.w3.org/ns/locn#"
+  geo: "http://www.opengis.net/ont/geosparql#"
+
+sources:
+  observation-points-source:
+    access: "observations.xml"
+    referenceFormulation: xpath
+    iterator: "/miv/meetpunt"
+  observations-source:
+    access: "observations.xml"
+    referenceFormulation: xpath
+    iterator: "/miv/meetpunt/meetdata"
+  calculations-source:
+    access: "observations.xml"
+    referenceFormulation: xpath
+    iterator: "/miv/meetpunt/rekendata"
+
+mappings:
+  observation-points:
+    sources: observation-points-source
+    s: https://www.wegenenverkeer.be/id/verkeersmetingen/meting/$(@unieke_id)
+    po:
+      - [a, sosa:Observation]
+      - [sosa:hasFeatureOfInterest, https://www.wegenenverkeer.be/id/verkeersmetingen/meetpunt/$(@unieke_id)~iri]
+      - [dcterms:modified, $(../tijd_laatste_config_wijziging), xsd:DateTime]
+      - [sosa:phenomenonTime, $(tijd_waarneming), xsd:DateTime]
+      - [miv:lve_nr, $(lve_nr), xsd:Integer]
+      - [miv:actueel_publicatie, $(actueel_publicatie), xsd:Integer]
+      - [miv:beschikbaar , $(beschikbaar ), xsd:Integer]
+      - [miv:defect , $(defect ), xsd:Integer]
+      - [miv:geldig , $(geldig ), xsd:Integer]
+      - p: miv:meetdata
+        o:
+          - mapping: observations
+            condition:
+              function: equal
+              parameters:
+                - [str1, $(./@unieke_id), s]
+                - [str2, $(../@unieke_id), o]
+      - p: miv:rekendata
+        o:
+          - mapping: calculations
+            condition:
+              function: equal
+              parameters:
+                - [str1, $(@unieke_id), s]
+                - [str2, $(../@unieke_id), o]
+
+  observations:
+    sources: observations-source
+    s: https://www.wegenenverkeer.be/id/verkeersmetingen/meetpunt/$(../@unieke_id)/$(@klasse_id)
+    po:
+      - [miv:klasse_id, $(@klasse_id), xsd:Integer]
+      - [miv:verkeersintensiteit , $(verkeersintensiteit ), xsd:Integer]
+      - [miv:voertuigsnelheid_rekenkundig , $(voertuigsnelheid_rekenkundig ), xsd:Integer]
+      - [miv:voertuigsnelheid_harmonisch  , $(voertuigsnelheid_harmonisch  ), xsd:Integer]
+  calculations:
+    sources: calculations-source
+    s: https://www.wegenenverkeer.be/id/verkeersmetingen/meetpunt/$(../@unieke_id)/meetdata
+    po:
+      - [miv:bezettingsgraad, $(bezettingsgraad), xsd:Integer]
+      - [miv:beschikbaarheidsgraad  , $(beschikbaarheidsgraad ), xsd:Integer]
+      - [miv:onrustigheid  , $(onrustigheid  ), xsd:Integer]
