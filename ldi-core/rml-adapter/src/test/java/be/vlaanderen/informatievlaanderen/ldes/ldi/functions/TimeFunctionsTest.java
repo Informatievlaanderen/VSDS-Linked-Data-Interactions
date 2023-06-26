@@ -9,7 +9,7 @@ public class TimeFunctionsTest {
 
 	@Test
 	void test_epocToIso() {
-		String dateTime = timeFunctions.replaceFunction(1687449613L * 1000);
+		String dateTime = timeFunctions.replaceFunction(1687449613L);
 
 		assertEquals("2023-06-22T16:00:13.000Z", dateTime);
 	}
