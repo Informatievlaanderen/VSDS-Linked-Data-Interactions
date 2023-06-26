@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes;
+package be.vlaanderen.informatievlaanderen.ldes.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
