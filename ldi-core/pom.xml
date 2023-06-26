@@ -21,6 +21,7 @@
         <module>geojson-to-wkt</module>
         <module>request-executor</module>
         <module>rml-adapter</module>
+        <module>json-to-ld-adapter</module>
     </modules>
 
     <properties>
