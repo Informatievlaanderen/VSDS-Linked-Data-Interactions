@@ -152,6 +152,7 @@
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-json-to-ld-adapter</artifactId>
                     <version>${project.version}</version>
+                    <scope>compile</scope>
                 </dependency>
             </dependencies>
         </profile>
