@@ -9,7 +9,7 @@
         <version>1.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ldio-Json-to-ld-adapter</artifactId>
+    <artifactId>ldio-json-to-ld-adapter</artifactId>
 
     <dependencies>
         <dependency>
