@@ -1,13 +1,11 @@
 package ldes.client.treenodesupplier;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
-import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
-import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
+import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
@@ -22,19 +20,17 @@ public class TreeNodeProcessor {
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
 	private final TreeNodeFetcher treeNodeFetcher;
-	private final StartingTreeNode startingTreeNode;
-
+	private final LdesMetaData ldesMetaData;
+	private final RequestExecutor requestExecutor;
 	private MemberRecord memberRecord;
 
-	public TreeNodeProcessor(StartingTreeNode startingTreeNode, StatePersistence statePersistence,
-			TreeNodeFetcher treeNodeFetcher) {
+	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
+			RequestExecutor requestExecutor) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
-		this.treeNodeFetcher = treeNodeFetcher;
-		if (!treeNodeRecordRepository.existsById(startingTreeNode.getStartingNodeUrl())) {
-			this.treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(startingTreeNode.getStartingNodeUrl()));
-		}
-		this.startingTreeNode = startingTreeNode;
+		this.requestExecutor = requestExecutor;
+		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor);
+		this.ldesMetaData = ldesMetaData;
 	}
 
 	private void processTreeNode() {
@@ -45,7 +41,7 @@ public class TreeNodeProcessor {
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
 		waitUntilNextVisit(treeNodeRecord);
 		TreeNodeResponse treeNodeResponse = treeNodeFetcher
-				.fetchTreeNode(startingTreeNode.createRequest(treeNodeRecord.getTreeNodeUrl()));
+				.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
 		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		treeNodeResponse.getRelations()
@@ -74,8 +70,9 @@ public class TreeNodeProcessor {
 	}
 
 	public SuppliedMember getMember() {
-		if (memberRecord != null) {
-			memberRepository.saveTreeMember(memberRecord);
+		savePreviousState();
+		if (!treeNodeRecordRepository.containsTreeNodeRecords()) {
+			initializeTreeNodeRecordRepository();
 		}
 		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		while (unprocessedTreeMember.isEmpty()) {
@@ -87,6 +84,18 @@ public class TreeNodeProcessor {
 		treeMember.processedMemberRecord();
 		memberRecord = treeMember;
 		return suppliedMember;
+	}
+
+	private void initializeTreeNodeRecordRepository() {
+		StartingTreeNode start = new StartingTreeNodeSupplier(requestExecutor)
+				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
+		treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(start.getStartingNodeUrl()));
+	}
+
+	private void savePreviousState() {
+		if (memberRecord != null) {
+			memberRepository.saveTreeMember(memberRecord);
+		}
 	}
 
 	public void destroyState() {

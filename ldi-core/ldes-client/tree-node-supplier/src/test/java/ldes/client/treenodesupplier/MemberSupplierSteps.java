@@ -5,7 +5,6 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.*;
@@ -26,7 +25,7 @@ public class MemberSupplierSteps {
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
 	private MemberSupplier memberSupplier;
-	private StartingTreeNode startingTreeNode;
+	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
 
 	@When("I request one member from the MemberSupplier")
@@ -56,15 +55,15 @@ public class MemberSupplierSteps {
 
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
-		startingTreeNode = new StartingTreeNodeSupplier(new DefaultConfig().createRequestExecutor()).getStart(url,
+		ldesMetaData = new LdesMetaData(url,
 				Lang.JSONLD);
 	}
 
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
-		treeNodeProcessor = new TreeNodeProcessor(startingTreeNode,
+		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				new StatePersistence(memberRepository, treeNodeRecordRepository),
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
+				new DefaultConfig().createRequestExecutor());
 	}
 
 	@Then("Member {string} is processed")
