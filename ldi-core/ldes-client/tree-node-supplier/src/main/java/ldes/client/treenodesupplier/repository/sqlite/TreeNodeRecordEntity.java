@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(name = "TreeNode.count", query = "SELECT COUNT(t) FROM TreeNodeRecordEntity t")
 @NamedQuery(name = "TreeNode.countById", query = "SELECT COUNT(t) FROM TreeNodeRecordEntity t WHERE t.id = :id")
 @NamedQuery(name = "TreeNode.countByIdAndStatus", query = "SELECT COUNT(t) FROM TreeNodeRecordEntity t WHERE t.id = :id and t.treeNodeStatus = :treeNodeStatus")
 @NamedQuery(name = "TreeNode.getByTreeNodeStatus", query = "SELECT t FROM TreeNodeRecordEntity t WHERE t.treeNodeStatus = :treeNodeStatus")
