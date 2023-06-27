@@ -1,6 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidJsonLdContextException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ParseToJsonException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
@@ -84,7 +87,16 @@ class JsonToLdAdapterTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "text/plain", "nonsense" })
 	void when_InCorrectMimeType(String mimeType) {
-		assertFalse(translator.validateMimeType(mimeType));
+		LdiAdapter.Content content = new LdiAdapter.Content("", mimeType);
+		Exception e = assertThrows(UnsupportedMimeTypeException.class, () -> translator.apply(content));
+		assertEquals("Unsupported MIME type was provided: " + mimeType + ". Supported MIME type is: application/json",
+				e.getMessage());
+	}
+
+	@Test
+	void when_CoreContextNull_Then_ThrowException() {
+		Exception e = assertThrows(InvalidJsonLdContextException.class, () -> new JsonToLdAdapter(null));
+		assertEquals("Core context can't be null", e.getMessage());
 	}
 
 	private Model readModelFromFile(String path) throws IOException {
