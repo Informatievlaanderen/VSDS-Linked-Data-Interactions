@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidJsonLdContextException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ParseToJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
@@ -28,13 +27,13 @@ public class JsonToLdAdapter implements LdiAdapter {
 
 	public JsonToLdAdapter(String coreContext, String ldContext) {
 		if (coreContext == null) {
-			throw new InvalidJsonLdContextException("Core context can't be null");
+			throw new IllegalArgumentException("Core context can't be null");
 		}
 		this.coreContext = coreContext;
 		this.ldContext = ldContext;
 	}
 
-	public void addContexts(JsonObject json) {
+	private void addContexts(JsonObject json) {
 		JsonArray contexts = new JsonArray();
 		contexts.add(coreContext);
 		if (ldContext != null) {
@@ -43,7 +42,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 		json.put("@context", contexts);
 	}
 
-	public Stream<Model> translateJsonToLD(String data) {
+	private Stream<Model> translateJsonToLD(String data) {
 		try {
 			JsonObject json = JSON.parse(data);
 			addContexts(json);
@@ -53,7 +52,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 		}
 	}
 
-	public Model toRDFModel(JsonObject json) {
+	private Model toRDFModel(JsonObject json) {
 		Model model = ModelFactory.createDefaultModel();
 		RDFParser.fromString(json.toString())
 				.lang(Lang.JSONLD)
@@ -69,7 +68,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 		return translateJsonToLD(content.content());
 	}
 
-	public boolean validateMimeType(String mimeType) {
+	private boolean validateMimeType(String mimeType) {
 		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase(MIMETYPE);
 	}
 
