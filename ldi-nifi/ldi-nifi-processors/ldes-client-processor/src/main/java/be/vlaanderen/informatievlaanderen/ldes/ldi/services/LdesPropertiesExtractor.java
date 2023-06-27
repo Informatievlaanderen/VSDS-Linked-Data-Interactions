@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import org.apache.jena.rdf.model.*;

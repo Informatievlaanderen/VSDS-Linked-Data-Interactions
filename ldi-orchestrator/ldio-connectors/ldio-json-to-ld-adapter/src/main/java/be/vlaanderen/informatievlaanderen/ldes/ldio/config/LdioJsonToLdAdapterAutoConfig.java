@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class LdioJsonToLdAdapterAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter")
-	public LdioConfigurator ldiHttpOutConfigurator() {
+	public LdioConfigurator ldioJsonToLdAdapterConfigurator() {
 		return new LdioJsonToLdAdapterConfigurator();
 	}
 
