@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects.executorsupplier;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.BasicIntervalFunctionDecorator;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.core.functions.Either;
 import org.apache.http.Header;

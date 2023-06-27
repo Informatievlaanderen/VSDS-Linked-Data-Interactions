@@ -1,0 +1,10 @@
+{
+  "@context": [
+    "http://localhost:10101/core-context.json"
+  ],
+  "id": "exampleID",
+  "type": "Model",
+  "example": {
+    "value": "value"
+  }
+}
