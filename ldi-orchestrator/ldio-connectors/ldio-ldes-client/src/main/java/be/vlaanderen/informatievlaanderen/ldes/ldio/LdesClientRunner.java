@@ -5,7 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.valueobject.LdesDescription;
+import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
@@ -52,18 +52,18 @@ public class LdesClientRunner implements Runnable {
 		StatePersistenceStrategy state = properties.getOptionalProperty(LdioLdesClientProperties.STATE)
 				.flatMap(StatePersistenceStrategy::from)
 				.orElse(StatePersistenceStrategy.MEMORY);
-		LdesDescription ldesDescription = new LdesDescription(targetUrl,
+		LdesMetaData ldesMetaData = new LdesMetaData(targetUrl,
 				sourceFormat);
-		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, ldesDescription);
+		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, ldesMetaData);
 		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
 		return new MemberSupplier(treeNodeProcessor, keepState);
 	}
 
 	private TreeNodeProcessor getTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy,
 			RequestExecutor requestExecutor,
-			LdesDescription ldesDescription) {
+			LdesMetaData ldesMetaData) {
 
-		return new TreeNodeProcessor(ldesDescription, StatePersistence.from(statePersistenceStrategy),
+		return new TreeNodeProcessor(ldesMetaData, StatePersistence.from(statePersistenceStrategy),
 				requestExecutor);
 	}
 

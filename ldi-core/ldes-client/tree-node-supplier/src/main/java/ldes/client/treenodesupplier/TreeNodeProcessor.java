@@ -20,17 +20,17 @@ public class TreeNodeProcessor {
 	private final TreeNodeRecordRepository treeNodeRecordRepository;
 	private final MemberRepository memberRepository;
 	private final TreeNodeFetcher treeNodeFetcher;
-	private final LdesDescription ldesDescription;
+	private final LdesMetaData ldesMetaData;
 	private final RequestExecutor requestExecutor;
 	private MemberRecord memberRecord;
 
-	public TreeNodeProcessor(LdesDescription ldesDescription, StatePersistence statePersistence,
-			RequestExecutor requestExecutor) {
+	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
+                             RequestExecutor requestExecutor) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
 		this.requestExecutor = requestExecutor;
 		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor);
-		this.ldesDescription = ldesDescription;
+		this.ldesMetaData = ldesMetaData;
 	}
 
 	private void processTreeNode() {
@@ -41,7 +41,7 @@ public class TreeNodeProcessor {
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
 		waitUntilNextVisit(treeNodeRecord);
 		TreeNodeResponse treeNodeResponse = treeNodeFetcher
-				.fetchTreeNode(ldesDescription.createRequest(treeNodeRecord.getTreeNodeUrl()));
+				.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
 		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		treeNodeResponse.getRelations()
@@ -88,7 +88,7 @@ public class TreeNodeProcessor {
 
 	private void initializeTreeNodeRecordRepository() {
 		StartingTreeNode start = new StartingTreeNodeSupplier(requestExecutor)
-				.getStart(ldesDescription.getStartingNodeUrl(), ldesDescription.getLang());
+				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
 		treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(start.getStartingNodeUrl()));
 	}
 

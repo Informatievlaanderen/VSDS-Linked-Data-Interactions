@@ -25,7 +25,7 @@ public class MemberSupplierSteps {
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
 	private MemberSupplier memberSupplier;
-	private LdesDescription ldesDescription;
+	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
 
 	@When("I request one member from the MemberSupplier")
@@ -55,13 +55,13 @@ public class MemberSupplierSteps {
 
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
-		ldesDescription = new LdesDescription(url,
+		ldesMetaData = new LdesMetaData(url,
 				Lang.JSONLD);
 	}
 
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
-		treeNodeProcessor = new TreeNodeProcessor(ldesDescription,
+		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				new StatePersistence(memberRepository, treeNodeRecordRepository),
 				new DefaultConfig().createRequestExecutor());
 	}

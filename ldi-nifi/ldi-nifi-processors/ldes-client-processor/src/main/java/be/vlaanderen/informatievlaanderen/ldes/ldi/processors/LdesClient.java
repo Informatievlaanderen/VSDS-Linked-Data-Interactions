@@ -8,7 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.valueobject.LdesDescription;
+import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
@@ -67,13 +67,13 @@ public class LdesClient extends AbstractProcessor {
 		String dataSourceUrl = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
-		LdesDescription ldesDescription = new LdesDescription(dataSourceUrl, dataSourceFormat);
-		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesDescription,
+		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrl, dataSourceFormat);
+		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				StatePersistence.from(LdesProcessorProperties.getStatePersistenceStrategy(context)),
 				requestExecutor);
 		memberSupplier = new MemberSupplier(treeNodeProcessor, LdesProcessorProperties.stateKept(context));
 
-		determineLdesProperties(ldesDescription, requestExecutor, context);
+		determineLdesProperties(ldesMetaData, requestExecutor, context);
 
 		LOGGER.info("LDES extraction processor {} with base url {} (expected LDES source format: {})",
 				context.getName(), dataSourceUrl, dataSourceFormat);
@@ -97,12 +97,12 @@ public class LdesClient extends AbstractProcessor {
 		};
 	}
 
-	private void determineLdesProperties(LdesDescription ldesDescription, RequestExecutor requestExecutor,
-			ProcessContext context) {
+	private void determineLdesProperties(LdesMetaData ldesMetaData, RequestExecutor requestExecutor,
+                                         ProcessContext context) {
 		boolean timestampPath = streamTimestampPathProperty(context);
 		boolean versionOfPath = streamVersionOfProperty(context);
 		boolean shape = streamShapeProperty(context);
-		ldesProperties = new LdesPropertiesExtractor(requestExecutor).getLdesProperties(ldesDescription, timestampPath,
+		ldesProperties = new LdesPropertiesExtractor(requestExecutor).getLdesProperties(ldesMetaData, timestampPath,
 				versionOfPath, shape);
 	}
 

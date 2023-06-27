@@ -6,7 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
-import ldes.client.treenodesupplier.domain.valueobject.LdesDescription;
+import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.RDFParser;
@@ -35,11 +35,11 @@ public class LdesPropertiesExtractor {
 				.map(Resource::toString);
 	}
 
-	public LdesProperties getLdesProperties(LdesDescription ldesDescription, boolean needTimestampPath,
-			boolean needVersionOfPath,
-			boolean needShape) {
+	public LdesProperties getLdesProperties(LdesMetaData ldesMetaData, boolean needTimestampPath,
+                                            boolean needVersionOfPath,
+                                            boolean needShape) {
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor)
-				.getStart(ldesDescription.getStartingNodeUrl(), ldesDescription.getLang());
+				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
 		TreeNodeRequest request = startingTreeNode.createRequest(startingTreeNode.getStartingNodeUrl());
 		Request httpRequest = request.createRequest();
 		Response response = requestExecutor.execute(httpRequest);
