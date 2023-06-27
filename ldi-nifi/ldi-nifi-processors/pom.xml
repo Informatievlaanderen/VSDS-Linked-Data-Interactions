@@ -19,6 +19,7 @@
         <module>ngsiv2-to-ld-processor</module>
         <module>rdf4j-repository-materialisation-processor</module>
         <module>geojson-to-wkt-processor</module>
+        <module>json-to-ld-processor</module>
     </modules>
 
     <properties>
