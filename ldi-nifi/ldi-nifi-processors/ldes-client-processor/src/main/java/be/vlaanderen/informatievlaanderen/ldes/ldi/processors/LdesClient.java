@@ -98,7 +98,7 @@ public class LdesClient extends AbstractProcessor {
 	}
 
 	private void determineLdesProperties(LdesMetaData ldesMetaData, RequestExecutor requestExecutor,
-                                         ProcessContext context) {
+			ProcessContext context) {
 		boolean timestampPath = streamTimestampPathProperty(context);
 		boolean versionOfPath = streamVersionOfProperty(context);
 		boolean shape = streamShapeProperty(context);

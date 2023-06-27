@@ -25,7 +25,7 @@ public class TreeNodeProcessor {
 	private MemberRecord memberRecord;
 
 	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
-                             RequestExecutor requestExecutor) {
+			RequestExecutor requestExecutor) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
 		this.requestExecutor = requestExecutor;

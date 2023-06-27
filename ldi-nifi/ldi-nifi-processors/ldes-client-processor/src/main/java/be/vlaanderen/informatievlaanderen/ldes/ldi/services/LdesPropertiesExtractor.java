@@ -36,8 +36,8 @@ public class LdesPropertiesExtractor {
 	}
 
 	public LdesProperties getLdesProperties(LdesMetaData ldesMetaData, boolean needTimestampPath,
-                                            boolean needVersionOfPath,
-                                            boolean needShape) {
+			boolean needVersionOfPath,
+			boolean needShape) {
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor)
 				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
 		TreeNodeRequest request = startingTreeNode.createRequest(startingTreeNode.getStartingNodeUrl());
