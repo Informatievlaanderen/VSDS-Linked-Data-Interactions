@@ -47,7 +47,7 @@ jobs:
   deploy:
     environment:
       name: develop
-      url: ${{ steps.deployment.outputs.page_url }}/dev
+      url: ${{ steps.deployment.outputs.page_url }}dev
     runs-on: ubuntu-latest
     needs: build
     steps:

@@ -47,7 +47,7 @@ jobs:
   deploy:
     environment:
       name: main
-      url: ${{ steps.deployment.outputs.page_url }}/main
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
