@@ -21,7 +21,7 @@ The following configuration is supported:
 
 Example config:
 
-```agsl
+```yaml
 orchestrator:
   input:
     name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient

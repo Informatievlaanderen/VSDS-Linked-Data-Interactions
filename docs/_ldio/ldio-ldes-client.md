@@ -1,11 +1,15 @@
 ---
 layout: default
-title: LDIO LDES Client
-grand_parent: Linked Data Interactions Orchestrator
-parent: LDI Input
+parent: LDIO Inputs
+title: LDES Client
 ---
 
-The following configuration is supported:
+# LDIO Ldes Client
+***be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient***
+
+An LDIO wrapper component for the [LDI LDES Client building block]
+
+## Config
 
 | Property                  | Description                                                                                   | Required | Default             | Example                       | Supported values                                              |
 |:--------------------------|:----------------------------------------------------------------------------------------------|:---------|:--------------------|:------------------------------|:--------------------------------------------------------------|
@@ -22,3 +26,23 @@ The following configuration is supported:
 | retries.enabled           | Indicates if the http client should retry http requests when the server cannot be reached.    | No       | true                | true                          | true or false                                                 |
 | retries.max               | Max number of retries the http client should do when retries.enabled = true                   | No       | 5                   | 100                           | Integer                                                       |
 | retries.statuses-to-retry | Custom comma seperated list of http status codes that can trigger a retry in the http client. | No       | N/A                 | 410,451                       | Comma seperated list of Integers                              |
+
+
+## Example
+
+```yaml
+  input:
+    name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient
+    config:
+      url: http://localhost:8080/my-ldes
+      sourceFormat: text/turtle
+      retries:
+        enabled: true
+      auth:
+        type: OAUTH2_CLIENT_CREDENTIALS
+        client-id: clientId
+        client-secret: secret
+        token-endpoint: http://localhost:8000/token
+```
+
+[LDI LDES Client building block]: /core/ldes-client
