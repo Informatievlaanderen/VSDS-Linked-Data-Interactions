@@ -35,6 +35,8 @@ just_the_docs:
     ldi-nifi:
       name: Linked Data Interactions for Apache NiFi
 
+enable_copy_code_button: true
+
 mermaid:
   # Version of mermaid library
   # Pick an available version from https://cdn.jsdelivr.net/npm/mermaid/

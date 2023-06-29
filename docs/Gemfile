@@ -8,5 +8,6 @@ gem "just-the-docs", "0.5.3" # pinned to the current release
 
 # If you have any plugins, put them here!
 group :jekyll_plugins do
-  gem "jekyll-remote-theme"
+    gem "kramdown"
+    gem "jekyll-remote-theme"
 end

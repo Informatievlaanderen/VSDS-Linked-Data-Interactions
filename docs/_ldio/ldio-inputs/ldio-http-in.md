@@ -9,6 +9,8 @@ title: HTTP In
 
 The LDIO Http In is a basic Http Listener. 
 
+Data can be written to ``http://{hostname}:{port}/{pipeline name}``
+
 ## Config
 
 This component has no required config

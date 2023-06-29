@@ -13,4 +13,4 @@ The LDIO Console Out will output its given model to the console.
 
 | Property     | Description          | Required | Default             | Example                     | Supported values                                              |
 |:-------------|:---------------------|:---------|:--------------------|:----------------------------|:--------------------------------------------------------------|
-| content-type | Target content type. | No       | application/ld+json | application/n-quads         | Any type supported by [Apache Jena](https://jena.apache.org/) |
+| content-type | Target content type. | No       | application/n-quads | application/ld+json         | Any type supported by [Apache Jena](https://jena.apache.org/) |

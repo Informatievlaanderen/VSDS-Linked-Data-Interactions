@@ -4,7 +4,7 @@ parent: LDIO Transformers
 title: Version Object Creator
 ---
 
-# LDIO Version Materializer
+# LDIO Version Object Creator
 ***be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator***
 
 An LDIO wrapper component for the [LDI Version Object Creator building block]
