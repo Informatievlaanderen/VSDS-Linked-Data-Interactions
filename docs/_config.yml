@@ -1,7 +1,6 @@
 title: Linked Data Interactions
 description: Linked Data Interactions
-theme: just-the-docs
-remote_theme: just-the-docs/just-the-docs@v0.5.2
+remote_theme: just-the-docs/just-the-docs@v0.5.3
 
 url: https://just-the-docs.github.io
 
