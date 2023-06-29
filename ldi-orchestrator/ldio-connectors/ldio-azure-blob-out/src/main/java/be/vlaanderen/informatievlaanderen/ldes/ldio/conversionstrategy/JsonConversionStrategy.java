@@ -3,6 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.conversionstrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.conversionstrategy.json.Model2JsonConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.MemberConversionException;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFWriter;
 
 import java.io.IOException;
 
@@ -24,7 +26,7 @@ public class JsonConversionStrategy implements ConversionStrategy {
 		try {
 			return model2JsonConverter.modelToJSONLD(model);
 		} catch (IOException e) {
-			throw new MemberConversionException(model, e);
+			throw new MemberConversionException(RDFWriter.source(model).lang(Lang.TURTLE).toString(), e);
 		}
 	}
 

@@ -1,22 +1,18 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.exception;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.util.ModelConverter;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.util.MemberIdExtractor.TREE_MEMBER;
 
 public class MemberIdNotFoundException extends RuntimeException {
 
-	private final Model model;
+	private final String modelString;
 
-	public MemberIdNotFoundException(Model model) {
+	public MemberIdNotFoundException(String modelString) {
 		super();
-		this.model = model;
+		this.modelString = modelString;
 	}
 
 	@Override
 	public String getMessage() {
-		return "Could not extract " + TREE_MEMBER + " statement from " + ModelConverter.toString(model, Lang.TURTLE);
+		return "Could not extract " + TREE_MEMBER + " statement from " + modelString;
 	}
 }

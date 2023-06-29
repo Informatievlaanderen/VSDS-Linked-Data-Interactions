@@ -16,10 +16,10 @@ public class LdioAzureBlobOutAutoConfig {
 
 	public static class LdioAzureBlobOutConfigurator implements LdioConfigurator {
 		public static final String PROPERTY_LANG = "lang";
-		public static final String PROPERTY_STORAGE_ACCOUNT_NAME = "storageAccountName";
-		public static final String PROPERTY_CONNECTION_STRING = "connectionString";
-		public static final String PROPERTY_BLOB_CONTAINER = "blobContainer";
-		public static final String PROPERTY_JSON_CONTEXT_URI = "jsonContextURI";
+		public static final String PROPERTY_STORAGE_ACCOUNT_NAME = "storage-account-name";
+		public static final String PROPERTY_CONNECTION_STRING = "connection-string";
+		public static final String PROPERTY_BLOB_CONTAINER = "blob-container";
+		public static final String PROPERTY_JSON_CONTEXT_URI = "json-context-uri";
 		private static final String DEFAULT_OUTPUT_LANG = "n-quads";
 		public static final String DEFAULT_JSON_CONTEXT_URI = "";
 

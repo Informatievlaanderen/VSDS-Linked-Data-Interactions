@@ -1,19 +1,15 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.exception;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.util.ModelConverter;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-
 public class MemberConversionException extends RuntimeException {
-	private final Model model;
+	private final String modelString;
 
-	public MemberConversionException(Model model, Throwable ex) {
+	public MemberConversionException(String modelString, Throwable ex) {
 		super(ex);
-		this.model = model;
+		this.modelString = modelString;
 	}
 
 	@Override
 	public String getMessage() {
-		return "Could not convert Model:\n" + ModelConverter.toString(model, Lang.TURTLE);
+		return "Could not convert Model:\n" + modelString;
 	}
 }

@@ -3,6 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.util;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.MemberIdNotFoundException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFWriter;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
@@ -15,6 +17,6 @@ public class MemberIdExtractor {
 				.listObjectsOfProperty(createProperty(TREE_MEMBER))
 				.nextOptional()
 				.map(RDFNode::toString)
-				.orElseThrow(() -> new MemberIdNotFoundException(model));
+				.orElseThrow(() -> new MemberIdNotFoundException(RDFWriter.source(model).lang(Lang.TURTLE).toString()));
 	}
 }

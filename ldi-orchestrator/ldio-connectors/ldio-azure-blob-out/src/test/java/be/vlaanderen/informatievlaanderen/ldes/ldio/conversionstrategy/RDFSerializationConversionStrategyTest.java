@@ -33,7 +33,6 @@ class RDFSerializationConversionStrategyTest {
 
 		String actualContent = conversionStrategy.getContent(model);
 
-		System.out.println(actualContent);
 		assertTrue(RDFParser.fromString(expectedContent).lang(lang).toModel().isIsomorphicWith(
 				RDFParser.fromString(actualContent).lang(lang).toModel()));
 		assertEquals(expectedFileExtension, conversionStrategy.getFileExtension());

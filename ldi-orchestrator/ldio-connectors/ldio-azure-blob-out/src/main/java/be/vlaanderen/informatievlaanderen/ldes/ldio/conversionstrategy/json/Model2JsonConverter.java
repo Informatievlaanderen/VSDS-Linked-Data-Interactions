@@ -1,12 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.conversionstrategy.json;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.util.MemberIdExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.util.ModelConverter;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -72,6 +72,6 @@ public class Model2JsonConverter {
 	}
 
 	private String convertModelToJson(Model model) {
-		return ModelConverter.toString(model, Lang.JSONLD11);
+		return RDFWriter.source(model).lang(Lang.JSONLD11).toString();
 	}
 }

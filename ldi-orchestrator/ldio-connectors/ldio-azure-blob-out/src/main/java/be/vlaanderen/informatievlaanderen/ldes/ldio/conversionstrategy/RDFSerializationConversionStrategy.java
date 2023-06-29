@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.conversionstrategy;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.util.ModelConverter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFWriter;
 
 public class RDFSerializationConversionStrategy implements ConversionStrategy {
 	private final Lang lang;
@@ -18,6 +18,6 @@ public class RDFSerializationConversionStrategy implements ConversionStrategy {
 
 	@Override
 	public String getContent(Model model) {
-		return ModelConverter.toString(model, lang);
+		return RDFWriter.source(model).lang(lang).toString();
 	}
 }
