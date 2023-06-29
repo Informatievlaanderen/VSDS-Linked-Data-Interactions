@@ -1,32 +1,36 @@
 ---
-title: LDIO
+title: Linked Data Interactions For Apache NiFi
 layout: home
+nav_order: 0
 ---
 
-This is a *bare-minimum* template to create a Jekyll site that uses the [Just the Docs] theme. You can easily set the created site to be published on [GitHub Pages] – the [README] file explains how to do that, along with other details.
+# Linked Data Interactions For Apache NiFi
 
-If [Jekyll] is installed on your computer, you can also build and preview the created site *locally*. This lets you test changes before committing them, and avoids waiting for GitHub Pages.[^1] And you will be able to deploy your local build to a different platform than GitHub Pages.
+[Apache Nifi] is an easy to use, powerful, and reliable system to process and distribute data.
 
-More specifically, the created site:
+## Usage
 
-- uses a gem-based approach, i.e. uses a `Gemfile` and loads the `just-the-docs` gem
-- uses the [GitHub Pages / Actions workflow] to build and publish the site on GitHub Pages
+All the following processors can be found in the processor list when using the ldes/ldi-workbench-nifi docker image.
 
-Other than that, you're free to customize sites that you create with this template, however you like. You can easily change the versions of `just-the-docs` and Jekyll it uses, as well as adding further plugins.
+These processors can be [added][Adding a processor in NiFi] by filtering on the ***be.vlaanderen.informatievlaanderen.ldes.ldi.nifi*** group or by filtering on the ***vsds*** tag
 
-[Browse our documentation][Just the Docs] to learn more about how to use this theme.
+- [Create Version Processor]
+- [GeoJson to WKT Processor]
+- [Json to Json LD Processor]
+- [Ngsi V2 to LD Processor]
+- [RDF4j Repository Materialization Processor]
+- [SPARQL Interactions Processor]
+- [Version Materialization Processor]
 
-To get started with creating a site, just click "[use this template]"!
+{: .note }
+All documentation and notes about configuration are available in the NiFi component itself.
 
-If you want to maintain your docs in the `docs` directory of an existing project repo, see [Hosting your docs from an existing project repo](https://github.com/just-the-docs/just-the-docs-template/blob/main/README.md#hosting-your-docs-from-an-existing-project-repo) in the template README.
-
-----
-
-[^1]: [It can take up to 10 minutes for changes to your site to publish after you push the changes to GitHub](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-your-site).
-
-[Just the Docs]: https://just-the-docs.github.io/just-the-docs/
-[GitHub Pages]: https://docs.github.com/en/pages
-[README]: https://github.com/just-the-docs/just-the-docs-template/blob/main/README.md
-[Jekyll]: https://jekyllrb.com
-[GitHub Pages / Actions workflow]: https://github.blog/changelog/2022-07-27-github-pages-custom-github-actions-workflows-beta/
-[use this template]: https://github.com/just-the-docs/just-the-docs-template/generate
+[Apache NiFi]: https://nifi.apache.org/
+[Adding a processor in NiFi]: https://nifi.apache.org/docs/nifi-docs/html/getting-started.html#adding-a-processor
+[Create Version Processor]: /core/version-object-creator
+[GeoJson to WKT Processor]: /core/geo-json-to-wkt
+[Json to Json LD Processor]: /core/json-to-json-ld
+[Ngsi V2 to LD Processor]: /core/ngsiv2-to-ld
+[RDF4j Repository Materialization Processor]: /ldi-nifi/rdf4j-repository-materialization
+[SPARQL Interactions Processor]: /ldi-nifi/sparql-interactions-processor
+[Version Materialization Processor]: core/version-materialization
