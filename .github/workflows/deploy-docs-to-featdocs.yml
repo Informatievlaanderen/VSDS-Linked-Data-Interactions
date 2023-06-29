@@ -47,7 +47,6 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      environment_url: https://develop.informatievlaanderen.github.io/VSDS-Linked-Data-Interactions/
       url: https://develop.informatievlaanderen.github.io/VSDS-Linked-Data-Interactions/
     runs-on: ubuntu-latest
     needs: build
