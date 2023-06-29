@@ -15,7 +15,7 @@ This project was created in function of the [VSDS project]
 ## Supported Frameworks
 
 Currently, we support 2 frameworks to use these building blocks in:
-* [Linked Data Interactions Orchestrator][LDIO docs]: A lightweight application maintained by the LDI team.
+* [Linked Data Interactions Orchestrator](ldio): A lightweight application maintained by the LDI team.
 * [Apache Nifi][Apache NiFi]: A powerful system to easily process and distribute data
 
 ### Component support over frameworks
@@ -28,4 +28,3 @@ However, since the LDI project is open source, feel free to contribute and/or cr
 [VSDS project]: https://www.vlaanderen.be/vlaamse-smart-data-space-portaal
 [Apache NiFi]: https://nifi.apache.org/
 [Linked Data Interactions]: https://github.com/Informatievlaanderen/VSDS-Linked-Data-Interactions
-[LDIO Docs]: /ldio/index

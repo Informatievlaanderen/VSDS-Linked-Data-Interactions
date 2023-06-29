@@ -10,10 +10,10 @@ has_toc: true
 
 ## Used Components
 
-- [Http In Poller]
-- [RML Adapter]
-- [Version Object Creator]
-- [Console Out]
+- [Http In Poller](../ldio-inputs/ldio-http-in-poller)
+- [RML Adapter](../ldio-adapters/ldio-rml-adapter.md)
+- [Version Object Creator](../ldio-transformers/ldio-version-object-creator)
+- [Console Out](../ldio-outputs/ldio-console-out)
 
 ## Setup 
 
@@ -112,7 +112,3 @@ Once started, you should be seeing data in your console similar to
 [LDIO Examples]: /ldio/examples
 [Matey]: https://rml.io/yarrrml/matey/#
 [mapping]: /ldio/examples/ex2/mapping.ttl
-[Http In Poller]: /ldio/ldio-inputs/ldio-http-in-poller
-[RML Adapter]: /ldio/ldio-adapters/ldio-rml-adaper
-[Version Object Creator]: /ldio/ldio-transformers/ldio-version-object-creator
-[Console Out]: /ldio/ldio-outputs/ldio-console-out

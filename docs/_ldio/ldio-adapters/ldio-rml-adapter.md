@@ -7,7 +7,7 @@ title: RML Adapter
 # LDIO RML Adapter
 ***be.vlaanderen.informatievlaanderen.ldes.ldi.RmlAdapter***
 
-An LDIO wrapper component for the [LDI RML Adapter building block]
+An LDIO wrapper component for the [LDI RML Adapter building block](../../core/ldi-adapters/rml-adapter)
 
 ## Config
 
@@ -15,5 +15,3 @@ An LDIO wrapper component for the [LDI RML Adapter building block]
 | Property | Description                                    | Required | Default | Example                     | Supported values    |
 |:---------|:-----------------------------------------------|:---------|:--------|:----------------------------|:--------------------|
 | mapping  | Path to content of RML/content of RML mapping. | Yes      | N/A     | mapping.ttl                 | Path/String         |
-
-[LDI RML Adapter building block]: /core/rml-adapter

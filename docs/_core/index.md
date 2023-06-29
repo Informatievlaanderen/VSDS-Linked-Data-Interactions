@@ -9,10 +9,10 @@ nav_order: 0
 As the LDI strives to be an easily reusable project, each of our building blocks are framework independent and is being maintained as part in our LDI Core.
 
 Each of the LDI Core Building Blocks falls under one of four categories:
-* [LDI Input][LDI Input]: A component that will receive data (not necessarily LD) to then feed the LDI pipeline.
-* [LDI Adapter][LDI Adapter]: To be used in conjunction with the LDI Input, the LDI Adapter will transform the provided content into and internal Linked Data model and sends it down the pipeline.
-* [LDI Transformer][LDI Transformer]: A component that takes in a Linked Data model, transforms/modifies it and then puts it back on the pipeline.
-* [LDI Output][LDI Output]: A component that will take in Linked Data and will export it to external sources.
+* [LDI Input](ldi-inputs): A component that will receive data (not necessarily LD) to then feed the LDI pipeline.
+* [LDI Adapter](ldi-adapters): To be used in conjunction with the LDI Input, the LDI Adapter will transform the provided content into and internal Linked Data model and sends it down the pipeline.
+* [LDI Transformer](ldi-transformers): A component that takes in a Linked Data model, transforms/modifies it and then puts it back on the pipeline.
+* [LDI Output](ldi-outputs): A component that will take in Linked Data and will export it to external sources.
 
 ````mermaid
 stateDiagram-v2
@@ -45,8 +45,3 @@ stateDiagram-v2
         [*] --> [*]
     }
 ````
-
-[LDI Input]: /core/ldi-inputs
-[LDI Adapter]: /core/ldi-adapters
-[LDI Transformer]: /core/ldi-transformers
-[LDI Output]: /core/ldi-outputs

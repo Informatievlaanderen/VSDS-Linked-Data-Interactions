@@ -9,8 +9,8 @@ nav_order: 1
 
 ## Used Components
 
-- [Http In]
-- [Console Out]
+- [Http In](../ldio-inputs/ldio-http-in)
+- [Console Out](../ldio-outputs/ldio-console-out)
 
 ## Setup 
 
@@ -53,6 +53,3 @@ _:b0 <http://schema.org/telephone> "(425) 123-4567" .
 _:b0 <http://schema.org/url> <http://www.janedoe.com> .
 _:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .
 ````
-
-[Http In]: /ldio/ldio-inputs/ldio-http-in
-[Console Out]: /ldio/ldio-outputs/ldio-console-out

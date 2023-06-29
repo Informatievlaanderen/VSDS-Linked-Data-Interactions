@@ -7,7 +7,7 @@ title: LDES Client
 # LDIO Ldes Client
 ***be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient***
 
-An LDIO wrapper component for the [LDI LDES Client building block]
+An LDIO wrapper component for the [LDI LDES Client building block](../../core/ldi-inputs/ldes-client)
 
 ## Config
 
@@ -44,5 +44,3 @@ An LDIO wrapper component for the [LDI LDES Client building block]
         client-secret: secret
         token-endpoint: http://localhost:8000/token
 ```
-
-[LDI LDES Client building block]: /core/ldes-client

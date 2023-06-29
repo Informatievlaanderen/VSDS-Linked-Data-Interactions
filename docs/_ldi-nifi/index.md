@@ -14,23 +14,16 @@ All the following processors can be found in the processor list when using the l
 
 These processors can be [added][Adding a processor in NiFi] by filtering on the ***be.vlaanderen.informatievlaanderen.ldes.ldi.nifi*** group or by filtering on the ***vsds*** tag
 
-- [Create Version Processor]
-- [GeoJson to WKT Processor]
-- [Json to Json LD Processor]
-- [Ngsi V2 to LD Processor]
-- [RDF4j Repository Materialization Processor]
-- [SPARQL Interactions Processor]
-- [Version Materialization Processor]
+- [Create Version Processor](../core/ldi-transformers/version-object-creator)
+- [GeoJson to WKT Processor](../core/ldi-transformers/geojson-to-wkt)
+- [Json to Json LD Processor](../core/ldi-adapters/json-to-json-ld)
+- [Ngsi V2 to LD Processor](../core/ldi-adapters/ngsiv2-to-ld)
+- [RDF4j Repository Materialization Processor](./processors/rdf4j-repository-materialization)
+- [SPARQL Interactions Processor](./processors/sparql-interactions)
+- [Version Materialization Processor](../core/ldi-transformers/version-materializer)
 
 {: .note }
 All documentation and notes about configuration are available in the NiFi component itself.
 
 [Apache NiFi]: https://nifi.apache.org/
 [Adding a processor in NiFi]: https://nifi.apache.org/docs/nifi-docs/html/getting-started.html#adding-a-processor
-[Create Version Processor]: /core/version-object-creator
-[GeoJson to WKT Processor]: /core/geo-json-to-wkt
-[Json to Json LD Processor]: /core/json-to-json-ld
-[Ngsi V2 to LD Processor]: /core/ngsiv2-to-ld
-[RDF4j Repository Materialization Processor]: /ldi-nifi/rdf4j-repository-materialization
-[SPARQL Interactions Processor]: /ldi-nifi/sparql-interactions-processor
-[Version Materialization Processor]: core/version-materialization

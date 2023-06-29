@@ -7,7 +7,7 @@ title: Version Object Creator
 # LDIO Version Object Creator
 ***be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator***
 
-An LDIO wrapper component for the [LDI Version Object Creator building block]
+An LDIO wrapper component for the [LDI Version Object Creator building block](../../core/ldi-transformers/version-object-creator)
 
 ## Config
 
@@ -18,5 +18,3 @@ An LDIO wrapper component for the [LDI Version Object Creator building block]
 | delimiter              | Defines how the version object id will be constructed. (versionOf + delimiter + dateObserved)           | No       | /                 | /                                                                 | String           |
 | generatedAt-property   | If defined, a statement will be added to the model with the observedAt value and the given property.    | No       | N/A               | http://www.w3.org/ns/prov#generatedAtTime                         | String           |
 | versionOf-property     | If defined, a statement will be added to the model with the versionOf value and the given property.     | No       | N/A               | http://purl.org/dc/terms/isVersionOf                              | String           |
-
-[LDI Version Object Creator building block]: /core/version-object-creator

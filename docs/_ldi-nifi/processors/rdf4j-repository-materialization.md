@@ -1,6 +1,7 @@
 ---
 layout: default
 title: RDF4J Repository Materialization Processor
+parent: LDI NiFi Processors
 ---
 
 # RDF4J Repository Materialization Processor
