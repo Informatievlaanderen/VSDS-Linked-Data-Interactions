@@ -47,7 +47,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: https://develop.informatievlaanderen.github.io/VSDS-Linked-Data-Interactions/
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
