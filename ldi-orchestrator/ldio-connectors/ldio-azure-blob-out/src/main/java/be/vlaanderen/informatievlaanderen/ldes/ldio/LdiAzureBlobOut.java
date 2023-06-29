@@ -4,16 +4,19 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.conversionstrategy.ConversionStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.conversionstrategy.ConversionStrategyFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.util.MemberIdExtractor;
+import com.azure.core.util.BinaryData;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.specialized.BlockBlobClient;
 import org.apache.jena.rdf.model.Model;
-
-import java.io.ByteArrayInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("java:S2629")
 public class LdiAzureBlobOut implements LdiOutput {
+	private final Logger log = LoggerFactory.getLogger(LdiAzureBlobOut.class);
+
 	private final String outputLanguage;
 	private final String storageAccountName;
 	private final String connectionString;
@@ -41,12 +44,14 @@ public class LdiAzureBlobOut implements LdiOutput {
 				.buildClient();
 
 		BlobContainerClient blobContainerClient = blobServiceClient.getBlobContainerClient(blobContainer);
+		String fileName = (memberIdExtractor.extractMemberId(model) + "." + conversionStrategy.getFileExtension())
+				.replace("/", "_");
 		BlockBlobClient blockBlobClient = blobContainerClient
-				.getBlobClient(memberIdExtractor.extractMemberId(model) + "." + conversionStrategy.getFileExtension())
+				.getBlobClient(fileName)
 				.getBlockBlobClient();
 
 		String content = conversionStrategy.getContent(model);
-		ByteArrayInputStream dataStream = new ByteArrayInputStream(content.getBytes());
-		blockBlobClient.upload(dataStream, content.length());
+		blockBlobClient.upload(BinaryData.fromString(content));
+		log.info("Written out %s".formatted(fileName));
 	}
 }

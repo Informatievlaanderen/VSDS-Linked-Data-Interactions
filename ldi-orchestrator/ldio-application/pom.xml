@@ -205,6 +205,16 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>ldio-azure-blob-out</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-azure-blob-out</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
 </project>
