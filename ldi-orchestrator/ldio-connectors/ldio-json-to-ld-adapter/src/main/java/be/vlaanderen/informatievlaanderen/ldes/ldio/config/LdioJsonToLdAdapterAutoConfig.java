@@ -18,8 +18,8 @@ public class LdioJsonToLdAdapterAutoConfig {
 	public static class LdioJsonToLdAdapterConfigurator implements LdioConfigurator {
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
-			String coreContext = config.getProperty("coreContext");
-			String ldContext = config.getOptionalProperty("ldContext").orElse(null);
+			String coreContext = config.getProperty("core-context");
+			String ldContext = config.getOptionalProperty("ld-context").orElse(null);
 			return new JsonToLdAdapter(coreContext, ldContext);
 		}
 	}

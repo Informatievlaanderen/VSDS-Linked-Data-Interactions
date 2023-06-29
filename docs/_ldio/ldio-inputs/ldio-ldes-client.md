@@ -1,7 +1,15 @@
-# LDIO LDES CLIENT
-This is an LDI Input component that reads an LDES from a server.
+---
+layout: default
+parent: LDIO Inputs
+title: LDES Client
+---
 
-The following configuration is supported:
+# LDIO Ldes Client
+***be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient***
+
+An LDIO wrapper component for the [LDI LDES Client building block](../../core/ldi-inputs/ldes-client)
+
+## Config
 
 | Property                  | Description                                                                                   | Required | Default             | Example                       | Supported values                                              |
 |:--------------------------|:----------------------------------------------------------------------------------------------|:---------|:--------------------|:------------------------------|:--------------------------------------------------------------|
@@ -19,10 +27,10 @@ The following configuration is supported:
 | retries.max               | Max number of retries the http client should do when retries.enabled = true                   | No       | 5                   | 100                           | Integer                                                       |
 | retries.statuses-to-retry | Custom comma seperated list of http status codes that can trigger a retry in the http client. | No       | N/A                 | 410,451                       | Comma seperated list of Integers                              |
 
-Example config:
+
+## Example
 
 ```yaml
-orchestrator:
   input:
     name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient
     config:
