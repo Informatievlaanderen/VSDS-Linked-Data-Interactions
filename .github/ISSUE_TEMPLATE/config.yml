@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🙋 Start a discussion/Ask a question.
+    url: https://github.com/Informatievlaanderen/VSDS-Linked-Data-Interactions/discussions
+    about: Ask structured and fully-formed questions about Linked Data Interactions
