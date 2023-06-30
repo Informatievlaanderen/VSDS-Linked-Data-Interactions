@@ -1,9 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.conversionstrategy.json;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.util.MemberIdExtractor;
-import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.core.JsonLdProcessor;
-import com.github.jsonldjava.utils.JsonUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;
@@ -16,6 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.utils.JsonUtils;
 
 public class Model2JsonConverter {
 

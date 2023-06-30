@@ -39,6 +39,7 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-geojson-to-wkt/targe
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-console-out/target/ldio-console-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-out/target/ldio-http-out-jar-with-dependencies.jar ./lib/
+COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-azure-blob-out/target/ldio-azure-blob-out-jar-with-dependencies.jar ./lib/
 
 RUN dir -s
 
