@@ -3,16 +3,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Java based pipeline framework to interact with Linked Data</description>
+    <url>https://informatievlaanderen.github.io/VSDS-Linked-Data-Interactions/</url>
+
     <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
     <artifactId>linked-data-interactions</artifactId>
     <packaging>pom</packaging>
     <version>1.2.0-SNAPSHOT</version>
+
     <modules>
         <module>ldi-api</module>
         <module>ldi-core</module>
         <module>ldi-orchestrator</module>
         <module>ldi-nifi</module>
     </modules>
+
+    <developers>
+        <developer>
+            <name>Yalz</name>
+            <email>Yalz@users.noreply.github.com </email>
+            <organization>Cegeka</organization>
+            <organizationUrl>http://www.sonatype.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>EUPL</name>
+            <url>https://eupl.eu/1.2/en</url>
+        </license>
+    </licenses>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -28,6 +49,7 @@
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
+        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <unittestskip>false</unittestskip>
         <integrationtestskip>false</integrationtestskip>
 
@@ -83,6 +105,11 @@
                         <encoding>UTF-8</encoding>
                         <configFile>${relative-formatter-path}/settings.xml</configFile>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -174,6 +201,25 @@
                     <scmCommentPrefix>[ci skip]</scmCommentPrefix>
                     <tagNameFormat>@{project.version}</tagNameFormat>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
