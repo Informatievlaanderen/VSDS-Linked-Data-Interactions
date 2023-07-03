@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.functions;
 
 public class LDI {
+	private LDI() {}
 	static final String PREFIX = "http://www.vlaanderen.be/ns/ldi#";
 	// Functions
 	static final String TO_WKT_FUNCTION = PREFIX + "toWkt";

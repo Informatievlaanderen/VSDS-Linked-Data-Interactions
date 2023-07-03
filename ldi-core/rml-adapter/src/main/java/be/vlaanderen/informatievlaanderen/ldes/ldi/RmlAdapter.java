@@ -47,7 +47,7 @@ public class RmlAdapter implements LdiAdapter {
 					.addFunctions(new WktFunctions(), new ReplaceFunctions(), new TimeFunctions())
 					.build();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new InvalidMappingException(mappingString);
 		}
 	}
 
