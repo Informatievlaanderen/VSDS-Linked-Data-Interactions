@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -80,7 +79,7 @@ class VersionMaterialiserTest {
 			Path filePath = Path.of(filename);
 			// Processor needs nquads for now.
 			String versionedInput = Files.readString(filePath);
-			InputStream versionedInputStream = IOUtils.toInputStream(versionedInput, StandardCharsets.UTF_8);
+			InputStream versionedInputStream = IOUtils.toInputStream(versionedInput);
 			return RDFParser.create()
 					.source(versionedInputStream)
 					.lang(Lang.TURTLE)

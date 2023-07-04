@@ -8,15 +8,12 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.util.NoSuchElementException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 public class LdioHttpIn extends LdiInput {
 	private final String endpoint;
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 	public LdioHttpIn(ComponentExecutor executor, LdiAdapter adapter, String endpoint) {
 		super(executor, adapter);
@@ -30,10 +27,9 @@ public class LdioHttpIn extends LdiInput {
 							.orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
 							.toString();
 					return req.bodyToMono(String.class)
-							.doOnNext(content -> executorService
-									.execute(() -> getAdapter().apply(Content.of(content, contentType))
-											.forEach(getExecutor()::transformLinkedData)))
-							.flatMap(body -> ServerResponse.accepted().build());
+							.doOnNext(content -> getAdapter().apply(Content.of(content, contentType))
+									.forEach(getExecutor()::transformLinkedData))
+							.flatMap(body -> ServerResponse.ok().build());
 				});
 	}
 

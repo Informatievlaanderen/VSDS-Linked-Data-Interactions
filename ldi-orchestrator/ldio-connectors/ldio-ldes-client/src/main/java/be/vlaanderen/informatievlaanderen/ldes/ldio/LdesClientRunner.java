@@ -3,9 +3,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodesupplier.MemberSupplier;
+import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
+import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
@@ -52,19 +54,19 @@ public class LdesClientRunner implements Runnable {
 		StatePersistenceStrategy state = properties.getOptionalProperty(LdioLdesClientProperties.STATE)
 				.flatMap(StatePersistenceStrategy::from)
 				.orElse(StatePersistenceStrategy.MEMORY);
-		LdesMetaData ldesMetaData = new LdesMetaData(targetUrl,
+		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor).getStart(targetUrl,
 				sourceFormat);
-		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, ldesMetaData);
+		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, startingTreeNode);
 		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
 		return new MemberSupplier(treeNodeProcessor, keepState);
 	}
 
 	private TreeNodeProcessor getTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy,
 			RequestExecutor requestExecutor,
-			LdesMetaData ldesMetaData) {
+			StartingTreeNode startingTreeNode) {
 
-		return new TreeNodeProcessor(ldesMetaData, StatePersistence.from(statePersistenceStrategy),
-				requestExecutor);
+		return new TreeNodeProcessor(startingTreeNode, StatePersistence.from(statePersistenceStrategy),
+				new TreeNodeFetcher(requestExecutor));
 	}
 
 	public void stopThread() {

@@ -83,7 +83,7 @@ class LdesClientTest {
 
 		testRunner.run(6);
 
-		WireMock.verify(3, getRequestedFor(urlEqualTo("/retry")));
+		WireMock.verify(2, getRequestedFor(urlEqualTo("/retry")));
 
 		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
 

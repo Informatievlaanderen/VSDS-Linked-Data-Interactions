@@ -48,12 +48,6 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 		immutable = new ArrayList<>();
 	}
 
-	@Override
-	public boolean containsTreeNodeRecords() {
-		return Stream.of(notVisited, mutableAndActive, immutable)
-				.anyMatch(treeNodeRecords -> !treeNodeRecords.isEmpty());
-	}
-
 	public Optional<TreeNodeRecord> getOneTreeNodeRecordWithStatus(TreeNodeStatus treeNodeStatus) {
 		return switch (treeNodeStatus) {
 			case NOT_VISITED -> notVisited.isEmpty() ? Optional.empty() : Optional.of(notVisited.get(0));

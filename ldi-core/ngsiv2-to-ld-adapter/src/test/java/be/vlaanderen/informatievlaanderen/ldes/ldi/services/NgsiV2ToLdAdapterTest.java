@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidNgsiLdContextException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
@@ -138,7 +139,7 @@ class NgsiV2ToLdAdapterTest {
 	@Test
 	void whenCoreContextIsNull_thenInvalidNgsiLdContextExceptionIsThrown() {
 		String coreContext = null;
-		assertThrows(IllegalArgumentException.class, () -> new NgsiV2ToLdAdapter(dataIdentifier, coreContext));
+		assertThrows(InvalidNgsiLdContextException.class, () -> new NgsiV2ToLdAdapter(dataIdentifier, coreContext));
 	}
 
 	@Test
