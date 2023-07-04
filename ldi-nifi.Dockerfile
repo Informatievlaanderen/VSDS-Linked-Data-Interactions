@@ -17,6 +17,7 @@ COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/ldes-client
 COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/sparql-interactions-processor/target/*.nar /opt/nifi/nifi-current/lib/
 COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/version-materialisation-processor/target/*.nar /opt/nifi/nifi-current/lib/
 COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/ngsiv2-to-ld-processor/target/*.nar /opt/nifi/nifi-current/lib/
+COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/json-to-ld-processor/target/*.nar /opt/nifi/nifi-current/lib/
 COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/rdf4j-repository-materialisation-processor/target/*.nar /opt/nifi/nifi-current/lib/
 COPY --from=app-stage --chown=nifi:nifi ldi-nifi/ldi-nifi-processors/geojson-to-wkt-processor/target/*.nar /opt/nifi/nifi-current/lib/
 
