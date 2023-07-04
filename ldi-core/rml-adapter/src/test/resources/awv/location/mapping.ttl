@@ -1,0 +1,197 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix map: <http://mapping.example.com/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix v: <http://rdf.data-vocabulary.org/#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix miv: <https://www.wegenenverkeer.be/ns/verkeersmetingen#> .
+@prefix locn: <https://www.w3.org/ns/locn#> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix ldi: <http://www.vlaanderen.be/ns/ldi#> .
+
+map:fn_000 rml:logicalSource map:source_000 ;
+	rr:predicateObjectMap map:pom_010, map:pom_011, map:pomexec_000 .
+
+map:gm_000 rdf:type rr:GraphMap ;
+	rr:template "https://www.wegenenverkeer.be/id/verkeersmetingen/meetpunt/{./@unieke_id}" .
+
+map:jc_000 rr:child "./@unieke_id" ;
+	rr:parent "./@unieke_id" .
+
+map:map_geometry_000 rml:logicalSource map:source_000 ;
+	rdf:type rr:TriplesMap ;
+	rdfs:label "geometry" ;
+	rr:predicateObjectMap map:pom_009 ;
+	rr:subjectMap map:s_001 .
+
+map:map_location_000 rml:logicalSource map:source_000 ;
+	rdf:type rr:TriplesMap ;
+	rdfs:label "location" ;
+	rr:predicateObjectMap map:pom_000, map:pom_001, map:pom_002, map:pom_003, map:pom_004, map:pom_005, map:pom_006, map:pom_007, map:pom_008 ;
+	rr:subjectMap map:s_000 .
+
+map:om_000 rdf:type rr:ObjectMap ;
+	rr:constant "http://www.w3.org/ns/sosa/FeatureOfInterest" ;
+	rr:termType rr:IRI .
+
+map:om_001 rml:reference "../tijd_laatste_config_wijziging" ;
+	rdf:type rr:ObjectMap ;
+	rr:datatype xsd:DateTime ;
+	rr:termType rr:Literal .
+
+map:om_002 rml:reference "beschrijvende_id" ;
+	rdf:type rr:ObjectMap ;
+	rr:termType rr:Literal .
+
+map:om_003 rml:reference "volledige_naam" ;
+	rdf:type rr:ObjectMap ;
+	rr:termType rr:Literal .
+
+map:om_004 rml:reference "Ident_8" ;
+	rdf:type rr:ObjectMap ;
+	rr:termType rr:Literal .
+
+map:om_005 rml:reference "lve_nr" ;
+	rdf:type rr:ObjectMap ;
+	rr:datatype xsd:Integer ;
+	rr:termType rr:Literal .
+
+map:om_006 rml:reference "Kmp_Rsys" ;
+	rdf:type rr:ObjectMap ;
+	rr:termType rr:Literal .
+
+map:om_007 rml:reference "Rijstrook" ;
+	rdf:type rr:ObjectMap ;
+	rr:termType rr:Literal .
+
+map:om_008 rdf:type rr:ObjectMap ;
+	rr:joinCondition map:jc_000 ;
+	rr:parentTriplesMap map:map_geometry_000 .
+
+map:om_009 <http://semweb.mmlab.be/ns/fnml#functionValue> map:fn_000 ;
+	rdf:type <http://semweb.mmlab.be/ns/fnml#FunctionTermMap> ;
+	rr:datatype geo:wktLiteral ;
+	rr:termType rr:Literal .
+
+map:om_010 rdf:type rr:ObjectMap ;
+	rr:template "{lengtegraad_EPSG_4326} {breedtegraad_EPSG_4326}" ;
+	rr:termType rr:Literal .
+
+map:om_011 rdf:type rr:ObjectMap ;
+	rr:constant "POINT" ;
+	rr:termType rr:Literal .
+
+map:omexec_000 rr:constant <http://www.vlaanderen.be/ns/ldi#toWkt> ;
+	rr:termType rr:IRI .
+
+map:pm_000 rdf:type rr:PredicateMap ;
+	rr:constant rdf:type .
+
+map:pm_001 rdf:type rr:PredicateMap ;
+	rr:constant dct:modified .
+
+map:pm_002 rdf:type rr:PredicateMap ;
+	rr:constant dct:identifier .
+
+map:pm_003 rdf:type rr:PredicateMap ;
+	rr:constant rdfs:label .
+
+map:pm_004 rdf:type rr:PredicateMap ;
+	rr:constant miv:Ident_8 .
+
+map:pm_005 rdf:type rr:PredicateMap ;
+	rr:constant miv:lve_nr .
+
+map:pm_006 rdf:type rr:PredicateMap ;
+	rr:constant miv:Kmp_Rsys .
+
+map:pm_007 rdf:type rr:PredicateMap ;
+	rr:constant miv:Rijstrook .
+
+map:pm_008 rdf:type rr:PredicateMap ;
+	rr:constant locn:geometry .
+
+map:pm_009 rdf:type rr:PredicateMap ;
+	rr:constant geo:asWKT .
+
+map:pm_010 rdf:type rr:PredicateMap ;
+	rr:constant ldi:coordinates .
+
+map:pm_011 rdf:type rr:PredicateMap ;
+	rr:constant ldi:wktType .
+
+map:pmexec_000 rr:constant <https://w3id.org/function/ontology#executes> .
+
+map:pom_000 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_000 ;
+	rr:predicateMap map:pm_000 .
+
+map:pom_001 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_001 ;
+	rr:predicateMap map:pm_001 .
+
+map:pom_002 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_002 ;
+	rr:predicateMap map:pm_002 .
+
+map:pom_003 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_003 ;
+	rr:predicateMap map:pm_003 .
+
+map:pom_004 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_004 ;
+	rr:predicateMap map:pm_004 .
+
+map:pom_005 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_005 ;
+	rr:predicateMap map:pm_005 .
+
+map:pom_006 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_006 ;
+	rr:predicateMap map:pm_006 .
+
+map:pom_007 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_007 ;
+	rr:predicateMap map:pm_007 .
+
+map:pom_008 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_008 ;
+	rr:predicateMap map:pm_008 .
+
+map:pom_009 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_009 ;
+	rr:predicateMap map:pm_009 .
+
+map:pom_010 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_010 ;
+	rr:predicateMap map:pm_010 .
+
+map:pom_011 rdf:type rr:PredicateObjectMap ;
+	rr:objectMap map:om_011 ;
+	rr:predicateMap map:pm_011 .
+
+map:pomexec_000 rr:objectMap map:omexec_000 ;
+	rr:predicateMap map:pmexec_000 .
+
+map:rules_000 <http://rdfs.org/ns/void#exampleResource> map:map_geometry_000, map:map_location_000 ;
+	rdf:type <http://rdfs.org/ns/void#Dataset> .
+
+map:s_000 rdf:type rr:SubjectMap ;
+	rr:graphMap map:gm_000 ;
+	rr:template "https://www.wegenenverkeer.be/id/verkeersmetingen/meetpunt/{./@unieke_id}" .
+
+map:s_001 rdf:type rr:SubjectMap ;
+	rr:template "https://www.wegenenverkeer.be/id/verkeersmetingen/meetpunt/{./@unieke_id}/geo" .
+
+map:source_000 rml:iterator "/mivconfig/meetpunt" ;
+	rml:referenceFormulation ql:XPath ;
+	rml:source "locations.xml" ;
+	rdf:type rml:LogicalSource ;
+	rdfs:label "locations-source" .
+

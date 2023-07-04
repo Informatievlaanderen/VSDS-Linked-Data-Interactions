@@ -3,7 +3,7 @@
     <parent>
         <artifactId>linked-data-interactions</artifactId>
         <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
-        <version>1.1.0</version>
+        <version>1.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,6 +20,8 @@
         <module>ngsiv2-to-ld-adapter</module>
         <module>geojson-to-wkt</module>
         <module>request-executor</module>
+        <module>rml-adapter</module>
+        <module>json-to-ld-adapter</module>
     </modules>
 
     <properties>

@@ -3,7 +3,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-orchestrator</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -127,12 +127,31 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ldio-rml-adapter</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-rml-adapter</artifactId>
+                    <version>${project.version}</version>
+                </dependency></dependencies>
+        </profile>
+        <profile>
             <id>ldio-ngsiv2-to-ld-adapter</id>
             <dependencies>
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-ngsiv2-to-ld-adapter</artifactId>
-                    <version>1.1.0</version>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ldio-json-to-ld-adapter</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-json-to-ld-adapter</artifactId>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -192,6 +211,16 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-console-out</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ldio-azure-blob-out</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-azure-blob-out</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>

@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 
