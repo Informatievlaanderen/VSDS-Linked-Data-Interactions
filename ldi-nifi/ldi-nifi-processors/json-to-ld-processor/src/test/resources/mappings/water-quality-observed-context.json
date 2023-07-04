@@ -1,0 +1,56 @@
+{
+	"request": {
+		"method": "GET",
+		"url": "/water-quality-observed-context.json"
+	},
+	"response": {
+		"status": 200,
+	    "headers": {
+	      "Content-Type": "application/ld+json"
+	    },
+		"jsonBody": {
+			"@context": {
+				"Chla": "https://smartdatamodels.org/dataModel.WaterQuality/Chla",
+				"Cl-": "https://smartdatamodels.org/dataModel.WaterQuality/Cl-",
+				"NH3": "https://smartdatamodels.org/dataModel.WaterQuality/NH3",
+				"NH4": "https://smartdatamodels.org/dataModel.WaterQuality/NH4",
+				"NO3": "https://smartdatamodels.org/dataModel.WaterQuality/NO3",
+				"O2": "https://smartdatamodels.org/dataModel.WaterQuality/O2",
+				"PC": "https://smartdatamodels.org/dataModel.WaterQuality/PC",
+				"PE": "https://smartdatamodels.org/dataModel.WaterQuality/PE",
+				"PO4": "https://smartdatamodels.org/dataModel.WaterQuality/PO4",
+				"address": "https://smartdatamodels.org/address",
+				"alternateName": "https://smartdatamodels.org/alternateName",
+				"areaServed": "https://smartdatamodels.org/areaServed",
+				"bod": "https://smartdatamodels.org/dataModel.WaterQuality/bod",
+				"cod": "https://smartdatamodels.org/dataModel.WaterQuality/cod",
+				"conductance": "https://smartdatamodels.org/dataModel.WaterQuality/conductance",
+				"conductivity": "https://smartdatamodels.org/dataModel.WaterQuality/conductivity",
+				"dataProvider": "https://smartdatamodels.org/dataProvider",
+				"dateCreated": "https://smartdatamodels.org/dateCreated",
+				"dateModified": "https://smartdatamodels.org/dateModified",
+				"dateObserved": "https://smartdatamodels.org/dateObserved",
+				"description": "http://purl.org/dc/terms/description",
+				"enterococci": "https://smartdatamodels.org/dataModel.WaterQuality/enterococci",
+				"escherichiaColi": "https://smartdatamodels.org/dataModel.WaterQuality/escherichiaColi",
+				"id": "@id",
+				"location": "ngsi-ld:location",
+				"measurand": "https://smartdatamodels.org/dataModel.WaterQuality/measurand",
+				"name": "https://smartdatamodels.org/name",
+				"ngsi-ld": "https://uri.etsi.org/ngsi-ld/",
+				"orp": "https://smartdatamodels.org/dataModel.WaterQuality/orp",
+				"owner": "https://smartdatamodels.org/owner",
+				"pH": "https://smartdatamodels.org/dataModel.WaterQuality/pH",
+				"refPointOfInterest": "https://smartdatamodels.org/dataModel.WaterQuality/refPointOfInterest",
+				"salinity": "https://smartdatamodels.org/dataModel.WaterQuality/salinity",
+				"seeAlso": "https://smartdatamodels.org/seeAlso",
+				"source": "https://smartdatamodels.org/source",
+				"tds": "https://smartdatamodels.org/dataModel.WaterQuality/tds",
+				"temperature": "https://smartdatamodels.org/dataModel.WaterQuality/temperature",
+				"tss": "https://smartdatamodels.org/dataModel.WaterQuality/tss",
+				"turbidity": "https://smartdatamodels.org/dataModel.WaterQuality/turbidity",
+				"type": "@type"
+			}
+		}
+	}
+}

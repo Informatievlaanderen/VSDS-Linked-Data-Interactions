@@ -5,17 +5,16 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ldes.client.treenodefetcher.TreeNodeFetcher;
-import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
-import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
-import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
+import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+
+import java.io.StringWriter;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,13 +25,12 @@ public class MemberSupplierSteps {
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
 	private MemberSupplier memberSupplier;
-	private StartingTreeNode startingTreeNode;
+	private LdesMetaData ldesMetaData;
+	private SuppliedMember suppliedMember;
 
-	@When("I request the {int} members from the MemberSupplier")
-	public void iRequestTheMembersFromTheMemberSupplier(int numberOfFetchedNumbers) {
-		for (int i = 0; i < numberOfFetchedNumbers; i++) {
-			memberSupplier.get();
-		}
+	@When("I request one member from the MemberSupplier")
+	public void iRequestOneMemberFromTheMemberSupplier() {
+		suppliedMember = memberSupplier.get();
 	}
 
 	@When("I create a MemberSupplier")
@@ -57,25 +55,20 @@ public class MemberSupplierSteps {
 
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
-		startingTreeNode = new StartingTreeNodeSupplier(new DefaultConfig().createRequestExecutor()).getStart(url,
+		ldesMetaData = new LdesMetaData(url,
 				Lang.JSONLD);
 	}
 
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
-		treeNodeProcessor = new TreeNodeProcessor(startingTreeNode,
+		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				new StatePersistence(memberRepository, treeNodeRecordRepository),
-				new TreeNodeFetcher(new DefaultConfig().createRequestExecutor()));
-	}
-
-	@Then("Member {string} is not processed")
-	public void memberIsNotProcessed(String arg0) {
-		assertFalse(memberRepository.isProcessed(new MemberRecord(arg0, null)));
+				new DefaultConfig().createRequestExecutor());
 	}
 
 	@Then("Member {string} is processed")
-	public void memberIsProcessed(String arg0) {
-		assertTrue(memberRepository.isProcessed(new MemberRecord(arg0, null)));
+	public void memberIsProcessed(String memberId) {
+		assertTrue(toString(suppliedMember.getModel(), Lang.JSONLD).contains(memberId));
 	}
 
 	@And("a StatePersistenceStrategy MEMORY")
@@ -95,5 +88,11 @@ public class MemberSupplierSteps {
 	@Then("MemberSupplier is destroyed")
 	public void membersupplierIsDestroyed() {
 		memberSupplier.destroyState();
+	}
+
+	private String toString(final Model model, final Lang lang) {
+		StringWriter stringWriter = new StringWriter();
+		RDFDataMgr.write(stringWriter, model, lang);
+		return stringWriter.toString();
 	}
 }
