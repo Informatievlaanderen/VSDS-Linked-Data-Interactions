@@ -60,7 +60,7 @@ mappings:
       - [cs:salePrice, $(salePrice), xsd:Double]
 ````
 
-[***mapping.ttl***][mapping]
+[***mapping.ttl***](./ex2/ex2-mapping.ttl)
 
 Let's save the mapping.ttl in our current directory.
 
@@ -108,7 +108,4 @@ Once started, you should be seeing data in your console similar to
     <https://w3id.org/ldes#timestampPath> "2023-06-28T21:31:20.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
     <https://w3id.org/ldes#versionOfPath> <http://www.cheapshark.com/gamedeals/157072> .
 ````
-
-[LDIO Examples]: /ldio/examples
 [Matey]: https://rml.io/yarrrml/matey/#
-[mapping]: /ldio/examples/ex2/mapping.ttl
