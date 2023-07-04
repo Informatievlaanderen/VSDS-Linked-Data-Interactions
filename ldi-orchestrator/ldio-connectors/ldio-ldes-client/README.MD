@@ -4,7 +4,7 @@ This is an LDI Input component that reads an LDES from a server.
 The following configuration is supported:
 
 | Property                  | Description                                                                                   | Required | Default             | Example                       | Supported values                                              |
-|:--------------------------|:----------------------------------------------------------------------------------------------|:---------|:--------------------|:------------------------------|:--------------------------------------------------------------|
+|---------------------------|-----------------------------------------------------------------------------------------------|----------|---------------------|-------------------------------|---------------------------------------------------------------|
 | url                       | The url of the LDES server                                                                    | Yes      | N/A                 | http://localhost:8080/my-ldes | HTTP and HTTPS urls                                           |
 | source-format             | The 'Content-Type' that should be requested to the server.                                    | No       | application/ld+json | application/n-quads           | Any type supported by [Apache Jena](https://jena.apache.org/) |
 | state                     | 'sqlite' or 'memory' to indicate how the state should be persisted.                           | No       | memory              | sqlite                        | 'sqlite' or 'memory'                                          |
@@ -21,7 +21,7 @@ The following configuration is supported:
 
 Example config:
 
-```yaml
+```agsl
 orchestrator:
   input:
     name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient

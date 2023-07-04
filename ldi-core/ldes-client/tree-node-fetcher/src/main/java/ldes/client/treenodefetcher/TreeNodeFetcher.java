@@ -1,7 +1,7 @@
 package ldes.client.treenodefetcher;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import ldes.client.treenodefetcher.domain.valueobjects.ModelResponse;
 import ldes.client.treenodefetcher.domain.valueobjects.MutabilityStatus;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;

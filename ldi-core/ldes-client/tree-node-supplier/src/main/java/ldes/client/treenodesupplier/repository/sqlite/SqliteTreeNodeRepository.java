@@ -54,11 +54,4 @@ public class SqliteTreeNodeRepository implements TreeNodeRecordRepository {
 		entityManagerFactory.destroyState();
 	}
 
-	@Override
-	public boolean containsTreeNodeRecords() {
-		return entityManager
-				.createNamedQuery("TreeNode.count", Long.class)
-				.getSingleResult() > 0;
-	}
-
 }

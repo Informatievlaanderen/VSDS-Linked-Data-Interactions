@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -14,9 +13,8 @@ public class ComponentProperties {
 		this(Map.of());
 	}
 
-	public ComponentProperties(Map<String, String> inputConfig) {
-		this.config = new HashMap<>();
-		inputConfig.forEach((key, value) -> this.config.put(removeCasing(key), value));
+	public ComponentProperties(Map<String, String> config) {
+		this.config = config;
 	}
 
 	public Map<String, String> getConfig() {
@@ -24,8 +22,7 @@ public class ComponentProperties {
 	}
 
 	public String getProperty(String key) {
-		String caseInsensitiveKey = removeCasing(key);
-		String value = config.get(caseInsensitiveKey);
+		String value = config.get(key);
 		if (value == null) {
 			throw new IllegalArgumentException("Missing value for key " + key);
 		}
@@ -33,7 +30,7 @@ public class ComponentProperties {
 	}
 
 	public Optional<String> getOptionalProperty(String key) {
-		return Optional.ofNullable(config.get(removeCasing(key)));
+		return Optional.ofNullable(config.get(key));
 	}
 
 	public Optional<Boolean> getOptionalBoolean(String key) {
@@ -72,12 +69,5 @@ public class ComponentProperties {
 		} catch (IOException ioe) {
 			throw new IllegalArgumentException("Unreadable file: " + file);
 		}
-	}
-
-	private String removeCasing(String key) {
-		return key
-				.toLowerCase()
-				.replace("-", "")
-				.replace("_", "");
 	}
 }

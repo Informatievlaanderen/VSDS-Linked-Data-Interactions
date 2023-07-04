@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.DeserializationFromJsonException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.InvalidNgsiLdContextException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
@@ -27,11 +28,11 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 
 	public NgsiV2ToLdAdapter(String dataIdentifier, String coreContext, String ldContext) {
 		if (dataIdentifier == null) {
-			throw new IllegalArgumentException("Can't identify data with the data array key");
+			throw new InvalidNgsiLdContextException("Can't identify data with the data array key");
 		}
 
 		if (coreContext == null) {
-			throw new IllegalArgumentException("Core context can't be null");
+			throw new InvalidNgsiLdContextException("Core context can't be null");
 		}
 		this.dataIdentifier = dataIdentifier;
 		this.coreContext = coreContext;

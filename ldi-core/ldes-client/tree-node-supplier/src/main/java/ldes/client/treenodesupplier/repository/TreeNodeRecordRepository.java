@@ -16,5 +16,4 @@ public interface TreeNodeRecordRepository {
 
 	void destroyState();
 
-	boolean containsTreeNodeRecords();
 }

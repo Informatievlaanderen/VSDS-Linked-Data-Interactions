@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noa
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import org.apache.http.message.BasicHeader;
 
 import java.util.List;
