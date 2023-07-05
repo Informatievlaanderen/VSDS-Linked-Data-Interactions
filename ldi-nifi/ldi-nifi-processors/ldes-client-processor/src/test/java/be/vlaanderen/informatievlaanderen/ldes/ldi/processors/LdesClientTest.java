@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.nifi.util.MockFlowFile;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
@@ -16,9 +18,6 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -54,6 +53,23 @@ class LdesClientTest {
 		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
 
 		assertEquals(numberOfRuns, dataFlowfiles.size());
+	}
+
+	@Test
+	void shouldSupportRedirectLogic() {
+		testRunner.setProperty("AUTHORIZATION_STRATEGY", "NO_AUTH");
+		testRunner.setProperty("DATA_SOURCE_URL", "http://localhost:10101/200-response-with-indirect-url");
+		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+		testRunner.setProperty("STREAM_TIMESTAMP_PATH_PROPERTY", Boolean.FALSE.toString());
+		testRunner.setProperty("STREAM_VERSION_OF_PROPERTY", Boolean.FALSE.toString());
+		testRunner.setProperty("DATA_SOURCE_FORMAT", "application/ld+json");
+
+		testRunner.run();
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(1, dataFlowfiles.size());
 	}
 
 	@ParameterizedTest

@@ -2,14 +2,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.riot.RDFParser;
 
 import java.util.Optional;
 
@@ -40,14 +36,8 @@ public class LdesPropertiesExtractor {
 			boolean needShape) {
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor)
 				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
-		TreeNodeRequest request = startingTreeNode.createRequest(startingTreeNode.getStartingNodeUrl());
-		Request httpRequest = request.createRequest();
-		Response response = requestExecutor.execute(httpRequest);
-		Model model = RDFParser
-				.fromString(response.getBody().orElseThrow())
-				.lang(request.getLang())
-				.build()
-				.toModel();
+		Model model = startingTreeNode.getResponseModel();
+
 		String timestampPath = getResource(needTimestampPath, getResource(model), LDES_TIMESTAMP_PATH);
 		String versionOfPath = getResource(needVersionOfPath, getVersionOfPath(model), LDES_VERSION_OF);
 		String shape = getResource(needShape, getShaclShape(model), TREE_SHAPE);

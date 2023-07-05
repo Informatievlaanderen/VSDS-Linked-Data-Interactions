@@ -16,9 +16,9 @@ public class StartingTreeNodeSupplier {
 	}
 
 	public StartingTreeNode getStart(String url, Lang lang) {
-		StartingTreeNodeFinder startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
-		ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode startingTreeNode = startingTreeNodeFinder
-				.determineStartingTreeNode(new StartingNodeRequest(url, lang, new RedirectHistory()));
-		return new StartingTreeNode(startingTreeNode.getUrl(), lang);
+		var startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutor);
+		var startingNodeRequest = new StartingNodeRequest(url, lang, new RedirectHistory());
+		var startingTreeNode = startingTreeNodeFinder.determineStartingTreeNode(startingNodeRequest);
+		return new StartingTreeNode(startingTreeNode.getUrl(), lang, startingTreeNode.getResponseModel());
 	}
 }

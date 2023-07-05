@@ -1,0 +1,211 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/200-response-with-indirect-url"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody":
+    [
+      {
+        "@context": {
+          "tree": "https://w3id.org/tree#",
+          "tree:node": {
+            "@type": "@id"
+          }
+        },
+        "@id": "http://localhost:10101/feed?page=2023",
+        "@type": "tree:Node",
+        "tree:relation": [
+          {
+            "tree:node": "http://localhost:10101/feed?page=2024"
+          }
+        ]
+      },
+      {
+        "@context": {
+          "tree": "https://w3id.org/tree#",
+          "ldes": "https://w3id.org/ldes#",
+          "ldes:versionKey": {
+            "@type": "@id",
+            "@container": "@list"
+          },
+          "dc": "http://purl.org/dc/terms/",
+          "dc:isVersionOf": {
+            "@type": "@id"
+          },
+          "dc:modified": {
+            "@type": "xsd:dateTime"
+          },
+          "xsd": "http://www.w3.org/2001/XMLSchema#",
+          "sh": "http://www.w3.org/ns/shacl#",
+          "schema": "https://schema.org/",
+          "skos": "http://www.w3.org/2004/02/skos/core#",
+          "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+          "mloc": "http://localhost:10101/ns/ontology#",
+          "gsp": "http://www.opengis.net/ont/geosparql#",
+          "dcat": "http://www.w3.org/ns/dcat#"
+        },
+        "@id": "http://localhost:10101/feed",
+        "@type": "ldes:EventStream",
+        "tree:view": {
+          "@id": "http://localhost:10101/feed?page=2023",
+          "ldes:retentionPolicy": {
+            "@type": "ldes:LatestVersionSubset",
+            "ldes:amount": 1,
+            "ldes:versionKey": [
+              "dc:isVersionOf"
+            ]
+          }
+        },
+        "tree:shape": {
+          "@type": "sh:NodeShape",
+          "sh:targetClass": {
+            "@id": "mloc:MLOCObject"
+          },
+          "sh:nodeKind": {
+            "@id": "sh:IRI"
+          },
+          "sh:property": [
+            {
+              "sh:path": {
+                "@id": "dc:modified"
+              },
+              "sh:minCount": 1,
+              "sh:datatype": {
+                "@id": "xsd:dateTime"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "dc:isVersionOf"
+              },
+              "sh:minCount": 1,
+              "sh:nodeKind": {
+                "@id": "sh:IRI"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "skos:note"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "skos:historyNote"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "dcat:centroid"
+              },
+              "sh:minCount": 1,
+              "sh:maxCount": 1,
+              "sh:datatype": {
+                "@id": "gsp:wktLiteral"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "dcat:bbox"
+              },
+              "sh:minCount": 0,
+              "sh:maxCount": 1,
+              "sh:datatype": {
+                "@id": "gsp:wktLiteral"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "mloc:hasGeometry"
+              },
+              "sh:minCount": 0,
+              "sh:nodekind": {
+                "@id": "sh:IRI"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "skos:exactMatch"
+              },
+              "sh:minCount": 0,
+              "sh:node": {
+                "@type": "sh:NodeShape",
+                "sh:nodeKind": {
+                  "@id": "sh:IRI"
+                },
+                "sh:property": [
+                  {
+                    "sh:path": {
+                      "@id": "schema:identifier"
+                    },
+                    "sh:class": {
+                      "@id": "schema:PropertyValue"
+                    },
+                    "sh:minCount": 1,
+                    "sh:maxCount": 1
+                  },
+                  {
+                    "sh:path": {
+                      "@id": "schema:url"
+                    },
+                    "sh:nodeKind": {
+                      "@id": "sh:IRI"
+                    },
+                    "sh:minCount": 1,
+                    "sh:maxCount": 1
+                  }
+                ]
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "skos:prefLabel"
+              },
+              "sh:minCount": 1,
+              "sh:datatype": {
+                "@id": "rdf:langString"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "skos:altLabel"
+              },
+              "sh:minCount": 0,
+              "sh:datatype": {
+                "@id": "rdf:langString"
+              }
+            },
+            {
+              "sh:path": {
+                "@id": "mloc:isRelatedTo"
+              },
+              "sh:minCount": 0,
+              "sh:class": {
+                "@id": "mloc:MLOCObject"
+              },
+              "sh:nodeKind": {
+                "@id": "sh:IRI"
+              }
+            }
+          ]
+        },
+        "tree:member": [
+          {
+            "@id": "http://localhost:10101/mlocgid/2196?t=1687265850",
+            "dc:isVersionOf": "http://localhost:10101/mlocgid/2196",
+            "dc:modified": "2023-06-20T12:57:30Z"
+          },
+          {
+            "@id": "http://localhost:10101/mlocgid/64267?t=1687265850",
+            "dc:isVersionOf": "http://localhost:10101/mlocgid/64267",
+            "dc:modified": "2023-06-20T12:57:30Z"
+          }
+        ]
+      }
+    ],
+    "headers": {
+      "Location": "http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z"
+    }
+  }
+}
