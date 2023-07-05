@@ -1,6 +1,5 @@
 package ldes.client.treenodesupplier.domain.valueobject;
 
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import org.apache.jena.riot.Lang;
 
 public class StartingTreeNode {

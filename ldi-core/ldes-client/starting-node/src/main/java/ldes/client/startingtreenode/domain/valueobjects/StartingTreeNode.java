@@ -1,7 +1,5 @@
 package ldes.client.startingtreenode.domain.valueobjects;
 
-import org.apache.jena.rdf.model.Model;
-
 /**
  * Contains the rootNode endpoint information to start the client.
  */
