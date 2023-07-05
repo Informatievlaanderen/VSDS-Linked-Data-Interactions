@@ -8,8 +8,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import ldes.client.startingtreenode.domain.valueobjects.StartingNodeRequest;
 import ldes.client.startingtreenode.exception.StartingNodeNotFoundException;
 import org.apache.http.HttpHeaders;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.RDFParser;
 
 import java.util.List;
 
@@ -21,13 +19,9 @@ public class RedirectRequestExecutor {
 		this.requestExecutor = requestExecutor;
 	}
 
-	// TODO: 05/07/23 docs and test
 	/**
-	 * Determines the first node to be queued.
-	 *
-	 * @param startingNodeRequest
-	 *            can contain a collection, view or treeNode.
-	 * @return the first node to be queued by the client
+	 * Executes the request. Will follow redirects until a success response is
+	 * obtained.
 	 */
 	public Response execute(final StartingNodeRequest startingNodeRequest) {
 		RequestHeaders requestHeaders = new RequestHeaders(

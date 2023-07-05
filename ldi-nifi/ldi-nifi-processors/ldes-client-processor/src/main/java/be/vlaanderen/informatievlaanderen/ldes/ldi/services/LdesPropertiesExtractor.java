@@ -43,23 +43,27 @@ public class LdesPropertiesExtractor {
 		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor)
 				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
 
-		String startingNodeUrl = startingTreeNode.getStartingNodeUrl();
-		Lang lang = startingTreeNode.getLang();
-
-		RedirectRequestExecutor redirectRequestExecutor = new RedirectRequestExecutor(requestExecutor);
-		Response response = redirectRequestExecutor
-				.execute(new StartingNodeRequest(startingNodeUrl, lang, new RedirectHistory()));
-
-		Model model = RDFParser
-				.fromString(response.getBody().orElseThrow())
-				.lang(lang)
-				.build()
-				.toModel();
+		Model model = getModelFromStartingTreeNode(startingTreeNode);
 
 		String timestampPath = getResource(needTimestampPath, getResource(model), LDES_TIMESTAMP_PATH);
 		String versionOfPath = getResource(needVersionOfPath, getVersionOfPath(model), LDES_VERSION_OF);
 		String shape = getResource(needShape, getShaclShape(model), TREE_SHAPE);
 		return new LdesProperties(timestampPath, versionOfPath, shape);
+	}
+
+	private Model getModelFromStartingTreeNode(StartingTreeNode startingTreeNode) {
+		final String startingNodeUrl = startingTreeNode.getStartingNodeUrl();
+		final Lang lang = startingTreeNode.getLang();
+
+		RedirectRequestExecutor redirectRequestExecutor = new RedirectRequestExecutor(requestExecutor);
+		Response response = redirectRequestExecutor
+				.execute(new StartingNodeRequest(startingNodeUrl, lang, new RedirectHistory()));
+
+		return RDFParser
+				.fromString(response.getBody().orElseThrow())
+				.lang(lang)
+				.build()
+				.toModel();
 	}
 
 	private String getResource(boolean resourceNeeded, Optional<String> resource, Property property) {
