@@ -29,7 +29,7 @@ public class TreeNodeSpecification implements StartingNodeSpecification {
 	public StartingTreeNode extractStartingNode(Model model) {
 		return getTreeNode(model)
 				.map(Resource::getURI)
-				.map(url -> new StartingTreeNode(url, model))
+				.map(StartingTreeNode::new)
 				.orElseThrow(() -> new RuntimeException("No Node found"));
 	}
 }

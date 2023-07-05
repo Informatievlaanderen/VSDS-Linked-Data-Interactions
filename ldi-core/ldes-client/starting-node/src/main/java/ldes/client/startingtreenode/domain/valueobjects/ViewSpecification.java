@@ -23,7 +23,7 @@ public class ViewSpecification implements StartingNodeSpecification {
 	public StartingTreeNode extractStartingNode(Model model) {
 		return model.listObjectsOfProperty(TREE_VIEW).nextOptional().map(RDFNode::asResource)
 				.map(Resource::getURI)
-				.map(url -> new StartingTreeNode(url, model))
+				.map(StartingTreeNode::new)
 				.orElseThrow(() -> new RuntimeException("No view found"));
 	}
 }

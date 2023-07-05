@@ -7,19 +7,13 @@ import org.apache.jena.rdf.model.Model;
  */
 public class StartingTreeNode {
 	private final String url;
-	private final Model responseModel;
 
-	public StartingTreeNode(String url, Model responseModel) {
+	public StartingTreeNode(String url) {
 		this.url = url;
-		this.responseModel = responseModel;
 	}
 
 	public String getUrl() {
 		return url;
-	}
-
-	public Model getResponseModel() {
-		return responseModel;
 	}
 
 }
