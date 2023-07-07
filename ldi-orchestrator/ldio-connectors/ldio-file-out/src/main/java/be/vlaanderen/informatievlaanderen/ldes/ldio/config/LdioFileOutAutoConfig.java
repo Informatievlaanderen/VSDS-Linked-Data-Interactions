@@ -16,7 +16,7 @@ public class LdioFileOutAutoConfig {
                 // TODO: 07/07/23 get path from properties
                 String basePath = "/home/tom/IdeaProjects/VSDS-Linked-Data-Interactions/ldi-orchestrator/ldio-connectors/ldio-file-out/archive";
 
-                return new LdioFileOut(null);
+                return new LdioFileOut(null, directoryManager, timestampExtractor);
 //                return new LdioFileOut(removeTrailingSlash(basePath), null, null);
             }
 

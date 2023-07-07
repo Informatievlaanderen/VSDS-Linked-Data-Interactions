@@ -7,14 +7,13 @@ import org.apache.jena.riot.RDFParser;
 import java.io.IOException;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
-import static org.junit.jupiter.api.Assertions.*;
 
 class LdioFileOutTest {
 
     public static void main(String[] args) throws IOException {
 
-        MemberFileArchiver archiver = new MemberFileArchiver(new LocalDateTimeConverter(),
-                "/home/tom/IdeaProjects/VSDS-Linked-Data-Interactions/ldi-orchestrator/ldio-connectors/ldio-file-out",
+        FileNameManager archiver = new FileNameManager(new LocalDateTimeConverter(),
+                "/home/tom/IdeaProjects/VSDS-Linked-Data-Interactions/ldi-orchestrator/ldio-connectors/ldio-file-out/archive",
                 createProperty("http://www.w3.org/ns/prov#generatedAtTime"));
 
         String model = """
@@ -58,7 +57,7 @@ class LdioFileOutTest {
 
         Model model1 = RDFParser.fromString(model).lang(Lang.NQUADS).build().toModel();
 
-        new LdioFileOut(archiver).accept(model1);
+        new LdioFileOut(archiver, directoryManager, timestampExtractor).accept(model1);
 
 
 //        String str = "Hello v2";
