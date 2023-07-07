@@ -6,9 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import ldes.client.startingtreenode.RedirectRequestExecutor;
 import ldes.client.startingtreenode.domain.valueobjects.RedirectHistory;
 import ldes.client.startingtreenode.domain.valueobjects.StartingNodeRequest;
-import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
-import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -40,10 +38,8 @@ public class LdesPropertiesExtractor {
 	public LdesProperties getLdesProperties(LdesMetaData ldesMetaData, boolean needTimestampPath,
 			boolean needVersionOfPath,
 			boolean needShape) {
-		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor)
-				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
 
-		Model model = getModelFromStartingTreeNode(startingTreeNode);
+		Model model = getModelFromStartingTreeNode(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
 
 		String timestampPath = getResource(needTimestampPath, getResource(model), LDES_TIMESTAMP_PATH);
 		String versionOfPath = getResource(needVersionOfPath, getVersionOfPath(model), LDES_VERSION_OF);
@@ -51,13 +47,10 @@ public class LdesPropertiesExtractor {
 		return new LdesProperties(timestampPath, versionOfPath, shape);
 	}
 
-	private Model getModelFromStartingTreeNode(StartingTreeNode startingTreeNode) {
-		final String startingNodeUrl = startingTreeNode.getStartingNodeUrl();
-		final Lang lang = startingTreeNode.getLang();
-
+	private Model getModelFromStartingTreeNode(String url, Lang lang) {
 		RedirectRequestExecutor redirectRequestExecutor = new RedirectRequestExecutor(requestExecutor);
 		Response response = redirectRequestExecutor
-				.execute(new StartingNodeRequest(startingNodeUrl, lang, new RedirectHistory()));
+				.execute(new StartingNodeRequest(url, lang, new RedirectHistory()));
 
 		return RDFParser
 				.fromString(response.getBody().orElseThrow())
