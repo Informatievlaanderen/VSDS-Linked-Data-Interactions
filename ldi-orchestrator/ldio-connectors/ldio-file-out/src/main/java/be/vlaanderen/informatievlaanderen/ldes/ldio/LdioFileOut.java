@@ -5,26 +5,20 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;
 
-import java.time.LocalDateTime;
-
 public class LdioFileOut implements LdiOutput {
 
-    private final FileNameManager fileNameManager;
-    private final DirectoryManager directoryManager;
     private final TimestampExtractor timestampExtractor;
+    private final String archiveRootDir;
 
-    public LdioFileOut(FileNameManager fileNameManager, DirectoryManager directoryManager, TimestampExtractor timestampExtractor) {
-        this.fileNameManager = fileNameManager;
-        this.directoryManager = directoryManager;
+    public LdioFileOut(TimestampExtractor timestampExtractor, String archiveRootDir) {
         this.timestampExtractor = timestampExtractor;
+        this.archiveRootDir = archiveRootDir;
     }
 
     @Override
     public void accept(Model model) {
-        LocalDateTime timestamp = timestampExtractor.extractTimestamp(model);
-        String directoryPath = directoryManager.createDirectoryForArchiving(timestamp);
-        String filePath = fileNameManager.createFilePath(timestamp, directoryPath);
-        RDFWriter.source(model).lang(Lang.NQUADS).output(filePath);
+        ArchiveFile archiveFile = new ArchiveFile(model, timestampExtractor);
+        RDFWriter.source(model).lang(Lang.NQUADS).output(archiveFile.getPath(archiveRootDir));
     }
 
 }

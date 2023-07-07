@@ -6,9 +6,17 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 // TODO: 07/07/23 test
-public class FileNameManager {
+public class FileName {
 
     private static final DateTimeFormatter fileNameFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSSSSS");
+
+    private final LocalDateTime timestamp;
+    private final ArchiveDirectory archiveDirectory;
+
+    public FileName(LocalDateTime timestamp, ArchiveDirectory archiveDirectory) {
+        this.timestamp = timestamp;
+        this.archiveDirectory = archiveDirectory;
+    }
 
     /**
      * Filenames need to be unique.
@@ -24,23 +32,23 @@ public class FileNameManager {
      * base-path/2023-12-12-05-05-00-000000000-2.nq
      *
      */
-    public String createFilePath(LocalDateTime timestamp, String basePath) {
-        String fileName = timestamp.format(fileNameFormatter);
+    public String getFilePath() {
+        String basePath = archiveDirectory.getDirectory();
+        String fileName = basePath + "/" + timestamp.format(fileNameFormatter);
 
-        String filePathString = basePath + "/" + fileName + ".nq";
+        String filePathString = fileName + ".nq";
         if (!Files.isReadable(Paths.get(filePathString))) {
             return filePathString;
         }
 
         int count = 1;
-        while (Files.isReadable(Paths.get(filePathFrom(basePath, fileName, count)))) {
+        while (Files.isReadable(Paths.get(filePathFrom(fileName, count)))) {
             count++;
         }
-        return filePathFrom(basePath, fileName, count);
+        return filePathFrom(fileName, count);
     }
 
-    private String filePathFrom(String basePath, String fileName, int count) {
-        return basePath + "/" + fileName + "-" + count + ".nq";
+    private String filePathFrom(String fileName, int count) {
+        return fileName + "-" + count + ".nq";
     }
-
 }

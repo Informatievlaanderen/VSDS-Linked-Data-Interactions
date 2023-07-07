@@ -12,7 +12,7 @@ class LdioFileOutTest {
 
     public static void main(String[] args) throws IOException {
 
-        FileNameManager archiver = new FileNameManager(new LocalDateTimeConverter(),
+        FileName archiver = new FileName(new LocalDateTimeConverter(),
                 "/home/tom/IdeaProjects/VSDS-Linked-Data-Interactions/ldi-orchestrator/ldio-connectors/ldio-file-out/archive",
                 createProperty("http://www.w3.org/ns/prov#generatedAtTime"));
 
@@ -57,7 +57,7 @@ class LdioFileOutTest {
 
         Model model1 = RDFParser.fromString(model).lang(Lang.NQUADS).build().toModel();
 
-        new LdioFileOut(archiver, directoryManager, timestampExtractor).accept(model1);
+        new LdioFileOut(archiver, directoryManager, timestampExtractor, basePath).accept(model1);
 
 
 //        String str = "Hello v2";
