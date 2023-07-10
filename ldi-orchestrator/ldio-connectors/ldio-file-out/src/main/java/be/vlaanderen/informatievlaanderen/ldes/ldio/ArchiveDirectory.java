@@ -12,7 +12,6 @@ public class ArchiveDirectory {
 		this.memberTimestamp = memberTimestamp;
 	}
 
-	// TODO: 07/07/23 test
 	/**
 	 * Returns the directory where the file should be archived.
 	 * This is based on the timestamp and archiveRootDir.
@@ -23,7 +22,7 @@ public class ArchiveDirectory {
 	 * Will Return: /archive/2023/02/15
 	 */
 	public String getDirectory() {
-		return "%s/%s/%s/%s/".formatted(archiveRootDir, memberTimestamp.getYear(), memberTimestamp.getMonth(),
+		return "%s/%s/%s/%s/".formatted(archiveRootDir, memberTimestamp.getYear(), memberTimestamp.getMonthValue(),
 				memberTimestamp.getDayOfMonth());
 	}
 
