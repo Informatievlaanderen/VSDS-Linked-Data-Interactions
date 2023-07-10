@@ -2,21 +2,36 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import org.apache.jena.rdf.model.Model;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 public class ArchiveFile {
 
-    private final Model model;
-    private final TimestampExtractor timestampExtractor;
+    private final FileName fileName;
+    private final ArchiveDirectory archiveDirectory;
 
-    public ArchiveFile(Model model, TimestampExtractor timestampExtractor) {
-        this.model = model;
-        this.timestampExtractor = timestampExtractor;
+    private ArchiveFile(FileName fileName, ArchiveDirectory archiveDirectory) {
+        this.fileName = fileName;
+        this.archiveDirectory = archiveDirectory;
+    }
+
+    // TODO: 10/07/23 test
+    /**
+     * Creates a new ArchiveFile
+     * @param model to be archived
+     * @param timestampExtractor extractor to obtain timestamp from model
+     * @param archiveRootDir root directory of archive
+     * @return new instance of ArchiveFile
+     */
+    public static ArchiveFile from(Model model, TimestampExtractor timestampExtractor, String archiveRootDir) {
+        LocalDateTime timestamp = timestampExtractor.extractTimestamp(model);
+        ArchiveDirectory directory = new ArchiveDirectory(archiveRootDir, timestamp);
+        return new ArchiveFile(new FileName(timestamp, directory), directory);
     }
 
     /**
      * Returns the path of the archive file based on the timestamp property of the model
-     * @param rootDir root directory where the archive is located
      * @return the full path of the archive file
      * <p>
      *     example:
@@ -24,10 +39,13 @@ public class ArchiveFile {
      * </p>
      */
     // TODO: 07/07/23 test
-    public String getPath(String rootDir) {
-        LocalDateTime timestamp = timestampExtractor.extractTimestamp(model);
-        ArchiveDirectory archiveDirectory = new ArchiveDirectory(rootDir, timestamp);
-        return new FileName(timestamp, archiveDirectory).getFilePath();
+    public String getPath() {
+        return fileName.getFilePath();
+    }
+
+    // TODO: 10/07/23 test
+    public Path getDirectoryPath() {
+        return Paths.get(archiveDirectory.getDirectory());
     }
 
 }

@@ -4,22 +4,26 @@ import java.time.LocalDateTime;
 
 public class ArchiveDirectory {
 
-    private final String basePath;
+    private final String archiveRootDir;
     private final LocalDateTime memberTimestamp;
 
-    public ArchiveDirectory(String basePath, LocalDateTime memberTimestamp) {
-        this.basePath = basePath;
+    public ArchiveDirectory(String archiveRootDir, LocalDateTime memberTimestamp) {
+        this.archiveRootDir = archiveRootDir;
         this.memberTimestamp = memberTimestamp;
     }
 
     // TODO: 07/07/23 test
-    // TODO: 07/07/23 javadoc
+    /**
+     * Returns the directory where the file should be archived.
+     * This is based on the timestamp and archiveRootDir.
+     * Example:
+     * - With archiveRootDir = /archive
+     * - With timestamp = 15 feb 2023 11:00:00
+     * <p>
+     * Will Return: /archive/2023/02/15
+     */
     public String getDirectory() {
-        // TODO: 07/07/23 implement
-        // TODO: 07/07/23 create new dir when necessary
-        https://stackoverflow.com/questions/28947250/create-a-directory-if-it-does-not-exist-and-then-create-the-files-in-that-direct
-//        Files.createDirectories(Paths.get("/Your/Path/Here"));
-        return "%s/%s/%s/%s/".formatted(basePath, memberTimestamp.getYear(), memberTimestamp.getMonth(), memberTimestamp.getDayOfMonth());
+        return "%s/%s/%s/%s/".formatted(archiveRootDir, memberTimestamp.getYear(), memberTimestamp.getMonth(), memberTimestamp.getDayOfMonth());
     }
 
 }
