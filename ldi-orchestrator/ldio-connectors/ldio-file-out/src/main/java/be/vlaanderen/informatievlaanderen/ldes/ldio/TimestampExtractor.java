@@ -14,30 +14,30 @@ import java.util.TimeZone;
 
 public class TimestampExtractor {
 
-    private final Property timestampPath;
+	private final Property timestampPath;
 
-    public TimestampExtractor(Property timestampPath) {
-        this.timestampPath = timestampPath;
-    }
+	public TimestampExtractor(Property timestampPath) {
+		this.timestampPath = timestampPath;
+	}
 
-    public LocalDateTime extractTimestamp(Model model) {
-        var timestamp = model
-                .listObjectsOfProperty(timestampPath)
-                .filterDrop(node -> !node.isLiteral())
-                .mapWith(RDFNode::asLiteral)
-                .nextOptional()
-                .orElseThrow(() -> new IllegalArgumentException("No timestamp as literal found on member"));
+	public LocalDateTime extractTimestamp(Model model) {
+		var timestamp = model
+				.listObjectsOfProperty(timestampPath)
+				.filterDrop(node -> !node.isLiteral())
+				.mapWith(RDFNode::asLiteral)
+				.nextOptional()
+				.orElseThrow(() -> new IllegalArgumentException("No timestamp as literal found on member"));
 
-        return getLocalDateTime(timestamp);
-    }
+		return getLocalDateTime(timestamp);
+	}
 
-    private LocalDateTime getLocalDateTime(Literal timestamp) {
-        RDFDatatype datatype = timestamp.getDatatype();
-        XSDDateTime parse = (XSDDateTime) datatype.parse(timestamp.getValue().toString());
-        Calendar calendar = parse.asCalendar();
-        TimeZone tz = calendar.getTimeZone();
-        ZoneId zoneId = tz.toZoneId();
-        return LocalDateTime.ofInstant(calendar.toInstant(), zoneId);
-    }
+	private LocalDateTime getLocalDateTime(Literal timestamp) {
+		RDFDatatype datatype = timestamp.getDatatype();
+		XSDDateTime parse = (XSDDateTime) datatype.parse(timestamp.getValue().toString());
+		Calendar calendar = parse.asCalendar();
+		TimeZone tz = calendar.getTimeZone();
+		ZoneId zoneId = tz.toZoneId();
+		return LocalDateTime.ofInstant(calendar.toInstant(), zoneId);
+	}
 
 }

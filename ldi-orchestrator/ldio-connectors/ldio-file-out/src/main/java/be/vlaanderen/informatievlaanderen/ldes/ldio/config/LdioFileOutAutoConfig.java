@@ -12,21 +12,20 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class LdioFileOutAutoConfig {
 
-    @Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut")
-    public LdioConfigurator ldiHttpOutConfigurator() {
-        return new LdioConfigurator() {
-            @Override
-            public LdiComponent configure(ComponentProperties properties) {
-                String archiveDirectory = properties.getProperty("archive-root-dir");
-                Property timestampPath = createProperty(properties.getProperty("timestamp-path"));
-                return new LdioFileOut(new TimestampExtractor(timestampPath), removeTrailingSlash(archiveDirectory));
-            }
+	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut")
+	public LdioConfigurator ldiHttpOutConfigurator() {
+		return new LdioConfigurator() {
+			@Override
+			public LdiComponent configure(ComponentProperties properties) {
+				String archiveDirectory = properties.getProperty("archive-root-dir");
+				Property timestampPath = createProperty(properties.getProperty("timestamp-path"));
+				return new LdioFileOut(new TimestampExtractor(timestampPath), removeTrailingSlash(archiveDirectory));
+			}
 
-            private String removeTrailingSlash(String path) {
-                return path.replaceAll("/$", "");
-            }
-        };
-    }
-
+			private String removeTrailingSlash(String path) {
+				return path.replaceAll("/$", "");
+			}
+		};
+	}
 
 }
