@@ -17,11 +17,9 @@ public class LdioFileOutAutoConfig {
         return new LdioConfigurator() {
             @Override
             public LdiComponent configure(ComponentProperties properties) {
-                // TODO: 07/07/23 get path from properties
-                String basePath = "/home/tom/IdeaProjects/VSDS-Linked-Data-Interactions/ldi-orchestrator/ldio-connectors/ldio-file-out/archive";
-                Property timestampPath = createProperty("");
-
-                return new LdioFileOut(new TimestampExtractor(timestampPath), removeTrailingSlash(basePath));
+                String archiveDirectory = properties.getProperty("archive-root-dir");
+                Property timestampPath = createProperty(properties.getProperty("timestamp-path"));
+                return new LdioFileOut(new TimestampExtractor(timestampPath), removeTrailingSlash(archiveDirectory));
             }
 
             private String removeTrailingSlash(String path) {
