@@ -5,7 +5,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-// TODO: 07/07/23 test
 public class FileName {
 
 	private static final DateTimeFormatter fileNameFormatter = DateTimeFormatter

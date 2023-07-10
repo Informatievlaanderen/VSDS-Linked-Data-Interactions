@@ -11,7 +11,7 @@ public class ArchiveFile {
 	private final FileName fileName;
 	private final ArchiveDirectory archiveDirectory;
 
-	private ArchiveFile(FileName fileName, ArchiveDirectory archiveDirectory) {
+	public ArchiveFile(FileName fileName, ArchiveDirectory archiveDirectory) {
 		this.fileName = fileName;
 		this.archiveDirectory = archiveDirectory;
 	}
@@ -43,12 +43,10 @@ public class ArchiveFile {
 	 *         my-archive/2023/11/21/2023-11-21-05-05-00-000000000-2.nq
 	 *         </p>
 	 */
-	// TODO: 07/07/23 test
 	public String getFilePath() {
 		return fileName.getFilePath();
 	}
 
-	// TODO: 10/07/23 test
 	public Path getDirectoryPath() {
 		return Paths.get(archiveDirectory.getDirectory());
 	}
