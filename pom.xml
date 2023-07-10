@@ -17,7 +17,6 @@
         <module>ldi-core</module>
         <module>ldi-orchestrator</module>
         <module>ldi-nifi</module>
-        <module>ldi-orchestrator/ldio-connectors/ldio-file-out</module>
     </modules>
 
     <developers>

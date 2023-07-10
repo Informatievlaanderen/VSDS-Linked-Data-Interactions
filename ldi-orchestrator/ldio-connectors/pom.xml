@@ -30,6 +30,8 @@
         <module>ldio-kafka</module>
         <module>ldio-rml-adapter</module>
         <module>ldio-azure-blob-out</module>
+        <module>ldio-file-out</module>
+
     </modules>
 
     <properties>
