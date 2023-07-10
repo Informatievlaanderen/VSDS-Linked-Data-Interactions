@@ -8,6 +8,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 
@@ -28,12 +29,12 @@ public class FileOutIntegrationTestSteps {
 
 	@Given("I an empty archive-dir {string}")
 	public void iAnEmptyArchiveDir(String dir) throws IOException {
-		archiveRootDir = dir;
+		archiveRootDir = FilenameUtils.separatorsToSystem(dir);
 		FileUtils.deleteDirectory(new File(archiveRootDir));
 	}
 
 	@And("I create a file-out-component with the archive-dir and timestampPath {string}")
-	public void iCreateAFileOutComponentWithArchiveDirAndTimestampPath(String path) throws IOException {
+	public void iCreateAFileOutComponentWithArchiveDirAndTimestampPath(String path) {
 		var props = new ComponentProperties(Map.of(ARCHIVE_ROOT_DIR_PROP, archiveRootDir, TIMESTAMP_PATH_PROP, path));
 		ldiFileOut = (LdiOutput) new LdioFileOutAutoConfig().ldiFileOutConfigurator().configure(props);
 	}
@@ -55,13 +56,13 @@ public class FileOutIntegrationTestSteps {
 
 	@Then("The model is written to {string}")
 	public void theModelIsWrittenTo(String expectedFilePath) {
-		Model actualModel = RDFParser.source(expectedFilePath).toModel();
+		Model actualModel = RDFParser.source(FilenameUtils.separatorsToSystem(expectedFilePath)).toModel();
 		assertTrue(model.isIsomorphicWith(actualModel));
 	}
 
 	@Then("The other model is written to {string}")
 	public void theOtherModelIsWrittenTo(String expectedFilePath) {
-		Model actualModel = RDFParser.source(expectedFilePath).toModel();
+		Model actualModel = RDFParser.source(FilenameUtils.separatorsToSystem(expectedFilePath)).toModel();
 		assertTrue(otherModel.isIsomorphicWith(actualModel));
 	}
 }

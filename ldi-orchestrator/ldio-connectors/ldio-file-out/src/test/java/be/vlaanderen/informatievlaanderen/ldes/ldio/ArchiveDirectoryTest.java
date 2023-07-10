@@ -1,10 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ArchiveDirectoryTest {
 
@@ -14,6 +15,6 @@ class ArchiveDirectoryTest {
 
 		String result = archiveDirectory.getDirectory();
 
-		assertEquals("archive/2023/7/6/", result);
+		assertEquals(FilenameUtils.separatorsToSystem("archive/2023/7/6/"), result);
 	}
 }
