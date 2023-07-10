@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class FileName {
 	 */
 	public String getFilePath() {
 		String basePath = archiveDirectory.getDirectory();
-		String fileName = basePath + "/" + timestamp.format(fileNameFormatter);
+		String fileName = basePath + File.separator + timestamp.format(fileNameFormatter);
 
 		String filePathString = fileName + ".nq";
 		if (!Files.isReadable(Paths.get(filePathString))) {

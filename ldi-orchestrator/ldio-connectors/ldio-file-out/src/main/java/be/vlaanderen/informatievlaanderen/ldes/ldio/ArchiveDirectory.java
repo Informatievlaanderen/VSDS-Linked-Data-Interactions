@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import java.io.File;
 import java.time.LocalDateTime;
 
 public class ArchiveDirectory {
@@ -22,8 +23,14 @@ public class ArchiveDirectory {
 	 * Will Return: /archive/2023/02/15
 	 */
 	public String getDirectory() {
-		return "%s/%s/%s/%s/".formatted(archiveRootDir, memberTimestamp.getYear(), memberTimestamp.getMonthValue(),
-				memberTimestamp.getDayOfMonth());
+		return archiveRootDir +
+				File.separator +
+				memberTimestamp.getYear() +
+				File.separator +
+				memberTimestamp.getMonthValue() +
+				File.separator +
+				memberTimestamp.getDayOfMonth() +
+				File.separator;
 	}
 
 }

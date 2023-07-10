@@ -8,6 +8,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import org.apache.jena.rdf.model.Property;
 import org.springframework.context.annotation.Bean;
 
+import java.io.File;
+
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class LdioFileOutAutoConfig {
@@ -26,7 +28,13 @@ public class LdioFileOutAutoConfig {
 			}
 
 			private String removeTrailingSlash(String path) {
-				return path.replaceAll("/$", "");
+				int indexLastChar = path.length() - 1;
+				String substring = path.substring(indexLastChar);
+				if (File.separator.equals(substring)) {
+					return path.substring(0, indexLastChar);
+				} else {
+					return path;
+				}
 			}
 		};
 	}

@@ -8,6 +8,7 @@ import org.apache.jena.riot.RDFWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 
+@SuppressWarnings("java:S112")
 public class LdioFileOut implements LdiOutput {
 
 	private final TimestampExtractor timestampExtractor;
