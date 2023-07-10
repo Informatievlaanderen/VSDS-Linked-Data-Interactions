@@ -11,4 +11,7 @@ Feature: FileOutIntegrationTest
     When I have another model defined in "other-model-with-timestamp20220520.nq"
     And I send the model to the file-out-component
     Then The other model is written to "target/archive/2022/5/20/2022-05-20-09-58-15-867000000-1.nq"
+    When I have another model defined in "third-model-with-timestamp20220520.nq"
+    And I send the model to the file-out-component
+    Then The other model is written to "target/archive/2022/5/20/2022-05-20-09-58-15-867000000-2.nq"
 
