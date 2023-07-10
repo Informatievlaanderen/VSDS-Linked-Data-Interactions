@@ -16,7 +16,6 @@ public class ArchiveFile {
 		this.archiveDirectory = archiveDirectory;
 	}
 
-	// TODO: 10/07/23 test
 	/**
 	 * Creates a new ArchiveFile
 	 *
@@ -45,7 +44,7 @@ public class ArchiveFile {
 	 *         </p>
 	 */
 	// TODO: 07/07/23 test
-	public String getPath() {
+	public String getFilePath() {
 		return fileName.getFilePath();
 	}
 
