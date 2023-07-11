@@ -225,6 +225,16 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>ldio-file-out</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-file-out</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
 </project>
