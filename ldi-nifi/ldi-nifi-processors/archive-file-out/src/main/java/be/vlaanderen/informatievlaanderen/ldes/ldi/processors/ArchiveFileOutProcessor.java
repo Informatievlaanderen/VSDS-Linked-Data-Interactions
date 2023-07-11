@@ -30,40 +30,45 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 @CapabilityDescription("Writes members to a file archive.")
 public class ArchiveFileOutProcessor extends AbstractProcessor {
 
-    private TimestampExtractor timestampExtractor;
-    private String archiveRootDir;
+	private TimestampExtractor timestampExtractor;
+	private String archiveRootDir;
 
-    @Override
-    public Set<Relationship> getRelationships() {
-        return Set.of(SUCCESS, FAILURE);
-    }
+	@Override
+	public Set<Relationship> getRelationships() {
+		return Set.of(SUCCESS, FAILURE);
+	}
 
-    @Override
-    public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-        return List.of(TIMESTAMP_PATH, ARCHIVE_ROOT_DIR);
-    }
+	@Override
+	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
+		return List.of(DATA_SOURCE_FORMAT, TIMESTAMP_PATH, ARCHIVE_ROOT_DIR);
+	}
 
-    @OnScheduled
-    public void onScheduled(final ProcessContext context) {
-        timestampExtractor = new TimestampExtractor(createProperty(getTimestampPath(context)));
-        archiveRootDir = getArchiveRootDirectory(context);
-    }
+	@OnScheduled
+	public void onScheduled(final ProcessContext context) {
+		timestampExtractor = new TimestampExtractor(createProperty(getTimestampPath(context)));
+		archiveRootDir = getArchiveRootDirectory(context);
+	}
 
-    @Override
-    public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
-        final FlowFile flowFile = session.get();
-        Lang dataSourceFormat = getDataSourceFormat(context);
-        Model model = receiveDataAsModel(session, flowFile, dataSourceFormat);
-        ArchiveFile archiveFile = ArchiveFile.from(model, timestampExtractor, archiveRootDir);
-        try {
-            Files.createDirectories(archiveFile.getDirectoryPath());
-            RDFWriter.source(model).lang(Lang.NQUADS).output(archiveFile.getFilePath());
-            sendRDFToRelation(session, flowFile, model, SUCCESS, dataSourceFormat);
-        } catch (IOException e) {
-            getLogger().error("Failed to write model to file in archive directory: {}", e.getMessage());
-            sendRDFToRelation(session, flowFile, FAILURE);
-        }
+	@Override
+	public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
+		final FlowFile flowFile = session.get();
+		try {
+			archiveFile(context, session, flowFile);
+		} catch (Exception e) {
+			getLogger().error("Failed to write model to file in archive directory: {}", e.getMessage());
+			sendRDFToRelation(session, flowFile, FAILURE);
+		}
+	}
 
-    }
+	private void archiveFile(ProcessContext context, ProcessSession session, FlowFile flowFile) throws IOException {
+		Lang dataSourceFormat = getDataSourceFormat(context);
+		Model model = receiveDataAsModel(session, flowFile, dataSourceFormat);
+
+		ArchiveFile archiveFile = ArchiveFile.from(model, timestampExtractor, archiveRootDir);
+		Files.createDirectories(archiveFile.getDirectoryPath());
+		RDFWriter.source(model).lang(Lang.NQUADS).output(archiveFile.getFilePath());
+
+		sendRDFToRelation(session, flowFile, model, SUCCESS, dataSourceFormat);
+	}
 
 }
