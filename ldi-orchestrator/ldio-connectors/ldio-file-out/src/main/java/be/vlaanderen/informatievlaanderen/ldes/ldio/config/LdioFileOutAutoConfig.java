@@ -7,11 +7,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurato
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.rdf.model.Property;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
+@Configuration
 public class LdioFileOutAutoConfig {
 
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
