@@ -2,8 +2,12 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ArchiveDirectory {
+
+	private static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MM");
+	private static final DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("dd");
 
 	private final String archiveRootDir;
 	private final LocalDateTime memberTimestamp;
@@ -27,9 +31,9 @@ public class ArchiveDirectory {
 				File.separator +
 				memberTimestamp.getYear() +
 				File.separator +
-				memberTimestamp.getMonthValue() +
+				memberTimestamp.format(monthFormatter) +
 				File.separator +
-				memberTimestamp.getDayOfMonth() +
+				memberTimestamp.format(dayFormatter) +
 				File.separator;
 	}
 

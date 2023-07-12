@@ -15,6 +15,6 @@ class ArchiveDirectoryTest {
 
 		String result = archiveDirectory.getDirectory();
 
-		assertEquals(FilenameUtils.separatorsToSystem("archive/2023/7/6/"), result);
+		assertEquals(FilenameUtils.separatorsToSystem("archive/2023/07/06/"), result);
 	}
 }
