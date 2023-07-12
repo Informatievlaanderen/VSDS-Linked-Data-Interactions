@@ -30,7 +30,7 @@ public class EntityManagerFactory {
 	public static synchronized EntityManagerFactory getInstance() {
 		if (instance == null) {
 			try {
-				Files.createDirectory(Paths.get(DATABASE_DIRECTORY));
+				Files.createDirectories(Paths.get(DATABASE_DIRECTORY));
 			} catch (IOException e) {
 				throw new CreateDirectoryFailedException(e);
 			}
