@@ -1,7 +1,7 @@
 ---
 layout: default
-parent: LDI NiFi Processors
-title: Archive File Out
+parent: LDI Outputs
+title: File archiving
 ---
 
 # Archive File Out
@@ -19,3 +19,9 @@ For example: 2023-11-21-05-05-00-000000000.nq will be located at  archive-root-d
 |:-----------------|:----------------------------------------------|:---------|:--------|:-------------------------------------------|:--------------------------------|
 | archive-root-dir | The root directory where files are written to | Yes      | N/A     | /parcels/archive                           | Linux (+ Mac) and Windows paths |
 | timestamp-path   | The timestamp path used for naming the        | Yes      | N/A     | http://www.w3.org/ns/prov#generatedAtTime  | Any valid LD predicate          |
+
+## Example
+A complete demo of the archiving functionality with both LDIO and NiFi can be found in the [E2E repo](https://github.com/Informatievlaanderen/VSDS-LDES-E2E-testing/tree/main/tests/033.archiving)
+
+{: .note }
+Only LD streams that contain a timestamp-path can be archived with these components
