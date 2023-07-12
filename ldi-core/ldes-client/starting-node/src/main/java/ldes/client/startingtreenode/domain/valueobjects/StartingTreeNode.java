@@ -13,4 +13,5 @@ public class StartingTreeNode {
 	public String getUrl() {
 		return url;
 	}
+
 }

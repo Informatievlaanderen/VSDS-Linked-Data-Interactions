@@ -2,13 +2,13 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
-import ldes.client.treenodesupplier.StartingTreeNodeSupplier;
+import ldes.client.startingtreenode.RedirectRequestExecutor;
+import ldes.client.startingtreenode.domain.valueobjects.RedirectHistory;
+import ldes.client.startingtreenode.domain.valueobjects.StartingNodeRequest;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
-import ldes.client.treenodesupplier.domain.valueobject.StartingTreeNode;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 
 import java.util.Optional;
@@ -38,20 +38,25 @@ public class LdesPropertiesExtractor {
 	public LdesProperties getLdesProperties(LdesMetaData ldesMetaData, boolean needTimestampPath,
 			boolean needVersionOfPath,
 			boolean needShape) {
-		StartingTreeNode startingTreeNode = new StartingTreeNodeSupplier(requestExecutor)
-				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
-		TreeNodeRequest request = startingTreeNode.createRequest(startingTreeNode.getStartingNodeUrl());
-		Request httpRequest = request.createRequest();
-		Response response = requestExecutor.execute(httpRequest);
-		Model model = RDFParser
-				.fromString(response.getBody().orElseThrow())
-				.lang(request.getLang())
-				.build()
-				.toModel();
+
+		Model model = getModelFromStartingTreeNode(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
+
 		String timestampPath = getResource(needTimestampPath, getResource(model), LDES_TIMESTAMP_PATH);
 		String versionOfPath = getResource(needVersionOfPath, getVersionOfPath(model), LDES_VERSION_OF);
 		String shape = getResource(needShape, getShaclShape(model), TREE_SHAPE);
 		return new LdesProperties(timestampPath, versionOfPath, shape);
+	}
+
+	private Model getModelFromStartingTreeNode(String url, Lang lang) {
+		RedirectRequestExecutor redirectRequestExecutor = new RedirectRequestExecutor(requestExecutor);
+		Response response = redirectRequestExecutor
+				.execute(new StartingNodeRequest(url, lang, new RedirectHistory()));
+
+		return RDFParser
+				.fromString(response.getBody().orElseThrow())
+				.lang(lang)
+				.build()
+				.toModel();
 	}
 
 	private String getResource(boolean resourceNeeded, Optional<String> resource, Property property) {
