@@ -6,15 +6,15 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-public class ArchiveFileReader {
+public class ArchiveFileCrawler {
 
     private final Path archiveRootDir;
 
-    public ArchiveFileReader(Path archiveRootDir) {
+    public ArchiveFileCrawler(Path archiveRootDir) {
         this.archiveRootDir = archiveRootDir;
     }
 
-    public Stream<Path> readFiles() throws IOException {
+    public Stream<Path> streamArchiveFilePaths() throws IOException {
         return readFilesInOrder(archiveRootDir);
     }
 

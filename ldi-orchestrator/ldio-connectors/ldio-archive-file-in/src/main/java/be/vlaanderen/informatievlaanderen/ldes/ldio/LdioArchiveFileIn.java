@@ -11,18 +11,18 @@ import java.io.IOException;
 
 public class LdioArchiveFileIn extends LdiInput {
 
-    private final ArchiveFileReader archiveFileReader;
+    private final ArchiveFileCrawler archiveFileCrawler;
     private final Lang sourceFormat;
 
     public LdioArchiveFileIn(LdiAdapter adapter, ComponentExecutor executor,
-                             ArchiveFileReader archiveFileReader, Lang sourceFormat) {
+                             ArchiveFileCrawler archiveFileCrawler, Lang sourceFormat) {
         super(executor, adapter);
-        this.archiveFileReader = archiveFileReader;
+        this.archiveFileCrawler = archiveFileCrawler;
         this.sourceFormat = sourceFormat;
     }
 
     public void run() throws IOException {
-        archiveFileReader.readFiles().forEach(file -> {
+        archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
             Model model = RDFParser.source(file).lang(sourceFormat).toModel();
             getExecutor().transformLinkedData(model);
         });
