@@ -16,6 +16,11 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>file-archiving</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -8,13 +8,9 @@ title: File Out
 ***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut***
 
 The LDIO File Out is used to write models to files based on a timestamp path property on the model.
-Every file is written to NQuads with the extracted timestamp as name: 2023-11-21-05-05-00-000000000.nq
-When two files have the same name, a sequence nr is added, for example: 2023-11-21-05-05-00-000000000-2.nq
+Please refer to the [core documentation](../../_core/ldi-outputs/file-archiving.md) for more information.
 
-The files are ordered in directories based on the date. For every day, there is one directory.
-For example: 2023-11-21-05-05-00-000000000.nq will be located at  archive-root-dir/2023/11/21.
-
-## Config
+## LDIO Config
 
 | Property         | Description                                   | Required | Default | Example                                    | Supported values                |
 |:-----------------|:----------------------------------------------|:---------|:--------|:-------------------------------------------|:--------------------------------|
