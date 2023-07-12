@@ -1,7 +1,7 @@
 package ldes.client.treenodesupplier.repository.sqlite;
 
-import ldes.client.treenodesupplier.repository.exception.CreateDirectoryFailedException;
-import ldes.client.treenodesupplier.repository.exception.DestroyDbFailedException;
+import ldes.client.treenodesupplier.repository.filebased.exception.CreateDirectoryFailedException;
+import ldes.client.treenodesupplier.repository.sqlite.exception.DestroyDbFailedException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +20,7 @@ public class EntityManagerFactory {
 	private static EntityManagerFactory instance = null;
 	private final EntityManager em;
 	private final javax.persistence.EntityManagerFactory emf;
-	private boolean databaseDeleted = false;
+	private static boolean databaseDeleted = false;
 
 	private EntityManagerFactory() {
 		emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
@@ -35,6 +35,7 @@ public class EntityManagerFactory {
 				throw new CreateDirectoryFailedException(e);
 			}
 			instance = new EntityManagerFactory();
+			databaseDeleted = false;
 		}
 
 		return instance;

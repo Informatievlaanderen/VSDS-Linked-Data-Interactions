@@ -7,7 +7,7 @@ Feature: MemberSupplier
     And a StatePersistenceStrategy <statePersistenceStrategy>
     And The TreeNode is not processed: "http://localhost:10101/200-first-tree-node"
     When I create a Processor
-    When I create a MemberSupplier
+    When I create a MemberSupplier without state
     When I request one member from the MemberSupplier
     Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
     Then Status "NOT_VISITED" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
@@ -26,3 +26,4 @@ Feature: MemberSupplier
       | statePersistenceStrategy |
       | MEMORY                   |
       | SQLITE                   |
+      | FILE                     |

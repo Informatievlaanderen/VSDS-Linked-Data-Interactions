@@ -33,16 +33,6 @@ public class MemberSupplierSteps {
 		suppliedMember = memberSupplier.get();
 	}
 
-	@When("I create a MemberSupplier")
-	public void iCreateAMemberSupplier() {
-		memberSupplier = new MemberSupplier(treeNodeProcessor, false);
-	}
-
-	@Then("The TreeNode is processed: {string}")
-	public void theTreeNodeIsProcessed(String treeNodeId) {
-		assertTrue(treeNodeRecordRepository.existsById(treeNodeId));
-	}
-
 	@And("The TreeNode is not processed: {string}")
 	public void theTreeNodeIsNotProcessed(String treeNodeId) {
 		assertFalse(treeNodeRecordRepository.existsById(treeNodeId));
@@ -72,17 +62,24 @@ public class MemberSupplierSteps {
 	}
 
 	@And("a StatePersistenceStrategy MEMORY")
-	public void aMemoryStatePersistanceStrategy() {
+	public void aMemoryStatePersistenceStrategy() {
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY);
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY);
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
-	public void aSqliteStatePersistanceStrategy() {
+	public void aSqliteStatePersistenceStrategy() {
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE);
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE);
+	}
+
+	@And("a StatePersistenceStrategy FILE")
+	public void aFileStatePersistenceStrategy() {
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.FILE);
+		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE);
 	}
 
 	@Then("MemberSupplier is destroyed")
@@ -94,5 +91,15 @@ public class MemberSupplierSteps {
 		StringWriter stringWriter = new StringWriter();
 		RDFDataMgr.write(stringWriter, model, lang);
 		return stringWriter.toString();
+	}
+
+	@When("I create a MemberSupplier with state")
+	public void iCreateAMemberSupplierWithState() {
+		memberSupplier = new MemberSupplier(treeNodeProcessor, true);
+	}
+
+	@When("I create a MemberSupplier without state")
+	public void iCreateAMemberSupplierWithoutState() {
+		memberSupplier = new MemberSupplier(treeNodeProcessor, false);
 	}
 }
