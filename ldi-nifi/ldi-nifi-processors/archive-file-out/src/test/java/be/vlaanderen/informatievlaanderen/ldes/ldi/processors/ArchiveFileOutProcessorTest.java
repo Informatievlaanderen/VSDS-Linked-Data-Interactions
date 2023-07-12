@@ -47,7 +47,7 @@ class ArchiveFileOutProcessorTest {
 		assertTrue(testRunner.getFlowFilesForRelationship(FAILURE).isEmpty());
 
 		Model resultModel = RDFParser.source(archiveDir
-				+ FilenameUtils.separatorsToSystem("/2022/5/20/2022-05-20-09-58-15-867000000.nq")).toModel();
+				+ FilenameUtils.separatorsToSystem("/2022/05/20/2022-05-20-09-58-15-867000000.nq")).toModel();
 		assertTrue(inputModel.isIsomorphicWith(resultModel));
 	}
 
