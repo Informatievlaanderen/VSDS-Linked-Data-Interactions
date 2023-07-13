@@ -27,8 +27,8 @@ public class LdioArchiveFileInAutoConfig {
 		return new LdioInputConfigurator() {
 			@Override
 			public LdiComponent configure(LdiAdapter adapter,
-										  ComponentExecutor executor,
-										  ComponentProperties config){
+					ComponentExecutor executor,
+					ComponentProperties config) {
 				ArchiveFileCrawler archiveFileCrawler = new ArchiveFileCrawler(getArchiveDirectoryPath(config));
 				Lang sourceFormat = getSourceFormat(config);
 				var ldioArchiveFileInRunner = new LdioArchiveFileInRunner(executor, archiveFileCrawler, sourceFormat);

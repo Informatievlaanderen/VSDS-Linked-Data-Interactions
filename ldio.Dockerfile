@@ -26,6 +26,7 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-in/target/ldio-
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-in-poller/target/ldio-http-in-poller-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ldes-client/target/ldio-ldes-client-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-kafka/target/ldio-kafka-jar-with-dependencies.jar ./lib/
+COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-archive-file-in/target/ldio-archive-file-in-jar-with-dependencies.jar ./lib/
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-rdf-adapter/target/ldio-rdf-adapter-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ngsiv2-to-ld-adapter/target/ldio-ngsiv2-to-ld-adapter-jar-with-dependencies.jar ./lib/
