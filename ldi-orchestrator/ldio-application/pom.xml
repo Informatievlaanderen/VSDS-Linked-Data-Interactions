@@ -117,6 +117,16 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ldio-archive-file-in</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-archive-file-in</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>ldio-rdf-adapter</id>
             <dependencies>
                 <dependency>
