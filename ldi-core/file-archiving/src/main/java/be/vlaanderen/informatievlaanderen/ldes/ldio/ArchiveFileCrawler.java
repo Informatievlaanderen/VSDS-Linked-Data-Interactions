@@ -19,11 +19,9 @@ public class ArchiveFileCrawler {
     }
 
     private Stream<Path> readFilesInOrder(Path parent) throws IOException {
-        try (final Stream<Path> files = Files.list(parent)) {
-            return files
-                    .sorted(sortByLowerCaseFileName())
-                    .flatMap(this::getFilesFromChildren);
-        }
+        return Files.list(parent)
+                .sorted(sortByLowerCaseFileName())
+                .flatMap(this::getFilesFromChildren);
     }
 
     private Comparator<Path> sortByLowerCaseFileName() {
