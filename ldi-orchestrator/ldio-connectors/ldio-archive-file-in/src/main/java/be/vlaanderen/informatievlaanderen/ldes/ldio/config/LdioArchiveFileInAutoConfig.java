@@ -30,8 +30,8 @@ public class LdioArchiveFileInAutoConfig {
 					ComponentExecutor executor,
 					ComponentProperties config) {
 				ArchiveFileCrawler archiveFileCrawler = new ArchiveFileCrawler(getArchiveDirectoryPath(config));
-				Lang sourceFormat = getSourceFormat(config);
-				var ldioArchiveFileInRunner = new LdioArchiveFileInRunner(executor, archiveFileCrawler, sourceFormat);
+				Lang hintLang = getSourceFormat(config);
+				var ldioArchiveFileInRunner = new LdioArchiveFileInRunner(executor, archiveFileCrawler, hintLang);
 				return new LdioArchiveFileIn(executor, ldioArchiveFileInRunner);
 			}
 

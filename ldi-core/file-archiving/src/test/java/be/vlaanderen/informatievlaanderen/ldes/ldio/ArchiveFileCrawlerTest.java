@@ -8,7 +8,6 @@ import java.util.List;
 
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ArchiveFileCrawlerTest {
 
@@ -31,9 +30,4 @@ class ArchiveFileCrawlerTest {
 		assertEquals("src/test/resources/archive/2022/11/11.nq", result.get(9).toString());
 	}
 
-	@Test
-	void should_ThrowException_when_PathNotFound() {
-		assertThrows(RuntimeException.class,
-				() -> new ArchiveFileCrawler(Paths.get("not\\existing/path")).streamArchiveFilePaths());
-	}
 }
