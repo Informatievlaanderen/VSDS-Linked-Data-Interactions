@@ -18,14 +18,10 @@ public class LdioArchiveFileInRunner implements Runnable {
     }
 
     public void run() {
-        try {
-            archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
-                Model model = RDFParser.source(file).lang(sourceFormat).toModel();
-                executor.transformLinkedData(model);
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
+            Model model = RDFParser.source(file).lang(sourceFormat).toModel();
+            executor.transformLinkedData(model);
+        });
     }
 
 }
