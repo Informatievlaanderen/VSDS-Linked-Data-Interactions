@@ -21,6 +21,7 @@
         <module>geojson-to-wkt-processor</module>
         <module>json-to-ld-processor</module>
         <module>archive-file-out</module>
+        <module>archive-file-in</module>
     </modules>
 
     <properties>
