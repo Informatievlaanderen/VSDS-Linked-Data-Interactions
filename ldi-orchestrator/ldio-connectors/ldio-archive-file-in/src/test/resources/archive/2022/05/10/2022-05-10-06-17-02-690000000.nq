@@ -1,0 +1,30 @@
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0> <http://www.w3.org/2004/02/skos/core#prefLabel> "In opmaak"@nl-BE .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245> <http://www.w3.org/2004/02/skos/core#prefLabel> "EagleBe Smartcity"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/org#Organization> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/events/10786773> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://data.vlaanderen.be/ns/mobiliteit#Evenement> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/events/10786773> <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg> <https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/events/10786773> <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg> <https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845247> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/events/10786773> <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg> <https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845248> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/events/10786773> <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg> <https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845251> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/events/10786773> <https://gipod.vlaanderen.be/ns/gipod#gipodId> "10786773"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:B7a8c6f3537ca7d4fda680ec7f5bdb5d2 <http://www.w3.org/ns/adms#schemaAgency> "https://gipod.vlaanderen.be"@nl-BE .
+_:B7a8c6f3537ca7d4fda680ec7f5bdb5d2 <http://www.w3.org/2004/02/skos/core#notation> "10786774"^^<https://gipod.vlaanderen.be/ns/gipod#gipodId> .
+_:B7a8c6f3537ca7d4fda680ec7f5bdb5d2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/adms#Identifier> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://purl.org/dc/elements/1.1/creator> <https://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://purl.org/dc/terms/created> "2022-05-10T06:17:02.6851044Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://www.w3.org/ns/adms#versionNotes> "MobilityHindranceWasRegistered"@nl-BE .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <https://data.vlaanderen.be/ns/mobiliteit#beheerder> <https://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://purl.org/dc/terms/modified> "2022-05-10T06:17:02.6851044Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://purl.org/dc/terms/description> "9270 Laarne, Kouterstraat 2: Andere"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#langString> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <https://data.vlaanderen.be/ns/mobiliteit#Inname.status> <https://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://www.w3.org/ns/prov#generatedAtTime> "2022-05-10T06:17:02.69Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <https://gipod.vlaanderen.be/ns/gipod#gipodId> "10786774"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://purl.org/dc/elements/1.1/contributor> <https://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://www.w3.org/ns/adms#identifier> _:B7a8c6f3537ca7d4fda680ec7f5bdb5d2 .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <http://purl.org/dc/terms/isVersionOf> <https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774> .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> <https://data.vlaanderen.be/ns/mobiliteit#periode> _:B83799c9e8cd99adc825ceacdda745bb0 .
+<https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances> <https://w3id.org/tree#member> <https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10786774/1845246> .
+_:B83799c9e8cd99adc825ceacdda745bb0 <http://data.europa.eu/m8g/startTime> "2022-05-13T04:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:B83799c9e8cd99adc825ceacdda745bb0 <http://data.europa.eu/m8g/endTime> "2022-05-13T20:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+_:B83799c9e8cd99adc825ceacdda745bb0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.europa.eu/m8g/PeriodOfTime> .
