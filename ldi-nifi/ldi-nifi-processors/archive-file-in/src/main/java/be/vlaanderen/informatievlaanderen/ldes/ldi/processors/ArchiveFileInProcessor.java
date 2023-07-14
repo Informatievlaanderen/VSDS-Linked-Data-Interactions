@@ -48,16 +48,15 @@ public class ArchiveFileInProcessor extends AbstractProcessor {
 
 	@Override
 	public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
-		final FlowFile flowFile = session.get();
 		try {
 			final Lang dataSourceFormat = getDataSourceFormat(context);
 			archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
 				Model model = RDFParser.source(file).lang(dataSourceFormat).toModel();
-				sendRDFToRelation(session, flowFile, model, SUCCESS, dataSourceFormat);
+				sendRDFToRelation(session, session.create(), model, SUCCESS, dataSourceFormat);
 			});
 		} catch (Exception e) {
 			getLogger().error("Failed to write model to file in archive directory: {}", e.getMessage());
-			sendRDFToRelation(session, flowFile, FAILURE);
+			sendRDFToRelation(session, session.create(), FAILURE);
 		}
 	}
 
