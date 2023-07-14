@@ -34,7 +34,7 @@ class ArchiveFileInProcessorTest {
 	void testProcessor() {
 		testRunner.setProperty(ARCHIVE_ROOT_DIR, archiveDir);
 
-		testRunner.run();
+		testRunner.run(5);
 
 		List<MockFlowFile> successFiles = testRunner.getFlowFilesForRelationship(SUCCESS);
 

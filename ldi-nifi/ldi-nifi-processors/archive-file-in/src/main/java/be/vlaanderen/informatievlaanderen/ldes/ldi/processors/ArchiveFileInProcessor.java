@@ -8,7 +8,6 @@ import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
@@ -30,6 +29,13 @@ public class ArchiveFileInProcessor extends AbstractProcessor {
 
 	private ArchiveFileCrawler archiveFileCrawler;
 
+	/**
+	 * The archive is traversed in one nifi run.
+	 * Consecutive runs would return the same members.
+	 * In the current setup, it is not possible to pause and continue the crawling.
+	 */
+	private boolean hasRun;
+
 	@Override
 	public Set<Relationship> getRelationships() {
 		return Set.of(SUCCESS, FAILURE);
@@ -42,12 +48,21 @@ public class ArchiveFileInProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
+		hasRun = false;
 		final Path archiveDir = Paths.get(getArchiveRootDirectory(context));
 		archiveFileCrawler = new ArchiveFileCrawler(archiveDir);
 	}
 
 	@Override
 	public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
+		if (hasRun) {
+			return;
+		}
+		readArchive(context, session);
+		hasRun = true;
+	}
+
+	private void readArchive(ProcessContext context, ProcessSession session) {
 		try {
 			final Lang dataSourceFormat = getDataSourceFormat(context);
 			archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
