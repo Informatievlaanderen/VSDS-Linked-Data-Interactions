@@ -13,6 +13,8 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,6 +28,8 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 @Tags({ "ldes, vsds, archive, file" })
 @CapabilityDescription("Writes members to a file archive.")
 public class ArchiveFileInProcessor extends AbstractProcessor {
+
+	private final Logger log = LoggerFactory.getLogger(ArchiveFileInProcessor.class);
 
 	private ArchiveFileCrawler archiveFileCrawler;
 
@@ -56,8 +60,10 @@ public class ArchiveFileInProcessor extends AbstractProcessor {
 	@Override
 	public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
 		if (hasRun) {
+			log.info("Archive already read, the processor can be turned off.");
 			return;
 		}
+		log.info("Starting new read of full archive.");
 		readArchive(context, session);
 		hasRun = true;
 	}
