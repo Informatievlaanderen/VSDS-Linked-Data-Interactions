@@ -46,4 +46,7 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-file-out/target/ldio
 
 RUN dir -s
 
+RUN mkdir "state"
+RUN chmod -R 777 ./state
+
 CMD ["java", "-cp", "ldio-application.jar", "-Dloader.path=lib/", "org.springframework.boot.loader.PropertiesLauncher"]
