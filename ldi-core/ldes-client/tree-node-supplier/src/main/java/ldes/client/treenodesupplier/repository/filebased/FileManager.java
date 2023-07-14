@@ -14,9 +14,9 @@ import static ldes.client.treenodesupplier.repository.filebased.FileManagerFacto
 public class FileManager {
 
 	public Stream<String> getRecords(String file) {
-		if (Path.of(STATE_DIRECTORY, file).toFile().exists()) {
+		if (fileExists(file)) {
 			try {
-				return Files.lines(Path.of(STATE_DIRECTORY, file));
+				return Files.lines(getAbsolutePath(file));
 			} catch (IOException e) {
 				throw new StateOperationFailedException(e);
 			}
@@ -24,18 +24,26 @@ public class FileManager {
 		return Stream.of();
 	}
 
+	private static Path getAbsolutePath(String file) {
+		return Path.of(STATE_DIRECTORY, file).toAbsolutePath();
+	}
+
 	public void createNewRecords(String file, Stream<String> records) {
 		try {
-			if (Path.of(STATE_DIRECTORY, file).toFile().exists()) {
-				Files.delete(Path.of(STATE_DIRECTORY, file));
+			if (fileExists(file)) {
+				Files.delete(getAbsolutePath(file));
 			}
-			BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of(STATE_DIRECTORY, file),
+			BufferedWriter bufferedWriter = Files.newBufferedWriter(getAbsolutePath(file),
 					StandardOpenOption.CREATE_NEW);
 			records.forEach(recordToWrite -> writeRecord(bufferedWriter, recordToWrite));
 			bufferedWriter.close();
 		} catch (IOException e) {
 			throw new StateOperationFailedException(e);
 		}
+	}
+
+	private boolean fileExists(String file) {
+		return getAbsolutePath(file).toFile().exists();
 	}
 
 	private static void writeRecord(BufferedWriter bufferedWriter, String recordToWrite) {
@@ -48,9 +56,9 @@ public class FileManager {
 	}
 
 	public void appendRecord(String file, String recordToAppend) {
-		if (Path.of(STATE_DIRECTORY, file).toFile().exists()) {
+		if (fileExists(file)) {
 			try {
-				BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of(STATE_DIRECTORY, file),
+				BufferedWriter bufferedWriter = Files.newBufferedWriter(getAbsolutePath(file),
 						StandardOpenOption.APPEND);
 				writeRecord(bufferedWriter, recordToAppend);
 				bufferedWriter.close();
