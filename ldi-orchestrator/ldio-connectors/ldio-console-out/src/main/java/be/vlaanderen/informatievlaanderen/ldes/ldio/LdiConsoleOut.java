@@ -21,14 +21,11 @@ public class LdiConsoleOut implements LdiOutput {
 		this.outputLanguage = outputLanguage;
 	}
 
-	int count = 0;
-
 	@Override
 	public void accept(Model model) {
-		// log.info(RDFWriter.source(model)
-		// .lang(outputLanguage)
-		// .asString());
-		log.info(String.valueOf(++count));
+		log.info(RDFWriter.source(model)
+				.lang(outputLanguage)
+				.asString());
 	}
 
 	public static Lang getLang(MediaType contentType) {
