@@ -1,4 +1,4 @@
-package ldes.client.treenodesupplier.repository.sqlite;
+package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
@@ -8,9 +8,14 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
-public class SqliteMemberRepository implements MemberRepository {
-	private final EntityManagerFactory entityManagerFactory = EntityManagerFactory.getInstance();
-	private final EntityManager entityManager = entityManagerFactory.getEntityManager();
+public class SqlMemberRepository implements MemberRepository {
+	private final EntityManagerFactory entityManagerFactory;
+	private final EntityManager entityManager;
+
+	public SqlMemberRepository(EntityManagerFactory entityManagerFactory) {
+		this.entityManagerFactory = entityManagerFactory;
+		this.entityManager = entityManagerFactory.getEntityManager();
+	}
 
 	@Override
 	public Optional<MemberRecord> getUnprocessedTreeMember() {

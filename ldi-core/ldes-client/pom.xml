@@ -25,6 +25,7 @@
         <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <hikari.version>5.0.1</hikari.version>
+        <postgresql.version>42.6.0</postgresql.version>
     </properties>
 
     <dependencies>

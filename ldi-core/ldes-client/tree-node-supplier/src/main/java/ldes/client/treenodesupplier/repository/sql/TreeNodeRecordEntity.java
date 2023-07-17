@@ -1,10 +1,11 @@
-package ldes.client.treenodesupplier.repository.sqlite;
+package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
@@ -17,6 +18,7 @@ import javax.persistence.NamedQuery;
 public class TreeNodeRecordEntity {
 
 	@Id
+	@Column(columnDefinition = "text", length = 10485760)
 	private String treeNodeUrl;
 	private TreeNodeStatus treeNodeStatus;
 	private LocalDateTime earliestNextVisit;

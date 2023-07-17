@@ -4,6 +4,7 @@ Feature: Restart MemberSupplier
 
   Scenario Outline: Obtaining the members from first three fragments including the starting node
     Given A starting url "http://localhost:10101/302-redirects-to-first-node"
+    And Postgres TestContainer is started
     And a StatePersistenceStrategy <statePersistenceStrategy>
     And The TreeNode is not processed: "http://localhost:10101/200-first-tree-node"
     When I create a Processor
@@ -27,8 +28,10 @@ Feature: Restart MemberSupplier
     Then Status "MUTABLE_AND_ACTIVE" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/3" is processed
     Then MemberSupplier is destroyed
+    And Postgres TestContainer is stopped
 
     Examples:
       | statePersistenceStrategy |
       | SQLITE                   |
       | FILE                     |
+      | POSTGRES                 |

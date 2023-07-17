@@ -5,15 +5,13 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.nifi.util.MockFlowFile;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Named;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +26,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LdesClientTest {
 
 	private TestRunner testRunner;
+
+	private static PostgreSQLContainer postgreSQLContainer;
+
+	@BeforeAll
+	static void beforeAll() {
+		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
+				.withDatabaseName("integration-test-client-persistence")
+				.withUsername("sa")
+				.withPassword("sa");
+		postgreSQLContainer.start();
+	}
+
+	@AfterAll
+	static void afterAll() {
+		postgreSQLContainer.stop();
+	}
 
 	@BeforeEach
 	public void init() {
@@ -53,6 +67,22 @@ class LdesClientTest {
 		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
 
 		assertEquals(numberOfRuns, dataFlowfiles.size());
+	}
+
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void when_NecessaryPropertiesAreSet_then_statePersistenceCanBeCreated(Map<String, String> properties) {
+		testRunner.setProperty("DATA_SOURCE_URL",
+				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
+		properties.forEach((key, value) -> testRunner.setProperty(key, value));
+
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+
+		testRunner.run();
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(1, dataFlowfiles.size());
 	}
 
 	@Test
@@ -135,6 +165,19 @@ class LdesClientTest {
 							Named.of("when_runningLdesClientWithConnectedFragments_expectsAllLdesMembers",
 									"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z"),
 							6));
+		}
+	}
+
+	static class StatePersistenceArgumentsProvider implements ArgumentsProvider {
+		@Override
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+			return Stream.of(
+					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "MEMORY")),
+					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "FILE")),
+					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "SQLITE")),
+					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "POSTGRES", "POSTGRES_URL",
+							postgreSQLContainer.getJdbcUrl(), "POSTGRES_USERNAME", postgreSQLContainer.getUsername(),
+							"POSTGRES_PASSWORD", postgreSQLContainer.getPassword())));
 		}
 	}
 

@@ -21,4 +21,13 @@
         </properties>
 
     </persistence-unit>
+
+    <persistence-unit name="pu-postgres-jpa">
+
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect" />
+        </properties>
+    </persistence-unit>
 </persistence>

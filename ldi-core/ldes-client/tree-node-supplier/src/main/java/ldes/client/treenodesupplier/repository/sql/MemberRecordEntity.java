@@ -1,4 +1,4 @@
-package ldes.client.treenodesupplier.repository.sqlite;
+package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
@@ -18,11 +18,12 @@ import javax.persistence.NamedQuery;
 public class MemberRecordEntity {
 
 	@Id
+	@Column(columnDefinition = "text", length = 10485760)
 	private String id;
 
 	private MemberStatus memberStatus;
 
-	@Column(name = "model")
+	@Column(name = "model", columnDefinition = "text", length = 10485760)
 	private String modelAsString;
 
 	public MemberRecordEntity() {
