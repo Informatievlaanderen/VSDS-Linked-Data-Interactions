@@ -1,7 +1,8 @@
-package ldes.client.treenodesupplier.repository.sqlite;
+package ldes.client.treenodesupplier.repository.sql.sqlite;
 
 import ldes.client.treenodesupplier.repository.filebased.exception.CreateDirectoryFailedException;
-import ldes.client.treenodesupplier.repository.sqlite.exception.DestroyDbFailedException;
+import ldes.client.treenodesupplier.repository.sql.EntityManagerFactory;
+import ldes.client.treenodesupplier.repository.sql.exception.DestroyDbFailedException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,29 +13,29 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
 @SuppressWarnings("java:S2696")
-public class EntityManagerFactory {
+public class SqliteEntityManagerFactory implements EntityManagerFactory {
 
 	public static final String DATABASE_DIRECTORY = "state";
 	public static final String PERSISTENCE_UNIT_NAME = "pu-sqlite-jpa";
 	public static final String DATABASE_NAME = "database.db";
-	private static EntityManagerFactory instance = null;
+	private static SqliteEntityManagerFactory instance = null;
 	private final EntityManager em;
 	private final javax.persistence.EntityManagerFactory emf;
 	private static boolean databaseDeleted = false;
 
-	private EntityManagerFactory() {
+	private SqliteEntityManagerFactory() {
 		emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 		em = emf.createEntityManager();
 	}
 
-	public static synchronized EntityManagerFactory getInstance() {
+	public static synchronized SqliteEntityManagerFactory getInstance() {
 		if (instance == null) {
 			try {
 				Files.createDirectories(Paths.get(DATABASE_DIRECTORY));
 			} catch (IOException e) {
 				throw new CreateDirectoryFailedException(e);
 			}
-			instance = new EntityManagerFactory();
+			instance = new SqliteEntityManagerFactory();
 			databaseDeleted = false;
 		}
 

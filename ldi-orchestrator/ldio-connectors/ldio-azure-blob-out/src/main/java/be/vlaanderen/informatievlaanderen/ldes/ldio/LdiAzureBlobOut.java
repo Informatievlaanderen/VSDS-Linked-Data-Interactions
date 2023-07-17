@@ -46,7 +46,7 @@ public class LdiAzureBlobOut implements LdiOutput {
 				.getBlockBlobClient();
 
 		String content = conversionStrategy.getContent(model);
-		blockBlobClient.upload(BinaryData.fromString(content));
+		blockBlobClient.upload(BinaryData.fromString(content), true);
 		log.info("Written out %s".formatted(fileName));
 	}
 }

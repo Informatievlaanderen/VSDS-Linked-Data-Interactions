@@ -46,6 +46,7 @@ public class LdesClient extends AbstractProcessor {
 	private MemberSupplier memberSupplier;
 	private LdesProperties ldesProperties;
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -59,7 +60,7 @@ public class LdesClient extends AbstractProcessor {
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY,
 				API_KEY_HEADER_PROPERTY,
 				API_KEY_PROPERTY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY,
-				RETRIES_ENABLED, MAX_RETRIES, STATUSES_TO_RETRY);
+				RETRIES_ENABLED, MAX_RETRIES, STATUSES_TO_RETRY, POSTGRES_URL, POSTGRES_USERNAME, POSTGRES_PASSWORD);
 	}
 
 	@OnScheduled
@@ -68,10 +69,11 @@ public class LdesClient extends AbstractProcessor {
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
 		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrl, dataSourceFormat);
+		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(context);
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
-				StatePersistence.from(LdesProcessorProperties.getStatePersistenceStrategy(context)),
-				requestExecutor);
-		memberSupplier = new MemberSupplier(treeNodeProcessor, LdesProcessorProperties.stateKept(context));
+				statePersistence, requestExecutor);
+		boolean keepState = stateKept(context);
+		memberSupplier = new MemberSupplier(treeNodeProcessor, keepState);
 
 		determineLdesProperties(ldesMetaData, requestExecutor, context);
 

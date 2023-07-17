@@ -7,7 +7,6 @@ import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
@@ -20,14 +19,16 @@ public class LdesClientRunner implements Runnable {
 	private final ComponentExecutor componentExecutor;
 	private final RequestExecutor requestExecutor;
 	private final ComponentProperties properties;
+	private final StatePersistence statePersistence;
 
 	private boolean threadRunning = true;
 
 	public LdesClientRunner(RequestExecutor requestExecutor, ComponentProperties properties,
-			ComponentExecutor componentExecutor) {
+			ComponentExecutor componentExecutor, StatePersistence statePersistence) {
 		this.componentExecutor = componentExecutor;
 		this.requestExecutor = requestExecutor;
 		this.properties = properties;
+		this.statePersistence = statePersistence;
 	}
 
 	@Override
@@ -49,22 +50,18 @@ public class LdesClientRunner implements Runnable {
 		Lang sourceFormat = properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
 				.map(RDFLanguages::nameToLang)
 				.orElse(Lang.JSONLD);
-		StatePersistenceStrategy state = properties.getOptionalProperty(LdioLdesClientProperties.STATE)
-				.flatMap(StatePersistenceStrategy::from)
-				.orElse(StatePersistenceStrategy.MEMORY);
 		LdesMetaData ldesMetaData = new LdesMetaData(targetUrl,
 				sourceFormat);
-		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(state, requestExecutor, ldesMetaData);
+		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(statePersistence, requestExecutor, ldesMetaData);
 		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
+
 		return new MemberSupplier(treeNodeProcessor, keepState);
 	}
 
-	private TreeNodeProcessor getTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy,
+	private TreeNodeProcessor getTreeNodeProcessor(StatePersistence statePersistenceStrategy,
 			RequestExecutor requestExecutor,
 			LdesMetaData ldesMetaData) {
-
-		return new TreeNodeProcessor(ldesMetaData, StatePersistence.from(statePersistenceStrategy),
-				requestExecutor);
+		return new TreeNodeProcessor(ldesMetaData, statePersistenceStrategy, requestExecutor);
 	}
 
 	public void stopThread() {

@@ -1,4 +1,4 @@
-package ldes.client.treenodesupplier.repository.sqlite;
+package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordComparator;
@@ -9,10 +9,15 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
-public class SqliteTreeNodeRepository implements TreeNodeRecordRepository {
+public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
-	private final EntityManagerFactory entityManagerFactory = EntityManagerFactory.getInstance();
-	private final EntityManager entityManager = entityManagerFactory.getEntityManager();
+	private final EntityManagerFactory entityManagerFactory;
+	private final EntityManager entityManager;
+
+	public SqlTreeNodeRepository(EntityManagerFactory entityManagerFactory) {
+		this.entityManagerFactory = entityManagerFactory;
+		this.entityManager = entityManagerFactory.getEntityManager();
+	}
 
 	@Override
 	public void saveTreeNodeRecord(TreeNodeRecord treeNodeRecord) {

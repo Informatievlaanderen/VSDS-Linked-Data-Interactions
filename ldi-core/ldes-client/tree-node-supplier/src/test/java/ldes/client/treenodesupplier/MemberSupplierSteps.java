@@ -10,11 +10,14 @@ import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFact
 import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
+import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.StringWriter;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,6 +30,7 @@ public class MemberSupplierSteps {
 	private MemberSupplier memberSupplier;
 	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
+	private PostgreSQLContainer postgreSQLContainer;
 
 	@When("I request one member from the MemberSupplier")
 	public void iRequestOneMemberFromTheMemberSupplier() {
@@ -63,23 +67,33 @@ public class MemberSupplierSteps {
 
 	@And("a StatePersistenceStrategy MEMORY")
 	public void aMemoryStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY);
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY, Map.of());
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY);
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of());
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
 	public void aSqliteStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE);
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE, Map.of());
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE);
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of());
+	}
+
+	@And("a StatePersistenceStrategy POSTGRES")
+	public void aStatePersistenceStrategyStatePersistenceStrategy() {
+		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
+				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.POSTGRES,
+				postgresProperties.getProperties());
+		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties());
 	}
 
 	@And("a StatePersistenceStrategy FILE")
 	public void aFileStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.FILE);
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.FILE, Map.of());
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE);
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE, Map.of());
 	}
 
 	@Then("MemberSupplier is destroyed")
@@ -101,5 +115,22 @@ public class MemberSupplierSteps {
 	@When("I create a MemberSupplier without state")
 	public void iCreateAMemberSupplierWithoutState() {
 		memberSupplier = new MemberSupplier(treeNodeProcessor, false);
+	}
+
+	@And("Postgres TestContainer is started")
+	public void postgresTestcontainerIsStarted() {
+		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
+				.withDatabaseName("integration-test-client-persistence")
+				.withUsername("sa")
+				.withPassword("sa");
+		postgreSQLContainer.start();
+	}
+
+	@And("Postgres TestContainer is stopped")
+	public void postgresTestContainerIsStopped() {
+		if (postgreSQLContainer != null) {
+			postgreSQLContainer.stop();
+			postgreSQLContainer = null;
+		}
 	}
 }

@@ -5,6 +5,8 @@ import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFact
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
+import java.util.Map;
+
 public class StatePersistence {
 
 	private final MemberRepository memberRepository;
@@ -15,10 +17,11 @@ public class StatePersistence {
 		this.treeNodeRecordRepository = treeNodeRecordRepository;
 	}
 
-	public static StatePersistence from(StatePersistenceStrategy statePersistenceStrategy) {
-		return new StatePersistence(MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy),
+	public static StatePersistence from(StatePersistenceStrategy statePersistenceStrategy,
+			Map<String, String> properties) {
+		return new StatePersistence(MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties),
 				TreeNodeRecordRepositoryFactory
-						.getTreeNodeRecordRepository(statePersistenceStrategy));
+						.getTreeNodeRecordRepository(statePersistenceStrategy, properties));
 	}
 
 	public MemberRepository getMemberRepository() {

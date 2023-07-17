@@ -11,6 +11,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,22 +19,22 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy.NO_AUTH;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.AUTH_TYPE;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.MAX_RETRIES;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.RETRIES_ENABLED;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.STATUSES_TO_RETRY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
 
 public class LdioLdesClientConfigurator implements LdioInputConfigurator {
 
 	public static final String DEFAULT_API_KEY_HEADER = "X-API-KEY";
 
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 
 	@Override
 	public LdiComponent configure(LdiAdapter adapter, ComponentExecutor componentExecutor,
 			ComponentProperties properties) {
 		RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(properties);
-		LdesClientRunner ldesClientRunner = new LdesClientRunner(requestExecutor, properties, componentExecutor);
+		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
+		LdesClientRunner ldesClientRunner = new LdesClientRunner(requestExecutor, properties, componentExecutor,
+				statePersistence);
 		return new LdioLdesClient(componentExecutor, ldesClientRunner);
 	}
 
