@@ -1,6 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
-public class InputComponentDefinition extends ComponentDefinition {
+import java.io.Serializable;
+
+public class InputComponentDefinition extends ComponentDefinition implements Serializable {
 	private ComponentDefinition adapter;
 
 	public ComponentDefinition getAdapter() {

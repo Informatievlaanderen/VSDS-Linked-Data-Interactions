@@ -2,12 +2,17 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.InputComponentDefinition;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PipelineConfig {
+@RedisHash("Pipeline")
+public class PipelineConfig implements Serializable {
 	public static final String PIPELINE_NAME = "pipeline.name";
+	@Id
 	private String name;
 	private String description;
 	private InputComponentDefinition input;

@@ -1,8 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class ComponentDefinition {
+public class ComponentDefinition implements Serializable {
 	private String name;
 	private ComponentProperties config = new ComponentProperties();
 

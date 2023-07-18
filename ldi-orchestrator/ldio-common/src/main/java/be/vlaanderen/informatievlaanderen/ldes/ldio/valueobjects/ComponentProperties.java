@@ -1,13 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ComponentProperties {
+public class ComponentProperties implements Serializable {
 	private final Map<String, String> config;
 
 	public ComponentProperties() {

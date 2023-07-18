@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.repository.ConfigRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.LdiSender;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
@@ -36,11 +37,15 @@ public class FlowAutoConfiguration {
 	private final ConfigurableApplicationContext configContext;
 	private final ApplicationEventPublisher eventPublisher;
 
+	private final ConfigRepository configRepository;
+
 	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
-			ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
+			ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher,
+			ConfigRepository configRepository) {
 		this.orchestratorConfig = orchestratorConfig;
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
+		this.configRepository = configRepository;
 	}
 
 	@PostConstruct
@@ -49,6 +54,7 @@ public class FlowAutoConfiguration {
 	}
 
 	public ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
+		configRepository.save(pipelineConfig);
 		List<LdiTransformer> ldiTransformers = pipelineConfig.getTransformers()
 				.stream()
 				.map(this::getLdioTransformer)
