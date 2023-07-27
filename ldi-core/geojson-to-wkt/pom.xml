@@ -13,7 +13,7 @@
 
     <properties>
         <jena-geosparql.version>4.7.0</jena-geosparql.version>
-        <org.geotools.version>29.1</org.geotools.version>
+        <org.geotools.version>29.2</org.geotools.version>
     </properties>
 
     <dependencies>
