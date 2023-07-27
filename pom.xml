@@ -60,7 +60,7 @@
         <relative-formatter-path>${maven.multiModuleProjectDirectory}</relative-formatter-path>
         <impsort-maven-plugin.version>1.9.0</impsort-maven-plugin.version>
 
-        <jena.version>4.8.0</jena.version>
+        <jena.version>4.9.0</jena.version>
 
         <!-- Testing -->
         <junit-jupiter.version>5.9.3</junit-jupiter.version>
