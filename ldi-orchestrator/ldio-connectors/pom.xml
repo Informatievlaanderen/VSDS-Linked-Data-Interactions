@@ -37,7 +37,7 @@
 
     <properties>
         <cucumber.version>7.13.0</cucumber.version>
-        <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
+        <junit-platform-suite.version>1.10.0</junit-platform-suite.version>
     </properties>
 
     <dependencies>
