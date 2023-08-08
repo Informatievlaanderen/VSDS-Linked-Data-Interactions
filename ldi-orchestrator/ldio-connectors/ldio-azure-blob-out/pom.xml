@@ -10,7 +10,7 @@
     </parent>
 
     <properties>
-        <azure-sdk.version>1.2.14</azure-sdk.version>
+        <azure-sdk.version>1.2.15</azure-sdk.version>
     </properties>
 
     <artifactId>ldio-azure-blob-out</artifactId>
