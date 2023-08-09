@@ -20,6 +20,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.ReactiveRedisOperations;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,16 +37,17 @@ public class FlowAutoConfiguration {
 	private final OrchestratorConfig orchestratorConfig;
 	private final ConfigurableApplicationContext configContext;
 	private final ApplicationEventPublisher eventPublisher;
-
 	private final ConfigRepository configRepository;
+	private final ReactiveRedisOperations<String, String> redisTemplate;
 
 	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
 			ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher,
-			ConfigRepository configRepository) {
+			ConfigRepository configRepository, ReactiveRedisOperations<String, String> redisTemplate) {
 		this.orchestratorConfig = orchestratorConfig;
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
 		this.configRepository = configRepository;
+		this.redisTemplate = redisTemplate;
 	}
 
 	@PostConstruct
@@ -67,7 +69,7 @@ public class FlowAutoConfiguration {
 		LdiSender ldiSender = new LdiSender(eventPublisher, ldiOutputs);
 		registerBean(pipelineConfig.getName() + "-ldiSender", ldiSender);
 
-		return new ComponentExecutorImpl(ldiTransformers, ldiSender);
+		return new ComponentExecutorImpl(ldiTransformers, ldiSender, redisTemplate);
 	}
 
 	public void initialiseLdiInput(PipelineConfig config) {
