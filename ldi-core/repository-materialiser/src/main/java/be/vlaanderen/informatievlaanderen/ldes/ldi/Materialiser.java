@@ -57,7 +57,7 @@ public class Materialiser {
 	 *            A graph
 	 * @return A set of subject URIs.
 	 */
-	protected Set<Resource> getSubjectsFromModel(Model model) {
+	private Set<Resource> getSubjectsFromModel(Model model) {
 		Set<Resource> entityIds = new HashSet<>();
 
 		model.listStatements().forEach(statement -> {
@@ -77,7 +77,7 @@ public class Materialiser {
 	 * @param connection
 	 *            The DB connection.
 	 */
-	protected void deleteEntitiesFromRepo(Set<Resource> entityIds, RDFConnection connection) {
+	private void deleteEntitiesFromRepo(Set<Resource> entityIds, RDFConnection connection) {
 		Deque<Resource> subjectStack = new ArrayDeque<>();
 		entityIds.forEach(subjectStack::push);
 
@@ -102,7 +102,7 @@ public class Materialiser {
 		}
 	}
 
-	private static String constructRDF4JSparqlEndpoint(String hostUrl, String repositoryId) {
+	protected static String constructRDF4JSparqlEndpoint(String hostUrl, String repositoryId) {
 		return hostUrl + "/repositories/" + repositoryId + "/statements";
 	}
 }

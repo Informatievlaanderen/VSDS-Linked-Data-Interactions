@@ -13,7 +13,7 @@ public class LdioRepositoryMaterialiser implements LdiOutput {
 
 	public LdioRepositoryMaterialiser(ComponentProperties config) {
 		this.materialiser = new Materialiser(config.getProperty(SPARQL_HOST), config.getProperty(REPOSITORY_ID),
-				config.getProperty(NAMED_GRAPH));
+				config.getOptionalProperty(NAMED_GRAPH).orElse(""));
 		materialiser.initConnection();
 	}
 

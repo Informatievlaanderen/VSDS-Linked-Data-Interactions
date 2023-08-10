@@ -13,10 +13,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser.constructRDF4JSparqlEndpoint;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class MaterialiserTest {
+	private String person1 = "http://somewhere/MattJones/";
+	private String person2 = "http://somewhere/SarahJones/";
+	private String person4 = "http://somewhere/DickJones/";
 	private RDFConnectionRemoteBuilder mockBuilder;
 	private RDFConnectionRemote mockConnection;
 	private Materialiser materialiser;
@@ -27,16 +32,16 @@ class MaterialiserTest {
 		mockConnection = mock(RDFConnectionRemote.class);
 		materialiser = new Materialiser("", "");
 		when(mockBuilder.build()).thenReturn(mockConnection);
-		when(mockConnection.fetch("http://somewhere/MattJones/"))
+		when(mockConnection.fetch(person1))
 				.thenReturn(readModelFromFile("src/test/resources/id1.nq"));
-		when(mockConnection.fetch("http://somewhere/DickJones/"))
+		when(mockConnection.fetch(person4))
 				.thenReturn(readModelFromFile("src/test/resources/id4.nq"));
-		when(mockConnection.fetch("http://somewhere/SarahJones/"))
+		when(mockConnection.fetch(person2))
 				.thenReturn(readModelFromFile("src/test/resources/id2.nq"));
 		when(mockConnection.fetch(matches("^(?!(?:http)).*$")))
 				.thenReturn(readModelFromFile("src/test/resources/id3.nq"));
 
-		materialiser.builder = mockBuilder;
+		materialiser.setConnectionBuilder(mockBuilder);
 	}
 
 	@Test
@@ -59,14 +64,22 @@ class MaterialiserTest {
 
 		materialiser.process(model);
 
-		verify(mockConnection).fetch("http://somewhere/DickJones/");
-		verify(mockConnection).fetch("http://somewhere/SarahJones/");
-		verify(mockConnection).delete("http://somewhere/DickJones/");
-		verify(mockConnection).delete("http://somewhere/SarahJones/");
+		verify(mockConnection).fetch(person4);
+		verify(mockConnection).fetch(person2);
+		verify(mockConnection).delete(person4);
+		verify(mockConnection).delete(person2);
 		verify(mockConnection).load(model);
 		verify(mockConnection).commit();
 		verify(mockConnection).close();
 		verifyNoMoreInteractions(mockConnection);
+	}
+
+	@Test
+	void when_ReceiveHostUrlAndRepoId_Then_ConstructSparqlEndpoint() {
+		String hostUrl = "http://host";
+		String repoId = "id";
+
+		assertEquals("http://host/repositories/id/statements", constructRDF4JSparqlEndpoint(hostUrl, repoId));
 	}
 
 	private Model readModelFromFile(String path) throws IOException {
