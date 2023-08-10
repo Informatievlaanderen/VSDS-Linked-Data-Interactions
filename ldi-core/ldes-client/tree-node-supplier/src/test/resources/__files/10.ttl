@@ -1,0 +1,541 @@
+@prefix adms:             <http://www.w3.org/ns/adms#> .
+@prefix consequencetypes: <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/mobility-hindrance/consequencetypes/> .
+@prefix core:             <http://www.w3.org/2004/02/skos/core#> .
+@prefix dc:               <http://purl.org/dc/elements/1.1/> .
+@prefix geosparql:        <http://www.opengis.net/ont/geosparql#> .
+@prefix gipod:            <https://gipod.vlaanderen.be/ns/gipod#> .
+@prefix ldes:             <https://w3id.org/ldes#> .
+@prefix locn:             <http://www.w3.org/ns/locn#> .
+@prefix m8g:              <http://data.europa.eu/m8g/> .
+@prefix org:              <http://www.w3.org/ns/org#> .
+@prefix organisations:    <https://private-api.gipod.vlaanderen.be/api/v1/organisations/> .
+@prefix prov:             <http://www.w3.org/ns/prov#> .
+@prefix rdf:              <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix statuses:         <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/statuses/> .
+@prefix terms:            <http://purl.org/dc/terms/> .
+@prefix tree:             <https://w3id.org/tree#> .
+@prefix zones:            <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590535/zones/> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590590/zones/5731cb0c-3357-4b32-bc40-779d0bb70963>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> MULTIPOLYGON (((138225.650190721 210455.811403548, 138226.042113978 210455.822076783, 138226.424424294 210455.90900537, 138226.782429698 210456.06884869, 138227.102372244 210456.295464056, 138227.371956719 210456.580142765, 138227.580823144 210456.911944775, 138227.720944897 210457.27811912, 138227.786937179 210457.664593926, 138227.776263944 210458.056517182, 138227.689335358 210458.438827498, 138227.529492037 210458.796832902, 138227.302876672 210459.116775448, 138227.018197962 210459.386359924, 138226.686395953 210459.595226348, 138224.896908587 210460.48997003, 138224.530734242 210460.630091784, 138224.144259436 210460.696084066, 138223.75233618 210460.685410831, 138223.370025864 210460.598482244, 138223.01202046 210460.438638924, 138222.692077914 210460.212023558, 138222.422493438 210459.927344849, 138222.213627014 210459.595542839, 138222.073505261 210459.229368494, 138222.007512979 210458.842893689, 138222.018186214 210458.450970432, 138222.1051148 210458.068660116, 138222.264958121 210457.710654712, 138222.491573486 210457.390712166, 138222.776252196 210457.12112769, 138223.108054205 210456.912261266, 138224.897541571 210456.017517584, 138225.263715916 210455.87739583, 138225.650190721 210455.811403548)), ((138219.33455301 210444.929775539, 138219.726621406 210444.93013488, 138220.111086215 210445.006976066, 138220.473172668 210445.157346133, 138220.798965986 210445.375466445, 138221.075946116 210445.652954759, 138221.293468865 210445.979147356, 138221.443174957 210446.341508837, 138221.519311271 210446.726113853, 138221.51895193 210447.11818225, 138221.442110744 210447.502647058, 138221.291740676 210447.864733512, 138221.073620365 210448.19052683, 138220.79613205 210448.46750696, 138220.469939454 210448.685029709, 138218.233080247 210449.878021286, 138217.870718766 210450.027727378, 138217.48611375 210450.103863691, 138217.094045353 210450.103504351, 138216.709580545 210450.026663164, 138216.347494092 210449.876293097, 138216.021700773 210449.658172785, 138215.744720643 210449.380684471, 138215.527197894 210449.054491874, 138215.377491802 210448.692130393, 138215.301355489 210448.307525377, 138215.301714829 210447.91545698, 138215.378556016 210447.530992172, 138215.528926083 210447.168905719, 138215.747046395 210446.8431124, 138216.024534709 210446.566132271, 138216.350727306 210446.348609521, 138218.587586512 210445.155617944, 138218.949947993 210445.005911852, 138219.33455301 210444.929775539)))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590460/zones/8e762d54-dc0a-466f-9e34-672ffb00b41c>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((66997.8263678326 210458.209941162, 66999.8263678326 210458.209941162, 66999.8263678326 210473.209941162, 66997.8263678326 210473.209941162, 66998.2298720442 210469.885411681, 66997.8263678326 210458.209941162))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/events/9197063>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Evenement> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590495/973> ;
+        gipod:gipodId  9197063 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590581/zones/98927785-e753-4a0a-8361-1efc85cd0b65>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((157720.315653858 190282.239878826, 157705.99977314 190293.519079363, 157703.396894011 190290.699276954, 157717.278964575 190279.203162237, 157720.315653858 190282.239878826))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#gevolg>
+                consequencetypes:e4ea1344-aa27-40e8-b5af-94ec5f7956f8 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590515/1073>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:0ab5d91f-03ca-035d-b829-657437c7f2c2 ;
+                                core:prefLabel     "Stad Eeklo"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:0ab5d91f-03ca-035d-b829-657437c7f2c2 ;
+                                core:prefLabel     "Stad Eeklo"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T13:24:38.227Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "9900 Eeklo, Moeie 29: nutswerken"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590515> ;
+        terms:modified        "2021-01-06T13:34:42.187Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590515"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:05:22.14Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:0ab5d91f-03ca-035d-b829-657437c7f2c2 ;
+                  core:prefLabel     "Stad Eeklo"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-02-26T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-01-08T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590515/zones/94febc33-2595-4fc7-9df3-1b2fd0e35ce1> ;
+        gipod:gipodId         10590515 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590348/zones/cb18163f-6ca5-4b90-b27e-85ab438c558d>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((121375.213186373 204233.932491256, 121375.490501848 204232.971712339, 121384.1375121 204235.467551618, 121383.860196625 204236.428330535, 121375.213186373 204233.932491256))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590581/1399>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:052b1b04-8a14-0c38-8770-01e8d6a36f76 ;
+                                core:prefLabel     "Stad Mechelen"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:052b1b04-8a14-0c38-8770-01e8d6a36f76 ;
+                                core:prefLabel     "Stad Mechelen"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T12:50:10.47Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "2800 Mechelen, Onze-Lieve-Vrouwekerkhof  5: Container"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590581> ;
+        terms:modified        "2021-01-06T12:50:10.47Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590581"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:05:40.777Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:052b1b04-8a14-0c38-8770-01e8d6a36f76 ;
+                  core:prefLabel     "Stad Mechelen"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-09-30T16:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-01-09T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590581/zones/98927785-e753-4a0a-8361-1efc85cd0b65> ;
+        gipod:gipodId         10590581 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250>
+        core:prefLabel  "HinderZone"@nl-BE .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/1313>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:760bb1a4-bc1c-0bb8-868d-c0b6fd937233 ;
+                                core:prefLabel     "Gemeente Brasschaat"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:760bb1a4-bc1c-0bb8-868d-c0b6fd937233 ;
+                                core:prefLabel     "Gemeente Brasschaat"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T12:58:25.483Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "2930 Brasschaat, Kasteellei 27: Huisaansluitingen/herstel kolken"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560> ;
+        terms:modified        "2021-01-06T13:03:51.107Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590560"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:05:35.713Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:760bb1a4-bc1c-0bb8-868d-c0b6fd937233 ;
+                  core:prefLabel     "Gemeente Brasschaat"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-01-22T15:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-01-11T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7> ;
+        gipod:gipodId         10590560 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590495/zones/317e0d17-1a07-4ad9-b19f-7780ea2e25f0>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((95546.9552656286 159461.9612512481, 95547.04574184009 159461.96319760388, 95547.13603738231 159461.96923483865, 95547.22596738115 159461.97935059154, 95547.31534771094 159461.99352415127, 95547.40399537141 159462.0117264984, 95547.4917288624 159462.03392036483, 95547.57836855543 159462.06006031015, 95547.6637370615 159462.09009281447, 95547.74765959433 159462.12395638833, 95547.82996432808 159462.16158169828, 95547.91048274934 159462.20289170902, 95547.98905000198 159462.24780184106, 95548.06550522482 159462.29622014388, 95548.13969188088 159462.34804748427, 95548.21145807793 159462.4031777492, 95548.28065687948 159462.4614980631, 95548.34714660558 159462.52288901902, 95548.41079112295 159462.5872249231, 95548.47146012372 159462.65437405187, 95548.52902939213 159462.72419892196, 95548.58338105895 159462.79655657161, 95548.63440384278 159462.87129885334, 95548.68199327785 159462.94827273735, 95548.72605192798 159463.0273206247, 95548.76648958602 159463.10828067016, 95548.80322345858 159463.19098711343, 95548.83617833549 159463.27527061853, 95548.86528674384 159463.36095862067, 95548.89048908609 159463.44787567938, 95548.91173376216 159463.53584383774, 95548.92897727496 159463.62468298685, 95548.94218431957 159463.71421123447, 95548.95188662251 159463.81151022573, 95548.95682172895 159463.909167141, 95548.95697784246 159464.00694855035, 95548.95235458991 159464.1046207261, 95548.94296302229 159464.2019502018, 95548.9288255883 159464.29870433008, 95548.90997608079 159464.3946518389, 95548.88645955584 159464.4895633842, 95548.85833222518 159464.5832120983, 95548.82566132175 159464.67537413197, 95548.78852493908 159464.76582918965, 95548.7470118445 159464.854361056, 95548.70122126705 159464.94075811267, 95548.6512626603 159465.02481384412, 95548.59725544063 159465.1063273314, 95548.53932870191 159465.18510373216, 95548.47762090682 159465.26095474671, 95548.41227955594 159465.33369906776, 95548.34346083515 159465.40316281407, 95548.27132924236 159465.46917994594, 95548.1960571942 159465.53159266216, 95548.11782461399 159465.59025177718, 95548.03681850163 159465.6450170777, 95547.9532324866 159465.6957576578, 95547.86726636514 159465.742352232, 95547.77912562268 159465.78468942485, 95547.68902094265 159465.82266803752, 95547.59716770294 159465.85619728942, 95547.50378546097 159465.88519703542, 95547.409097429 159465.90959795713, 95547.31332994049 159465.9293417289, 95547.21671190913 159465.94438115705, 95547.20453876552 159465.94593431955, 95517.57953876552 159469.63343431955, 95517.56735632104 159469.6349127598, 95517.4699996292 159469.6440178647, 95517.37231427104 159469.64835366668, 95517.27453374452 159469.6479098018, 95517.17689177516 159469.6426873311, 95517.07962175725 159469.6326987378, 95516.98295619599 159469.6179678978, 95516.88712615176 159469.59853002228, 95516.7923606878 159469.5744315737, 95516.69888632269 159469.54573015484, 95516.60692648884 159469.51249437084, 95516.51670099849 159469.47480366545, 95516.42842551829 159469.43274813102, 95516.34231105374 159469.3864282932, 95516.25856344485 159469.33595487062, 95516.17738287413 159469.28144851027, 95516.09896338807 159469.2230394991, 95516.02349243332 159469.16086745256, 95515.95115040865 159469.09508098094, 95515.88211023371 159469.02583733413, 95515.81653693572 159468.95330202568, 95515.754587255 159468.87764843728, 95515.6964092703 159468.79905740422, 95515.64214204489 159468.7177167832, 95515.59191529409 159468.6338210033, 95515.54584907526 159468.5475706012, 95515.50405350082 159468.45917174182, 95515.46662847501 159468.36883572562, 95515.43366345516 159468.27677848338, 95515.40523723776 159468.18322006022, 95515.38141777022 159468.08838408947, 95515.36226198838 159467.99249725824, 95515.34781568043 159467.8957887655, 95515.3381133775 159467.79848977426, 95515.33317827106 159467.70083285897, 95515.33302215755 159467.60305144964, 95515.3376454101 159467.50537927388, 95515.34703697772 159467.4080497982, 95515.36117441171 159467.3112956699, 95515.38002391922 159467.2153481611, 95515.40354044417 159467.12043661578, 95515.43166777483 159467.02678790168, 95515.46433867826 159466.93462586802, 95515.50147506093 159466.84417081033, 95515.5429881555 159466.75563894399, 95515.58877873296 159466.6692418873, 95515.6387373397 159466.58518615586, 95515.69274455938 159466.5036726686, 95515.7506712981 159466.42489626782, 95515.81237909319 159466.34904525327, 95515.87772044407 159466.27630093222, 95515.94653916486 159466.20683718592, 95516.01867075765 159466.14082005405, 95516.0939428058 159466.07840733783, 95516.17217538602 159466.0197482228, 95516.25318149838 159465.96498292228, 95516.3367675134 159465.91424234217, 95516.42273363487 159465.867647768, 95516.51087437733 159465.82531057514, 95516.60097905736 159465.78733196246, 95516.69283229706 159465.75380271056, 95516.78621453904 159465.72480296457, 95516.880902571 159465.70040204286, 95516.97667005952 159465.6806582711, 95517.07328809088 159465.66561884293, 95517.08546123448 159465.66406568044, 95546.71046123448 159461.97656568044, 95546.72264367896 159461.9750872402, 95546.83875296728 159461.9647783267, 95546.9552656286 159461.9612512481))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/events/9196920>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Evenement> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590590/1444> ;
+        gipod:gipodId  9196920 .
+
+zones:cc387acc-218f-4c80-9175-7ef973c1739f
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((189253.57923384116 223748.99448567163, 189254.14901808344 223743.5269308407, 189251.65721345745 223743.2685189573, 189251.08743182293 223748.73607431352, 189250.51765134826 223754.20362397656, 189249.94787203366 223759.67116794921, 189252.43966883677 223759.92957825586, 189253.00945075898 223754.46203480847, 189253.57923384116 223748.99448567163))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590350/139>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:854d962b-03c6-0f1a-a088-1c2cedaa8f67 ;
+                                core:prefLabel     "Stad Aalst"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:854d962b-03c6-0f1a-a088-1c2cedaa8f67 ;
+                                core:prefLabel     "Stad Aalst"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T16:03:21.373Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "9300 Aalst, Molenstraat 40A: Werf met combinatie van types"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590350> ;
+        terms:modified        "2021-01-06T16:03:21.373Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590350"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:04:19.533Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:854d962b-03c6-0f1a-a088-1c2cedaa8f67 ;
+                  core:prefLabel     "Stad Aalst"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-02-14T21:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-02-01T05:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590350/zones/bdcf99d7-0402-45c8-b1e0-7eb3af0b5ba0> ;
+        gipod:gipodId         10590350 .
+
+<http://localhost:10101/mobility-hindrances/pagination10?pageNumber=1>
+        rdf:type        tree:Node ;
+        terms:isPartOf  <http://localhost:10101/mobility-hindrances> ;
+        tree:relation   [ rdf:type   tree:Relation ;
+                          tree:node  <http://localhost:10101/mobility-hindrances/pagination10?pageNumber={{math request.query.pageNumber '+' 1}}>
+                        ] .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/events/9197182>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Evenement> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590420/576> ;
+        gipod:gipodId  9197182 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/events/9197000>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Evenement> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590535/1182> ;
+        gipod:gipodId  9197000 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/events/9197333>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Evenement> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590350/139> ;
+        gipod:gipodId  9197333 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590515/zones/94febc33-2595-4fc7-9df3-1b2fd0e35ce1>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> MULTIPOLYGON (((93316.0097874294 208436.848029878, 93316.2046132163 208436.869763537, 93316.3914554539 208436.929088215, 93316.5631338996 208437.023724099, 93316.7130510471 208437.150034384, 93316.8354456645 208437.303165037, 93316.9256141953 208437.477231332, 93316.9800915134 208437.665544, 93316.996784086 208437.860866291, 93316.9750504269 208438.055692078, 93316.9157257485 208438.242534316, 93316.8210898649 208438.414212761, 93316.69477958 208438.564129909, 93316.5416489272 208438.686524526, 93316.3675826316 208438.776693057, 93316.1792699634 208438.831170375, 93198.8187235893 208460.603266653, 93198.6234012987 208460.619959225, 93198.4285755118 208460.598225566, 93198.2417332742 208460.538900888, 93198.0700548285 208460.444265004, 93197.920137681 208460.317954719, 93197.7977430636 208460.164824067, 93197.7075745328 208459.990757771, 93197.6530972148 208459.802445103, 93197.6364046421 208459.607122812, 93197.6581383012 208459.412297025, 93197.7174629796 208459.225454788, 93197.8120988632 208459.053776342, 93197.9384091481 208458.903859195, 93198.0915398009 208458.781464577, 93198.2656060965 208458.691296046, 93198.4539187647 208458.636818728, 93315.8144651388 208436.864722451, 93316.0097874294 208436.848029878)), ((93384.3064675867 208424.172469579, 93384.5013383238 208424.193796441, 93384.6883040101 208424.252730907, 93384.8601796591 208424.34700816, 93385.010360186 208424.473005178, 93385.1330742373 208424.625879966, 93385.223605981 208424.799757632, 93385.2784763328 208424.987956154, 93385.295576656 208425.183243169, 93385.2742497946 208425.378113906, 93385.215315328 208425.565079592, 93385.1210380748 208425.736955241, 93384.9950410568 208425.887135768, 93384.8421662688 208426.009849819, 93384.6682886033 208426.100381563, 93384.4800900813 208426.155251915, 93331.2428409637 208436.146556371, 93331.0475539489 208436.163656694, 93330.8526832118 208436.142329833, 93330.6657175255 208436.083395366, 93330.4938418765 208435.989118113, 93330.3436613497 208435.863121095, 93330.2209472983 208435.710246307, 93330.1304155546 208435.536368642, 93330.0755452028 208435.34817012, 93330.0584448797 208435.152883105, 93330.079771741 208434.958012368, 93330.1387062076 208434.771046681, 93330.2329834609 208434.599171032, 93330.3589804788 208434.448990506, 93330.5118552668 208434.326276454, 93330.6857329323 208434.23574471, 93330.8739314543 208434.180874359, 93384.111180572 208424.189569902, 93384.3064675867 208424.172469579)), ((93449.2401649016 208398.525797627, 93449.4361398835 208398.530619003, 93449.6274086572 208398.57358056, 93449.8066208711 208398.653031309, 93449.9668895002 208398.765918003, 93450.1020555111 208398.90790247, 93450.2069245497 208399.073528325, 93450.2774665577 208399.25643066, 93450.3109706452 208399.449580642, 93450.3061492691 208399.645555624, 93450.263187712 208399.836824397, 93450.1837369626 208400.016036611, 93450.0708502685 208400.17630524, 93449.9288658021 208400.311471251, 93449.7632399468 208400.41634029, 93449.5803376113 208400.486882298, 93411.851978993 208410.925558595, 93411.6588290116 208410.959062683, 93411.4628540297 208410.954241307, 93411.271585256 208410.91127975, 93411.0923730421 208410.831829, 93410.932104413 208410.718942306, 93410.7969384021 208410.57695784, 93410.6920693635 208410.411331985, 93410.6215273555 208410.228429649, 93410.5880232679 208410.035279668, 93410.5928446441 208409.839304686, 93410.6358062011 208409.648035912, 93410.7152569506 208409.468823698, 93410.8281436447 208409.308555069, 93410.9701281111 208409.173389058, 93411.1357539664 208409.06852002, 93411.3186563018 208408.997978012, 93449.0470149202 208398.559301714, 93449.2401649016 208398.525797627)), ((93481.4433998482 208398.228133993, 93481.6394056799 208398.231473624, 93481.8309937848 208398.272987926, 93482.0108015393 208398.351081528, 93482.1719190325 208398.462753335, 93482.3081546092 208398.603711864, 93482.4142728129 208398.768540157, 93482.4861955803 208398.950903955, 93482.5211589598 208399.143795119, 93482.5178193285 208399.339800951, 93482.4763050264 208399.531389055, 93482.398211425 208399.71119681, 93482.2865396174 208399.872314303, 93482.1455810887 208400.00854988, 93481.9807527961 208400.114668084, 93481.7983889984 208400.186590851, 93409.0259028096 208420.914819499, 93408.8330116453 208420.949782879, 93408.6370058136 208420.946443247, 93408.4454177087 208420.904928945, 93408.2656099542 208420.826835344, 93408.104492461 208420.715163536, 93407.9682568843 208420.574205007, 93407.8621386806 208420.409376715, 93407.7902159132 208420.227012917, 93407.7552525336 208420.034121753, 93407.758592165 208419.838115921, 93407.800106467 208419.646527816, 93407.8782000685 208419.466720062, 93407.989871876 208419.305602568, 93408.1308304047 208419.169366992, 93408.2956586974 208419.063248788, 93408.4780224951 208418.991326021, 93481.2505086839 208398.263097373, 93481.4433998482 208398.228133993)))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590348/117>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:eef6687d-ac2d-06be-af05-87620d4ad3a4 ;
+                                core:prefLabel     "Stad Lokeren"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:eef6687d-ac2d-06be-af05-87620d4ad3a4 ;
+                                core:prefLabel     "Stad Lokeren"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T16:10:41.617Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "9160 Lokeren, Eksaarde-dorp 74: Stelling"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590348> ;
+        terms:modified        "2021-01-06T16:20:02.927Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590348"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:04:18.51Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:eef6687d-ac2d-06be-af05-87620d4ad3a4 ;
+                  core:prefLabel     "Stad Lokeren"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-01-18T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2020-12-07T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590348/zones/cb18163f-6ca5-4b90-b27e-85ab438c558d> ;
+        gipod:gipodId         10590348 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/events/9197118>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Evenement> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590460/809> ;
+        gipod:gipodId  9197118 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590535/1182>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:cd3dafb5-a73b-03ff-8b7d-13803fee79cd ;
+                                core:prefLabel     "Stad Turnhout"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:cd3dafb5-a73b-03ff-8b7d-13803fee79cd ;
+                                core:prefLabel     "Stad Turnhout"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T13:13:43.9Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "Vrachtwagen/werfwagen Kleine vrachtwagen voor verhuis"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590535> ;
+        terms:modified        "2021-01-06T14:32:46.257Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590535"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:05:28.32Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:cd3dafb5-a73b-03ff-8b7d-13803fee79cd ;
+                  core:prefLabel     "Stad Turnhout"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-01-17T17:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-01-16T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                zones:cc387acc-218f-4c80-9175-7ef973c1739f ;
+        gipod:gipodId         10590535 .
+
+statuses:a411c53e-db33-436a-9bb9-d62d535b661d
+        core:prefLabel  "Onbekend"@nl-BE .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/events/9196957>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Evenement> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/1313> ;
+        gipod:gipodId  9196957 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590590/1444>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:6d015497-c7aa-0966-9259-00512db31fdd ;
+                                core:prefLabel     "Gemeente Beveren"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:6d015497-c7aa-0966-9259-00512db31fdd ;
+                                core:prefLabel     "Gemeente Beveren"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T12:43:35.957Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "9120 Beveren, Kriekelaarstraat 66: Wegenwerken (4-3b)"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590590> ;
+        terms:modified        "2021-01-06T12:43:35.957Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590590"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:05:42.943Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:6d015497-c7aa-0966-9259-00512db31fdd ;
+                  core:prefLabel     "Gemeente Beveren"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-01-27T20:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-01-20T07:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590590/zones/5731cb0c-3357-4b32-bc40-779d0bb70963> ;
+        gipod:gipodId         10590590 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590460/809>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:403bce42-4e39-0f0f-8add-2634e6ce7e21 ;
+                                core:prefLabel     "Politiezone Brugge"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:403bce42-4e39-0f0f-8add-2634e6ce7e21 ;
+                                core:prefLabel     "Politiezone Brugge"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T14:10:39.96Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "8200 Brugge, Albert Serreynstraat 10: Inname openbaar domein met lichte hinder"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590460> ;
+        terms:modified        "2021-01-06T14:22:00.49Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590460"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:05:00.03Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:403bce42-4e39-0f0f-8add-2634e6ce7e21 ;
+                  core:prefLabel     "Politiezone Brugge"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-01-15T21:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-01-13T05:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590460/zones/8e762d54-dc0a-466f-9e34-672ffb00b41c> ;
+        gipod:gipodId         10590460 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/works/9196933>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Werk> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590581/1399> ;
+        gipod:gipodId  9196933 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590495/973>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:94204bd6-a6e5-0207-b722-643889e41d15 ;
+                                core:prefLabel     "Stad Ronse"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:94204bd6-a6e5-0207-b722-643889e41d15 ;
+                                core:prefLabel     "Stad Ronse"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T13:38:39.21Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "9600 Ronse - Pierre D'Hauwerstraat 5 - parkeerverbod"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590495> ;
+        terms:modified        "2021-01-06T13:39:23.79Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590495"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:05:11.813Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:94204bd6-a6e5-0207-b722-643889e41d15 ;
+                  core:prefLabel     "Stad Ronse"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-01-21T17:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-01-21T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590495/zones/317e0d17-1a07-4ad9-b19f-7780ea2e25f0> ;
+        gipod:gipodId         10590495 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/works/9197034>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Werk> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590515/1073> ;
+        gipod:gipodId  9197034 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590420/576>
+        rdf:type              <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+        dc:contributor        [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:e1fa3e12-2627-0af5-8c17-436a85a834d9 ;
+                                core:prefLabel     "Gemeente Beernem"^^rdf:langString
+                              ] ;
+        dc:creator            [ rdf:type           org:Organization ;
+                                terms:isVersionOf  organisations:e1fa3e12-2627-0af5-8c17-436a85a834d9 ;
+                                core:prefLabel     "Gemeente Beernem"^^rdf:langString
+                              ] ;
+        terms:created         "2021-01-06T14:40:20.94Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        terms:description     "8730 Beernem, Wingene Steenweg 23: Inname voetpad en fietspad voor wegenwerken - herstel riolering en voetpad"^^rdf:langString ;
+        terms:isVersionOf     <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590420> ;
+        terms:modified        "2021-01-06T14:41:39.95Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        adms:identifier       [ rdf:type           adms:Identifier ;
+                                core:notation      "10590420"^^gipod:gipodId ;
+                                adms:schemaAgency  "https://gipod.vlaanderen.be"@nl-BE
+                              ] ;
+        adms:versionNotes     "MobilityHindranceWasImportedFromLegacy"@nl-BE ;
+        prov:generatedAtTime  "2021-01-06T18:04:46.567Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.status>
+                statuses:a411c53e-db33-436a-9bb9-d62d535b661d ;
+        <https://data.vlaanderen.be/ns/mobiliteit#beheerder>
+                [ rdf:type           org:Organization ;
+                  terms:isVersionOf  organisations:e1fa3e12-2627-0af5-8c17-436a85a834d9 ;
+                  core:prefLabel     "Gemeente Beernem"^^rdf:langString
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#periode>
+                [ rdf:type       m8g:PeriodOfTime ;
+                  m8g:endTime    "2021-01-18T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+                  m8g:startTime  "2021-01-11T05:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+                ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#zone>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590420/zones/7709fec1-047d-4771-83d9-c83c457ac7c5> ;
+        gipod:gipodId         10590420 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/works/9197339>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Werk> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
+                <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590348/117> ;
+        gipod:gipodId  9197339 .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((156569.258415376 218419.123817213, 156570.525968926 218419.981279909, 156573.583009842 218414.277288932, 156572.203613331 218413.49438821, 156569.258415376 218419.123817213))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590350/zones/bdcf99d7-0402-45c8-b1e0-7eb3af0b5ba0>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((126976.20760756 181030.537122162, 126995.146348843 181035.756460311, 126995.891968578 181033.072229263, 126976.953227296 181027.703767167, 126976.20760756 181030.537122162))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
+
+consequencetypes:e4ea1344-aa27-40e8-b5af-94ec5f7956f8
+        core:prefLabel  "Geen doorgang voor voetgangers"@nl-BE .
+
+<http://localhost:10101/mobility-hindrances>
+        rdf:type     ldes:EventStream ;
+        tree:member  <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590515/1073> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590348/117> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590420/576> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/1313> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590350/139> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590535/1182> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590495/973> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590581/1399> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590590/1444> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590460/809> .
+
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590420/zones/7709fec1-047d-4771-83d9-c83c457ac7c5>
+        rdf:type       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
+        locn:geometry  [ rdf:type         locn:Geometry ;
+                         geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((77072.23660894507 202169.48247884715, 77078.3143381737 202166.142102887, 77064.36286635812 202136.0787124195, 77057.80141268537 202139.18049324988, 77072.23660894507 202169.48247884715))"^^geosparql:wktLiteral
+                       ] ;
+        <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
+                <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> ;
+        <https://data.vlaanderen.be/ns/mobiliteit#gevolg>
+                consequencetypes:e4ea1344-aa27-40e8-b5af-94ec5f7956f8 .

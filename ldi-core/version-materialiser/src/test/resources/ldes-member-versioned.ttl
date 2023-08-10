@@ -20,9 +20,9 @@ ent:0fb72ef7-6ac9-4a70-b295-a30ea215d250
         skos:prefLabel  "HinderZone"@nl-BE .
 
 <https://private-api.gipod.vlaanderen.be/api/v1/ldes/mobility-hindrances>
-        tree:member  <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/1313> .
+        tree:member  <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/1313> .
 
-<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7>
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7>
         rdf:type        mobi:Zone ;
         locn:geometry   [ rdf:type   locn:Geometry ;
                           geo:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((156569.258415376 218419.123817213, 156570.525968926 218419.981279909, 156573.583009842 218414.277288932, 156572.203613331 218413.49438821, 156569.258415376 218419.123817213))"^^geo:wktLiteral
@@ -31,13 +31,13 @@ ent:0fb72ef7-6ac9-4a70-b295-a30ea215d250
 
 <https://private-api.gipod.vlaanderen.be/api/v1/events/9196957>
         rdf:type                 mobi:Evenement ;
-        mobi:Inname.heeftGevolg  <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/1313> ;
+        mobi:Inname.heeftGevolg  <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/1313> ;
         ext:gipodId              9196957 .
 
 <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/statuses/a411c53e-db33-436a-9bb9-d62d535b661d>
         skos:prefLabel  "Onbekend"@nl-BE .
 
-<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/1313>
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/1313>
         rdf:type              mobi:Mobiliteitshinder ;
         dc:contributor        [ rdf:type         org:Organization ;
                                 dct:isVersionOf  <https://private-api.gipod.vlaanderen.be/api/v1/organisations/760bb1a4-bc1c-0bb8-868d-c0b6fd937233> ;
@@ -49,7 +49,7 @@ ent:0fb72ef7-6ac9-4a70-b295-a30ea215d250
                               ] ;
         dct:created           "2021-01-06T12:58:25.483Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
         dct:description       "2930 Brasschaat, Kasteellei 27: Huisaansluitingen/herstel kolken"^^rdf:langString ;
-        dct:isVersionOf       <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560> ;
+        dct:isVersionOf       <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560> ;
         dct:modified          "2021-01-06T13:03:51.107Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
         adms:identifier       [ rdf:type           adms:Identifier ;
                                 skos:notation      "10590560"^^ext:gipodId ;
@@ -65,5 +65,5 @@ ent:0fb72ef7-6ac9-4a70-b295-a30ea215d250
                                 m8g:endTime    "2021-01-22T15:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
                                 m8g:startTime  "2021-01-11T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
                               ] ;
-        mobi:zone             <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7> ;
+        mobi:zone             <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7> ;
         ext:gipodId           10590560 .
