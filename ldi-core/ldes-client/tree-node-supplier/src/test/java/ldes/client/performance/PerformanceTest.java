@@ -18,24 +18,20 @@ import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.ArgumentsProvider;
-import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class PerformanceTest {
 
     private static WireMockServer wireMockServer;
     private static final String CSV_PATH = "results.csv";
     private static CsvFile csvFile;
+    private static final int TEST_SIZE = 1000;
 
     @BeforeAll
     static void setUp() {
@@ -59,30 +55,20 @@ public class PerformanceTest {
      * grafiek van members/seconde op Y as en members processed op X -as
      */
     @ParameterizedTest
-    @ArgumentsSource(PerformanceArguments.class)
-    void performanceTest(TestScenario test, String url) {
-        final TreeNodeProcessor treeNodeProcessor = createTreeNodeProcessor(test.getPersistenceStrategy(), url);
+    @EnumSource(TestScenario.class)
+    void performanceTest(TestScenario test) {
+        final TreeNodeProcessor treeNodeProcessor =
+                createTreeNodeProcessor(test.getPersistenceStrategy(), test.getStartingEndpoint());
 
         LocalDateTime lastInterval = LocalDateTime.now();
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= TEST_SIZE; i++) {
             treeNodeProcessor.getMember();
-            if (i % 10 == 0) {
+            if (i % (TEST_SIZE / 20) == 0) {
                 int msIntervals = (int) ChronoUnit.MILLIS.between(lastInterval, lastInterval = LocalDateTime.now());
                 csvFile.addLine(i, msIntervals, test);
                 System.out.println(i + ": " + msIntervals);
             }
         }
-    }
-
-    static class PerformanceArguments implements ArgumentsProvider {
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(
-                    Arguments.of(TestScenario.SQLITE10, "http://localhost:10101/mobility-hindrances/pagination10?pageNumber=1")
-            );
-        }
-
     }
 
     private TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, String url) {
@@ -95,35 +81,6 @@ public class PerformanceTest {
         };
         final RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
         return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
-    }
-
-
-    @Test
-    void temp() {
-
-//        LocalDateTime start = LocalDateTime.now();
-//        for (int i = 0; i < 999_999; i++) {
-//            SuppliedMember member = treeNodeProcessor.getMember();
-//            if (i % 1000 == 0) {
-//                System.out.println(i);
-//            }
-//            String string = RDFWriter.source(member.getModel()).lang(Lang.TURTLE).asString();
-//            System.out.println(string);
-//        }
-//        LocalDateTime end = LocalDateTime.now();
-//        System.out.println("This took: " + ChronoUnit.SECONDS.between(start, end));
-
-
-//        RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
-//        Response response = requestExecutor.execute(new Request("http://localhost:10101/mobility-hindrances/pagination10?pageNumber=1", RequestHeaders.empty()));
-//        System.out.println(response.getBody());
-        //        Response response = requestExecutor.execute(new Request(URL, RequestHeaders.empty()));
-//        Model model = RDFParser.fromString(response.getBody().get()).lang(Lang.TURTLE).toModel();
-//        model.listStatements(null, RDF.type, model.createProperty("https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder"))
-//                .toList()
-//                .forEach(statement -> renameResource(statement.getSubject(), statement.getSubject().getURI() + "/{{request.query.pageNumber}}"));
-//        assertEquals(200, response.getHttpStatus());
-//        System.out.println(response.getBody());
     }
 
     private PostgreSQLContainer startPostgresContainer() {

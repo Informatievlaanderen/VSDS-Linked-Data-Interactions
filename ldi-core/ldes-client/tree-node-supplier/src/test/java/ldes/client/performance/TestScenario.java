@@ -4,14 +4,15 @@ import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 
 public enum TestScenario {
 
-    SQLITE10(StatePersistenceStrategy.SQLITE, 10),
-    MEMORY10(StatePersistenceStrategy.MEMORY, 10),
-    FILE10(StatePersistenceStrategy.POSTGRES, 10);
+    MEMORY10(StatePersistenceStrategy.MEMORY, FragmentSize.TEN),
+    POSTGRES10(StatePersistenceStrategy.POSTGRES, FragmentSize.TEN),
+    SQLITE10(StatePersistenceStrategy.SQLITE, FragmentSize.TEN),
+    FILE10(StatePersistenceStrategy.FILE, FragmentSize.TEN);
 
     private final StatePersistenceStrategy persistenceStrategy;
-    private final int fragmentSize;
+    private final FragmentSize fragmentSize;
 
-    TestScenario(StatePersistenceStrategy persistenceStrategy, int fragmentSize) {
+    TestScenario(StatePersistenceStrategy persistenceStrategy, FragmentSize fragmentSize) {
         this.persistenceStrategy = persistenceStrategy;
         this.fragmentSize = fragmentSize;
     }
@@ -20,8 +21,8 @@ public enum TestScenario {
         return persistenceStrategy;
     }
 
-    public int getFragmentSize() {
-        return fragmentSize;
+    public String getStartingEndpoint() {
+        return fragmentSize.getStartingEndpoint();
     }
 
 }

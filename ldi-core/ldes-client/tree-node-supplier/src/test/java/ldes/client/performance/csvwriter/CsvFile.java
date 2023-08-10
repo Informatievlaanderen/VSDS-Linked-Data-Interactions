@@ -31,8 +31,12 @@ public class CsvFile {
     }
 
     private static void setValueOnCsvLine(int value, TestScenario testType, CsvResultLine csvResultLine) {
+        String stringValue = String.valueOf(value);
         switch (testType) {
-            case SQLITE10 -> csvResultLine.setSqlite10(value);
+            case SQLITE10 -> csvResultLine.setSqlite10(stringValue);
+            case MEMORY10 -> csvResultLine.setMemory10(stringValue);
+            case FILE10 -> csvResultLine.setFile10(stringValue);
+            case POSTGRES10 -> csvResultLine.setPostgres10(stringValue);
         }
     }
 
