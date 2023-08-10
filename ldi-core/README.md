@@ -27,7 +27,7 @@ The SparqlConstructTransformer allows the user to transform its Linked Data base
 
 To support the creation of version objects, e.g. when transforming data in the [NGSI LD format](https://vloca-kennishub.vlaanderen.be/NGSI_(LD)) to LDES.
 
-## 4. Version be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser
+## 4. Version Materialiser
 
 As a counterpart to the Version Object Creator, this processor will turn a  [versioned LDES stream](https://w3id.org/ldes/specification#version-materializations) into an unversioned LDES stream.
 
