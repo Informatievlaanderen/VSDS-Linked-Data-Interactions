@@ -4,7 +4,8 @@ import java.util.List;
 
 public class CsvResultLine {
 
-    private String sqlite10, sqlite100;
+    private String sqlite10 = "0";
+    private String sqlite100 = "0";
 
     public void setSqlite10(int sqlite10) {
         this.sqlite10 = String.valueOf(sqlite10);
@@ -15,7 +16,7 @@ public class CsvResultLine {
     }
 
     public static String getCsvHeaders() {
-        return "sqlite10,sqlite100";
+        return "count,sqlite10,sqlite100";
     }
 
     public String toCsv() {

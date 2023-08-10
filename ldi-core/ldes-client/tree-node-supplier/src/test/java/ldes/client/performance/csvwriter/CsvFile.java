@@ -1,6 +1,6 @@
 package ldes.client.performance.csvwriter;
 
-import ldes.client.performance.PerformanceTest;
+import ldes.client.performance.TestScenario;
 import ldes.client.treenodesupplier.repository.filebased.exception.StateOperationFailedException;
 
 import java.io.BufferedWriter;
@@ -24,16 +24,15 @@ public class CsvFile {
         }
     }
 
-    private void addLine(int count, int msInterval, PerformanceTest test) {
+    public void addLine(int count, int msInterval, TestScenario test) {
         CsvResultLine csvResultLine = Objects.requireNonNullElseGet(results.get(count), CsvResultLine::new);
         setValueOnCsvLine(msInterval, test, csvResultLine);
         results.put(count, csvResultLine);
     }
 
-    private static void setValueOnCsvLine(int value, PerformanceTest testType, CsvResultLine csvResultLine) {
+    private static void setValueOnCsvLine(int value, TestScenario testType, CsvResultLine csvResultLine) {
         switch (testType) {
             case SQLITE10 -> csvResultLine.setSqlite10(value);
-            case SQLITE100 -> csvResultLine.setSqlite100(value);
         }
     }
 
