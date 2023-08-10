@@ -34,7 +34,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
-	protected Materialiser materialiser;
+	private Materialiser materialiser;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -80,6 +80,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 				materialiser.process(content);
 				session.transfer(flowFile, SUCCESS);
 			} catch (Exception e) {
+				getLogger().error("Error sending model to repository", e.getMessage());
 				session.transfer(flowFile, FAILURE);
 			}
 		}
