@@ -13,26 +13,9 @@
 	<packaging>nar</packaging>
 
 	<properties>
-		<!-- Java properties -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- RDF4j -->
-		<rdf4j.version>4.3.3</rdf4j.version>
 		<!-- Code formatter -->
 		<relative-formatter-path>../../..</relative-formatter-path>
 	</properties>
-	
-	<dependencyManagement>
-		<dependencies>
-			<!-- https://mvnrepository.com/artifact/org.eclipse.rdf4j/rdf4j-bom -->
-			<dependency>
-			    <groupId>org.eclipse.rdf4j</groupId>
-			    <artifactId>rdf4j-bom</artifactId>
-			    <version>${rdf4j.version}</version>
-			    <type>pom</type>
-			    <scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<dependencies>
 		<!-- VSDS -->
