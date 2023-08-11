@@ -16,6 +16,8 @@ import java.util.List;
 
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
+// TODO: 11/08/23 run against 8080
+// TODO: 11/08/23 run against real postgres
 public class PerformanceTest {
 
 	private static WireMockServer wireMockServer;
