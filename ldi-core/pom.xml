@@ -23,6 +23,7 @@
         <module>rml-adapter</module>
         <module>json-to-ld-adapter</module>
         <module>file-archiving</module>
+        <module>repository-materialiser</module>
     </modules>
 
     <properties>
