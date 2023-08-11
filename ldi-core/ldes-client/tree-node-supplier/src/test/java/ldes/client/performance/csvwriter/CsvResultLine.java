@@ -7,14 +7,14 @@ import java.util.TreeMap;
 
 public class CsvResultLine {
 
-    private final Map<TestScenario, String> line = new TreeMap<>();
+	private final Map<TestScenario, String> line = new TreeMap<>();
 
-    public String toCsv() {
-        return String.join(",", line.values());
-    }
+	public String toCsv() {
+		return String.join(",", line.values());
+	}
 
-    public void addValue(TestScenario testScenario, String stringValue) {
-        line.put(testScenario, stringValue);
-    }
+	public void addValue(TestScenario testScenario, String stringValue) {
+		line.put(testScenario, stringValue);
+	}
 
 }
