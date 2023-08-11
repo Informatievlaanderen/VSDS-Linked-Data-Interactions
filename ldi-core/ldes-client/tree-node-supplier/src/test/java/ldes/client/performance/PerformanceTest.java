@@ -5,7 +5,10 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import ldes.client.performance.csvwriter.CsvFile;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -42,21 +45,38 @@ public class PerformanceTest {
 
 	@Tag("performance")
 	@Test
-	void test_memory_f10_s100_000() {
+	void compare_persistence_strategies_f250_s1000() {
 		testRunner(
-				separatorsToSystem("target/test_memory_f10_s100_000.csv"),
-				100_000,
-				List.of(TestScenario.MEMORY10));
+				separatorsToSystem("target/compare_persistence_strategies_f250_s1000.csv"),
+				1000,
+				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
 
-	@Disabled
 	@Tag("performance")
 	@Test
-	void test_postgres_f10_s100_000() {
+	void compare_persistence_strategies_f10_s100_000() {
 		testRunner(
-				separatorsToSystem("target/test_postgres_f10_s100_000.csv"),
-				20,
-				List.of(TestScenario.MEMORY10));
+				separatorsToSystem("target/compare_persistence_strategies_f10_s100_000.csv"),
+				100_000,
+				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
+	}
+
+	@Tag("performance")
+	@Test
+	void test_memory_f250_s100_000() {
+		testRunner(
+				separatorsToSystem("target/test_memory_f250_s100_000.csv"),
+				100_000,
+				List.of(TestScenario.MEMORY250));
+	}
+
+	@Tag("performance")
+	@Test
+	void test_postgres_f250_s100_000() {
+		testRunner(
+				separatorsToSystem("target/test_postgres_f250_s100_000.csv"),
+				100_000,
+				List.of(TestScenario.POSTGRES250));
 	}
 
 	private void testRunner(String fileName, int testSize, List<TestScenario> scenarios) {
