@@ -72,6 +72,7 @@ public class PerformanceTest {
 				List.of(TestScenario.MEMORY250));
 	}
 
+	// Runs 1h14m
 	@Tag("performance")
 	@Test
 	void test_postgres_f250_s100_000() {
