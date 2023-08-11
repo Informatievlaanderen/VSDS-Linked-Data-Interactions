@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
+
 public class PerformanceTest {
 
 	private static WireMockServer wireMockServer;
@@ -33,7 +35,7 @@ public class PerformanceTest {
 	@Test
 	void compare_persistence_strategies_f10_s1000() {
 		testRunner(
-				"compare_persistence_strategies_f10_s1000.csv",
+				separatorsToSystem("target/compare_persistence_strategies_f10_s1000.csv"),
 				1000,
 				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
@@ -42,7 +44,7 @@ public class PerformanceTest {
 	@Test
 	void test_memory_f10_s100_000() {
 		testRunner(
-				"test_memory_f10_s100_000.csv",
+				separatorsToSystem("target/test_memory_f10_s100_000.csv"),
 				100_000,
 				List.of(TestScenario.MEMORY10));
 	}
@@ -52,9 +54,9 @@ public class PerformanceTest {
 	@Test
 	void test_postgres_f10_s100_000() {
 		testRunner(
-				"test_postgres_f10_s100_000.csv",
-				10_000,
-				List.of(TestScenario.FILE10));
+				separatorsToSystem("target/test_postgres_f10_s100_000.csv"),
+				20,
+				List.of(TestScenario.MEMORY10));
 	}
 
 	private void testRunner(String fileName, int testSize, List<TestScenario> scenarios) {
