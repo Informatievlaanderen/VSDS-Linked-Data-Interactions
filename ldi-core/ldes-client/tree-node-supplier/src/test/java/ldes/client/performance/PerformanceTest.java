@@ -18,24 +18,23 @@ import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class PerformanceTest {
 
     private static WireMockServer wireMockServer;
-    private static final String CSV_PATH = "results.csv";
-    private static CsvFile csvFile;
-    private static final int TEST_SIZE = 1000;
 
     @BeforeAll
     static void setUp() {
-        csvFile = new CsvFile();
         ResponseTemplateTransformer templateTransformer = new ResponseTemplateTransformer(false);
         wireMockServer = new WireMockServer(WireMockConfiguration.options().extensions(templateTransformer).port(10101));
         wireMockServer.start();
@@ -43,31 +42,53 @@ public class PerformanceTest {
 
     @AfterAll
     static void tearDown() {
-        csvFile.writeToFile(CSV_PATH);
         wireMockServer.stop();
     }
 
-    /**
-     * Wat willen we:
-     * - verschillende fragmentgrootte
-     * - verschillende persistence methodes
-     * <p>
-     * grafiek van members/seconde op Y as en members processed op X -as
-     */
     @ParameterizedTest
-    @EnumSource(TestScenario.class)
-    void performanceTest(TestScenario test) {
+    @ArgumentsSources({
+            @ArgumentsSource(FragmentSize10Test.class),
+            @ArgumentsSource(FragmentSize100Test.class)
+    })
+    void performanceTest(TestScenario test, CsvFile csvFile, int testSize) {
         final TreeNodeProcessor treeNodeProcessor =
                 createTreeNodeProcessor(test.getPersistenceStrategy(), test.getStartingEndpoint());
 
         LocalDateTime lastInterval = LocalDateTime.now();
-        for (int i = 1; i <= TEST_SIZE; i++) {
+        for (int i = 1; i <= testSize; i++) {
             treeNodeProcessor.getMember();
-            if (i % (TEST_SIZE / 20) == 0) {
+            if (i % (testSize / 20) == 0) {
                 int msIntervals = (int) ChronoUnit.MILLIS.between(lastInterval, lastInterval = LocalDateTime.now());
                 csvFile.addLine(i, msIntervals, test);
                 System.out.println(i + ": " + msIntervals);
             }
+        }
+
+        csvFile.writeToFile();
+    }
+
+    static class FragmentSize10Test implements ArgumentsProvider {
+        private final CsvFile csvFile = new CsvFile("test1.csv");
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            final int testSize = 1000;
+            return Stream.of(
+                    Arguments.of(TestScenario.FILE10, csvFile, testSize),
+                    Arguments.of(TestScenario.MEMORY10, csvFile, testSize)
+            );
+        }
+    }
+
+    static class FragmentSize100Test implements ArgumentsProvider {
+        private final CsvFile csvFile = new CsvFile("test2.csv");
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            final int testSize = 1000;
+            return Stream.of(
+                    Arguments.of(TestScenario.MEMORY10, csvFile, testSize)
+            );
         }
     }
 

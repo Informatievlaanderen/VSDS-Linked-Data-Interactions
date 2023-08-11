@@ -7,21 +7,29 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 public class CsvFile {
 
+    private final Set<TestScenario> headers = new TreeSet<>();
     private final Map<Integer, CsvResultLine> results = new TreeMap<>();
+    private final String path;
 
-    public void writeToFile(String path) {
+    public CsvFile(String path) {
+        this.path = path;
+    }
+
+    public void writeToFile() {
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Path.of(path))) {
-            writeRecord(bufferedWriter, CsvResultLine.getCsvHeaders());
+            writeRecord(bufferedWriter, getCsvHeaders());
             results.forEach((key, value) -> writeRecord(bufferedWriter, key + "," + value.toCsv()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getCsvHeaders() {
+        return "counter," + String.join(",", headers.stream().map(TestScenario::name).toList());
     }
 
     public void addLine(int count, int msInterval, TestScenario test) {
@@ -30,14 +38,10 @@ public class CsvFile {
         results.put(count, csvResultLine);
     }
 
-    private static void setValueOnCsvLine(int value, TestScenario testType, CsvResultLine csvResultLine) {
+    private void setValueOnCsvLine(int value, TestScenario testScenario, CsvResultLine csvResultLine) {
         String stringValue = String.valueOf(value);
-        switch (testType) {
-            case SQLITE10 -> csvResultLine.setSqlite10(stringValue);
-            case MEMORY10 -> csvResultLine.setMemory10(stringValue);
-            case FILE10 -> csvResultLine.setFile10(stringValue);
-            case POSTGRES10 -> csvResultLine.setPostgres10(stringValue);
-        }
+        csvResultLine.addValue(testScenario, stringValue);
+        headers.add(testScenario);
     }
 
     private static void writeRecord(BufferedWriter bufferedWriter, String recordToWrite) {
