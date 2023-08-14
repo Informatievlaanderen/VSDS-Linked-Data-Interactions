@@ -225,11 +225,11 @@ zones:cc387acc-218f-4c80-9175-7ef973c1739f
                 <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590350/zones/bdcf99d7-0402-45c8-b1e0-7eb3af0b5ba0> ;
         gipod:gipodId         10590350 .
 
-<http://localhost:8080/mobility-hindrances/pagination10?pageNumber=1>
+<http://localhost:10101/mobility-hindrances/pagination10?pageNumber=1>
         rdf:type        tree:Node ;
-        terms:isPartOf  <http://localhost:8080/mobility-hindrances> ;
+        terms:isPartOf  <http://localhost:10101/mobility-hindrances> ;
         tree:relation   [ rdf:type   tree:Relation ;
-                          tree:node  <http://localhost:8080/mobility-hindrances/pagination10?pageNumber={{math request.query.pageNumber '+' 1}}>
+                          tree:node  <http://localhost:10101/mobility-hindrances/pagination10?pageNumber={{math request.query.pageNumber '+' 1}}>
                         ] .
 
 <https://private-api.gipod.vlaanderen.be/api/v1/events/9197182>
@@ -526,7 +526,7 @@ statuses:a411c53e-db33-436a-9bb9-d62d535b661d
 consequencetypes:e4ea1344-aa27-40e8-b5af-94ec5f7956f8
         core:prefLabel  "Geen doorgang voor voetgangers"@nl-BE .
 
-<http://localhost:8080/mobility-hindrances>
+<http://localhost:10101/mobility-hindrances>
         rdf:type     ldes:EventStream ;
         tree:member  <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590515/1073> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590348/117> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590420/576> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590560/1313> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590350/139> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590535/1182> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590495/973> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590581/1399> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590590/1444> , <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}10590460/809> .
 

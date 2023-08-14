@@ -12,7 +12,8 @@ public enum TestScenario {
 	MEMORY250(StatePersistenceStrategy.MEMORY, FragmentSize.TWOFIFTY),
 	POSTGRES250(StatePersistenceStrategy.POSTGRES, FragmentSize.TWOFIFTY),
 	SQLITE250(StatePersistenceStrategy.SQLITE, FragmentSize.TWOFIFTY),
-	FILE250(StatePersistenceStrategy.FILE, FragmentSize.TWOFIFTY);
+	FILE250(StatePersistenceStrategy.FILE, FragmentSize.TWOFIFTY),
+	MEMORY_EXTERNAL(StatePersistenceStrategy.MEMORY, FragmentSize.EXT);
 	// @formatter:on
 
 	private final StatePersistenceStrategy persistenceStrategy;

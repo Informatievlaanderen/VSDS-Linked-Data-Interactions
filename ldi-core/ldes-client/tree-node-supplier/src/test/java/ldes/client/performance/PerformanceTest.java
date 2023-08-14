@@ -16,8 +16,6 @@ import java.util.List;
 
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
-// TODO: 11/08/23 run against 8080
-// TODO: 11/08/23 run against real postgres
 public class PerformanceTest {
 
 	private static WireMockServer wireMockServer;
@@ -51,7 +49,8 @@ public class PerformanceTest {
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f250_s1000.csv"),
 				1000,
-				List.of(TestScenario.FILE250, TestScenario.MEMORY250, TestScenario.SQLITE250, TestScenario.POSTGRES250));
+				List.of(TestScenario.FILE250, TestScenario.MEMORY250, TestScenario.SQLITE250,
+						TestScenario.POSTGRES250));
 	}
 
 	@Tag("performance")
@@ -61,6 +60,15 @@ public class PerformanceTest {
 				separatorsToSystem("target/compare_persistence_strategies_f10_s100_000.csv"),
 				100_000,
 				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
+	}
+
+	@Tag("performance")
+	@Test
+	void memory_real_test() {
+		testRunner(
+				separatorsToSystem("target/memory_real_f1250_s10_000.csv"),
+				10_000,
+				List.of(TestScenario.MEMORY_EXTERNAL));
 	}
 
 	@Tag("performance")
