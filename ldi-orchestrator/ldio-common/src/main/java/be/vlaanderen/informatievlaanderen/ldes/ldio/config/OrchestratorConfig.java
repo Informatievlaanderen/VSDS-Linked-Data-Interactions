@@ -11,6 +11,7 @@ import static java.util.UUID.randomUUID;
 @ConfigurationProperties(prefix = "orchestrator")
 public class OrchestratorConfig {
 	public static final String ORCHESTRATOR_NAME = "orchestrator.name";
+	public static final String DEBUG = "debug";
 	private String name = randomUUID().toString();
 	private List<PipelineConfig> pipelines;
 
