@@ -5,10 +5,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import ldes.client.performance.csvwriter.CsvFile;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -16,6 +13,10 @@ import java.util.List;
 
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
+/**
+ * This class is used to generate performance test reports on the LDES CLient.
+ *
+ */
 public class PerformanceTest {
 
 	private static WireMockServer wireMockServer;
@@ -34,6 +35,7 @@ public class PerformanceTest {
 		wireMockServer.stop();
 	}
 
+	@Disabled
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f10_s1000() {
@@ -43,6 +45,7 @@ public class PerformanceTest {
 				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
 
+	@Disabled
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f250_s1000() {
@@ -53,6 +56,7 @@ public class PerformanceTest {
 						TestScenario.POSTGRES250));
 	}
 
+	@Disabled
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f10_s100_000() {
@@ -62,6 +66,7 @@ public class PerformanceTest {
 				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
 
+	@Disabled
 	@Tag("performance")
 	@Test
 	void memory_real_test() {
@@ -71,6 +76,7 @@ public class PerformanceTest {
 				List.of(TestScenario.MEMORY_EXTERNAL));
 	}
 
+	@Disabled
 	@Tag("performance")
 	@Test
 	void test_memory_f250_s100_000() {
@@ -81,6 +87,7 @@ public class PerformanceTest {
 	}
 
 	// Runs 1h14m
+	@Disabled
 	@Tag("performance")
 	@Test
 	void test_postgres_f250_s100_000() {
