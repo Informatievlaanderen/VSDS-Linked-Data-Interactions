@@ -36,3 +36,7 @@ As a counterpart to the Version Object Creator, this processor will turn a  [ver
 To support the ingestion of input data in [NGSI V2 format](https://fiware-tutorials.readthedocs.io/en/stable/getting-started/),
 the NgsiV2ToLd processor will take the inputted NGSI V2 data and transform it to [NGSI LD](https://vloca-kennishub.vlaanderen.be/NGSI_(LD)).
 More information can be found [here](ngsiv2-to-ld-adapter/README.md).
+
+## 6. Repository materialiser
+
+Allows an eventstream to be materialised in a triple store. More information can be found [here](repository-materialiser/README.md).
