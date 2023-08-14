@@ -71,7 +71,7 @@ public class PerformanceTest {
 	@Test
 	void memory_real_test() {
 		testRunner(
-				separatorsToSystem("target/memory_real_f1250_s10_000.csv"),
+				separatorsToSystem("target/memory_real_test.csv"),
 				10_000,
 				List.of(TestScenario.MEMORY_EXTERNAL));
 	}
