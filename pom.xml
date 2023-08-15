@@ -71,7 +71,7 @@
         <mockito-junit.version>5.4.0</mockito-junit.version>
         <testcontainers-postgresql.version>1.18.3</testcontainers-postgresql.version>
         <slf4j.version>2.0.7</slf4j.version>
-        <byte-buddy-dep.version>1.14.5</byte-buddy-dep.version>
+        <byte-buddy-dep.version>1.14.6</byte-buddy-dep.version>
 
         <!-- Jacoco -->
         <jacoco.version>0.8.10</jacoco.version>
