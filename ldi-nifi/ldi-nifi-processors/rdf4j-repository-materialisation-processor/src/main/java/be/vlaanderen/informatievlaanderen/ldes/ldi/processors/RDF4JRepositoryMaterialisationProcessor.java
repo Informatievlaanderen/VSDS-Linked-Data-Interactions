@@ -61,7 +61,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			materialiser = new Materialiser(context.getProperty(SPARQL_HOST).getValue(),
 					context.getProperty(REPOSITORY_ID).getValue(),
 					context.getProperty(NAMED_GRAPH).getValue());
-			materialiser.initConnection();
+			//materialiser.initConnection();
 		}
 	}
 
@@ -77,7 +77,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		for (FlowFile flowFile : flowFiles) {
 			Model content = FlowManager.receiveDataAsModel(session, flowFile, Lang.NQUADS);
 			try {
-				materialiser.process(content);
+				//materialiser.process(content);
 				session.transfer(flowFile, SUCCESS);
 			} catch (Exception e) {
 				getLogger().error("Error sending model to repository", e.getMessage());

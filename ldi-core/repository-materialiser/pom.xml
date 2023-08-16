@@ -16,6 +16,11 @@
             <artifactId>jena-rdfconnection</artifactId>
             <version>${jena.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.rdf4j</groupId>
+            <artifactId>rdf4j-client</artifactId>
+            <version>4.3.3</version>
+        </dependency>
     </dependencies>
 
 </project>
