@@ -3,9 +3,9 @@
             "HinderZone"@nl-BE .
 
 <https://private-api.gipod.vlaanderen.be/api/v1/ldes/mobility-hindrances>
-    <https://w3id.org/tree#member>  <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560> .
+    <https://w3id.org/tree#member>  <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}{{request.query.pageNumber}}10590560> .
 
-<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7>
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}{{request.query.pageNumber}}10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7>
     a       <https://data.vlaanderen.be/ns/mobiliteit#Zone> ;
     <http://www.w3.org/ns/locn#geometry>
             [ a       <http://www.w3.org/ns/locn#Geometry> ;
@@ -15,7 +15,7 @@
     <https://data.vlaanderen.be/ns/mobiliteit#Zone.type>
             <https://private-api.gipod.vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250> .
 
-<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560>
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}{{request.query.pageNumber}}10590560>
     a       <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
     <http://purl.org/dc/elements/1.1/contributor>
             <https://private-api.gipod.vlaanderen.be/api/v1/organisations/760bb1a4-bc1c-0bb8-868d-c0b6fd937233> ;
@@ -50,14 +50,14 @@
                       "2021-01-11T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
             ] ;
     <https://data.vlaanderen.be/ns/mobiliteit#zone>
-            <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7> ;
+            <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}{{request.query.pageNumber}}10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7> ;
     <https://gipod.vlaanderen.be/ns/gipod#gipodId>
             10590560 .
 
 <https://private-api.gipod.vlaanderen.be/api/v1/events/9196957>
     a       <https://data.vlaanderen.be/ns/mobiliteit#Evenement> ;
     <https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolg>
-            <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560> ;
+            <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}{{request.query.pageNumber}}10590560> ;
     <https://gipod.vlaanderen.be/ns/gipod#gipodId>
             9196957 .
 

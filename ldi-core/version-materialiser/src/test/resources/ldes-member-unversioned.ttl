@@ -15,7 +15,7 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix tree: <https://w3id.org/tree#> .
 
-<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560>
+<https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}{{request.query.pageNumber}}10590560>
     rdf:type              mobi:Mobiliteitshinder ;
     <http://purl.org/dc/elements/1.1/contributor>
                           <https://private-api.gipod.vlaanderen.be/api/v1/organisations/760bb1a4-bc1c-0bb8-868d-c0b6fd937233> ;
@@ -39,5 +39,5 @@
                             m8g:endTime    "2021-01-22T15:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
                             m8g:startTime  "2021-01-11T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
                           ] ;
-    mobi:zone             <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7> ;
+    mobi:zone             <https://private-api.gipod.vlaanderen.be/api/v1/mobility-hindrances/{{request.query.pageNumber}}{{request.query.pageNumber}}10590560/zones/adda5d7c-bec2-4bb5-a9b4-f664e4373df7> ;
     ext:gipodId           10590560 .
