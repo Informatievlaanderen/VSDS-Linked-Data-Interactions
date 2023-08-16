@@ -1,0 +1,13 @@
+{
+  "request": {
+    "urlPath": "/mobility-hindrances/pagination10"
+  },
+  "response": {
+    "bodyFileName": "10-member-fragment.ttl",
+    "transformers": ["response-template"],
+    "headers": {
+      "Content-Type": "text/turtle;charset=UTF-8",
+      "Cache-Control": "public, max-age=604800, immutable"
+    }
+  }
+}
