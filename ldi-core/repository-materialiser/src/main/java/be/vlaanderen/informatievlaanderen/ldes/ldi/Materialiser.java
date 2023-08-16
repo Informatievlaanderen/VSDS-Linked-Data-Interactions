@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -8,6 +9,8 @@ import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 
 import java.util.*;
+
+import static org.apache.jena.rdfconnection.RDFConnection.queryConnect;
 
 public class Materialiser {
 
@@ -78,27 +81,20 @@ public class Materialiser {
 	 *            The DB connection.
 	 */
 	private void deleteEntitiesFromRepo(Set<Resource> entityIds, RDFConnection connection) {
-		Deque<Resource> subjectStack = new ArrayDeque<>();
-		entityIds.forEach(subjectStack::push);
+
+
 
 		/*
 		 * Entities can contain blank node references. All statements with those blank
 		 * node identifiers need to be removed as well. As blank nodes can be nested
-		 * inside blank nodes, we need to keep track of them as they are encountered by
-		 * adding them to the stack.
+		 * inside blank nodes, the SPARQL query has to account for this.
 		 */
-
-		while (!subjectStack.isEmpty()) {
-			Resource subject = subjectStack.pop();
-
-			connection.fetch(subject.toString()).listStatements().forEach(statement -> {
-				RDFNode object = statement.getObject();
-				if (object.isAnon()) {
-					subjectStack.push((Resource) object);
-				}
-			});
-
-			connection.delete(subject.toString());
+		if (namedGraph != null && !namedGraph.isEmpty()) {
+			entityIds.forEach(subject -> connection.newUpdate()
+					.update("WITH <" + namedGraph + "> DELETE {<" + subject + "> ?prop ?val . ?child ?childProp ?childPropVal . ?someSubj ?incomingChildProp ?child . } WHERE { <"+ subject +"> ?prop ?val ; (a|!a)+ ?child . ?child ?childProp ?childPropVal. ?someSubj ?incomingChildProp ?child. FILTER (! isURI(?val))}").build().execute());
+		} else {
+			entityIds.forEach(subject -> connection.newUpdate()
+					.update("DELETE {<" + subject + "> ?prop ?val . ?child ?childProp ?childPropVal . ?someSubj ?incomingChildProp ?child . } WHERE { <"+ subject +"> ?prop ?val ; (a|!a)+ ?child . ?child ?childProp ?childPropVal . ?someSubj ?incomingChildProp ?child . FILTER ((! isIRI(?child)))}").build().execute());
 		}
 	}
 
