@@ -18,9 +18,7 @@ public class TransformDebugger implements LdiTransformer {
 
 	@Override
 	public Model apply(Model model) {
-		if (log.isDebugEnabled()) {
-			log.debug("Starting model: \n" + RDFWriter.source(model).lang(Lang.TTL).asString());
-		}
+		log.debug("Starting model: \n" + RDFWriter.source(model).lang(Lang.TTL).asString());
 		return ldiTransformer.apply(model);
 	}
 }

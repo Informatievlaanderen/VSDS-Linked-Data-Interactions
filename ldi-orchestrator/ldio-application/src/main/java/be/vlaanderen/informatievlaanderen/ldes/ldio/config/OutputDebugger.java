@@ -18,9 +18,7 @@ public class OutputDebugger implements LdiOutput {
 
 	@Override
 	public void accept(Model model) {
-		if (log.isDebugEnabled()) {
-			log.debug("Starting model: \n" + RDFWriter.source(model).lang(Lang.TTL).asString());
-		}
+		log.debug("Starting model: \n" + RDFWriter.source(model).lang(Lang.TTL).asString());
 		ldiOutput.accept(model);
 	}
 }

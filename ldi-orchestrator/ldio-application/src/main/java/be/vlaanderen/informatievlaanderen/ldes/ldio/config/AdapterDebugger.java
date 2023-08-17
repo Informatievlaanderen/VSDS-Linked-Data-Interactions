@@ -18,9 +18,7 @@ public class AdapterDebugger implements LdiAdapter {
 
 	@Override
 	public Stream<Model> apply(Content content) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Starting point: " + content);
-		}
+		logger.debug("Starting point: " + content);
 
 		return adapter.apply(content);
 	}
