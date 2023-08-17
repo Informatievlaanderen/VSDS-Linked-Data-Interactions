@@ -1,52 +1,59 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionRemote;
-import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ModelParseIOException;
+import org.eclipse.rdf4j.common.transaction.IsolationLevels;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.base.AbstractIRI;
+import org.eclipse.rdf4j.repository.Repository;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
+import org.eclipse.rdf4j.repository.manager.RepositoryManager;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.Rio;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Materialiser {
-
-	private final String sparqlEndpoint;
+	private final String repositoryId;
 	private final String namedGraph;
-	protected RDFConnectionRemoteBuilder builder;
+	protected RepositoryManager repositoryManager;
 
 	public Materialiser(String hostUrl, String repositoryId, String namedGraph) {
-		this(constructRDF4JSparqlEndpoint(hostUrl, repositoryId), namedGraph);
-	}
-
-	public Materialiser(String sparqlEndpoint, String namedGraph) {
-		this.sparqlEndpoint = sparqlEndpoint;
+		this.repositoryId = repositoryId;
 		this.namedGraph = namedGraph;
+		initRepositoryManager(new RemoteRepositoryManager(hostUrl));
 	}
 
-	protected void setConnectionBuilder(RDFConnectionRemoteBuilder builder) {
-		this.builder = builder;
+	protected void initRepositoryManager(RepositoryManager manager) {
+		this.repositoryManager = manager;
 	}
 
-	public void initConnection() {
-		if (builder == null) {
-			setConnectionBuilder(
-					RDFConnectionRemote.service(sparqlEndpoint));
-		}
-	}
+	public void process(String content) {
+		final Repository repository = repositoryManager.getRepository(repositoryId);
 
-	public void process(Model content) {
-		try (RDFConnection connection = builder.build()) {
+		try (RepositoryConnection dbConnection = repository.getConnection()) {
+			dbConnection.setIsolationLevel(IsolationLevels.NONE);
+			dbConnection.begin();
 
-			Set<Resource> entityIds = getSubjectsFromModel(content);
-			deleteEntitiesFromRepo(entityIds, connection);
+			var updateModel = readInputString(content);
+
+			Set<Resource> entityIds = getSubjectsFromModel(updateModel);
+			deleteEntitiesFromRepo(entityIds, dbConnection);
 
 			if (namedGraph != null && !namedGraph.isEmpty()) {
-				connection.load(namedGraph, content);
+				var namedGraphIRI = dbConnection.getValueFactory().createIRI(namedGraph);
+				dbConnection.add(updateModel, namedGraphIRI);
 			} else {
-				connection.load(content);
+				dbConnection.add(updateModel);
 			}
-			connection.commit();
+			dbConnection.commit();
 		}
 	}
 
@@ -57,12 +64,12 @@ public class Materialiser {
 	 *            A graph
 	 * @return A set of subject URIs.
 	 */
-	private Set<Resource> getSubjectsFromModel(Model model) {
+	protected static Set<Resource> getSubjectsFromModel(Model model) {
 		Set<Resource> entityIds = new HashSet<>();
 
-		model.listStatements().forEach(statement -> {
-			if (statement.getSubject().isURIResource()) {
-				entityIds.add(statement.getSubject());
+		model.subjects().forEach((Resource subject) -> {
+			if (subject instanceof AbstractIRI) {
+				entityIds.add(subject);
 			}
 		});
 
@@ -77,7 +84,7 @@ public class Materialiser {
 	 * @param connection
 	 *            The DB connection.
 	 */
-	private void deleteEntitiesFromRepo(Set<Resource> entityIds, RDFConnection connection) {
+	protected static void deleteEntitiesFromRepo(Set<Resource> entityIds, RepositoryConnection connection) {
 		Deque<Resource> subjectStack = new ArrayDeque<>();
 		entityIds.forEach(subjectStack::push);
 
@@ -87,22 +94,26 @@ public class Materialiser {
 		 * inside blank nodes, we need to keep track of them as they are encountered by
 		 * adding them to the stack.
 		 */
-
 		while (!subjectStack.isEmpty()) {
 			Resource subject = subjectStack.pop();
 
-			connection.fetch(subject.toString()).listStatements().forEach(statement -> {
-				RDFNode object = statement.getObject();
-				if (object.isAnon()) {
+			connection.getStatements(subject, null, null).forEach((Statement statement) -> {
+				Value object = statement.getObject();
+				if (object.isBNode()) {
 					subjectStack.push((Resource) object);
 				}
 			});
 
-			connection.delete(subject.toString());
+			connection.remove(subject, null, null);
 		}
 	}
 
-	protected static String constructRDF4JSparqlEndpoint(String hostUrl, String repositoryId) {
-		return hostUrl + "/repositories/" + repositoryId + "/statements";
+	private Model readInputString(String content) {
+		InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+		try {
+			return Rio.parse(in, "", RDFFormat.NQUADS);
+		} catch (IOException e) {
+			throw new ModelParseIOException(content, e.getMessage());
+		}
 	}
 }
