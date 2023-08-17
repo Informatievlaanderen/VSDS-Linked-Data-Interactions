@@ -16,7 +16,8 @@ public class TransformDebugger implements LdiTransformer {
 		log = LoggerFactory.getLogger(ldiTransformer.getClass());
 	}
 
-	@Override public Model apply(Model model) {
+	@Override
+	public Model apply(Model model) {
 		if (log.isDebugEnabled()) {
 			log.debug("Starting model: \n" + RDFWriter.source(model).lang(Lang.TTL).asString());
 		}
