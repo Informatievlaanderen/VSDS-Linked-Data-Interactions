@@ -46,11 +46,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.rdf4j</groupId>
             <artifactId>rdf4j-sail-memory</artifactId>
             <version>${rdf4j.version}</version>
@@ -60,30 +55,6 @@
             <groupId>org.eclipse.rdf4j</groupId>
             <artifactId>rdf4j-repository-sail</artifactId>
             <version>${rdf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rdf4j</groupId>
-            <artifactId>rdf4j-sail-inferencer</artifactId>
-            <version>${rdf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rdf4j</groupId>
-            <artifactId>rdf4j-shacl</artifactId>
-            <version>${rdf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rdf4j</groupId>
-            <artifactId>rdf4j-sparqlbuilder</artifactId>
-            <version>${rdf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
