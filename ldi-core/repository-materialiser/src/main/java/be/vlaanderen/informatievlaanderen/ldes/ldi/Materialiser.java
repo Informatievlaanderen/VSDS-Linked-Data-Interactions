@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.query.Query;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ModelParseIOException;
 import org.eclipse.rdf4j.common.transaction.IsolationLevels;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
@@ -14,39 +14,35 @@ import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static java.lang.System.in;
-import static org.apache.jena.rdfconnection.RDFConnection.queryConnect;
-
 public class Materialiser {
-
-	private final String sparqlEndpoint;
+	private final String repositoryId;
 	private final String namedGraph;
 	protected RepositoryManager repositoryManager;
 
 	public Materialiser(String hostUrl, String repositoryId, String namedGraph) {
-		this(constructRDF4JSparqlEndpoint(hostUrl, repositoryId), namedGraph);
-	}
-
-	public Materialiser(String sparqlEndpoint, String namedGraph) {
-		this.sparqlEndpoint = sparqlEndpoint;
+		this.repositoryId = repositoryId;
 		this.namedGraph = namedGraph;
+		initRepositoryManager(new RemoteRepositoryManager(hostUrl));
 	}
 
-	public void setRepositoryManager(String host) {
-		this.repositoryManager = new RemoteRepositoryManager(host);
+	protected void initRepositoryManager(RepositoryManager manager) {
+		this.repositoryManager = manager;
 	}
 
 	public void process(String content) {
-		final Repository repository = repositoryManager.getRepository(sparqlEndpoint);
+		final Repository repository = repositoryManager.getRepository(repositoryId);
 
 		try (RepositoryConnection dbConnection = repository.getConnection()) {
 			dbConnection.setIsolationLevel(IsolationLevels.NONE);
 			dbConnection.begin();
 
-			var updateModel = Rio.parse(in, "", RDFFormat.NQUADS);
+			var updateModel = readInputString(content);
 
 			Set<Resource> entityIds = getSubjectsFromModel(updateModel);
 			deleteEntitiesFromRepo(entityIds, dbConnection);
@@ -58,8 +54,6 @@ public class Materialiser {
 				dbConnection.add(updateModel);
 			}
 			dbConnection.commit();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -114,8 +108,12 @@ public class Materialiser {
 		}
 	}
 
-
-	protected static String constructRDF4JSparqlEndpoint(String hostUrl, String repositoryId) {
-		return hostUrl + "/repositories/" + repositoryId + "/statements";
+	private Model readInputString(String content) {
+		InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+		try {
+			return Rio.parse(in, "", RDFFormat.NQUADS);
+		} catch (IOException e) {
+			throw new ModelParseIOException(content, e.getMessage());
+		}
 	}
 }
