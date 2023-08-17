@@ -1,93 +1,127 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdfconnection.RDFConnectionRemote;
-import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParser;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.config.RepositoryConfig;
+import org.eclipse.rdf4j.repository.manager.LocalRepositoryManager;
+import org.eclipse.rdf4j.repository.manager.RepositoryManager;
+import org.eclipse.rdf4j.repository.sail.config.SailRepositoryConfig;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.sail.memory.config.MemoryStoreConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser.constructRDF4JSparqlEndpoint;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MaterialiserTest {
-	private String person1 = "http://somewhere/MattJones/";
-	private String person2 = "http://somewhere/SarahJones/";
-	private String person4 = "http://somewhere/DickJones/";
-	private RDFConnectionRemoteBuilder mockBuilder;
-	private RDFConnectionRemote mockConnection;
-	private Materialiser materialiser;
+	private static final String LOCAL_SERVER_URL = "http://localhost:8080/rdf4j-server";
+	private static final String LOCAL_REPOSITORY_ID = "test";
+	private static RepositoryManager subject;
+	private static Materialiser materialiser;
+	private static RepositoryConnection connection;
+
+	@TempDir
+	File dataDir;
+
+	private static final String[] TEST_FILES = new String[] {
+			"src/test/resources/people_data_01.nq",
+			"src/test/resources/people_data_02.nq" };
+	private static final String CHANGED_FILE = "src/test/resources/people_data_03.nq";
 
 	@BeforeEach
-	void setUp() throws IOException {
-		mockBuilder = mock(RDFConnectionRemoteBuilder.class);
-		mockConnection = mock(RDFConnectionRemote.class);
-		materialiser = new Materialiser("", "");
-		when(mockBuilder.build()).thenReturn(mockConnection);
-		when(mockConnection.fetch(person1))
-				.thenReturn(readModelFromFile("src/test/resources/id1.nq"));
-		when(mockConnection.fetch(person4))
-				.thenReturn(readModelFromFile("src/test/resources/id4.nq"));
-		when(mockConnection.fetch(person2))
-				.thenReturn(readModelFromFile("src/test/resources/id2.nq"));
-		when(mockConnection.fetch(matches("^(?!(?:http)).*$")))
-				.thenReturn(readModelFromFile("src/test/resources/id3.nq"));
+	public void setUp() throws Exception {
+		materialiser = new Materialiser(LOCAL_SERVER_URL, LOCAL_REPOSITORY_ID, "");
+		subject = new LocalRepositoryManager(dataDir);
+		subject.init();
 
-		materialiser.setConnectionBuilder(mockBuilder);
+		subject.addRepositoryConfig(
+				new RepositoryConfig(LOCAL_REPOSITORY_ID, new SailRepositoryConfig(new MemoryStoreConfig(true))));
+		connection = subject.getRepository(LOCAL_REPOSITORY_ID).getConnection();
+
+		materialiser.initRepositoryManager(subject);
+	}
+
+	@AfterEach
+	public void tearDown() throws Exception {
+		connection.close();
+		subject.shutDown();
 	}
 
 	@Test
-	void when_RepoHasAnonNode_Then_AnonNodeAlsoRemoved() throws IOException {
-		Model model = readModelFromFile("src/test/resources/people_data_01.nq");
+	void when_DataPresent_Then_GetEntityIds() throws Exception {
+		var updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
 
-		materialiser.process(model);
+		Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
 
-		verify(mockConnection, times(3)).fetch(anyString());
-		verify(mockConnection, times(3)).delete(anyString());
-		verify(mockConnection).load(model);
-		verify(mockConnection).commit();
-		verify(mockConnection).close();
-		verifyNoMoreInteractions(mockConnection);
+		assertEquals(2, entityIds.size(), "Expected all subjects from test data");
+
 	}
 
 	@Test
-	void when_ModelHasNodes_Then_NodesInRepoReplaced() throws IOException {
-		Model model = readModelFromFile("src/test/resources/people_data_02.nq");
+	void when_DeleteEntities_Then_EntitiesRemovedFromStore() throws Exception {
+		populateAndCheckRepository(List.of(TEST_FILES));
+		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
+		Model updateModel2 = Rio.parse(new FileInputStream(TEST_FILES[1]), "", RDFFormat.NQUADS);
+		Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
 
-		materialiser.process(model);
+		Materialiser.deleteEntitiesFromRepo(entityIds, connection);
 
-		verify(mockConnection).fetch(person4);
-		verify(mockConnection).fetch(person2);
-		verify(mockConnection).delete(person4);
-		verify(mockConnection).delete(person2);
-		verify(mockConnection).load(model);
-		verify(mockConnection).commit();
-		verify(mockConnection).close();
-		verifyNoMoreInteractions(mockConnection);
+		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+		statements.forEach(statement -> assertTrue(updateModel2.contains(statement)));
+		statements.forEach(statement -> assertFalse(updateModel.contains(statement)));
 	}
 
 	@Test
-	void when_ReceiveHostUrlAndRepoId_Then_ConstructSparqlEndpoint() {
-		String hostUrl = "http://host";
-		String repoId = "id";
+	void when_UpdateEntities_Then_OldTriplesRemoved() throws Exception {
+		populateAndCheckRepository(List.of(TEST_FILES));
+		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
+		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		assertEquals("http://host/repositories/id/statements", constructRDF4JSparqlEndpoint(hostUrl, repoId));
+		materialiser.process(Files.readString(Path.of(CHANGED_FILE)));
+
+		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+		assertTrue(testModelInStatements(changedModel, statements));
+		assertFalse(testModelInStatements(updateModel, statements));
 	}
 
-	private Model readModelFromFile(String path) throws IOException {
-		String data = Files.readString(Path.of(path));
-		Model model = ModelFactory.createDefaultModel();
-		RDFParser.fromString(data)
-				.lang(Lang.NQ)
-				.parse(model);
-		return model;
+	void populateAndCheckRepository(List<String> files) throws IOException {
+		List<Model> models = new ArrayList<>();
+		for (String testFile : files) {
+			var model = Rio.parse(new FileInputStream(testFile), "", RDFFormat.NQUADS);
+			connection.add(model);
+			models.add(model);
+		}
+
+		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+
+		for (Model testModel : models) {
+			assertTrue(testModelInStatements(testModel, statements));
+		}
 	}
+
+	private boolean testModelInStatements(Model model, List<Statement> statements) {
+		AtomicBoolean result = new AtomicBoolean(true);
+		model.getStatements(null, null, null).forEach(statement -> {
+			if (!statements.contains(statement)) {
+				result.set(false);
+			}
+		});
+		return result.get();
+	}
+
 }

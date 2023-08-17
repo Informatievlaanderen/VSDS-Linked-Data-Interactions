@@ -2,8 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -61,7 +59,6 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			materialiser = new Materialiser(context.getProperty(SPARQL_HOST).getValue(),
 					context.getProperty(REPOSITORY_ID).getValue(),
 					context.getProperty(NAMED_GRAPH).getValue());
-			materialiser.initConnection();
 		}
 	}
 
@@ -75,7 +72,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		}
 
 		for (FlowFile flowFile : flowFiles) {
-			Model content = FlowManager.receiveDataAsModel(session, flowFile, Lang.NQUADS);
+			String content = FlowManager.receiveData(session, flowFile);
 			try {
 				materialiser.process(content);
 				session.transfer(flowFile, SUCCESS);
