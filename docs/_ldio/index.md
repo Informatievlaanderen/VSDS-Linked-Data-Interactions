@@ -39,6 +39,23 @@ orchestrator:
 - Note that one orchestrator can have multiple pipelines 
 - Note that one pipeline can have multiple LDI Transformers and LDI Outputs 
 
+## LDIO DEBUG logging
+
+To enable logging the input model for a 
+* [LDIO Adapter](./ldio-adapters)
+* [LDIO Transformer](./ldio-transformers)
+* [LDIO Output](./ldio-outputs)
+
+Make sure you 
+
+* Add the following property in your application config:
+    ````yaml
+    logging:
+        level:
+            be.vlaanderen.informatievlaanderen: DEBUG
+    ````
+* Add the ```debug: true``` property to your transformer or output config.
+
 ## LDIO Process Flow 
 
 ````mermaid

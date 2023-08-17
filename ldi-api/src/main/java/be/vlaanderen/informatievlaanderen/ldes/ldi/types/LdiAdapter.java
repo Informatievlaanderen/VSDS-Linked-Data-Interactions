@@ -21,5 +21,13 @@ public interface LdiAdapter extends LdiComponent, Function<Content, Stream<Model
 		public static Content of(String content, String mimeType) {
 			return new Content(content, mimeType);
 		}
+
+		@Override
+		public String toString() {
+			return "Content {" +
+					"mimeType='" + mimeType + '\'' +
+					", content='" + content + '\'' +
+					'}';
+		}
 	}
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.DEBUG;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
@@ -69,7 +70,7 @@ public class FlowAutoConfiguration {
 				config.getInput().getName());
 
 		LdiAdapter adapter = Optional.ofNullable(config.getInput().getAdapter())
-				.map(adapterConfig -> (LdiAdapter) getLdiComponent(adapterConfig.getName(), adapterConfig.getConfig()))
+				.map(this::getLdioAdapter)
 				.orElseGet(() -> {
 					LOGGER.warn(
 							"No adapter configured for pipeline %s. Please verify this is a desired scenario."
@@ -90,12 +91,31 @@ public class FlowAutoConfiguration {
 		registerBean(pipeLineName, ldiInput);
 	}
 
+	private LdiAdapter getLdioAdapter(ComponentDefinition componentDefinition) {
+		boolean debug = componentDefinition.getConfig().getOptionalBoolean(DEBUG).orElse(false);
+
+		LdiAdapter adapter = (LdiAdapter) getLdiComponent(componentDefinition.getName(),
+				componentDefinition.getConfig());
+
+		return debug ? new AdapterDebugger(adapter) : adapter;
+	}
+
 	private LdiTransformer getLdioTransformer(ComponentDefinition componentDefinition) {
-		return (LdiTransformer) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
+		boolean debug = componentDefinition.getConfig().getOptionalBoolean(DEBUG).orElse(false);
+
+		LdiTransformer ldiTransformer = (LdiTransformer) getLdiComponent(componentDefinition.getName(),
+				componentDefinition.getConfig());
+
+		return debug ? new TransformDebugger(ldiTransformer) : ldiTransformer;
 	}
 
 	private LdiOutput getLdioOutput(ComponentDefinition componentDefinition) {
-		return (LdiOutput) getLdiComponent(componentDefinition.getName(), componentDefinition.getConfig());
+		boolean debug = componentDefinition.getConfig().getOptionalBoolean(DEBUG).orElse(false);
+
+		LdiOutput ldiOutput = (LdiOutput) getLdiComponent(componentDefinition.getName(),
+				componentDefinition.getConfig());
+
+		return debug ? new OutputDebugger(ldiOutput) : ldiOutput;
 	}
 
 	private LdiComponent getLdiComponent(String beanName, ComponentProperties config) {
