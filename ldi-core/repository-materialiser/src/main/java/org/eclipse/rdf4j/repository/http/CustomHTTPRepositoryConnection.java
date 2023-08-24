@@ -32,7 +32,7 @@ import static org.eclipse.rdf4j.rio.RDFFormat.NTRIPLES;
 
 /**
  * This is a copy of the HTTPRepositoryConnection
- * The only change is that we use RdfFormat.N3 instead of Binary.
+ * The only change is that we use RdfFormat.NQUADS instead of Binary.
  * This is because we use the assembly plugin to create fat jars. Rdf4j uses SPI
  * and different RDFParserFactories are provided in the META-INF.
  * However, these are overwritten by the assembly plugin.
@@ -520,7 +520,7 @@ public class CustomHTTPRepositoryConnection extends HTTPRepositoryConnection {
 	}
 
 	private void addModel(Model m) throws RepositoryException {
-		RDFFormat format = RDFFormat.N3;
+		RDFFormat format = RDFFormat.NQUADS;
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			Rio.write(m, out, format);
@@ -535,7 +535,7 @@ public class CustomHTTPRepositoryConnection extends HTTPRepositoryConnection {
 	}
 
 	private void removeModel(Model m) throws RepositoryException {
-		RDFFormat format = RDFFormat.N3;
+		RDFFormat format = RDFFormat.NQUADS;
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			Rio.write(m, out, format);
