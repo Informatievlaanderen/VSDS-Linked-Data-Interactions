@@ -145,7 +145,7 @@ public class CustomHTTPRepositoryConnection extends HTTPRepositoryConnection {
 	}
 
 	/**
-	 * Prepares a {@Link Query} for evaluation on this repository. Note that the
+	 * Prepares a Query for evaluation on this repository. Note that the
 	 * preferred way of preparing queries is
 	 * to use the more specific
 	 * {@link #prepareTupleQuery(QueryLanguage, String, String)},
@@ -783,7 +783,7 @@ public class CustomHTTPRepositoryConnection extends HTTPRepositoryConnection {
 	}
 
 	/**
-	 * Verifies that the connection is open, throws a {@link StoreException} if it
+	 * Verifies that the connection is open, throws a StoreException if it
 	 * isn't.
 	 */
 	protected void verifyIsOpen() throws RepositoryException {
@@ -794,7 +794,7 @@ public class CustomHTTPRepositoryConnection extends HTTPRepositoryConnection {
 
 	/**
 	 * Verifies that the connection has an active transaction, throws a
-	 * {@link StoreException} if it hasn't.
+	 * StoreException if it hasn't.
 	 */
 	protected void verifyTxnActive() throws RepositoryException {
 		if (!isActive()) {
