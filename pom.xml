@@ -312,7 +312,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>META-INF/**</exclude>
-                                <exclude>**/CustomHTTPRepositoryConnection.java</exclude>
+                                <exclude>**/org/eclipse/rdf4j/repository/**/*</exclude>
                             </excludes>
                         </configuration>
                         <executions>
