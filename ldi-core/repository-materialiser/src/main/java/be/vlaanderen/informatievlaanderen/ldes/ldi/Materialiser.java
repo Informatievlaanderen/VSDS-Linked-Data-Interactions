@@ -9,6 +9,8 @@ import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.base.AbstractIRI;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.http.CustomHTTPRepositoryConnection;
+import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.eclipse.rdf4j.rio.RDFFormat;
@@ -38,7 +40,14 @@ public class Materialiser {
 	public void process(String content) {
 		final Repository repository = repositoryManager.getRepository(repositoryId);
 
-		try (RepositoryConnection dbConnection = repository.getConnection()) {
+		final RepositoryConnection dbConnection;
+		if (repository instanceof HTTPRepository) {
+			dbConnection = new CustomHTTPRepositoryConnection(repository);
+		} else {
+			dbConnection = repository.getConnection();
+		}
+
+		try {
 			dbConnection.setIsolationLevel(IsolationLevels.NONE);
 			dbConnection.begin();
 
@@ -54,7 +63,10 @@ public class Materialiser {
 				dbConnection.add(updateModel);
 			}
 			dbConnection.commit();
+		} finally {
+			dbConnection.close();
 		}
+
 	}
 
 	/**
