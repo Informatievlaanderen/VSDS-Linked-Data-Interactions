@@ -39,6 +39,8 @@ import static org.eclipse.rdf4j.rio.RDFFormat.NTRIPLES;
  * We cannot use the Binary format as this is not supported by Jena, only by
  * Rdf4j.
  */
+@SuppressWarnings({"java:S2177", "java:S1161", "java:S1874", "java:S6201", "java:S1155", "java:S112", "java:S1185",
+		"java:S1192", "java:S6208", "java:S131", "java:S3776", "java:S125", "java:S3878", "java:S1905"})
 public class CustomHTTPRepositoryConnection extends HTTPRepositoryConnection {
 
 	public CustomHTTPRepositoryConnection(Repository repository) {

@@ -312,7 +312,6 @@
                         <configuration>
                             <excludes>
                                 <exclude>META-INF/**</exclude>
-                                <exclude>**/org/eclipse/rdf4j/repository/**/*</exclude>
                             </excludes>
                         </configuration>
                         <executions>
