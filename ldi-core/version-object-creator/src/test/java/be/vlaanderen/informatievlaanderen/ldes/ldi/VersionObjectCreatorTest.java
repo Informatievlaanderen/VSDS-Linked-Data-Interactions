@@ -65,7 +65,7 @@ class VersionObjectCreatorTest {
 	void when_dateObservedPropertyIsNoDatetime_expectCurrentDatetime() {
 		Model inputModel = RDFParser.fromString("""
 				@prefix ex:   <http://example.org/> .
-				    
+
 				ex:member
 				  a ex:Something ;
 				  ex:foo "bar mitswa".
