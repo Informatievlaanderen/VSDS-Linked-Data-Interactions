@@ -50,7 +50,7 @@ public class VersionObjectCreator implements LdiTransformer {
 						.mapWith(Statement::getObject)
 						.filterKeep(RDFNode::isLiteral)
 						.mapWith(RDFNode::asLiteral)
-						.filterKeep(literal -> literal.getDatatype().getURI().equals(XMLSCHEMA_DATE_TIME))
+						.filterKeep(literal -> literal.getDatatype().getURI().contains("DateTime"))
 						.nextOptional()
 						.map(Literal::getString)
 						.orElse(LocalDateTime.now().format(formatter)))
