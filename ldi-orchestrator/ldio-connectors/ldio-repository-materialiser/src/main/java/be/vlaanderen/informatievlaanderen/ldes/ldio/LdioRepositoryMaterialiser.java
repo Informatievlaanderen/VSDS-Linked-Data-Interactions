@@ -22,8 +22,6 @@ public class LdioRepositoryMaterialiser implements LdiOutput {
 
 	@Override
 	public void accept(Model model) {
-		StringWriter writer = new StringWriter();
-		RDFDataMgr.write(writer, model, Lang.NQUADS);
-		materialiser.process(writer.toString());
+		materialiser.process(model);
 	}
 }
