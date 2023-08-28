@@ -4,7 +4,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -26,7 +28,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator.S
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class LdesMemberConverterTest {
+class VersionObjectCreatorTest {
 	private static final String DEFAULT_DELIMITER = "/";
 
 	private static final Model initModel = ModelFactory.createDefaultModel();
@@ -57,6 +59,40 @@ class LdesMemberConverterTest {
 		assertFalse(
 				actualOutput.listStatements(null, TERMS_IS_VERSION_OF, model.createResource(memberInfo.getVersionOf()))
 						.toList().isEmpty());
+	}
+
+	@Test
+	void when_dateObservedPropertyIsNoDatetime_expectCurrentDatetime() {
+		Model inputModel = RDFParser.fromString("""
+				@prefix ex:   <http://example.org/> .
+				    
+				ex:member
+				  a ex:Something ;
+				  ex:foo "bar mitswa".
+				""").lang(Lang.TTL).toModel();
+
+		Resource memberType = inputModel.createResource("http://example.org/Something");
+		Property dateObservedProperty = inputModel.createProperty("http://example.org/foo");
+		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
+		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
+
+		String expectedId = "http://example.org/member/";
+
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedProperty, memberType,
+				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
+
+		Model versionObject = versionObjectCreator.apply(inputModel);
+
+		final LocalDateTime startTestTime = LocalDateTime.now();
+
+		final String minuteTheTestStarted = getPartOfLocalDateTime(startTestTime);
+		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(startTestTime.plusMinutes(1));
+
+		assertTrue(versionObject.listStatements()
+				.toList()
+				.stream()
+				.anyMatch(stmt -> stmt.getSubject().toString().contains(expectedId + minuteTheTestStarted) ||
+						stmt.getSubject().toString().contains(expectedId + minuteAfterTheTestStarted)));
 	}
 
 	@ParameterizedTest

@@ -47,8 +47,11 @@ public class VersionObjectCreator implements LdiTransformer {
 			Property dateObservedProperty) {
 		String dateObserved = Optional.ofNullable(dateObservedProperty)
 				.map(property -> linkedDataModel.listStatements(null, property, (Resource) null)
+						.mapWith(Statement::getObject)
+						.filterKeep(RDFNode::isLiteral)
+						.mapWith(RDFNode::asLiteral)
+						.filterKeep(literal -> literal.getDatatype().getURI().equals(XMLSCHEMA_DATE_TIME))
 						.nextOptional()
-						.map(Statement::getLiteral)
 						.map(Literal::getString)
 						.orElse(LocalDateTime.now().format(formatter)))
 				.orElse(LocalDateTime.now().format(formatter));
