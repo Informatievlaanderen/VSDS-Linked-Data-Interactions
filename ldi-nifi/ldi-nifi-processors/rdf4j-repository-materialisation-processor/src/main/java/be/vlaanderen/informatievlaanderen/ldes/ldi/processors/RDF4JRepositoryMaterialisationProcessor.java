@@ -2,6 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -19,10 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryMaterialisationProcessorProperties.NAMED_GRAPH;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryMaterialisationProcessorProperties.REPOSITORY_ID;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryMaterialisationProcessorProperties.SIMULTANEOUS_FLOWFILES_TO_PROCESS;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryMaterialisationProcessorProperties.SPARQL_HOST;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RDF4JRepositoryMaterialisationProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
 
@@ -45,6 +45,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 	@Override
 	protected List<PropertyDescriptor> getSupportedPropertyDescriptors() {
 		final List<PropertyDescriptor> properties = new ArrayList<>();
+		properties.add(DATA_SOURCE_FORMAT);
 		properties.add(SPARQL_HOST);
 		properties.add(REPOSITORY_ID);
 		properties.add(NAMED_GRAPH);
@@ -71,10 +72,13 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			return;
 		}
 
+		Lang dataSourceFormat = getDataSourceFormat(context);
+
 		for (FlowFile flowFile : flowFiles) {
 			String content = FlowManager.receiveData(session, flowFile);
+
 			try {
-				materialiser.process(content);
+				materialiser.process(RDFParser.fromString(content).lang(dataSourceFormat).toModel());
 				session.transfer(flowFile, SUCCESS);
 			} catch (Exception e) {
 				getLogger().error("Error sending model to repository", e.getMessage());

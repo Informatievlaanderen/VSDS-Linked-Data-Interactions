@@ -6,7 +6,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-core</artifactId>
-        <version>1.4.0-SNAPSHOT</version>
+        <version>1.5.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -37,6 +37,43 @@
             <groupId>org.eclipse.rdf4j</groupId>
             <artifactId>rdf4j-client</artifactId>
             <type>pom</type>
+<!--            We exclude these because we use the assembly plugin to create fat jars. Rdf4j uses SPI-->
+<!--            and different RDFParserFactories are provided in the META-INF.-->
+<!--            However, these are overwritten by the assembly plugin.-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.rdf4j</groupId>
+                    <artifactId>rdf4j-rio-binary</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.rdf4j</groupId>
+                    <artifactId>rdf4j-rio-jsonld</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.rdf4j</groupId>
+                    <artifactId>rdf4j-rio-rdfjson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.rdf4j</groupId>
+                    <artifactId>rdf4j-rio-rdfxml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.rdf4j</groupId>
+                    <artifactId>rdf4j-rio-trig</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.rdf4j</groupId>
+                    <artifactId>rdf4j-rio-trix</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.rdf4j</groupId>
+                    <artifactId>rdf4j-rio-turtle</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.rdf4j</groupId>
+                    <artifactId>rdf4j-rio-n3</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Test Dependencies -->
