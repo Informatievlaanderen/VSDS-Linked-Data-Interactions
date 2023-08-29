@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import org.apache.jena.riot.RDFParser;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
@@ -92,7 +93,7 @@ class MaterialiserTest {
 		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
 		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		materialiser.process(Files.readString(Path.of(CHANGED_FILE)));
+		materialiser.process(RDFParser.source(CHANGED_FILE).toModel());
 
 		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
 		assertTrue(testModelInStatements(changedModel, statements));

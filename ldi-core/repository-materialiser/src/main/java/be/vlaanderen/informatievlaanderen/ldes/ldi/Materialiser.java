@@ -1,6 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ModelParseIOException;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFWriter;
 import org.eclipse.rdf4j.common.transaction.IsolationLevels;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
@@ -42,7 +45,7 @@ public class Materialiser {
 		this.repositoryManager = manager;
 	}
 
-	public void process(String content) {
+	public void process(org.apache.jena.rdf.model.Model jenaModel) {
 		final Repository repository = repositoryManager.getRepository(repositoryId);
 
 		final RepositoryConnection dbConnection;
@@ -56,7 +59,7 @@ public class Materialiser {
 			dbConnection.setIsolationLevel(IsolationLevels.NONE);
 			dbConnection.begin();
 
-			var updateModel = readInputString(content);
+			var updateModel = toRdf4jModel(jenaModel);
 
 			Set<Resource> entityIds = getSubjectsFromModel(updateModel);
 			deleteEntitiesFromRepo(entityIds, dbConnection);
@@ -71,6 +74,7 @@ public class Materialiser {
 
 		} catch (Exception e) {
 			log.error("Failed to materialise: ", e);
+			throw new MaterialisationFailedException(e);
 		} finally {
 			dbConnection.close();
 		}
@@ -128,7 +132,8 @@ public class Materialiser {
 		}
 	}
 
-	private Model readInputString(String content) {
+	private Model toRdf4jModel(org.apache.jena.rdf.model.Model jenaModel) {
+		String content = RDFWriter.source(jenaModel).lang(Lang.NQUADS).asString();
 		InputStream in = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
 		try {
 			return Rio.parse(in, "", RDFFormat.NQUADS);
