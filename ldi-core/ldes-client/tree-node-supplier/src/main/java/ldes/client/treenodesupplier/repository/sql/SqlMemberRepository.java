@@ -4,12 +4,11 @@ import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 public class SqlMemberRepository implements MemberRepository {
-	private final EntityManagerFactory entityManagerFactory;
+	final EntityManagerFactory entityManagerFactory;
 	private final EntityManager entityManager;
 
 	public SqlMemberRepository(EntityManagerFactory entityManagerFactory) {

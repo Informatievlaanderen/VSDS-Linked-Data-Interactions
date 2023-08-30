@@ -41,17 +41,17 @@ class TreeNodeProcessorFactory {
 
 	private StatePersistence createFileStatePersistence() {
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.FILE,
-				Map.of());
+				Map.of(), "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE, Map.of());
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE, Map.of(), "instanceName");
 		return new StatePersistence(memberRepository, treeNodeRecordRepository);
 	}
 
 	private StatePersistence createSqliteStatePersistence() {
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE,
-				Map.of());
+				Map.of(), "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of());
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
 		return new StatePersistence(memberRepository, treeNodeRecordRepository);
 	}
 
@@ -62,18 +62,19 @@ class TreeNodeProcessorFactory {
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(
 				StatePersistenceStrategy.POSTGRES,
-				postgresProperties.getProperties());
+				postgresProperties.getProperties(), "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties());
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
+						"instanceName");
 
 		return new StatePersistence(memberRepository, treeNodeRecordRepository);
 	}
 
 	private StatePersistence createInMemoryStatePersistence() {
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY,
-				Map.of());
+				Map.of(), "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of());
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of(), "instanceName");
 		return new StatePersistence(memberRepository, treeNodeRecordRepository);
 	}
 

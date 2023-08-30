@@ -67,16 +67,18 @@ public class MemberSupplierSteps {
 
 	@And("a StatePersistenceStrategy MEMORY")
 	public void aMemoryStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY, Map.of());
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY, Map.of(),
+				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of());
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of(), "instanceName");
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
 	public void aSqliteStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE, Map.of());
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE, Map.of(),
+				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of());
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
 	}
 
 	@And("a StatePersistenceStrategy POSTGRES")
@@ -84,16 +86,18 @@ public class MemberSupplierSteps {
 		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.POSTGRES,
-				postgresProperties.getProperties());
+				postgresProperties.getProperties(), "instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties());
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
+						"instanceName");
 	}
 
 	@And("a StatePersistenceStrategy FILE")
 	public void aFileStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.FILE, Map.of());
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.FILE, Map.of(),
+				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE, Map.of());
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE, Map.of(), "instanceName");
 	}
 
 	@Then("MemberSupplier is destroyed")

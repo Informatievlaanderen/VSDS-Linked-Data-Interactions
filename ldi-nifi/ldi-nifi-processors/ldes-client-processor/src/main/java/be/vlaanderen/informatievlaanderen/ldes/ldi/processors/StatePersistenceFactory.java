@@ -18,7 +18,7 @@ public class StatePersistenceFactory {
 		if (state.equals(StatePersistenceStrategy.POSTGRES)) {
 			persistenceProperties = createPostgresProperties(context);
 		}
-		return StatePersistence.from(state, persistenceProperties);
+		return StatePersistence.from(state, persistenceProperties, context.getName());
 	}
 
 	private Map<String, String> createPostgresProperties(ProcessContext context) {

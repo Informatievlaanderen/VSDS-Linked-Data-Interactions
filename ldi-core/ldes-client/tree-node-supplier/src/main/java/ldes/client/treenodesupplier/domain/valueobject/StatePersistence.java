@@ -18,10 +18,10 @@ public class StatePersistence {
 	}
 
 	public static StatePersistence from(StatePersistenceStrategy statePersistenceStrategy,
-			Map<String, String> properties) {
-		return new StatePersistence(MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties),
+			Map<String, String> properties, String instanceName) {
+		return new StatePersistence(MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties, instanceName),
 				TreeNodeRecordRepositoryFactory
-						.getTreeNodeRecordRepository(statePersistenceStrategy, properties));
+						.getTreeNodeRecordRepository(statePersistenceStrategy, properties, instanceName));
 	}
 
 	public MemberRepository getMemberRepository() {
