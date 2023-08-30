@@ -24,6 +24,7 @@
         <module>json-to-ld-adapter</module>
         <module>file-archiving</module>
         <module>repository-materialiser</module>
+        <module>member-splitter</module>
     </modules>
 
     <properties>
