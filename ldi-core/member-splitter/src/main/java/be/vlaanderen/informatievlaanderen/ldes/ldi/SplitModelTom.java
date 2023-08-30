@@ -1,13 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 //map1 = Map<modelId, Set<Statement>>
 //        map2 = Map<Subject|Object, modelId>
@@ -20,14 +15,90 @@ import java.util.Set;
 //        Dan kwestie van subjects zoeken van type T en kijken in welke graphs ze zitten in map2 en de statements uit map1 gebruiken om model te maken
 public class SplitModelTom implements Splittable {
 
-    Map<Integer, Set<Statement>> statementsPerModel;
-    Map<Resource, Integer> subjects;
-    Map<RDFNode, Integer> objects;
-
+    Map<Integer, Set<Statement>> statementsPerModel = new HashMap<>();
+    Map<Resource, Integer> subjects = new HashMap<>();
+    Map<RDFNode, Integer> objects = new HashMap<>();
+    int sequence;
 
     @Override
     public List<Model> split(Model model) {
-        return null;
+        List<Statement> statementsList = model.listStatements().toList();
+
+
+        for (Statement statement : statementsList) {
+            System.out.println("=== new run ===");
+            Integer subjectModelId = subjects.get(statement.getSubject());
+            Integer objectModelId = objects.get(statement.getObject());
+
+            // Not present in existing model yet -> create model, add statement to model
+            // add subject and object
+            if (subjectModelId == null && objectModelId == null) {
+                ++sequence;
+                HashSet<Statement> statements = new HashSet<>();
+                statements.add(statement);
+                statementsPerModel.put(sequence, statements);
+                subjects.put(statement.getSubject(), sequence);
+                objects.put(statement.getObject(), sequence);
+                System.out.println("created: " + sequence);
+                // Only present in 1 model -> add statement to model
+            } else if (Objects.equals(subjectModelId, objectModelId)) {
+                addStatementToModel(statement, subjectModelId);
+            } else if (subjectModelId == null) {
+                subjects.put(statement.getSubject(), objectModelId);
+                addStatementToModel(statement, objectModelId);
+            } else if (objectModelId == null) {
+                objects.put(statement.getObject(), subjectModelId);
+                addStatementToModel(statement, subjectModelId);
+            } else {
+                // Present in 2 models
+                addStatementToModel(statement, subjectModelId);
+
+                mergeModels(subjectModelId, objectModelId, statement);
+            }
+
+
+        }
+
+        return statementsPerModel.values().stream().map(statements -> {
+            Model m = ModelFactory.createDefaultModel();
+            m.add(statements.stream().toList());
+            return m;
+        }).toList();
+    }
+
+    private void mergeModels(Integer subjectModelId, Integer objectModelId, Statement statement) {
+        Set<Statement> mergedStatements = new HashSet<>();
+        mergedStatements.addAll(statementsPerModel.get(subjectModelId));
+        mergedStatements.addAll(statementsPerModel.get(objectModelId));
+
+        statementsPerModel.remove(subjectModelId);
+        statementsPerModel.remove(objectModelId);
+        subjects.entrySet().removeIf(entry -> entry.getValue().equals(subjectModelId));
+        System.out.println("has value been removed " + subjects.containsValue(subjectModelId));
+        objects.entrySet().removeIf(entry -> entry.getValue().equals(objectModelId));
+
+        statementsPerModel.put(++sequence, mergedStatements);
+        subjects.put(statement.getSubject(), sequence);
+        objects.put(statement.getObject(), sequence);
+
+        System.out.println("removed: " + subjectModelId + " and " + objectModelId);
+        System.out.println("created after merge: " + sequence);
+    }
+
+    private void addStatementToModel(Statement statement, Integer modelId) {
+        Set<Statement> statements = statementsPerModel.get(modelId);
+        if (statements == null) {
+            System.out.println("help" + modelId);
+        }
+        statements.add(statement);
+//        statements.add(statement);
+//        statementsPerModel.compute(modelId, (key, value) -> {
+//            if (value == null) {
+//                System.out.println("help");
+//            }
+//            value.add(statement);
+//            return value;
+//        });
     }
 
 }
