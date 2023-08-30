@@ -27,6 +27,8 @@ public class SplitModelTom implements Splittable {
 
         for (Statement statement : statementsList) {
             System.out.println("=== new run ===");
+            System.out.println(subjects.values());
+            System.out.println(objects.values());
             Integer subjectModelId = subjects.get(statement.getSubject());
             Integer objectModelId = objects.get(statement.getObject());
 
@@ -73,9 +75,14 @@ public class SplitModelTom implements Splittable {
 
         statementsPerModel.remove(subjectModelId);
         statementsPerModel.remove(objectModelId);
-        subjects.entrySet().removeIf(entry -> entry.getValue().equals(subjectModelId));
-        System.out.println("has value been removed " + subjects.containsValue(subjectModelId));
-        objects.entrySet().removeIf(entry -> entry.getValue().equals(objectModelId));
+
+        subjects.entrySet().removeIf(entry -> entry.getValue().equals(subjectModelId) || entry.getValue().equals(objectModelId));
+        System.out.println("subject still exists " + subjects.containsValue(subjectModelId));
+        System.out.println(subjects.values());
+        System.out.println("removing objectId: " + objectModelId);
+        objects.entrySet().removeIf(entry -> entry.getValue().equals(subjectModelId) || entry.getValue().equals(objectModelId));
+        System.out.println("object still exists " + subjects.containsValue(subjectModelId));
+        System.out.println(objects.values());
 
         statementsPerModel.put(++sequence, mergedStatements);
         subjects.put(statement.getSubject(), sequence);
