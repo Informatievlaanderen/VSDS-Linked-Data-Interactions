@@ -19,7 +19,7 @@ public class MemberRepositoryFactory {
 	public static MemberRepository getMemberRepository(StatePersistenceStrategy statePersistenceStrategy,
 			Map<String, String> properties, String instanceName) {
 		return switch (statePersistenceStrategy) {
-			case SQLITE -> new SqlMemberRepository(SqliteEntityManagerFactory.getInstance());
+			case SQLITE -> new SqlMemberRepository(SqliteEntityManagerFactory.getInstance(instanceName));
 			case MEMORY -> new InMemoryMemberRepository();
 			case FILE -> new FileBasedMemberRepository();
 			case POSTGRES -> new PostgresqlMemberRepository(instanceName,
