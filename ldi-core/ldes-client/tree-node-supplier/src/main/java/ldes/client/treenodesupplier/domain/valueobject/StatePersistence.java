@@ -19,7 +19,8 @@ public class StatePersistence {
 
 	public static StatePersistence from(StatePersistenceStrategy statePersistenceStrategy,
 			Map<String, String> properties, String instanceName) {
-		return new StatePersistence(MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties, instanceName),
+		return new StatePersistence(
+				MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties, instanceName),
 				TreeNodeRecordRepositoryFactory
 						.getTreeNodeRecordRepository(statePersistenceStrategy, properties, instanceName));
 	}

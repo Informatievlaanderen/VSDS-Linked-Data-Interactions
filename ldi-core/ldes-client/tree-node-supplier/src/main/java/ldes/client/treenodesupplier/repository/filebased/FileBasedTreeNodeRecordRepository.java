@@ -29,7 +29,7 @@ public class FileBasedTreeNodeRecordRepository implements TreeNodeRecordReposito
 	public void saveTreeNodeRecord(TreeNodeRecord treeNodeRecord) {
 		switch (treeNodeRecord.getTreeNodeStatus()) {
 			case NOT_VISITED ->
-					fileManager.appendRecord(NOT_VISITED_TREE_NODES, mapper.fromTreeNodeRecord(treeNodeRecord));
+				fileManager.appendRecord(NOT_VISITED_TREE_NODES, mapper.fromTreeNodeRecord(treeNodeRecord));
 			case MUTABLE_AND_ACTIVE -> {
 				fileManager.appendRecord(MUTABLE_TREE_NODES, mapper.fromTreeNodeRecord(treeNodeRecord));
 				removeTreeNodeRecord(NOT_VISITED_TREE_NODES, treeNodeRecord);

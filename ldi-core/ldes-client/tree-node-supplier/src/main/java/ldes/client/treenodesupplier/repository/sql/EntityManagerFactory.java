@@ -4,5 +4,7 @@ import javax.persistence.EntityManager;
 
 public interface EntityManagerFactory {
 	EntityManager getEntityManager();
-	default void destroyState(String instanceName) {};
+
+	default void destroyState(String instanceName) {
+	};
 }
