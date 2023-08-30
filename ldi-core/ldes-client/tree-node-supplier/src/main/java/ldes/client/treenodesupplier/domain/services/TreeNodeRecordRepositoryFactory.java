@@ -18,11 +18,12 @@ public class TreeNodeRecordRepositoryFactory {
 	public static TreeNodeRecordRepository getTreeNodeRecordRepository(
 			StatePersistenceStrategy statePersistenceStrategy, Map<String, String> properties, String instanceName) {
 		return switch (statePersistenceStrategy) {
-			case SQLITE -> new SqlTreeNodeRepository(SqliteEntityManagerFactory.getInstance(instanceName));
+			case SQLITE -> new SqlTreeNodeRepository(instanceName,
+					SqliteEntityManagerFactory.getInstance(instanceName));
 			case MEMORY -> new InMemoryTreeNodeRecordRepository();
 			case FILE -> new FileBasedTreeNodeRecordRepository(instanceName);
 			case POSTGRES -> new PostgresqlTreeNodeRepository(instanceName,
-					PostgresEntityManagerFactory.getInstance(properties, instanceName));
+					PostgresEntityManagerFactory.getInstance(instanceName, properties));
 		};
 	}
 }

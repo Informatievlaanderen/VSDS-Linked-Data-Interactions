@@ -20,8 +20,8 @@ public class PostgresEntityManagerFactory implements EntityManagerFactory {
 		em = emf.createEntityManager();
 	}
 
-	public static synchronized PostgresEntityManagerFactory getInstance(Map<String, String> properties,
-			String instanceName) {
+	public static synchronized PostgresEntityManagerFactory getInstance(String instanceName,
+			Map<String, String> properties) {
 		return instances.computeIfAbsent(instanceName, s -> new PostgresEntityManagerFactory(properties));
 	}
 
@@ -34,13 +34,6 @@ public class PostgresEntityManagerFactory implements EntityManagerFactory {
 		em.close();
 		emf.close();
 		instances.remove(instanceName);
-		// DELETE tables
-	}
-
-	public void destroyState() {
-		em.close();
-		emf.close();
-		instances.clear();
 		// DELETE tables
 	}
 }

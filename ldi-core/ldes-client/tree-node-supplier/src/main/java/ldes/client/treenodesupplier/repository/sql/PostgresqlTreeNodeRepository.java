@@ -5,7 +5,7 @@ public class PostgresqlTreeNodeRepository extends SqlTreeNodeRepository {
 	private final String instanceName;
 
 	public PostgresqlTreeNodeRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
-		super(entityManagerFactory);
+		super(instanceName, entityManagerFactory);
 		this.instanceName = instanceName;
 	}
 

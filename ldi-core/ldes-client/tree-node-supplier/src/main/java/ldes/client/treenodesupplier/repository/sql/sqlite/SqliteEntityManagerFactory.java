@@ -62,8 +62,4 @@ public class SqliteEntityManagerFactory implements EntityManagerFactory {
 			throw new DestroyDbFailedException(e);
 		}
 	}
-
-	public void destroyState() {
-		instances.keySet().forEach(this::destroyState);
-	}
 }

@@ -12,10 +12,12 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
 	final EntityManagerFactory entityManagerFactory;
 	private final EntityManager entityManager;
+	private final String instanceName;
 
-	public SqlTreeNodeRepository(EntityManagerFactory entityManagerFactory) {
+	public SqlTreeNodeRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
 		this.entityManager = entityManagerFactory.getEntityManager();
+		this.instanceName = instanceName;
 	}
 
 	@Override
@@ -55,7 +57,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
 	@Override
 	public void destroyState() {
-		entityManagerFactory.destroyState();
+		entityManagerFactory.destroyState(instanceName);
 	}
 
 	@Override

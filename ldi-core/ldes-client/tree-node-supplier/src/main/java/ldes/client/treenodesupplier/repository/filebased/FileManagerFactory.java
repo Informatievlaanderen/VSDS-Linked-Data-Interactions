@@ -35,9 +35,9 @@ public class FileManagerFactory {
 
 	public void destroyState(String instanceName) {
 		try {
-			instances.remove(instanceName);
+			instances.remove("%s/%s".formatted(STATE_FOLDER, instanceName));
 			if (!stateDeleted) {
-				deleteState(instanceName);
+				deleteState("%s/%s".formatted(STATE_FOLDER, instanceName));
 			}
 		} catch (IOException e) {
 			throw new DestroyStateFailedException(e);

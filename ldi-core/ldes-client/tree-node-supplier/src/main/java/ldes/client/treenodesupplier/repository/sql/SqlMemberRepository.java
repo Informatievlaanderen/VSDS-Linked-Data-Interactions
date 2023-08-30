@@ -10,10 +10,12 @@ import java.util.Optional;
 public class SqlMemberRepository implements MemberRepository {
 	final EntityManagerFactory entityManagerFactory;
 	private final EntityManager entityManager;
+	private final String instanceName;
 
-	public SqlMemberRepository(EntityManagerFactory entityManagerFactory) {
+	public SqlMemberRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
 		this.entityManager = entityManagerFactory.getEntityManager();
+		this.instanceName = instanceName;
 	}
 
 	@Override
@@ -47,6 +49,6 @@ public class SqlMemberRepository implements MemberRepository {
 
 	@Override
 	public void destroyState() {
-		entityManagerFactory.destroyState();
+		entityManagerFactory.destroyState(instanceName);
 	}
 }
