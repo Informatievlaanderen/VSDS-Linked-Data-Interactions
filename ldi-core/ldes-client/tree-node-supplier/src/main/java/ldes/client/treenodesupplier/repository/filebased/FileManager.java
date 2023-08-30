@@ -9,9 +9,14 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.stream.Stream;
 
-import static ldes.client.treenodesupplier.repository.filebased.FileManagerFactory.STATE_DIRECTORY;
+import static ldes.client.treenodesupplier.repository.filebased.FileManagerFactory.STATE_FOLDER;
 
 public class FileManager {
+	private final String stateDirectory;
+
+	public FileManager(String stateDirectory) {
+		this.stateDirectory = "%s/%s".formatted(STATE_FOLDER, stateDirectory);
+	}
 
 	public Stream<String> getRecords(String file) {
 		if (fileExists(file)) {
@@ -24,8 +29,8 @@ public class FileManager {
 		return Stream.of();
 	}
 
-	private static Path getAbsolutePath(String file) {
-		return Path.of(STATE_DIRECTORY, file).toAbsolutePath();
+	private Path getAbsolutePath(String file) {
+		return Path.of(stateDirectory, file).toAbsolutePath();
 	}
 
 	public void createNewRecords(String file, Stream<String> records) {
