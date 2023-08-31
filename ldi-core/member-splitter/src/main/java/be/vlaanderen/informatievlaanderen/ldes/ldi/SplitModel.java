@@ -11,7 +11,7 @@ public class SplitModel implements Splittable {
         return splitToMap(model).values().stream().toList();
     }
 
-    private Map<String, Model> splitToMap(Model input) {
+    public Map<String, Model> splitToMap(Model input) {
         Map<String, Model> map = new HashMap<>();
         Set<Resource> subjects = new HashSet<>();
 
