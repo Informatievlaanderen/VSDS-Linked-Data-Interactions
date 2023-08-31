@@ -4,14 +4,14 @@ import org.apache.jena.rdf.model.*;
 
 import java.util.*;
 
-public class SplitModelSander implements Splittable {
+public class SplitModel implements Splittable {
 
     @Override
     public List<Model> split(Model model) {
         return splitToMap(model).values().stream().toList();
     }
 
-    public Map<String, Model> splitToMap(Model input) {
+    private Map<String, Model> splitToMap(Model input) {
         Map<String, Model> map = new HashMap<>();
         Set<Resource> subjects = new HashSet<>();
 

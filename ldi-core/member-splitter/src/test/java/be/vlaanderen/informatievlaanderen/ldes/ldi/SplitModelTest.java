@@ -13,21 +13,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class SplitModelTest {
 
     @Test
-    public void testSplitterSander() {
+    public void test_generic() {
         Model inputModel = RDFParser.source("input.ttl").toModel();
-        List<Model> resultModels = new SplitModelSander().split(inputModel);
+        List<Model> resultModels = new SplitModel().split(inputModel);
         assertSplit("member1.ttl", resultModels.get(0));
         assertSplit("member2.ttl", resultModels.get(1));
     }
 
     @Test
-    public void testSplitterTom() {
-        Model inputModel = RDFParser.source("input.ttl").toModel();
-        List<Model> resultModels = new SplitModelTom().split(inputModel);
-        String string = RDFWriter.source(resultModels.get(0)).lang(Lang.TURTLE).toString();
+    public void test_crowdscan() {
+        Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
+        List<Model> resultModels = new SplitModel().split(inputModel);
+        String string = RDFWriter.source(resultModels.get(1)).lang(Lang.TURTLE).toString();
         System.out.println(string);
-        assertSplit("member1.ttl", resultModels.get(0));
-        assertSplit("member2.ttl", resultModels.get(1));
+        assertSplit("crowdscan/observation3.ttl", resultModels.get(0));
+        assertSplit("crowdscan/observation1.ttl", resultModels.get(1));
+        assertSplit("crowdscan/observation2.ttl", resultModels.get(2));
     }
 
     void assertSplit(String file, Model actualModel) {
