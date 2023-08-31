@@ -46,9 +46,11 @@ public class VersionObjectCreator implements LdiTransformer {
 	private MemberInfo extractMemberInfo(Model linkedDataModel, Resource memberTypeResource,
 			Property dateObservedProperty) {
 		String dateObserved = Optional.ofNullable(dateObservedProperty)
-				.map(property -> linkedDataModel.listStatements(null, property, (Resource) null)
+				.map(property -> linkedDataModel.listObjectsOfProperty(property)
+						.filterKeep(RDFNode::isLiteral)
+						.mapWith(RDFNode::asLiteral)
+						.filterKeep(literal -> literal.getDatatype().getURI().toLowerCase().contains("datetime"))
 						.nextOptional()
-						.map(Statement::getLiteral)
 						.map(Literal::getString)
 						.orElse(LocalDateTime.now().format(formatter)))
 				.orElse(LocalDateTime.now().format(formatter));
