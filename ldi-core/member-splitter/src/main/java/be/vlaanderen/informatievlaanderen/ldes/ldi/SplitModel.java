@@ -1,25 +1,31 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.*;
+
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class SplitModel implements Splittable {
 
     @Override
-    public List<Model> split(Model model) {
-        return splitToMap(model).values().stream().toList();
+    public List<Model> split(Model model, String memberType) {
+        return splitToMap(model, memberType).values().stream().toList();
     }
 
-    public Map<String, Model> splitToMap(Model input) {
+    public Map<String, Model> splitToMap(Model input, String memberType) {
         Map<String, Model> map = new HashMap<>();
-        Set<Resource> subjects = new HashSet<>();
+//        Set<Resource> subjects = new HashSet<>();
 
-        input.listSubjects().forEach((Resource subject) -> {
-            if (subject.isAnon())
-                return;
-            subjects.add(subject);
-        });
+        Property property = createProperty(memberType);
+        Set<Resource> subjects = input.listSubjectsWithProperty(RDF.type, property).toSet();
+//        input.listSubjects().forEach((Resource subject) -> {
+//            if (subject.isAnon()) {
+//                return;
+//            }
+//            subjects.add(subject);
+//        });
         subjects.forEach((Resource subject) -> {
             Stack<Resource> subjectsOfIncludedStatements = new Stack<>();
             subjectsOfIncludedStatements.push(subject);
@@ -29,7 +35,7 @@ public class SplitModel implements Splittable {
                 input.listStatements(includedSubject, null, (String) null).forEach((Statement includedStatement) -> {
                     LDESMemberModel.add(includedStatement);
                     RDFNode object = includedStatement.getObject();
-                    if (object.isAnon()) {
+                    if (object.isResource()) {
                         subjectsOfIncludedStatements.push((Resource) object);
                     }
                 });
