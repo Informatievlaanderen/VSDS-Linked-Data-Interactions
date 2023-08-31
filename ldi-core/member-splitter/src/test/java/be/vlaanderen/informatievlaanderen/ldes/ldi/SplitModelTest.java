@@ -1,7 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import org.apache.jena.ontology.DatatypeProperty;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SplitModelTest {
 
@@ -41,15 +42,12 @@ class SplitModelTest {
     @Test
     public void test_traffic() {
         Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
-        List<Model> resultModels = new SplitModel().split(inputModel);
         Map<String, Model> resultMap = new SplitModel().splitToMap(inputModel);
-        String string = RDFWriter.source(resultModels.get(0)).lang(Lang.TURTLE).toString();
-//        System.out.println(string);
 
 
         Property property = createProperty("https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
         List<Model> members =
-                resultModels
+                resultMap.values()
                         .stream()
                         .filter(model -> !model.listSubjectsWithProperty(RDF.type, property).toList().isEmpty())
                         .toList();
@@ -64,25 +62,88 @@ class SplitModelTest {
                             .filterKeep(Objects::nonNull)
                             .toList();
             list.forEach(baseModel::add);
-            String s = RDFWriter.source(baseModel).lang(Lang.TURTLE).asString();
-            System.out.println("------ begin ----------");
-            System.out.println(s);
-            System.out.println("------ end ----------");
+//            String s = RDFWriter.source(baseModel).lang(Lang.TURTLE).asString();
+//            System.out.println("------ begin ----------");
+//            System.out.println(s);
+//            System.out.println("------ end ----------");
         });
 
-        Model model = resultModels.get(23);
-        Model baseModel = resultModels.get(10);
-        baseModel.add(model);
-        RDFWriter.source(baseModel).lang(Lang.TURTLE).asString();
+        String s = RDFWriter.source(members.get(2)).lang(Lang.TURTLE).asString();
+        System.out.println(s);
 
-        List<Model> list = baseModel.listObjects().filterKeep(RDFNode::isResource).mapWith(RDFNode::toString).mapWith(resultMap::get).filterKeep(Objects::nonNull).toList();
-        list.forEach(baseModel::add);
-//resultMap.get(rdfNode.toString());
-//resultModels.stream().filter(model -> model.listSubjects())
-        RDFWriter.source(baseModel).lang(Lang.TURTLE).asString();
-//resultModels.stream().m
+        assertSplit("traffic/measure1.ttl", members.get(2));
+    }
 
-        assertSplit("traffic/measure1.ttl", resultModels.get(0));
+
+    @Test
+    public void recursive() {
+        Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
+        Map<String, Model> resultMap = new SplitModel().splitToMap(inputModel);
+
+
+        resultMap.values().forEach(member -> {
+            List<Model> modelsToAddToMember = member
+                    .listObjects()
+                    .filterKeep(RDFNode::isResource)
+                    .mapWith(RDFNode::toString)
+                    .mapWith(resultMap::get)
+                    .filterKeep(Objects::nonNull)
+                    .toList();
+        });
+    }
+
+    /**
+     * select members
+     * voor elk subject filter objects
+     * voor elk object haal model uit resultmap
+     * voor elk model uit resultmap doe stap hierboven
+     */
+    @Test
+    public void test_trafficzzzzzzzzzzzzzzzzzzzzz() {
+
+        Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
+        Map<String, Model> resultMap = new SplitModel().splitToMap(inputModel);
+
+
+        resultMap.values().forEach(member -> {
+            List<Model> modelsToAddToMember = member
+                    .listObjects()
+                    .filterKeep(RDFNode::isResource)
+                    .mapWith(RDFNode::toString)
+                    .mapWith(resultMap::get)
+                    .filterKeep(Objects::nonNull)
+                    .toList();
+        });
+
+        ///////////////////////////////
+
+        Property property = createProperty("https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
+        List<Model> members =
+                resultMap.values()
+                        .stream()
+                        .filter(model -> !model.listSubjectsWithProperty(RDF.type, property).toList().isEmpty())
+                        .toList();
+
+        members.forEach(baseModel -> {
+            List<Model> list =
+                    baseModel
+                            .listObjects()
+                            .filterKeep(RDFNode::isResource)
+                            .mapWith(RDFNode::toString)
+                            .mapWith(resultMap::get)
+                            .filterKeep(Objects::nonNull)
+                            .toList();
+            list.forEach(baseModel::add);
+//            String s = RDFWriter.source(baseModel).lang(Lang.TURTLE).asString();
+//            System.out.println("------ begin ----------");
+//            System.out.println(s);
+//            System.out.println("------ end ----------");
+        });
+
+        String s = RDFWriter.source(members.get(2)).lang(Lang.TURTLE).asString();
+        System.out.println(s);
+
+        assertSplit("traffic/measure1.ttl", members.get(2));
     }
 
     void assertSplit(String file, Model actualModel) {
