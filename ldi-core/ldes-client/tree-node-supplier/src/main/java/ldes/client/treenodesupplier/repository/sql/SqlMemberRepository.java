@@ -4,17 +4,18 @@ import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 public class SqlMemberRepository implements MemberRepository {
-	private final EntityManagerFactory entityManagerFactory;
+	final EntityManagerFactory entityManagerFactory;
 	private final EntityManager entityManager;
+	private final String instanceName;
 
-	public SqlMemberRepository(EntityManagerFactory entityManagerFactory) {
+	public SqlMemberRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
 		this.entityManager = entityManagerFactory.getEntityManager();
+		this.instanceName = instanceName;
 	}
 
 	@Override
@@ -48,6 +49,6 @@ public class SqlMemberRepository implements MemberRepository {
 
 	@Override
 	public void destroyState() {
-		entityManagerFactory.destroyState();
+		entityManagerFactory.destroyState(instanceName);
 	}
 }

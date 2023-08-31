@@ -14,9 +14,14 @@ public class FileBasedTreeNodeRecordRepository implements TreeNodeRecordReposito
 	public static final String NOT_VISITED_TREE_NODES = "treeNodesNotVisited.txt";
 	public static final String MUTABLE_TREE_NODES = "treeNodesMutable.txt";
 	public static final String IMMUTABLE_TREE_NODES = "treeNodesImmutable.txt";
-	private final FileManagerFactory fileManagerFactory = FileManagerFactory.getInstance();
-	private final FileManager fileManager = fileManagerFactory.getFileManager();
+	private final FileManager fileManager;
 	private final TreeNodeRecordMapper mapper = new TreeNodeRecordMapper();
+	private final String instanceName;
+
+	public FileBasedTreeNodeRecordRepository(String instanceName) {
+		this.fileManager = FileManagerFactory.getInstance(instanceName);
+		this.instanceName = instanceName;
+	}
 
 	@Override
 	public void saveTreeNodeRecord(TreeNodeRecord treeNodeRecord) {
@@ -85,7 +90,8 @@ public class FileBasedTreeNodeRecordRepository implements TreeNodeRecordReposito
 
 	@Override
 	public void destroyState() {
-		FileManagerFactory.destroyState();
+		fileManager.destroyState();
+		FileManagerFactory.removeInstance(instanceName);
 	}
 
 	@Override

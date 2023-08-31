@@ -1,17 +1,25 @@
 package ldes.client.treenodesupplier.repository.filebased;
 
+import ldes.client.treenodesupplier.repository.filebased.exception.DestroyStateFailedException;
 import ldes.client.treenodesupplier.repository.filebased.exception.StateOperationFailedException;
+import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.stream.Stream;
 
-import static ldes.client.treenodesupplier.repository.filebased.FileManagerFactory.STATE_DIRECTORY;
+import static ldes.client.treenodesupplier.repository.filebased.FileManagerFactory.STATE_FOLDER;
 
 public class FileManager {
+	private final String stateDirectory;
+
+	public FileManager(String stateDirectory) {
+		this.stateDirectory = "%s/%s".formatted(STATE_FOLDER, stateDirectory);
+	}
 
 	public Stream<String> getRecords(String file) {
 		if (fileExists(file)) {
@@ -24,8 +32,8 @@ public class FileManager {
 		return Stream.of();
 	}
 
-	private static Path getAbsolutePath(String file) {
-		return Path.of(STATE_DIRECTORY, file).toAbsolutePath();
+	public Path getAbsolutePath(String file) {
+		return Path.of(stateDirectory, file).toAbsolutePath();
 	}
 
 	public void createNewRecords(String file, Stream<String> records) {
@@ -67,6 +75,14 @@ public class FileManager {
 			}
 		} else {
 			createNewRecords(file, Stream.of(recordToAppend));
+		}
+	}
+
+	public void destroyState() {
+		try {
+			FileUtils.deleteDirectory(new File(stateDirectory).getParentFile());
+		} catch (IOException e) {
+			throw new DestroyStateFailedException(e);
 		}
 	}
 }

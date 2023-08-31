@@ -5,18 +5,19 @@ import ldes.client.treenodesupplier.domain.services.TreeNodeRecordComparator;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
-import java.util.Optional;
-
 import javax.persistence.EntityManager;
+import java.util.Optional;
 
 public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
-	private final EntityManagerFactory entityManagerFactory;
+	final EntityManagerFactory entityManagerFactory;
 	private final EntityManager entityManager;
+	private final String instanceName;
 
-	public SqlTreeNodeRepository(EntityManagerFactory entityManagerFactory) {
+	public SqlTreeNodeRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
 		this.entityManager = entityManagerFactory.getEntityManager();
+		this.instanceName = instanceName;
 	}
 
 	@Override
@@ -56,7 +57,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
 	@Override
 	public void destroyState() {
-		entityManagerFactory.destroyState();
+		entityManagerFactory.destroyState(instanceName);
 	}
 
 	@Override

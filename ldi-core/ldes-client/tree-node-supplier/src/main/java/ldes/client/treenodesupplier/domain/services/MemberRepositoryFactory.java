@@ -16,12 +16,14 @@ public class MemberRepositoryFactory {
 	}
 
 	public static MemberRepository getMemberRepository(StatePersistenceStrategy statePersistenceStrategy,
-			Map<String, String> properties) {
+			Map<String, String> properties, String instanceName) {
 		return switch (statePersistenceStrategy) {
-			case SQLITE -> new SqlMemberRepository(SqliteEntityManagerFactory.getInstance());
+			case SQLITE -> new SqlMemberRepository(instanceName,
+					SqliteEntityManagerFactory.getInstance(instanceName));
 			case MEMORY -> new InMemoryMemberRepository();
-			case FILE -> new FileBasedMemberRepository();
-			case POSTGRES -> new SqlMemberRepository(PostgresEntityManagerFactory.getInstance(properties));
+			case FILE -> new FileBasedMemberRepository(instanceName);
+			case POSTGRES -> new SqlMemberRepository(instanceName,
+					PostgresEntityManagerFactory.getInstance(instanceName, properties));
 		};
 	}
 }

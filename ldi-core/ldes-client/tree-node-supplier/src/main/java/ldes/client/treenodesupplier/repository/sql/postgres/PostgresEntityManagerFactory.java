@@ -2,16 +2,16 @@ package ldes.client.treenodesupplier.repository.sql.postgres;
 
 import ldes.client.treenodesupplier.repository.sql.EntityManagerFactory;
 
-import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("java:S2696")
 public class PostgresEntityManagerFactory implements EntityManagerFactory {
 
 	public static final String PERSISTENCE_UNIT_NAME = "pu-postgres-jpa";
-	private static PostgresEntityManagerFactory instance = null;
+	private static final Map<String, PostgresEntityManagerFactory> instances = new HashMap<>();
 	private final EntityManager em;
 	private final javax.persistence.EntityManagerFactory emf;
 
@@ -20,22 +20,20 @@ public class PostgresEntityManagerFactory implements EntityManagerFactory {
 		em = emf.createEntityManager();
 	}
 
-	public static synchronized PostgresEntityManagerFactory getInstance(Map<String, String> properties) {
-		if (instance == null) {
-			instance = new PostgresEntityManagerFactory(properties);
-		}
-
-		return instance;
+	public static synchronized PostgresEntityManagerFactory getInstance(String instanceName,
+			Map<String, String> properties) {
+		return instances.computeIfAbsent(instanceName, s -> new PostgresEntityManagerFactory(properties));
 	}
 
 	public EntityManager getEntityManager() {
 		return em;
 	}
 
-	public void destroyState() {
+	@Override
+	public void destroyState(String instanceName) {
 		em.close();
 		emf.close();
-		instance = null;
+		instances.remove(instanceName);
 		// DELETE tables
 	}
 }
