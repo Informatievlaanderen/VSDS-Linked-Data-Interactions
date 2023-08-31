@@ -14,10 +14,10 @@ class SplitModelTest {
 
     @Test
     public void test_generic() {
-        Model inputModel = RDFParser.source("input.ttl").toModel();
+        Model inputModel = RDFParser.source("generic/input.ttl").toModel();
         List<Model> resultModels = new SplitModel().split(inputModel);
-        assertSplit("member1.ttl", resultModels.get(0));
-        assertSplit("member2.ttl", resultModels.get(1));
+        assertSplit("generic/member1.ttl", resultModels.get(0));
+        assertSplit("generic/member2.ttl", resultModels.get(1));
     }
 
     @Test
