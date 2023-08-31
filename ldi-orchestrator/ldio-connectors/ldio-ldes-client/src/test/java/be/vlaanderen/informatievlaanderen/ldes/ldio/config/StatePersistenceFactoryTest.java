@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -73,15 +74,19 @@ class StatePersistenceFactoryTest {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(
-					Arguments.of(new ComponentProperties(Map.of(STATE, "memory")), InMemoryMemberRepository.class,
+					Arguments.of(new ComponentProperties(Map.of(PIPELINE_NAME, "pipelineName", STATE, "memory")),
+							InMemoryMemberRepository.class,
 							InMemoryTreeNodeRecordRepository.class),
-					Arguments.of(new ComponentProperties(Map.of(STATE, "sqlite")), SqlMemberRepository.class,
+					Arguments.of(new ComponentProperties(Map.of(PIPELINE_NAME, "pipelineName", STATE, "sqlite")),
+							SqlMemberRepository.class,
 							SqlTreeNodeRepository.class),
-					Arguments.of(new ComponentProperties(Map.of(STATE, "file")), FileBasedMemberRepository.class,
+					Arguments.of(new ComponentProperties(Map.of(PIPELINE_NAME, "pipelineName", STATE, "file")),
+							FileBasedMemberRepository.class,
 							FileBasedTreeNodeRecordRepository.class),
 					Arguments.of(
 							new ComponentProperties(
-									Map.of(STATE, "postgres", POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
+									Map.of(PIPELINE_NAME, "pipelineName", STATE, "postgres",
+											POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
 											POSTGRES_USERNAME, postgreSQLContainer.getUsername(), POSTGRES_PASSWORD,
 											postgreSQLContainer.getPassword(), KEEP_STATE, "false")),
 							SqlMemberRepository.class, SqlTreeNodeRepository.class));

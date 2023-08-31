@@ -12,14 +12,12 @@ import java.util.stream.Collectors;
 public class FileBasedMemberRepository implements MemberRepository {
 	public static final String UNPROCESSED_MEMBERS = "membersUnprocessed.txt";
 	public static final String PROCESSED_MEMBERS = "membersProcessed.txt";
-	private final FileManagerFactory fileManagerFactory;
 	private final FileManager fileManager;
 	private final MemberRecordMapper mapper = new MemberRecordMapper();
 	private final String instanceName;
 
 	public FileBasedMemberRepository(String instanceName) {
-		this.fileManagerFactory = FileManagerFactory.getInstance(instanceName);
-		this.fileManager = fileManagerFactory.getFileManager(instanceName);
+		this.fileManager = FileManagerFactory.getInstance(instanceName);
 		this.instanceName = instanceName;
 	}
 
@@ -58,6 +56,7 @@ public class FileBasedMemberRepository implements MemberRepository {
 
 	@Override
 	public void destroyState() {
-		fileManagerFactory.destroyState(instanceName);
+		fileManager.destroyState();
+		FileManagerFactory.removeInstance(instanceName);
 	}
 }
