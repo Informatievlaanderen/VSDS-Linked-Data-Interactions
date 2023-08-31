@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FileManagerFactory {
+	private FileManagerFactory() {
+	}
+
 	public static final String STATE_FOLDER = "ldes-client";
 	private static final Map<String, FileManager> instances = new HashMap<>();
 
