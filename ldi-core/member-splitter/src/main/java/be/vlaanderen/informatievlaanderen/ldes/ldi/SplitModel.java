@@ -18,6 +18,7 @@ public class SplitModel implements Splittable {
         Map<String, Model> map = new HashMap<>();
 //        Set<Resource> subjects = new HashSet<>();
 
+        // TODO: 31/08/23 stop cyclic dependencies
         Property property = createProperty(memberType);
         Set<Resource> subjects = input.listSubjectsWithProperty(RDF.type, property).toSet();
 //        input.listSubjects().forEach((Resource subject) -> {
