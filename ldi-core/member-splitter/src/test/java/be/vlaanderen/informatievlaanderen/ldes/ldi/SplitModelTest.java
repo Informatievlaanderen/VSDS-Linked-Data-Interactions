@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SplitModelTest {
@@ -44,9 +45,18 @@ class SplitModelTest {
     public void test_traffic_2() {
         Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
         List<Model> resultModels = new SplitModel().split(inputModel, "https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
-        String string = RDFWriter.source(resultModels.get(7)).lang(Lang.TURTLE).toString();
-        System.out.println(string);
+
+        assertEquals(10, resultModels.size());
+        assertSplit("traffic/measure8.ttl", resultModels.get(0));
+        assertSplit("traffic/measure6.ttl", resultModels.get(1));
+        assertSplit("traffic/measure10.ttl", resultModels.get(2));
+        assertSplit("traffic/measure5.ttl", resultModels.get(3));
+        assertSplit("traffic/measure2.ttl", resultModels.get(4));
+        assertSplit("traffic/measure9.ttl", resultModels.get(5));
+        assertSplit("traffic/measure3.ttl", resultModels.get(6));
         assertSplit("traffic/measure1.ttl", resultModels.get(7));
+        assertSplit("traffic/measure7.ttl", resultModels.get(8));
+        assertSplit("traffic/measure4.ttl", resultModels.get(9));
     }
 
     @Test
