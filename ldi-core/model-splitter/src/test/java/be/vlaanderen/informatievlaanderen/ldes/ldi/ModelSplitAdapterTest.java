@@ -25,7 +25,7 @@ class ModelSplitAdapterTest {
 	private ModelSplitter modelSplitter;
 
 	@Test
-	public void testApply() {
+	void testApply() {
 		String subjectType = "subjectType";
 		ModelSplitAdapter modelSplitAdapter = new ModelSplitAdapter(subjectType, ldiAdapter, modelSplitter);
 		LdiAdapter.Content content = LdiAdapter.Content.of("content", "mime");

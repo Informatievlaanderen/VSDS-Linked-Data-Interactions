@@ -20,7 +20,7 @@ class ModelSplitterTest {
 		Set<Model> result = new ModelSplitter().split(inputModel, "http://schema.org/Movie");
 
 		assertEquals(2, result.size());
-		assertThing(List.of("generic/member1.ttl", "generic/member2.ttl"), result);
+		assertModels(List.of("generic/member1.ttl", "generic/member2.ttl"), result);
 	}
 
 	@Test
@@ -30,7 +30,7 @@ class ModelSplitterTest {
 				"http://def.isotc211.org/iso19156/2011/Observation#OM_Observation");
 
 		assertEquals(3, result.size());
-		assertThing(List.of("crowdscan/observation1.ttl", "crowdscan/observation2.ttl", "crowdscan/observation3.ttl"),
+		assertModels(List.of("crowdscan/observation1.ttl", "crowdscan/observation2.ttl", "crowdscan/observation3.ttl"),
 				result);
 	}
 
@@ -41,7 +41,7 @@ class ModelSplitterTest {
 				"https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
 
 		assertEquals(10, result.size());
-		assertThing(List.of(
+		assertModels(List.of(
 				"traffic/measure1.ttl",
 				"traffic/measure2.ttl",
 				"traffic/measure3.ttl",
@@ -54,7 +54,7 @@ class ModelSplitterTest {
 				"traffic/measure10.ttl"), result);
 	}
 
-	private void assertThing(List<String> expectedModelPaths, Set<Model> result) {
+	private void assertModels(List<String> expectedModelPaths, Set<Model> result) {
 		Set<Model> expectedModels = expectedModelPaths
 				.stream()
 				.map(RDFParser::source)
