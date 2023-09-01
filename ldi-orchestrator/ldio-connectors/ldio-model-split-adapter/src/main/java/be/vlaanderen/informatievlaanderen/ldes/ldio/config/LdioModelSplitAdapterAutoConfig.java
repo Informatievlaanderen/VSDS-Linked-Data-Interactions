@@ -19,8 +19,8 @@ public class LdioModelSplitAdapterAutoConfig {
 
 	public static class LdioModelSplitAdapterConfigurator implements LdioConfigurator {
 
-		public static final String SUBJECT_TYPE = "subject-type";
-		public static final String BASE_ADAPTER = "base-adapter";
+		public static final String SUBJECT_TYPE = "split-subject-type";
+		public static final String BASE_ADAPTER = "split-base-adapter";
 
 		private final ConfigurableApplicationContext configContext;
 
