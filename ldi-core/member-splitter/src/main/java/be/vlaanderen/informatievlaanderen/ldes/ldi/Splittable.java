@@ -3,10 +3,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.List;
+import java.util.Set;
 
 public interface Splittable {
 
-//    List<Model> split(Model model);
-    List<Model> split(Model model, String memberType);
+    Set<Model> split(Model model, String memberType);
 
 }

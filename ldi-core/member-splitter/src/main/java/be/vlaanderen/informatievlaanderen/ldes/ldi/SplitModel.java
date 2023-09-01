@@ -3,32 +3,22 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class SplitModel implements Splittable {
 
     @Override
-    public List<Model> split(Model model, String memberType) {
-        return splitToMap(model, memberType).values().stream().toList();
-    }
-
-    public Map<String, Model> splitToMap(Model input, String memberType) {
-        Map<String, Model> map = new HashMap<>();
-//        Set<Resource> subjects = new HashSet<>();
-
-        // TODO: 31/08/23 stop cyclic dependencies
+    public Set<Model> split(Model input, String memberType) {
         Property property = createProperty(memberType);
         Set<Resource> subjects = input.listSubjectsWithProperty(RDF.type, property).toSet();
-//        input.listSubjects().forEach((Resource subject) -> {
-//            if (subject.isAnon()) {
-//                return;
-//            }
-//            subjects.add(subject);
-//        });
-        subjects.forEach((Resource subject) -> {
-            Stack<Resource> subjectsOfIncludedStatements = new Stack<>();
+
+        return subjects.stream().map((Resource subject) -> {
+            Deque<Resource> subjectsOfIncludedStatements = new ArrayDeque<>();
             subjectsOfIncludedStatements.push(subject);
             Model LDESMemberModel = ModelFactory.createDefaultModel();
             while (!subjectsOfIncludedStatements.isEmpty()) {
@@ -41,9 +31,7 @@ public class SplitModel implements Splittable {
                     }
                 });
             }
-            map.put(subject.toString(), LDESMemberModel);
-        });
-
-        return map;
+            return LDESMemberModel;
+        }).collect(Collectors.toSet());
     }
 }
