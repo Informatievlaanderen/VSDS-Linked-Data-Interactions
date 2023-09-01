@@ -12,185 +12,6 @@
 @prefix time:           <http://www.w3.org/2006/time#> .
 @prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
 
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/4>
-        rdf:type                       dv-vm:Verkeersmeting ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "49"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        prov:generatedAtTime           "2023-08-31T06:16:00+01:00"^^xsd:dateTime ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/4> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/3>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "snelheid"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "3"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/1>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "aantal"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "1"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/2>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "snelheid"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "2"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/5>
-        rdf:type                       iso19156-co:OM_CountObservation , dv-vm:Verkeersmeting ;
-        iso19156-co:OM_CountObservation.result
-                "5"^^xsd:int ;
-        iso19156-om-ob:featureOfInterest
-                <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        iso19156-om-ob:observedProperty
-                <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/5> ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "5"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/5> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/3>
-        rdf:type                       dv-vm:Verkeersmeting ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "0"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        prov:generatedAtTime           "2023-08-31T06:16:00+01:00"^^xsd:dateTime ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/3> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00>
-        rdf:type           time:ProperInterval ;
-        time:hasBeginning  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        time:hasEnd        <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T07:17:21+02:00> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#sensor>
-        rdf:type        sosa:Sensor ;
-        dcterms:type    "Verkeersmeting"^^dv-vm:Meetinstrumenttype ;
-        ssn:implements  [ rdf:type      sosa:Procedure ;
-                          dcterms:type  "???"^^dv-vm:Observatieproceduretype
-                        ] ;
-        ssn:implements  [ rdf:type      sosa:Procedure ;
-                          dcterms:type  "???"^^dv-vm:Observatieproceduretype
-                        ] ;
-        ssn:implements  [ rdf:type      sosa:Procedure ;
-                          dcterms:type  "???"^^dv-vm:Observatieproceduretype
-                        ] ;
-        ssn:implements  [ rdf:type      sosa:Procedure ;
-                          dcterms:type  "???"^^dv-vm:Observatieproceduretype
-                        ] ;
-        ssn:implements  [ rdf:type      sosa:Procedure ;
-                          dcterms:type  "???"^^dv-vm:Observatieproceduretype
-                        ] .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T07:17:21+02:00>
-        rdf:type                 time:Instant ;
-        time:inXSDDateTimeStamp  "2023-08-31T07:17:21+02:00"^^xsd:dateTime .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/2>
-        rdf:type                       dv-vm:Verkeersmeting ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "68"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        prov:generatedAtTime           "2023-08-31T06:16:00+01:00"^^xsd:dateTime ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/2> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/4>
-        rdf:type                       iso19156-co:OM_CountObservation , dv-vm:Verkeersmeting ;
-        iso19156-co:OM_CountObservation.result
-                "1"^^xsd:int ;
-        iso19156-om-ob:featureOfInterest
-                <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        iso19156-om-ob:observedProperty
-                <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/4> ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "1"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/4> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/1>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "snelheid"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "1"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00>
-        rdf:type                 time:Instant ;
-        time:inXSDDateTimeStamp  "2023-08-31T06:16:00+01:00"^^xsd:dateTime .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/5>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "aantal"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "5"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/3>
-        rdf:type                       iso19156-co:OM_CountObservation , dv-vm:Verkeersmeting ;
-        iso19156-co:OM_CountObservation.result
-                "0"^^xsd:int ;
-        iso19156-om-ob:featureOfInterest
-                <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        iso19156-om-ob:observedProperty
-                <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/3> ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "0"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/3> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/1>
-        rdf:type                       dv-vm:Verkeersmeting ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "0"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        prov:generatedAtTime           "2023-08-31T06:16:00+01:00"^^xsd:dateTime ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/1> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/4>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "aantal"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "4"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/2>
-        rdf:type                       dv-vm:Verkeersmeting , iso19156-co:OM_CountObservation ;
-        iso19156-co:OM_CountObservation.result
-                "3"^^xsd:int ;
-        iso19156-om-ob:featureOfInterest
-                <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        iso19156-om-ob:observedProperty
-                <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/2> ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "3"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/2> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/3>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "aantal"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "3"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/5>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "snelheid"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "5"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245>
-        rdf:type              dv-vm:Verkeersmetingverzameling ;
-        prov:generatedAtTime  "2023-08-31T06:16:00+01:00"^^xsd:dateTime ;
-        dv-vm:fenomeentijd    <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        dv-vm:heeftLid        <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/2> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/5> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/1> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/4> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/3> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/5> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/2> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/3> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/1> , <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/4> ;
-        dv-vm:uitgevoerdMet   <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#sensor> .
-
 <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/aantal/1>
         rdf:type                       iso19156-co:OM_CountObservation , dv-vm:Verkeersmeting ;
         iso19156-co:OM_CountObservation.result
@@ -206,22 +27,20 @@
         dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
         dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
 
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245/snelheid/5>
-        rdf:type                       dv-vm:Verkeersmeting ;
-        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00> ;
-        iso19156-om-ob:result          "51"^^xsd:int ;
-        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
-        prov:generatedAtTime           "2023-08-31T06:16:00+01:00"^^xsd:dateTime ;
-        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/5> ;
-        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245#rijstrook> ;
-        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/4245> .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/4>
-        rdf:type            dv-vm:Verkeerskenmerk ;
-        dv-vm:type          "snelheid"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "4"^^dv-vm:Voertuigtype .
-
-<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/2>
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/aantal/1>
         rdf:type            dv-vm:Verkeerskenmerk ;
         dv-vm:type          "aantal"^^dv-vm:Verkeerskenmerktype ;
-        dv-vm:voertuigType  "2"^^dv-vm:Voertuigtype .
+        dv-vm:voertuigType  "1"^^dv-vm:Voertuigtype .
+
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00-2023-08-31T07:17:21+02:00>
+        rdf:type           time:ProperInterval ;
+        time:hasBeginning  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00> ;
+        time:hasEnd        <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T07:17:21+02:00> .
+
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T06:16:00+01:00>
+        rdf:type                 time:Instant ;
+        time:inXSDDateTimeStamp  "2023-08-31T06:16:00+01:00"^^xsd:dateTime .
+
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/4245#2023-08-31T07:17:21+02:00>
+        rdf:type                 time:Instant ;
+        time:inXSDDateTimeStamp  "2023-08-31T07:17:21+02:00"^^xsd:dateTime .
