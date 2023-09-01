@@ -5,16 +5,16 @@ import org.apache.jena.rdf.model.Model;
 
 import java.util.stream.Stream;
 
-// TODO TVB: 01/09/23 test me
 public class ModelSplitAdapter implements LdiAdapter {
 
 	private final String subjectType;
 	private final LdiAdapter ldiAdapter;
-	private final ModelSplitter modelSplitter = new ModelSplitter();
+	private final ModelSplitter modelSplitter;
 
-	public ModelSplitAdapter(String subjectType, LdiAdapter ldiAdapter) {
+	public ModelSplitAdapter(String subjectType, LdiAdapter ldiAdapter, ModelSplitter modelSplitter) {
 		this.subjectType = subjectType;
 		this.ldiAdapter = ldiAdapter;
+		this.modelSplitter = modelSplitter;
 	}
 
 	@Override

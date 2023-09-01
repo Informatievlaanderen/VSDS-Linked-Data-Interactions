@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
@@ -34,7 +35,7 @@ public class LdioModelSplitAdapterAutoConfig {
 			final String baseAdapterBeanName = config.getProperty(BASE_ADAPTER);
 			final LdioConfigurator ldioConfigurator = (LdioConfigurator) configContext.getBean(baseAdapterBeanName);
 			final LdiAdapter adapter = (LdiAdapter) ldioConfigurator.configure(config);
-			return new ModelSplitAdapter(subjectType, adapter);
+			return new ModelSplitAdapter(subjectType, adapter, new ModelSplitter());
 		}
 	}
 }
