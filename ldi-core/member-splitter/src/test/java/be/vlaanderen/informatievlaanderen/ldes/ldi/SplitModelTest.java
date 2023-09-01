@@ -14,57 +14,58 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SplitModelTest {
 
-    @Test
-    public void test_generic() {
-        Model inputModel = RDFParser.source("generic/input.ttl").toModel();
-        Set<Model> result = new SplitModel().split(inputModel, "http://schema.org/Movie");
+	@Test
+	public void test_generic() {
+		Model inputModel = RDFParser.source("generic/input.ttl").toModel();
+		Set<Model> result = new SplitModel().split(inputModel, "http://schema.org/Movie");
 
-        assertEquals(2, result.size());
-        assertThing(List.of("generic/member1.ttl", "generic/member2.ttl"), result);
-    }
+		assertEquals(2, result.size());
+		assertThing(List.of("generic/member1.ttl", "generic/member2.ttl"), result);
+	}
 
-    @Test
-    public void test_crowdscan() {
-        Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
-        Set<Model> result = new SplitModel().split(inputModel, "http://def.isotc211.org/iso19156/2011/Observation#OM_Observation");
+	@Test
+	public void test_crowdscan() {
+		Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
+		Set<Model> result = new SplitModel().split(inputModel,
+				"http://def.isotc211.org/iso19156/2011/Observation#OM_Observation");
 
-        assertEquals(3, result.size());
-        assertThing(List.of("crowdscan/observation1.ttl", "crowdscan/observation2.ttl", "crowdscan/observation3.ttl"), result);
-    }
+		assertEquals(3, result.size());
+		assertThing(List.of("crowdscan/observation1.ttl", "crowdscan/observation2.ttl", "crowdscan/observation3.ttl"),
+				result);
+	}
 
-    @Test
-    public void test_traffic() {
-        Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
-        Set<Model> result = new SplitModel().split(inputModel, "https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
+	@Test
+	public void test_traffic() {
+		Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
+		Set<Model> result = new SplitModel().split(inputModel,
+				"https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
 
-        assertEquals(10, result.size());
-        assertThing(List.of(
-                "traffic/measure1.ttl",
-                "traffic/measure2.ttl",
-                "traffic/measure3.ttl",
-                "traffic/measure4.ttl",
-                "traffic/measure5.ttl",
-                "traffic/measure6.ttl",
-                "traffic/measure7.ttl",
-                "traffic/measure8.ttl",
-                "traffic/measure9.ttl",
-                "traffic/measure10.ttl"
-        ), result);
-    }
+		assertEquals(10, result.size());
+		assertThing(List.of(
+				"traffic/measure1.ttl",
+				"traffic/measure2.ttl",
+				"traffic/measure3.ttl",
+				"traffic/measure4.ttl",
+				"traffic/measure5.ttl",
+				"traffic/measure6.ttl",
+				"traffic/measure7.ttl",
+				"traffic/measure8.ttl",
+				"traffic/measure9.ttl",
+				"traffic/measure10.ttl"), result);
+	}
 
-    private void assertThing(List<String> expectedModelPaths, Set<Model> result) {
-        Set<Model> expectedModels =
-                expectedModelPaths
-                        .stream()
-                        .map(RDFParser::source)
-                        .map(RDFParserBuilder::toModel)
-                        .collect(Collectors.toSet());
+	private void assertThing(List<String> expectedModelPaths, Set<Model> result) {
+		Set<Model> expectedModels = expectedModelPaths
+				.stream()
+				.map(RDFParser::source)
+				.map(RDFParserBuilder::toModel)
+				.collect(Collectors.toSet());
 
-        result.forEach(
-                actualResult -> expectedModels.removeIf(expectedResult -> expectedResult.isIsomorphicWith(actualResult))
-        );
+		result.forEach(
+				actualResult -> expectedModels
+						.removeIf(expectedResult -> expectedResult.isIsomorphicWith(actualResult)));
 
-        assertTrue(expectedModels.isEmpty());
-    }
+		assertTrue(expectedModels.isEmpty());
+	}
 
 }
