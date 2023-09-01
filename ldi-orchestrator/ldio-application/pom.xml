@@ -146,11 +146,11 @@
                 </dependency></dependencies>
         </profile>
         <profile>
-            <id>ldio-member-split-adapter</id>
+            <id>ldio-model-split-adapter</id>
             <dependencies>
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-member-split-adapter</artifactId>
+                    <artifactId>ldio-model-split-adapter</artifactId>
                     <version>${project.version}</version>
                 </dependency></dependencies>
         </profile>

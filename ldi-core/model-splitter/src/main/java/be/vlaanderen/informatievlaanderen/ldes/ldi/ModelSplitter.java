@@ -15,9 +15,9 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class ModelSplitter {
 
-	public Set<Model> split(Model inputModel, String memberType) {
+	public Set<Model> split(Model inputModel, String subjectType) {
 		return inputModel
-				.listSubjectsWithProperty(RDF.type, createProperty(memberType))
+				.listSubjectsWithProperty(RDF.type, createProperty(subjectType))
 				.mapWith(subject -> extractModelForSubject(inputModel, subject))
 				.toSet();
 	}

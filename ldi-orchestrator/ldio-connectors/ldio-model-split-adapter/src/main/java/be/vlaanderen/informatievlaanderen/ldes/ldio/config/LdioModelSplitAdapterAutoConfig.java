@@ -10,30 +10,31 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class LdioMemberSplitAdapterAutoConfig {
+public class LdioModelSplitAdapterAutoConfig {
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.MemberSplitAdapter")
+	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitAdapter")
 	public LdioConfigurator ldiHttpOutConfigurator(ConfigurableApplicationContext configContext) {
-		return new LdioMemberSplitAdapterConfigurator(configContext);
+		return new LdioModelSplitAdapterConfigurator(configContext);
 	}
 
-	public static class LdioMemberSplitAdapterConfigurator implements LdioConfigurator {
-		public static final String MEMBER_TYPE = "member-type";
+	public static class LdioModelSplitAdapterConfigurator implements LdioConfigurator {
+
+		public static final String SUBJECT_TYPE = "subject-type";
 		public static final String BASE_ADAPTER = "base-adapter";
 
 		private final ConfigurableApplicationContext configContext;
 
-		public LdioMemberSplitAdapterConfigurator(ConfigurableApplicationContext configContext) {
+		public LdioModelSplitAdapterConfigurator(ConfigurableApplicationContext configContext) {
 			this.configContext = configContext;
 		}
 
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
-			final String memberType = config.getProperty(MEMBER_TYPE);
+			final String subjectType = config.getProperty(SUBJECT_TYPE);
 			final String baseAdapterBeanName = config.getProperty(BASE_ADAPTER);
 			final LdioConfigurator ldioConfigurator = (LdioConfigurator) configContext.getBean(baseAdapterBeanName);
 			final LdiAdapter adapter = (LdiAdapter) ldioConfigurator.configure(config);
-			return new ModelSplitAdapter(memberType, adapter);
+			return new ModelSplitAdapter(subjectType, adapter);
 		}
 	}
 }
