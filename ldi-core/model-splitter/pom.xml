@@ -9,7 +9,7 @@
         <version>1.6.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>be.vlaanderen.informatievlaanderen.vsds</groupId>
+    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
     <artifactId>model-splitter</artifactId>
 
 </project>

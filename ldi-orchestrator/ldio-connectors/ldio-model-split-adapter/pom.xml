@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.vsds</groupId>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>model-splitter</artifactId>
             <version>${project.version}</version>
         </dependency>
