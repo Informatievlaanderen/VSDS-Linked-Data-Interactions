@@ -4,11 +4,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ModelSplitProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.flowfile.FlowFile;
+import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
@@ -47,18 +49,28 @@ public class ModelSplitProcessor extends AbstractProcessor {
 		final FlowFile flowFile = session.get();
 		if (flowFile != null) {
 			try {
-				Lang dataSourceFormat = ModelSplitProperties.getDataSourceFormat(context);
+				Lang dataSourceFormat = determineDataSourceFormat(flowFile, context);
 				Model inputModel = receiveDataAsModel(session, flowFile, dataSourceFormat);
 				modelSplitter
 						.split(inputModel, ModelSplitProperties.getSubjectType(context))
 						.forEach(model -> sendRDFToRelation(session, session.create(), model, SUCCESS,
 								dataSourceFormat));
-				sendRDFToRelation(session, flowFile, PROCESSED_INPUT_FILE);
+				sendRDFToRelation(session, flowFile, inputModel, PROCESSED_INPUT_FILE, dataSourceFormat);
 			} catch (Exception e) {
 				getLogger().error("Error splitting model in multiple models: {}", e.getMessage());
 				sendRDFToRelation(session, flowFile, FAILURE);
 			}
 		}
+	}
+
+	private Lang determineDataSourceFormat(FlowFile flowFile, ProcessContext context) {
+		// Optional config can overwrite the mime types of the flowfiles
+		final Lang configDataSourceFormat = ModelSplitProperties.getDataSourceFormat(context);
+		if (configDataSourceFormat != null) {
+			return configDataSourceFormat;
+		}
+
+		return RDFLanguages.contentTypeToLang(flowFile.getAttribute(CoreAttributes.MIME_TYPE.key()));
 	}
 
 }

@@ -13,7 +13,7 @@ public class ModelSplitProperties {
 	}
 
 	public static final Relationship PROCESSED_INPUT_FILE = new Relationship.Builder()
-			.name("PROCESSED_INPUT_FILE")
+			.name("processed")
 			.description("The input file that was processed")
 			.build();
 
@@ -27,8 +27,7 @@ public class ModelSplitProperties {
 	public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
 			.name("DATA_SOURCE_FORMAT")
 			.displayName("Data source format")
-			.required(true)
-			.defaultValue(Lang.NQUADS.getHeaderString())
+			.required(false)
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.build();
 
