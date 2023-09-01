@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ModelSplitterTest {
 
 	@Test
-	public void test_generic() {
+	void test_generic() {
 		Model inputModel = RDFParser.source("generic/input.ttl").toModel();
 		Set<Model> result = new ModelSplitter().split(inputModel, "http://schema.org/Movie");
 
@@ -24,7 +24,7 @@ class ModelSplitterTest {
 	}
 
 	@Test
-	public void test_crowdscan() {
+	void test_crowdscan() {
 		Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
 		Set<Model> result = new ModelSplitter().split(inputModel,
 				"http://def.isotc211.org/iso19156/2011/Observation#OM_Observation");
@@ -35,7 +35,7 @@ class ModelSplitterTest {
 	}
 
 	@Test
-	public void test_traffic() {
+	void test_traffic() {
 		Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
 		Set<Model> result = new ModelSplitter().split(inputModel,
 				"https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
