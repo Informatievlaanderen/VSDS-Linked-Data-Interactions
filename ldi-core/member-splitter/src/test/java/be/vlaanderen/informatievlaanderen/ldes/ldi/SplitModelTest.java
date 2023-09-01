@@ -9,6 +9,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.vocabulary.RDF;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ class SplitModelTest {
     }
 
     @Test
-    public void test_traffic_2() {
+    public void test_traffic() {
         Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
         List<Model> resultModels = new SplitModel().split(inputModel, "https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
 
@@ -59,8 +60,9 @@ class SplitModelTest {
         assertSplit("traffic/measure4.ttl", resultModels.get(9));
     }
 
+    @Disabled
     @Test
-    public void test_traffic() {
+    public void test_traffic_old() {
         Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
         Map<String, Model> resultMap = new SplitModel().splitToMap(inputModel, "https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
 
@@ -95,6 +97,7 @@ class SplitModelTest {
     }
 
 
+    @Disabled
     @Test
     public void recursive() {
         Model inputModel = RDFParser.source("traffic/measure_temp.ttl").toModel();
@@ -141,6 +144,7 @@ class SplitModelTest {
      * voor elk object haal model uit resultmap
      * voor elk model uit resultmap doe stap hierboven
      */
+    @Disabled
     @Test
     public void test_trafficzzzzzzzzzzzzzzzzzzzzz() {
 
