@@ -13,7 +13,7 @@ import java.util.Set;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
-public class SplitModel {
+public class ModelSplitter {
 
 	public Set<Model> split(Model inputModel, String memberType) {
 		return inputModel

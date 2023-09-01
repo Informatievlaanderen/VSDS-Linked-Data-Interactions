@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SplitModelTest {
+class ModelSplitterTest {
 
 	@Test
 	public void test_generic() {
 		Model inputModel = RDFParser.source("generic/input.ttl").toModel();
-		Set<Model> result = new SplitModel().split(inputModel, "http://schema.org/Movie");
+		Set<Model> result = new ModelSplitter().split(inputModel, "http://schema.org/Movie");
 
 		assertEquals(2, result.size());
 		assertThing(List.of("generic/member1.ttl", "generic/member2.ttl"), result);
@@ -26,7 +26,7 @@ class SplitModelTest {
 	@Test
 	public void test_crowdscan() {
 		Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
-		Set<Model> result = new SplitModel().split(inputModel,
+		Set<Model> result = new ModelSplitter().split(inputModel,
 				"http://def.isotc211.org/iso19156/2011/Observation#OM_Observation");
 
 		assertEquals(3, result.size());
@@ -37,7 +37,7 @@ class SplitModelTest {
 	@Test
 	public void test_traffic() {
 		Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
-		Set<Model> result = new SplitModel().split(inputModel,
+		Set<Model> result = new ModelSplitter().split(inputModel,
 				"https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
 
 		assertEquals(10, result.size());
