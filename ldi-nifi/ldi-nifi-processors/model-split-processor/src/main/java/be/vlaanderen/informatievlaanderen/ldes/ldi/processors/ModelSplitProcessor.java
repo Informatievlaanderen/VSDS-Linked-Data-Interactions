@@ -51,7 +51,8 @@ public class ModelSplitProcessor extends AbstractProcessor {
 				Model inputModel = receiveDataAsModel(session, flowFile, dataSourceFormat);
 				modelSplitter
 						.split(inputModel, ModelSplitProperties.getSubjectType(context))
-						.forEach(model -> sendRDFToRelation(session, session.create(), model, SUCCESS, dataSourceFormat));
+						.forEach(model -> sendRDFToRelation(session, session.create(), model, SUCCESS,
+								dataSourceFormat));
 				sendRDFToRelation(session, flowFile, PROCESSED_INPUT_FILE);
 			} catch (Exception e) {
 				getLogger().error("Error splitting model in multiple models: {}", e.getMessage());
