@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mockito;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
@@ -34,7 +35,7 @@ class HttpInputPollerTest {
 	void setUp() {
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
-		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, true);
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), true);
 	}
 
 	@Test
@@ -50,7 +51,7 @@ class HttpInputPollerTest {
 	void whenPolling_andMissesHeader() {
 		stubFor(get(ENDPOINT).willReturn(ok().withBody(CONTENT)));
 
-		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, false);
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), false);
 		Executable polling = () -> httpInputPoller.poll();
 
 		assertThrows(MissingHeaderException.class, polling);
@@ -84,7 +85,7 @@ class HttpInputPollerTest {
 	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling() {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + ENDPOINT, false);
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), false);
 		httpInputPoller.schedulePoller(1);
 
 		Mockito.verify(adapter, after(2000).never()).apply(any());
@@ -94,7 +95,7 @@ class HttpInputPollerTest {
 	@Test
 	void when_EndpointDoesNotExist_Then_NoDataIsSent() {
 		String wrongEndpoint = "/non-existing-resource";
-		httpInputPoller = new HttpInputPoller(executor, adapter, BASE_URL + wrongEndpoint, true);
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + wrongEndpoint), true);
 
 		httpInputPoller.poll();
 
