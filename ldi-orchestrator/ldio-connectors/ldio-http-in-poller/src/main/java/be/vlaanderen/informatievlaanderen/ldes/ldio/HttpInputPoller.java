@@ -21,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class HttpInputPoller extends LdiInput {
+
+	private final Logger log = LoggerFactory.getLogger(HttpInputPoller.class);
+
 	private final ScheduledExecutorService scheduler;
 	private final RequestExecutor requestExecutor;
 	private final List<Request> requests;
@@ -56,6 +59,7 @@ public class HttpInputPoller extends LdiInput {
 	}
 
 	private void executeRequest(Request request) {
+		log.atDebug().log("Polling next url: {}", request.getUrl());
 		Response response = requestExecutor.execute(request);
 		if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
 			String contentType = response.getFirstHeaderValue(CONTENT_TYPE)
