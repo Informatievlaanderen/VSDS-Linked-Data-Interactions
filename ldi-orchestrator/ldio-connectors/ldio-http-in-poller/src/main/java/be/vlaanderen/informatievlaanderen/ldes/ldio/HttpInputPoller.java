@@ -56,7 +56,6 @@ public class HttpInputPoller extends LdiInput {
 	}
 
 	private void executeRequest(Request request) {
-		System.out.println(request.getUrl());
 		Response response = requestExecutor.execute(request);
 		if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
 			String contentType = response.getFirstHeaderValue(CONTENT_TYPE)
