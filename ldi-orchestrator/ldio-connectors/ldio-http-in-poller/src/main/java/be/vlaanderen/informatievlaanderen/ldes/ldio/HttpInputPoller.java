@@ -28,7 +28,6 @@ public class HttpInputPoller extends LdiInput {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
 
-	// TODO TVB: 03/09/23 add test with multiple requests
 	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
 			boolean continueOnFail) {
 		super(executor, adapter);
@@ -55,6 +54,7 @@ public class HttpInputPoller extends LdiInput {
 	}
 
 	private void executeRequest(Request request) {
+		System.out.println(request.getUrl());
 		Response response = requestExecutor.execute(request);
 		if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
 			String contentType = response.getFirstHeaderValue(CONTENT_TYPE)
