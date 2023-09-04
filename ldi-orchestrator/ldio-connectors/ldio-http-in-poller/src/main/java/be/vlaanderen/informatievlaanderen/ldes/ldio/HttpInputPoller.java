@@ -28,9 +28,6 @@ public class HttpInputPoller extends LdiInput {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
 
-	// TODO TVB: 03/09/23 ASK Ranko, "poll interval en continue on fail" voor elke
-	// url apart?
-
 	// TODO TVB: 03/09/23 add test with multiple requests
 	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
 			boolean continueOnFail) {
