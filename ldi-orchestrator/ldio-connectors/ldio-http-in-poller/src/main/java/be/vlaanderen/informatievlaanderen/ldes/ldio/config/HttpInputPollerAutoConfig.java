@@ -27,8 +27,8 @@ public class HttpInputPollerAutoConfig {
 		@Override
 		public HttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
 				ComponentProperties properties) {
-			String endpoint = properties.getProperty(URL);
-			List<String> endpoints = List.of(endpoint); // TODO TVB: 03/09/23 get csv list from properties
+			List<String> endpoints = properties.getPropertyList(URL);
+
 			String pollingInterval = properties.getProperty(INTERVAL);
 			boolean continueOnFail = properties.getOptionalBoolean(CONTINUE_ON_FAIL).orElse(true);
 
@@ -45,5 +45,6 @@ public class HttpInputPollerAutoConfig {
 
 			return httpInputPoller;
 		}
+
 	}
 }
