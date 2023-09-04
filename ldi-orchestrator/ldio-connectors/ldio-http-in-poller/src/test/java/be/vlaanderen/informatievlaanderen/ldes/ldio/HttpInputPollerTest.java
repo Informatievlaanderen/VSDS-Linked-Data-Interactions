@@ -75,6 +75,20 @@ class HttpInputPollerTest {
 	}
 
 	@Test
+	void whenPollMultipleEndpoints_andOneEndpointFails_thenTheOtherEndpointShouldStillBePolled() {
+		stubFor(get(ENDPOINT).willReturn(serverError().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
+		String otherEndpoint = "/other-resource";
+		stubFor(get(otherEndpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT, BASE_URL + otherEndpoint),
+				true);
+
+		httpInputPoller.poll();
+
+		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
+		WireMock.verify(getRequestedFor(urlEqualTo(otherEndpoint)));
+	}
+
+	@Test
 	void whenPeriodicPollingMultipleEndpoints_thenReturnTwoTimesTheSameResponse() {
 		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 		String otherEndpoint = "/other-resource";

@@ -43,14 +43,16 @@ public class HttpInputPoller extends LdiInput {
 	}
 
 	public void poll() {
-		try {
-			requests.forEach(this::executeRequest);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-			if (!continueOnFail) {
-				throw e;
+		requests.forEach(request -> {
+			try {
+				executeRequest(request);
+			} catch (Exception e) {
+				LOGGER.error(e.getMessage());
+				if (!continueOnFail) {
+					throw e;
+				}
 			}
-		}
+		});
 	}
 
 	private void executeRequest(Request request) {
