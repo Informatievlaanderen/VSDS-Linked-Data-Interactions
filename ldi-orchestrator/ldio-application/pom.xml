@@ -146,6 +146,15 @@
                 </dependency></dependencies>
         </profile>
         <profile>
+            <id>ldio-model-split-adapter</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-model-split-adapter</artifactId>
+                    <version>${project.version}</version>
+                </dependency></dependencies>
+        </profile>
+        <profile>
             <id>ldio-ngsiv2-to-ld-adapter</id>
             <dependencies>
                 <dependency>
