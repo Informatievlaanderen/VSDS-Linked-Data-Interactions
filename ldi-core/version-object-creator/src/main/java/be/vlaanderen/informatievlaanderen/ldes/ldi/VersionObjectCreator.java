@@ -37,10 +37,10 @@ public class VersionObjectCreator implements LdiTransformer {
 	}
 
 	@Override
-	public Model apply(Model linkedDataModel) {
+	public List<Model> apply(Model linkedDataModel) {
 		MemberInfo memberInfo = extractMemberInfo(linkedDataModel, memberTypeResource, dateObservedProperty);
 
-		return constructVersionObject(linkedDataModel, memberInfo);
+		return List.of(constructVersionObject(linkedDataModel, memberInfo));
 	}
 
 	private MemberInfo extractMemberInfo(Model linkedDataModel, Resource memberTypeResource,
