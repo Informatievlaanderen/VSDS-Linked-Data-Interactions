@@ -150,7 +150,7 @@
             <dependencies>
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-model-split-adapter</artifactId>
+                    <artifactId>ldio-model-split</artifactId>
                     <version>${project.version}</version>
                 </dependency></dependencies>
         </profile>
