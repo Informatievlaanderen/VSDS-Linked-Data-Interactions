@@ -52,8 +52,8 @@ public class GeoJsonToWktProcessor extends AbstractProcessor {
 			try {
 				Lang dataSourceFormat = GeoJsonToWktProcessorProperties.getDataSourceFormat(context);
 				Model inputModel = receiveDataAsModel(session, flowFile, dataSourceFormat);
-				Model result = geoJsonToWktTransformer.apply(inputModel);
-				sendRDFToRelation(session, flowFile, result, SUCCESS, dataSourceFormat);
+				geoJsonToWktTransformer.apply(inputModel)
+						.forEach(result -> sendRDFToRelation(session, flowFile, result, SUCCESS, dataSourceFormat));
 			} catch (Exception e) {
 				getLogger().error("Error transforming geojson to wkt: {}", e.getMessage());
 				sendRDFToRelation(session, flowFile, FAILURE);
