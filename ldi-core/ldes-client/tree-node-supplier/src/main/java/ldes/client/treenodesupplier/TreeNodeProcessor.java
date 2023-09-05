@@ -37,7 +37,7 @@ public class TreeNodeProcessor {
 		TreeNodeRecord treeNodeRecord = treeNodeRecordRepository
 				.getOneTreeNodeRecordWithStatus(TreeNodeStatus.NOT_VISITED).orElseGet(
 						() -> treeNodeRecordRepository.getOneTreeNodeRecordWithStatus(TreeNodeStatus.MUTABLE_AND_ACTIVE)
-								.orElseThrow(() -> new RuntimeException(
+								.orElseThrow(() -> new EndOfLdesException(
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
 		waitUntilNextVisit(treeNodeRecord);
 		TreeNodeResponse treeNodeResponse = treeNodeFetcher

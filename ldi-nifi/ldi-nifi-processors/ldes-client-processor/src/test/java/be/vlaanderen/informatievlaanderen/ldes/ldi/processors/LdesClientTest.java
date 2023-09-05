@@ -103,6 +103,26 @@ class LdesClientTest {
 		assertEquals(1, dataFlowfiles.size());
 	}
 
+	@Test
+	void shouldBeAbleToEndGracefully() {
+		// This is an immutable fragment with 1 member and no relations. We reach the
+		// end of the ldes after 1 run.
+		testRunner.setProperty("DATA_SOURCE_URL",
+				"http://localhost:10101/end-of-ldes?generatedAtTime=2022-05-03T00:00:00.000Z");
+		testRunner.setProperty("AUTHORIZATION_STRATEGY", "NO_AUTH");
+		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+		testRunner.setProperty("STREAM_TIMESTAMP_PATH_PROPERTY", Boolean.FALSE.toString());
+		testRunner.setProperty("STREAM_VERSION_OF_PROPERTY", Boolean.FALSE.toString());
+		testRunner.setProperty("DATA_SOURCE_FORMAT", "application/ld+json");
+
+		testRunner.run(5);
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(1, dataFlowfiles.size());
+	}
+
 	@ParameterizedTest
 	@ArgumentsSource(RequestExecutorProvider.class)
 	void shouldSupportDifferentHttpRequestExecutors(Map<String, String> properties) {

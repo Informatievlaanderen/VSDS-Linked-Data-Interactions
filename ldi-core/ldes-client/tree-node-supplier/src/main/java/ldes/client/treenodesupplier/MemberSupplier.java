@@ -1,5 +1,6 @@
 package ldes.client.treenodesupplier;
 
+import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,9 @@ public class MemberSupplier implements Supplier<SuppliedMember> {
 		try {
 			return executorService.submit(treeNodeProcessor::getMember).get();
 		} catch (ExecutionException e) {
+			if (e.getCause() instanceof EndOfLdesException endOfLdesException) {
+				throw endOfLdesException;
+			}
 			throw new ClientInterruptedException(e);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
