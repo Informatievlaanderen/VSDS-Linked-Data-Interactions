@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class LdioModelSplitTransformerAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitTransformer")
-	public LdioConfigurator ldiHttpOutConfigurator() {
+	public LdioConfigurator ldiModelSplitConfigurator() {
 		return new LdioModelSplitTransformerConfigurator();
 	}
 

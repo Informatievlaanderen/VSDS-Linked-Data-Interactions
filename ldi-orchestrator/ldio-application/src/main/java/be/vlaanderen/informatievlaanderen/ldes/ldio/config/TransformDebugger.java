@@ -7,6 +7,7 @@ import org.apache.jena.riot.RDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 public class TransformDebugger implements LdiTransformer {
@@ -19,7 +20,7 @@ public class TransformDebugger implements LdiTransformer {
 	}
 
 	@Override
-	public List<Model> apply(Model model) {
+	public Collection<Model> apply(Model model) {
 		log.debug("Starting model: \n" + RDFWriter.source(model).lang(Lang.TTL).asString());
 		return ldiTransformer.apply(model);
 	}
