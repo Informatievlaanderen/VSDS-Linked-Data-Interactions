@@ -5,7 +5,7 @@ title: Model Split Adapter
 ---
 
 # LDIO RML Adapter
-***be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitAdapter***
+***be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitTransformer***
 
 An LDIO wrapper component for the [LDI Model Split Adapter building block](../../_core/ldi-adapters/model-split-adapter.md)
 
@@ -22,7 +22,7 @@ For example:
 
 ```yaml
         adapter:
-          name: be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitAdapter
+          name: be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitTransformer
           config:
             split-subject-type: http://schema.org/Movie
             split-base-adapter: be.vlaanderen.informatievlaanderen.ldes.ldi.RmlAdapter
