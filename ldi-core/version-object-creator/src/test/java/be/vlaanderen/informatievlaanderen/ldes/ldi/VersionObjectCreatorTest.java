@@ -81,7 +81,7 @@ class VersionObjectCreatorTest {
 		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedProperty, memberType,
 				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
 
-		Model versionObject = versionObjectCreator.apply(inputModel);
+		Model versionObject = versionObjectCreator.apply(inputModel).get(0);
 
 		final LocalDateTime startTestTime = LocalDateTime.now();
 
@@ -105,7 +105,7 @@ class VersionObjectCreatorTest {
 		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(null, model.createResource(memberType),
 				DEFAULT_DELIMITER, null, null);
 
-		Model versionObject = versionObjectCreator.apply(model);
+		Model versionObject = versionObjectCreator.apply(model).get(0);
 
 		final String minuteTheTestStarted = getPartOfLocalDateTime(startTestTime);
 		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(startTestTime.plusMinutes(1));

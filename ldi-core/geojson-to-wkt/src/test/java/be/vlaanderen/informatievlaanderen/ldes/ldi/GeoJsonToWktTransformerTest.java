@@ -19,7 +19,7 @@ class GeoJsonToWktTransformerTest {
 	@Test
 	void testApply() {
 		Model result = transformer.apply(
-				RDFParser.source("geojson-all-types.json").lang(Lang.JSONLD).build().toModel());
+				RDFParser.source("geojson-all-types.json").lang(Lang.JSONLD).build().toModel()).get(0);
 
 		Model expectedResult = RDFParser.source("result-all-types.json").lang(Lang.JSONLD).build().toModel();
 

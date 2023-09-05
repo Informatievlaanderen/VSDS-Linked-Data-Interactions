@@ -16,10 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ModelSplitAdapterTest {
-
-	@Mock
-	private LdiAdapter ldiAdapter;
+class ModelSplitTransformerTest {
 
 	@Mock
 	private ModelSplitter modelSplitter;
@@ -27,15 +24,13 @@ class ModelSplitAdapterTest {
 	@Test
 	void testApply() {
 		String subjectType = "subjectType";
-		ModelSplitAdapter modelSplitAdapter = new ModelSplitAdapter(subjectType, ldiAdapter, modelSplitter);
-		LdiAdapter.Content content = LdiAdapter.Content.of("content", "mime");
+		ModelSplitTransformer modelSplitTransformer = new ModelSplitTransformer(subjectType, modelSplitter);
 		Model modelA = ModelFactory.createDefaultModel();
-		when(ldiAdapter.apply(content)).thenReturn(Stream.of(modelA));
 		Model modelB = ModelFactory.createDefaultModel();
 		Model modelC = ModelFactory.createDefaultModel();
 		when(modelSplitter.split(modelA, subjectType)).thenReturn(Set.of(modelB, modelC));
 
-		List<Model> result = modelSplitAdapter.apply(content).toList();
+		List<Model> result = modelSplitTransformer.apply(modelA).stream().toList();
 
 		assertEquals(2, result.size());
 		assertFalse(result.contains(modelA));

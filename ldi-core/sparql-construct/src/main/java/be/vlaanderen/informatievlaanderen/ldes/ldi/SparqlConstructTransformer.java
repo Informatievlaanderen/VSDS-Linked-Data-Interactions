@@ -6,6 +6,8 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.rdf.model.Model;
 
+import java.util.List;
+
 public class SparqlConstructTransformer implements LdiTransformer {
 	private final Query query;
 	private final boolean includeOriginal;
@@ -16,13 +18,13 @@ public class SparqlConstructTransformer implements LdiTransformer {
 	}
 
 	@Override
-	public Model apply(Model linkedDataModel) {
+	public List<Model> apply(Model linkedDataModel) {
 		try (QueryExecution qexec = QueryExecutionFactory.create(query, linkedDataModel)) {
 			Model resultModel = qexec.execConstruct();
 			if (includeOriginal) {
 				resultModel.add(linkedDataModel);
 			}
-			return resultModel;
+			return List.of(resultModel);
 		}
 	}
 }

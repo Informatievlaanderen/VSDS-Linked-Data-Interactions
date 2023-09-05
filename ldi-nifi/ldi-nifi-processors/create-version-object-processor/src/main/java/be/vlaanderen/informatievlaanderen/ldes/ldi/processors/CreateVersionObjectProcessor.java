@@ -85,9 +85,10 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		String content = FlowManager.receiveData(session, flowFile);
 		try {
 			Model input = RDFParserBuilder.create().fromString(content).lang(lang).toModel();
-			Model versionObject = versionObjectCreator.apply(input);
+			versionObjectCreator.apply(input)
+					.forEach(versionObject -> FlowManager.sendRDFToRelation(session, flowFile, versionObject,
+							DATA_RELATIONSHIP, dataDestinationFormat));
 
-			FlowManager.sendRDFToRelation(session, flowFile, versionObject, DATA_RELATIONSHIP, dataDestinationFormat);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			FlowManager.sendRDFToRelation(session, flowFile, content, DATA_UNPARSEABLE_RELATIONSHIP, Lang.JSONLD);

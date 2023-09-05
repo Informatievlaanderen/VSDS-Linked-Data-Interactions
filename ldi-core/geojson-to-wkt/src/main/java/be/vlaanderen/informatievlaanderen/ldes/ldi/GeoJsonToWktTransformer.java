@@ -20,7 +20,7 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 	 * containing geosparql#wktLiteral
 	 */
 	@Override
-	public Model apply(Model model) {
+	public List<Model> apply(Model model) {
 		final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)
 				.toList();
 		geometryStatements.forEach(oldGeometryStatement -> {
@@ -29,7 +29,7 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 			model.remove(createModelWithChildStatements(model, oldGeometryStatement));
 			model.add(newGeometryStatement);
 		});
-		return model;
+		return List.of(model);
 	}
 
 	private Statement createNewGeometryStatement(Statement oldStatement, Model geometryModel) {

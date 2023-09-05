@@ -9,7 +9,7 @@
         <version>1.6.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ldio-model-split-adapter</artifactId>
+    <artifactId>ldio-model-split</artifactId>
 
     <dependencies>
         <dependency>

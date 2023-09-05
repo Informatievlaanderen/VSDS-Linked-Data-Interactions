@@ -23,12 +23,13 @@ public class ComponentExecutorImpl implements ComponentExecutor {
 	@Override
 	public void transformLinkedData(final Model linkedDataModel) {
 		executorService.execute(() -> {
-			Model transformedLinkedDataModel = linkedDataModel;
+			List<Model> transformedLinkedDataModels = List.of(linkedDataModel);
 			for (LdiTransformer component : ldiTransformers) {
-				transformedLinkedDataModel = component.apply(transformedLinkedDataModel);
+				transformedLinkedDataModels = transformedLinkedDataModels.stream()
+						.flatMap(model -> component.apply(model).stream()).toList();
 			}
 
-			ldiSender.accept(transformedLinkedDataModel);
+			transformedLinkedDataModels.forEach(ldiSender);
 		});
 	}
 
