@@ -6,6 +6,8 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,10 +39,10 @@ class SparqlConstructTransformerTest {
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
-		model = sparqlConstructTransformer.apply(model);
+		List<Model> models = sparqlConstructTransformer.apply(model);
 
-		assertTrue(model.contains(transformedData));
-		assertFalse(model.contains(originalData));
+		assertTrue(models.get(0).contains(transformedData));
+		assertFalse(models.get(0).contains(originalData));
 
 	}
 
@@ -51,10 +53,10 @@ class SparqlConstructTransformerTest {
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
-		model = sparqlConstructTransformer.apply(model);
+		List<Model> models = sparqlConstructTransformer.apply(model);
 
-		assertTrue(model.contains(transformedData));
-		assertTrue(model.contains(originalData));
+		assertTrue(models.get(0).contains(transformedData));
+		assertTrue(models.get(0).contains(originalData));
 
 	}
 }
