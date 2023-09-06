@@ -1,0 +1,53 @@
+@prefix vm: <http://www.wegenenverkeer.be/ns/verkeersmetingen#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+
+<http://www.wegenenverkeer.be/id/verkeersmetingen/meting/29>
+  vm:unieke_id "29"^^xsd:int ;
+  dc:modified "2019-12-05T10:26:49+01:00"^^xsd:dateTime ;
+  vm:tijd_laatst_gewijzigd "2023-08-04T15:29:16+02:00"^^xsd:dateTime ;
+  a vm:Meting ;
+  vm:tijd_waarneming "2023-08-04T14:28:00+01:00"^^xsd:dateTime ;
+  dc:issued "2023-08-04T15:29:40.997+02:00"^^xsd:dateTime ;
+  vm:meetData [
+    vm:klasse_id "2"^^xsd:int ;
+    vm:voertuigsnelheid_harmonisch "252"^^xsd:int ;
+    vm:verkeersintensiteit "0"^^xsd:int ;
+    a vm:MeetData ;
+    vm:voertuigsnelheid_rekenkundig "0"^^xsd:int
+  ], [
+    vm:klasse_id "4"^^xsd:int ;
+    vm:voertuigsnelheid_harmonisch "252"^^xsd:int ;
+    vm:verkeersintensiteit "0"^^xsd:int ;
+    a vm:MeetData ;
+    vm:voertuigsnelheid_rekenkundig "0"^^xsd:int
+  ], [
+    vm:klasse_id "5"^^xsd:int ;
+    vm:voertuigsnelheid_harmonisch "252"^^xsd:int ;
+    vm:verkeersintensiteit "0"^^xsd:int ;
+    a vm:MeetData ;
+    vm:voertuigsnelheid_rekenkundig "0"^^xsd:int
+  ], [
+    vm:klasse_id "1"^^xsd:int ;
+    vm:voertuigsnelheid_harmonisch "252"^^xsd:int ;
+    vm:verkeersintensiteit "0"^^xsd:int ;
+    a vm:MeetData ;
+    vm:voertuigsnelheid_rekenkundig "0"^^xsd:int
+  ], [
+    vm:klasse_id "3"^^xsd:int ;
+    vm:voertuigsnelheid_harmonisch "252"^^xsd:int ;
+    vm:verkeersintensiteit "0"^^xsd:int ;
+    a vm:MeetData ;
+    vm:voertuigsnelheid_rekenkundig "0"^^xsd:int
+  ] ;
+  vm:beschikbaar "1"^^xsd:int ;
+  vm:actueel_publicatie "0"^^xsd:int ;
+  vm:lve_nr "55"^^xsd:int ;
+  vm:defect "0"^^xsd:int ;
+  vm:rekenData [
+    a vm:RekenData ;
+    vm:beschikbaarheidsgraad "100"^^xsd:int ;
+    vm:bezettingsgraad "0"^^xsd:int ;
+    vm:onrustigheid "0"^^xsd:int
+  ] ;
+  vm:geldig "0"^^xsd:int .
