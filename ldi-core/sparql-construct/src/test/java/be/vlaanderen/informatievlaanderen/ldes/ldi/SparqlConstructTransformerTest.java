@@ -81,8 +81,40 @@ class SparqlConstructTransformerTest {
 	}
 
 	@Test
+	void shouldNotSplitModels_whenQueryContainsNoGraph_AndHasOnlyDefaultModelStatements() throws IOException {
+		Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
+		String constructQuery = Files.readString(Path.of("./src/test/resources/crowdscan/no-graph-query.rq"));
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(constructQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(inputModel);
+
+		assertEquals(1, result.size());
+		Model expectedResult = RDFParser.source("crowdscan/no-graph-observations.ttl").toModel();
+		assertTrue(expectedResult.isIsomorphicWith(result.get(0)));
+	}
+
+	@Test
 	void shouldSplitModels_whenQueryContainsGraph_AndHasDefaultModelStatements() throws IOException {
-		// TODO TVB: 06/09/23 traffic impl
+		Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
+		String constructQuery = Files.readString(Path.of("./src/test/resources/traffic/query.rq"));
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(constructQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(inputModel);
+
+		assertEquals(10, result.size());
+		assertModels(List.of(
+				"traffic/measure1.ttl",
+				"traffic/measure2.ttl",
+				"traffic/measure3.ttl",
+				"traffic/measure4.ttl",
+				"traffic/measure5.ttl",
+				"traffic/measure6.ttl",
+				"traffic/measure7.ttl",
+				"traffic/measure8.ttl",
+				"traffic/measure9.ttl",
+				"traffic/measure10.ttl"), result);
 	}
 
 	private void assertModels(List<String> expectedModelPaths, Collection<Model> result) {
