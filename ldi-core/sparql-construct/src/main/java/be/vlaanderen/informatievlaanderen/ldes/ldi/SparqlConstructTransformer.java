@@ -48,7 +48,7 @@ public class SparqlConstructTransformer implements LdiTransformer {
 			return List.of(dataset.getDefaultModel());
 		}
 
-    }
+	}
 
 	private boolean hasMultipleModels(Dataset dataset) {
 		return dataset.listNames().hasNext();
