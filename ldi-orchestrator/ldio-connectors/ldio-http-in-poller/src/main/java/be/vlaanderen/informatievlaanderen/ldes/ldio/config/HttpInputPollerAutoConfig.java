@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
 
@@ -26,7 +27,8 @@ public class HttpInputPollerAutoConfig {
 		@Override
 		public HttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
 				ComponentProperties properties) {
-			String endpoint = properties.getProperty(URL);
+			List<String> endpoints = properties.getPropertyList(URL);
+
 			String pollingInterval = properties.getProperty(INTERVAL);
 			boolean continueOnFail = properties.getOptionalBoolean(CONTINUE_ON_FAIL).orElse(true);
 
@@ -38,10 +40,11 @@ public class HttpInputPollerAutoConfig {
 						+ " cannot have following value: " + pollingInterval);
 			}
 
-			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoint, continueOnFail);
+			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoints, continueOnFail);
 			httpInputPoller.schedulePoller(seconds);
 
 			return httpInputPoller;
 		}
+
 	}
 }
