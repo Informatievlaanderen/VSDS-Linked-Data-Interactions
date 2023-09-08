@@ -8,7 +8,6 @@ import java.util.List;
 
 public class EmptyPropertyExtractor implements PropertyExtractor {
 
-	// TODO TVB: 08/09/23 add test
 	@Override
 	public List<RDFNode> getProperties(Model model) {
 		return new ArrayList<>();

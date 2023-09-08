@@ -48,15 +48,6 @@ class PropertyPathExtractorTest {
                             createPlainLiteral("my-zone-type"),
                             1),
                     Arguments.of(
-                            "shouldReturnAnyResultStringWhenMultipleResults",
-                            """
-                                        <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
-                                        <https://example.com/hindrances/zones/a> <https://data.com/ns/mobiliteit#Zone.type> 'my-zone-type' .
-                                    """,
-                            "<https://data.com/ns/mobiliteit#zone>/<https://data.com/ns/mobiliteit#Zone.type>",
-                            createPlainLiteral("my-zone-type"),
-                            1),
-                    Arguments.of(
                             "shouldReturnUriAsResourceWhenObjectIsResource",
                             "<https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .",
                             "<https://data.com/ns/mobiliteit#zone>",
@@ -72,7 +63,7 @@ class PropertyPathExtractorTest {
                             createResource("https://example.com/hindrances/zones/a"),
                             2),
                     Arguments.of(
-                            "shouldReturnNullIfPathIsNotFound",
+                            "shouldReturnEmptyIfPathIsNotFound",
                             "<https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .",
                             "<https://not-existing>",
                             null,

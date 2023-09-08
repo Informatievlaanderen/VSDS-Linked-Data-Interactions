@@ -27,7 +27,6 @@ public class PropertyPathExtractor implements PropertyExtractor {
 				results.add(resultSet.next().get("object"));
 			}
 			return results;
-//			return resultSet.hasNext() ? resultSet.next().get("object") : null;
 		}
 	}
 
