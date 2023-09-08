@@ -19,62 +19,63 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PropertyPathExtractorTest {
 
-    @ParameterizedTest
-    @ArgumentsSource(PropertyPathExtractorProvider.class)
-    void testGetKey(String testName, String input, String propertyPath, RDFNode expectedResult, int expectedResultCount) {
-        assertNotNull(testName);
-        Model model = RDFParser.fromString(input).lang(Lang.NQUADS).build().toModel();
-        PropertyExtractor extractor = new PropertyPathExtractor(propertyPath);
+	@ParameterizedTest
+	@ArgumentsSource(PropertyPathExtractorProvider.class)
+	void testGetKey(String testName, String input, String propertyPath, RDFNode expectedResult,
+			int expectedResultCount) {
+		assertNotNull(testName);
+		Model model = RDFParser.fromString(input).lang(Lang.NQUADS).build().toModel();
+		PropertyExtractor extractor = new PropertyPathExtractor(propertyPath);
 
-        List<RDFNode> results = extractor.getProperties(model);
+		List<RDFNode> results = extractor.getProperties(model);
 
-        assertEquals(expectedResultCount, results.size());
-        if (isNotEmpty(results)) {
-            assertEquals(expectedResult, results.get(0));
-        }
-    }
+		assertEquals(expectedResultCount, results.size());
+		if (isNotEmpty(results)) {
+			assertEquals(expectedResult, results.get(0));
+		}
+	}
 
-    static class PropertyPathExtractorProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(
-                    Arguments.of(
-                            "shouldReturnLiteralStringWhenLinkedPath",
-                            """
-                                        <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
-                                        <https://example.com/hindrances/zones/a> <https://data.com/ns/mobiliteit#Zone.type> 'my-zone-type' .
-                                    """,
-                            "<https://data.com/ns/mobiliteit#zone>/<https://data.com/ns/mobiliteit#Zone.type>",
-                            createPlainLiteral("my-zone-type"),
-                            1),
-                    Arguments.of(
-                            "shouldReturnUriAsResourceWhenObjectIsResource",
-                            "<https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .",
-                            "<https://data.com/ns/mobiliteit#zone>",
-                            createResource("https://example.com/hindrances/zones/a"),
-                            1),
-                    Arguments.of(
-                            "shouldReturnMultipleResultsWhenMultipleResultsMatch",
-                            """
-                                <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
-                                <https://example.com/hindrances/29798> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
-                            """,
-                            "<https://data.com/ns/mobiliteit#zone>",
-                            createResource("https://example.com/hindrances/zones/a"),
-                            2),
-                    Arguments.of(
-                            "shouldReturnEmptyIfPathIsNotFound",
-                            "<https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .",
-                            "<https://not-existing>",
-                            null,
-                            0),
-                    Arguments.of(
-                            "shouldReturnLiteralStringWhenSimplePath",
-                            "<https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> 'my-zone-type' .",
-                            "<https://data.com/ns/mobiliteit#zone>",
-                            createPlainLiteral("my-zone-type"),
-                            1));
-        }
-    }
+	static class PropertyPathExtractorProvider implements ArgumentsProvider {
+		@Override
+		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+			return Stream.of(
+					Arguments.of(
+							"shouldReturnLiteralStringWhenLinkedPath",
+							"""
+									    <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
+									    <https://example.com/hindrances/zones/a> <https://data.com/ns/mobiliteit#Zone.type> 'my-zone-type' .
+									""",
+							"<https://data.com/ns/mobiliteit#zone>/<https://data.com/ns/mobiliteit#Zone.type>",
+							createPlainLiteral("my-zone-type"),
+							1),
+					Arguments.of(
+							"shouldReturnUriAsResourceWhenObjectIsResource",
+							"<https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .",
+							"<https://data.com/ns/mobiliteit#zone>",
+							createResource("https://example.com/hindrances/zones/a"),
+							1),
+					Arguments.of(
+							"shouldReturnMultipleResultsWhenMultipleResultsMatch",
+							"""
+									    <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
+									    <https://example.com/hindrances/29798> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .
+									""",
+							"<https://data.com/ns/mobiliteit#zone>",
+							createResource("https://example.com/hindrances/zones/a"),
+							2),
+					Arguments.of(
+							"shouldReturnEmptyIfPathIsNotFound",
+							"<https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> <https://example.com/hindrances/zones/a> .",
+							"<https://not-existing>",
+							null,
+							0),
+					Arguments.of(
+							"shouldReturnLiteralStringWhenSimplePath",
+							"<https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> 'my-zone-type' .",
+							"<https://data.com/ns/mobiliteit#zone>",
+							createPlainLiteral("my-zone-type"),
+							1));
+		}
+	}
 
 }

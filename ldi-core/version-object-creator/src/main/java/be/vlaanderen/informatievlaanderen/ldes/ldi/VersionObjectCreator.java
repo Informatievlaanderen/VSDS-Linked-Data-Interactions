@@ -19,8 +19,8 @@ public class VersionObjectCreator implements LdiTransformer {
 	private static final Model initModel = ModelFactory.createDefaultModel();
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	private static final String XMLSCHEMA_DATE_TIME = "http://www.w3.org/2001/XMLSchema#dateTime";
-	public static final Property SYNTAX_TYPE =
-			initModel.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+	public static final Property SYNTAX_TYPE = initModel
+			.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
 	private final PropertyExtractor dateObservedPropertyExtractor;
 	private final Resource memberTypeResource;
@@ -28,8 +28,9 @@ public class VersionObjectCreator implements LdiTransformer {
 	private final Property generatedAtTimeProperty;
 	private final Property versionOfProperty;
 
-	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, Resource memberTypeResource, String delimiter,
-								Property generatedAtTimeProperty, Property versionOfProperty) {
+	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, Resource memberTypeResource,
+			String delimiter,
+			Property generatedAtTimeProperty, Property versionOfProperty) {
 		this.dateObservedPropertyExtractor = dateObservedPropertyExtractor;
 		this.memberTypeResource = memberTypeResource;
 		this.delimiter = delimiter;

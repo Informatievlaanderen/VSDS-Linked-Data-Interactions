@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EmptyPropertyExtractorTest {
 
-    @Test
-    void getObjects() {
-        assertTrue(new EmptyPropertyExtractor().getProperties(null).isEmpty());
-    }
+	@Test
+	void getObjects() {
+		assertTrue(new EmptyPropertyExtractor().getProperties(null).isEmpty());
+	}
 
 }
