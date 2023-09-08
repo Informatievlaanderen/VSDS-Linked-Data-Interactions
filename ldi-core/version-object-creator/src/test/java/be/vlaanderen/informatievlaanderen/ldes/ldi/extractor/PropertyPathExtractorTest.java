@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.extractor;
 
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -27,7 +26,7 @@ class PropertyPathExtractorTest {
         Model model = RDFParser.fromString(input).lang(Lang.NQUADS).build().toModel();
         PropertyExtractor extractor = new PropertyPathExtractor(propertyPath);
 
-        List<RDFNode> results = extractor.getProperty(model);
+        List<RDFNode> results = extractor.getProperties(model);
 
         assertEquals(expectedResultCount, results.size());
         if (isNotEmpty(results)) {

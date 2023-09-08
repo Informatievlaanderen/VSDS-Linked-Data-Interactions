@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface PropertyExtractor {
 
-	List<RDFNode> getProperty(Model model);
+	List<RDFNode> getProperties(Model model);
 
 }

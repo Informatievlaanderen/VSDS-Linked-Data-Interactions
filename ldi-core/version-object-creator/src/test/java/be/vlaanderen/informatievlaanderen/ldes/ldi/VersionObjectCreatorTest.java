@@ -1,5 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -72,13 +75,13 @@ class VersionObjectCreatorTest {
 				""").lang(Lang.TTL).toModel();
 
 		Resource memberType = inputModel.createResource("http://example.org/Something");
-		Property dateObservedProperty = inputModel.createProperty("http://example.org/foo");
+		PropertyExtractor dateObservedPropertyExtractor = new PropertyPathExtractor("<http://example.org/foo>");
 		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
 		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
 
 		String expectedId = "http://example.org/member/";
 
-		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedProperty, memberType,
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType,
 				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
 
 		Model versionObject = versionObjectCreator.apply(inputModel).get(0);
@@ -102,7 +105,7 @@ class VersionObjectCreatorTest {
 
 		Model model = RDFParserBuilder.create().fromString(getJsonString(fileName)).lang(Lang.JSONLD).toModel();
 
-		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(null, model.createResource(memberType),
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(), model.createResource(memberType),
 				DEFAULT_DELIMITER, null, null);
 
 		Model versionObject = versionObjectCreator.apply(model).get(0);

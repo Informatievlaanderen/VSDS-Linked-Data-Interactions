@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
 import org.apache.jena.datatypes.TypeMapper;
@@ -21,15 +22,15 @@ public class VersionObjectCreator implements LdiTransformer {
 	public static final Property SYNTAX_TYPE =
 			initModel.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
-	private final Property dateObservedProperty;
+	private final PropertyExtractor dateObservedPropertyExtractor;
 	private final Resource memberTypeResource;
 	private final String delimiter;
 	private final Property generatedAtTimeProperty;
 	private final Property versionOfProperty;
 
-	public VersionObjectCreator(Property dateObservedProperty, Resource memberTypeResource, String delimiter,
-			Property generatedAtTimeProperty, Property versionOfProperty) {
-		this.dateObservedProperty = dateObservedProperty;
+	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, Resource memberTypeResource, String delimiter,
+								Property generatedAtTimeProperty, Property versionOfProperty) {
+		this.dateObservedPropertyExtractor = dateObservedPropertyExtractor;
 		this.memberTypeResource = memberTypeResource;
 		this.delimiter = delimiter;
 		this.generatedAtTimeProperty = generatedAtTimeProperty;
@@ -44,15 +45,8 @@ public class VersionObjectCreator implements LdiTransformer {
 	}
 
 	private MemberInfo extractMemberInfo(Model linkedDataModel) {
-		String dateObserved = Optional.ofNullable(dateObservedProperty)
-				.map(property -> linkedDataModel.listObjectsOfProperty(property)
-						.filterKeep(RDFNode::isLiteral)
-						.mapWith(RDFNode::asLiteral)
-						.filterKeep(literal -> literal.getDatatype().getURI().toLowerCase().contains("datetime"))
-						.nextOptional()
-						.map(Literal::getString)
-						.orElse(LocalDateTime.now().format(formatter)))
-				.orElse(LocalDateTime.now().format(formatter));
+		final String dateObserved = getDateObserved(linkedDataModel);
+
 		String id = linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
 				.nextOptional()
 				.map(Statement::getSubject)
@@ -60,6 +54,18 @@ public class VersionObjectCreator implements LdiTransformer {
 				.map(Node::toString)
 				.orElseThrow();
 		return new MemberInfo(id, dateObserved);
+	}
+
+	private String getDateObserved(Model linkedDataModel) {
+		return dateObservedPropertyExtractor
+				.getProperties(linkedDataModel)
+				.stream()
+				.filter(RDFNode::isLiteral)
+				.map(RDFNode::asLiteral)
+				.filter(literal -> literal.getDatatype().getURI().toLowerCase().contains("datetime"))
+				.map(Literal::getString)
+				.findFirst()
+				.orElse(LocalDateTime.now().format(formatter));
 	}
 
 	protected Model constructVersionObject(Model inputModel, MemberInfo memberInfo) {

@@ -5,6 +5,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PropertyPathExtractor implements PropertyExtractor {
@@ -16,7 +17,7 @@ public class PropertyPathExtractor implements PropertyExtractor {
 	}
 
 	@Override
-	public List<RDFNode> getProperty(Model model) {
+	public List<RDFNode> getProperties(Model model) {
 		final Query query = QueryFactory.create(queryString);
 		try (QueryExecution queryExecution = QueryExecutionFactory.create(query, model)) {
 			ResultSet resultSet = queryExecution.execSelect();
