@@ -18,8 +18,8 @@ public class VersionObjectCreator implements LdiTransformer {
 	private static final Model initModel = ModelFactory.createDefaultModel();
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	private static final String XMLSCHEMA_DATE_TIME = "http://www.w3.org/2001/XMLSchema#dateTime";
-	public static final Property SYNTAX_TYPE = initModel.createProperty(
-			"http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+	public static final Property SYNTAX_TYPE =
+			initModel.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
 	private final Property dateObservedProperty;
 	private final Resource memberTypeResource;
@@ -38,13 +38,12 @@ public class VersionObjectCreator implements LdiTransformer {
 
 	@Override
 	public List<Model> apply(Model linkedDataModel) {
-		MemberInfo memberInfo = extractMemberInfo(linkedDataModel, memberTypeResource, dateObservedProperty);
+		MemberInfo memberInfo = extractMemberInfo(linkedDataModel);
 
 		return List.of(constructVersionObject(linkedDataModel, memberInfo));
 	}
 
-	private MemberInfo extractMemberInfo(Model linkedDataModel, Resource memberTypeResource,
-			Property dateObservedProperty) {
+	private MemberInfo extractMemberInfo(Model linkedDataModel) {
 		String dateObserved = Optional.ofNullable(dateObservedProperty)
 				.map(property -> linkedDataModel.listObjectsOfProperty(property)
 						.filterKeep(RDFNode::isLiteral)

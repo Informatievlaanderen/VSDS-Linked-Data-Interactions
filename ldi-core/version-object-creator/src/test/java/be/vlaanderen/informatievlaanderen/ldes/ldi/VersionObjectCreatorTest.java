@@ -32,10 +32,10 @@ class VersionObjectCreatorTest {
 	private static final String DEFAULT_DELIMITER = "/";
 
 	private static final Model initModel = ModelFactory.createDefaultModel();
-	private static final Property PROV_GENERATED_AT_TIME = initModel.createProperty(
-			"http://www.w3.org/ns/prov#generatedAtTime");
-	private static final Property TERMS_IS_VERSION_OF = initModel.createProperty(
-			"http://purl.org/dc/terms/isVersionOf");
+	private static final Property PROV_GENERATED_AT_TIME =
+			initModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
+	private static final Property TERMS_IS_VERSION_OF =
+			initModel.createProperty("http://purl.org/dc/terms/isVersionOf");
 	private static final String WATER_QUALITY_OBSERVED = "https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved";
 
 	MemberInfo memberInfo = new MemberInfo(
