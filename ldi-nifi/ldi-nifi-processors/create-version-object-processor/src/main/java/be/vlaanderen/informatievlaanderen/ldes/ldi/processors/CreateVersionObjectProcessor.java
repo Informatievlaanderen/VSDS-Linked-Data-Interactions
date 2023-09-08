@@ -1,6 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
@@ -21,6 +24,7 @@ import java.util.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorPropertyDescriptors.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_RELATIONSHIP;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -64,14 +68,18 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		Property dateObservedProperty = getDateObservedValueRdfProperty(context);
+		String dateObservedProperty = getDateObservedValue(context);
+		createProperty(dateObservedProperty);
+		PropertyExtractor dateObservedPropertyExtractor = dateObservedProperty != null
+				? new PropertyPathExtractor(dateObservedProperty)
+				: new EmptyPropertyExtractor();
 		Resource memberType = getMemberRdfSyntaxType(context);
 		String delimiter = getDelimiter(context);
 		Property versionOfKey = getVersionOfKey(context);
 		Property generatedAtTimeProperty = getGeneratedAtTimeProperty(context);
 		dataDestinationFormat = getDataDestinationFormat(context);
 
-		versionObjectCreator = new VersionObjectCreator(dateObservedProperty, memberType, delimiter,
+		versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter,
 				generatedAtTimeProperty,
 				versionOfKey);
 	}

@@ -1,6 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -26,8 +29,10 @@ public class LdioVersionObjectCreatorAutoConfig {
 		public LdiComponent configure(ComponentProperties properties) {
 			Model initModel = ModelFactory.createDefaultModel();
 
-			Property dateObserved = properties.getOptionalProperty("date-observed-property")
-					.map(initModel::createProperty).orElse(null);
+			PropertyExtractor dateObservedPropertyExtractor = properties.getOptionalProperty("date-observed-property")
+					.map(PropertyPathExtractor::new)
+					.map(PropertyExtractor.class::cast)
+					.orElseGet(EmptyPropertyExtractor::new);
 
 			Resource memberType = Optional.of(properties.getProperty("member-type"))
 					.map(initModel::createResource).orElse(null);
@@ -42,7 +47,7 @@ public class LdioVersionObjectCreatorAutoConfig {
 					.map(initModel::createProperty)
 					.orElse(null);
 
-			return new VersionObjectCreator(dateObserved, memberType, delimiter, generatedAtProperty,
+			return new VersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter, generatedAtProperty,
 					versionOfProperty);
 		}
 	}

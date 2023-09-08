@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CreateVersionObjectProcessorTest {
 
-	private static final String DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY = "https://uri.etsi.org/ngsi-ld/observedAt";
+	private static final String DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY = "<https://uri.etsi.org/ngsi-ld/observedAt>";
 	private static final String DEFAULT_MEMBER_TYPE_WQO = "https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
