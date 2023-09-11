@@ -25,7 +25,7 @@ class PropertyPathExtractorTest {
 			int expectedResultCount) {
 		assertNotNull(testName);
 		Model model = RDFParser.fromString(input).lang(Lang.NQUADS).build().toModel();
-		PropertyExtractor extractor = new PropertyPathExtractor(propertyPath);
+		PropertyExtractor extractor = PropertyPathExtractor.from(propertyPath);
 
 		List<RDFNode> results = extractor.getProperties(model);
 

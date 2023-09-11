@@ -72,7 +72,7 @@ class VersionObjectCreatorTest {
 				""").lang(Lang.TTL).toModel();
 
 		Resource memberType = inputModel.createResource("http://example.org/Something");
-		PropertyExtractor dateObservedPropertyExtractor = new PropertyPathExtractor("<http://example.org/foo>");
+		PropertyExtractor dateObservedPropertyExtractor = PropertyPathExtractor.from("<http://example.org/foo>");
 		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
 		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
 
@@ -110,7 +110,7 @@ class VersionObjectCreatorTest {
 				  ] .
 				""").lang(Lang.TTL).toModel();
 		Resource memberType = inputModel.createResource("http://example.org/Something");
-		PropertyExtractor dateObservedPropertyExtractor = new PropertyPathExtractor(
+		PropertyExtractor dateObservedPropertyExtractor = PropertyPathExtractor.from(
 				"<http://example.org/created>/<http://www.w3.org/2006/time#inXSDDateTimeStamp>");
 		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
 		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");

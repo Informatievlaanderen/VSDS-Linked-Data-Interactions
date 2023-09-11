@@ -12,8 +12,21 @@ public class PropertyPathExtractor implements PropertyExtractor {
 
 	private final String queryString;
 
-	public PropertyPathExtractor(String propertyPath) {
+	private PropertyPathExtractor(String propertyPath) {
 		queryString = "SELECT * where { ?subject %s ?object }".formatted(propertyPath);
+	}
+
+	/**
+	 * This factory method was provided for backwards compatibility.
+	 * In the past we supported properties to be provided as strings in a non IRI format (not wrapped by <>).
+	 * When a property is provided as a plain string, we wrap it to an IRI.
+	 * NOTE: Does not work with property paths -> ex:foo/ex:bar must always be <ex:foo>/<ex:bar>. Property paths
+	 * were not supported in previous versions and there cannot be any config with property paths without <>
+	 */
+	public static PropertyPathExtractor from(String propertyPath) {
+		return propertyPath.startsWith("<")
+				? new PropertyPathExtractor(propertyPath)
+				: new PropertyPathExtractor("<%s>".formatted(propertyPath));
 	}
 
 	@Override

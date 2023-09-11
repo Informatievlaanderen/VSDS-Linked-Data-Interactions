@@ -71,7 +71,7 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		String dateObservedProperty = getDateObservedValue(context);
 		createProperty(dateObservedProperty);
 		PropertyExtractor dateObservedPropertyExtractor = dateObservedProperty != null
-				? new PropertyPathExtractor(dateObservedProperty)
+				? PropertyPathExtractor.from(dateObservedProperty)
 				: new EmptyPropertyExtractor();
 		Resource memberType = getMemberRdfSyntaxType(context);
 		String delimiter = getDelimiter(context);

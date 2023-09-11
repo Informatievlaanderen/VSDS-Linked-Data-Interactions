@@ -30,7 +30,7 @@ public class LdioVersionObjectCreatorAutoConfig {
 			Model initModel = ModelFactory.createDefaultModel();
 
 			PropertyExtractor dateObservedPropertyExtractor = properties.getOptionalProperty("date-observed-property")
-					.map(PropertyPathExtractor::new)
+					.map(PropertyPathExtractor::from)
 					.map(PropertyExtractor.class::cast)
 					.orElseGet(EmptyPropertyExtractor::new);
 
