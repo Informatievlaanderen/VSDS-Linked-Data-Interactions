@@ -3,9 +3,12 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,9 +27,14 @@ public class LdioFileOutAutoConfig {
 		return new LdioConfigurator() {
 			@Override
 			public LdiComponent configure(ComponentProperties properties) {
-				String archiveDirectory = properties.getProperty(ARCHIVE_ROOT_DIR_PROP);
-				Property timestampPath = createProperty(properties.getProperty(TIMESTAMP_PATH_PROP));
-				return new LdioFileOut(new TimestampExtractor(timestampPath), removeTrailingSlash(archiveDirectory));
+				final String archiveDirectory = properties.getProperty(ARCHIVE_ROOT_DIR_PROP);
+				final TimestampExtractor timestampExtractor = properties.getOptionalProperty(TIMESTAMP_PATH_PROP)
+						.map(ResourceFactory::createProperty)
+						.map(TimestampFromPathExtractor::new)
+						.map(TimestampExtractor.class::cast)
+						.orElseGet(TimestampFromCurrentTimeExtractor::new);
+
+				return new LdioFileOut(timestampExtractor, removeTrailingSlash(archiveDirectory));
 			}
 
 			private String removeTrailingSlash(String path) {

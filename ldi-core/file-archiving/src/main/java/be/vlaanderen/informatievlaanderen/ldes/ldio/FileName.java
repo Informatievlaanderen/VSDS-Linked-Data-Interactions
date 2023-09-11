@@ -11,6 +11,8 @@ public class FileName {
 	private static final DateTimeFormatter fileNameFormatter = DateTimeFormatter
 			.ofPattern("yyyy-MM-dd-HH-mm-ss-SSSSSSSSS");
 
+	private static final String FILE_EXTENSION = ".ttl";
+
 	private final LocalDateTime timestamp;
 	private final ArchiveDirectory archiveDirectory;
 
@@ -38,7 +40,7 @@ public class FileName {
 		String basePath = archiveDirectory.getDirectory();
 		String fileName = basePath + File.separator + timestamp.format(fileNameFormatter);
 
-		String filePathString = fileName + ".nq";
+		String filePathString = fileName + FILE_EXTENSION;
 		if (!Files.isReadable(Paths.get(filePathString))) {
 			return filePathString;
 		}
@@ -51,6 +53,6 @@ public class FileName {
 	}
 
 	private String filePathFrom(String fileName, int count) {
-		return fileName + "-" + count + ".nq";
+		return fileName + "-" + count + FILE_EXTENSION;
 	}
 }
