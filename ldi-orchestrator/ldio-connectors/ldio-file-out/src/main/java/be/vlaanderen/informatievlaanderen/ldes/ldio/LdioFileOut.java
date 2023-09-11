@@ -24,7 +24,7 @@ public class LdioFileOut implements LdiOutput {
 		ArchiveFile archiveFile = ArchiveFile.from(model, timestampExtractor, archiveRootDir);
 		try {
 			Files.createDirectories(archiveFile.getDirectoryPath());
-			RDFWriter.source(model).lang(Lang.NQUADS).output(archiveFile.getFilePath());
+			RDFWriter.source(model).lang(Lang.TURTLE).output(archiveFile.getFilePath());
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to write model to file in archive directory", e);
 		}

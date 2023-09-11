@@ -66,7 +66,7 @@ public class ArchiveFileOutProcessor extends AbstractProcessor {
 
 		ArchiveFile archiveFile = ArchiveFile.from(model, timestampExtractor, archiveRootDir);
 		Files.createDirectories(archiveFile.getDirectoryPath());
-		RDFWriter.source(model).lang(Lang.NQUADS).output(archiveFile.getFilePath());
+		RDFWriter.source(model).lang(Lang.TURTLE).output(archiveFile.getFilePath());
 
 		sendRDFToRelation(session, flowFile, model, SUCCESS, dataSourceFormat);
 	}

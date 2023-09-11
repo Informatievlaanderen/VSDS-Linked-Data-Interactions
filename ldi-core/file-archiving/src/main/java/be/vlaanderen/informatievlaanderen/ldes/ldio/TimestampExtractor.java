@@ -21,14 +21,13 @@ public class TimestampExtractor {
 	}
 
 	public LocalDateTime extractTimestamp(Model model) {
-		var timestamp = model
+		return model
 				.listObjectsOfProperty(timestampPath)
 				.filterDrop(node -> !node.isLiteral())
 				.mapWith(RDFNode::asLiteral)
 				.nextOptional()
-				.orElseThrow(() -> new IllegalArgumentException("No timestamp as literal found on member"));
-
-		return getLocalDateTime(timestamp);
+				.map(this::getLocalDateTime)
+				.orElseGet(LocalDateTime::now);
 	}
 
 	private LocalDateTime getLocalDateTime(Literal timestamp) {
