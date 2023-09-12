@@ -10,6 +10,8 @@ import java.util.List;
 
 public class PropertyPathExtractor implements PropertyExtractor {
 
+	private static final String OBJECT_VAR_NAME = "object";
+	private static final String IRI_OPENING_SYMBOL = "<";
 	private final String queryString;
 
 	private PropertyPathExtractor(String propertyPath) {
@@ -27,7 +29,7 @@ public class PropertyPathExtractor implements PropertyExtractor {
 	 * property paths without <>
 	 */
 	public static PropertyPathExtractor from(String propertyPath) {
-		return propertyPath.startsWith("<")
+		return propertyPath.startsWith(IRI_OPENING_SYMBOL)
 				? new PropertyPathExtractor(propertyPath)
 				: new PropertyPathExtractor("<%s>".formatted(propertyPath));
 	}
@@ -40,7 +42,7 @@ public class PropertyPathExtractor implements PropertyExtractor {
 
 			List<RDFNode> results = new ArrayList<>();
 			while (resultSet.hasNext()) {
-				results.add(resultSet.next().get("object"));
+				results.add(resultSet.next().get(OBJECT_VAR_NAME));
 			}
 			return results;
 		}
