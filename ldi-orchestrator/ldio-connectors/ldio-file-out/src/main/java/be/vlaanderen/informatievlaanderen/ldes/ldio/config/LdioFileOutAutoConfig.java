@@ -7,14 +7,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromCurrentTimeExtr
 import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
-
-import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 @Configuration
 public class LdioFileOutAutoConfig {
