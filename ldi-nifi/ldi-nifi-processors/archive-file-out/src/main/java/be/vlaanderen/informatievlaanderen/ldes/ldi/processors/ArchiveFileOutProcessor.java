@@ -2,6 +2,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.ArchiveFile;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromPathExtractor;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;
@@ -45,7 +47,11 @@ public class ArchiveFileOutProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		timestampExtractor = new TimestampExtractor(createProperty(getTimestampPath(context)));
+		String timestampPath = getTimestampPath(context);
+		timestampExtractor = timestampPath != null
+				? new TimestampFromPathExtractor(createProperty(timestampPath))
+				: new TimestampFromCurrentTimeExtractor();
+
 		archiveRootDir = getArchiveRootDirectory(context);
 	}
 
@@ -66,7 +72,7 @@ public class ArchiveFileOutProcessor extends AbstractProcessor {
 
 		ArchiveFile archiveFile = ArchiveFile.from(model, timestampExtractor, archiveRootDir);
 		Files.createDirectories(archiveFile.getDirectoryPath());
-		RDFWriter.source(model).lang(Lang.NQUADS).output(archiveFile.getFilePath());
+		RDFWriter.source(model).lang(Lang.TURTLE).output(archiveFile.getFilePath());
 
 		sendRDFToRelation(session, flowFile, model, SUCCESS, dataSourceFormat);
 	}

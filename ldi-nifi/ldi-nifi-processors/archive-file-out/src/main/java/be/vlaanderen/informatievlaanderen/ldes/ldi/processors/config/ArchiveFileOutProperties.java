@@ -14,7 +14,7 @@ public class ArchiveFileOutProperties {
 	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
 			.name("TIMESTAMP_PATH")
 			.displayName("Timestamp path")
-			.required(true)
+			.required(false)
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.build();
 
