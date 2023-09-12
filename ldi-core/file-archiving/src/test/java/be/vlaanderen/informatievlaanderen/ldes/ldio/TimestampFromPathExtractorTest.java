@@ -24,9 +24,9 @@ class TimestampFromPathExtractorTest {
 	@Test
 	void ExtractTimestamp_ShouldThrowException_WhenTimestampNotFound() {
 		Property timeProperty = ResourceFactory.createProperty("not-existing-property");
+		TimestampFromPathExtractor timestampFromPathExtractor = new TimestampFromPathExtractor(timeProperty);
 
-		assertThrows(IllegalArgumentException.class,
-				() -> new TimestampFromPathExtractor(timeProperty).extractTimestamp(inputModel));
+		assertThrows(IllegalArgumentException.class, () -> timestampFromPathExtractor.extractTimestamp(inputModel));
 	}
 
 	@Test
