@@ -23,12 +23,15 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LdioLdesClientAutoConfigTest {
 	private static final String ENDPOINT = "http://localhost:8080/endpoint";
+	private static final String pipelineName = "pipeline";
 	private LdioLdesClientConfigurator configurator;
 	@Mock
 	private LdiAdapter adapter;
@@ -44,7 +47,8 @@ class LdioLdesClientAutoConfigTest {
 
 	@Test
 	void when_invalidConfigProvided_then_noInteractionsExpected() {
-		configurator.configure(adapter, componentExecutor, new ComponentProperties());
+		configurator.configure(adapter, componentExecutor,
+				new ComponentProperties(Map.of(PIPELINE_NAME, pipelineName)));
 
 		verifyNoInteractions(componentExecutor);
 	}
@@ -64,7 +68,8 @@ class LdioLdesClientAutoConfigTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "api_key", "oauth2_client_credentials" })
 	void when_autTypeProvided_and_additionalKeysAreMissing_then_throwException(String authType) {
-		ComponentProperties props = new ComponentProperties(Map.of(URL, ENDPOINT, AUTH_TYPE, authType));
+		ComponentProperties props = new ComponentProperties(
+				Map.of(PIPELINE_NAME, pipelineName, URL, ENDPOINT, AUTH_TYPE, authType));
 
 		assertThrows(IllegalArgumentException.class, () -> configurator.configure(adapter, componentExecutor, props));
 	}
@@ -72,7 +77,8 @@ class LdioLdesClientAutoConfigTest {
 	@Test
 	void when_unsupportedAuthTypeProvided_then_throwException() {
 		final String INVALID_AUTH_TYPE = "invalid_auth_type";
-		ComponentProperties props = new ComponentProperties(Map.of(URL, ENDPOINT, AUTH_TYPE, INVALID_AUTH_TYPE));
+		ComponentProperties props = new ComponentProperties(
+				Map.of(PIPELINE_NAME, pipelineName, URL, ENDPOINT, AUTH_TYPE, INVALID_AUTH_TYPE));
 
 		Exception e = assertThrows(UnsupportedOperationException.class,
 				() -> configurator.configure(adapter, componentExecutor, props));
@@ -83,15 +89,17 @@ class LdioLdesClientAutoConfigTest {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(
-					Arguments.of(new ComponentProperties(Map.of(RETRIES_ENABLED, "FALSE", URL, ENDPOINT)),
+					Arguments.of(new ComponentProperties(Map.of(PIPELINE_NAME, pipelineName, RETRIES_ENABLED, "FALSE",
+							URL, ENDPOINT)),
 							DefaultRequestExecutor.class),
 					Arguments.of(
 							new ComponentProperties(
-									Map.of(RETRIES_ENABLED, "false", URL, ENDPOINT, AUTH_TYPE, "api_key", API_KEY,
-											"my_secret_key")),
+									Map.of(PIPELINE_NAME, pipelineName, RETRIES_ENABLED, "false", URL, ENDPOINT,
+											AUTH_TYPE, "api_key", API_KEY, "my_secret_key")),
 							DefaultRequestExecutor.class),
 					Arguments.of(
 							new ComponentProperties(Map.of(
+									PIPELINE_NAME, pipelineName,
 									RETRIES_ENABLED, "false",
 									URL, ENDPOINT,
 									AUTH_TYPE, "oauth2_client_credentials",
@@ -100,13 +108,16 @@ class LdioLdesClientAutoConfigTest {
 									TOKEN_ENDPOINT, "http://localhost:8080/token-endpoint")),
 							ClientCredentialsRequestExecutor.class),
 					Arguments.of(
-							new ComponentProperties(Map.of(URL, ENDPOINT, RETRIES_ENABLED, "FALSE")),
+							new ComponentProperties(Map.of(PIPELINE_NAME, pipelineName, URL, ENDPOINT,
+									RETRIES_ENABLED, "FALSE")),
 							DefaultRequestExecutor.class),
 					Arguments.of(
-							new ComponentProperties(Map.of(URL, ENDPOINT, RETRIES_ENABLED, "true")),
+							new ComponentProperties(Map.of(PIPELINE_NAME, pipelineName, URL, ENDPOINT,
+									RETRIES_ENABLED, "true")),
 							RetryExecutor.class),
 					Arguments.of(
 							new ComponentProperties(Map.of(
+									PIPELINE_NAME, pipelineName,
 									URL, ENDPOINT,
 									RETRIES_ENABLED, "TRUE",
 									MAX_RETRIES, "10",

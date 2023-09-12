@@ -3,9 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class ComponentProperties {
 	private final Map<String, String> config;
@@ -30,6 +28,56 @@ public class ComponentProperties {
 			throw new IllegalArgumentException("Missing value for key " + key);
 		}
 		return value;
+	}
+
+	/**
+	 * Returns a list when a property is an array. For example
+	 *
+	 * <pre>
+	 *         config:
+	 *           url:
+	 *             - example.com/api/1
+	 *             - example.com/api/2
+	 * </pre>
+	 *
+	 * Will return List.of(example.com/api/1, example.com/api/2)
+	 * <br>
+	 * <br>
+	 * When the property is not an array, for example
+	 *
+	 * <pre>
+	 *         config:
+	 *          url: example.com/api/1
+	 * </pre>
+	 *
+	 * Then the property is returned as a singleton list:
+	 * List.of(example.com/api/1).
+	 * <br>
+	 * <br>
+	 * Returns empty when the property is not found.
+	 *
+	 * @param key
+	 *            the property key,
+	 * @return the found properties
+	 */
+	public List<String> getPropertyList(String key) {
+		final List<String> endpoints = new ArrayList<>();
+
+		getOptionalProperty(key).ifPresent(endpoints::add);
+
+		int i = 0;
+		boolean propertyFound;
+		do {
+			Optional<String> optionalProperty = getOptionalProperty("%s.%d".formatted(key, i++));
+			if (optionalProperty.isPresent()) {
+				propertyFound = true;
+				endpoints.add(optionalProperty.get());
+			} else {
+				propertyFound = false;
+			}
+		} while (propertyFound);
+
+		return endpoints;
 	}
 
 	public Optional<String> getOptionalProperty(String key) {

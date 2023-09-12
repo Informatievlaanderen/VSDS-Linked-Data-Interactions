@@ -5,7 +5,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-core</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.7.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,7 +20,7 @@
     </modules>
 
     <properties>
-        <sqlite-jdbc.version>3.42.0.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.43.0.0</sqlite-jdbc.version>
         <sqlite-dialect.version>0.1.4</sqlite-dialect.version>
         <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
         <hibernate.version>5.6.15.Final</hibernate.version>

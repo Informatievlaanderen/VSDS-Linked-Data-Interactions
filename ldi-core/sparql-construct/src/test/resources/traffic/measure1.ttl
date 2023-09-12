@@ -1,0 +1,43 @@
+@prefix dc:             <http://purl.org/dc/terms/> .
+@prefix dcterms:        <http://purl.org/dc/terms/> .
+@prefix dv-vm:          <https://data.vlaanderen.be/ns/verkeersmetingen#> .
+@prefix iso19156:       <http://def.isotc211.org/iso19156/2011/> .
+@prefix iso19156-co:    <http://def.isotc211.org/iso19156/2011/CountObservation#> .
+@prefix iso19156-om-co: <http://def.isotc211.org/iso19156/2011/CountObservation#OM_CountObservation.> .
+@prefix iso19156-om-ob: <http://def.isotc211.org/iso19156/2011/Observation#OM_Observation.> .
+@prefix miv:            <http://www.wegenenverkeer.be/ns/verkeersmetingen#> .
+@prefix prov:           <http://www.w3.org/ns/prov#> .
+@prefix rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sosa:           <http://www.w3.org/ns/sosa/> .
+@prefix ssn:            <http://www.w3.org/ns/ssn/> .
+@prefix time:           <http://www.w3.org/2006/time#> .
+@prefix vm:             <http://www.wegenenverkeer.be/ns/verkeersmetingen#> .
+@prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
+
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/29/snelheid/4>
+        rdf:type                       dv-vm:Verkeersmeting ;
+        iso19156-om-ob:phenomenonTime  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/29#2023-08-04T14:28:00+01:00-2023-08-04T15:29:16+02:00> ;
+        iso19156-om-ob:result          "0"^^xsd:int ;
+        iso19156-om-ob:resultTime      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/29#2023-08-04T14:28:00+01:00> ;
+        prov:generatedAtTime           "2023-08-04T14:28:00+01:00"^^xsd:dateTime ;
+        dv-vm:geobserveerdKenmerk      <https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/4> ;
+        dv-vm:geobserveerdObject       <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/29#rijstrook> ;
+        dv-vm:verkeersmeetpunt         <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeetpunt/29> .
+
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/29#2023-08-04T14:28:00+01:00-2023-08-04T15:29:16+02:00>
+        rdf:type           time:ProperInterval ;
+        time:hasBeginning  <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/29#2023-08-04T14:28:00+01:00> ;
+        time:hasEnd        <https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/29#2023-08-04T15:29:16+02:00> .
+
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeerskenmerk/snelheid/4>
+        rdf:type            dv-vm:Verkeerskenmerk ;
+        dv-vm:type          "snelheid"^^dv-vm:Verkeerskenmerktype ;
+        dv-vm:voertuigType  "4"^^dv-vm:Voertuigtype .
+
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/29#2023-08-04T14:28:00+01:00>
+        rdf:type                 time:Instant ;
+        time:inXSDDateTimeStamp  "2023-08-04T14:28:00+01:00"^^xsd:dateTime .
+
+<https://data.vlaanderen.be/id/verkeersmetingen/Verkeersmeting/29#2023-08-04T15:29:16+02:00>
+        rdf:type                 time:Instant ;
+        time:inXSDDateTimeStamp  "2023-08-04T15:29:16+02:00"^^xsd:dateTime .

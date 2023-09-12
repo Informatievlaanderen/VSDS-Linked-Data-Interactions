@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
+import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import org.apache.jena.riot.Lang;
@@ -40,6 +41,8 @@ public class LdesClientRunner implements Runnable {
 			while (threadRunning) {
 				componentExecutor.transformLinkedData(memberSupplier.get().getModel());
 			}
+		} catch (EndOfLdesException e) {
+			log.warn(e.getMessage());
 		} catch (Exception e) {
 			log.error("LdesClientRunner FAILURE", e);
 		}

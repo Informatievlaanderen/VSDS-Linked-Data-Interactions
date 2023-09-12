@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
+import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
@@ -47,6 +48,7 @@ public class LdesClient extends AbstractProcessor {
 	private LdesProperties ldesProperties;
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
+	private boolean hasLdesEnded;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -110,6 +112,20 @@ public class LdesClient extends AbstractProcessor {
 
 	@Override
 	public void onTrigger(ProcessContext context, ProcessSession session) throws ProcessException {
+		if (hasLdesEnded) {
+			return;
+		}
+
+		try {
+			processNextMember(context, session);
+		} catch (EndOfLdesException exception) {
+			LOGGER.warn(exception.getMessage());
+			hasLdesEnded = true;
+		}
+
+	}
+
+	private void processNextMember(ProcessContext context, ProcessSession session) {
 		SuppliedMember memberRecord = memberSupplier.get();
 
 		FlowFile flowFile = session.create();

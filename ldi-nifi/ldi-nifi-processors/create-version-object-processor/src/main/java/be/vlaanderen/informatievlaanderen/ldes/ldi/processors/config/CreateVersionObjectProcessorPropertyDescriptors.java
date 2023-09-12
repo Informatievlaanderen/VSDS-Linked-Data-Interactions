@@ -89,8 +89,8 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 			.defaultValue(DEFAULT_PROV_GENERATED_AT_TIME)
 			.build();
 
-	public static Property getDateObservedValueRdfProperty(ProcessContext context) {
-		return initModel.createProperty(context.getProperty(DATE_OBSERVED_VALUE_RDF_PROPERTY).getValue());
+	public static String getDateObservedValue(ProcessContext context) {
+		return context.getProperty(DATE_OBSERVED_VALUE_RDF_PROPERTY).getValue();
 	}
 
 	public static Resource getMemberRdfSyntaxType(ProcessContext context) {

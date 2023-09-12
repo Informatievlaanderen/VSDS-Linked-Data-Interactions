@@ -1,0 +1,29 @@
+@prefix cs-count: <http://www.crowdscan.be/ns/count#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema:   <http://schema.org/> .
+@prefix time:     <http://www.w3.org/2006/time#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.crowdscan.be/id/observation/beacon/1>
+        rdf:type              cs-count:Observation ;
+        cs-count:environment  "beacon" ;
+        cs-count:region       1 ;
+        cs-count:time         "2023-09-05T07:08:53.479483Z"^^xsd:DateTime ;
+        cs-count:timedelta    "-PT15M"^^xsd:duration ;
+        cs-count:value        0 .
+
+<http://www.crowdscan.be/id/observation/beacon/2>
+        rdf:type              cs-count:Observation ;
+        cs-count:environment  "beacon" ;
+        cs-count:region       2 ;
+        cs-count:time         "2023-09-05T07:08:53.479483Z"^^xsd:DateTime ;
+        cs-count:timedelta    "-PT15M"^^xsd:duration ;
+        cs-count:value        2.741105e-1 .
+
+<http://www.crowdscan.be/id/observation/beacon/3>
+        rdf:type              cs-count:Observation ;
+        cs-count:environment  "beacon" ;
+        cs-count:region       3 ;
+        cs-count:time         "2023-09-05T07:08:53.479483Z"^^xsd:DateTime ;
+        cs-count:timedelta    "-PT15M"^^xsd:duration ;
+        cs-count:value        5.051886e-1 .

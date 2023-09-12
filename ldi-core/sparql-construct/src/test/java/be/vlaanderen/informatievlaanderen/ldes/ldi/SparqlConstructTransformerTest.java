@@ -1,13 +1,21 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.riot.*;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class SparqlConstructTransformerTest {
 
@@ -37,10 +45,10 @@ class SparqlConstructTransformerTest {
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
-		model = sparqlConstructTransformer.apply(model);
+		List<Model> models = sparqlConstructTransformer.apply(model);
 
-		assertTrue(model.contains(transformedData));
-		assertFalse(model.contains(originalData));
+		assertTrue(models.get(0).contains(transformedData));
+		assertFalse(models.get(0).contains(originalData));
 
 	}
 
@@ -51,10 +59,79 @@ class SparqlConstructTransformerTest {
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
-		model = sparqlConstructTransformer.apply(model);
+		List<Model> models = sparqlConstructTransformer.apply(model);
 
-		assertTrue(model.contains(transformedData));
-		assertTrue(model.contains(originalData));
-
+		assertTrue(models.get(0).contains(transformedData));
+		assertTrue(models.get(0).contains(originalData));
 	}
+
+	@Test
+	void shouldSplitModels_whenQueryContainsGraph_AndHasNoDefaultModelStatements() throws IOException {
+		Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
+		String constructQuery = Files.readString(Path.of("./src/test/resources/crowdscan/query.rq"));
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(constructQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(inputModel);
+
+		assertEquals(3, result.size());
+		assertModels(
+				List.of("crowdscan/observation1.ttl", "crowdscan/observation2.ttl", "crowdscan/observation3.ttl"),
+				result);
+	}
+
+	@Test
+	void shouldNotSplitModels_whenQueryContainsNoGraph_AndHasOnlyDefaultModelStatements() throws IOException {
+		Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
+		String constructQuery = Files.readString(Path.of("./src/test/resources/crowdscan/no-graph-query.rq"));
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(constructQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(inputModel);
+
+		assertEquals(1, result.size());
+		Model expectedResult = RDFParser.source("crowdscan/no-graph-observations.ttl").toModel();
+		assertTrue(expectedResult.isIsomorphicWith(result.get(0)));
+	}
+
+	@Test
+	void shouldSplitModels_whenQueryContainsGraph_AndHasDefaultModelStatements() throws IOException {
+		Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
+		String constructQuery = Files.readString(Path.of("./src/test/resources/traffic/query.rq"));
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(constructQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(inputModel);
+
+		assertEquals(10, result.size());
+		assertModels(List.of(
+				"traffic/measure1.ttl",
+				"traffic/measure2.ttl",
+				"traffic/measure3.ttl",
+				"traffic/measure4.ttl",
+				"traffic/measure5.ttl",
+				"traffic/measure6.ttl",
+				"traffic/measure7.ttl",
+				"traffic/measure8.ttl",
+				"traffic/measure9.ttl",
+				"traffic/measure10.ttl"), result);
+	}
+
+	private void assertModels(List<String> expectedModelPaths, Collection<Model> result) {
+		Set<Model> expectedModels = expectedModelPaths
+				.stream()
+				.map(RDFParser::source)
+				.map(RDFParserBuilder::toModel)
+				.collect(Collectors.toSet());
+
+		result.forEach(
+				actualResult -> {
+					System.out.println(RDFWriter.source(actualResult).lang(Lang.TURTLE).asString());
+					expectedModels
+							.removeIf(expectedResult -> expectedResult.isIsomorphicWith(actualResult));
+				});
+
+		assertTrue(expectedModels.isEmpty());
+	}
+
 }

@@ -23,6 +23,7 @@ These processors can be [added][Adding a processor in NiFi] by filtering on the 
 - [Version Materialization Processor](../_core/ldi-transformers/version-materializer)
 - [Archive File Out Processor](../_core/ldi-outputs/file-archiving)
 - [Archive File In Processor](../_core/ldi-outputs/file-archiving)
+- [Model Split Processor](../_core/ldi-adapters/model-split-adapter.md)
 
 {: .note }
 All documentation and notes about configuration are available in the NiFi component itself.

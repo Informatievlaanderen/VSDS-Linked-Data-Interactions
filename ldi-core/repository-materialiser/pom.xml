@@ -6,14 +6,14 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-core</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.7.0-SNAPSHOT</version>
     </parent>
 
     <properties>
         <!-- Java properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- RDF4j -->
-        <rdf4j.version>4.3.3</rdf4j.version>
+        <rdf4j.version>4.3.6</rdf4j.version>
         <!-- Code formatter -->
         <relative-formatter-path>../..</relative-formatter-path>
     </properties>

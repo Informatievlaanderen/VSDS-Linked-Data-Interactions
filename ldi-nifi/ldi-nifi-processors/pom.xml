@@ -3,7 +3,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-nifi</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.7.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,6 +22,7 @@
         <module>json-to-ld-processor</module>
         <module>archive-file-out</module>
         <module>archive-file-in</module>
+        <module>model-split-processor</module>
     </modules>
 
     <properties>

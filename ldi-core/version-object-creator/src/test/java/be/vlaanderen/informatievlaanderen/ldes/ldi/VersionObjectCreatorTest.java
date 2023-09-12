@@ -1,11 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,17 +26,16 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator.SYNTAX_TYPE;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-class LdesMemberConverterTest {
+class VersionObjectCreatorTest {
 	private static final String DEFAULT_DELIMITER = "/";
 
 	private static final Model initModel = ModelFactory.createDefaultModel();
-	private static final Property PROV_GENERATED_AT_TIME = initModel.createProperty(
-			"http://www.w3.org/ns/prov#generatedAtTime");
-	private static final Property TERMS_IS_VERSION_OF = initModel.createProperty(
-			"http://purl.org/dc/terms/isVersionOf");
+	private static final Property PROV_GENERATED_AT_TIME = initModel
+			.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
+	private static final Property TERMS_IS_VERSION_OF = initModel
+			.createProperty("http://purl.org/dc/terms/isVersionOf");
 	private static final String WATER_QUALITY_OBSERVED = "https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved";
 
 	MemberInfo memberInfo = new MemberInfo(
@@ -59,6 +61,74 @@ class LdesMemberConverterTest {
 						.toList().isEmpty());
 	}
 
+	@Test
+	void when_dateObservedPropertyIsNoDatetime_expectCurrentDatetime() {
+		Model inputModel = RDFParser.fromString("""
+				@prefix ex:   <http://example.org/> .
+
+				ex:member
+				  a ex:Something ;
+				  ex:foo "bar mitswa".
+				""").lang(Lang.TTL).toModel();
+
+		Resource memberType = inputModel.createResource("http://example.org/Something");
+		PropertyExtractor dateObservedPropertyExtractor = PropertyPathExtractor.from("<http://example.org/foo>");
+		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
+		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
+
+		String expectedId = "http://example.org/member/";
+
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType,
+				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
+
+		Model versionObject = versionObjectCreator.apply(inputModel).get(0);
+
+		final LocalDateTime startTestTime = LocalDateTime.now();
+
+		final String minuteTheTestStarted = getPartOfLocalDateTime(startTestTime);
+		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(startTestTime.plusMinutes(1));
+
+		assertTrue(versionObject.listStatements()
+				.toList()
+				.stream()
+				.anyMatch(stmt -> stmt.getSubject().toString().contains(expectedId + minuteTheTestStarted) ||
+						stmt.getSubject().toString().contains(expectedId + minuteAfterTheTestStarted)));
+	}
+
+	@Test
+	void when_dateObservedPropertyIsNested_thenAPropertyPathCanBeProvided() {
+		Model inputModel = RDFParser.fromString("""
+				@prefix time: <http://www.w3.org/2006/time#> .
+				@prefix ex:   <http://example.org/> .
+				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+				ex:member
+				  a ex:Something ;
+				  ex:created [
+				    a time:Instant ;
+				    time:inXSDDateTimeStamp "2023-08-18T13:08:00+01:00"^^xsd:DateTime
+				  ] .
+				""").lang(Lang.TTL).toModel();
+		Resource memberType = inputModel.createResource("http://example.org/Something");
+		PropertyExtractor dateObservedPropertyExtractor = PropertyPathExtractor.from(
+				"<http://example.org/created>/<http://www.w3.org/2006/time#inXSDDateTimeStamp>");
+		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
+		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType,
+				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
+
+		String result = versionObjectCreator
+				.apply(inputModel)
+				.get(0)
+				.listSubjectsWithProperty(RDF.type, initModel.createResource("http://example.org/Something"))
+				.mapWith(RDFNode::asResource)
+				.mapWith(Resource::getURI)
+				.mapWith(String::toString)
+				.next();
+
+		assertEquals("http://example.org/member/2023-08-18T13:08:00+01:00", result);
+	}
+
 	@ParameterizedTest
 	@ArgumentsSource(JsonLDFileArgumentsProvider.class)
 	void shouldMatchCountOfObjects(String fileName, String expectedId, LocalDateTime startTestTime, String memberType)
@@ -66,10 +136,11 @@ class LdesMemberConverterTest {
 
 		Model model = RDFParserBuilder.create().fromString(getJsonString(fileName)).lang(Lang.JSONLD).toModel();
 
-		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(null, model.createResource(memberType),
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(),
+				model.createResource(memberType),
 				DEFAULT_DELIMITER, null, null);
 
-		Model versionObject = versionObjectCreator.apply(model);
+		Model versionObject = versionObjectCreator.apply(model).get(0);
 
 		final String minuteTheTestStarted = getPartOfLocalDateTime(startTestTime);
 		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(startTestTime.plusMinutes(1));

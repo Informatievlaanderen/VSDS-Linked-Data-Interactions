@@ -19,7 +19,7 @@ public class VersionMaterialiser implements LdiTransformer {
 	}
 
 	@Override
-	public Model apply(Model linkedDataModel) {
+	public List<Model> apply(Model linkedDataModel) {
 		final Model versionMaterialisedModel = ModelFactory.createDefaultModel();
 
 		Map<Resource, Resource> versionIDEntityIDMap = getVersionIDEntityIDMap(linkedDataModel, versionPredicate);
@@ -33,9 +33,9 @@ public class VersionMaterialiser implements LdiTransformer {
 		versionMaterialisedModel.add(deversionedStatements);
 
 		if (restrictToMembers) {
-			return reduceToLDESMemberOnlyModel(versionMaterialisedModel);
+			return List.of(reduceToLDESMemberOnlyModel(versionMaterialisedModel));
 		}
-		return versionMaterialisedModel;
+		return List.of(versionMaterialisedModel);
 	}
 
 	private Statement deversionStatement(Map<Resource, Resource> versionIdEntityIdMap, Statement statement) {

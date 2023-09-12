@@ -1,0 +1,16 @@
+@prefix cs: <http://www.crowdscan.be/ns/count#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+[]
+  cs:header [
+    cs:environment "beacon"^^xsd:string ;
+    cs:last_updated "2023-09-05T07:08:53.479483Z"^^xsd:string ;
+    cs:time "2023-09-05T07:08:53.479483Z"^^xsd:DateTime ;
+    cs:timedelta "15"^^xsd:int
+  ] ;
+  cs:payload [ cs:regions (
+     2.236581e-1
+     0
+     2.741105e-1
+     5.051886e-1
+   ) ] .
