@@ -12,6 +12,44 @@ SPARQL Construct is a query language used in semantic Web technologies to create
 
 The SPARQL Construct query language provides a powerful way to create new RDF data by using existing data as the input. It can be used to transform RDF data into different formats, as well as to simplify the structure of RDF data by aggregating or filtering data.
 
-This SPARQL Construct Transfomer building block can be used to execute model transformations.
+This SPARQL Construct Transfomer building block can be used to execute model transformations. 
 
 [SPARQL]: https://www.w3.org/TR/rdf-sparql-query/
+
+## Splitting models using SPARQL Construct
+
+This component can be used to split models into multiple models using graphs.
+For example, the below query will create a dataset containing multiple models defined by 'GRAPH'.
+The SPARQL construct component will extract all named models from the dataset and add all statements from the default model. 
+The component will then return a collection of models.
+
+```sparql
+CONSTRUCT {
+  GRAPH ?observation {
+    ?observation rdf:type cs-count:Observation .
+    ?observation cs-count:time ?time .
+    ?observation cs-count:value ?value .
+    ?observation cs-count:environment ?environment .
+    ?observation cs-count:timedelta ?delta .
+    ?observation cs-count:region ?zone .
+  }
+} WHERE {
+    ?header cs-count:environment ?environment .
+    ?header cs-count:time ?time .
+    ?header cs-count:timedelta ?timedelta .
+    bind(strdt(concat("-PT", str(?timedelta), "M"), xsd:duration) as ?delta) .
+
+    ?payload cs-count:payload ?regions .
+    {
+      SELECT ?value (count(?mid) as ?zone)
+      WHERE
+      {
+        ?regions rdf:rest* ?mid .
+        ?mid rdf:rest ?node .
+        ?node rdf:first ?value .
+      }
+      GROUP BY ?node ?value
+    }
+    bind(uri(concat("http://www.crowdscan.be/id/observation/", ?environment, "/", str(?zone))) as ?observation) .
+  }
+```
