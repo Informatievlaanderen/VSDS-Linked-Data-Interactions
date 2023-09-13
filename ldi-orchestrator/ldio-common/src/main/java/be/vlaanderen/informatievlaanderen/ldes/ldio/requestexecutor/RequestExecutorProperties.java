@@ -2,6 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor;
 
 public class RequestExecutorProperties {
 
+	private RequestExecutorProperties() {
+	}
+
 	public static final String RETRIES_ENABLED = "retries.enabled";
 	public static final String MAX_RETRIES = "retries.max";
 	public static final String STATUSES_TO_RETRY = "retries.statuses-to-retry";
