@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
@@ -29,6 +31,7 @@ class HttpInputPollerTest {
 	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 	private static final String CONTENT_TYPE = "application/n-quads";
 	private HttpInputPoller httpInputPoller;
+	private static RequestExecutor noAuthExecutor = new RequestExecutorFactory().createNoAuthExecutor();
 
 	@BeforeEach
     void setUp() {
@@ -38,7 +41,7 @@ class HttpInputPollerTest {
                 .thenReturn(Stream.of())
                 .thenReturn(Stream.of());
 
-        httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), true);
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), true, noAuthExecutor);
     }
 
 	@Test
@@ -54,7 +57,7 @@ class HttpInputPollerTest {
 	void whenPolling_andMissesHeader() {
 		stubFor(get(ENDPOINT).willReturn(ok().withBody(CONTENT)));
 
-		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), false);
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
 		Executable polling = () -> httpInputPoller.poll();
 
 		assertThrows(MissingHeaderException.class, polling);
@@ -78,7 +81,7 @@ class HttpInputPollerTest {
 		String otherEndpoint = "/other-resource";
 		stubFor(get(otherEndpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT, BASE_URL + otherEndpoint),
-				true);
+				true, noAuthExecutor);
 
 		httpInputPoller.poll();
 
@@ -93,7 +96,7 @@ class HttpInputPollerTest {
 		String otherEndpoint = "/other-endpoint";
 		stubFor(get(otherEndpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + endpoint, BASE_URL + otherEndpoint),
-				true);
+				true, noAuthExecutor);
 
 		httpInputPoller.schedulePoller(1);
 
@@ -118,7 +121,7 @@ class HttpInputPollerTest {
 	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling() {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), false);
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
 		httpInputPoller.schedulePoller(1);
 
 		Mockito.verify(adapter, after(2000).never()).apply(any());
@@ -128,7 +131,8 @@ class HttpInputPollerTest {
 	@Test
 	void when_EndpointDoesNotExist_Then_NoDataIsSent() {
 		String wrongEndpoint = "/non-existing-resource";
-		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + wrongEndpoint), true);
+		httpInputPoller = new HttpInputPoller(executor, adapter, List.of(BASE_URL + wrongEndpoint), true,
+				noAuthExecutor);
 
 		httpInputPoller.poll();
 
