@@ -25,31 +25,9 @@ The component will then return a collection of models.
 
 ```sparql
 CONSTRUCT {
-  GRAPH ?observation {
-    ?observation rdf:type cs-count:Observation .
-    ?observation cs-count:time ?time .
-    ?observation cs-count:value ?value .
-    ?observation cs-count:environment ?environment .
-    ?observation cs-count:timedelta ?delta .
-    ?observation cs-count:region ?zone .
-  }
-} WHERE {
-    ?header cs-count:environment ?environment .
-    ?header cs-count:time ?time .
-    ?header cs-count:timedelta ?timedelta .
-    bind(strdt(concat("-PT", str(?timedelta), "M"), xsd:duration) as ?delta) .
-
-    ?payload cs-count:payload ?regions .
-    {
-      SELECT ?value (count(?mid) as ?zone)
-      WHERE
-      {
-        ?regions rdf:rest* ?mid .
-        ?mid rdf:rest ?node .
-        ?node rdf:first ?value .
-      }
-      GROUP BY ?node ?value
+    GRAPH ?s {
+        ?s ?p ?o
     }
-    bind(uri(concat("http://www.crowdscan.be/id/observation/", ?environment, "/", str(?zone))) as ?observation) .
-  }
+}
+WHERE { ?s ?p ?o }
 ```
