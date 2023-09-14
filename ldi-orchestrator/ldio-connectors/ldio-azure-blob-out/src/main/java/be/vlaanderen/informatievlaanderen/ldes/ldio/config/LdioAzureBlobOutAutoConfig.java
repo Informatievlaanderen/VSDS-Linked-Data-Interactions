@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -24,7 +24,7 @@ public class LdioAzureBlobOutAutoConfig {
 		public static final String DEFAULT_JSON_CONTEXT_URI = "";
 
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
+		public LdiOutput configure(ComponentProperties properties) {
 			String outputLanguage = properties.getOptionalProperty(PROPERTY_LANG)
 					.orElse(DEFAULT_OUTPUT_LANG);
 			String storageAccountName = properties.getProperty(PROPERTY_STORAGE_ACCOUNT_NAME);

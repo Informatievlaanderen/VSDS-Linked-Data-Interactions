@@ -12,10 +12,10 @@ public class LioRepositoryMaterialiserAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.RepositoryMaterialiser")
 	public LdioConfigurator ldiRepoMaterialiserConfigurator() {
-		return new LdiRepoMaterialiserConfigurator();
+		return new LdiRepoMaterialiserProcessorConfigurator();
 	}
 
-	public static class LdiRepoMaterialiserConfigurator implements LdioConfigurator {
+	public static class LdiRepoMaterialiserProcessorConfigurator implements LdioConfigurator {
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
 			return new LdioRepositoryMaterialiser(config);

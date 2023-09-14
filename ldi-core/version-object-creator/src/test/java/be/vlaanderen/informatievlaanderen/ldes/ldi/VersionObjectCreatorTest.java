@@ -81,7 +81,7 @@ class VersionObjectCreatorTest {
 		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType,
 				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
 
-		Model versionObject = versionObjectCreator.apply(inputModel).get(0);
+		Model versionObject = versionObjectCreator.transform(inputModel);
 
 		final LocalDateTime startTestTime = LocalDateTime.now();
 
@@ -118,8 +118,7 @@ class VersionObjectCreatorTest {
 				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
 
 		String result = versionObjectCreator
-				.apply(inputModel)
-				.get(0)
+				.transform(inputModel)
 				.listSubjectsWithProperty(RDF.type, initModel.createResource("http://example.org/Something"))
 				.mapWith(RDFNode::asResource)
 				.mapWith(Resource::getURI)
@@ -140,7 +139,7 @@ class VersionObjectCreatorTest {
 				model.createResource(memberType),
 				DEFAULT_DELIMITER, null, null);
 
-		Model versionObject = versionObjectCreator.apply(model).get(0);
+		Model versionObject = versionObjectCreator.transform(model);
 
 		final String minuteTheTestStarted = getPartOfLocalDateTime(startTestTime);
 		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(startTestTime.plusMinutes(1));

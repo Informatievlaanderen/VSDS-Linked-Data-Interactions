@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.apache.jena.rdf.model.ResourceFactory.*;
 
-public class VersionObjectCreator implements LdiTransformer {
+public class VersionObjectCreator implements LdiOneToOneTransformer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionObjectCreator.class);
 
@@ -42,10 +42,10 @@ public class VersionObjectCreator implements LdiTransformer {
 	}
 
 	@Override
-	public List<Model> apply(Model linkedDataModel) {
+	public Model transform(Model linkedDataModel) {
 		MemberInfo memberInfo = extractMemberInfo(linkedDataModel);
 
-		return List.of(constructVersionObject(linkedDataModel, memberInfo));
+		return constructVersionObject(linkedDataModel, memberInfo);
 	}
 
 	private MemberInfo extractMemberInfo(Model linkedDataModel) {

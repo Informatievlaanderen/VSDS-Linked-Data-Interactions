@@ -1,11 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioProcessorConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -19,14 +18,14 @@ import java.util.Optional;
 @Configuration
 public class LdioVersionObjectCreatorAutoConfig {
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator")
-	public LdioConfigurator ldioConfigurator() {
-		return new LdioVersionObjectCreatorConfigurator();
+	public LdioProcessorConfigurator ldioConfigurator() {
+		return new LdioVersionObjectCreatorProcessorConfigurator();
 	}
 
-	public static class LdioVersionObjectCreatorConfigurator implements LdioConfigurator {
+	public static class LdioVersionObjectCreatorProcessorConfigurator implements LdioProcessorConfigurator {
 
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
+		public LdioProcessor configure(ComponentProperties properties) {
 			Model initModel = ModelFactory.createDefaultModel();
 
 			PropertyExtractor dateObservedPropertyExtractor = properties.getOptionalProperty("date-observed-property")
@@ -47,7 +46,8 @@ public class LdioVersionObjectCreatorAutoConfig {
 					.map(initModel::createProperty)
 					.orElse(null);
 
-			return new VersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter, generatedAtProperty,
+			return new LdioVersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter,
+					generatedAtProperty,
 					versionOfProperty);
 		}
 	}

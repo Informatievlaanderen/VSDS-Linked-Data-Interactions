@@ -12,10 +12,10 @@ public class LdioJsonToLdAdapterAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter")
 	public LdioConfigurator ldioJsonToLdAdapterConfigurator() {
-		return new LdioJsonToLdAdapterConfigurator();
+		return new LdioJsonToLdConfigurator();
 	}
 
-	public static class LdioJsonToLdAdapterConfigurator implements LdioConfigurator {
+	public static class LdioJsonToLdConfigurator implements LdioConfigurator {
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
 			String coreContext = config.getProperty("core-context");

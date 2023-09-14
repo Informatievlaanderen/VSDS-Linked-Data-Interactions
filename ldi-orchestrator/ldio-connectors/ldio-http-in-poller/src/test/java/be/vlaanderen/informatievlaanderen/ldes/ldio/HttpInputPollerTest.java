@@ -32,7 +32,7 @@ class HttpInputPollerTest {
 	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 	private static final String CONTENT_TYPE = "application/n-quads";
 	private HttpInputPoller httpInputPoller;
-	private static RequestExecutor noAuthExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+	private static final RequestExecutor noAuthExecutor = new RequestExecutorFactory().createNoAuthExecutor();
 
 	@BeforeEach
     void setUp() {

@@ -23,7 +23,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrateg
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy.SASL_SSL_PLAIN;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.*;
 
-public class LdioKafkaOutConfigurator implements LdioConfigurator {
+public class LdioKafkaOutProcessorConfigurator implements LdioConfigurator {
 
 	@Override
 	public LdiComponent configure(ComponentProperties config) {

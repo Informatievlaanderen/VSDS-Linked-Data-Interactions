@@ -9,7 +9,7 @@ public class LdioKafkaOutAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut")
 	public LdioConfigurator ldiKafkaOutConfigurator() {
-		return new LdioKafkaOutConfigurator();
+		return new LdioKafkaOutProcessorConfigurator();
 	}
 
 }

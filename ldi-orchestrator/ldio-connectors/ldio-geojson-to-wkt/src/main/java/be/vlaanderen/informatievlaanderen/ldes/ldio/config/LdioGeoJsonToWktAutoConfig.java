@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.GeoJsonToWktTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioProcessorConfigurator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 public class LdioGeoJsonToWktAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.GeoJsonToWktTransformer")
-	public LdioConfigurator geoJsonToWktConfigurator() {
-		return properties -> new GeoJsonToWktTransformer();
+	public LdioProcessorConfigurator geoJsonToWktConfigurator() {
+		return properties -> new LdioGeoJsonToWkt();
 	}
 
 }

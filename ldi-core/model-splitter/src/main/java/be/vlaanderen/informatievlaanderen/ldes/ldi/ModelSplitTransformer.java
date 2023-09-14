@@ -1,23 +1,50 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToManyTransformer;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.RDF;
 
-import java.util.Collection;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
 
-public class ModelSplitTransformer implements LdiTransformer {
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+
+public class ModelSplitTransformer implements LdiOneToManyTransformer {
 
 	private final String subjectType;
-	private final ModelSplitter modelSplitter;
 
-	public ModelSplitTransformer(String subjectType, ModelSplitter modelSplitter) {
+	public ModelSplitTransformer(String subjectType) {
 		this.subjectType = subjectType;
-		this.modelSplitter = modelSplitter;
 	}
 
 	@Override
-	public Collection<Model> apply(Model model) {
-		return modelSplitter.split(model, subjectType);
+	public List<Model> transform(Model inputModel) {
+		return inputModel
+				.listSubjectsWithProperty(RDF.type, createProperty(subjectType))
+				.mapWith(subject -> extractModelForSubject(inputModel, subject))
+				.toList();
 	}
 
+	private Model extractModelForSubject(Model inputModel, Resource subject) {
+		final Deque<Resource> subjectsOfIncludedStatements = new ArrayDeque<>();
+		subjectsOfIncludedStatements.push(subject);
+		final Model memberModel = ModelFactory.createDefaultModel();
+		while (isNotEmpty(subjectsOfIncludedStatements)) {
+			final Resource includedSubject = subjectsOfIncludedStatements.pop();
+			inputModel.listStatements(includedSubject, null, (String) null)
+					.forEach(includedStatement -> {
+						memberModel.add(includedStatement);
+						RDFNode object = includedStatement.getObject();
+						if (object.isResource()) {
+							subjectsOfIncludedStatements.push(object.asResource());
+						}
+					});
+		}
+		return memberModel;
+	}
 }
