@@ -21,10 +21,13 @@ class WktConverterTest {
 	@ParameterizedTest
 	@ArgumentsSource(GeoJsonProvider.class)
 	void test_getWktFromModel(String source, String expectedResult) {
-		final String result = wktConverter.getWktFromModel(
+		final WktResult result = wktConverter.getWktFromModel(
 				RDFParser.source(source).lang(Lang.JSONLD).build().toModel());
 
-		assertEquals(expectedResult, result);
+		assertEquals(expectedResult, result.wkt());
+		System.out.println(result.type());
+		// TODO TVB: 15/09/23 add test on type
+//		assertEquals(expectedResult, result.wkt());
 	}
 
 	static class GeoJsonProvider implements ArgumentsProvider {

@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.GeoType;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
@@ -8,6 +10,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
@@ -22,9 +25,10 @@ public class WktConverter {
 	 * Locates the geojson:geometry from the provided model and returns the WKT
 	 * translation
 	 */
-	public String getWktFromModel(Model model) {
+	public WktResult getWktFromModel(Model model) {
 		final Geometry geom = geometryExtractor.createGeometry(model, getGeometryId(model));
-		return writer.write(geom);
+		GeoType geoType = GeoType.fromName(geom.getGeometryType()).orElseThrow(); // TODO TVB: 15/09/23 throw custom issue
+		return new WktResult(geoType, writer.write(geom));
 	}
 
 	private Resource getGeometryId(Model model) {
