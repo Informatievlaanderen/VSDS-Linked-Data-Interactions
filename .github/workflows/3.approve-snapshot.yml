@@ -30,7 +30,7 @@ jobs:
           echo "current version: $VERSION"
           if [[ $VERSION == *"-SNAPSHOT" ]]; then
             echo "Dealing with a snapshot version. Current version: $VERSION"
-            NEW_VERSION = "${VERSION/"-SNAPSHOT"/""}"
+            export NEW_VERSION = "${VERSION/"-SNAPSHOT"/""}"
             echo "New version: $NEW_VERSION"
             mvn -B versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
           else
