@@ -30,7 +30,7 @@ jobs:
             echo "Dealing with a snapshot version. Current version: ${{ env.version }}"
             str_to_replace="-SNAPSHOT"
             replace_str=""
-            echo "New version: ${{ env.version //$str_to_replace/$replace_str }}"
+            echo "New version: ${ env.version //$str_to_replace/$replace_str }"
           else
             echo "Already released. Current version: ${{ env.version }}"
           fi
