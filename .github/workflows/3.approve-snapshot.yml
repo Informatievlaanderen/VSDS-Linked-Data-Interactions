@@ -28,7 +28,9 @@ jobs:
           export VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
           if [[ "${{ env.version }}" == *"SNAPSHOT"* ]]; then
             echo "Dealing with a snapshot version. Current version: ${{ env.version }}"
-            echo "New version: ${{ env.version //-SNAPSHOT/ }}"
+            str_to_replace="-SNAPSHOT"
+            replace_str=""
+            echo "New version: ${{ env.version //$str_to_replace/$replace_str }}"
           else
             echo "Already released. Current version: ${{ env.version }}"
           fi
