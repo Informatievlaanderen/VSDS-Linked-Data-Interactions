@@ -26,12 +26,11 @@ jobs:
       - name: Define docker variables
         run: |
           export VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
-          echo "version=$VERSION" >> $GITHUB_ENV
           
           echo "current version: $VERSION"
           if [[ $VERSION == *"SNAPSHOT"* ]]; then
             echo "Dealing with a snapshot version. Current version: $VERSION"
-            echo "New version: ${ $VERSION//'-SNAPSHOT'//g }"
+            echo "New version: ${ $VERSION%"-SNAPSHOT" }"
           else
             echo "Already released. Current version: $VERSION"
           fi
