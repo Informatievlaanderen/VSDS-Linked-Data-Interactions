@@ -31,7 +31,7 @@ jobs:
           if [[ $VERSION == *"SNAPSHOT"* ]]; then
             echo "Dealing with a snapshot version. Current version: $VERSION"
             suffix="-SNAPSHOT"
-            echo "New version: ${ $VERSION%"$suffix" }"
+            echo "New version: ${ VERSION%"$suffix" }"
           else
             echo "Already released. Current version: $VERSION"
           fi
