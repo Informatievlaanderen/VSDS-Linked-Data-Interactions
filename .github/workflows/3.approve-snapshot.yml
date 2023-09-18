@@ -27,11 +27,12 @@ jobs:
         run: |
           export VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
           
+          echo "current version: $VERSION"
           if [[ $VERSION == *"-SNAPSHOT" ]]; then
             echo "Dealing with a snapshot version. Current version: $VERSION"
-            export NEW_VERSION = ${VERSION/"-SNAPSHOT"/""}
-            echo "New version: $NEW_VERSION"
-            mvn -B versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
+            export NEWVERSION = "${VERSION/"-SNAPSHOT"/""}"
+            echo "New version: $NEWVERSION"
+            mvn -B versions:set -DnewVersion=$NEWVERSION -DgenerateBackupPoms=false
           else
             echo "Already released. Current version: $VERSION"
           fi
