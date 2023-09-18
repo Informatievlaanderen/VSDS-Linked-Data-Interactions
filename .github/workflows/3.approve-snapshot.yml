@@ -28,7 +28,7 @@ jobs:
           export VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_ENV
           
-          echo "current version: ${{ env.version }}"
+          echo "current version: $VERSION"
           if [[ "$env.version" == *"SNAPSHOT"* ]]; then
             echo "Dealing with a snapshot version. Current version: ${{ env.version }}"
             echo "New version: ${ env.version //-SNAPSHOT//g }"
