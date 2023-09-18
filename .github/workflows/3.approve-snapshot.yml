@@ -32,7 +32,6 @@ jobs:
           if [[ "${{ env.version }}" != *"SNAPSHOT"* ]]; then
             echo "Dealing with a snapshot version"
             echo "${{ env.version }}"
-          fi
           else
             echo "Already released"
           fi
