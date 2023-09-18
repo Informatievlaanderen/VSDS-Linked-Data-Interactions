@@ -1,9 +1,6 @@
 name: 3. Approve Snapshot
 
 on:
-  push:
-    branches:
-      - ci/approve-snapshot
   workflow_dispatch:
 
 env:
@@ -12,7 +9,7 @@ env:
 
 jobs:
   approve-snapshot:
-    #if: github.ref == "refs/heads/main"
+    if: github.ref == "refs/heads/main"
     name: Approve Snapshot and Promote
     runs-on: ubuntu-latest
     steps:
@@ -33,6 +30,8 @@ jobs:
             export NEWVERSION=$(echo ${VERSION/"-SNAPSHOT"/""})
             echo "New version: ${NEWVERSION}"
             mvn -B versions:set -DnewVersion=${NEWVERSION} -DgenerateBackupPoms=false
+            git commit -am "Automated report"
+            git push
           else
             echo "Already released. Current version: $VERSION"
           fi
