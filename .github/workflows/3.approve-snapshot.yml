@@ -25,10 +25,10 @@ jobs:
           java-version: 18
       - name: Define docker variables
         run: |
-          export version=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
-          if [[ "$version" == *"SNAPSHOT"* ]]; then
-            echo "Dealing with a snapshot version. Current version: ${{ version }}"
-            echo "New version: ${ version //-SNAPSHOT//g }"
+          VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
+          if [[ "$VERSION" == *"SNAPSHOT"* ]]; then
+            echo "Dealing with a snapshot version. Current version: ${{ VERSION }}"
+            echo "New version: ${ VERSION //-SNAPSHOT//g }"
           else
-            echo "Already released. Current version: ${ version }"
+            echo "Already released. Current version: ${ VERSION }"
           fi
