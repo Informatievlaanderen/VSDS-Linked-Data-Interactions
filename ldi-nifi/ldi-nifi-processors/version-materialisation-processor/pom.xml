@@ -3,7 +3,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi.nifi</groupId>
         <artifactId>ldi-nifi-processors</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
