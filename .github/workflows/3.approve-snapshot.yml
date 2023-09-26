@@ -30,8 +30,10 @@ jobs:
             export NEWVERSION=$(echo ${VERSION/"-SNAPSHOT"/""})
             echo "New version: ${NEWVERSION}"
             mvn -B versions:set -DnewVersion=${NEWVERSION} -DgenerateBackupPoms=false
+            git config --global user.email "noreply@vsds.informatievlaanderen.com"
+            git config --global user.name "VSDS CI Pipeline"
             git add -A
-            git commit -am "ci: Promoted version to ${NEWVERSION}" --author "VSDS CI Pipeline <>"
+            git commit -am "ci: Promoted version to ${NEWVERSION}"
             git push
           else
             echo "Already released. Current version: $VERSION"
