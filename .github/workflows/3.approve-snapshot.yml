@@ -31,7 +31,7 @@ jobs:
             echo "New version: ${NEWVERSION}"
             mvn -B versions:set -DnewVersion=${NEWVERSION} -DgenerateBackupPoms=false
             git add -A
-            git commit -am "ci: Promoted version to ${NEWVERSION}"
+            git commit -am "ci: Promoted version to ${NEWVERSION}" --author "VSDS CI Pipeline <>"
             git push
           else
             echo "Already released. Current version: $VERSION"
