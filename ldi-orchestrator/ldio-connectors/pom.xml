@@ -37,7 +37,6 @@
         <module>ldio-azure-blob-out</module>
         <module>ldio-file-out</module>
         <module>ldio-repository-materialiser</module>
-        <module>ldio-request-executor</module>
 
     </modules>
 
