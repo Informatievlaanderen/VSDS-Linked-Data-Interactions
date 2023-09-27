@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.types;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
 
 /**

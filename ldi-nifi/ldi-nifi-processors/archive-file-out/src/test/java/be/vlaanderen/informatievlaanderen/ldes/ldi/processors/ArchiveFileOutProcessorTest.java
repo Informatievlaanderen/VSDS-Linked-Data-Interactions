@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -24,7 +23,7 @@ class ArchiveFileOutProcessorTest {
 
 	private TestRunner testRunner;
 
-	final String archiveDir = FilenameUtils.separatorsToSystem("target/archive");
+	final String archiveDir = "target/archive";
 
 	@BeforeEach
 	void init() throws IOException {
@@ -47,7 +46,7 @@ class ArchiveFileOutProcessorTest {
 		assertTrue(testRunner.getFlowFilesForRelationship(FAILURE).isEmpty());
 
 		Model resultModel = RDFParser.source(archiveDir
-				+ FilenameUtils.separatorsToSystem("/2022/05/20/2022-05-20-09-58-15-867000000.ttl")).toModel();
+				+ "/2022/05/20/2022-05-20-09-58-15-867000000.ttl").toModel();
 		assertTrue(inputModel.isIsomorphicWith(resultModel));
 	}
 
