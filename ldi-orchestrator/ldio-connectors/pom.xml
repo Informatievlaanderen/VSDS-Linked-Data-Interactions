@@ -12,6 +12,8 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>ldio-request-executor</module>
+
         <module>ldio-http-in</module>
         <module>ldio-http-in-poller</module>
         <module>ldio-ldes-client</module>

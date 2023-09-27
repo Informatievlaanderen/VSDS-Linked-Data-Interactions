@@ -56,13 +56,13 @@ public class FileOutIntegrationTestSteps {
 
 	@Then("The model is written to {string}")
 	public void theModelIsWrittenTo(String expectedFilePath) {
-		Model actualModel = RDFParser.source(FilenameUtils.separatorsToSystem(expectedFilePath)).toModel();
+		Model actualModel = RDFParser.source(expectedFilePath).toModel();
 		assertTrue(model.isIsomorphicWith(actualModel));
 	}
 
 	@Then("The other model is written to {string}")
 	public void theOtherModelIsWrittenTo(String expectedFilePath) {
-		Model actualModel = RDFParser.source(FilenameUtils.separatorsToSystem(expectedFilePath)).toModel();
+		Model actualModel = RDFParser.source(expectedFilePath).toModel();
 		assertTrue(otherModel.isIsomorphicWith(actualModel));
 	}
 }

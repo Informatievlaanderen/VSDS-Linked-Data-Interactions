@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class HttpInputPoller extends LdiInput {
 
@@ -32,10 +30,9 @@ public class HttpInputPoller extends LdiInput {
 	private static final String CONTENT_TYPE = "Content-Type";
 
 	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
-			boolean continueOnFail) {
+			boolean continueOnFail, RequestExecutor requestExecutor) {
 		super(executor, adapter);
-		RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
-		this.requestExecutor = requestExecutorFactory.createNoAuthExecutor();
+		this.requestExecutor = requestExecutor;
 		this.requests = endpoints.stream().map(endpoint -> new Request(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();

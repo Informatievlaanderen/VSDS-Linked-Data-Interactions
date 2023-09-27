@@ -5,7 +5,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class PropertyPathExtractor implements PropertyExtractor {

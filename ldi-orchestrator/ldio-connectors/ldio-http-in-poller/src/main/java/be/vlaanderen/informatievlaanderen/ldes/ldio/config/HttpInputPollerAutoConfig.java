@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,8 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPolle
 
 @Configuration
 public class HttpInputPollerAutoConfig {
+
+	private static final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller")
 	public HttpInputPollerConfigurator httpInputPollerConfigurator() {
@@ -40,7 +43,8 @@ public class HttpInputPollerAutoConfig {
 						+ " cannot have following value: " + pollingInterval);
 			}
 
-			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoints, continueOnFail);
+			var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
+			var httpInputPoller = new HttpInputPoller(executor, adapter, endpoints, continueOnFail, requestExecutor);
 			httpInputPoller.schedulePoller(seconds);
 
 			return httpInputPoller;
