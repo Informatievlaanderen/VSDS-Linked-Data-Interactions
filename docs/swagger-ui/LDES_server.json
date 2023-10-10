@@ -1,0 +1,439 @@
+openapi: 3.0.3
+info:
+  title: LDES Server API
+  version: 1.0.0
+tags:
+  - name: admin
+    description: For the admin of the LDES server
+  - name: ingest
+    description: Ingesting LDES members to the LDES server
+  - name: feed
+    description: Endpoint to replicate/sync with an LDES
+paths:
+  /admin/api/v1/eventStreams:
+    get:
+      tags:
+        - admin
+      summary: List existing Linked Data Event Streams
+      operationId: getEventStreams
+      responses:
+        '200':
+          description: Get a list of all Linked Data Event Streams
+          content:
+            text/turtle:
+              schema:
+                $ref: '#/components/schemas/EventStream'
+              examples:
+                text/turtle:
+                  value: |
+                    # base URI will be set by the LDES server
+                  
+                    </{collectionName}> a ldes:EventStream ;
+                      ldes:versionOfPath ... ;
+                      ldes:timestampPath ... ;
+                      ldes:shape </{collection_name}/shape> ;
+                      ldes:view ... ;
+                      
+                    </{collectionName}> a ldes:EventStream ;
+                      ldes:versionOfPath ... ;
+                      ldes:timestampPath ... ;
+                      ldes:shape </{collectionName}/shape> ;
+                      ldes:view ... ;
+                    ...   
+    put:
+      tags:
+        - admin
+      summary: Create or update an Linked Data Event Stream
+      operationId: updateEventStream
+      requestBody:
+        description: Create a new collection or update an existing collection. 
+        content:
+          text/turtle:
+            schema:
+              $ref: '#/components/schemas/EventStream'
+            examples:
+              text/turtle:
+                value: |
+                  # the base URI will be set by the LDES server
+                  
+                  </{collectionName}> a ldes:EventStream ;
+                     ldes:versionOfPath ... ;
+                     ldes:timestampPath ... ;
+                     ldes:shape [] .          # Shape can be empty or provided inline
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+
+  /admin/api/v1/eventStreams/{collectionName}:
+    get:
+      tags:
+        - admin
+      summary: Get the metadata of a Linked Data Event Stream
+      operationId: getEventStream
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+          description: Name of the collection (Linked Data Event Stream)
+      responses:
+        '200':
+          description: Returns the metadata of a collection
+          content:
+            text/turtle:
+              schema:
+                $ref: '#/components/schemas/EventStream'
+              examples:
+                text/turtle:
+                  value: |
+                    # the base URI will be set by the LDES server
+                    
+                    </{collectionName}> a ldes:EventStream ;
+                     ldes:versionOfPath ... ;
+                     ldes:timestampPath ... ;
+                     ldes:shape [] .          # Shape can be empty or provided inline
+        '404':
+          description: Linked Data Event Stream not found
+    delete:
+      tags:
+        - admin
+      summary: Delete a Linked Data Event Stream
+      operationId: deleteEventStream
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+          description: Name of the collection (Linked Data Event Stream)
+      responses:
+        '400':
+          description: Invalid collection name
+  /admin/api/v1/eventStreams/{collectionName}/shape:
+    put:
+      tags:
+        - admin
+      summary: Update the SHACL shape of a collection
+      operationId: updateEventStreamShape
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+          description: Name of the collection (Linked Data Event Stream)
+      requestBody:
+        description: Create a new collection or update an existing collection. 
+        content:
+          text/turtle:
+            schema:
+              $ref: '#/components/schemas/EventStream'
+            examples:
+              text/turtle:
+                value: |
+                  <> a sh:NodeShape ;
+                  ...
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+    get:
+      tags:
+        - admin
+      summary: Get the SHACL shape of a collection
+      operationId: getEventStreamShape
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+          description: Name of the collection (Linked Data Event Stream)
+      responses:
+        '200':
+          description: Returns the shape of a collection
+          content:
+            text/turtle:
+              schema:
+                $ref: '#/components/schemas/EventStream'
+              examples:
+                text/turtle:
+                  value: |
+                    <> a sh:NodeShape ;
+                    ...
+        '404':
+          description: Linked Data Event Stream not found
+      
+  /admin/api/v1/eventStreams/{collectionName}/views:
+    get:
+      tags:
+        - admin
+      summary: Get all the existing views of a collections
+      operationId: getEventStreamViews
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+          description: Name of the collection (Linked Data Event Stream)
+      responses:
+        '200':
+          description: Returns the views of a collection
+          content:
+            text/turtle:
+              schema:
+                $ref: '#/components/schemas/EventStream'
+              examples:
+                text/turtle:
+                  value: |
+                    # base URI will be set by the LDES server
+                    
+                    </{collectionName}> tree:view </view1> .
+                    
+                    </view1> tree:viewDescription [
+                        ldes:retentionPolicy ... ;
+                        tree:fragmentationStrategy ([
+                            a tree:Fragmentation ;
+                            tree: pageSize ... ;
+                            tree:property (propertyPath) .
+                        ]) .
+                    ] .
+        '404':
+          description: Linked Data Event Stream not found
+    put:
+      tags:
+        - admin
+      summary: Create a new view on top of a collection
+      operationId: createEventStreamView
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+          description: Name of the collection (Linked Data Event Stream)
+      requestBody:
+        description: Create a new view on top of a collection. 
+        content:
+          text/turtle:
+            schema:
+              $ref: '#/components/schemas/EventStream'
+            examples:
+              text/turtle:
+                value: |
+                  # base URI will be set by the LDES server
+                  
+                  </{viewName}> tree:viewDescription [
+                      ldes:retentionPolicy ... ;
+                      tree:fragmentationStrategy ([
+                          a tree:Fragmentation ;
+                          tree: pageSize ... ;
+                          tree:property (propertyPath) .
+                      ]) .
+                  ] .
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+  /admin/api/v1/eventStreams/{collectionName}/views/{viewName}:
+    get:
+      tags:
+        - admin
+      summary: Get the metadata of the view of the collection
+      operationId: getEventStreamView
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: viewName
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Returns the metadata of a view of the collection
+          content:
+            text/turtle:
+              schema:
+                $ref: '#/components/schemas/EventStream'
+              examples:
+                text/turtle:
+                  value: |
+                    # base URI will be set by the LDES server
+                    
+                    </{viewName}> tree:viewDescription [
+                        ldes:retentionPolicy ... ;
+                        tree:fragmentationStrategy ([
+                            a tree:Fragmentation ;
+                            tree: pageSize ... ;
+                            tree:property (propertyPath) .
+                        ]) .
+                    ] .
+        '404':
+          description: Collection or view not found
+    delete:
+      tags:
+        - admin
+      summary: Delete the view of a collection
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: viewName
+          schema:
+            type: string
+          required: true
+      responses:
+        '400':
+          description: Invalid collection or view name
+  /admin/api/v1/fragmentationStrategies:
+    get:
+      tags:
+        - admin
+      summary: Get the fragmentation strategies (and their declarations) supported by the LDES server
+      responses:
+        '200':
+          description: The list of supported fragmentation stratgies (and their declarations)
+  /admin/api/v1/fragmentationStrategies/{strategyName}:
+    get:
+      tags:
+        - admin
+      summary: Get the declaration of a fragmentation strategy
+      parameters:
+        - in: path
+          name: strategyName
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: The list of supported fragmentation stratgies (and their declarations)
+  /ingest/api/v1/eventStreams/{collectionName}:
+    post:
+      tags:
+        - ingest
+      summary: Create a new LDES members
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+      responses:
+        '400':
+          description: Invalid collection name
+        '4XX':
+          description: LDES members does not validate against the SHACL shape of the collection
+    delete:
+      tags:
+        - ingest
+      summary: Delete an LDES member in a collection
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: objectId
+          schema:
+            type: string
+          description: the HTTP URI of the entity
+          required: true
+      responses:
+        '200':
+          description: Successful operation
+        
+  /feed:
+    get:
+      tags:
+        - feed
+      summary: Returns the DCAT of the LDES server
+      responses:
+        '200':
+          description: Returns the data catalog of the server
+  /feed/{collectionName}:
+    get:
+      tags:
+        - feed
+      summary: Returns the metadata of a collection
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Returns the metadata of the collection
+          content:
+            text/turtle:
+              schema:
+                $ref: '#/components/schemas/EventStream'
+              examples:
+                text/turtle:
+                  value: |
+                    # the base URI will be set by the LDES server
+                    
+                    </{collectionName}> a ldes:EventStream ;
+                     ldes:versionOfPath ... ;
+                     ldes:timestampPath ... ;
+                     ldes:shape [] ;          # Shape can be empty or provided inline
+                     tree:view ... .
+        '404':
+          description: Collection not found
+  /feed/{collectionName}/{viewName}:
+    get:
+      tags:
+        - feed
+      summary: Get metadata about the view and the link to the root fragment
+      parameters:
+        - in: path
+          name: collectionName
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: viewName
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Returns the metadata of the collection
+          content:
+            text/turtle:
+              schema:
+                $ref: '#/components/schemas/EventStream'
+              examples:
+                text/turtle:
+                  value: |
+                    # the base URI will be set by the LDES server
+                    
+                    </{viewName}> a tree:Node ;
+                        tree:relation [
+                          a tree:Relation ;
+                          tree:node <...> .
+                        ] ;
+                        tree:viewDescription [
+                          ldes:retentionPolicy ... ;
+                          tree:fragmentationStrategy ([
+                            a tree:Fragmentation ;
+                            ... .
+                          ]) .
+                        ] .
+        '404':
+          description: Collection or view not found
+components:
+  schemas:
+    EventStream:
+      type: object

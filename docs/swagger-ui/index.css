@@ -1,0 +1,122 @@
+html {
+    box-sizing: border-box;
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    background: #fafafa;
+}
+
+.swagger-ui .topbar {
+    background-color: white;
+    padding: 10px 0;
+}
+
+.swagger-ui .info .title small pre {
+    color: gray;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+element.style {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    background: lightgray;
+    color: white;
+}
+
+.swagger-ui .info .title small pre {
+    color: white;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+.markdown-body .highlight pre,
+.markdown-body pre {
+    font-size: 12px;
+    border: transparent;
+    background-color: transparent;
+}
+*/
+
+.swagger-ui .opblock .opblock-summary-operation-id,
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-path__deprecated,
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-external-docs-wrapper p,
+.swagger-ui .opblock-title_normal p,
+.swagger-ui .model-box-control,
+.swagger-ui .models-control,
+.swagger-ui .opblock-summary-control,
+.swagger-ui .opblock .opblock-summary-description {
+    font-family: "FlandersArtSans-Regular";
+    color: #666666;
+}
+
+.swagger-ui .info .title {
+    color: #666666;
+    font-family: "FlandersArtSans-SerifThin";
+    font-size: 36px;
+    margin: 0;
+}
+
+.swagger-ui .opblock-tag {
+    color: #666666;
+    font-family: "FlandersArtSans-SerifThin";
+    font-size: 24px;
+    margin: 0 0 5px;
+}
+
+.markdown-body pre>code {
+    color: #666666;
+}
+
+.swagger-ui .markdown p,
+.swagger-ui .markdown pre,
+.swagger-ui .renderedMarkdown p,
+.swagger-ui .renderedMarkdown pre,
+.swagger-ui .opblock .opblock-section-header h4,
+.swagger-ui .opblock .opblock-section-header h1,
+.swagger-ui .opblock .opblock-section-header h2,
+.swagger-ui .opblock .opblock-section-header h3,
+.swagger-ui .btn
+
+
+{
+
+        font-family: "FlandersArtSans-Regular";
+        color: #666666;
+    }
+
+.swagger-ui .topbar,
+.swagger-ui .url{
+visibility: hidden !important;
+display: none;
+}
+
+.swagger-ui .opblock .opblock-summary-description{
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.swagger-ui a.nostyle,
+.swagger-ui a.nostyle:visited{
+font-weight: bold;
+}
+
+.swagger-ui .scheme-container {
+    visibility: hidden !important;
+    display: none;
+}
