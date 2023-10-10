@@ -19,9 +19,6 @@ aux_links:
 ga_tracking: G-9F4LJXRX6T
 ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true/nil by default)
 
-
-
-
 # Define Jekyll collections
 collections:
   core:
