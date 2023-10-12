@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -9,6 +10,8 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RDFWriter;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.jena.rdf.model.ResourceFactory.createStatement;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SparqlConstructTransformerTest {
@@ -31,9 +35,9 @@ class SparqlConstructTransformerTest {
 			WHERE { ?s ?p ?o }
 			""";
 
-	private final static String geoConstructQuery = """
-						prefix tree: <https://w3id.org/tree#>
-						prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+	private final static String geoConstructFirstCoordinateQuery = """
+			prefix tree: <https://w3id.org/tree#>
+			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
 						
 			CONSTRUCT  {
 				?s geosparql:asWKT ?value
@@ -45,8 +49,29 @@ class SparqlConstructTransformerTest {
 						
 			""";
 
+	private final static String geoConstructLastCoordinateQuery = """
+			prefix tree: <https://w3id.org/tree#>
+			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+						
+			CONSTRUCT  {
+				?s geosparql:asWKT ?value
+			}
+			WHERE {
+				?s geosparql:asWKT ?wkt
+				BIND (tree:lastCoordinate(?wkt, 0) as ?value)
+			}
+						
+			""";
+
+	private final Model createGeoModel(String wkt) {
+		Statement geoStatement = initModel.createStatement(
+				initModel.createResource("http://data-from-source/"),
+				initModel.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				initModel.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+		return ModelFactory.createDefaultModel().add(geoStatement);
+	}
+
 	private final Model geoModel = RDFParser.fromString("""
-						<subject> <description> "A Linestring" .
 			<subject> <http://www.opengis.net/ont/geosparql#asWKT> "LINESTRING (3.5499566360323342 50.8944627132135, 3.928202753880612 50.677574117590524, 3.637920849485539 50.45967858693999)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
 			""").lang(Lang.NQUADS).toModel();
 
@@ -144,14 +169,34 @@ class SparqlConstructTransformerTest {
 				"traffic/measure10.ttl"), result);
 	}
 
-	@Test
-	void geo_test() {
+	@ParameterizedTest
+	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
+	void geoFunctions_firstCoordinate(String id, String midpoint, String line, String start, String end) {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
-				QueryFactory.create(geoConstructQuery), false);
+				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
 
-		List<Model> models = sparqlConstructTransformer.apply(geoModel2);
+		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
 
-		assertEquals(1, models.get(0).listStatements().toList().size());
+		Statement expected = createStatement(initModel.createResource("http://data-from-source/"),
+				initModel.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				initModel.createTypedLiteral(start, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+
+		assertTrue(result.get(0).contains(expected));
+	}
+
+	@ParameterizedTest
+	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
+	void geoFunctions_lastCoordinate(String id, String midpoint, String line, String start, String end) {
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(geoConstructLastCoordinateQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
+
+		Statement expected = createStatement(initModel.createResource("http://data-from-source/"),
+				initModel.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				initModel.createTypedLiteral(end, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+
+		assertTrue(result.get(0).contains(expected));
 	}
 
 	private void assertModels(List<String> expectedModelPaths, Collection<Model> result) {
