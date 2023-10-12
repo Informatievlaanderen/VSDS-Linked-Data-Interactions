@@ -20,7 +20,8 @@ public class LdioJsonToLdAdapterAutoConfig {
 		public LdiComponent configure(ComponentProperties config) {
 			String coreContext = config.getProperty("core-context");
 			String ldContext = config.getOptionalProperty("ld-context").orElse(null);
-			return new JsonToLdAdapter(coreContext, ldContext);
+			boolean forceContentType = config.getOptionalBoolean("force-content-type").orElse(false);
+			return new JsonToLdAdapter(coreContext, ldContext, forceContentType);
 		}
 	}
 }

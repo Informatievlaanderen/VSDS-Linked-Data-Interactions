@@ -31,7 +31,8 @@ class JsonToLdAdapterTest {
 
 	@BeforeEach
 	void setUp() {
-		translator = new JsonToLdAdapter(CORE_CONTEXT, LOCAL_CONTEXT);
+		// TODO TVB: 12/10/23 imple me
+		translator = new JsonToLdAdapter(CORE_CONTEXT, LOCAL_CONTEXT, false);
 	}
 
 	@Test

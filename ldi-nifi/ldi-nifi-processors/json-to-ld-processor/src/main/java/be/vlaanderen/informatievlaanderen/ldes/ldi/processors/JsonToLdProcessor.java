@@ -48,7 +48,8 @@ public class JsonToLdProcessor extends AbstractProcessor {
 		coreContext = JsonToLdProcessorProperties.getCoreContext(context);
 		ldContext = JsonToLdProcessorProperties.getLdContext(context);
 
-		adapter = new JsonToLdAdapter(coreContext, ldContext);
+		// TODO TVB: 12/10/23 impl me
+		adapter = new JsonToLdAdapter(coreContext, ldContext, false);
 	}
 
 	@Override
