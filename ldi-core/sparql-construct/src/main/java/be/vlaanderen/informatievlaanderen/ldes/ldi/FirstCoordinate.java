@@ -12,11 +12,6 @@ public class FirstCoordinate extends FunctionBase2 {
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue index) {
-		/*
-		if (index == null) {
-			index = NodeValue.makeInteger(0);
-		}
-		 */
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
 		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
 
