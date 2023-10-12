@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.ratelimiter.RateLimiterConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
@@ -131,4 +132,11 @@ public class RequestExecutorSteps {
 				.willReturn(aResponse().withStatus(200)));
 	}
 
+	// TODO TVB: 12/10/23 finish
+    @Given("I have a requestExecutor which foo")
+    public void iHaveARequestExecutorWhichFoo() {
+//		Retry retry = RetryConfig.of(retryCount, List.of()).getRetry();
+//		new RateLimiterConfig(1)
+//		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry).get();
+    }
 }

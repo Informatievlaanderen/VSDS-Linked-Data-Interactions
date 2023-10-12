@@ -79,3 +79,6 @@ Feature: RequestExecutor
     And I execute the request
     Then I will have called "/418-response" 3 times
     And I obtain a response with status code 418
+
+  Scenario: Obtaining the response with a rateLimiter.
+    Given I have a requestExecutor which foo
