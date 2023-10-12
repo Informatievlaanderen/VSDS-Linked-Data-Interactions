@@ -24,18 +24,36 @@ class SparqlConstructTransformerTest {
 
 	private final static Model initModel = ModelFactory.createDefaultModel();
 
-	private final static String constructQuery = """
-   			prefix tree: <https://w3id.org/tree#>
-   			
+	private final static String constructQuery = """	
 			CONSTRUCT {
-			  <http://transformed-quad/> <http://test/> ?value .
+			  <http://transformed-quad/> <http://test/> "Transformed data"
 			}
-			WHERE { 
-				?s ?p ?o 
-				BIND (tree:firstCoordinate(5, 8) as ?value)
-			}
-			
+			WHERE { ?s ?p ?o }
 			""";
+
+	private final static String geoConstructQuery = """
+						prefix tree: <https://w3id.org/tree#>
+						prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+						
+			CONSTRUCT  {
+				?s geosparql:asWKT ?value
+			}
+			WHERE {
+				?s geosparql:asWKT ?wkt
+				BIND (tree:firstCoordinate(?wkt, 0) as ?value)
+			}
+						
+			""";
+
+	private final Model geoModel = RDFParser.fromString("""
+						<subject> <description> "A Linestring" .
+			<subject> <http://www.opengis.net/ont/geosparql#asWKT> "LINESTRING (3.5499566360323342 50.8944627132135, 3.928202753880612 50.677574117590524, 3.637920849485539 50.45967858693999)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
+			""").lang(Lang.NQUADS).toModel();
+
+	private final Model geoModel2 = RDFParser.fromString("""
+						<subject> <description> "A Linestring" .
+			<subject> <http://www.opengis.net/ont/geosparql#asWKT> "MULTILINESTRING ((3.5499566360323342 50.8944627132135, 3.928202753880612 50.677574117590524), (3.928202753880612 50.677574117590524, 3.637920849485539 50.45967858693999)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
+			""").lang(Lang.NQUADS).toModel();
 
 	private final Statement originalData = initModel.createStatement(
 			initModel.createResource("http://data-from-source/"),
@@ -124,6 +142,16 @@ class SparqlConstructTransformerTest {
 				"traffic/measure8.ttl",
 				"traffic/measure9.ttl",
 				"traffic/measure10.ttl"), result);
+	}
+
+	@Test
+	void geo_test() {
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(geoConstructQuery), false);
+
+		List<Model> models = sparqlConstructTransformer.apply(geoModel2);
+
+		assertEquals(1, models.get(0).listStatements().toList().size());
 	}
 
 	private void assertModels(List<String> expectedModelPaths, Collection<Model> result) {
