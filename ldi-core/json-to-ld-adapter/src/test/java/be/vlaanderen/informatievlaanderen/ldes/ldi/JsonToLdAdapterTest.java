@@ -31,7 +31,6 @@ class JsonToLdAdapterTest {
 
 	@BeforeEach
 	void setUp() {
-		// TODO TVB: 12/10/23 imple me
 		translator = new JsonToLdAdapter(CORE_CONTEXT, LOCAL_CONTEXT, false);
 	}
 
@@ -41,6 +40,17 @@ class JsonToLdAdapterTest {
 		Model expected = readModelFromFile("src/test/resources/expected-ld.json");
 
 		Model actual = translator.apply(new LdiAdapter.Content(data, MIMETYPE)).toList().get(0);
+
+		assertTrue(expected.isIsomorphicWith(actual));
+	}
+
+	@Test
+	void noExceptionIsThrown_whenIncorrectMimeWithForceTrue() throws IOException {
+		String data = Files.readString(Path.of("src/test/resources/example.json"));
+		Model expected = readModelFromFile("src/test/resources/expected-ld.json");
+
+		translator = new JsonToLdAdapter(CORE_CONTEXT, LOCAL_CONTEXT, true);
+		Model actual = translator.apply(new LdiAdapter.Content(data, "application/tom")).toList().get(0);
 
 		assertTrue(expected.isIsomorphicWith(actual));
 	}
