@@ -1,10 +1,13 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.query.*;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.riot.RDFWriter;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -22,10 +25,16 @@ class SparqlConstructTransformerTest {
 	private final static Model initModel = ModelFactory.createDefaultModel();
 
 	private final static String constructQuery = """
+   			prefix tree: <https://w3id.org/tree#>
+   			
 			CONSTRUCT {
-			  <http://transformed-quad/> <http://test/> "Transformed data"
+			  <http://transformed-quad/> <http://test/> ?value .
 			}
-			WHERE { ?s ?p ?o }
+			WHERE { 
+				?s ?p ?o 
+				BIND (tree:firstCoordinate(5, 8) as ?value)
+			}
+			
 			""";
 
 	private final Statement originalData = initModel.createStatement(
