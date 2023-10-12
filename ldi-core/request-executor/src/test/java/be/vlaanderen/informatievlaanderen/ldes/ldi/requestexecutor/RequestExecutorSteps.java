@@ -2,6 +2,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
@@ -12,6 +14,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.github.resilience4j.retry.Retry;
 import org.apache.http.HttpHeaders;
 
 import java.util.ArrayList;
@@ -99,12 +102,14 @@ public class RequestExecutorSteps {
 
 	@Given("I have a requestExecutor which does {int} retries")
 	public void iHaveARequestExecutorWhichDoesRetries(int retryCount) {
-		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount, List.of());
+		Retry retry = RetryConfig.of(retryCount, List.of()).getRetry();
+		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry).get();
 	}
 
 	@Given("I have a requestExecutor which does {int} retries with custom http status code {int}")
 	public void iHaveARequestExecutorWhichDoesRetries(int retryCount, int httpStatus) {
-		requestExecutor = factory.createRetryExecutor(factory.createNoAuthExecutor(), retryCount, List.of(httpStatus));
+		Retry retry = RetryConfig.of(retryCount, List.of(httpStatus)).getRetry();
+		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry).get();
 	}
 
 	@Then("I will have called {string} {int} times")

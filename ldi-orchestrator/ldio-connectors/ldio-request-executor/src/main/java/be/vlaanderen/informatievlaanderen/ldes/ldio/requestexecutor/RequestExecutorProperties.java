@@ -9,6 +9,8 @@ public class RequestExecutorProperties {
 	public static final String MAX_RETRIES = "retries.max";
 	public static final String STATUSES_TO_RETRY = "retries.statuses-to-retry";
 
+	public static final String RATE_LIMIT_ENABLED = "rate-limit.enabled";
+
 	// authorization properties
 	public static final String AUTH_TYPE = "auth.type";
 	public static final String API_KEY = "auth.api-key";
