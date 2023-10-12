@@ -35,8 +35,8 @@ public class RequestExecutorDecorator {
             return request ->
                     Decorators
                             .ofSupplier(() -> requestExecutor.execute(request))
-                            .withRetry(retry)
                             .withRateLimiter(rateLimiter)
+                            .withRetry(retry)
                             .get();
         }
 

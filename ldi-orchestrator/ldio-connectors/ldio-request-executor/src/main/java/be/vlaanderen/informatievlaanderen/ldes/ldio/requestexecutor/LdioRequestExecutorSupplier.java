@@ -3,8 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.ratelimiter.RateLimiterConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.github.resilience4j.ratelimiter.RateLimiter;
@@ -46,7 +46,8 @@ public class LdioRequestExecutorSupplier {
 	private RateLimiter getRateLimiter(ComponentProperties props) {
 		boolean rateLimitEnabled = props.getOptionalBoolean(RATE_LIMIT_ENABLED).orElse(Boolean.TRUE);
 		if (rateLimitEnabled) {
-			return RateLimiterConfig.of().getRateLimiter();
+			int maxRequestsPerMinute = props.getOptionalInteger(MAX_REQUESTS_PER_MINUTE).orElse(500);
+			return RateLimiterConfig.limitPerMinute(maxRequestsPerMinute).getRateLimiter();
 		} else {
 			return null;
 		}
