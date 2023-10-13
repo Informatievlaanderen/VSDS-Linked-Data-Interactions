@@ -5,7 +5,6 @@ import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 
 import java.time.Duration;
 
-// TODO TVB: 12/10/23 test
 public class RateLimiterConfig {
 
 	private final int limitForPeriod;
