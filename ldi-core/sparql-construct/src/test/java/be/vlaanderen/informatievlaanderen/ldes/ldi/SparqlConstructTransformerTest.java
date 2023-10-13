@@ -173,7 +173,7 @@ class SparqlConstructTransformerTest {
 	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
 	void geoFunctions_firstCoordinate(String id, String midpoint, String line, String start, String end) {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
-				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
+				QueryFactory.create(geoConstructFirstCoordinateQuery), false, new FirstCoordinate());
 
 		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
 
@@ -188,7 +188,7 @@ class SparqlConstructTransformerTest {
 	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
 	void geoFunctions_lastCoordinate(String id, String midpoint, String line, String start, String end) {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
-				QueryFactory.create(geoConstructLastCoordinateQuery), false);
+				QueryFactory.create(geoConstructLastCoordinateQuery), false, new LastCoordinate());
 
 		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
 

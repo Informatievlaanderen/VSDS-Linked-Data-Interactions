@@ -18,7 +18,12 @@ public class SparqlConstructTransformer implements LdiTransformer {
 	public SparqlConstructTransformer(Query query, boolean includeOriginal) {
 		this.query = query;
 		this.includeOriginal = includeOriginal;
-		FunctionRegistry.get().put(FirstCoordinate.name, FirstCoordinate.class);
+	}
+
+	public SparqlConstructTransformer(Query query, boolean includeOriginal, FunctionBase2WithName functionClass) {
+		this.query = query;
+		this.includeOriginal = includeOriginal;
+		FunctionRegistry.get().put(functionClass.getName(), functionClass.getClass());
 	}
 
 	@Override
