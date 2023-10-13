@@ -5,10 +5,9 @@ import org.apache.jena.geosparql.implementation.GeometryWrapperFactory;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.function.FunctionBase2;
 
-public class FirstCoordinate extends FunctionBase2 {
-	public static final String name = "https://w3id.org/tree#firstCoordinate";
+public class FirstCoordinate extends FunctionBase2WithName {
+	public final String name = "https://w3id.org/tree#firstCoordinate";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue index) {
@@ -24,5 +23,10 @@ public class FirstCoordinate extends FunctionBase2 {
 				.asNode();
 
 		return NodeValue.makeNode(firstCoordinate);
+	}
+
+	@Override
+	String getName() {
+		return name;
 	}
 }
