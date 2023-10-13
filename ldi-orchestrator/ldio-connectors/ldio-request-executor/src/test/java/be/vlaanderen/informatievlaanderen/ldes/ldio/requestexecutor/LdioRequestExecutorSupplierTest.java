@@ -1,23 +1,27 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.github.resilience4j.ratelimiter.RateLimiter;
+import io.github.resilience4j.retry.Retry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.RequestExecutorProperties.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LdioRequestExecutorSupplierTest {
@@ -31,15 +35,19 @@ class LdioRequestExecutorSupplierTest {
 	@Test
 	void shouldReturnRetryExecutorWithDefaults_whenNoProperties() {
 		ComponentProperties properties = new ComponentProperties(Map.of());
-		RequestExecutor requestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createNoAuthExecutor()).thenReturn(requestExecutor);
+		RequestExecutorDecorator requestExecutorDecorator = mock(RequestExecutorDecorator.class);
+		when(requestExecutorDecorator.with((Retry) any())).thenReturn(requestExecutorDecorator);
+		when(requestExecutorDecorator.with((RateLimiter) any())).thenReturn(requestExecutorDecorator);
 		RequestExecutor retryRequestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createRetryExecutor(requestExecutor, 5, List.of()))
-				.thenReturn(retryRequestExecutor);
+		when(requestExecutorDecorator.get()).thenReturn(retryRequestExecutor);
 
-		RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
-
-		assertEquals(retryRequestExecutor, result);
+		try (MockedStatic<RequestExecutorDecorator> utilities = Mockito.mockStatic(RequestExecutorDecorator.class)) {
+			utilities.when(() -> RequestExecutorDecorator.decorate(any())).thenReturn(requestExecutorDecorator);
+			RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
+			assertEquals(result, retryRequestExecutor);
+			verify(requestExecutorDecorator).with((Retry) any());
+			verify(requestExecutorDecorator).with((RateLimiter) null);
+		}
 	}
 
 	@Test
@@ -53,14 +61,39 @@ class LdioRequestExecutorSupplierTest {
 				API_KEY, "key"));
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
 		when(requestExecutorFactory.createApiKeyExecutor("key-header", "key")).thenReturn(requestExecutor);
+		RequestExecutorDecorator requestExecutorDecorator = mock(RequestExecutorDecorator.class);
+		when(requestExecutorDecorator.with((Retry) any())).thenReturn(requestExecutorDecorator);
+		when(requestExecutorDecorator.with((RateLimiter) any())).thenReturn(requestExecutorDecorator);
 		RequestExecutor retryRequestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createRetryExecutor(requestExecutor, Integer.parseInt(maxRetries),
-				List.of(400, 404)))
-				.thenReturn(retryRequestExecutor);
+		when(requestExecutorDecorator.get()).thenReturn(retryRequestExecutor);
 
-		RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
+		try (MockedStatic<RequestExecutorDecorator> utilities = Mockito.mockStatic(RequestExecutorDecorator.class)) {
+			utilities.when(() -> RequestExecutorDecorator.decorate(any())).thenReturn(requestExecutorDecorator);
+			RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
+			assertEquals(result, retryRequestExecutor);
+			verify(requestExecutorDecorator).with((Retry) any());
+			verify(requestExecutorDecorator).with((RateLimiter) null);
+		}
+	}
 
-		assertEquals(retryRequestExecutor, result);
+	@Test
+	void shouldReturnRateLimitExecutorWithConfiguredProperties_whenPropertiesConfigured() {
+		ComponentProperties properties = new ComponentProperties(Map.of(
+				RATE_LIMIT_ENABLED, "true",
+				MAX_REQUESTS_PER_MINUTE, "100"));
+		RequestExecutorDecorator requestExecutorDecorator = mock(RequestExecutorDecorator.class);
+		when(requestExecutorDecorator.with((Retry) any())).thenReturn(requestExecutorDecorator);
+		when(requestExecutorDecorator.with((RateLimiter) any())).thenReturn(requestExecutorDecorator);
+		RequestExecutor retryRequestExecutor = mock(RequestExecutor.class);
+		when(requestExecutorDecorator.get()).thenReturn(retryRequestExecutor);
+
+		try (MockedStatic<RequestExecutorDecorator> utilities = Mockito.mockStatic(RequestExecutorDecorator.class)) {
+			utilities.when(() -> RequestExecutorDecorator.decorate(any())).thenReturn(requestExecutorDecorator);
+			RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
+			assertEquals(result, retryRequestExecutor);
+			verify(requestExecutorDecorator).with((Retry) any());
+			verify(requestExecutorDecorator).with((RateLimiter) any());
+		}
 	}
 
 	@Test
