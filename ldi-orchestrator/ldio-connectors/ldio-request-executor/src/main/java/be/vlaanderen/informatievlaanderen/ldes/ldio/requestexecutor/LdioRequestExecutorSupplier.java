@@ -44,7 +44,7 @@ public class LdioRequestExecutorSupplier {
 	}
 
 	private RateLimiter getRateLimiter(ComponentProperties props) {
-		boolean rateLimitEnabled = props.getOptionalBoolean(RATE_LIMIT_ENABLED).orElse(Boolean.TRUE);
+		boolean rateLimitEnabled = props.getOptionalBoolean(RATE_LIMIT_ENABLED).orElse(Boolean.FALSE);
 		if (rateLimitEnabled) {
 			int maxRequestsPerMinute = props.getOptionalInteger(MAX_REQUESTS_PER_MINUTE).orElse(500);
 			return RateLimiterConfig.limitPerMinute(maxRequestsPerMinute).getRateLimiter();
