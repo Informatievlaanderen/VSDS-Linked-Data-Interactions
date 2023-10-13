@@ -38,27 +38,26 @@
 // utilities
 @import "lib/@primer/css/utilities";
 
-.container{
+.container {
 
-        background: #fff;
+    background: #fff;
 }
 
-.pb-1{
-    color:#666
+.pb-1 {
+    color: #666
 }
 
-.addons-wrap .status{
-    
+.addons-wrap .status {
+
     background-color: #ccd2d8;
 }
 
-.addons-wrap .addons dd a{
-color:#666
-
+.addons-wrap .addons dd a {
+    color: #666
 }
 
-.addons-wrap .status .branch .name{
-    color:#05c
+.addons-wrap .status .branch .name {
+    color: #05c
 }
 
 .side-bar {
@@ -143,13 +142,11 @@ body {
     overflow-x: hidden;
 }
 
-body{
+body {
     background: white !important;
 }
 
-.site-title:not(.active):hover{
-    
-}
+.site-title:not(.active):hover {}
 
 
 /* Add a black background color to the top navigation */
@@ -179,7 +176,7 @@ body{
     overflow: hidden;
 }
 
-.space a{
+.space a {
     float: left;
     color: white;
     text-align: center;
@@ -209,22 +206,23 @@ body{
 }
 
 
-a:link a:visited a:hover a:active{
+a:link a:visited a:hover a:active {
     color: #05c;
 }
 
 .side-bar {
-    height:90%;
+    height: 90%;
 
 }
-.main-content{
-        margin-top: 100px;
+
+.main-content {
+    margin-top: 100px;
 }
 
-.main-header{
-        margin-top:23px;
-        position: fixed;
-        width: 100%;
-        background: white;
-        z-index: 100;
+.main-header {
+    margin-top: 23px;
+    position: fixed;
+    width: 100%;
+    background: white;
+    z-index: 100;
 }

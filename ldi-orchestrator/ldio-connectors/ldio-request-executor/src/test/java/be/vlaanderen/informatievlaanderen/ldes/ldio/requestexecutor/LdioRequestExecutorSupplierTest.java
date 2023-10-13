@@ -34,9 +34,8 @@ class LdioRequestExecutorSupplierTest {
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
 		when(requestExecutorFactory.createNoAuthExecutor()).thenReturn(requestExecutor);
 		RequestExecutor retryRequestExecutor = mock(RequestExecutor.class);
-		// when(requestExecutorFactory.createRetryExecutor(requestExecutor, 5,
-		// List.of()))
-		// .thenReturn(retryRequestExecutor);
+		when(requestExecutorFactory.createRetryExecutor(requestExecutor, 5, List.of()))
+				.thenReturn(retryRequestExecutor);
 
 		RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
 
@@ -55,10 +54,9 @@ class LdioRequestExecutorSupplierTest {
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
 		when(requestExecutorFactory.createApiKeyExecutor("key-header", "key")).thenReturn(requestExecutor);
 		RequestExecutor retryRequestExecutor = mock(RequestExecutor.class);
-		// when(requestExecutorFactory.createRetryExecutor(requestExecutor,
-		// Integer.parseInt(maxRetries),
-		// List.of(400, 404)))
-		// .thenReturn(retryRequestExecutor);
+		when(requestExecutorFactory.createRetryExecutor(requestExecutor, Integer.parseInt(maxRetries),
+				List.of(400, 404)))
+				.thenReturn(retryRequestExecutor);
 
 		RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
 
