@@ -81,4 +81,15 @@ Feature: RequestExecutor
     And I obtain a response with status code 418
 
   Scenario: Obtaining the response with a rateLimiter.
-    Given I have a requestExecutor which foo
+    Given I have a requestExecutor which limits the requests to 1 per second
+    When I create a Request with the RequestHeaders and url: http://localhost:10101/418-response
+    Then It takes approximately 3000 ms to execute the request 4 times
+
+  Scenario: Obtaining the response with retries and rateLimiter
+    Given I have a requestExecutor which does 3 retries with custom http status code 418 and limits requests
+    When I create a Request with the RequestHeaders and url: http://localhost:10101/418-response
+    And I start timing
+    And I execute the request
+    Then I will have called "/418-response" 3 times
+    And Approximately 2000 ms have passed
+    And I obtain a response with status code 418

@@ -15,23 +15,22 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.retry.Retry;
 import org.apache.http.HttpHeaders;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RequestExecutorSteps {
 
+	private LocalDateTime start;
 	private final RequestExecutorFactory factory = new RequestExecutorFactory();
 	private RequestExecutor requestExecutor;
 	private Response response;
@@ -132,11 +131,45 @@ public class RequestExecutorSteps {
 				.willReturn(aResponse().withStatus(200)));
 	}
 
-	// TODO TVB: 12/10/23 finish
-    @Given("I have a requestExecutor which foo")
-    public void iHaveARequestExecutorWhichFoo() {
-//		Retry retry = RetryConfig.of(retryCount, List.of()).getRetry();
-//		new RateLimiterConfig(1)
-//		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry).get();
-    }
+	@Given("I have a requestExecutor which limits the requests to 1 per second")
+	public void iHaveARequestExecutorWithRateLimiter() {
+		Duration waitTime = Duration.ofSeconds(1);
+		RateLimiter rateLimiter = new RateLimiterConfig(1, waitTime, waitTime).getRateLimiter();
+		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(rateLimiter).get();
+	}
+
+	@Then("It takes approximately {int} ms to execute the request {int} times")
+	public void itTakesSecondsToExecuteTheRequestTimes(int ms, int requestCount) {
+		LocalDateTime start = LocalDateTime.now();
+		for (int i = 0; i < requestCount; i++) {
+			response = requestExecutor.execute(request);
+		}
+		LocalDateTime end = LocalDateTime.now();
+
+		assertTrue(Duration.between(start, end).toMillis() > ms - 250);
+		assertTrue(Duration.between(start, end).toMillis() < ms + 250);
+	}
+
+	@Given("I have a requestExecutor which does {int} retries with custom http status code {int} and limits requests")
+	public void iHaveARequestExecutorWhichDoesRetriesWithCustomHttpStatusCodeAndLimitsRequests(int retryCount,
+			int httpStatus) {
+		Duration waitTime = Duration.ofSeconds(1);
+		RateLimiter rateLimiter = new RateLimiterConfig(1, waitTime, waitTime).getRateLimiter();
+		Retry retry = RetryConfig.of(retryCount, List.of(httpStatus)).getRetry();
+		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry)
+				.with(rateLimiter).get();
+	}
+
+	@And("I start timing")
+	public void iStartTiming() {
+		start = LocalDateTime.now();
+	}
+
+	@And("Approximately {int} ms have passed")
+	public void approximatelyMsHavePassed(int expectedMillisPassed) {
+		LocalDateTime end = LocalDateTime.now();
+		long actualMillisPassed = Duration.between(start, end).toMillis();
+		assertTrue(actualMillisPassed > expectedMillisPassed - 250);
+		assertTrue(actualMillisPassed < expectedMillisPassed + 250);
+	}
 }
