@@ -51,7 +51,12 @@ class ResponseTest {
 						  ].
 				""";
 
-		Model model = RDFParser.fromString(foo).lang(Lang.TURTLE).toModel();
+		String bar = """
+				[] <http://example.com/request> [ <http://example.com/headers> "Content-Type: application/json", "x-api-key: my-secret" ].
+				""";
+
+		Model model = RDFParser.fromString(bar).lang(Lang.TURTLE).toModel();
+		model.listObjectsOfProperty(model.createProperty("http://example.com/headers")).forEach(System.out::println);
 		System.out.println("yay");
 	}
 
