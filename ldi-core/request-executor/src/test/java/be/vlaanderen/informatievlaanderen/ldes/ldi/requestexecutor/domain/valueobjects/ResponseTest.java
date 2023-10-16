@@ -8,9 +8,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.message.BasicHeader;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -38,26 +35,6 @@ class ResponseTest {
 	void test_isOk() {
 		assertFalse(new Response(null, List.of(), HttpStatus.SC_MOVED_TEMPORARILY, null).isOk());
 		assertTrue(new Response(null, List.of(), HttpStatus.SC_OK, null).isOk());
-	}
-
-	public static void main(String[] args) {
-		String foo = """
-						<http://example.com/request> <http://example.com/headers> [
-						      <http://example.com/name> "Content-Type";
-						      <http://example.com/value> "application/json"
-						  ], [
-						      <http://example.com/name> "x-api-key";
-						      <http://example.com/value> "my-secret"
-						  ].
-				""";
-
-		String bar = """
-				[] <http://example.com/request> [ <http://example.com/headers> "Content-Type: application/json", "x-api-key: my-secret" ].
-				""";
-
-		Model model = RDFParser.fromString(bar).lang(Lang.TURTLE).toModel();
-		model.listObjectsOfProperty(model.createProperty("http://example.com/headers")).forEach(System.out::println);
-		System.out.println("yay");
 	}
 
 	@Test
