@@ -1,15 +1,15 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.SaslSslPlainConfigProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.EmptyKafkaKeyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.KafkaKeyExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.KafkaKeyPropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -37,9 +37,16 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 	private KafkaKeyExtractor determineKafkaKeyExtractor(ComponentProperties config) {
 		final String propertyPath = config.getOptionalProperty(KEY_PROPERTY_PATH).orElse(null);
 		if (propertyPath != null) {
-			return new KafkaKeyPropertyPathExtractor(propertyPath);
+			PropertyPathExtractor propertyPathExtractor = PropertyPathExtractor.from(propertyPath);
+
+			return model -> propertyPathExtractor
+					.getProperties(model)
+					.stream()
+					.findFirst()
+					.map(RDFNode::toString)
+					.orElse(null);
 		} else {
-			return new EmptyKafkaKeyExtractor();
+			return model -> null;
 		}
 	}
 
