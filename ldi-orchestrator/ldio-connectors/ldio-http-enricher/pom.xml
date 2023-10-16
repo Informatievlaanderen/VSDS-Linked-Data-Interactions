@@ -9,7 +9,7 @@
         <version>1.8.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ldio-http-requester</artifactId>
+    <artifactId>ldio-http-enricher</artifactId>
 
     <properties>
         <relative-formatter-path>../../..</relative-formatter-path>

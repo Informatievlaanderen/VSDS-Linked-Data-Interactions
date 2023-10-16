@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-public class LdioHttpRequesterProperties {
+public class LdioHttpEnricherProperties {
 
-    private LdioHttpRequesterProperties() {
+    private LdioHttpEnricherProperties() {
     }
 
     public static final String URL_PROPERTY_PATH = "url-property-path";

@@ -5,18 +5,17 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
-import org.apache.http.entity.ContentType;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.Collection;
 import java.util.List;
 
-public class LdioHttpRequester implements LdiTransformer {
+public class LdioHttpEnricher implements LdiTransformer {
 
     private final LdiAdapter adapter;
     private final RequestExecutor requestExecutor;
 
-    public LdioHttpRequester(LdiAdapter adapter, RequestExecutor requestExecutor) {
+    public LdioHttpEnricher(LdiAdapter adapter, RequestExecutor requestExecutor) {
         this.adapter = adapter;
         this.requestExecutor = requestExecutor;
     }

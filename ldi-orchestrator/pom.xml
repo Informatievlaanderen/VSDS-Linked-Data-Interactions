@@ -15,7 +15,7 @@
         <module>ldio-common</module>
         <module>ldio-application</module>
         <module>ldio-connectors</module>
-        <module>ldio-connectors/ldio-http-requester</module>
+        <module>ldio-connectors/ldio-http-enricher</module>
     </modules>
 
     <properties>
