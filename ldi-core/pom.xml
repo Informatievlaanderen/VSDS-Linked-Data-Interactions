@@ -25,6 +25,7 @@
         <module>file-archiving</module>
         <module>repository-materialiser</module>
         <module>model-splitter</module>
+        <module>ldi-common</module>
     </modules>
 
     <properties>
