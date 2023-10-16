@@ -23,74 +23,76 @@ import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 
 public class LdioHttpEnricher implements LdiTransformer {
 
-    public static final String PAYLOAD = "<http://example.com/payload>";
+	public static final String PAYLOAD = "<http://example.com/payload>";
 
-    private final LdiAdapter adapter;
-    private final RequestExecutor requestExecutor;
-    private final RequestPropertyPaths requestPropertyPaths;
+	private final LdiAdapter adapter;
+	private final RequestExecutor requestExecutor;
+	private final RequestPropertyPaths requestPropertyPaths;
 
-    public LdioHttpEnricher(LdiAdapter adapter, RequestExecutor requestExecutor, RequestPropertyPaths requestPropertyPaths) {
-        this.adapter = adapter;
-        this.requestExecutor = requestExecutor;
-        this.requestPropertyPaths = requestPropertyPaths;
-    }
+	public LdioHttpEnricher(LdiAdapter adapter, RequestExecutor requestExecutor,
+			RequestPropertyPaths requestPropertyPaths) {
+		this.adapter = adapter;
+		this.requestExecutor = requestExecutor;
+		this.requestPropertyPaths = requestPropertyPaths;
+	}
 
-    @Override
-    public Collection<Model> apply(Model model) {
-        final Request request = createRequest(model);
-        final Response response = requestExecutor.execute(request);
-        addResponseToModel(model, response);
-        return List.of(model);
-    }
+	@Override
+	public Collection<Model> apply(Model model) {
+		final Request request = createRequest(model);
+		final Response response = requestExecutor.execute(request);
+		addResponseToModel(model, response);
+		return List.of(model);
+	}
 
-    private void addResponseToModel(Model model, Response response) {
-        final Resource subject = createResource(PAYLOAD);
-        final Property predicate = createProperty(requestPropertyPaths.payloadPropertyPath());
-        final String object = response.getBody().orElse("");
-        model.add(subject, predicate, object);
-    }
+	private void addResponseToModel(Model model, Response response) {
+		final Resource subject = createResource(PAYLOAD);
+		final Property predicate = createProperty(requestPropertyPaths.payloadPropertyPath());
+		final String object = response.getBody().orElse("");
+		model.add(subject, predicate, object);
+	}
 
-    private Request createRequest(Model model) {
-        final String url = extractUrl(model);
-        final RequestHeaders requestHeaders = extractRequestHeaders(model);
-        return new Request(url, requestHeaders);
-    }
+	private Request createRequest(Model model) {
+		final String url = extractUrl(model);
+		final RequestHeaders requestHeaders = extractRequestHeaders(model);
+		return new Request(url, requestHeaders);
+	}
 
-    private String extractUrl(Model model) {
-        return PropertyPathExtractor.from(requestPropertyPaths.urlPropertyPath())
-                .getProperties(model)
-                .stream()
-                .findFirst()
-                .map(RDFNode::toString)
-                .orElseThrow(() -> new IllegalArgumentException("No url found on the defined property path."));
-    }
+	private String extractUrl(Model model) {
+		return PropertyPathExtractor.from(requestPropertyPaths.urlPropertyPath())
+				.getProperties(model)
+				.stream()
+				.findFirst()
+				.map(RDFNode::toString)
+				.orElseThrow(() -> new IllegalArgumentException("No url found on the defined property path."));
+	}
 
-    private RequestHeaders extractRequestHeaders(Model model) {
-        List<RequestHeader> headers = PropertyPathExtractor.from(requestPropertyPaths.headerPropertyPath())
-                .getProperties(model)
-                .stream()
-                .map(RDFNode::toString)
-                .map(RequestHeader::from)
-                .toList();
+	private RequestHeaders extractRequestHeaders(Model model) {
+		List<RequestHeader> headers = PropertyPathExtractor.from(requestPropertyPaths.headerPropertyPath())
+				.getProperties(model)
+				.stream()
+				.map(RDFNode::toString)
+				.map(RequestHeader::from)
+				.toList();
 
-        return new RequestHeaders(headers);
-    }
+		return new RequestHeaders(headers);
+	}
 
-    private void addResponseToModelAlt(Model model, Response response) {
-        List<Model> payloadModels = response
-                .getBody()
-                .stream()
-                .flatMap(body -> adapter.apply(toContent(body, response)))
-                .toList();
+	private void addResponseToModelAlt(Model model, Response response) {
+		List<Model> payloadModels = response
+				.getBody()
+				.stream()
+				.flatMap(body -> adapter.apply(toContent(body, response)))
+				.toList();
 
-        // TODO TVB: 16/10/23 figure out how to map this to the model? => provide subject?
-    }
+		// TODO TVB: 16/10/23 figure out how to map this to the model? => provide
+		// subject?
+	}
 
-    private LdiAdapter.Content toContent(String body, Response response) {
-        String mimeType = response
-                .getFirstHeaderValue(HttpHeaders.CONTENT_TYPE)
-                .orElse(ContentType.TEXT_PLAIN.getMimeType());
-        return LdiAdapter.Content.of(body, mimeType);
-    }
+	private LdiAdapter.Content toContent(String body, Response response) {
+		String mimeType = response
+				.getFirstHeaderValue(HttpHeaders.CONTENT_TYPE)
+				.orElse(ContentType.TEXT_PLAIN.getMimeType());
+		return LdiAdapter.Content.of(body, mimeType);
+	}
 
 }
