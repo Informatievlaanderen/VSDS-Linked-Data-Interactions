@@ -27,7 +27,6 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 		return headers.iterator();
 	}
 
-	// TODO TVB: 17/10/23 test
 	public Optional<RequestHeader> getFirst(String key) {
 		return headers.stream()
 				.filter(header -> Objects.equals(lowerCase(header.getKey()), lowerCase(key)))

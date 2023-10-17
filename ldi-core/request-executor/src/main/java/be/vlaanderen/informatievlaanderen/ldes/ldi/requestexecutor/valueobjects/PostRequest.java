@@ -22,7 +22,6 @@ public class PostRequest extends Request {
         return body;
     }
 
-    // TODO TVB: 17/10/23 test
     public String getContentType() {
         return getRequestHeaders()
                 .getFirst(HttpHeaders.CONTENT_TYPE)
