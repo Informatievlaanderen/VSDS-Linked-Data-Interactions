@@ -1,15 +1,20 @@
 {
   "request": {
-    "method": "GET",
-    "url": "/200-response-with-api-key",
+    "method": "POST",
+    "url": "/200-post-response-accept-nquads",
     "headers": {
+      "Content-Type": {
+        "contains": "application/json"
+      },
       "Accept": {
         "contains": "application/n-quads"
-      },
-      "X-API-Key": {
-        "contains": "test123"
       }
-    }
+    },
+    "bodyPatterns": [
+      {
+        "equalToJson": "{\"name\": \"Joe\"}"
+      }
+    ]
   },
   "response": {
     "status": 200,

@@ -16,6 +16,21 @@ Feature: RequestExecutor
       | ClientCredentialsRequestExecutor | http://localhost:10101/200-response-with-token    |
       | ApiKeyRequestExecutor            | http://localhost:10101/200-response-with-api-key  |
 
+  Scenario Outline: Obtaining the Response of a Post Request
+    Given I have a <requestExecutor>
+    When I create RequestHeaders
+    And I add a RequestHeader with key "Accept" and value "application/n-quads"
+    And I add a RequestHeader with key "Content-Type" and value "application/json"
+    And I create a PostRequest with body {"name": "Joe"} and the RequestHeaders and url: <endpoint>
+    And I execute the request
+    Then I obtain a response with status code 200
+
+    Examples:
+      | requestExecutor                  | endpoint                                               |
+      | DefaultRequestExecutor           | http://localhost:10101/200-post-response-accept-nquads |
+      | ClientCredentialsRequestExecutor | http://localhost:10101/200-post-response-with-token    |
+      | ApiKeyRequestExecutor            | http://localhost:10101/200-post-response-with-api-key  |
+
   Scenario Outline: Obtaining the Response of a redirected Request
     Given I have a <requestExecutor>
     When I create RequestHeaders

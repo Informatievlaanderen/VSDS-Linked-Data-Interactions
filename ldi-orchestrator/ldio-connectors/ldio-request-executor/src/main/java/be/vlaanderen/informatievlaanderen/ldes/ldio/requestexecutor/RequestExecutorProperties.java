@@ -5,6 +5,9 @@ public class RequestExecutorProperties {
 	private RequestExecutorProperties() {
 	}
 
+	public static final String HTTP_METHOD = "http.method";
+	public static final String HTTP_CONTENT_TYPE = "http.content-type";
+
 	public static final String RETRIES_ENABLED = "retries.enabled";
 	public static final String MAX_RETRIES = "retries.max";
 	public static final String STATUSES_TO_RETRY = "retries.statuses-to-retry";
