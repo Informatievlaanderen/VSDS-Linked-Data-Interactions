@@ -38,9 +38,8 @@ public class HttpEnricherSteps {
 						.create()
 						.fromString(input.content())
 						.lang(nameToLang(input.mimeType()))
-						.toModel()
-		);
-    }
+						.toModel());
+	}
 
 	@And("I configure url property path {string}")
 	public void iConfigureUrlPropertyPath(String urlPropertyPath) {
@@ -54,8 +53,7 @@ public class HttpEnricherSteps {
 				getPropertyPathExtractor(urlPropertyPath),
 				getPropertyPathExtractor(bodyPropertyPath),
 				getPropertyPathExtractor(headerPropertyPath),
-				getPropertyPathExtractor(httpMethodPropertyPath)
-		);
+				getPropertyPathExtractor(httpMethodPropertyPath));
 		ldioHttpEnricher = new LdioHttpEnricher(ldiAdapter, requestExecutor, propertyPathExtractors);
 	}
 
