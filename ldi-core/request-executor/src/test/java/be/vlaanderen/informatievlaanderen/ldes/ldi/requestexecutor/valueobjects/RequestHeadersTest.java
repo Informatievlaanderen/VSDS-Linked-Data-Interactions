@@ -9,14 +9,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RequestHeadersTest {
 
-    @Test
-    void getFirst() {
-        final String contentType = "application/json";
-        final List<RequestHeader> requestHeaders = List.of(new RequestHeader("content-type", contentType));
-        Optional<String> firstHeader =
-                new RequestHeaders(requestHeaders).getFirst("cOnTenT-TYPE").map(RequestHeader::getValue);
-        assertTrue(firstHeader.isPresent());
-        assertEquals(contentType, firstHeader.get());
-    }
+	@Test
+	void getFirst() {
+		final String contentType = "application/json";
+		final List<RequestHeader> requestHeaders = List.of(new RequestHeader("content-type", contentType));
+		Optional<String> firstHeader = new RequestHeaders(requestHeaders).getFirst("cOnTenT-TYPE")
+				.map(RequestHeader::getValue);
+		assertTrue(firstHeader.isPresent());
+		assertEquals(contentType, firstHeader.get());
+	}
 
 }
