@@ -1,9 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.RequestPropertyPaths;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.RequestPropertyPathExtractors;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -20,18 +23,31 @@ public class LdioHttpEnricherAutoConfig {
 	public LdioConfigurator ldioConfigurator(ConfigurableApplicationContext configContext) {
 		return config -> {
 			final LdiAdapter adapter = createAdapter(configContext, config);
-			final RequestPropertyPaths requestPropertyPaths = createRequestPropertyPaths(config);
+			final RequestPropertyPathExtractors requestPropertyPaths = createRequestPropertyPathExtractors(config);
 			final RequestExecutor requestExecutor = new LdioRequestExecutorSupplier().getRequestExecutor(config);
 			return new LdioHttpEnricher(adapter, requestExecutor, requestPropertyPaths);
 		};
 	}
 
-	private RequestPropertyPaths createRequestPropertyPaths(ComponentProperties config) {
-		final String urlPropertyPath = config.getProperty(URL_PROPERTY_PATH);
-		final String bodyPropertyPath = config.getOptionalProperty(BODY_PROPERTY_PATH).orElse(null);
-		final String headerPropertyPath = config.getOptionalProperty(HEADER_PROPERTY_PATH).orElse(null);
-		final String payloadPropertyPath = config.getProperty(PAYLOAD_PROPERTY_PATH);
-		return new RequestPropertyPaths(urlPropertyPath, bodyPropertyPath, headerPropertyPath, payloadPropertyPath);
+	// TODO TVB: 17/10/23 test correct mapping props to object..
+	private RequestPropertyPathExtractors createRequestPropertyPathExtractors(ComponentProperties config) {
+		final var urlPropertyPathExtractor = PropertyPathExtractor.from(config.getProperty(URL_PROPERTY_PATH));
+		final var bodyPropertyPathExtractor = createPropertyPathExtractor(config, BODY_PROPERTY_PATH);
+		final var headerPropertyPathExtractor = createPropertyPathExtractor(config, HEADER_PROPERTY_PATH);
+		final var httpMethodPropertyPathExtractor = createPropertyPathExtractor(config, HTTP_METHOD_PROPERTY_PATH);
+		return new RequestPropertyPathExtractors(
+				urlPropertyPathExtractor,
+				bodyPropertyPathExtractor,
+				headerPropertyPathExtractor,
+				httpMethodPropertyPathExtractor);
+	}
+
+	private PropertyExtractor createPropertyPathExtractor(ComponentProperties config, String property) {
+		return config
+				.getOptionalProperty(property)
+				.map(PropertyPathExtractor::from)
+				.map(PropertyExtractor.class::cast)
+				.orElse(new EmptyPropertyExtractor());
 	}
 
 	private LdiAdapter createAdapter(ConfigurableApplicationContext configContext, ComponentProperties config) {

@@ -1,39 +1,28 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
 
 import java.util.Collection;
 import java.util.List;
 
-import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
-import static org.apache.jena.rdf.model.ResourceFactory.createResource;
-
 public class LdioHttpEnricher implements LdiTransformer {
-
-	public static final String PAYLOAD = "<http://example.com/payload>";
 
 	private final LdiAdapter adapter;
 	private final RequestExecutor requestExecutor;
-	private final RequestPropertyPaths requestPropertyPaths;
+	private final RequestPropertyPathExtractors propertyPathExtractors;
 
 	public LdioHttpEnricher(LdiAdapter adapter, RequestExecutor requestExecutor,
-			RequestPropertyPaths requestPropertyPaths) {
+			RequestPropertyPathExtractors propertyPathExtractors) {
 		this.adapter = adapter;
 		this.requestExecutor = requestExecutor;
-		this.requestPropertyPaths = requestPropertyPaths;
+		this.propertyPathExtractors = propertyPathExtractors;
 	}
 
 	@Override
@@ -44,21 +33,39 @@ public class LdioHttpEnricher implements LdiTransformer {
 		return List.of(model);
 	}
 
-	private void addResponseToModel(Model model, Response response) {
-		final Resource subject = createResource(PAYLOAD);
-		final Property predicate = createProperty(requestPropertyPaths.payloadPropertyPath());
-		final String object = response.getBody().orElse("");
-		model.add(subject, predicate, object);
-	}
-
 	private Request createRequest(Model model) {
 		final String url = extractUrl(model);
 		final RequestHeaders requestHeaders = extractRequestHeaders(model);
-		return new Request(url, requestHeaders);
+
+		String httpMethod = extractHttpMethod(model);
+		return switch (httpMethod) {
+			case "GET" -> new GetRequest(url, requestHeaders);
+			case "POST" -> new PostRequest(url, requestHeaders, extractBody(model));
+			default -> throw new IllegalStateException("Http method not supported: " + httpMethod);
+		};
+	}
+
+	private String extractBody(Model model) {
+		return propertyPathExtractors.bodyPropertyPathExtractor()
+				.getProperties(model)
+				.stream()
+				.findFirst()
+				.map(RDFNode::toString)
+				.orElse(null);
+	}
+
+	private String extractHttpMethod(Model model) {
+		return propertyPathExtractors.httpMethodPropertyPathExtractor()
+				.getProperties(model)
+				.stream()
+				.findFirst()
+				.map(RDFNode::toString)
+				.map(String::toUpperCase)
+				.orElse("GET");
 	}
 
 	private String extractUrl(Model model) {
-		return PropertyPathExtractor.from(requestPropertyPaths.urlPropertyPath())
+		return propertyPathExtractors.urlPropertyPathExtractor()
 				.getProperties(model)
 				.stream()
 				.findFirst()
@@ -67,7 +74,7 @@ public class LdioHttpEnricher implements LdiTransformer {
 	}
 
 	private RequestHeaders extractRequestHeaders(Model model) {
-		List<RequestHeader> headers = PropertyPathExtractor.from(requestPropertyPaths.headerPropertyPath())
+		List<RequestHeader> headers = propertyPathExtractors.headerPropertyPathExtractor()
 				.getProperties(model)
 				.stream()
 				.map(RDFNode::toString)
@@ -77,15 +84,13 @@ public class LdioHttpEnricher implements LdiTransformer {
 		return new RequestHeaders(headers);
 	}
 
-	private void addResponseToModelAlt(Model model, Response response) {
-		List<Model> payloadModels = response
+	private void addResponseToModel(Model model, Response response) {
+		response
 				.getBody()
 				.stream()
 				.flatMap(body -> adapter.apply(toContent(body, response)))
-				.toList();
-
-		// TODO TVB: 16/10/23 figure out how to map this to the model? => provide
-		// subject?
+				.toList()
+				.forEach(model::add);
 	}
 
 	private LdiAdapter.Content toContent(String body, Response response) {
