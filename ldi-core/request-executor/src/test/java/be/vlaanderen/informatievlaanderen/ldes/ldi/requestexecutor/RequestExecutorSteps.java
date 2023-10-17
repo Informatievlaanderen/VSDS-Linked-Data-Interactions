@@ -85,6 +85,11 @@ public class RequestExecutorSteps {
 		request = new GetRequest(url, requestHeaders);
 	}
 
+	@And("^I create a PostRequest with body (.*) and the RequestHeaders and url: (.*)$")
+	public void iCreateAPostRequestWithBodyAndTheRequestHeadersAndUrl(String body, String url) {
+		request = new PostRequest(url, requestHeaders, body);
+	}
+
 	private void addHeaderToRequestHeaders(String key, String value) {
 		List<RequestHeader> headers = new ArrayList<>();
 		requestHeaders.forEach(headers::add);

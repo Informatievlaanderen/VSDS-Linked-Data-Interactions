@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
 
-// TODO TVB: 17/10/23 test auth and no auth flow
 public class PostRequest extends Request {
 
 	public static final String METHOD_NAME = "POST";
