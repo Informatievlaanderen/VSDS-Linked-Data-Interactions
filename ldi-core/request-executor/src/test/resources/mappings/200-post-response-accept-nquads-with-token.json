@@ -1,15 +1,23 @@
 {
   "request": {
-    "method": "GET",
-    "url": "/200-response-with-token",
+    "method": "POST",
+    "url": "/200-post-response-with-token",
     "headers": {
+      "Content-Type": {
+        "contains": "application/json"
+      },
       "Accept": {
         "contains": "application/n-quads"
       },
       "Authorization": {
         "contains": "Bearer eyJraWQiOiJ0b2tlbiIsInR5cCI6IkpXVCIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjbGllbnRJZCIsImF1ZCI6InNpbXBsZVNjb3BlIiwibmJmIjoxNjc4MzU5Mjg4LCJhenAiOiJjbGllbnRJZCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC90b2tlbiIsImV4cCI6MTY3ODM2Mjg4OCwiaWF0IjoxNjc4MzU5Mjg4LCJqdGkiOiIxMjhiOTI2ZC0yY2EwLTRmYjAtODk1ZS0yOWVlMDA0NzBhYjAiLCJ0aWQiOiJ0b2tlbiJ9.GWJquhDHffcXfD-UhSPW84CjEf0C4zj5jeEurG3_-_vihyAmADgLmjp9L440v5igELsgvkjGBHlhNBkj1zmOJaRhn3JCwPoevK-rvVm6iuOcVwkfTumGD-sqHh5fSj3ga1o5ov6wcrmp6yhEWcFH26tZ-uayLzWAmdbjBivlC35wwM1v2m-QXhGj42oLE43bnGDZdWZk2mYtwbLvOlPAsoennHVe_Z-GEhrYkWi4C5SbLjUt_muQ8wp0cA4GvhDDIcCmyxU2dAXRpj_LGte3F7Pu0ryIXdScC1KqBOWnAooHpc_lrp4Q8xqGGS5E6SIg-IEp-a2t-jIHGRNaS7jC0g"
       }
-    }
+    },
+    "bodyPatterns": [
+      {
+        "equalToJson": "{\"name\": \"Joe\"}"
+      }
+    ]
   },
   "response": {
     "status": 200,
