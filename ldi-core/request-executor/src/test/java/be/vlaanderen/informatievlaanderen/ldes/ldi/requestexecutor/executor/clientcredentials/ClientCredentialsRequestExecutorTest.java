@@ -1,9 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.GetRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,11 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.util.Map;
 
-import com.github.scribejava.core.model.OAuth2AccessToken;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,7 +38,7 @@ class ClientCredentialsRequestExecutorTest {
 					3600, "refreshToken", "scope", "rawResponse");
 			when(oAuthService.getAccessTokenClientCredentialsGrant()).thenReturn(token);
 
-			Request request = new Request("url", RequestHeaders.empty());
+			Request request = new GetRequest("url", RequestHeaders.empty());
 
 			com.github.scribejava.core.model.Response scribeResponse = new com.github.scribejava.core.model.Response(
 					200, "OK", Map.of("key", "value"), "body");
@@ -58,7 +56,7 @@ class ClientCredentialsRequestExecutorTest {
 
 		@Test
 		void shouldThrowHtppException_whenIOException() throws Exception {
-			Request request = new Request("url", RequestHeaders.empty());
+			Request request = new GetRequest("url", RequestHeaders.empty());
 			when(oAuthService.execute(any())).thenThrow(IOException.class);
 			assertThrows(HttpRequestException.class, () -> clientCredentialsRequestExecutor.execute(request));
 
@@ -66,7 +64,7 @@ class ClientCredentialsRequestExecutorTest {
 
 		@Test
 		void shouldThrowHtppException_whenInterrupted() throws Exception {
-			Request request = new Request("url", RequestHeaders.empty());
+			Request request = new GetRequest("url", RequestHeaders.empty());
 			when(oAuthService.execute(any())).thenThrow(InterruptedException.class);
 
 			assertThrows(HttpRequestException.class, () -> clientCredentialsRequestExecutor.execute(request));
@@ -74,7 +72,7 @@ class ClientCredentialsRequestExecutorTest {
 
 		@Test
 		void shouldNotThrowHtppException_whenInterrupted() throws Exception {
-			Request request = new Request("url", RequestHeaders.empty());
+			Request request = new GetRequest("url", RequestHeaders.empty());
 			when(oAuthService.execute(any())).thenThrow(NullPointerException.class);
 
 			assertThrows(NullPointerException.class, () -> clientCredentialsRequestExecutor.execute(request));

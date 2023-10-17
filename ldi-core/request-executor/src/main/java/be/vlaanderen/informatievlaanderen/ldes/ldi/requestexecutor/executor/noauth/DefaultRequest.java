@@ -1,8 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.GetRequest;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.PostRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 
 public class DefaultRequest {
 
@@ -13,7 +19,20 @@ public class DefaultRequest {
 	}
 
 	public HttpUriRequest getHttpRequest() {
-		final HttpGet httpRequest = new HttpGet(request.getUrl());
+		if (GetRequest.METHOD_NAME.equals(request.getMethod())) {
+			final HttpGet httpRequest = new HttpGet(request.getUrl());
+		}
+
+		final HttpRequestBase httpRequest = switch (request.getMethod()) {
+			case GetRequest.METHOD_NAME -> new HttpGet(request.getUrl());
+			case PostRequest.METHOD_NAME -> {
+				final HttpPost post = new HttpPost(request.getUrl());
+				post.setEntity(new StringEntity(request.getBody(), request.getContentType()));
+				yield post;
+			}
+			default -> throw new IllegalStateException("Unexpected value: " + request.getMethod());
+		};
+
 		request.getRequestHeaders().forEach(header -> httpRequest.addHeader(header.getKey(), header.getValue()));
 		return httpRequest;
 	}

@@ -6,10 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.rate
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.wiremock.WireMockConfig;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -85,7 +82,7 @@ public class RequestExecutorSteps {
 
 	@And("^I create a Request with the RequestHeaders and url: (.*)$")
 	public void iCreateARequestWithTheRequestHeadersAndUrl(String url) {
-		request = new Request(url, requestHeaders);
+		request = new GetRequest(url, requestHeaders);
 	}
 
 	private void addHeaderToRequestHeaders(String key, String value) {

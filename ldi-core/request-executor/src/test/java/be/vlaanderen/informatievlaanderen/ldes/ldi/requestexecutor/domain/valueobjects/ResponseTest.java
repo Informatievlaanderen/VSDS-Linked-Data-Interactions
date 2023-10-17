@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.domain.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.GetRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
@@ -18,10 +19,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ResponseTest {
 
@@ -67,7 +65,7 @@ class ResponseTest {
 	class TestGetRedirectLocation {
 		@Test
 		void shouldReturnEmpty_whenNoLocationHeader() {
-			Request request = new Request("https://example.com", RequestHeaders.empty());
+			Request request = new GetRequest("https://example.com", RequestHeaders.empty());
 			Response response = new Response(request, List.of(), 302, null);
 
 			assertTrue(response.getRedirectLocation().isEmpty());
@@ -77,7 +75,7 @@ class ResponseTest {
 		@ArgumentsSource(LocationProvider.class)
 		void foo(String testName, String location) {
 			assertNotNull(testName);
-			Request request = new Request("https://example.com/blog/article", RequestHeaders.empty());
+			Request request = new GetRequest("https://example.com/blog/article", RequestHeaders.empty());
 			Header header = new BasicHeader(HttpHeaders.LOCATION, location);
 			Response response = new Response(request, List.of(header), 302, null);
 
