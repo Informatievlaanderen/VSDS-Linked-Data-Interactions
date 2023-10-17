@@ -2,8 +2,13 @@ Feature: HttpEnricher
   As a user
   I want to use a HttpEnricher to enrich the model using HTTP Requests
 
-Scenario: Foo
-  Given I have foo
+Scenario: Enriching the model with a GET request
+  Given I have an RdfAdapter
+  And I configure url property path "<http://example.org/url>"
+  And I create an LdioHttpEnricher with the configured properties
+  And I have a model with only an url property
+  When I send the model to the enricher
+  Then The result contains a model with both the input and the http response
 
 #  Scenario Outline: Obtaining the Response of Request
 #    Given I have a <requestExecutor>

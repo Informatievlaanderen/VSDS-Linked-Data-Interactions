@@ -1,0 +1,10 @@
+@prefix ex: <http://example.org/> .
+
+ex:John
+    a ex:Person ;
+    ex:hasName "John Smith" ;
+    ex:hasAge 30 ;
+    ex:hasEmail <mailto:john@example.org> .
+
+ex:request
+    ex:url "http://localhost:10101/200-get-response" .

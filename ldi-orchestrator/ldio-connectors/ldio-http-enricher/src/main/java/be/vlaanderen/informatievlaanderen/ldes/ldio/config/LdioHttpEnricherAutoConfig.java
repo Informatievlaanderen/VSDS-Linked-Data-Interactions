@@ -30,6 +30,7 @@ public class LdioHttpEnricherAutoConfig {
 	}
 
 	// TODO TVB: 17/10/23 test correct mapping props to object..
+	// TODO TVB: 17/10/23 best door dit naar aparte class te trekken..
 	private RequestPropertyPathExtractors createRequestPropertyPathExtractors(ComponentProperties config) {
 		final var urlPropertyPathExtractor = PropertyPathExtractor.from(config.getProperty(URL_PROPERTY_PATH));
 		final var bodyPropertyPathExtractor = createPropertyPathExtractor(config, BODY_PROPERTY_PATH);
