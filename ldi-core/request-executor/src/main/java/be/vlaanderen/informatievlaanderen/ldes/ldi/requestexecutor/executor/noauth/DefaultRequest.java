@@ -19,22 +19,22 @@ public class DefaultRequest {
 	}
 
 	public HttpUriRequest getHttpRequest() {
-		if (GetRequest.METHOD_NAME.equals(request.getMethod())) {
-			final HttpGet httpRequest = new HttpGet(request.getUrl());
-		}
+		final HttpRequestBase httpRequest = createRequest();
+		request.getRequestHeaders().forEach(header -> httpRequest.addHeader(header.getKey(), header.getValue()));
+		return httpRequest;
+	}
 
-		final HttpRequestBase httpRequest = switch (request.getMethod()) {
+	private HttpRequestBase createRequest() {
+		return switch (request.getMethod()) {
 			case GetRequest.METHOD_NAME -> new HttpGet(request.getUrl());
 			case PostRequest.METHOD_NAME -> {
 				final HttpPost post = new HttpPost(request.getUrl());
-				post.setEntity(new StringEntity(request.getBody(), request.getContentType()));
+				final PostRequest postRequest = (PostRequest) request;
+				post.setEntity(new StringEntity(postRequest.getBody(), postRequest.getContentType()));
 				yield post;
 			}
-			default -> throw new IllegalStateException("Unexpected value: " + request.getMethod());
+			default -> throw new IllegalStateException("Http method not supported: " + request.getMethod());
 		};
-
-		request.getRequestHeaders().forEach(header -> httpRequest.addHeader(header.getKey(), header.getValue()));
-		return httpRequest;
 	}
 
 }

@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 public class RequestHeaders implements Iterable<RequestHeader> {
 
@@ -27,4 +27,10 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 		return headers.iterator();
 	}
 
+	// TODO TVB: 17/10/23 test
+	public Optional<RequestHeader> getFirst(String key) {
+		return headers.stream()
+				.filter(header -> Objects.equals(lowerCase(header.getKey()), lowerCase(key)))
+				.findFirst();
+	}
 }
