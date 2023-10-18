@@ -6,24 +6,29 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtract
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpEnricherSteps {
 
-	private Collection<Model> result;
-	private Model model;
+	private List<Model> resultModels;
+	private Model inputModel;
 	private LdioHttpEnricher ldioHttpEnricher;
 	private LdiAdapter ldiAdapter;
 	private String urlPropertyPath;
@@ -46,6 +51,21 @@ public class HttpEnricherSteps {
 		this.urlPropertyPath = urlPropertyPath;
 	}
 
+	@And("I configure body property path {string}")
+	public void iConfigureBodyPropertyPath(String bodyPropertyPath) {
+		this.bodyPropertyPath = bodyPropertyPath;
+	}
+
+	@And("I configure header property path {string}")
+	public void iConfigureHeaderPropertyPath(String headerPropertyPath) {
+		this.headerPropertyPath = headerPropertyPath;
+	}
+
+	@And("I configure httpMethod property path {string}")
+	public void iConfigureHttpMethodPropertyPath(String httpMethodPropertyPath) {
+		this.httpMethodPropertyPath = httpMethodPropertyPath;
+	}
+
 	@And("I create an LdioHttpEnricher with the configured properties")
 	public void iCreateAnLdioHttpEnricherWithTheConfiguredProperties() {
 		final RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthExecutor();
@@ -63,17 +83,36 @@ public class HttpEnricherSteps {
 
 	@And("I have a model with only an url property")
 	public void iHaveAModelWithOnlyAnUrlProperty() {
-		model = RDFParser.source("model-with-only-url.ttl").toModel();
+		inputModel = RDFParser.source("model-with-only-url.ttl").toModel();
+	}
+
+	@And("I have a model with everything")
+	public void iHaveAModelWithEverything() {
+		inputModel = RDFParser.source("model-with-everything.ttl").toModel();
 	}
 
 	@When("I send the model to the enricher")
 	public void iSendTheModelToTheEnricher() {
-		result = ldioHttpEnricher.apply(model);
+		resultModels = new ArrayList<>(ldioHttpEnricher.apply(inputModel));
+	}
+
+	@Then("The result contains {int} model")
+	public void theResultContainsModel(int resultCount) {
+		assertEquals(resultCount, resultModels.size());
 	}
 
 	@Then("The result contains a model with both the input and the http response")
 	public void theResultContainsAModelWithBothTheInputAndTheHttpResponse() {
-		// TODO TVB: 17/10/23 impl isomorph test
-		System.out.println(result.stream().findFirst().orElseThrow().listStatements().toList());
+		Model resultModel = this.resultModels.get(0);
+
+		final Model expectedModel = ModelFactory.createDefaultModel();
+		expectedModel.add(inputModel);
+		expectedModel.add(
+				createResource("http://example.org/John"),
+				createProperty("http://example.org/hasWife"),
+				createResource("http://example.org/Hillary")
+		);
+
+		assertTrue(expectedModel.isIsomorphicWith(resultModel));
 	}
 }

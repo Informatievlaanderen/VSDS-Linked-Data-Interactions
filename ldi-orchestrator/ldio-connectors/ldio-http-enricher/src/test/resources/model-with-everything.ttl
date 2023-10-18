@@ -1,0 +1,18 @@
+@prefix ex: <http://example.org/> .
+
+ex:John
+    a ex:Person ;
+    ex:hasName "John Smith" ;
+    ex:hasAge 30 ;
+    ex:hasEmail <mailto:john@example.org> .
+
+ex:Request
+    ex:url "http://localhost:10101/200-post-response" ;
+    ex:meta ex:Meta .
+
+ex:Meta
+    ex:body "{'name': 'Joe'}" ;
+    ex:method "POST" ;
+    ex:headers "Content-Type: application/json" ;
+    ex:headers "Accept: application/n-quads" ;
+    ex:headers "x-api-key: my-secret" .

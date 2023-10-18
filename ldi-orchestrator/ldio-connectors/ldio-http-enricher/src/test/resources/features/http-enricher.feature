@@ -8,18 +8,17 @@ Scenario: Enriching the model with a GET request
   And I create an LdioHttpEnricher with the configured properties
   And I have a model with only an url property
   When I send the model to the enricher
-  Then The result contains a model with both the input and the http response
+  Then The result contains 1 model
+  And The result contains a model with both the input and the http response
 
-#  Scenario Outline: Obtaining the Response of Request
-#    Given I have a <requestExecutor>
-#    When I create RequestHeaders
-#    And I add a RequestHeader with key "Accept" and value "application/n-quads"
-#    And I create a Request with the RequestHeaders and url: <endpoint>
-#    And I execute the request
-#    Then I obtain a response with status code 200
-#
-#    Examples:
-#      | requestExecutor                  | endpoint                                          |
-#      | DefaultRequestExecutor           | http://localhost:10101/200-response-accept-nquads |
-#      | ClientCredentialsRequestExecutor | http://localhost:10101/200-response-with-token    |
-#      | ApiKeyRequestExecutor            | http://localhost:10101/200-response-with-api-key  |
+  Scenario: Enriching the model with a POST request
+    Given I have an RdfAdapter
+    And I configure url property path "<http://example.org/url>"
+    And I configure body property path "<http://example.org/meta>/<http://example.org/body>"
+    And I configure header property path "<http://example.org/meta>/<http://example.org/headers>"
+    And I configure httpMethod property path "<http://example.org/meta>/<http://example.org/method>"
+    And I create an LdioHttpEnricher with the configured properties
+    And I have a model with everything
+    When I send the model to the enricher
+    Then The result contains 1 model
+    And The result contains a model with both the input and the http response
