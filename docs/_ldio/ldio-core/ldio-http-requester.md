@@ -1,9 +1,7 @@
 ---
 layout: default
+parent: LDIO Core
 title: LDIO Http Requester
-has_children: false
-has_toc: true
-nav_order: 1
 ---
 
 # LDIO Http Requester

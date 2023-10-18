@@ -22,7 +22,7 @@ The response is converted to linked data and added to the incoming model.
 | http-method-property-path  | Path defining the http method that needs to be selected on the model for the http request.                  | No       | GET     | GET                                                     | GET or POST                      |
 
 This component uses the "LDIO Http Requester" to make the HTTP request. 
-Refer to [LDIO Http Requester](../ldio-http-requester) for the config.
+Refer to [LDIO Http Requester](../ldio-core) for the config.
 
 Note that all adapters are supported. When the adapter requires additional config, this can be added among the other config.
 
