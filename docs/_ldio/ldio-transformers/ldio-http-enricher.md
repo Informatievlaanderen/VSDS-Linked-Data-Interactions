@@ -4,7 +4,7 @@ parent: LDIO Transformers
 title: Http Enricher Transformer
 ---
 
-# LDIO Http Enricher Transformer
+# LDIO Http Enricher
 ***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher***
 
 A transformer which allows to send a GET or POST HTTP request to a dynamic URL provided by the model. 
