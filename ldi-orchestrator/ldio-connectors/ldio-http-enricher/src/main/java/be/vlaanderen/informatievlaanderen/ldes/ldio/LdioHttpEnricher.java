@@ -98,7 +98,7 @@ public class LdioHttpEnricher implements LdiTransformer {
 					.toList()
 					.forEach(model::add);
 		} else {
-			log.warn("Failed to enrich model. The request url was {}. " +
+			log.atWarn().log("Failed to enrich model. The request url was {}. " +
 					"The http response obtained from the server has code {} and body \"{}\".",
 					response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
 		}
