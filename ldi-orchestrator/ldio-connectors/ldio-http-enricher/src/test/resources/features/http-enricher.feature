@@ -22,3 +22,11 @@ Scenario: Enriching the model with a GET request
     When I send the model to the enricher
     Then The result contains 1 model
     And The result contains a model with both the input and the http response
+
+  Scenario: Enriching the model with an invalid HTTP method
+    Given I have an RdfAdapter
+    And I configure url property path "<http://example.org/url>"
+    And I configure httpMethod property path "<http://example.org/method>"
+    And I create an LdioHttpEnricher with the configured properties
+    And I have a model with an invalid http method
+    Then The enricher should throw an exception when I send the model to the enricher

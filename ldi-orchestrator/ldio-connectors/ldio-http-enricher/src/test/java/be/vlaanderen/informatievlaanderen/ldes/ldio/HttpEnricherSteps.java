@@ -22,8 +22,7 @@ import java.util.stream.Stream;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpEnricherSteps {
 
@@ -91,6 +90,11 @@ public class HttpEnricherSteps {
 		inputModel = RDFParser.source("model-with-everything.ttl").toModel();
 	}
 
+	@And("I have a model with an invalid http method")
+	public void iHaveAModelWithAnInvalidHttpMethod() {
+		inputModel = RDFParser.source("model-with-invalid-http-method.ttl").toModel();
+	}
+
 	@When("I send the model to the enricher")
 	public void iSendTheModelToTheEnricher() {
 		resultModels = new ArrayList<>(ldioHttpEnricher.apply(inputModel));
@@ -113,5 +117,10 @@ public class HttpEnricherSteps {
 				createResource("http://example.org/Hillary"));
 
 		assertTrue(expectedModel.isIsomorphicWith(resultModel));
+	}
+
+	@Then("The enricher should throw an exception when I send the model to the enricher")
+	public void theEnricherShouldThrowAnExceptionWhenISendTheModelToTheEnricher() {
+		assertThrows(IllegalStateException.class, () -> ldioHttpEnricher.apply(inputModel));
 	}
 }
