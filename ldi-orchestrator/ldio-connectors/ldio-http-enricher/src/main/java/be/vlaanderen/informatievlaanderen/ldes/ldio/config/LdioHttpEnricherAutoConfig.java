@@ -11,7 +11,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpEnricherProperties.HTTP_REQUESTER_ADAPTER;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpEnricherProperties.ADAPTER_CONFIG;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpEnricherProperties.ADAPTER_NAME;
 
 @Configuration
 public class LdioHttpEnricherAutoConfig {
@@ -28,9 +29,9 @@ public class LdioHttpEnricherAutoConfig {
 	}
 
 	private LdiAdapter createAdapter(ConfigurableApplicationContext configContext, ComponentProperties config) {
-		final String adapterBeanName = config.getProperty(HTTP_REQUESTER_ADAPTER);
+		final String adapterBeanName = config.getProperty(ADAPTER_NAME);
 		final LdioConfigurator ldioConfigurator = (LdioConfigurator) configContext.getBean(adapterBeanName);
-		return (LdiAdapter) ldioConfigurator.configure(config);
+		return (LdiAdapter) ldioConfigurator.configure(config.extractNestedProperties(ADAPTER_CONFIG));
 	}
 
 }
