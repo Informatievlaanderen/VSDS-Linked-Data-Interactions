@@ -110,8 +110,7 @@ public class HttpEnricherSteps {
 		expectedModel.add(
 				createResource("http://example.org/John"),
 				createProperty("http://example.org/hasWife"),
-				createResource("http://example.org/Hillary")
-		);
+				createResource("http://example.org/Hillary"));
 
 		assertTrue(expectedModel.isIsomorphicWith(resultModel));
 	}
