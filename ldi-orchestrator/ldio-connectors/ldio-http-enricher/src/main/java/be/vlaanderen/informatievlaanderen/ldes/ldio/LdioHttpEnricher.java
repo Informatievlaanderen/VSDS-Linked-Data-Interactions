@@ -107,6 +107,8 @@ public class LdioHttpEnricher implements LdiTransformer {
 	private LdiAdapter.Content toContent(String body, Response response) {
 		String mimeType = response
 				.getFirstHeaderValue(HttpHeaders.CONTENT_TYPE)
+				.map(ContentType::parse)
+				.map(ContentType::getMimeType)
 				.orElse(ContentType.TEXT_PLAIN.getMimeType());
 		return LdiAdapter.Content.of(body, mimeType);
 	}
