@@ -11,7 +11,7 @@ ex:Request
     ex:meta ex:Meta .
 
 ex:Meta
-    ex:body "{'name': 'Joe'}" ;
+    ex:body "{\"name\": \"Joe\"}" ;
     ex:method "POST" ;
     ex:headers "Content-Type: application/json" ;
     ex:headers "Accept: application/n-quads" ;

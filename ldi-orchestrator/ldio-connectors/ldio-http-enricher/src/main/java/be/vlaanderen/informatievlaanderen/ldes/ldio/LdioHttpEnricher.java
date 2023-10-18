@@ -4,15 +4,20 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
 
 public class LdioHttpEnricher implements LdiTransformer {
+
+	private final Logger log = LoggerFactory.getLogger(LdioHttpEnricher.class);
 
 	private final LdiAdapter adapter;
 	private final RequestExecutor requestExecutor;
@@ -40,7 +45,7 @@ public class LdioHttpEnricher implements LdiTransformer {
 		String httpMethod = extractHttpMethod(model);
 		return switch (httpMethod) {
 			case "GET" -> new GetRequest(url, requestHeaders);
-			case "POST" -> new PostRequest(url, requestHeaders, extractBody(model));
+			case "POST" -> new PostRequest(url, requestHeaders, StringEscapeUtils.unescapeJava(extractBody(model)));
 			default -> throw new IllegalStateException("Http method not supported: " + httpMethod);
 		};
 	}
@@ -85,12 +90,18 @@ public class LdioHttpEnricher implements LdiTransformer {
 	}
 
 	private void addResponseToModel(Model model, Response response) {
-		response
-				.getBody()
-				.stream()
-				.flatMap(body -> adapter.apply(toContent(body, response)))
-				.toList()
-				.forEach(model::add);
+		if (response.isOk()) {
+			response
+					.getBody()
+					.stream()
+					.flatMap(body -> adapter.apply(toContent(body, response)))
+					.toList()
+					.forEach(model::add);
+		} else {
+			log.warn("Failed to enrich model. The request url was {}. " +
+					"The http response obtained from the server has code {} and body \"{}\".",
+					response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
+		}
 	}
 
 	private LdiAdapter.Content toContent(String body, Response response) {

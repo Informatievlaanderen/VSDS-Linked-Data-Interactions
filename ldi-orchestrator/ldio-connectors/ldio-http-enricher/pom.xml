@@ -11,6 +11,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ldio-http-enricher</artifactId>
+
+    <properties>
+        <apache.commons.version>1.10.0</apache.commons.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
@@ -29,6 +34,12 @@
             <artifactId>wiremock-jre8-standalone</artifactId>
             <version>${wiremock-jre8.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${apache.commons.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     

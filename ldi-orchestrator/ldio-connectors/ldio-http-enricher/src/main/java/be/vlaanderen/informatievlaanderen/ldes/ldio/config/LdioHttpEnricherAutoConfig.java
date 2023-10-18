@@ -20,8 +20,8 @@ public class LdioHttpEnricherAutoConfig {
 	public LdioConfigurator ldioConfigurator(ConfigurableApplicationContext configContext) {
 		return config -> {
 			final LdiAdapter adapter = createAdapter(configContext, config);
-			final RequestPropertyPathExtractors requestPropertyPaths =
-					new PropertyPathExtractorConverter(config).mapToPropertyPathExtractors();
+			final RequestPropertyPathExtractors requestPropertyPaths = new PropertyPathExtractorConverter(config)
+					.mapToPropertyPathExtractors();
 			final RequestExecutor requestExecutor = new LdioRequestExecutorSupplier().getRequestExecutor(config);
 			return new LdioHttpEnricher(adapter, requestExecutor, requestPropertyPaths);
 		};

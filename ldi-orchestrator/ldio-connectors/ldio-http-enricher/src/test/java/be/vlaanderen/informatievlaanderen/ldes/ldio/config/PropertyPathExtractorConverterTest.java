@@ -14,31 +14,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PropertyPathExtractorConverterTest {
 
-    @Test
-    void mapToPropertyPathExtractors() {
-        String url = "http://example.org/url";
-        String header = "http://example.org/header";
-        String body = "http://example.org/body";
-        String httpMethod = "http://example.org/http-method";
-        final Map<String, String> propertyMap = Map.of(
-                URL_PROPERTY_PATH, url,
-                HEADER_PROPERTY_PATH, header,
-                BODY_PROPERTY_PATH, body,
-                HTTP_METHOD_PROPERTY_PATH, httpMethod
-        );
-        final Model model = ModelFactory.createDefaultModel();
-        model.add(ResourceFactory.createResource(), model.createProperty(url), url);
-        model.add(ResourceFactory.createResource(), model.createProperty(header), header);
-        model.add(ResourceFactory.createResource(), model.createProperty(body), body);
-        model.add(ResourceFactory.createResource(), model.createProperty(httpMethod), httpMethod);
+	@Test
+	void mapToPropertyPathExtractors() {
+		String url = "http://example.org/url";
+		String header = "http://example.org/header";
+		String body = "http://example.org/body";
+		String httpMethod = "http://example.org/http-method";
+		final Map<String, String> propertyMap = Map.of(
+				URL_PROPERTY_PATH, url,
+				HEADER_PROPERTY_PATH, header,
+				BODY_PROPERTY_PATH, body,
+				HTTP_METHOD_PROPERTY_PATH, httpMethod);
+		final Model model = ModelFactory.createDefaultModel();
+		model.add(ResourceFactory.createResource(), model.createProperty(url), url);
+		model.add(ResourceFactory.createResource(), model.createProperty(header), header);
+		model.add(ResourceFactory.createResource(), model.createProperty(body), body);
+		model.add(ResourceFactory.createResource(), model.createProperty(httpMethod), httpMethod);
 
-        RequestPropertyPathExtractors result =
-                new PropertyPathExtractorConverter(new ComponentProperties(propertyMap)).mapToPropertyPathExtractors();
+		RequestPropertyPathExtractors result = new PropertyPathExtractorConverter(new ComponentProperties(propertyMap))
+				.mapToPropertyPathExtractors();
 
-        assertEquals(url, result.urlPropertyPathExtractor().getProperties(model).get(0).toString());
-        assertEquals(header, result.headerPropertyPathExtractor().getProperties(model).get(0).toString());
-        assertEquals(body, result.bodyPropertyPathExtractor().getProperties(model).get(0).toString());
-        assertEquals(httpMethod, result.httpMethodPropertyPathExtractor().getProperties(model).get(0).toString());
-    }
+		assertEquals(url, result.urlPropertyPathExtractor().getProperties(model).get(0).toString());
+		assertEquals(header, result.headerPropertyPathExtractor().getProperties(model).get(0).toString());
+		assertEquals(body, result.bodyPropertyPathExtractor().getProperties(model).get(0).toString());
+		assertEquals(httpMethod, result.httpMethodPropertyPathExtractor().getProperties(model).get(0).toString());
+	}
 
 }
