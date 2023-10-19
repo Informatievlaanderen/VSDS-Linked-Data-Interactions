@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -18,12 +19,7 @@ public class SparqlConstructTransformer implements LdiTransformer {
 	public SparqlConstructTransformer(Query query, boolean includeOriginal) {
 		this.query = query;
 		this.includeOriginal = includeOriginal;
-	}
-
-	public SparqlConstructTransformer(Query query, boolean includeOriginal, FunctionBase2WithName functionClass) {
-		this.query = query;
-		this.includeOriginal = includeOriginal;
-		FunctionRegistry.get().put(functionClass.getName(), functionClass.getClass());
+		initGeoFunctions();
 	}
 
 	@Override
@@ -77,4 +73,11 @@ public class SparqlConstructTransformer implements LdiTransformer {
 		return result;
 	}
 
+	private void initGeoFunctions() {
+		FunctionRegistry.get().put(FirstCoordinate.name, FirstCoordinate.class);
+		FunctionRegistry.get().put(LastCoordinate.name, LastCoordinate.class);
+		FunctionRegistry.get().put(LineLength.name, LineLength.class);
+		FunctionRegistry.get().put(MidPoint.name, MidPoint.class);
+		FunctionRegistry.get().put(PointAtFromStart.name, PointAtFromStart.class);
+	}
 }
