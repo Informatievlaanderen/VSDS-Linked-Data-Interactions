@@ -21,74 +21,74 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RdfFormatterTest {
 
-    @Test
-    void formatModel_jsonLD() throws IOException, URISyntaxException {
-        String input = getJsonString("./rdfFormatter/product.jsonld");
+	@Test
+	void formatModel_jsonLD() throws IOException, URISyntaxException {
+		String input = getJsonString("./rdfFormatter/product.jsonld");
 
-        Model model = RDFParser.fromString(input)
-                .lang(Lang.JSONLD)
-                .toModel();
+		Model model = RDFParser.fromString(input)
+				.lang(Lang.JSONLD)
+				.toModel();
 
-        String frameType = "http://purl.org/goodrelations/v1#Offering";
+		String frameType = "http://purl.org/goodrelations/v1#Offering";
 
-        String output = RdfFormatter.formatModel(model, Lang.JSONLD, frameType);
-        String expected = getJsonString("./rdfFormatter/expected/product.jsonld");
+		String output = RdfFormatter.formatModel(model, Lang.JSONLD, frameType);
+		String expected = getJsonString("./rdfFormatter/expected/product.jsonld");
 
-        assertEquals(JSON.parse(expected), JSON.parse(output));
-    }
+		assertEquals(JSON.parse(expected), JSON.parse(output));
+	}
 
-    @Test
-    void formatModel_turtle() throws IOException, URISyntaxException {
-        String input = getJsonString("./rdfFormatter/product.jsonld");
+	@Test
+	void formatModel_turtle() throws IOException, URISyntaxException {
+		String input = getJsonString("./rdfFormatter/product.jsonld");
 
-        Model model = RDFParser.fromString(input)
-                .lang(Lang.JSONLD)
-                .toModel();
+		Model model = RDFParser.fromString(input)
+				.lang(Lang.JSONLD)
+				.toModel();
 
-        String output = RdfFormatter.formatModel(model, Lang.TURTLE, null);
-        String expected = getJsonString("./rdfFormatter/expected/product.ttl");
+		String output = RdfFormatter.formatModel(model, Lang.TURTLE, null);
+		String expected = getJsonString("./rdfFormatter/expected/product.ttl");
 
-        assertTrue(RDFParser.fromString(output)
-                .lang(Lang.TURTLE)
-                .toModel()
-                .isIsomorphicWith(RDFParser.fromString(expected).lang(Lang.TURTLE).toModel()));
-    }
+		assertTrue(RDFParser.fromString(output)
+				.lang(Lang.TURTLE)
+				.toModel()
+				.isIsomorphicWith(RDFParser.fromString(expected).lang(Lang.TURTLE).toModel()));
+	}
 
-    @Test
-    void formatModel_nquads() throws IOException, URISyntaxException {
-        String input = getJsonString("./rdfFormatter/product.jsonld");
+	@Test
+	void formatModel_nquads() throws IOException, URISyntaxException {
+		String input = getJsonString("./rdfFormatter/product.jsonld");
 
-        Model model = RDFParser.fromString(input)
-                .lang(Lang.JSONLD)
-                .toModel();
+		Model model = RDFParser.fromString(input)
+				.lang(Lang.JSONLD)
+				.toModel();
 
-        String output = RdfFormatter.formatModel(model, Lang.NQUADS, null);
-        String expected = getJsonString("./rdfFormatter/expected/product.nq");
+		String output = RdfFormatter.formatModel(model, Lang.NQUADS, null);
+		String expected = getJsonString("./rdfFormatter/expected/product.nq");
 
-        assertTrue(RDFParser.fromString(output)
-                .lang(Lang.NQUADS)
-                .toModel()
-                .isIsomorphicWith(RDFParser.fromString(expected).lang(Lang.NQUADS).toModel()));
-    }
+		assertTrue(RDFParser.fromString(output)
+				.lang(Lang.NQUADS)
+				.toModel()
+				.isIsomorphicWith(RDFParser.fromString(expected).lang(Lang.NQUADS).toModel()));
+	}
 
-    @Test
-    void getFramedContext() throws URISyntaxException, IOException {
-        Model model = RDFParser.fromString(getJsonString("./rdfFormatter/person.jsonld"))
-                .lang(Lang.JSONLD)
-                .toModel();
-        String frameType = "http://schema.org/Person";
+	@Test
+	void getFramedContext() throws URISyntaxException, IOException {
+		Model model = RDFParser.fromString(getJsonString("./rdfFormatter/person.jsonld"))
+				.lang(Lang.JSONLD)
+				.toModel();
+		String frameType = "http://schema.org/Person";
 
-        JsonLDWriteContext context = (JsonLDWriteContext) RdfFormatter.getFramedContext(model, frameType);
+		JsonLDWriteContext context = (JsonLDWriteContext) RdfFormatter.getFramedContext(model, frameType);
 
-        JsonObject frameObject = JSON.parse((String) context.get(JsonLD10Writer.JSONLD_FRAME));
-        assertEquals(frameType, frameObject.get("@type").getAsString().value());
-        assertTrue(frameObject.hasKey("@context"));
-        assertTrue(((JsonLdOptions) context.get(JsonLD10Writer.JSONLD_OPTIONS)).getOmitGraph());
-    }
+		JsonObject frameObject = JSON.parse((String) context.get(JsonLD10Writer.JSONLD_FRAME));
+		assertEquals(frameType, frameObject.get("@type").getAsString().value());
+		assertTrue(frameObject.hasKey("@context"));
+		assertTrue(((JsonLdOptions) context.get(JsonLD10Writer.JSONLD_OPTIONS)).getOmitGraph());
+	}
 
-    private String getJsonString(String resource) throws URISyntaxException, IOException {
-        File file = new File(
-                Objects.requireNonNull(getClass().getClassLoader().getResource(resource)).toURI());
-        return Files.readString(file.toPath());
-    }
+	private String getJsonString(String resource) throws URISyntaxException, IOException {
+		File file = new File(
+				Objects.requireNonNull(getClass().getClassLoader().getResource(resource)).toURI());
+		return Files.readString(file.toPath());
+	}
 }

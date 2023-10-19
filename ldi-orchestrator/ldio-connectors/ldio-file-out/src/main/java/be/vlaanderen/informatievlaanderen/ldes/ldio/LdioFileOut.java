@@ -31,6 +31,6 @@ public class LdioFileOut implements LdiOutput {
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to write model to file in archive directory", e);
 		}
-    }
+	}
 
 }

@@ -26,7 +26,7 @@ public class LdiConsoleOut implements LdiOutput {
 
 	@Override
 	public void accept(Model model) {
-        log.info(RdfFormatter.formatModel(model, outputLanguage, frameType));
+		log.info(RdfFormatter.formatModel(model, outputLanguage, frameType));
 	}
 
 	public static Lang getLang(MediaType contentType) {

@@ -20,7 +20,8 @@ public class LdioHttpOut implements LdiOutput {
 	private final Lang outputLanguage;
 	private final String frameType;
 
-	public LdioHttpOut(RestTemplate restTemplate, HttpHeaders headers, Lang outputLanguage, String targetURL, String frameType) {
+	public LdioHttpOut(RestTemplate restTemplate, HttpHeaders headers, Lang outputLanguage, String targetURL,
+			String frameType) {
 		this.restTemplate = restTemplate;
 		this.headers = headers;
 		this.outputLanguage = outputLanguage;
