@@ -28,6 +28,7 @@
         <module>ldio-version-object-creator</module>
         <module>ldio-version-materialiser</module>
         <module>ldio-geojson-to-wkt</module>
+        <module>ldio-http-enricher</module>
 
         <module>ldio-console-out</module>
         <module>ldio-http-out</module>

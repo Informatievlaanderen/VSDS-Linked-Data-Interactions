@@ -1,0 +1,26 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/200-post-response",
+    "headers": {
+      "Content-Type": {
+        "contains": "application/json"
+      },
+      "Accept": {
+        "contains": "application/n-quads"
+      },
+      "x-api-key": {
+        "contains": "my-secret"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "equalToJson": "{\"name\": \"Joe\"}"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": "<http://example.org/John> <http://example.org/hasWife> <http://example.org/Hillary> ."
+  }
+}

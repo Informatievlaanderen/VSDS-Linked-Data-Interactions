@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class ComponentProperties {
 	private final Map<String, String> config;
@@ -120,6 +123,52 @@ public class ComponentProperties {
 		} catch (IOException ioe) {
 			throw new IllegalArgumentException("Unreadable file: " + file);
 		}
+	}
+
+	/**
+	 * Returns a new map with the nested properties for a provided key.
+	 * For example the following config:
+	 *
+	 * <pre>
+	 * adapter:
+	 *    name: my-adapter
+	 * 	  config:
+	 * 	      core-context: context.ttl
+	 * 	      alt-context: alt-context.ttl
+	 * </pre>
+	 *
+	 * <br>
+	 * <br>
+	 * Will result in the following component properties:
+	 *
+	 * <pre>
+	 *     adapter.name: my-adapter
+	 *     adapter.config.core-context: context.ttl
+	 *     adapter.config.alt-context: alt-context.ttl
+	 * </pre>
+	 *
+	 * When providing the key "adapter.config" to this method, new component
+	 * properties are returned:
+	 *
+	 * <pre>
+	 *     core-context: context.ttl
+	 *     alt-context: alt-context.ttl
+	 * </pre>
+	 */
+	public ComponentProperties extractNestedProperties(String key) {
+		if (isBlank(key)) {
+			return new ComponentProperties();
+		}
+
+		return new ComponentProperties(
+				config
+						.entrySet()
+						.stream()
+						.filter(entry -> entry.getKey().startsWith(key))
+						.filter(entry -> !key.equals(entry.getKey()))
+						.collect(Collectors.toMap(
+								entry -> entry.getKey().substring(key.length() + 1),
+								Map.Entry::getValue)));
 	}
 
 	private String removeCasing(String key) {
