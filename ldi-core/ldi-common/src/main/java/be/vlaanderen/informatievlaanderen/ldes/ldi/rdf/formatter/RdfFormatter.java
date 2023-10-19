@@ -1,9 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.rdfFormatter;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
 import com.github.jsonldjava.core.JsonLdOptions;
-import org.apache.commons.cli.MissingArgumentException;
 import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.json.io.parser.JSONParser;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.JsonLDWriteContext;
 import org.apache.jena.riot.Lang;
@@ -12,9 +10,12 @@ import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.riot.writer.JsonLD10Writer;
 import org.apache.jena.sparql.util.Context;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdfFormatter.PrefixAdder.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.*;
 
 public class RdfFormatter {
+	private RdfFormatter() {
+	}
+
 	public static String formatModel(Model model, Lang lang, String frameType) throws IllegalArgumentException {
 
 		if (lang == Lang.JSONLD) {

@@ -1,7 +1,6 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.rdfFormatter;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
 import com.github.jsonldjava.core.JsonLdOptions;
-import org.apache.commons.cli.MissingArgumentException;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;

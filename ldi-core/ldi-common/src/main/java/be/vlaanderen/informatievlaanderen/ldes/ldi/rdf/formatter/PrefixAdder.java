@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.rdfFormatter;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public class PrefixAdder {
+	private PrefixAdder() {
+	}
 
 	private static final String VALID_LOCALNAME_REGEX = "([a-zA-Z][\\-_a-zA-Z0-9]*)$";
 	private static final String VALID_PREFIX_REGEX = "^[a-zA-Z_][\\w.-]*$"; // NCName regex
