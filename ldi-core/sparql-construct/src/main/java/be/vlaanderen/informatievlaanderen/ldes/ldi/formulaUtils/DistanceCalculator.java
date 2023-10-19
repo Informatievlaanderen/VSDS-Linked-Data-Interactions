@@ -1,0 +1,74 @@
+package be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils;
+
+import org.locationtech.jts.geom.Coordinate;
+
+import java.util.stream.IntStream;
+
+public class DistanceCalculator {
+
+	static double SEMI_MAJOR_AXIS_MT = 6378137;
+	static double SEMI_MINOR_AXIS_MT = 6356752.314245;
+	static double FLATTENING = 1 / 298.257223563;
+	static double ERROR_TOLERANCE = 1e-12;
+
+	public static double[] getLineLengths(Coordinate[] coords) {
+
+		return IntStream.range(0, coords.length - 1)
+				.mapToDouble(i -> calculateDistance(coords[i].y, coords[i].x, coords[i + 1].y, coords[i + 1].x))
+				.toArray();
+	}
+
+	public static double getTotalLineLength(Coordinate[] coords) {
+
+		return IntStream.range(0, coords.length - 1)
+				.mapToDouble(i -> calculateDistance(coords[i].y, coords[i].x, coords[i + 1].y, coords[i + 1].x))
+				.sum();
+	}
+
+	/**
+	 * Vincenty's Formula
+	 */
+	public static double calculateDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
+
+		double U1 = Math.atan((1 - FLATTENING) * Math.tan(Math.toRadians(latitude1)));
+		double U2 = Math.atan((1 - FLATTENING) * Math.tan(Math.toRadians(latitude2)));
+
+		double sinU1 = Math.sin(U1);
+		double cosU1 = Math.cos(U1);
+		double sinU2 = Math.sin(U2);
+		double cosU2 = Math.cos(U2);
+
+		double longitudeDifference = Math.toRadians(longitude2 - longitude1);
+		double previousLongitudeDifference;
+
+		double sinSigma, cosSigma, sigma, sinAlpha, cosSqAlpha, cos2SigmaM;
+
+		do {
+			sinSigma = Math.sqrt(Math.pow(cosU2 * Math.sin(longitudeDifference), 2) +
+					Math.pow(cosU1 * sinU2 - sinU1 * cosU2 * Math.cos(longitudeDifference), 2));
+			cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * Math.cos(longitudeDifference);
+			sigma = Math.atan2(sinSigma, cosSigma);
+			sinAlpha = cosU1 * cosU2 * Math.sin(longitudeDifference) / sinSigma;
+			cosSqAlpha = 1 - Math.pow(sinAlpha, 2);
+			cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
+			if (Double.isNaN(cos2SigmaM)) {
+				cos2SigmaM = 0;
+			}
+			previousLongitudeDifference = longitudeDifference;
+			double C = FLATTENING / 16 * cosSqAlpha * (4 + FLATTENING * (4 - 3 * cosSqAlpha));
+			longitudeDifference = Math.toRadians(longitude2 - longitude1) + (1 - C) * FLATTENING * sinAlpha *
+					(sigma + C * sinSigma * (cos2SigmaM + C * cosSigma * (-1 + 2 * Math.pow(cos2SigmaM, 2))));
+		} while (Math.abs(longitudeDifference - previousLongitudeDifference) > ERROR_TOLERANCE);
+
+		double uSq = cosSqAlpha * (Math.pow(SEMI_MAJOR_AXIS_MT, 2) - Math.pow(SEMI_MINOR_AXIS_MT, 2))
+				/ Math.pow(SEMI_MINOR_AXIS_MT, 2);
+
+		double A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+		double B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+
+		double deltaSigma = B * sinSigma * (cos2SigmaM + B / 4 * (cosSigma * (-1 + 2 * Math.pow(cos2SigmaM, 2))
+				- B / 6 * cos2SigmaM * (-3 + 4 * Math.pow(sinSigma, 2)) * (-3 + 4 * Math.pow(cos2SigmaM, 2))));
+
+		return SEMI_MINOR_AXIS_MT * A * (sigma - deltaSigma);
+	}
+}
