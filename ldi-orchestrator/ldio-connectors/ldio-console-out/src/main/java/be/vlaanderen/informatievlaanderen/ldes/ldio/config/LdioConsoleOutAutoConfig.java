@@ -26,7 +26,9 @@ public class LdioConsoleOutAutoConfig {
 			Lang outputLanguage = properties.getOptionalProperty("content-type")
 					.map(contentType -> getLang(MediaType.valueOf(contentType)))
 					.orElse(DEFAULT_OUTPUT_LANG);
-			return new LdiConsoleOut(outputLanguage);
+			String frameType = properties.getOptionalProperty("frame-type").orElse(null);
+
+			return new LdiConsoleOut(outputLanguage, frameType);
 		}
 	}
 }

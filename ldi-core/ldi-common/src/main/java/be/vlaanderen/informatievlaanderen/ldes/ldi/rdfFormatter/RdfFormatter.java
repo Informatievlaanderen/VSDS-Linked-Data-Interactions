@@ -15,11 +15,11 @@ import org.apache.jena.sparql.util.Context;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdfFormatter.PrefixAdder.*;
 
 public class RdfFormatter {
-    public static String formatModel(Model model, Lang lang, String frameType) throws MissingArgumentException {
+    public static String formatModel(Model model, Lang lang, String frameType) throws IllegalArgumentException {
 
         if (lang == Lang.JSONLD) {
             if (frameType == null) {
-                throw new MissingArgumentException("No frameType was given");
+                throw new IllegalArgumentException("No frameType was given");
             }
             return RDFWriter.source(addPrefixesToModel(model))
                     .context(getFramedContext(model, frameType))

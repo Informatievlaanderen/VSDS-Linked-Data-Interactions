@@ -31,7 +31,8 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 		final String topic = config.getProperty(TOPIC);
 		final var kafkaTemplate = createKafkaTemplate(config);
 		final var kafkaKeyExtractor = determineKafkaKeyExtractor(config);
-		return new LdioKafkaOut(kafkaTemplate, lang, topic, kafkaKeyExtractor);
+		final String frameType = config.getOptionalProperty("frame-type").orElse(null);
+		return new LdioKafkaOut(kafkaTemplate, lang, topic, frameType, kafkaKeyExtractor);
 	}
 
 	private KafkaKeyExtractor determineKafkaKeyExtractor(ComponentProperties config) {

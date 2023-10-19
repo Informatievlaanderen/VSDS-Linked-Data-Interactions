@@ -43,8 +43,9 @@ public class LdioHttpOutAutoConfig {
 					.orElse(DEFAULT_OUTPUT_LANG);
 
 			String targetURL = config.getProperty("endpoint");
+			String frameType = config.getOptionalProperty("frame-type").orElse(null);
 
-			return new LdioHttpOut(restTemplate, headers, outputLanguage, targetURL);
+			return new LdioHttpOut(restTemplate, headers, outputLanguage, targetURL, frameType);
 		}
 	}
 }

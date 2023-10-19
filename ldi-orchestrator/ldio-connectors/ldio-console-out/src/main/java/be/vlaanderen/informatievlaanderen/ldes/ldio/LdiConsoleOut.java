@@ -1,9 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdfFormatter.RdfFormatter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
+import org.apache.commons.cli.MissingArgumentException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -16,16 +17,16 @@ public class LdiConsoleOut implements LdiOutput {
 	private final Logger log = LoggerFactory.getLogger(LdiConsoleOut.class);
 
 	private final Lang outputLanguage;
+	private final String frameType;
 
-	public LdiConsoleOut(Lang outputLanguage) {
+	public LdiConsoleOut(Lang outputLanguage, String frameType) {
 		this.outputLanguage = outputLanguage;
+		this.frameType = frameType;
 	}
 
 	@Override
 	public void accept(Model model) {
-		log.info(RDFWriter.source(model)
-				.lang(outputLanguage)
-				.asString());
+        log.info(RdfFormatter.formatModel(model, outputLanguage, frameType));
 	}
 
 	public static Lang getLang(MediaType contentType) {

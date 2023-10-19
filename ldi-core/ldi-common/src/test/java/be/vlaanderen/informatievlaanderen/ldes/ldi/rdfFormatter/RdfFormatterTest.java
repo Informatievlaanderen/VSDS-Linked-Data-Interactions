@@ -21,10 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RdfFormatterTest {
 
-
-
     @Test
-    void formatModel_jsonLD() throws IOException, URISyntaxException, MissingArgumentException {
+    void formatModel_jsonLD() throws IOException, URISyntaxException {
         String input = getJsonString("./rdfFormatter/product.jsonld");
 
         Model model = RDFParser.fromString(input)
@@ -37,6 +35,40 @@ class RdfFormatterTest {
         String expected = getJsonString("./rdfFormatter/expected/product.jsonld");
 
         assertEquals(JSON.parse(expected), JSON.parse(output));
+    }
+
+    @Test
+    void formatModel_turtle() throws IOException, URISyntaxException {
+        String input = getJsonString("./rdfFormatter/product.jsonld");
+
+        Model model = RDFParser.fromString(input)
+                .lang(Lang.JSONLD)
+                .toModel();
+
+        String output = RdfFormatter.formatModel(model, Lang.TURTLE, null);
+        String expected = getJsonString("./rdfFormatter/expected/product.ttl");
+
+        assertTrue(RDFParser.fromString(output)
+                .lang(Lang.TURTLE)
+                .toModel()
+                .isIsomorphicWith(RDFParser.fromString(expected).lang(Lang.TURTLE).toModel()));
+    }
+
+    @Test
+    void formatModel_nquads() throws IOException, URISyntaxException {
+        String input = getJsonString("./rdfFormatter/product.jsonld");
+
+        Model model = RDFParser.fromString(input)
+                .lang(Lang.JSONLD)
+                .toModel();
+
+        String output = RdfFormatter.formatModel(model, Lang.NQUADS, null);
+        String expected = getJsonString("./rdfFormatter/expected/product.nq");
+
+        assertTrue(RDFParser.fromString(output)
+                .lang(Lang.NQUADS)
+                .toModel()
+                .isIsomorphicWith(RDFParser.fromString(expected).lang(Lang.NQUADS).toModel()));
     }
 
     @Test
