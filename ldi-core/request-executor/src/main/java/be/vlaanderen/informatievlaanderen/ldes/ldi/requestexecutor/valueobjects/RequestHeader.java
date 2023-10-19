@@ -12,6 +12,13 @@ public class RequestHeader {
 		this.value = notNull(value);
 	}
 
+	public static RequestHeader from(String headerString) {
+		int indexFirstColon = headerString.indexOf(":");
+		String key = headerString.substring(0, indexFirstColon).trim();
+		String value = headerString.substring(indexFirstColon + 1).trim();
+		return new RequestHeader(key, value);
+	}
+
 	public String getKey() {
 		return key;
 	}

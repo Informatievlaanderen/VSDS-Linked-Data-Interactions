@@ -10,7 +10,7 @@ public abstract class Request {
 	private final String url;
 	private final RequestHeaders requestHeaders;
 
-	public Request(String url, RequestHeaders requestHeaders) {
+	protected Request(String url, RequestHeaders requestHeaders) {
 		this.url = url;
 		this.requestHeaders = notNull(requestHeaders);
 	}
