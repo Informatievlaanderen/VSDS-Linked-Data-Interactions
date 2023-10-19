@@ -182,5 +182,4 @@ public class SparqlConstructFunctionsTest {
 
 		assertTrue(calculated.equals2D(expected, 0.00004));
 	}
-
 }
