@@ -18,6 +18,7 @@ public class SparqlFunctionsUtils {
 
 	/**
 	 * Vincenty's Formula
+	 * returns a double representing the distance in meters
 	 */
 	public static double calculateDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
 
