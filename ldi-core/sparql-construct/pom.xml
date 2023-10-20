@@ -8,12 +8,4 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sparql-construct</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-geosparql</artifactId>
-            <version>${jena.version}</version>
-        </dependency>
-    </dependencies>
 </project>
