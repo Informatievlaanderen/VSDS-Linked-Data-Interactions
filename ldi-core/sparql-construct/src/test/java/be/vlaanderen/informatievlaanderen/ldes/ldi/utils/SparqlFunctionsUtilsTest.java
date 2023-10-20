@@ -52,6 +52,7 @@ public class SparqlFunctionsUtilsTest {
 
 		assertEquals(FIRST_LENGTH, distance, PRECISION_2_CM);
 	}
+
 	@Test
 	void findOnSegmentByDistanceTest() {
 

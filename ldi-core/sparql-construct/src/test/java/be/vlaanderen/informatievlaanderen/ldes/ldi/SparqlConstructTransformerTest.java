@@ -154,7 +154,7 @@ class SparqlConstructTransformerTest {
 	}
 
 	@Test
-	void initGeoFunctionsTest () {
+	void initGeoFunctionsTest() {
 
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructFirstCoordinateQuery), false);

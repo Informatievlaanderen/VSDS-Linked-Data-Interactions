@@ -37,7 +37,6 @@ public class MidPoint extends FunctionBase2 {
 
 		int nthLength = getNthLength(lineLengths, halfOfLineLength);
 
-
 		Coordinate result = getMidPointCoordinate(halfOfLineLength, nthLength, coordinates);
 
 		return getNodeValue(wrapper, result);
