@@ -1,10 +1,15 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import org.apache.jena.query.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.*;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.riot.RDFWriter;
+import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SparqlConstructTransformerTest {
 
-	private final static Model initModel = ModelFactory.createDefaultModel();
+	private final static Model INIT_MODEL = ModelFactory.createDefaultModel();
 
 	private final static String constructQuery = """
 			CONSTRUCT {
@@ -28,14 +33,28 @@ class SparqlConstructTransformerTest {
 			WHERE { ?s ?p ?o }
 			""";
 
-	private final Statement originalData = initModel.createStatement(
-			initModel.createResource("http://data-from-source/"),
-			initModel.createProperty("http://test/"),
+	private final static String geoConstructFirstCoordinateQuery = """
+			prefix tree: <https://w3id.org/tree#>
+			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+
+			CONSTRUCT  {
+				?s geosparql:asWKT ?value
+			}
+			WHERE {
+				?s geosparql:asWKT ?wkt
+				BIND (tree:firstCoordinate(?wkt, 0) as ?value)
+			}
+
+			""";
+
+	private final Statement originalData = INIT_MODEL.createStatement(
+			INIT_MODEL.createResource("http://data-from-source/"),
+			INIT_MODEL.createProperty("http://test/"),
 			"Source data!");
 
-	private final Statement transformedData = initModel.createStatement(
-			initModel.createResource("http://transformed-quad/"),
-			initModel.createProperty("http://test/"),
+	private final Statement transformedData = INIT_MODEL.createStatement(
+			INIT_MODEL.createResource("http://transformed-quad/"),
+			INIT_MODEL.createProperty("http://test/"),
 			"Transformed data");
 
 	@Test
@@ -134,4 +153,18 @@ class SparqlConstructTransformerTest {
 		assertTrue(expectedModels.isEmpty());
 	}
 
+	@Test
+	void initGeoFunctionsTest() {
+
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
+
+		FunctionRegistry registry = FunctionRegistry.get();
+
+		assertTrue(registry.isRegistered(FirstCoordinate.NAME));
+		assertTrue(registry.isRegistered(LastCoordinate.NAME));
+		assertTrue(registry.isRegistered(LineLength.NAME));
+		assertTrue(registry.isRegistered(MidPoint.NAME));
+		assertTrue(registry.isRegistered(PointAtFromStart.NAME));
+	}
 }
