@@ -1,34 +1,20 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.utils;
 
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.GeometryWrapperFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-public class DistanceCalculator {
+public class SparqlFunctionsUtils {
 
 	static double SEMI_MAJOR_AXIS_MT = 6378137;
 	static double SEMI_MINOR_AXIS_MT = 6356752.314245;
 	static double FLATTENING = 1 / 298.257223563;
 	static double ERROR_TOLERANCE = 1e-12;
-
-	public static double[] getLineLengths(Coordinate[] coords) {
-
-		return getLineLengthsStream(coords)
-				.toArray();
-	}
-
-	public static double getTotalLineLength(Coordinate[] coords) {
-
-		return getLineLengthsStream(coords)
-				.sum();
-	}
-
-	private static DoubleStream getLineLengthsStream(Coordinate[] coords) {
-
-		return IntStream.range(0, coords.length - 1)
-				.mapToDouble(i -> calculateDistance(coords[i].y, coords[i].x, coords[i + 1].y, coords[i + 1].x));
-	}
 
 	/**
 	 * Vincenty's Formula
@@ -75,5 +61,42 @@ public class DistanceCalculator {
 				- B / 6 * cos2SigmaM * (-3 + 4 * Math.pow(sinSigma, 2)) * (-3 + 4 * Math.pow(cos2SigmaM, 2))));
 
 		return SEMI_MINOR_AXIS_MT * A * (sigma - deltaSigma);
+	}
+
+	public static double[] getLineLengths(Coordinate[] coords) {
+
+		return getLineLengthsStream(coords)
+				.toArray();
+	}
+
+	public static double getTotalLineLength(Coordinate[] coords) {
+
+		return getLineLengthsStream(coords)
+				.sum();
+	}
+
+	private static DoubleStream getLineLengthsStream(Coordinate[] coords) {
+
+		return IntStream.range(0, coords.length - 1)
+				.mapToDouble(i -> calculateDistance(coords[i].y, coords[i].x, coords[i + 1].y, coords[i + 1].x));
+	}
+
+	public static Coordinate findOnSegmentByDistance(Coordinate c1, Coordinate c2, double distanceToX) {
+
+		double length = calculateDistance(c1.y, c1.x, c2.y, c2.x);
+		double ratio = distanceToX / length;
+		double x = ratio * c2.x + (1.0 - ratio) * c1.x;
+		double y = ratio * c2.y + (1.0 - ratio) * c1.y;
+
+		return new Coordinate(x, y);
+	}
+
+	public static NodeValue getNodeValue(GeometryWrapper wrapper, Coordinate result) {
+
+		Node midpoint = GeometryWrapperFactory
+				.createPoint(result, wrapper.getGeometryDatatypeURI())
+				.asNode();
+
+		return NodeValue.makeNode(midpoint);
 	}
 }

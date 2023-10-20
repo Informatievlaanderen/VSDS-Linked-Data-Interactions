@@ -6,7 +6,7 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
 import org.locationtech.jts.geom.Coordinate;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils.DistanceCalculator.getTotalLineLength;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.getTotalLineLength;
 
 public class LineLength extends FunctionBase2 {
 
