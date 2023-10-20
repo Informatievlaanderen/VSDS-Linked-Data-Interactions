@@ -181,8 +181,27 @@ public class SparqlConstructFunctionsTest {
 		assertTrue(calculated.equals2D(expected, 0.00004));
 	}
 
+	@ParameterizedTest
+	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
+	void pointAtFromStart(String id, String midpoint, String line, String start, String end, String offset) {
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(geoConstructPointAtFromStartQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(createGeoModelTwo(line, offset));
+
+		String[] points = splitPoint(midpoint);
+
+		Coordinate expected = new Coordinate(Double.parseDouble(points[0]), Double.parseDouble(points[1]));
+
+		Coordinate calculated = GeometryWrapper
+				.extract(result.get(0).listStatements().nextStatement().getObject().asNode()).getXYGeometry()
+				.getCoordinates()[0];
+
+		assertTrue(calculated.equals2D(expected, 0.00004));
+	}
+
 	private static String[] splitPoint(String midpoint) {
-        return midpoint.replace("POINT(", "")
+		return midpoint.replace("POINT(", "")
 				.replace(")", "")
 				.split(" ");
 	}

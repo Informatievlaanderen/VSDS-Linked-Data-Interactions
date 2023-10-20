@@ -24,7 +24,6 @@ public class DistanceCalculator {
 				.sum();
 	}
 
-
 	private static DoubleStream getLineLengthsStream(Coordinate[] coords) {
 
 		return IntStream.range(0, coords.length - 1)
