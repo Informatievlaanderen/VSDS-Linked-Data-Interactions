@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.FirstCoordinate;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.*;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -9,6 +9,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RDFWriter;
+import org.apache.jena.sparql.function.FunctionRegistry;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -158,8 +159,12 @@ class SparqlConstructTransformerTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
 
-		String expected = "https://w3id.org/tree#firstCoordinate";
+		FunctionRegistry registry = FunctionRegistry.get();
 
-		assertEquals(expected, FirstCoordinate.NAME);
+		assertTrue(registry.isRegistered(FirstCoordinate.NAME));
+		assertTrue(registry.isRegistered(LastCoordinate.NAME));
+		assertTrue(registry.isRegistered(LineLength.NAME));
+		assertTrue(registry.isRegistered(MidPoint.NAME));
+		assertTrue(registry.isRegistered(PointAtFromStart.NAME));
 	}
 }
