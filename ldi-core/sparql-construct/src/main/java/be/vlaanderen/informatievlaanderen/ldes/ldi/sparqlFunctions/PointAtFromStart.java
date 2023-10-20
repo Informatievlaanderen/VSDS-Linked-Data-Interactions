@@ -1,9 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions;
 
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
-import org.apache.jena.geosparql.implementation.GeometryWrapperFactory;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
-import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase3;
 import org.locationtech.jts.geom.Coordinate;
@@ -11,7 +9,7 @@ import org.locationtech.jts.geom.Coordinate;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils.DistanceCalculator.getLineLengths;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.MidPoint.getNthLength;
 
-public class PointAtFromStart extends FunctionBase3 {
+public class PointAtFromStart extends FunctionBase3 implements NodeHelper {
 
 	public static final String name = "https://w3id.org/tree#pointAtFromStart";
 
@@ -32,9 +30,6 @@ public class PointAtFromStart extends FunctionBase3 {
 
 		Coordinate result = MidPoint.getMidPointCoordinate(os, getNthLength(lineLengths, os), coords);
 
-		Node midpoint = GeometryWrapperFactory.createPoint(result, wrapper.getGeometryDatatypeURI())
-				.asNode();
-
-		return NodeValue.makeNode(midpoint);
+		return getNodeValue(wrapper, result);
 	}
 }

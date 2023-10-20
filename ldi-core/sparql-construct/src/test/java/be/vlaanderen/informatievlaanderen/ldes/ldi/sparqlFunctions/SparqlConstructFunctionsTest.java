@@ -170,9 +170,7 @@ public class SparqlConstructFunctionsTest {
 
 		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
 
-		String[] points = midpoint.replace("POINT(", "")
-				.replace(")", "")
-				.split(" ");
+		String[] points = splitPoint(midpoint);
 
 		Coordinate expected = new Coordinate(Double.parseDouble(points[0]), Double.parseDouble(points[1]));
 
@@ -181,5 +179,11 @@ public class SparqlConstructFunctionsTest {
 				.getCoordinates()[0];
 
 		assertTrue(calculated.equals2D(expected, 0.00004));
+	}
+
+	private static String[] splitPoint(String midpoint) {
+        return midpoint.replace("POINT(", "")
+				.replace(")", "")
+				.split(" ");
 	}
 }

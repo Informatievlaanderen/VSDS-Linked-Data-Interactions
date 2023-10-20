@@ -1,14 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions;
 
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
-import org.apache.jena.geosparql.implementation.GeometryWrapperFactory;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
-import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
 import org.locationtech.jts.geom.Coordinate;
 
-public class LastCoordinate extends FunctionBase2 {
+public class LastCoordinate extends FunctionBase2 implements NodeHelper{
 
 	public static final String name = "https://w3id.org/tree#lastCoordinate";
 
@@ -23,11 +21,8 @@ public class LastCoordinate extends FunctionBase2 {
 
 	private NodeValue getLastCoordinateOfLineString(GeometryWrapper wrapper) {
 
-		Coordinate[] coordinates = wrapper.getXYGeometry().getCoordinates();
-		Node lastCoordinate = GeometryWrapperFactory
-				.createPoint(coordinates[coordinates.length - 1], wrapper.getGeometryDatatypeURI())
-				.asNode();
+		Coordinate[] coords = wrapper.getXYGeometry().getCoordinates();
 
-		return NodeValue.makeNode(lastCoordinate);
+		return getNodeValue(wrapper, coords[coords.length - 1]);
 	}
 }
