@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.FirstCoordinate;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -29,6 +30,20 @@ class SparqlConstructTransformerTest {
 			  <http://transformed-quad/> <http://test/> "Transformed data"
 			}
 			WHERE { ?s ?p ?o }
+			""";
+
+	private final static String geoConstructFirstCoordinateQuery = """
+			prefix tree: <https://w3id.org/tree#>
+			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+
+			CONSTRUCT  {
+				?s geosparql:asWKT ?value
+			}
+			WHERE {
+				?s geosparql:asWKT ?wkt
+				BIND (tree:firstCoordinate(?wkt, 0) as ?value)
+			}
+
 			""";
 
 	private final Model geoModel = RDFParser
@@ -150,5 +165,16 @@ class SparqlConstructTransformerTest {
 				});
 
 		assertTrue(expectedModels.isEmpty());
+	}
+
+	@Test
+	void initGeoFunctionsTest () {
+
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
+
+		String expected = "https://w3id.org/tree#firstCoordinate";
+
+		assertEquals(expected, FirstCoordinate.name);
 	}
 }
