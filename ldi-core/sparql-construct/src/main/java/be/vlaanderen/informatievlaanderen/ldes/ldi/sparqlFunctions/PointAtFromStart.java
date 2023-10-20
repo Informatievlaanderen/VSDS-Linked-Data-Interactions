@@ -7,7 +7,6 @@ import org.apache.jena.sparql.function.FunctionBase3;
 import org.locationtech.jts.geom.Coordinate;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.getLineLengths;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.MidPoint.getNthLength;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.getNodeValue;
 
 public class PointAtFromStart extends FunctionBase3 {
@@ -28,9 +27,9 @@ public class PointAtFromStart extends FunctionBase3 {
 
 		Coordinate[] coords = wrapper.getXYGeometry().getCoordinates();
 		double[] lineLengths = getLineLengths(coords);
-		MidPoint midPoint = new MidPoint();
+		MidPoint mp = new MidPoint();
 
-		Coordinate result = midPoint.getMidPointCoordinate(os, getNthLength(lineLengths, os), coords);
+		Coordinate result = mp.getMidPointCoordinate(os, mp.getNthLength(lineLengths, os), coords);
 
 		return getNodeValue(wrapper, result);
 	}
