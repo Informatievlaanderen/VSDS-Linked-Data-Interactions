@@ -24,8 +24,6 @@ This requester supports the below config:
 | rate-limit.enabled                  | Indicates if the http client should limit http requests when calling the server.              | No       | false     | false                       | true or false                                 |
 | rate-limit.max-requests-per-minute  | Max number of requests per minute the http client should do when rate-limit.enabled = true    | No       | 500       | 500                         | Integer                                       |
 
-
-## Example
 ```yaml
       config:
         auth:
