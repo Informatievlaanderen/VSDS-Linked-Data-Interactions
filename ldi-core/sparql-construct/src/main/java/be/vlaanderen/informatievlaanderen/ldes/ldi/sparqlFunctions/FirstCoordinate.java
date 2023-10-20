@@ -9,7 +9,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsU
 
 public class FirstCoordinate extends FunctionBase2 {
 
-	public static final String name = "https://w3id.org/tree#firstCoordinate";
+	public static final String NAME = "https://w3id.org/tree#firstCoordinate";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue index) {

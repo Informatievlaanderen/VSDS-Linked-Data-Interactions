@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SparqlConstructTransformerTest {
 
-	private final static Model initModel = ModelFactory.createDefaultModel();
+	private final static Model INIT_MODEL = ModelFactory.createDefaultModel();
 
 	private final static String constructQuery = """
 			CONSTRUCT {
@@ -61,14 +61,14 @@ class SparqlConstructTransformerTest {
 							""")
 			.lang(Lang.NQUADS).toModel();
 
-	private final Statement originalData = initModel.createStatement(
-			initModel.createResource("http://data-from-source/"),
-			initModel.createProperty("http://test/"),
+	private final Statement originalData = INIT_MODEL.createStatement(
+			INIT_MODEL.createResource("http://data-from-source/"),
+			INIT_MODEL.createProperty("http://test/"),
 			"Source data!");
 
-	private final Statement transformedData = initModel.createStatement(
-			initModel.createResource("http://transformed-quad/"),
-			initModel.createProperty("http://test/"),
+	private final Statement transformedData = INIT_MODEL.createStatement(
+			INIT_MODEL.createResource("http://transformed-quad/"),
+			INIT_MODEL.createProperty("http://test/"),
 			"Transformed data");
 
 	@Test
@@ -175,6 +175,6 @@ class SparqlConstructTransformerTest {
 
 		String expected = "https://w3id.org/tree#firstCoordinate";
 
-		assertEquals(expected, FirstCoordinate.name);
+		assertEquals(expected, FirstCoordinate.NAME);
 	}
 }
