@@ -38,16 +38,24 @@ public class MidPoint extends FunctionBase2 implements NodeHelper {
 
 		int nthLength = getNthLength(lineLengths, halfOfLineLength);
 
+
 		Coordinate result = getMidPointCoordinate(halfOfLineLength, nthLength, coordinates);
 
 		return getNodeValue(wrapper, result);
 	}
 
-	public static Coordinate getMidPointCoordinate(double halfOfLineLength, int nthLength, Coordinate[] coords) {
+	Coordinate getMidPointCoordinate(double offset, int nthLength, Coordinate[] coords) {
 
-		double distanceToFirst = halfOfLineLength - getSumOfLengthsBeforeSegment(getLineLengths(coords), nthLength);
+		double distanceToFirst = offset - getSumOfLengthsBeforeSegment(getLineLengths(coords), nthLength);
 
 		return findOnSegmentByDistance(coords[nthLength], coords[nthLength + 1], distanceToFirst);
+	}
+
+	private double getSumOfLengthsBeforeSegment(double[] lineLengths, int nthLength) {
+
+		return stream(lineLengths)
+				.limit(nthLength)
+				.sum();
 	}
 
 	public static int getNthLength(double[] lineLengths, double offset) {
@@ -65,12 +73,5 @@ public class MidPoint extends FunctionBase2 implements NodeHelper {
 		return i -> lengths.subList(0, i + 1).stream()
 				.mapToDouble(Double::doubleValue)
 				.sum() > offset;
-	}
-
-	private static double getSumOfLengthsBeforeSegment(double[] lineLengths, int nthLength) {
-
-		return stream(lineLengths)
-				.limit(nthLength)
-				.sum();
 	}
 }

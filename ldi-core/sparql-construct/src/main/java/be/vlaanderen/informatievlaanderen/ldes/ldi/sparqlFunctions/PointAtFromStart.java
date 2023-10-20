@@ -27,8 +27,9 @@ public class PointAtFromStart extends FunctionBase3 implements NodeHelper {
 
 		Coordinate[] coords = wrapper.getXYGeometry().getCoordinates();
 		double[] lineLengths = getLineLengths(coords);
+		MidPoint midPoint = new MidPoint();
 
-		Coordinate result = MidPoint.getMidPointCoordinate(os, getNthLength(lineLengths, os), coords);
+		Coordinate result = midPoint.getMidPointCoordinate(os, getNthLength(lineLengths, os), coords);
 
 		return getNodeValue(wrapper, result);
 	}
