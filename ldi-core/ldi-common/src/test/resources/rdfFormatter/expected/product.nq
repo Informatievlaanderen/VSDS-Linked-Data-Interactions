@@ -1,0 +1,13 @@
+<http://example.org/cars/for-sale#tesla> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/goodrelations/v1#Offering> .
+<http://example.org/cars/for-sale#tesla> <http://purl.org/goodrelations/v1#acceptedPaymentMethods> <http://purl.org/goodrelations/v1#Cash> .
+<http://example.org/cars/for-sale#tesla> <http://purl.org/goodrelations/v1#description> "Need to sell fast and furiously"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://example.org/cars/for-sale#tesla> <http://purl.org/goodrelations/v1#hasBusinessFunction> <http://purl.org/goodrelations/v1#Sell> .
+<http://example.org/cars/for-sale#tesla> <http://purl.org/goodrelations/v1#hasPriceSpecification> _:genid1 .
+<http://example.org/cars/for-sale#tesla> <http://purl.org/goodrelations/v1#includes> _:genid2 .
+<http://example.org/cars/for-sale#tesla> <http://purl.org/goodrelations/v1#name> "Used Tesla Roadster"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:genid1 <http://purl.org/goodrelations/v1#hasCurrency> "USD"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:genid1 <http://purl.org/goodrelations/v1#hasCurrencyValue> "85000"^^<http://www.w3.org/2001/XMLSchema#float> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/goodrelations/v1#Individual> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.productontology.org/id/Vehicle> .
+_:genid2 <http://purl.org/goodrelations/v1#name> "Tesla Roadster"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:genid2 <http://xmlns.com/foaf/0.1/page> <http://www.teslamotors.com/roadster> .
