@@ -57,17 +57,17 @@ public class MidPoint extends FunctionBase2 {
 				.sum();
 	}
 
-	public static int getNthLength(double[] lineLengths, double offset) {
+	int getNthLength(double[] lineLengths, double offset) {
 
 		List<Double> lengths = DoubleStream.of(lineLengths).boxed().toList();
 
 		return IntStream.range(0, lengths.size())
-				.filter(WhenSumOfLengthsIsBiggerThanOffset(offset, lengths))
+				.filter(whenSumOfLengthsIsBiggerThanOffset(offset, lengths))
 				.findFirst()
 				.orElseThrow();
 	}
 
-	private static IntPredicate WhenSumOfLengthsIsBiggerThanOffset(double offset, List<Double> lengths) {
+	private static IntPredicate whenSumOfLengthsIsBiggerThanOffset(double offset, List<Double> lengths) {
 
 		return i -> lengths.subList(0, i + 1).stream()
 				.mapToDouble(Double::doubleValue)
