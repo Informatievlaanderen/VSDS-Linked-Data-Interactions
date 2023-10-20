@@ -11,7 +11,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsU
 
 public class PointAtFromStart extends FunctionBase3 {
 
-	public static final String name = "https://w3id.org/tree#pointAtFromStart";
+	public static final String NAME = "https://w3id.org/tree#pointAtFromStart";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue nodeValue1, NodeValue offset) {

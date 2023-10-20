@@ -10,7 +10,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsU
 
 public class LastCoordinate extends FunctionBase2 {
 
-	public static final String name = "https://w3id.org/tree#lastCoordinate";
+	public static final String NAME = "https://w3id.org/tree#lastCoordinate";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue index) {

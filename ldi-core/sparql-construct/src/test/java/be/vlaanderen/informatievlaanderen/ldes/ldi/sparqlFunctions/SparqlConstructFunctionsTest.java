@@ -20,26 +20,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SparqlConstructFunctionsTest {
 
-	private final static Model initModel = ModelFactory.createDefaultModel();
+	private final static Model INIT_MODEL = ModelFactory.createDefaultModel();
 
 	private final Model createGeoModel(String wkt) {
-		Statement geoStatement = initModel.createStatement(
-				initModel.createResource("http://data-from-source/"),
-				initModel.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
-				initModel.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+		Statement geoStatement = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource("http://data-from-source/"),
+				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
 		return ModelFactory.createDefaultModel().add(geoStatement);
 	}
 
 	private final Model createGeoModelTwo(String wkt, String offset) {
-		Statement geoStatement = initModel.createStatement(
-				initModel.createResource("http://data-from-source/"),
-				initModel.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
-				initModel.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+		Statement geoStatement = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource("http://data-from-source/"),
+				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
 
-		Statement geoStatement2 = initModel.createStatement(
-				initModel.createResource("http://data-from-source/"),
-				initModel.createProperty("https://w3id.org/tree#offset"),
-				initModel.createLiteral(offset));
+		Statement geoStatement2 = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource("http://data-from-source/"),
+				INIT_MODEL.createProperty("https://w3id.org/tree#offset"),
+				INIT_MODEL.createLiteral(offset));
 
 		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
 	}
@@ -123,9 +123,9 @@ public class SparqlConstructFunctionsTest {
 
 		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
 
-		Statement expected = createStatement(initModel.createResource("http://data-from-source/"),
-				initModel.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
-				initModel.createTypedLiteral(start, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+		Statement expected = createStatement(INIT_MODEL.createResource("http://data-from-source/"),
+				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				INIT_MODEL.createTypedLiteral(start, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
 
 		assertTrue(result.get(0).contains(expected));
 	}
@@ -138,9 +138,9 @@ public class SparqlConstructFunctionsTest {
 
 		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
 
-		Statement expected = createStatement(initModel.createResource("http://data-from-source/"),
-				initModel.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
-				initModel.createTypedLiteral(end, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+		Statement expected = createStatement(INIT_MODEL.createResource("http://data-from-source/"),
+				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				INIT_MODEL.createTypedLiteral(end, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
 
 		assertTrue(result.get(0).contains(expected));
 	}

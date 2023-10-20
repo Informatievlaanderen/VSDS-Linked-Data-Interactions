@@ -16,7 +16,7 @@ import static java.util.Arrays.stream;
 
 public class MidPoint extends FunctionBase2 {
 
-	public static final String name = "https://w3id.org/tree#midPoint";
+	public static final String NAME = "https://w3id.org/tree#midPoint";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue index) {
