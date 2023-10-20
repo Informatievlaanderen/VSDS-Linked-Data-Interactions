@@ -74,10 +74,11 @@ public class SparqlConstructTransformer implements LdiTransformer {
 	}
 
 	private void initGeoFunctions() {
-		FunctionRegistry.get().put(FirstCoordinate.name, FirstCoordinate.class);
-		FunctionRegistry.get().put(LastCoordinate.name, LastCoordinate.class);
-		FunctionRegistry.get().put(LineLength.name, LineLength.class);
-		FunctionRegistry.get().put(MidPoint.name, MidPoint.class);
-		FunctionRegistry.get().put(PointAtFromStart.name, PointAtFromStart.class);
+		FunctionRegistry functionRegistry = FunctionRegistry.get();
+		functionRegistry.put(FirstCoordinate.name, FirstCoordinate.class);
+		functionRegistry.put(LastCoordinate.name, LastCoordinate.class);
+		functionRegistry.put(LineLength.name, LineLength.class);
+		functionRegistry.put(MidPoint.name, MidPoint.class);
+		functionRegistry.put(PointAtFromStart.name, PointAtFromStart.class);
 	}
 }
