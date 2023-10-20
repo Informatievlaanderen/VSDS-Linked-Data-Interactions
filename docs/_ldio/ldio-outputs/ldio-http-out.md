@@ -11,7 +11,7 @@ The LDIO HTTP Out is a basic Http Client that will send the given Linked Data mo
 
 ## Config
 
-| Property     | Description          | Required | Default             | Example                     | Supported values                                              |
-|:-------------|:---------------------|:---------|:--------------------|:----------------------------|:--------------------------------------------------------------|
-| content-type | Target content type. | No       | application/ld+json | application/n-quads         | Any type supported by [Apache Jena](https://jena.apache.org/) |
-| endpoint     | Target url.          | Yes      | N/A                 | http://example.com/endpoint | HTTP and HTTPS urls                                           |
+| Property   | Description           | Required | Default      | Example                     | Supported values                                      |
+|:-----------|:----------------------|:---------|:-------------|:----------------------------|:------------------------------------------------------|
+| endpoint   | Target url.           | Yes      | N/A          | http://example.com/endpoint | HTTP and HTTPS urls                                   |
+| rdf-writer | LDI RDF Writer Config | No       | Empty Config | N/A                         | [LDI RDF Writer Config](../ldio-core/ldio-rdf-writer) |

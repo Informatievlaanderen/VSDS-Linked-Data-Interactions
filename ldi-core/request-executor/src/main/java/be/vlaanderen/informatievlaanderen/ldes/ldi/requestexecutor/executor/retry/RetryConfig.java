@@ -4,7 +4,6 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 
 import java.util.List;
-import java.util.Optional;
 
 public class RetryConfig {
 

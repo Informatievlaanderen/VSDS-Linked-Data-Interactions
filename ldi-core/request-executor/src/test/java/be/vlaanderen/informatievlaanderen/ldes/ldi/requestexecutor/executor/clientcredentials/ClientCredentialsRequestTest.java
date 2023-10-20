@@ -4,10 +4,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
-import com.github.scribejava.core.model.OAuthRequest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import com.github.scribejava.core.model.OAuthRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
