@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils;
 
 import org.locationtech.jts.geom.Coordinate;
 
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 public class DistanceCalculator {
@@ -13,16 +14,21 @@ public class DistanceCalculator {
 
 	public static double[] getLineLengths(Coordinate[] coords) {
 
-		return IntStream.range(0, coords.length - 1)
-				.mapToDouble(i -> calculateDistance(coords[i].y, coords[i].x, coords[i + 1].y, coords[i + 1].x))
+		return getLineLengthsStream(coords)
 				.toArray();
 	}
 
 	public static double getTotalLineLength(Coordinate[] coords) {
 
-		return IntStream.range(0, coords.length - 1)
-				.mapToDouble(i -> calculateDistance(coords[i].y, coords[i].x, coords[i + 1].y, coords[i + 1].x))
+		return getLineLengthsStream(coords)
 				.sum();
+	}
+
+
+	private static DoubleStream getLineLengthsStream(Coordinate[] coords) {
+
+		return IntStream.range(0, coords.length - 1)
+				.mapToDouble(i -> calculateDistance(coords[i].y, coords[i].x, coords[i + 1].y, coords[i + 1].x));
 	}
 
 	/**

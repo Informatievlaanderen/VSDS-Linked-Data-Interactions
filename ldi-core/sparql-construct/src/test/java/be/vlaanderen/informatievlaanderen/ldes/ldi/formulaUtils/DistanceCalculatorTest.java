@@ -9,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DistanceCalculatorTest {
 
+    public static final double FIRST_LENGTH = 162.65;
+    public static final double SECOND_LENGTH = 95.46;
+    public static final int NUMBER_OF_LENGTHS = 2;
+    public static final double TOTAL_OF_LENGTHS = 258.12;
+    public static final double PRECISION_2_CM = 0.02d;
     Coordinate c1;
     Coordinate c2;
     Coordinate c3;
@@ -27,9 +32,9 @@ public class DistanceCalculatorTest {
 
         double[] lengths = getLineLengths(coordinates);
 
-        assertEquals(2, lengths.length);
-        assertEquals(162.65, lengths[0], 0.02d);
-        assertEquals(95.46, lengths[1], 0.02d);
+        assertEquals(NUMBER_OF_LENGTHS, lengths.length);
+        assertEquals(FIRST_LENGTH, lengths[0], PRECISION_2_CM);
+        assertEquals(SECOND_LENGTH, lengths[1], PRECISION_2_CM);
     }
 
     @Test
@@ -37,7 +42,7 @@ public class DistanceCalculatorTest {
 
         double length = getTotalLineLength(coordinates);
 
-        assertEquals(258.12, length, 0.02d);
+        assertEquals(TOTAL_OF_LENGTHS, length, PRECISION_2_CM);
     }
 
     @Test
@@ -45,6 +50,6 @@ public class DistanceCalculatorTest {
 
         double distance = calculateDistance(c1.y, c1.x, c2.y, c2.x);
 
-        assertEquals(162.65, distance, 0.02d);
+        assertEquals(FIRST_LENGTH, distance, PRECISION_2_CM);
     }
 }
