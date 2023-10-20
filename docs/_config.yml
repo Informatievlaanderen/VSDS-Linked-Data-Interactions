@@ -14,6 +14,14 @@ callouts:
 aux_links:
   LDI Repository: https://github.com/Informatievlaanderen/VSDS-Linked-Data-Interactions
 
+# Google Analytics Tracking (optional)
+# Supports a CSV of tracking ID strings (eg. "UA-1234567-89,G-1AB234CDE5")
+ga_tracking: G-9F4LJXRX6T
+ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true/nil by default)
+
+
+
+
 # Define Jekyll collections
 collections:
   core:
