@@ -8,12 +8,12 @@ import org.locationtech.jts.geom.Coordinate;
 
 public interface NodeHelper {
 
-    default NodeValue getNodeValue(GeometryWrapper wrapper, Coordinate result) {
+	default NodeValue getNodeValue(GeometryWrapper wrapper, Coordinate result) {
 
-        Node midpoint = GeometryWrapperFactory
-                .createPoint(result, wrapper.getGeometryDatatypeURI())
-                .asNode();
+		Node midpoint = GeometryWrapperFactory
+				.createPoint(result, wrapper.getGeometryDatatypeURI())
+				.asNode();
 
-        return NodeValue.makeNode(midpoint);
-    }
+		return NodeValue.makeNode(midpoint);
+	}
 }

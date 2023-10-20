@@ -38,7 +38,6 @@ public class MidPoint extends FunctionBase2 implements NodeHelper {
 
 		int nthLength = getNthLength(lineLengths, halfOfLineLength);
 
-
 		Coordinate result = getMidPointCoordinate(halfOfLineLength, nthLength, coordinates);
 
 		return getNodeValue(wrapper, result);
@@ -50,7 +49,6 @@ public class MidPoint extends FunctionBase2 implements NodeHelper {
 
 		return findOnSegmentByDistance(coords[nthLength], coords[nthLength + 1], distanceToFirst);
 	}
-
 
 	public static int getNthLength(double[] lineLengths, double offset) {
 

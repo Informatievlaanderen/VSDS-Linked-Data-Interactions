@@ -24,7 +24,7 @@ class SparqlConstructTransformerTest {
 
 	private final static Model initModel = ModelFactory.createDefaultModel();
 
-	private final static String constructQuery = """	
+	private final static String constructQuery = """
 			CONSTRUCT {
 			  <http://transformed-quad/> <http://test/> "Transformed data"
 			}
