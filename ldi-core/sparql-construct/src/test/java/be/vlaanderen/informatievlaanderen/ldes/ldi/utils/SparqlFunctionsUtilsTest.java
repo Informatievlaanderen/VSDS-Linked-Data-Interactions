@@ -1,13 +1,13 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.utils;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils.DistanceCalculator.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DistanceCalculatorTest {
+public class SparqlFunctionsUtilsTest {
 
 	public static final double FIRST_LENGTH = 162.65;
 	public static final double SECOND_LENGTH = 95.46;
@@ -51,5 +51,17 @@ public class DistanceCalculatorTest {
 		double distance = calculateDistance(c1.y, c1.x, c2.y, c2.x);
 
 		assertEquals(FIRST_LENGTH, distance, PRECISION_2_CM);
+	}
+	@Test
+	void findOnSegmentByDistanceTest() {
+
+		double distance = 129.059021377d;
+
+		Coordinate expected = new Coordinate(4.472400420184437, 51.197838901231705);
+
+		Coordinate result = findOnSegmentByDistance(c1, c2, distance);
+
+		assertEquals(expected.x, result.x, 0.00004d);
+		assertEquals(expected.y, result.y, 0.00004d);
 	}
 }

@@ -11,11 +11,10 @@ import java.util.function.IntPredicate;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils.CoordinateFinder.findOnSegmentByDistance;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.formulaUtils.DistanceCalculator.getLineLengths;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.*;
 import static java.util.Arrays.stream;
 
-public class MidPoint extends FunctionBase2 implements NodeHelper {
+public class MidPoint extends FunctionBase2 {
 
 	public static final String name = "https://w3id.org/tree#midPoint";
 
@@ -65,7 +64,7 @@ public class MidPoint extends FunctionBase2 implements NodeHelper {
 		return IntStream.range(0, lengths.size())
 				.filter(WhenSumOfLengthsIsBiggerThanOffset(offset, lengths))
 				.findFirst()
-				.getAsInt();
+				.orElseThrow();
 	}
 
 	private static IntPredicate WhenSumOfLengthsIsBiggerThanOffset(double offset, List<Double> lengths) {

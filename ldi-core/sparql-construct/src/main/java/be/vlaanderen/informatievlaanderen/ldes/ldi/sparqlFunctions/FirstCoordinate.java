@@ -5,7 +5,9 @@ import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
 
-public class FirstCoordinate extends FunctionBase2 implements NodeHelper {
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.getNodeValue;
+
+public class FirstCoordinate extends FunctionBase2 {
 
 	public static final String name = "https://w3id.org/tree#firstCoordinate";
 
