@@ -46,21 +46,6 @@ class SparqlConstructTransformerTest {
 
 			""";
 
-	private final Model geoModel = RDFParser
-			.fromString(
-					"""
-							<subject> <http://www.opengis.net/ont/geosparql#asWKT> "LINESTRING (3.5499566360323342 50.8944627132135, 3.928202753880612 50.677574117590524, 3.637920849485539 50.45967858693999)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
-							""")
-			.lang(Lang.NQUADS).toModel();
-
-	private final Model geoModel2 = RDFParser
-			.fromString(
-					"""
-										<subject> <description> "A Linestring" .
-							<subject> <http://www.opengis.net/ont/geosparql#asWKT> "MULTILINESTRING ((3.5499566360323342 50.8944627132135, 3.928202753880612 50.677574117590524), (3.928202753880612 50.677574117590524, 3.637920849485539 50.45967858693999)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
-							""")
-			.lang(Lang.NQUADS).toModel();
-
 	private final Statement originalData = INIT_MODEL.createStatement(
 			INIT_MODEL.createResource("http://data-from-source/"),
 			INIT_MODEL.createProperty("http://test/"),
