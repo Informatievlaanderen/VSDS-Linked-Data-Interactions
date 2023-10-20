@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
-import com.github.jsonldjava.core.JsonLdOptions;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.JsonLDWriteContext;
@@ -8,6 +7,8 @@ import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.riot.writer.JsonLD10Writer;
 import org.apache.jena.sparql.util.Context;
+
+import com.github.jsonldjava.core.JsonLdOptions;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.addPrefixesToModel;
 

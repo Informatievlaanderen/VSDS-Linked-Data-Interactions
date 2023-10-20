@@ -37,7 +37,7 @@ public class LdiRdfWriterProperties {
 		if (properties.containsKey(CONTENT_TYPE)) {
 			this.lang = nameToLang(MediaType.createFromContentType(properties.get(CONTENT_TYPE)).getContentTypeStr());
 		} else {
-			this.lang = Lang.NQUADS;
+			this.lang = Lang.TTL;
 		}
 	}
 

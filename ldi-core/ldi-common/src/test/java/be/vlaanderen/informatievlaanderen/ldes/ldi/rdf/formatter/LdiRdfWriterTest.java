@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
-import com.github.jsonldjava.core.JsonLdOptions;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
@@ -16,6 +15,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Objects;
+
+import com.github.jsonldjava.core.JsonLdOptions;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.FRAME_TYPE;
 import static org.junit.jupiter.api.Assertions.*;
