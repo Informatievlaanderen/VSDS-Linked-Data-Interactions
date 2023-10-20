@@ -9,41 +9,41 @@ import java.util.Objects;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
 public class LdiRdfWriterProperties {
-    public final static String RDF_WRITER = "rdfWriter";
-    public final static String CONTENT_TYPE = "content-type";
-    public final static String FRAME_TYPE = "jsonld-frame-type";
-    private final Map<String, String> properties;
-    private Lang lang;
+	public final static String RDF_WRITER = "rdfWriter";
+	public final static String CONTENT_TYPE = "content-type";
+	public final static String FRAME_TYPE = "jsonld-frame-type";
+	private final Map<String, String> properties;
+	private Lang lang;
 
-    public LdiRdfWriterProperties() {
-        this.properties = Map.of();
-    }
-    public LdiRdfWriterProperties(Map<String, String> properties) {
-        this.properties = properties;
-        setLangFromProperties();
-    }
+	public LdiRdfWriterProperties() {
+		this.properties = Map.of();
+	}
 
-    public LdiRdfWriterProperties withLang(Lang lang) {
-        this.lang = lang;
-        return this;
-    }
+	public LdiRdfWriterProperties(Map<String, String> properties) {
+		this.properties = properties;
+		setLangFromProperties();
+	}
 
-    public Lang getLang() {
-        return lang;
-    }
+	public LdiRdfWriterProperties withLang(Lang lang) {
+		this.lang = lang;
+		return this;
+	}
 
-    private void setLangFromProperties() {
-        if (properties.containsKey(CONTENT_TYPE)) {
-            this.lang = nameToLang(MediaType.createFromContentType(properties.get(CONTENT_TYPE)).getContentTypeStr());
-        }
-        else {
-            this.lang = Lang.NQUADS;
-        }
-    }
+	public Lang getLang() {
+		return lang;
+	}
 
-    // JSON-LD
+	private void setLangFromProperties() {
+		if (properties.containsKey(CONTENT_TYPE)) {
+			this.lang = nameToLang(MediaType.createFromContentType(properties.get(CONTENT_TYPE)).getContentTypeStr());
+		} else {
+			this.lang = Lang.NQUADS;
+		}
+	}
 
-    public String getFrameType() {
-        return properties.get(Objects.requireNonNull(FRAME_TYPE));
-    }
+	// JSON-LD
+
+	public String getFrameType() {
+		return properties.get(Objects.requireNonNull(FRAME_TYPE));
+	}
 }

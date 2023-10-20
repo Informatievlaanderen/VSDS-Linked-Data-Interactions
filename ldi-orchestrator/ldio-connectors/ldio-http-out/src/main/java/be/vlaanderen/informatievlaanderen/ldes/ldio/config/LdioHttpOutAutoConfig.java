@@ -7,15 +7,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import org.apache.jena.riot.Lang;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-
-import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.RDF_WRITER;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut.getLang;
 
 @Configuration
 public class LdioHttpOutAutoConfig {
@@ -33,8 +28,8 @@ public class LdioHttpOutAutoConfig {
 
 			String targetURL = config.getProperty("endpoint");
 
-			return new LdioHttpOut(requestExecutor, targetURL, 
-                             new LdiRdfWriterProperties(config.extractNestedProperties(RDF_WRITER).getConfig()));
+			return new LdioHttpOut(requestExecutor, targetURL,
+					new LdiRdfWriterProperties(config.extractNestedProperties(RDF_WRITER).getConfig()));
 		}
 	}
 }

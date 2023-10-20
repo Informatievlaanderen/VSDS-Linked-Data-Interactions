@@ -11,8 +11,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolN
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.KafkaKeyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -32,8 +30,8 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 		final String topic = config.getProperty(TOPIC);
 		final var kafkaTemplate = createKafkaTemplate(config);
 		final var kafkaKeyExtractor = determineKafkaKeyExtractor(config);
-		final LdiRdfWriterProperties writerProperties
-				= new LdiRdfWriterProperties(config.extractNestedProperties(RDF_WRITER).getConfig());
+		final LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(
+				config.extractNestedProperties(RDF_WRITER).getConfig());
 		return new LdioKafkaOut(kafkaTemplate, topic, writerProperties, kafkaKeyExtractor);
 	}
 

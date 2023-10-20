@@ -12,19 +12,19 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWr
 
 @Configuration
 public class LdioConsoleOutAutoConfig {
-    @Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut")
-    public LdioConfigurator ldioConfigurator() {
-        return new LdioConsoleOutConfigurator();
-    }
+	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut")
+	public LdioConfigurator ldioConfigurator() {
+		return new LdioConsoleOutConfigurator();
+	}
 
-    public static class LdioConsoleOutConfigurator implements LdioConfigurator {
+	public static class LdioConsoleOutConfigurator implements LdioConfigurator {
 
-        @Override
-        public LdiComponent configure(ComponentProperties config) {
-            LdiRdfWriterProperties writerProperties
-                    = new LdiRdfWriterProperties(config.extractNestedProperties(RDF_WRITER).getConfig());
+		@Override
+		public LdiComponent configure(ComponentProperties config) {
+			LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(
+					config.extractNestedProperties(RDF_WRITER).getConfig());
 
-            return new LdiConsoleOut(writerProperties);
-        }
-    }
+			return new LdiConsoleOut(writerProperties);
+		}
+	}
 }
