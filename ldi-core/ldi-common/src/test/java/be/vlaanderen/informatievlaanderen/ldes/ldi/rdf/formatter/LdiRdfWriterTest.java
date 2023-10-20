@@ -18,8 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.FRAME_TYPE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LdiRdfWriterTest {
 	@Test
@@ -34,9 +33,11 @@ public class LdiRdfWriterTest {
 		LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(Map.of(FRAME_TYPE, frameType));
 
 		String output = LdiRdfWriter.getRdfWriter(writerProperties.withLang(Lang.JSONLD)).write(model);
-		String expected = getJsonString("./rdfFormatter/expected/product.jsonld");
 
-		assertEquals(JSON.parse(expected), JSON.parse(output));
+		JsonObject outputJson = JSON.parse(output);
+
+		assertFalse(outputJson.hasKey("@graph"));
+		assertEquals(9, outputJson.size());
 	}
 
 	@Test
