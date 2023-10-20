@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
@@ -19,6 +20,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.HashMap;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.RDF_WRITER;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy.NO_AUTH;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy.SASL_SSL_PLAIN;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.*;
@@ -27,12 +29,12 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 
 	@Override
 	public LdiComponent configure(ComponentProperties config) {
-		final Lang lang = getLang(config);
 		final String topic = config.getProperty(TOPIC);
 		final var kafkaTemplate = createKafkaTemplate(config);
 		final var kafkaKeyExtractor = determineKafkaKeyExtractor(config);
-		final String frameType = config.getOptionalProperty("frame-type").orElse(null);
-		return new LdioKafkaOut(kafkaTemplate, lang, topic, frameType, kafkaKeyExtractor);
+		final LdiRdfWriterProperties writerProperties
+				= new LdiRdfWriterProperties(config.extractNestedProperties(RDF_WRITER).getConfig());
+		return new LdioKafkaOut(kafkaTemplate, topic, writerProperties, kafkaKeyExtractor);
 	}
 
 	private KafkaKeyExtractor determineKafkaKeyExtractor(ComponentProperties config) {
@@ -49,13 +51,6 @@ public class LdioKafkaOutConfigurator implements LdioConfigurator {
 		} else {
 			return model -> null;
 		}
-	}
-
-	private Lang getLang(ComponentProperties config) {
-		return config
-				.getOptionalProperty(CONTENT_TYPE)
-				.map(RDFLanguages::contentTypeToLang)
-				.orElse(Lang.NQUADS);
 	}
 
 	private KafkaTemplate<String, String> createKafkaTemplate(ComponentProperties config) {

@@ -1,36 +1,26 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.RdfFormatter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 
-import static java.util.Optional.ofNullable;
-import static org.apache.jena.riot.RDFLanguages.nameToLang;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriter.getRdfWriter;
 
 @SuppressWarnings("java:S2629")
 public class LdiConsoleOut implements LdiOutput {
 	private final Logger log = LoggerFactory.getLogger(LdiConsoleOut.class);
 
-	private final Lang outputLanguage;
-	private final String frameType;
+	private final LdiRdfWriterProperties properties;
 
-	public LdiConsoleOut(Lang outputLanguage, String frameType) {
-		this.outputLanguage = outputLanguage;
-		this.frameType = frameType;
+	public LdiConsoleOut(LdiRdfWriterProperties properties) {
+		this.properties = properties;
 	}
 
 	@Override
 	public void accept(Model model) {
-		log.info(RdfFormatter.formatModel(model, outputLanguage, frameType));
-	}
-
-	public static Lang getLang(MediaType contentType) {
-		return ofNullable(nameToLang(contentType.getType() + "/" + contentType.getSubtype()))
-				.orElseGet(() -> ofNullable(nameToLang(contentType.getSubtype()))
-						.orElseThrow());
+		log.info(getRdfWriter(properties).write(model));
 	}
 }

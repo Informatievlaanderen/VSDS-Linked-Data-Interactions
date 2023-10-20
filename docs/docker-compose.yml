@@ -5,11 +5,3 @@ services:
       - 4000:4000
     volumes:
       - .:/site
-  nginx:
-    image: nginx:${NGINX_TAG:-stable}
-    ports:
-      - ${NGINX_PORT:-8080}:8080
-    volumes:
-      - ./proxy/nginx.passthrough.conf:/etc/nginx/conf.d/fwd-jekyll.conf:ro
-    depends_on:
-      - jekyll

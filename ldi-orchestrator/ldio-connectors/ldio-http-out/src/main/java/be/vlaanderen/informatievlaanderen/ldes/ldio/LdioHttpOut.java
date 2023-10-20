@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.RdfFormatter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -16,22 +17,20 @@ public class LdioHttpOut implements LdiOutput {
 	private final RestTemplate restTemplate;
 	private final HttpHeaders headers;
 	private final String targetURL;
-	private final Lang outputLanguage;
-	private final String frameType;
+	private final LdiRdfWriterProperties rdfWriterProperties;
 
-	public LdioHttpOut(RestTemplate restTemplate, HttpHeaders headers, Lang outputLanguage, String targetURL,
-			String frameType) {
+	public LdioHttpOut(RestTemplate restTemplate, HttpHeaders headers, String targetURL,
+					   LdiRdfWriterProperties rdfWriterProperties) {
 		this.restTemplate = restTemplate;
 		this.headers = headers;
-		this.outputLanguage = outputLanguage;
 		this.targetURL = targetURL;
-		this.frameType = frameType;
+		this.rdfWriterProperties = rdfWriterProperties;
 	}
 
 	@Override
 	public void accept(Model linkedDataModel) {
 		if (!linkedDataModel.isEmpty()) {
-			String content = RdfFormatter.formatModel(linkedDataModel, outputLanguage, frameType);
+			String content = LdiRdfWriter.getRdfWriter(rdfWriterProperties).write(linkedDataModel);
 			HttpEntity<String> request = new HttpEntity<>(content, headers);
 			restTemplate.postForObject(targetURL, request, String.class);
 		}

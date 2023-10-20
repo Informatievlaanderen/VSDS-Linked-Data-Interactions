@@ -23,3 +23,20 @@ This requester supports the below config:
 | retries.statuses-to-retry           | Custom comma seperated list of http status codes that can trigger a retry in the http client. | No       | N/A       | 410,451                     | Comma seperated list of Integers              |
 | rate-limit.enabled                  | Indicates if the http client should limit http requests when calling the server.              | No       | false     | false                       | true or false                                 |
 | rate-limit.max-requests-per-minute  | Max number of requests per minute the http client should do when rate-limit.enabled = true    | No       | 500       | 500                         | Integer                                       |
+
+
+## Example
+```yaml
+      config:
+        auth:
+          type: API_KEY
+          api-key: my-secret
+          api-key-header: x-api-key
+        retries:
+          enabled: true
+          max: 10
+          statuses-to-retry: 410,451
+        rate-limit:
+          enabled: true
+          max-requests-per-minute: 500
+```
