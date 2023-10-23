@@ -37,13 +37,13 @@ public class SparqlFunctionsUtils {
 		double previousLongitudeDifference;
 
 		double sinSigma;
-        double cosSigma;
-        double sigma;
-        double sinAlpha;
-        double cosSqAlpha;
-        double cos2SigmaM;
+		double cosSigma;
+		double sigma;
+		double sinAlpha;
+		double cosSqAlpha;
+		double cos2SigmaM;
 
-        do {
+		do {
 			sinSigma = Math.sqrt(Math.pow(cosU2 * Math.sin(longitudeDifference), 2) +
 					Math.pow(cosU1 * sinU2 - sinU1 * cosU2 * Math.cos(longitudeDifference), 2));
 			cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * Math.cos(longitudeDifference);
