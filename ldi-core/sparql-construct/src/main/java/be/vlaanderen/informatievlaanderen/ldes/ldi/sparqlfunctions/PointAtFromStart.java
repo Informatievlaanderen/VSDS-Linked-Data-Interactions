@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions;
 
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
