@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
@@ -18,7 +18,7 @@ import static org.apache.jena.rdf.model.ResourceFactory.createStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SparqlConstructFunctionsTest {
+public class SparqlConstructFunctionsTest {
 
 	private final static Model INIT_MODEL = ModelFactory.createDefaultModel();
 

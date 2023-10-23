@@ -7,7 +7,7 @@ import org.locationtech.jts.geom.Coordinate;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SparqlFunctionsUtilsTest {
+public class SparqlFunctionsUtilsTest {
 
 	public static final double FIRST_LENGTH = 162.65;
 	public static final double SECOND_LENGTH = 95.46;
