@@ -16,6 +16,9 @@ public class SparqlFunctionsUtils {
 	static double FLATTENING = 1 / 298.257223563;
 	static double ERROR_TOLERANCE = 1e-12;
 
+	private SparqlFunctionsUtils() {
+	}
+
 	/**
 	 * Vincenty's Formula
 	 * returns a double representing the distance in meters
