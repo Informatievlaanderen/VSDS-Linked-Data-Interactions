@@ -18,7 +18,7 @@ import static org.apache.jena.rdf.model.ResourceFactory.createStatement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SparqlConstructFunctionsTest {
+class SparqlConstructFunctionsTest {
 
 	private final static Model INIT_MODEL = ModelFactory.createDefaultModel();
 
