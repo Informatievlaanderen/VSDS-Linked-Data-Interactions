@@ -11,10 +11,10 @@ import java.util.stream.IntStream;
 
 public class SparqlFunctionsUtils {
 
-	final static double SEMI_MAJOR_AXIS_MT = 6378137;
-	final static double SEMI_MINOR_AXIS_MT = 6356752.314245;
-	final static double FLATTENING = 1 / 298.257223563;
-	final static double ERROR_TOLERANCE = 1e-12;
+	static final double SEMI_MAJOR_AXIS_MT = 6378137;
+	static final double SEMI_MINOR_AXIS_MT = 6356752.314245;
+	static final double FLATTENING = 1 / 298.257223563;
+	static final double ERROR_TOLERANCE = 1e-12;
 
 	private SparqlFunctionsUtils() {
 	}
