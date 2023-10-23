@@ -90,7 +90,7 @@ public class LdioHttpEnricher implements LdiTransformer {
 	}
 
 	private void addResponseToModel(Model model, Response response) {
-		if (response.isOk()) {
+		if (response.isSuccess()) {
 			response
 					.getBody()
 					.stream()

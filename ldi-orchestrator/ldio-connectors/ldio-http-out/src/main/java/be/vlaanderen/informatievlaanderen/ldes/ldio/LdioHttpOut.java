@@ -6,13 +6,18 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.PostRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
 public class LdioHttpOut implements LdiOutput {
+
+	private final Logger log = LoggerFactory.getLogger(LdioHttpOut.class);
 
 	private final RequestExecutor requestExecutor;
 	private final String targetURL;
@@ -32,7 +37,12 @@ public class LdioHttpOut implements LdiOutput {
 			final String contentType = rdfWriterProperties.getLang().getHeaderString();
 			final RequestHeader requestHeader = new RequestHeader(HttpHeaders.CONTENT_TYPE, contentType);
 			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), content);
-			requestExecutor.execute(request);
+			Response response = requestExecutor.execute(request);
+			if (!response.isSuccess()) {
+				log.atError().log("Failed to post model. The request url was {}. " +
+						"The http response obtained from the server has code {} and body \"{}\".",
+						response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
+			}
 		}
 	}
 }
