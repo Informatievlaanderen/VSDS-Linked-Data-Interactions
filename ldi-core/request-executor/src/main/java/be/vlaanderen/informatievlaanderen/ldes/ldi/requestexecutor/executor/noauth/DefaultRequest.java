@@ -10,6 +10,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
+import java.nio.charset.StandardCharsets;
+
 public class DefaultRequest {
 
 	private final Request request;
@@ -30,7 +32,8 @@ public class DefaultRequest {
 			case PostRequest.METHOD_NAME -> {
 				final HttpPost post = new HttpPost(request.getUrl());
 				final PostRequest postRequest = (PostRequest) request;
-				final ContentType contentType = ContentType.create(postRequest.getContentType());
+				final ContentType contentType = ContentType.create(postRequest.getContentType(),
+						StandardCharsets.UTF_8);
 				post.setEntity(new StringEntity(postRequest.getBody(), contentType));
 				yield post;
 			}
