@@ -9,8 +9,8 @@ import java.util.Objects;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
 public class LdiRdfWriterProperties {
-	public final static String RDF_WRITER = "rdfWriter";
-	public final static String CONTENT_TYPE = "content-type";
+	public final static String RDF_WRITER = "rdfwriter";
+	public final static String CONTENT_TYPE = "contenttype";
 	public final static String FRAME_TYPE = "jsonld-frame-type";
 	private final Map<String, String> properties;
 	private Lang lang;
