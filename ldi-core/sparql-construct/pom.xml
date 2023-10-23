@@ -15,5 +15,18 @@
             <artifactId>jena-geosparql</artifactId>
             <version>${jena.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.sis.non-free</groupId>
+            <artifactId>sis-epsg</artifactId>
+            <version>1.3</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.14.2.0</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
+
 </project>
