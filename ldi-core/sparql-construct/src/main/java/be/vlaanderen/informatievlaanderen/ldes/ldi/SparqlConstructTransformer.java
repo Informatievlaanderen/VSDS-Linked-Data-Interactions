@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
