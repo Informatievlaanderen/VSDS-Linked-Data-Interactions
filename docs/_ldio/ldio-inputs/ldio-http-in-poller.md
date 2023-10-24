@@ -11,14 +11,20 @@ The LDIO Http In Poller is a basic Http Poller that will poll a target URL on a 
 
 ## Config
 
-| Property                            | Description                                                                                   | Required | Default   | Example                     | Supported values                              |
-|:------------------------------------|:----------------------------------------------------------------------------------------------|:---------|:----------|:----------------------------|:----------------------------------------------|
-| url                                 | Target URL to poll from.                                                                      | Yes      | N/A       | http://example.com/my-api   | HTTP and HTTPS urls (lists are supported)     |
-| interval                            | Polling interval declared in ISO 8601 format.                                                 | Yes      | N/A       | PT1S                        | ISO 8601 formatted String                     |
-| continueOnFail                      | Indicated if continue if polling results in failure                                           | No       | true      | true                        | true or false                                 |
-
-This component uses the "LDIO Http Requester" to make the HTTP request.
-Refer to [LDIO Http Requester](../ldio-core) for the config.
+| Property                  | Description                                                                                   | Required | Default     | Example                                                  | Supported values                              |
+|:--------------------------|:----------------------------------------------------------------------------------------------|:---------|:------------|:---------------------------------------------------------|:----------------------------------------------|
+| url                       | Target URL to poll from.                                                                      | Yes      | N/A         | http://example.com/my-api                                | HTTP and HTTPS urls (lists are supported)     |
+| interval                  | Polling interval declared in ISO 8601 format.                                                 | Yes      | N/A         | PT1S                                                     | ISO 8601 formatted String                     |
+| continueOnFail            | Indicated if continue if polling results in failure                                           | No       | true        | true                                                     | true or false                                 |
+| auth.type                 | The type of authentication required by the LDES server                                        | No       | NO_AUTH     | OAUTH2_CLIENT_CREDENTIALS                                | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS |
+| auth.api-key              | The api key when using auth.type 'API_KEY'                                                    | No       | N/A         | myKey                                                    | String                                        |
+| auth.api-key-header       | The header for the api key when using auth.type 'API_KEY'                                     | No       | X-API-KEY   | X-API-KEY                                                | String                                        |
+| auth.client-id            | The client identifier when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'                        | No       | N/A         | myId                                                     | String                                        |
+| auth.client-secret        | The client secret when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'                            | No       | N/A         | mySecret                                                 | String                                        |
+| auth.token-endpoint       | The token endpoint when using auth.type 'OAUTH2_CLIENT_CREDENTIALS'                           | No       | N/A         | http://localhost:8000/token                              | HTTP and HTTPS urls                           |
+| retries.enabled           | Indicates if the http client should retry http requests when the server cannot be reached.    | No       | true        | true                                                     | true or false                                 |
+| retries.max               | Max number of retries the http client should do when retries.enabled = true                   | No       | 5           | 100                                                      | Integer                                       |
+| retries.statuses-to-retry | Custom comma seperated list of http status codes that can trigger a retry in the http client. | No       | N/A         | 410,451                                                  | Comma seperated list of Integers              |
 
 The Http In Poller supports polling multiple endpoints. Example configuration:
 

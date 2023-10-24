@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.GetRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
@@ -25,7 +24,7 @@ public class HttpInputPoller extends LdiInput {
 
 	private final ScheduledExecutorService scheduler;
 	private final RequestExecutor requestExecutor;
-	private final List<? extends Request> requests;
+	private final List<Request> requests;
 	private final boolean continueOnFail;
 	private static final Logger LOGGER = LoggerFactory.getLogger(HttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
@@ -34,7 +33,7 @@ public class HttpInputPoller extends LdiInput {
 			boolean continueOnFail, RequestExecutor requestExecutor) {
 		super(executor, adapter);
 		this.requestExecutor = requestExecutor;
-		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
+		this.requests = endpoints.stream().map(endpoint -> new Request(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
 	}
