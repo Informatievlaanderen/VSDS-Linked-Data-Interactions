@@ -1,9 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.ratelimiter.RateLimiterConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.github.resilience4j.ratelimiter.RateLimiter;
+import io.github.resilience4j.retry.Retry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +37,36 @@ public class LdioRequestExecutorSupplier {
 	}
 
 	public RequestExecutor getRequestExecutor(ComponentProperties props) {
-		final RequestExecutor requestExecutor = getAuthRequestExecutor(props);
+		final RequestExecutor baseRequestExecutor = getBaseRequestExecutor(props);
+		Retry retry = getRetry(props);
+		RateLimiter rateLimiter = getRateLimiter(props);
+		return RequestExecutorDecorator.decorate(baseRequestExecutor).with(retry).with(rateLimiter).get();
+	}
+
+	private RateLimiter getRateLimiter(ComponentProperties props) {
+		boolean rateLimitEnabled = props.getOptionalBoolean(RATE_LIMIT_ENABLED).orElse(Boolean.FALSE);
+		if (rateLimitEnabled) {
+			int maxRequestsPerMinute = props.getOptionalInteger(MAX_REQUESTS_PER_MINUTE).orElse(500);
+			return RateLimiterConfig.limitPerMinute(maxRequestsPerMinute).getRateLimiter();
+		} else {
+			return null;
+		}
+	}
+
+	private Retry getRetry(ComponentProperties props) {
 		boolean retriesEnabled = props.getOptionalBoolean(RETRIES_ENABLED).orElse(Boolean.TRUE);
 		if (retriesEnabled) {
 			int maxRetries = props.getOptionalInteger(MAX_RETRIES).orElse(5);
 			List<Integer> statusesToRetry = props.getOptionalProperty(STATUSES_TO_RETRY)
 					.map(csv -> Stream.of(csv.split(",")).map(String::trim).map(Integer::parseInt).toList())
 					.orElse(new ArrayList<>());
-			return requestExecutorFactory.createRetryExecutor(requestExecutor, maxRetries, statusesToRetry);
+			return RetryConfig.of(maxRetries, statusesToRetry).getRetry();
 		} else {
-			return requestExecutor;
+			return null;
 		}
 	}
 
-	private RequestExecutor getAuthRequestExecutor(ComponentProperties componentProperties) {
+	private RequestExecutor getBaseRequestExecutor(ComponentProperties componentProperties) {
 		Optional<AuthStrategy> authentication = AuthStrategy
 				.from(componentProperties.getOptionalProperty(AUTH_TYPE).orElse(NO_AUTH.name()));
 		if (authentication.isPresent()) {

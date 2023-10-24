@@ -10,9 +10,9 @@
     font-weight: $font-weight-normal;
     font-style: normal;
     font-display: block;
-    src: url("../webfonts/serif/FlandersArtSerif-Thin.woff2")
+    src: url("/assets/webfonts/serif/FlandersArtSerif-Thin.woff2")
         format("woff2"),
-      url("../webfonts/serif/FlandersArtSerif-Thin.woff")
+      url("/assets/webfonts/serif/FlandersArtSerif-Thin.woff")
         format("woff");
   }
 
