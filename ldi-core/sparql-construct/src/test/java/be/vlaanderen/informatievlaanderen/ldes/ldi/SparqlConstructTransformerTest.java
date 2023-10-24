@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlFunctions.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions.*;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -154,7 +154,7 @@ class SparqlConstructTransformerTest {
 	}
 
 	@Test
-	void initGeoFunctionsTest () {
+	void initGeoFunctionsTest() {
 
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
