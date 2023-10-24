@@ -7,7 +7,7 @@ title: Model Split Transformer
 # LDIO Model Split Transformer
 ***be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitTransformer***
 
-An LDIO wrapper component for the [LDI Model Split Transformer building block](../../_core/ldi-adapters/model-split-adapter.md)
+An LDIO wrapper component for the [LDI Model Split Transformer building block](../../core/ldi-adapters/model-split-adapter.md)
 
 ## Config
 

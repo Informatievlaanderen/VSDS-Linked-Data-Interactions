@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.GetRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
@@ -20,7 +21,7 @@ class ClientCredentialsRequestTest {
 						new RequestHeader("key", "value"),
 						new RequestHeader("otherKey", "otherValue")));
 
-		Request request = new Request("url", requestHeaders);
+		Request request = new GetRequest("url", requestHeaders);
 		ClientCredentialsRequest credentialsRequest = new ClientCredentialsRequest(request);
 		OAuthRequest oAuthRequest = credentialsRequest.getOAuthRequest();
 

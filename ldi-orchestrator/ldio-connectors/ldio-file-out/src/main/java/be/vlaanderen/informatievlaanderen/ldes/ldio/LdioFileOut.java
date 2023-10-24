@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -24,6 +26,7 @@ public class LdioFileOut implements LdiOutput {
 		ArchiveFile archiveFile = ArchiveFile.from(model, timestampExtractor, archiveRootDir);
 		try {
 			Files.createDirectories(archiveFile.getDirectoryPath());
+			LdiRdfWriter.getRdfWriter(new LdiRdfWriterProperties().withLang(Lang.TURTLE));
 			RDFWriter.source(model).lang(Lang.TURTLE).output(archiveFile.getFilePath());
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to write model to file in archive directory", e);

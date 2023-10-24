@@ -29,6 +29,10 @@ public class Response {
 		return httpStatus;
 	}
 
+	public boolean isSuccess() {
+		return httpStatus >= 200 && httpStatus < 300;
+	}
+
 	public boolean hasStatus(List<Integer> statusList) {
 		return statusList.contains(getHttpStatus());
 	}

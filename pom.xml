@@ -10,7 +10,7 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
     <artifactId>linked-data-interactions</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.8.0-SNAPSHOT</version>
 
     <modules>
         <module>ldi-api</module>
@@ -231,6 +231,11 @@
             <dependency>
                 <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
                 <artifactId>ldi-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+                <artifactId>ldi-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

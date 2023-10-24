@@ -12,25 +12,31 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.stream.Stream;
 
 public class JsonToLdAdapter implements LdiAdapter {
 
+	private final Logger log = LoggerFactory.getLogger(JsonToLdAdapter.class);
+
 	private final String coreContext;
 	private final String ldContext;
 	private static final String MIMETYPE = "application/json";
+	private final boolean forceContentType;
 
 	public JsonToLdAdapter(String coreContext) {
-		this(coreContext, null);
+		this(coreContext, null, false);
 	}
 
-	public JsonToLdAdapter(String coreContext, String ldContext) {
+	public JsonToLdAdapter(String coreContext, String ldContext, boolean forceContentType) {
 		if (coreContext == null) {
 			throw new IllegalArgumentException("Core context can't be null");
 		}
 		this.coreContext = coreContext;
 		this.ldContext = ldContext;
+		this.forceContentType = forceContentType;
 	}
 
 	private void addContexts(JsonObject json) {
@@ -63,7 +69,11 @@ public class JsonToLdAdapter implements LdiAdapter {
 	@Override
 	public Stream<Model> apply(Content content) {
 		if (!validateMimeType(content.mimeType())) {
-			throw new UnsupportedMimeTypeException(MIMETYPE, content.mimeType());
+			if (forceContentType) {
+				log.warn("Invalid mimeType {} was forced to application/json", content.mimeType());
+			} else {
+				throw new UnsupportedMimeTypeException(MIMETYPE, content.mimeType());
+			}
 		}
 		return translateJsonToLD(content.content());
 	}
