@@ -2,8 +2,6 @@ title: Linked Data Interactions
 description: Linked Data Interactions
 remote_theme: just-the-docs/just-the-docs@v0.5.3
 
-url: https://just-the-docs.github.io
-
 favicon_ico: "/assets/images/favicon.ico"
 
 callouts:
@@ -18,9 +16,6 @@ aux_links:
 # Supports a CSV of tracking ID strings (eg. "UA-1234567-89,G-1AB234CDE5")
 ga_tracking: G-9F4LJXRX6T
 ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true/nil by default)
-
-
-
 
 # Define Jekyll collections
 collections:

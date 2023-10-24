@@ -6,31 +6,17 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-core</artifactId>
-        <version>1.8.0-SNAPSHOT</version>
+        <version>1.9.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>geojson-to-wkt</artifactId>
 
-    <properties>
-        <jena-geosparql.version>4.7.0</jena-geosparql.version>
-        <org.geotools.version>29.2</org.geotools.version>
-    </properties>
-
     <dependencies>
         <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-            <version>${org.geotools.version}</version>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-geosparql</artifactId>
+            <version>${jena.version}</version>
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>osgeo</id>
-            <name>OSGeo Release Repository</name>
-            <url>https://repo.osgeo.org/repository/release/</url>
-            <snapshots><enabled>false</enabled></snapshots>
-            <releases><enabled>true</enabled></releases>
-        </repository>
-    </repositories>
 </project>
