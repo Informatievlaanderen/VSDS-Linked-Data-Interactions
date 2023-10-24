@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/200-post-response-accept-nquads",
+    "headers": {
+      "Content-Type": {
+        "contains": "application/json"
+      },
+      "Accept": {
+        "contains": "application/n-quads"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "equalToJson": "{\"name\": \"Joe\"}"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "body": "<http://localhost:10101/exampleData/10054228/165875> <http://purl.org/dc/elements/1.1/contributor> <https://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/9c5926df-195d-01be-a40a-360bcd21d662> .",
+    "headers": {
+      "Content-Type": "application/n-quads",
+      "Cache-Control": "max-age=604800"
+    }
+  }
+}

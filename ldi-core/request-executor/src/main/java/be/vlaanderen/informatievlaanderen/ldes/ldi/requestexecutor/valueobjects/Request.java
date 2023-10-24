@@ -5,12 +5,12 @@ import static org.apache.commons.lang3.Validate.notNull;
 /**
  * Contains the request details to connect to the server.
  */
-public class Request {
+public abstract class Request {
 
 	private final String url;
 	private final RequestHeaders requestHeaders;
 
-	public Request(String url, RequestHeaders requestHeaders) {
+	protected Request(String url, RequestHeaders requestHeaders) {
 		this.url = url;
 		this.requestHeaders = notNull(requestHeaders);
 	}
@@ -22,5 +22,7 @@ public class Request {
 	public RequestHeaders getRequestHeaders() {
 		return requestHeaders;
 	}
+
+	public abstract String getMethod();
 
 }

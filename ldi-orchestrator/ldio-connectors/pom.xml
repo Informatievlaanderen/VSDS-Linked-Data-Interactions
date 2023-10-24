@@ -3,7 +3,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-orchestrator</artifactId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.8.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,6 +28,7 @@
         <module>ldio-version-object-creator</module>
         <module>ldio-version-materialiser</module>
         <module>ldio-geojson-to-wkt</module>
+        <module>ldio-http-enricher</module>
 
         <module>ldio-console-out</module>
         <module>ldio-http-out</module>
@@ -45,6 +46,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-common</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>

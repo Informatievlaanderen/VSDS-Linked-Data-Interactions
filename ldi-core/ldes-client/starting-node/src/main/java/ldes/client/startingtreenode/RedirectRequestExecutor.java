@@ -1,7 +1,7 @@
 package ldes.client.startingtreenode;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.GetRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
@@ -26,7 +26,7 @@ public class RedirectRequestExecutor {
 	public Response execute(final StartingNodeRequest startingNodeRequest) {
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, startingNodeRequest.contentType())));
-		Response response = requestExecutor.execute(new Request(startingNodeRequest.url(), requestHeaders));
+		Response response = requestExecutor.execute(new GetRequest(startingNodeRequest.url(), requestHeaders));
 		if (response.isOk()) {
 			return response;
 		}

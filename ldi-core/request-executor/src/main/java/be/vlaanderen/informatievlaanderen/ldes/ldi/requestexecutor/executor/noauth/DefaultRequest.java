@@ -1,8 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.GetRequest;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.PostRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+
+import java.nio.charset.StandardCharsets;
 
 public class DefaultRequest {
 
@@ -13,9 +21,24 @@ public class DefaultRequest {
 	}
 
 	public HttpUriRequest getHttpRequest() {
-		final HttpGet httpRequest = new HttpGet(request.getUrl());
+		final HttpRequestBase httpRequest = createRequest();
 		request.getRequestHeaders().forEach(header -> httpRequest.addHeader(header.getKey(), header.getValue()));
 		return httpRequest;
+	}
+
+	private HttpRequestBase createRequest() {
+		return switch (request.getMethod()) {
+			case GetRequest.METHOD_NAME -> new HttpGet(request.getUrl());
+			case PostRequest.METHOD_NAME -> {
+				final HttpPost post = new HttpPost(request.getUrl());
+				final PostRequest postRequest = (PostRequest) request;
+				final ContentType contentType = ContentType.create(postRequest.getContentType(),
+						StandardCharsets.UTF_8);
+				post.setEntity(new StringEntity(postRequest.getBody(), contentType));
+				yield post;
+			}
+			default -> throw new IllegalStateException("Http method not supported: " + request.getMethod());
+		};
 	}
 
 }

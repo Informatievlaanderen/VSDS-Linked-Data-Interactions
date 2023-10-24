@@ -41,4 +41,54 @@ class ComponentPropertiesTest {
 		}
 	}
 
+	@Nested
+	class ExtractNestedProperties {
+
+		@Test
+		void shouldReturnNestedProperties_whenFound() {
+			ComponentProperties properties = new ComponentProperties(
+					Map.of("adapter.name", "my-adapter",
+							"adapter.config.context", "example.com",
+							"adapter.config.alt", "alternative"));
+
+			ComponentProperties nestedProperties = properties.extractNestedProperties("adapter.config");
+
+			assertEquals(2, nestedProperties.getConfig().size());
+			assertEquals("example.com", nestedProperties.getProperty("context"));
+			assertEquals("alternative", nestedProperties.getProperty("alt"));
+		}
+
+		@Test
+		void shouldReturnEmpty_whenNotFound() {
+			ComponentProperties properties = new ComponentProperties(Map.of("foo", "bar"));
+
+			ComponentProperties nestedProperties = properties.extractNestedProperties("adapter.config");
+
+			assertTrue(nestedProperties.getConfig().isEmpty());
+		}
+
+		@Test
+		void shouldReturnEmpty_whenThereAreNoProperties() {
+			ComponentProperties properties = new ComponentProperties();
+
+			ComponentProperties nestedProperties = properties.extractNestedProperties("adapter.config");
+
+			assertTrue(nestedProperties.getConfig().isEmpty());
+		}
+
+		@Test
+		void shouldReturnEmpty_whenKeyIsNullOrEmpty() {
+			ComponentProperties properties = new ComponentProperties(Map.of("a", "b"));
+
+			assertTrue(properties.extractNestedProperties(null).getConfig().isEmpty());
+			assertTrue(properties.extractNestedProperties("").getConfig().isEmpty());
+		}
+
+		@Test
+		void shouldReturnEmpty_whenKeyMatchesValueInsteadOfNestedStructure() {
+			ComponentProperties properties = new ComponentProperties(Map.of("a", "b"));
+			assertTrue(properties.extractNestedProperties("a").getConfig().isEmpty());
+		}
+	}
+
 }

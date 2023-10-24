@@ -4,8 +4,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesPrope
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
+import io.github.resilience4j.retry.Retry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
@@ -84,11 +87,15 @@ public class LdesClient extends AbstractProcessor {
 	}
 
 	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {
-		final RequestExecutor requestExecutor = getRequestExecutor(context);
-		return retriesEnabled(context)
-				? requestExecutorFactory.createRetryExecutor(requestExecutor, getMaxRetries(context),
-						getStatusesToRetry(context))
-				: requestExecutor;
+		return RequestExecutorDecorator.decorate(getRequestExecutor(context)).with(getRetry(context)).get();
+	}
+
+	private Retry getRetry(final ProcessContext context) {
+		if (retriesEnabled(context)) {
+			return RetryConfig.of(getMaxRetries(context), getStatusesToRetry(context)).getRetry();
+		} else {
+			return null;
+		}
 	}
 
 	private RequestExecutor getRequestExecutor(final ProcessContext context) {
