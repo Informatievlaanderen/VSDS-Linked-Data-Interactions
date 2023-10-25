@@ -10,7 +10,9 @@
     </parent>
 
     <artifactId>geojson-to-wkt</artifactId>
-
+    <properties>
+        <jena-geosparql.version>4.7.0</jena-geosparql.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.jena</groupId>
