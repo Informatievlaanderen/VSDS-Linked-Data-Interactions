@@ -1,7 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
@@ -115,6 +117,20 @@ class SparqlConstructFunctionsTest {
 
 			""";
 
+	private final static String geoConstructDistanceFromStartQuery = """
+			prefix tree: <https://w3id.org/tree#>
+			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+
+			CONSTRUCT  {
+				?s geosparql:distanceFromStart ?value
+			}
+			WHERE {
+				?s geosparql:asWKT ?wkt .
+				BIND (tree:distanceFromStart(?wkt, 0) as ?value)
+			}
+
+			""";
+
 	@ParameterizedTest
 	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
 	void geoFunctions_firstCoordinate(String id, String midpoint, String line, String start, String end) {
@@ -164,15 +180,13 @@ class SparqlConstructFunctionsTest {
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
-	void midPoint(String id, String midpoint, String line, String start, String end, String offset) {
+	void geoFunctions_midPoint(String id, String midpoint, String line, String start, String end, String offset) {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructMidPointQuery), false);
 
 		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
 
-		String[] points = splitPoint(midpoint);
-
-		Coordinate expected = new Coordinate(Double.parseDouble(points[0]), Double.parseDouble(points[1]));
+		Coordinate expected = SparqlFunctionsUtils.getCoordinatesFromPointAsString(midpoint);
 
 		Coordinate calculated = GeometryWrapper
 				.extract(result.get(0).listStatements().nextStatement().getObject().asNode()).getXYGeometry()
@@ -183,15 +197,14 @@ class SparqlConstructFunctionsTest {
 
 	@ParameterizedTest
 	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
-	void pointAtFromStart(String id, String midpoint, String line, String start, String end, String offset) {
+	void geoFunctions_pointAtFromStart(String id, String midpoint, String line, String start, String end,
+			String offset) {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructPointAtFromStartQuery), false);
 
 		List<Model> result = sparqlConstructTransformer.apply(createGeoModelTwo(line, offset));
 
-		String[] points = splitPoint(midpoint);
-
-		Coordinate expected = new Coordinate(Double.parseDouble(points[0]), Double.parseDouble(points[1]));
+		Coordinate expected = SparqlFunctionsUtils.getCoordinatesFromPointAsString(midpoint);
 
 		Coordinate calculated = GeometryWrapper
 				.extract(result.get(0).listStatements().nextStatement().getObject().asNode()).getXYGeometry()
@@ -200,9 +213,23 @@ class SparqlConstructFunctionsTest {
 		assertTrue(calculated.equals2D(expected, 0.00004));
 	}
 
-	private static String[] splitPoint(String midpoint) {
-		return midpoint.replace("POINT(", "")
-				.replace(")", "")
-				.split(" ");
+	@ParameterizedTest
+	@CsvFileSource(resources = "/geo-functions/telraam.csv", numLinesToSkip = 1)
+	void geoFunctions_distanceFromStart(String id, String midpoint, String line, String start, String end,
+			String offset) {
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(geoConstructDistanceFromStartQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
+
+		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
+		GeometryWrapper wrapper = wktDatatype.read(line);
+		double expected = new LineLength().getLineLengthOfString(wrapper).getDouble() / 2;
+
+		double distanceFromStart = result.get(0)
+				.listObjectsOfProperty(createProperty("http://www.opengis.net/ont/geosparql#distanceFromStart"))
+				.toList().get(0).asLiteral().getDouble();
+
+		assertEquals(expected, distanceFromStart, 0.002);
 	}
 }

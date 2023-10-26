@@ -166,5 +166,6 @@ class SparqlConstructTransformerTest {
 		assertTrue(registry.isRegistered(LineLength.NAME));
 		assertTrue(registry.isRegistered(MidPoint.NAME));
 		assertTrue(registry.isRegistered(PointAtFromStart.NAME));
+		assertTrue(registry.isRegistered(DistanceFromStart.NAME));
 	}
 }

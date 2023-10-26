@@ -21,10 +21,10 @@ public class LineLength extends FunctionBase2 {
 		return getLineLengthOfString(wrapper);
 	}
 
-	private NodeValue getLineLengthOfString(GeometryWrapper wrapper) {
+	NodeValue getLineLengthOfString(GeometryWrapper wrapper) {
 
 		Coordinate[] coordinates = wrapper.getXYGeometry().getCoordinates();
-		double lineLength = (double) Math.round((getTotalLineLength(coordinates)) * 100) / 100;
+		double lineLength = getTotalLineLength(coordinates);
 
 		return NodeValue.makeDouble(lineLength);
 	}
