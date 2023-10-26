@@ -81,6 +81,5 @@ public class SparqlConstructTransformer implements LdiTransformer {
 		functionRegistry.put(MidPoint.NAME, MidPoint.class);
 		functionRegistry.put(PointAtFromStart.NAME, PointAtFromStart.class);
 		functionRegistry.put(DistanceFromStart.NAME, DistanceFromStart.class);
-		functionRegistry.put(LineAtIndex.NAME, LineAtIndex.class);
 	}
 }

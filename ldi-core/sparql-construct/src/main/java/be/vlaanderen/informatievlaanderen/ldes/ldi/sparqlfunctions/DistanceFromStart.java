@@ -16,7 +16,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsU
 
 public class DistanceFromStart extends FunctionBase2 {
 
-	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#distanceFromStart";
+	public static final String NAME = "https://w3id.org/tree#distanceFromStart";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue nodeValue1) {
@@ -46,7 +46,7 @@ public class DistanceFromStart extends FunctionBase2 {
 			Coordinate thePoint) {
 
 		List<Coordinate> coordinateList = Arrays.stream(coordinates)
-				.limit(segmentNumber + 1L)
+				.limit(segmentNumber + 1)
 				.collect(Collectors.toList());
 
 		coordinateList.add(thePoint);
