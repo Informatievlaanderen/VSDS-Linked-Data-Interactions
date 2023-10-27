@@ -26,7 +26,7 @@ class SparqlConstructFunctionsTest {
 
 	private final static Model INIT_MODEL = ModelFactory.createDefaultModel();
 
-	private final Model createGeoModel(String wkt) {
+	private Model createGeoModel(String wkt) {
 		Statement geoStatement = INIT_MODEL.createStatement(
 				INIT_MODEL.createResource("http://data-from-source/"),
 				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
@@ -34,7 +34,7 @@ class SparqlConstructFunctionsTest {
 		return ModelFactory.createDefaultModel().add(geoStatement);
 	}
 
-	private final Model createGeoModelTwo(String wkt, String offset) {
+	private Model createGeoModelTwo(String wkt, String offset) {
 		Statement geoStatement = INIT_MODEL.createStatement(
 				INIT_MODEL.createResource("http://data-from-source/"),
 				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
@@ -48,7 +48,7 @@ class SparqlConstructFunctionsTest {
 		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
 	}
 
-	private final Model createGeoModelThree(String wkt, int index) {
+	private Model createGeoModelThree(String wkt, int index) {
 		Statement geoStatement = INIT_MODEL.createStatement(
 				INIT_MODEL.createResource("http://data-from-source/"),
 				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
