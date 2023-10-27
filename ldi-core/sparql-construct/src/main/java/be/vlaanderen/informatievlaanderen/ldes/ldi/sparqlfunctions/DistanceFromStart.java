@@ -16,7 +16,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsU
 
 public class DistanceFromStart extends FunctionBase2 {
 
-	public static final String NAME = "https://w3id.org/tree#distanceFromStart";
+	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#distanceFromStart";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue nodeValue1) {
