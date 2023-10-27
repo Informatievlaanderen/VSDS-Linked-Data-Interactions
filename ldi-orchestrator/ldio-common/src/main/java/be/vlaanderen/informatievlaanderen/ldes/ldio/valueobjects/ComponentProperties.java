@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -108,7 +109,14 @@ public class ComponentProperties {
 	 */
 	public Optional<String> getOptionalPropertyFromFile(String key) {
 		String file = getProperty(key);
-		Path path = Path.of(file);
+
+		Path path;
+		try {
+			path = Path.of(file);
+		}
+		catch (InvalidPathException e) {
+			return Optional.empty();
+		}
 
 		if (!Files.exists(path)) {
 			return Optional.empty();
