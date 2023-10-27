@@ -33,12 +33,21 @@ public class LineAtIndex extends FunctionBase2 {
 
     private NodeValue getLineAtIndex(GeometryWrapper wrapper, MultiLineString multiLineString, int i) {
 
+        checkIndexInRange(multiLineString, i);
+
         Coordinate[] coordinates = multiLineString.getGeometryN(i).getCoordinates();
 
         Node wkt = GeometryWrapperFactory.createLineString(coordinates, wrapper.getGeometryDatatypeURI())
                 .asNode();
 
         return NodeValue.makeNode(wkt);
+    }
+
+    private static void checkIndexInRange(MultiLineString multiLineString, int i) {
+
+        boolean inRange = 0 <= i && i < multiLineString.getNumGeometries();
+
+        if (!inRange) throw new RuntimeException("Index is not in range !");
     }
 
     private static MultiLineString getMultiLineString(NodeValue wktLiteral) {
