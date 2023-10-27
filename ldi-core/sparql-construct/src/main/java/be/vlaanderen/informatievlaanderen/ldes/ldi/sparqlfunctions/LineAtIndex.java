@@ -1,0 +1,57 @@
+package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions;
+
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.GeometryWrapperFactory;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class LineAtIndex extends FunctionBase2 {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LineAtIndex.class);
+    public static final String NAME = "https://w3id.org/tree#lineAtIndex";
+
+    @Override
+    public NodeValue exec(NodeValue wktLiteral, NodeValue number) {
+
+        WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
+        GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+
+        MultiLineString multiLineString = getMultiLineString(wktLiteral);
+
+        int i = number.getDecimal().intValue();
+
+        return getLineAtIndex(wrapper, multiLineString, i);
+    }
+
+    private NodeValue getLineAtIndex(GeometryWrapper wrapper, MultiLineString multiLineString, int i) {
+
+        Coordinate[] coordinates = multiLineString.getGeometryN(i).getCoordinates();
+
+        Node wkt = GeometryWrapperFactory.createLineString(coordinates, wrapper.getGeometryDatatypeURI())
+                .asNode();
+
+        return NodeValue.makeNode(wkt);
+    }
+
+    private static MultiLineString getMultiLineString(NodeValue wktLiteral) {
+
+        WKTReader wktReader = new WKTReader();
+        MultiLineString multiLineString = null;
+
+        try {
+            multiLineString = (MultiLineString) wktReader.read(wktLiteral.asUnquotedString());
+        } catch (ParseException e) {
+            LOGGER.error("MultiLineString parsing went wrong", e);
+        }
+
+        return multiLineString;
+    }
+}

@@ -46,7 +46,7 @@ public class DistanceFromStart extends FunctionBase2 {
 			Coordinate thePoint) {
 
 		List<Coordinate> coordinateList = Arrays.stream(coordinates)
-				.limit(segmentNumber + 1)
+				.limit(segmentNumber + 1L)
 				.collect(Collectors.toList());
 
 		coordinateList.add(thePoint);

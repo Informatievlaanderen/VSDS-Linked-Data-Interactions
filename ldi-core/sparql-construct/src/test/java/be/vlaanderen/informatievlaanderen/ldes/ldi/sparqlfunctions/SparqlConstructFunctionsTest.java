@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
@@ -9,6 +10,7 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.locationtech.jts.geom.Coordinate;
@@ -42,6 +44,20 @@ class SparqlConstructFunctionsTest {
 				INIT_MODEL.createResource("http://data-from-source/"),
 				INIT_MODEL.createProperty("https://w3id.org/tree#offset"),
 				INIT_MODEL.createLiteral(offset));
+
+		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
+	}
+
+	private final Model createGeoModelThree(String wkt, int index) {
+		Statement geoStatement = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource("http://data-from-source/"),
+				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+
+		Statement geoStatement2 = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource("http://data-from-source/"),
+				INIT_MODEL.createProperty("https://w3id.org/tree#index"),
+				INIT_MODEL.createTypedLiteral(index, XSDDatatype.XSDint));
 
 		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
 	}
@@ -112,7 +128,7 @@ class SparqlConstructFunctionsTest {
 			WHERE {
 				?s geosparql:asWKT ?wkt .
 				?s tree:offset ?ofs .
-				BIND (tree:pointAtFromStart(?wkt, 0, ?ofs) as ?value)
+				BIND (tree:pointAtFromStart(?wkt, ?ofs) as ?value)
 			}
 
 			""";
@@ -127,6 +143,21 @@ class SparqlConstructFunctionsTest {
 			WHERE {
 				?s geosparql:asWKT ?wkt .
 				BIND (tree:distanceFromStart(?wkt, 0) as ?value)
+			}
+
+			""";
+
+	private final static String geoConstructLineAtIndexQuery = """
+			prefix tree: <https://w3id.org/tree#>
+			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+
+			CONSTRUCT  {
+				?s geosparql:asWKT ?value
+			}
+			WHERE {
+				?s geosparql:asWKT ?wkt .
+				?s tree:index ?idx .
+				BIND (tree:lineAtIndex(?wkt, ?idx) as ?value)
 			}
 
 			""";
@@ -231,5 +262,20 @@ class SparqlConstructFunctionsTest {
 				.toList().get(0).asLiteral().getDouble();
 
 		assertEquals(expected, distanceFromStart, 0.002);
+	}
+
+	@Test
+	void geoFunctions_getLineAtIndex() {
+		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
+				QueryFactory.create(geoConstructLineAtIndexQuery), false);
+
+		List<Model> result = sparqlConstructTransformer.apply(createGeoModelThree("MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))", 0));
+
+		String lineString = "LINESTRING(10 10, 20 20, 10 40)";
+		Statement expected = createStatement(INIT_MODEL.createResource("http://data-from-source/"),
+				INIT_MODEL.createProperty("http://www.opengis.net/ont/geosparql#asWKT"),
+				INIT_MODEL.createTypedLiteral(lineString, GeoSPARQL_URI.GEO_URI + "wktLiteral"));
+
+		assertTrue(result.get(0).contains(expected));
 	}
 }

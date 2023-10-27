@@ -3,18 +3,18 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.function.FunctionBase3;
+import org.apache.jena.sparql.function.FunctionBase2;
 import org.locationtech.jts.geom.Coordinate;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.getLineLengths;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.getNodeValue;
 
-public class PointAtFromStart extends FunctionBase3 {
+public class PointAtFromStart extends FunctionBase2 {
 
 	public static final String NAME = "https://w3id.org/tree#pointAtFromStart";
 
 	@Override
-	public NodeValue exec(NodeValue wktLiteral, NodeValue nodeValue1, NodeValue offset) {
+	public NodeValue exec(NodeValue wktLiteral, NodeValue offset) {
 
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
 		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
