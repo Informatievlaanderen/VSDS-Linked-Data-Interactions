@@ -31,42 +31,6 @@ class SparqlConstructFunctionsTest {
 	public static final String WKT_LITERAL = "wktLiteral";
 	public static final String GEOSPARQL_CUSTOM = "https://opengis.net/def/function/geosparql/custom#";
 
-	private Model createGeoModel(String wkt) {
-		Statement geoStatement = INIT_MODEL.createStatement(
-				INIT_MODEL.createResource(DATA_FROM_SOURCE),
-				INIT_MODEL.createProperty(GEOSPARQL_AS_WKT),
-				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
-		return ModelFactory.createDefaultModel().add(geoStatement);
-	}
-
-	private Model createGeoModelTwo(String wkt, String offset) {
-		Statement geoStatement = INIT_MODEL.createStatement(
-				INIT_MODEL.createResource(DATA_FROM_SOURCE),
-				INIT_MODEL.createProperty(GEOSPARQL_AS_WKT),
-				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
-
-		Statement geoStatement2 = INIT_MODEL.createStatement(
-				INIT_MODEL.createResource(DATA_FROM_SOURCE),
-				INIT_MODEL.createProperty(GEOSPARQL_CUSTOM + "offset"),
-				INIT_MODEL.createLiteral(offset));
-
-		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
-	}
-
-	private Model createGeoModelThree(String wkt, int index) {
-		Statement geoStatement = INIT_MODEL.createStatement(
-				INIT_MODEL.createResource(DATA_FROM_SOURCE),
-				INIT_MODEL.createProperty(GEOSPARQL_AS_WKT),
-				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
-
-		Statement geoStatement2 = INIT_MODEL.createStatement(
-				INIT_MODEL.createResource(DATA_FROM_SOURCE),
-				INIT_MODEL.createProperty(GEOSPARQL_CUSTOM + "index"),
-				INIT_MODEL.createTypedLiteral(index, XSDDatatype.XSDint));
-
-		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
-	}
-
 	private final static String geoConstructFirstCoordinateQuery = """
 			prefix geoc: <https://opengis.net/def/function/geosparql/custom#>
 			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
@@ -238,7 +202,7 @@ class SparqlConstructFunctionsTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructPointAtFromStartQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModelTwo(line, offset));
+		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line, offset));
 
 		Coordinate expected = SparqlFunctionsUtils.getCoordinatesFromPointAsString(midpoint);
 
@@ -276,7 +240,7 @@ class SparqlConstructFunctionsTest {
 
 		String multiLineString = "MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))";
 		int index = 0;
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModelThree(multiLineString, index));
+		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(multiLineString, index));
 
 		String lineString = "LINESTRING(10 10, 20 20, 10 40)";
 		Statement expected = createStatement(INIT_MODEL.createResource(DATA_FROM_SOURCE),
@@ -284,5 +248,41 @@ class SparqlConstructFunctionsTest {
 				INIT_MODEL.createTypedLiteral(lineString, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
 
 		assertTrue(result.get(0).contains(expected));
+	}
+
+	private Model createGeoModel(String wkt) {
+		Statement geoStatement = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource(DATA_FROM_SOURCE),
+				INIT_MODEL.createProperty(GEOSPARQL_AS_WKT),
+				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
+		return ModelFactory.createDefaultModel().add(geoStatement);
+	}
+
+	private Model createGeoModel(String wkt, String offset) {
+		Statement geoStatement = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource(DATA_FROM_SOURCE),
+				INIT_MODEL.createProperty(GEOSPARQL_AS_WKT),
+				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
+
+		Statement geoStatement2 = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource(DATA_FROM_SOURCE),
+				INIT_MODEL.createProperty(GEOSPARQL_CUSTOM + "offset"),
+				INIT_MODEL.createLiteral(offset));
+
+		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
+	}
+
+	private Model createGeoModel(String wkt, int index) {
+		Statement geoStatement = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource(DATA_FROM_SOURCE),
+				INIT_MODEL.createProperty(GEOSPARQL_AS_WKT),
+				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
+
+		Statement geoStatement2 = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource(DATA_FROM_SOURCE),
+				INIT_MODEL.createProperty(GEOSPARQL_CUSTOM + "index"),
+				INIT_MODEL.createTypedLiteral(index, XSDDatatype.XSDint));
+
+		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
 	}
 }
