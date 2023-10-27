@@ -11,7 +11,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsU
 
 public class PointAtFromStart extends FunctionBase2 {
 
-	public static final String NAME = "https://w3id.org/tree#pointAtFromStart";
+	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#pointAtFromStart";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue offset) {

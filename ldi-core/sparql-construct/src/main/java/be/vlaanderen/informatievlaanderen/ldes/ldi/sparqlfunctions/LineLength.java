@@ -10,7 +10,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsU
 
 public class LineLength extends FunctionBase2 {
 
-	public static final String NAME = "https://w3id.org/tree#lineLength";
+	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#lineLength";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue nodeValue1) {

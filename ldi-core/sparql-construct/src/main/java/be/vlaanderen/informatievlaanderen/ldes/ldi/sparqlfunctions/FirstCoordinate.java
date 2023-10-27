@@ -9,7 +9,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsU
 
 public class FirstCoordinate extends FunctionBase2 {
 
-	public static final String NAME = "https://w3id.org/tree#firstCoordinate";
+	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#firstCoordinate";
 
 	@Override
 	public NodeValue exec(NodeValue wktLiteral, NodeValue index) {

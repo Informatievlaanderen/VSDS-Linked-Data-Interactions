@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class LineAtIndex extends FunctionBase2 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LineAtIndex.class);
-    public static final String NAME = "https://w3id.org/tree#lineAtIndex";
+    public static final String NAME = "https://opengis.net/def/function/geosparql/custom#lineAtIndex";
 
     @Override
     public NodeValue exec(NodeValue wktLiteral, NodeValue number) {
