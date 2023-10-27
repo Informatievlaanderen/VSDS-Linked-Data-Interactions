@@ -48,7 +48,7 @@ public class LineAtIndex extends FunctionBase2 {
 		boolean inRange = 0 <= i && i < multiLineString.getNumGeometries();
 
 		if (!inRange)
-			throw new RuntimeException("Index is not in range !");
+			throw new IllegalArgumentException("Index is not in range !");
 	}
 
 	private static MultiLineString getMultiLineString(NodeValue wktLiteral) {
