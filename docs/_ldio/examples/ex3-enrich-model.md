@@ -36,7 +36,7 @@ docker run -d -p 8081:8080 -e JAVA_OPTS="-Xms1g -Xmx4g" eclipse/rdf4j-workbench:
 Once spun up, a simple repository can be configured via doing the following curl command:
 
 ***test-db.ttl:***
-````text
+```ttl
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix rep: <http://www.openrdf.org/config/repository#>.
 @prefix sr: <http://www.openrdf.org/config/repository/sail#>.
@@ -54,7 +54,7 @@ Once spun up, a simple repository can be configured via doing the following curl
 	 ms:syncDelay 120
       ]
    ].
-````
+```
 
 ````shell
 curl -X PUT -H "Content-Type: text/turtle" --data-binary @test-db.ttl http://localhost:8081/rdf4j-server/repositories/test
@@ -110,7 +110,7 @@ orchestrator:
 First, we will post these three turtle files to our "to-graph" pipeline at endpoint http://localhost:8080/to-graph 
 with the Content-Type header set to 'text/turtle'
 
-````text
+```ttl
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -119,9 +119,9 @@ with the Content-Type header set to 'text/turtle'
   schema:brand "Volvo"^^xsd:string ;
   schema:max-speed "180"^^xsd:integer ;
   schema:model "XC40"^^xsd:string .
-````
+```
 
-````text
+```ttl
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -130,9 +130,9 @@ with the Content-Type header set to 'text/turtle'
   schema:brand "Ferrari"^^xsd:string ;
   schema:max-speed "315"^^xsd:integer ;
   schema:model "F40"^^xsd:string .
-````
+```
 
-````text
+```ttl
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -141,7 +141,7 @@ with the Content-Type header set to 'text/turtle'
   schema:brand "Reliant"^^xsd:string ;
   schema:max-speed "136"^^xsd:integer ;
   schema:model "Robin"^^xsd:string .
-````
+```
 
 ### 2. Send un-enriched member to pipeline
 
@@ -150,7 +150,7 @@ with the Content-Type header set to 'text/turtle'.
 
 This pipeline will not only include the posted statements, but will include the models from the GraphDB based on their URI.
 
-````text
+```ttl
 @prefix schema: <http://schema.org/> .
 
 <http://example.com/people/SpideyBoy>
@@ -158,12 +158,12 @@ This pipeline will not only include the posted statements, but will include the 
   schema:jobTitle "Spidey Boy" ;
   schema:name "Peter Parker" ;
   a schema:Person .
-````
+```
 
 ### 3. Result: an Enriched Model
 
 After posting the User model, you should be seeing data in your console similar to
-````text
+```ttl
 @prefix Ferrari: <http://example.com/cars/Ferrari/> .
 @prefix Volvo:   <http://example.com/cars/Volvo/> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -184,4 +184,4 @@ Ferrari:F40  rdf:type     schema:Car ;
         schema:brand      "Ferrari" ;
         schema:max-speed  315 ;
         schema:model      "F40" .
-````
+```

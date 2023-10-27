@@ -113,8 +113,7 @@ public class ComponentProperties {
 		Path path;
 		try {
 			path = Path.of(file);
-		}
-		catch (InvalidPathException e) {
+		} catch (InvalidPathException e) {
 			return Optional.empty();
 		}
 
