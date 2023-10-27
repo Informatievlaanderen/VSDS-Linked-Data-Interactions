@@ -3,9 +3,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineSegment;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SparqlFunctionsUtilsTest {
 
@@ -48,7 +50,7 @@ class SparqlFunctionsUtilsTest {
 	@Test
 	void calculateDistanceTest() {
 
-		double distance = calculateDistance(c1.y, c1.x, c2.y, c2.x);
+		double distance = calculateDistance(c1, c2);
 
 		assertEquals(FIRST_LENGTH, distance, PRECISION_2_CM);
 	}
@@ -64,5 +66,25 @@ class SparqlFunctionsUtilsTest {
 
 		assertEquals(expected.x, result.x, 0.00004d);
 		assertEquals(expected.y, result.y, 0.00004d);
+	}
+
+	@Test
+	void getCoordinatesFromPointAsStringTest() {
+
+		String pointAsString = "POINT(4.721500079821837 50.90498118462908)";
+		Coordinate expected = new Coordinate(4.721500079821837, 50.90498118462908);
+
+		assertEquals(expected, getCoordinatesFromPointAsString(pointAsString));
+	}
+
+	@Test
+	void pointIsOnLineTest() {
+
+		Coordinate coordinate1 = new Coordinate(3.4046930961461, 50.8974825023952);
+		Coordinate coordinate2 = new Coordinate(3.40420579614629, 50.898212802395);
+		LineSegment lineSegment = new LineSegment(coordinate1, coordinate2);
+		Coordinate point = new Coordinate(3.404449446146195, 50.8978476523951);
+
+		assertTrue(pointIsOnLine(lineSegment, point));
 	}
 }

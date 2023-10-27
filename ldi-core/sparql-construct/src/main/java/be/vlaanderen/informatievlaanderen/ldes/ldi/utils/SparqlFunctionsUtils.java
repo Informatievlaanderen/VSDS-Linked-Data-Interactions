@@ -5,7 +5,9 @@ import org.apache.jena.geosparql.implementation.GeometryWrapperFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineSegment;
 
+import java.util.Arrays;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
@@ -23,7 +25,12 @@ public class SparqlFunctionsUtils {
 	 * Vincenty's Formula
 	 * returns a double representing the distance in meters
 	 */
-	public static double calculateDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
+	public static double calculateDistance(Coordinate coordinate1, Coordinate coordinate2) {
+
+		double latitude1 = coordinate1.y;
+		double longitude1 = coordinate1.x;
+		double latitude2 = coordinate2.y;
+		double longitude2 = coordinate2.x;
 
 		double u1 = Math.atan((1 - FLATTENING) * Math.tan(Math.toRadians(latitude1)));
 		double u2 = Math.atan((1 - FLATTENING) * Math.tan(Math.toRadians(latitude2)));
@@ -87,12 +94,12 @@ public class SparqlFunctionsUtils {
 	private static DoubleStream getLineLengthsStream(Coordinate[] coords) {
 
 		return IntStream.range(0, coords.length - 1)
-				.mapToDouble(i -> calculateDistance(coords[i].y, coords[i].x, coords[i + 1].y, coords[i + 1].x));
+				.mapToDouble(i -> calculateDistance(coords[i], coords[i + 1]));
 	}
 
 	public static Coordinate findOnSegmentByDistance(Coordinate c1, Coordinate c2, double distanceToX) {
 
-		double length = calculateDistance(c1.y, c1.x, c2.y, c2.x);
+		double length = calculateDistance(c1, c2);
 		double ratio = distanceToX / length;
 		double x = ratio * c2.x + (1.0 - ratio) * c1.x;
 		double y = ratio * c2.y + (1.0 - ratio) * c1.y;
@@ -107,5 +114,22 @@ public class SparqlFunctionsUtils {
 				.asNode();
 
 		return NodeValue.makeNode(midpoint);
+	}
+
+	public static Coordinate getCoordinatesFromPointAsString(String midpoint) {
+
+		double[] coords = Arrays.stream(midpoint.replace("POINT(", "")
+				.replace(")", "")
+				.split(" "))
+				.mapToDouble(Double::parseDouble)
+				.toArray();
+
+		return new Coordinate(coords[0], coords[1]);
+	}
+
+	public static boolean pointIsOnLine(LineSegment line, Coordinate thePoint) {
+
+		return (thePoint.y - line.p0.y) * (line.p1.x - line.p0.x)
+				- (thePoint.x - line.p1.x) * (line.p1.y - line.p0.y) < 0.05;
 	}
 }
