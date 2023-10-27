@@ -8,9 +8,9 @@ import java.util.Map;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
 public class LdiRdfWriterProperties {
-	public final static String RDF_WRITER = "rdfwriter";
-	public final static String CONTENT_TYPE = "contenttype";
-	public final static String FRAME_TYPE = "frametype";
+	public static final String RDF_WRITER = "rdfwriter";
+	public static final String CONTENT_TYPE = "contenttype";
+	public static final String FRAME_TYPE = "frametype";
 	private final Map<String, String> properties;
 	private Lang lang;
 
