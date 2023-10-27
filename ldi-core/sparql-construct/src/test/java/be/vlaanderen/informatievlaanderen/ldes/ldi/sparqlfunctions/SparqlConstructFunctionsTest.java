@@ -31,8 +31,6 @@ class SparqlConstructFunctionsTest {
 	public static final String WKT_LITERAL = "wktLiteral";
 	public static final String GEOSPARQL_CUSTOM = "https://opengis.net/def/function/geosparql/custom#";
 
-
-
 	private final static String geoConstructFirstCoordinateQuery = """
 			prefix geoc: <https://opengis.net/def/function/geosparql/custom#>
 			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
@@ -251,6 +249,7 @@ class SparqlConstructFunctionsTest {
 
 		assertTrue(result.get(0).contains(expected));
 	}
+
 	private Model createGeoModel(String wkt) {
 		Statement geoStatement = INIT_MODEL.createStatement(
 				INIT_MODEL.createResource(DATA_FROM_SOURCE),
