@@ -15,52 +15,53 @@ import org.slf4j.LoggerFactory;
 
 public class LineAtIndex extends FunctionBase2 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LineAtIndex.class);
-    public static final String NAME = "https://opengis.net/def/function/geosparql/custom#lineAtIndex";
+	private static final Logger LOGGER = LoggerFactory.getLogger(LineAtIndex.class);
+	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#lineAtIndex";
 
-    @Override
-    public NodeValue exec(NodeValue wktLiteral, NodeValue number) {
+	@Override
+	public NodeValue exec(NodeValue wktLiteral, NodeValue number) {
 
-        WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-        GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
+		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
 
-        MultiLineString multiLineString = getMultiLineString(wktLiteral);
+		MultiLineString multiLineString = getMultiLineString(wktLiteral);
 
-        int i = number.getDecimal().intValue();
+		int i = number.getDecimal().intValue();
 
-        return getLineAtIndex(wrapper, multiLineString, i);
-    }
+		return getLineAtIndex(wrapper, multiLineString, i);
+	}
 
-    private NodeValue getLineAtIndex(GeometryWrapper wrapper, MultiLineString multiLineString, int i) {
+	private NodeValue getLineAtIndex(GeometryWrapper wrapper, MultiLineString multiLineString, int i) {
 
-        checkIndexInRange(multiLineString, i);
+		checkIndexInRange(multiLineString, i);
 
-        Coordinate[] coordinates = multiLineString.getGeometryN(i).getCoordinates();
+		Coordinate[] coordinates = multiLineString.getGeometryN(i).getCoordinates();
 
-        Node wkt = GeometryWrapperFactory.createLineString(coordinates, wrapper.getGeometryDatatypeURI())
-                .asNode();
+		Node wkt = GeometryWrapperFactory.createLineString(coordinates, wrapper.getGeometryDatatypeURI())
+				.asNode();
 
-        return NodeValue.makeNode(wkt);
-    }
+		return NodeValue.makeNode(wkt);
+	}
 
-    private static void checkIndexInRange(MultiLineString multiLineString, int i) {
+	private static void checkIndexInRange(MultiLineString multiLineString, int i) {
 
-        boolean inRange = 0 <= i && i < multiLineString.getNumGeometries();
+		boolean inRange = 0 <= i && i < multiLineString.getNumGeometries();
 
-        if (!inRange) throw new RuntimeException("Index is not in range !");
-    }
+		if (!inRange)
+			throw new RuntimeException("Index is not in range !");
+	}
 
-    private static MultiLineString getMultiLineString(NodeValue wktLiteral) {
+	private static MultiLineString getMultiLineString(NodeValue wktLiteral) {
 
-        WKTReader wktReader = new WKTReader();
-        MultiLineString multiLineString = null;
+		WKTReader wktReader = new WKTReader();
+		MultiLineString multiLineString = null;
 
-        try {
-            multiLineString = (MultiLineString) wktReader.read(wktLiteral.asUnquotedString());
-        } catch (ParseException e) {
-            LOGGER.error("MultiLineString parsing went wrong", e);
-        }
+		try {
+			multiLineString = (MultiLineString) wktReader.read(wktLiteral.asUnquotedString());
+		} catch (ParseException e) {
+			LOGGER.error("MultiLineString parsing went wrong", e);
+		}
 
-        return multiLineString;
-    }
+		return multiLineString;
+	}
 }
