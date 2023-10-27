@@ -1,0 +1,26 @@
+name: Update Docker Hub Description
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  update-dockerhub:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Linked Data Interactions Orchestrator
+      uses: peter-evans/dockerhub-description@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: ldes/ldi-orchestrator
+        short-description: Linked Data Interactions Orchestrator
+    - name: Linked Data Interactions for Apache NiFi
+      uses: peter-evans/dockerhub-description@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: ldi-workbench-nifi
+        short-description: Linked Data Interactions for Apache NiFi
