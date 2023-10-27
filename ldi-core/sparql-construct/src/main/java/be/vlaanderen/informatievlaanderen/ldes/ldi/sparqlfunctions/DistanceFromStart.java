@@ -42,7 +42,7 @@ public class DistanceFromStart extends FunctionBase2 {
 		return NodeValue.makeDouble(getTotalLineLength(coordinatesFromStartToPoint));
 	}
 
-	private static Coordinate[] getCoordinatesFromStartToPoint(Coordinate[] coordinates, int segmentNumber,
+	private Coordinate[] getCoordinatesFromStartToPoint(Coordinate[] coordinates, int segmentNumber,
 			Coordinate thePoint) {
 
 		List<Coordinate> coordinateList = Arrays.stream(coordinates)
@@ -54,7 +54,7 @@ public class DistanceFromStart extends FunctionBase2 {
 		return coordinateList.toArray(new Coordinate[0]);
 	}
 
-	int getSegmentNumberForCoordinate(Coordinate[] coords, Coordinate thePoint) {
+	private int getSegmentNumberForCoordinate(Coordinate[] coords, Coordinate thePoint) {
 
 		List<LineSegment> lines = createLineSegmentsList(coords);
 
@@ -64,7 +64,7 @@ public class DistanceFromStart extends FunctionBase2 {
 				.orElseThrow();
 	}
 
-	private static List<LineSegment> createLineSegmentsList(Coordinate[] coords) {
+	private List<LineSegment> createLineSegmentsList(Coordinate[] coords) {
 
 		return IntStream.range(0, coords.length - 1)
 				.mapToObj(i -> new LineSegment(coords[i], coords[i + 1]))
