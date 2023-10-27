@@ -16,14 +16,14 @@ jobs:
     - name: Linked Data Interactions Orchestrator
       uses: peter-evans/dockerhub-description@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ldes/ldi-orchestrator
         short-description: Linked Data Interactions Orchestrator
     - name: Linked Data Interactions for Apache NiFi
       uses: peter-evans/dockerhub-description@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ldi-workbench-nifi
         short-description: Linked Data Interactions for Apache NiFi
