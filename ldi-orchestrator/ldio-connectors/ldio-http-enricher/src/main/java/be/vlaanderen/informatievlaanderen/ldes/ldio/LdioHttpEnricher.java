@@ -34,6 +34,9 @@ public class LdioHttpEnricher implements LdiTransformer {
 	public Collection<Model> apply(Model model) {
 		final Request request = createRequest(model);
 		final Response response = requestExecutor.execute(request);
+
+		log.info(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
+
 		addResponseToModel(model, response);
 		return List.of(model);
 	}
