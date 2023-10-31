@@ -36,7 +36,8 @@ public class LdioHttpIn extends LdiInput {
 							.toString();
 
 					String type = req.headers().contentType().map(MediaType::toString).orElse("(unknown)");
-					LOGGER.info("POST " + "/%s".formatted(endpoint) + " type:" + type +  " length:" + req.headers().contentLength().orElse(0L));
+					LOGGER.info("POST " + "/%s".formatted(endpoint) + " type:" + type + " length:"
+							+ req.headers().contentLength().orElse(0L));
 
 					return req.bodyToMono(String.class)
 							.doOnNext(content -> executorService
