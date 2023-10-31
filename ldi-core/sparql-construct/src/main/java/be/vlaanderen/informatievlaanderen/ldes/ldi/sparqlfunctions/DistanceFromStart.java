@@ -8,6 +8,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -19,18 +20,19 @@ public class DistanceFromStart extends FunctionBase2 {
 	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#distanceFromStart";
 
 	@Override
-	public NodeValue exec(NodeValue wktLiteral, NodeValue nodeValue1) {
+	public NodeValue exec(NodeValue wktLiteral, NodeValue point) {
 
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		GeometryWrapper wktWrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		GeometryWrapper pointWrapper = wktDatatype.read(point.asUnquotedString());
 
-		return getDistanceFromStart(wrapper);
+		return getDistanceFromStart(wktWrapper, pointWrapper);
 	}
 
-	private NodeValue getDistanceFromStart(GeometryWrapper wrapper) {
+	private NodeValue getDistanceFromStart(GeometryWrapper wktWrapper, GeometryWrapper pointWrapper) {
 
-		Coordinate[] coordinates = wrapper.getXYGeometry().getCoordinates();
-		Coordinate thePoint = new MidPoint().getMidPointCoordinate(getTotalLineLength(coordinates) / 2, 0, coordinates);
+		Coordinate[] coordinates = wktWrapper.getXYGeometry().getCoordinates();
+		Coordinate thePoint = pointWrapper.getXYGeometry().getCoordinate();
 
 		if (coordinates.length == 2) {
 			return NodeValue.makeDouble(calculateDistance(coordinates[0], thePoint));
@@ -56,18 +58,21 @@ public class DistanceFromStart extends FunctionBase2 {
 
 	private int getSegmentNumberForCoordinate(Coordinate[] coords, Coordinate thePoint) {
 
-		List<LineSegment> lines = createLineSegmentsList(coords);
+		LineSegment[] lineSegs = createLineSegmentsArray(coords);
 
-		return IntStream.range(0, lines.size())
-				.filter(i -> pointIsOnLine(lines.get(i), thePoint))
-				.findFirst()
+		return IntStream.range(0, lineSegs.length)
+				.mapToObj(x -> new IndexAndDistance(x, distanceFromLine(lineSegs[x], thePoint)))
+				.min(Comparator.comparing(x -> x.distance))
+				.map(x -> x.index)
 				.orElseThrow();
 	}
 
-	private List<LineSegment> createLineSegmentsList(Coordinate[] coords) {
+	private LineSegment[] createLineSegmentsArray(Coordinate[] coords) {
 
 		return IntStream.range(0, coords.length - 1)
 				.mapToObj(i -> new LineSegment(coords[i], coords[i + 1]))
-				.toList();
+				.toArray(LineSegment[]::new);
 	}
+
+	private record IndexAndDistance (int index, double distance) {}
 }

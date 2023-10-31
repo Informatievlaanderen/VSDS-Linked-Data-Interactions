@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
-import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
@@ -30,6 +29,11 @@ class SparqlConstructFunctionsTest {
 	public static final String GEOSPARQL_AS_WKT = "http://www.opengis.net/ont/geosparql#asWKT";
 	public static final String WKT_LITERAL = "wktLiteral";
 	public static final String GEOSPARQL_CUSTOM = "https://opengis.net/def/function/geosparql/custom#";
+	public static final String EXAMPLE_ORG = "http://example.org/";
+	public static final String GEOMETRY = "geometry";
+	public static final String POINT = "point";
+	public static final String INDEX = "index";
+	public static final String OFFSET = "offset";
 
 	private final static String geoConstructFirstCoordinateQuery = """
 			prefix geoc: <https://opengis.net/def/function/geosparql/custom#>
@@ -40,7 +44,7 @@ class SparqlConstructFunctionsTest {
 			}
 			WHERE {
 				?s geosparql:asWKT ?wkt
-				BIND (geoc:firstCoordinate(?wkt, 0) as ?value)
+				BIND (geoc:firstCoordinate(?wkt) as ?value)
 			}
 
 			""";
@@ -54,7 +58,7 @@ class SparqlConstructFunctionsTest {
 			}
 			WHERE {
 				?s geosparql:asWKT ?wkt
-				BIND (geoc:lastCoordinate(?wkt, 0) as ?value)
+				BIND (geoc:lastCoordinate(?wkt) as ?value)
 			}
 
 			""";
@@ -68,7 +72,7 @@ class SparqlConstructFunctionsTest {
 			}
 			WHERE {
 				?s geosparql:asWKT ?wkt
-				BIND (geoc:lineLength(?wkt, 0) as ?value)
+				BIND (geoc:lineLength(?wkt) as ?value)
 			}
 
 			""";
@@ -82,7 +86,7 @@ class SparqlConstructFunctionsTest {
 			}
 			WHERE {
 				?s geosparql:asWKT ?wkt
-				BIND (geoc:midPoint(?wkt, 0) as ?value)
+				BIND (geoc:midPoint(?wkt) as ?value)
 			}
 
 			""";
@@ -105,13 +109,15 @@ class SparqlConstructFunctionsTest {
 	private final static String geoConstructDistanceFromStartQuery = """
 			prefix geoc: <https://opengis.net/def/function/geosparql/custom#>
 			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+			prefix : <http://example.org/>
 
 			CONSTRUCT  {
-				?s geosparql:distanceFromStart ?value
+				?s geoc:distanceFromStart ?value
 			}
 			WHERE {
-				?s geosparql:asWKT ?wkt .
-				BIND (geoc:distanceFromStart(?wkt, 0) as ?value)
+				?s :geometry ?wkt .
+			    ?s :point ?pnt .
+				BIND (geoc:distanceFromStart(?wkt, ?pnt) as ?value)
 			}
 
 			""";
@@ -133,7 +139,7 @@ class SparqlConstructFunctionsTest {
 
 	@ParameterizedTest
 	@CsvFileSource(resources = TELRAAM_CSV, numLinesToSkip = 1)
-	void geoFunctions_firstCoordinate(String id, String midpoint, String line, String start, String end) {
+	void geoFunctions_firstCoordinate(String id, String midpoint, String line, String start) {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
 
@@ -180,7 +186,7 @@ class SparqlConstructFunctionsTest {
 
 	@ParameterizedTest
 	@CsvFileSource(resources = TELRAAM_CSV, numLinesToSkip = 1)
-	void geoFunctions_midPoint(String id, String midpoint, String line, String start, String end, String offset) {
+	void geoFunctions_midPoint(String id, String midpoint, String line) {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructMidPointQuery), false);
 
@@ -215,22 +221,18 @@ class SparqlConstructFunctionsTest {
 
 	@ParameterizedTest
 	@CsvFileSource(resources = TELRAAM_CSV, numLinesToSkip = 1)
-	void geoFunctions_distanceFromStart(String id, String midpoint, String line, String start, String end,
-			String offset) {
+	void geoFunctions_distanceFromStart(String id, String midpoint,  String line, String start, String end,
+										String offset) {
+
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructDistanceFromStartQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
+		List<Model> result = sparqlConstructTransformer.apply(createGeoModelTwoLiterals(line, midpoint));
 
-		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-		GeometryWrapper wrapper = wktDatatype.read(line);
-		double expected = new LineLength().getLineLengthOfString(wrapper).getDouble() / 2;
+		double expected = Double.parseDouble(offset);;
+		double distanceFromStart = result.get(0).listStatements().nextStatement().getDouble();
 
-		double distanceFromStart = result.get(0)
-				.listObjectsOfProperty(createProperty("http://www.opengis.net/ont/geosparql#distanceFromStart"))
-				.toList().get(0).asLiteral().getDouble();
-
-		assertEquals(expected, distanceFromStart, 0.002);
+		assertEquals(expected, distanceFromStart, 0.02);
 	}
 
 	@Test
@@ -266,7 +268,7 @@ class SparqlConstructFunctionsTest {
 
 		Statement geoStatement2 = INIT_MODEL.createStatement(
 				INIT_MODEL.createResource(DATA_FROM_SOURCE),
-				INIT_MODEL.createProperty(GEOSPARQL_CUSTOM + "offset"),
+				INIT_MODEL.createProperty(GEOSPARQL_CUSTOM + OFFSET),
 				INIT_MODEL.createLiteral(offset));
 
 		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
@@ -280,8 +282,21 @@ class SparqlConstructFunctionsTest {
 
 		Statement geoStatement2 = INIT_MODEL.createStatement(
 				INIT_MODEL.createResource(DATA_FROM_SOURCE),
-				INIT_MODEL.createProperty(GEOSPARQL_CUSTOM + "index"),
+				INIT_MODEL.createProperty(GEOSPARQL_CUSTOM + INDEX),
 				INIT_MODEL.createTypedLiteral(index, XSDDatatype.XSDint));
+
+		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
+	}
+	private Model createGeoModelTwoLiterals(String wkt, String point) {
+		Statement geoStatement = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource(DATA_FROM_SOURCE),
+				INIT_MODEL.createProperty(EXAMPLE_ORG + GEOMETRY),
+				INIT_MODEL.createTypedLiteral(wkt, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
+
+		Statement geoStatement2 = INIT_MODEL.createStatement(
+				INIT_MODEL.createResource(DATA_FROM_SOURCE),
+				INIT_MODEL.createProperty(EXAMPLE_ORG + POINT),
+				INIT_MODEL.createTypedLiteral(point, GeoSPARQL_URI.GEO_URI + WKT_LITERAL));
 
 		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
 	}
