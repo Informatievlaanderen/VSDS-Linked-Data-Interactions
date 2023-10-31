@@ -6,6 +6,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +16,8 @@ import java.util.List;
 import static org.apache.jena.rdf.model.ResourceFactory.*;
 
 public class VersionObjectCreator implements LdiTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(VersionObjectCreator.class);
 
 	private static final Model initModel = ModelFactory.createDefaultModel();
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -72,6 +76,8 @@ public class VersionObjectCreator implements LdiTransformer {
 		Model versionObjectModel = ModelFactory.createDefaultModel();
 		String versionObjectId = memberInfo.generateVersionObjectId(delimiter);
 		Resource subject = versionObjectModel.createResource(versionObjectId);
+
+		LOGGER.info("Created version: " + versionObjectId);
 
 		List<Statement> statementList = inputModel.listStatements().toList();
 		statementList.stream()
