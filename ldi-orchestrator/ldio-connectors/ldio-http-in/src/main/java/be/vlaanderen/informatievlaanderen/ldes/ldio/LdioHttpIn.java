@@ -19,7 +19,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 
 public class LdioHttpIn extends LdiInput {
 
-	private final Logger log = LoggerFactory.getLogger(LdioHttpIn.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LdioHttpIn.class);
 	private final String endpoint;
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -36,7 +36,7 @@ public class LdioHttpIn extends LdiInput {
 							.toString();
 
 					String type = req.headers().contentType().map(MediaType::toString).orElse("(unknown)");
-					log.info("POST " + "/%s".formatted(endpoint) + " type:" + type +  " length:" + req.headers().contentLength().orElse(0L));
+					LOGGER.info("POST " + "/%s".formatted(endpoint) + " type:" + type +  " length:" + req.headers().contentLength().orElse(0L));
 
 					return req.bodyToMono(String.class)
 							.doOnNext(content -> executorService
