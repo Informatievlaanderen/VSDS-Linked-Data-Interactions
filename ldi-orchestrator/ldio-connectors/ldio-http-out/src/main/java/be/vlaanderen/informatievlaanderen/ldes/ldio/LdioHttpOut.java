@@ -38,11 +38,13 @@ public class LdioHttpOut implements LdiOutput {
 			final RequestHeader requestHeader = new RequestHeader(HttpHeaders.CONTENT_TYPE, contentType);
 			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), content);
 			Response response = requestExecutor.execute(request);
-			if (!response.isSuccess()) {
-				log.atError().log("Failed to post model. The request url was {}. " +
-						"The http response obtained from the server has code {} and body \"{}\".",
-						response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
-			}
-		}
+            if (response.isSuccess()) {
+                log.info(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
+            } else {
+                log.atError().log("Failed to post model. The request url was {}. " +
+                        "The http response obtained from the server has code {} and body \"{}\".",
+                        response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
+            }
+        }
 	}
 }
