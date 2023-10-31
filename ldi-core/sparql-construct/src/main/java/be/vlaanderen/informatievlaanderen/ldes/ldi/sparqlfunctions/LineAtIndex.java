@@ -19,12 +19,12 @@ public class LineAtIndex extends FunctionBase2 {
 	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#lineAtIndex";
 
 	@Override
-	public NodeValue exec(NodeValue wktLiteral, NodeValue number) {
+	public NodeValue exec(NodeValue lineString, NodeValue number) {
 
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		GeometryWrapper wrapper = wktDatatype.read(lineString.asUnquotedString());
 
-		MultiLineString multiLineString = getMultiLineString(wktLiteral);
+		MultiLineString multiLineString = getMultiLineString(lineString);
 
 		int i = number.getDecimal().intValue();
 

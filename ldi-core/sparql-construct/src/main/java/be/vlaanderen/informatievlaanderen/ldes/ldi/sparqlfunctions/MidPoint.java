@@ -19,10 +19,10 @@ public class MidPoint extends FunctionBase1 {
 	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#midPoint";
 
 	@Override
-	public NodeValue exec(NodeValue wktLiteral) {
+	public NodeValue exec(NodeValue lineString) {
 
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		GeometryWrapper wrapper = wktDatatype.read(lineString.asUnquotedString());
 
 		return getMidPoint(wrapper);
 	}

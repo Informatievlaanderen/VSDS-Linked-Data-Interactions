@@ -14,10 +14,10 @@ public class PointAtFromStart extends FunctionBase2 {
 	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#pointAtFromStart";
 
 	@Override
-	public NodeValue exec(NodeValue wktLiteral, NodeValue offset) {
+	public NodeValue exec(NodeValue lineString, NodeValue offset) {
 
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		GeometryWrapper wrapper = wktDatatype.read(lineString.asUnquotedString());
 		double os = Double.parseDouble(offset.asString());
 
 		return getPointAtFromStart(wrapper, os);

@@ -127,6 +127,9 @@ public class SparqlFunctionsUtils {
 		return new Coordinate(coords[0], coords[1]);
 	}
 
+	/**
+	 * @see <a href="https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line">distance from a point to a line</a>
+	 */
 	public static double distanceFromLine(LineSegment lineSegment, Coordinate p0) {
 
 		Coordinate p1 = lineSegment.p0;

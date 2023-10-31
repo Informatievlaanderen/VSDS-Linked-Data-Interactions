@@ -13,10 +13,10 @@ public class LastCoordinate extends FunctionBase1 {
 	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#lastCoordinate";
 
 	@Override
-	public NodeValue exec(NodeValue wktLiteral) {
+	public NodeValue exec(NodeValue lineString) {
 
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		GeometryWrapper wrapper = wktDatatype.read(lineString.asUnquotedString());
 
 		return getLastCoordinateOfLineString(wrapper);
 	}
