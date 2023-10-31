@@ -7,7 +7,6 @@ import org.locationtech.jts.geom.LineSegment;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SparqlFunctionsUtilsTest {
 
@@ -78,13 +77,13 @@ class SparqlFunctionsUtilsTest {
 	}
 
 	@Test
-	void pointIsOnLineTest() {
+	void distanceFromLineTest() {
 
-		Coordinate coordinate1 = new Coordinate(3.4046930961461, 50.8974825023952);
-		Coordinate coordinate2 = new Coordinate(3.40420579614629, 50.898212802395);
-		LineSegment lineSegment = new LineSegment(coordinate1, coordinate2);
-		Coordinate point = new Coordinate(3.404449446146195, 50.8978476523951);
+		Coordinate point = new Coordinate(4.47384349591721, 51.1974197024265);
+		double expected = 0.000029910710289885583;
+		double expected1 = 0.000024244738829277438;
 
-		assertTrue(pointIsOnLine(lineSegment, point));
+		assertEquals(expected, distanceFromLine(new LineSegment(c1, c2), point), 0.0000001);
+		assertEquals(expected1, distanceFromLine(new LineSegment(c2, c3), point), 0.0000001);
 	}
 }

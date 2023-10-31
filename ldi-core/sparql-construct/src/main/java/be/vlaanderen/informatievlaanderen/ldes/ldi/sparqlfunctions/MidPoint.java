@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.function.FunctionBase2;
+import org.apache.jena.sparql.function.FunctionBase1;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.util.List;
@@ -14,15 +14,15 @@ import java.util.stream.IntStream;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.utils.SparqlFunctionsUtils.*;
 import static java.util.Arrays.stream;
 
-public class MidPoint extends FunctionBase2 {
+public class MidPoint extends FunctionBase1 {
 
 	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#midPoint";
 
 	@Override
-	public NodeValue exec(NodeValue wktLiteral, NodeValue index) {
+	public NodeValue exec(NodeValue lineString) {
 
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		GeometryWrapper wrapper = wktDatatype.read(lineString.asUnquotedString());
 
 		return getMidPoint(wrapper);
 	}

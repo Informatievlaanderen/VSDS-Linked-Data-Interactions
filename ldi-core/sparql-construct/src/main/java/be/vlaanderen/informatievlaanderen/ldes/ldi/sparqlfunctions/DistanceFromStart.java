@@ -8,6 +8,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineSegment;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -19,25 +20,26 @@ public class DistanceFromStart extends FunctionBase2 {
 	public static final String NAME = "https://opengis.net/def/function/geosparql/custom#distanceFromStart";
 
 	@Override
-	public NodeValue exec(NodeValue wktLiteral, NodeValue nodeValue1) {
+	public NodeValue exec(NodeValue lineString, NodeValue point) {
 
 		WKTDatatype wktDatatype = WKTDatatype.INSTANCE;
-		GeometryWrapper wrapper = wktDatatype.read(wktLiteral.asUnquotedString());
+		GeometryWrapper lineStringWrapper = wktDatatype.read(lineString.asUnquotedString());
+		GeometryWrapper pointWrapper = wktDatatype.read(point.asUnquotedString());
 
-		return getDistanceFromStart(wrapper);
+		return getDistanceFromStart(lineStringWrapper, pointWrapper);
 	}
 
-	private NodeValue getDistanceFromStart(GeometryWrapper wrapper) {
+	private NodeValue getDistanceFromStart(GeometryWrapper lineStringWrapper, GeometryWrapper pointWrapper) {
 
-		Coordinate[] coordinates = wrapper.getXYGeometry().getCoordinates();
-		Coordinate thePoint = new MidPoint().getMidPointCoordinate(getTotalLineLength(coordinates) / 2, 0, coordinates);
+		Coordinate[] coordinates = lineStringWrapper.getXYGeometry().getCoordinates();
+		Coordinate point = pointWrapper.getXYGeometry().getCoordinate();
 
 		if (coordinates.length == 2) {
-			return NodeValue.makeDouble(calculateDistance(coordinates[0], thePoint));
+			return NodeValue.makeDouble(calculateDistance(coordinates[0], point));
 		}
 
-		int segmentNumber = getSegmentNumberForCoordinate(coordinates, thePoint);
-		Coordinate[] coordinatesFromStartToPoint = getCoordinatesFromStartToPoint(coordinates, segmentNumber, thePoint);
+		int segmentNumber = getSegmentNumberForCoordinate(coordinates, point);
+		Coordinate[] coordinatesFromStartToPoint = getCoordinatesFromStartToPoint(coordinates, segmentNumber, point);
 
 		return NodeValue.makeDouble(getTotalLineLength(coordinatesFromStartToPoint));
 	}
@@ -56,18 +58,22 @@ public class DistanceFromStart extends FunctionBase2 {
 
 	private int getSegmentNumberForCoordinate(Coordinate[] coords, Coordinate thePoint) {
 
-		List<LineSegment> lines = createLineSegmentsList(coords);
+		LineSegment[] lineSegments = createLineSegmentsArray(coords);
 
-		return IntStream.range(0, lines.size())
-				.filter(i -> pointIsOnLine(lines.get(i), thePoint))
-				.findFirst()
+		return IntStream.range(0, lineSegments.length)
+				.mapToObj(x -> new IndexAndDistance(x, distanceFromLine(lineSegments[x], thePoint)))
+				.min(Comparator.comparing(x -> x.distance))
+				.map(x -> x.index)
 				.orElseThrow();
 	}
 
-	private List<LineSegment> createLineSegmentsList(Coordinate[] coords) {
+	private LineSegment[] createLineSegmentsArray(Coordinate[] coords) {
 
 		return IntStream.range(0, coords.length - 1)
 				.mapToObj(i -> new LineSegment(coords[i], coords[i + 1]))
-				.toList();
+				.toArray(LineSegment[]::new);
+	}
+
+	private record IndexAndDistance(int index, double distance) {
 	}
 }
