@@ -83,7 +83,7 @@ class SparqlFunctionsUtilsTest {
 		double expected = 0.000029910710289885583;
 		double expected1 = 0.000024244738829277438;
 
-		assertEquals(expected, distanceFromLine(new LineSegment(c1,c2), point), 0.0000001);
-		assertEquals(expected1, distanceFromLine(new LineSegment(c2,c3), point), 0.0000001);
+		assertEquals(expected, distanceFromLine(new LineSegment(c1, c2), point), 0.0000001);
+		assertEquals(expected1, distanceFromLine(new LineSegment(c2, c3), point), 0.0000001);
 	}
 }

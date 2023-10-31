@@ -127,11 +127,12 @@ public class SparqlFunctionsUtils {
 		return new Coordinate(coords[0], coords[1]);
 	}
 
-	public static double distanceFromLine(LineSegment lineSegment, Coordinate p0){
+	public static double distanceFromLine(LineSegment lineSegment, Coordinate p0) {
 
 		Coordinate p1 = lineSegment.p0;
 		Coordinate p2 = lineSegment.p1;
 
-        return Math.abs((p2.x - p1.x) * (p1.y - p0.y) - (p1.x - p0.x) * (p2.y - p1.y)) / Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+		return Math.abs((p2.x - p1.x) * (p1.y - p0.y) - (p1.x - p0.x) * (p2.y - p1.y))
+				/ Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 	}
 }

@@ -74,5 +74,6 @@ public class DistanceFromStart extends FunctionBase2 {
 				.toArray(LineSegment[]::new);
 	}
 
-	private record IndexAndDistance (int index, double distance) {}
+	private record IndexAndDistance(int index, double distance) {
+	}
 }

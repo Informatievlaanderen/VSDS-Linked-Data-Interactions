@@ -221,15 +221,15 @@ class SparqlConstructFunctionsTest {
 
 	@ParameterizedTest
 	@CsvFileSource(resources = TELRAAM_CSV, numLinesToSkip = 1)
-	void geoFunctions_distanceFromStart(String id, String midpoint,  String line, String start, String end,
-										String offset) {
+	void geoFunctions_distanceFromStart(String id, String midpoint, String line, String start, String end,
+			String offset) {
 
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructDistanceFromStartQuery), false);
 
 		List<Model> result = sparqlConstructTransformer.apply(createGeoModelTwoLiterals(line, midpoint));
 
-		double expected = Double.parseDouble(offset);;
+		double expected = Double.parseDouble(offset);
 		double distanceFromStart = result.get(0).listStatements().nextStatement().getDouble();
 
 		assertEquals(expected, distanceFromStart, 0.02);
@@ -287,6 +287,7 @@ class SparqlConstructFunctionsTest {
 
 		return ModelFactory.createDefaultModel().add(geoStatement).add(geoStatement2);
 	}
+
 	private Model createGeoModelTwoLiterals(String wkt, String point) {
 		Statement geoStatement = INIT_MODEL.createStatement(
 				INIT_MODEL.createResource(DATA_FROM_SOURCE),
