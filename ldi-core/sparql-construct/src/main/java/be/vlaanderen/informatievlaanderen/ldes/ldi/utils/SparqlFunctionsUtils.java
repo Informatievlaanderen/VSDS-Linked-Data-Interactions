@@ -128,7 +128,9 @@ public class SparqlFunctionsUtils {
 	}
 
 	/**
-	 * @see <a href="https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line">distance from a point to a line</a>
+	 * @see <a href=
+	 *      "https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line">distance
+	 *      from a point to a line</a>
 	 */
 	public static double distanceFromLine(LineSegment lineSegment, Coordinate p0) {
 
