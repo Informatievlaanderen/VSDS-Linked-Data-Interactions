@@ -21,8 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 public class HttpInputPoller extends LdiInput {
 
-	private final Logger log = LoggerFactory.getLogger(HttpInputPoller.class);
-
 	private final ScheduledExecutorService scheduler;
 	private final RequestExecutor requestExecutor;
 	private final List<? extends Request> requests;
@@ -57,8 +55,12 @@ public class HttpInputPoller extends LdiInput {
 	}
 
 	private void executeRequest(Request request) {
-		log.atDebug().log("Polling next url: {}", request.getUrl());
+		LOGGER.atDebug().log("Polling next url: {}", request.getUrl());
+
 		Response response = requestExecutor.execute(request);
+
+		LOGGER.info(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
+
 		if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
 			String contentType = response.getFirstHeaderValue(CONTENT_TYPE)
 					.orElseThrow(() -> new MissingHeaderException(response.getHttpStatus(), request.getUrl()));
