@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator.EXTRACT_MEMBER_INFO_FAILED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator.SYNTAX_TYPE;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -171,7 +170,7 @@ class VersionObjectCreatorTest {
 		versionObjectCreator.apply(initModel);
 
 		List<ILoggingEvent> logsList = listAppender.list;
-		assertTrue(logsList.get(0).getMessage().contains(EXTRACT_MEMBER_INFO_FAILED));
+		assertTrue(logsList.get(0).getMessage().contains(VersionObjectCreator.DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND));
 		assertEquals(Level.WARN, logsList.get(0).getLevel());
 	}
 
