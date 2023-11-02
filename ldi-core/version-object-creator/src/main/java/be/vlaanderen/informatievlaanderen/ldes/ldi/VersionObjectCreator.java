@@ -25,7 +25,7 @@ public class VersionObjectCreator implements LdiTransformer {
 	private static final String XMLSCHEMA_DATE_TIME = "http://www.w3.org/2001/XMLSchema#dateTime";
 	public static final Property SYNTAX_TYPE = initModel
 			.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-	public static final String EXTRACT_MEMBER_INFO_FAILED = "extractMemberInfo failed: ";
+	public static final String EXTRACT_MEMBER_INFO_FAILED = "extractMemberInfo failed: {}";
 
 	private final PropertyExtractor dateObservedPropertyExtractor;
 	private final Resource memberTypeResource;
@@ -51,7 +51,7 @@ public class VersionObjectCreator implements LdiTransformer {
 		if (memberInfo.isPresent())
 			return List.of(constructVersionObject(linkedDataModel, new MemberInfo(memberInfo.get(), dateObserved)));
 
-		LOGGER.warn(EXTRACT_MEMBER_INFO_FAILED + dateObserved);
+		LOGGER.warn(EXTRACT_MEMBER_INFO_FAILED, dateObserved);
 		return List.of(linkedDataModel);
 	}
 
