@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.*;
 
@@ -24,6 +25,7 @@ public class VersionObjectCreator implements LdiTransformer {
 	private static final String XMLSCHEMA_DATE_TIME = "http://www.w3.org/2001/XMLSchema#dateTime";
 	public static final Property SYNTAX_TYPE = initModel
 			.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+	public static final String DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND = "Date observed property could not be found: {}";
 
 	private final PropertyExtractor dateObservedPropertyExtractor;
 	private final Resource memberTypeResource;
@@ -43,21 +45,23 @@ public class VersionObjectCreator implements LdiTransformer {
 
 	@Override
 	public List<Model> apply(Model linkedDataModel) {
-		MemberInfo memberInfo = extractMemberInfo(linkedDataModel);
+		final String dateObserved = getDateObserved(linkedDataModel);
+		Optional<String> memberInfo = extractMemberInfo(linkedDataModel);
 
-		return List.of(constructVersionObject(linkedDataModel, memberInfo));
+		if (memberInfo.isPresent())
+			return List.of(constructVersionObject(linkedDataModel, new MemberInfo(memberInfo.get(), dateObserved)));
+
+		LOGGER.warn(DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND, dateObserved);
+		return List.of(linkedDataModel);
 	}
 
-	private MemberInfo extractMemberInfo(Model linkedDataModel) {
-		final String dateObserved = getDateObserved(linkedDataModel);
+	private Optional<String> extractMemberInfo(Model linkedDataModel) {
 
-		String id = linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
+		return linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
 				.nextOptional()
 				.map(Statement::getSubject)
 				.map(Resource::asNode)
-				.map(Node::toString)
-				.orElseThrow();
-		return new MemberInfo(id, dateObserved);
+				.map(Node::toString);
 	}
 
 	private String getDateObserved(Model linkedDataModel) {
