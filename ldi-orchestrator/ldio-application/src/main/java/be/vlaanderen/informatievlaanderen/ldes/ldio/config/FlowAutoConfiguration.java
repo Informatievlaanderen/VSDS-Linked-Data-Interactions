@@ -36,7 +36,7 @@ public class FlowAutoConfiguration {
 	private final ApplicationEventPublisher eventPublisher;
 
 	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
-			ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
+	                             ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
 		this.orchestratorConfig = orchestratorConfig;
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
@@ -60,10 +60,19 @@ public class FlowAutoConfiguration {
 
 		LdiSender ldiSender = new LdiSender(eventPublisher, ldiOutputs);
 
-		List<LdioProcessor> processorChain = new ArrayList<>(ldioProcessors.subList(1, ldioProcessors.size()));
+		List<LdioProcessor> processorChain = new ArrayList<>();
+
+		if (!ldioProcessors.isEmpty()) {
+			processorChain.addAll(ldioProcessors.subList(1, ldioProcessors.size()));
+		}
+
 		processorChain.add(ldiSender);
 
-		LdioProcessor ldioProcessorPipeline = LdioProcessor.link(ldioProcessors.get(0), processorChain);
+		LdioProcessor ldioProcessorPipeline = processorChain.get(0);
+
+		if (processorChain.size() > 1) {
+			ldioProcessorPipeline = LdioProcessor.link(processorChain.get(0), processorChain);
+		}
 
 		registerBean(pipelineConfig.getName() + "-ldiSender", ldiSender);
 
