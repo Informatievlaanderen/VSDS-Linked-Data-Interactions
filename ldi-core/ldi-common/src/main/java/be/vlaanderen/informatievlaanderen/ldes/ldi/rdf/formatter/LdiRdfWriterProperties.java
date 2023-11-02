@@ -10,7 +10,7 @@ import static org.apache.jena.riot.RDFLanguages.nameToLang;
 public class LdiRdfWriterProperties {
 	public static final String RDF_WRITER = "rdfwriter";
 	public static final String CONTENT_TYPE = "contenttype";
-	public static final String FRAME_TYPE = "frametype";
+	public static final String FRAME = "frame";
 	private final Map<String, String> properties;
 	private Lang lang;
 
@@ -33,7 +33,7 @@ public class LdiRdfWriterProperties {
 	}
 
 	private void setLangFromProperties() {
-		if (properties.containsKey(stripped(CONTENT_TYPE))) {
+		if (properties.containsKey(CONTENT_TYPE)) {
 			this.lang = nameToLang(MediaType.createFromContentType(getProperty(CONTENT_TYPE)).getContentTypeStr());
 		} else {
 			this.lang = Lang.TTL;
@@ -42,20 +42,13 @@ public class LdiRdfWriterProperties {
 
 	// JSON-LD
 
-	public String getFrameType() {
-		return getProperty(FRAME_TYPE);
+	public String getJsonLdFrame() {
+		return getProperty(FRAME);
 	}
 
 	// Common
 
 	private String getProperty(String key) {
-		return properties.get(stripped(key));
-	}
-
-	static String stripped(String key) {
-		return key
-				.toLowerCase()
-				.replace("-", "")
-				.replace("_", "");
+		return properties.get(key);
 	}
 }
