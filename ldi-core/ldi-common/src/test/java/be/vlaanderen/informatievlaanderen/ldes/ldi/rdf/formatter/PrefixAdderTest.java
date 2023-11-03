@@ -20,7 +20,7 @@ class PrefixAdderTest {
 
 	@Test
 	void when_PrefixesAndLocalNamesAreValid_TheyAreAddedToPrefixMap() throws URISyntaxException, IOException {
-		Model model = readLdesMemberFromFile(getClass().getClassLoader(), "rdfFormatter/prefixAdderTest.nq");
+		Model model = readLdesMemberFromFile(getClass().getClassLoader(), "rdf/formatter/prefixAdderTest.nq");
 		Model updatedModel = PrefixAdder.addPrefixesToModel(model);
 		Map<String, String> nsPrefixMap = updatedModel.getNsPrefixMap();
 
