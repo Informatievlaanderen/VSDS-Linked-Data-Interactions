@@ -170,7 +170,8 @@ class VersionObjectCreatorTest {
 		versionObjectCreator.apply(initModel);
 
 		List<ILoggingEvent> logsList = listAppender.list;
-		assertTrue(logsList.get(0).getMessage().contains(VersionObjectCreator.DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND));
+		assertTrue(
+				logsList.get(0).getMessage().contains(VersionObjectCreator.DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND));
 		assertEquals(Level.WARN, logsList.get(0).getLevel());
 	}
 
