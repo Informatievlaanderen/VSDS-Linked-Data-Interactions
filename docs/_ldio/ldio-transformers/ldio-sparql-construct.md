@@ -11,7 +11,6 @@ An LDIO wrapper component for the [LDI SPARQL Construct building block](../../co
 
 ## Config
 
-
 | Property | Description                                              | Required | Default | Example  | Supported values |
 |:---------|:---------------------------------------------------------|:---------|:--------|:---------|:-----------------|
 | query    | Path to content of SPARQL Query/content of SPARQL query. | Yes      | N/A     | query.rq | Path/String      |
