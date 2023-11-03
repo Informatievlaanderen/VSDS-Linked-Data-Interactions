@@ -9,10 +9,23 @@ title: SPARQL Construct
 
 An LDIO wrapper component for the [LDI SPARQL Construct building block](../../core/ldi-transformers/sparql-construct)
 
-## Config
+## SPARQL functions
+
+We support some additional geo functions that can call inside your SPARQL Construct query,
+
+with the following namespace: 
+
+prefix geoc: <https://opengis.net/def/function/geosparql/custom#>
 
 
-| Property | Description                                              | Required | Default | Example  | Supported values |
-|:---------|:---------------------------------------------------------|:---------|:--------|:---------|:-----------------|
-| query    | Path to content of SPARQL Query/content of SPARQL query. | Yes      | N/A     | query.rq | Path/String      |
-| infer    | Include original model in end result.                    | No       | false   | false    | true or false    |
+
+
+| Function               | Description                                                 | Input                                                  | Output                 |
+|:-----------------------|:------------------------------------------------------------|:-------------------------------------------------------|:-----------------------|
+| geoc:lineAtIndex       | get LineString from MultiLineString by index.               | MultiLineString(wktLiteral) & index                    | LineString(wktLiteral) |
+| geoc:firstCoordinate   | get first Coordinate of LineString.                         | LineString(wktLiteral)                                 | Coordinate(wktLiteral) |
+| geoc:lastCoordinate    | get last Coordinate of LineString.                          | LineString(wktLiteral)                                 | Coordinate(wktLiteral) |
+| geoc:lineLength        | calculate total line length of LineString.                  | LineString(wktLiteral)                                 | distance in meters     |
+| geoc:midPoint          | calculate midpoint of LineString.                           | LineString(wktLiteral)                                 | Coordinate(wktLiteral) |
+| geoc:pointAtFromStart  | calculate point on LineString by distance.                  | LineString(wktLiteral) & distance in meters            | Coordinate(wktLiteral) |
+| geoc:distanceFromStart | calculate distance from start of LineString to given point. | LineString(wktLiteral) & Coordinate(wktLiteral)        | distance in meters     |
