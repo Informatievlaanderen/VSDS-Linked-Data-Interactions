@@ -16,7 +16,7 @@ jobs:
     - name: Linked Data Interactions Orchestrator
       uses: peter-evans/dockerhub-description@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USER }}
+        username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ldes/ldi-orchestrator
         short-description: Linked Data Interactions Orchestrator
