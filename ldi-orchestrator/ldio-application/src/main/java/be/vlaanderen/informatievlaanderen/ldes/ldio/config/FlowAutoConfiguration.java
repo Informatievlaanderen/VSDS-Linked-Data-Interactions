@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioProcessorConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.LdiSender;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
@@ -20,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -29,6 +31,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 
 @Configuration
 @ComponentScan("be.vlaanderen.informatievlaanderen")
+@Component
 public class FlowAutoConfiguration {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlowAutoConfiguration.class);
 	private final OrchestratorConfig orchestratorConfig;
@@ -103,6 +106,7 @@ public class FlowAutoConfiguration {
 		Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(inputConfig));
 
 		registerBean(pipeLineName, ldiInput);
+		eventPublisher.publishEvent(new PipelineCreatedEvent(this, config));
 	}
 
 	private LdiAdapter getLdioAdapter(ComponentDefinition componentDefinition) {

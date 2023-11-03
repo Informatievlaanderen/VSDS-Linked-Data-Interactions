@@ -31,7 +31,7 @@ public class LdiSender extends LdioProcessor {
 	@SuppressWarnings({ "java:S131", "java:S1301" })
 	@EventListener
 	public void handlePipelineStatus(PipelineStatusEvent statusEvent) {
-		switch (statusEvent.getStatus()) {
+		switch (statusEvent.status()) {
 			case RESUMING -> {
 				while (!queue.isEmpty()) {
 					ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(queue.poll()));
