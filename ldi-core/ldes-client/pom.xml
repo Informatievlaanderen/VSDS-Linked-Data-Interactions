@@ -22,7 +22,7 @@
     <properties>
         <sqlite-jdbc.version>3.43.0.0</sqlite-jdbc.version>
         <sqlite-dialect.version>0.1.4</sqlite-dialect.version>
-        <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
+        <junit-platform-suite.version>1.10.1</junit-platform-suite.version>
         <hibernate.version>5.6.15.Final</hibernate.version>
         <hikari.version>5.0.1</hikari.version>
         <postgresql.version>42.6.0</postgresql.version>
