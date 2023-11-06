@@ -18,39 +18,41 @@ import java.util.Objects;
 
 import com.github.jsonldjava.core.JsonLdOptions;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.FRAME_TYPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.FRAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LdiRdfWriterTest {
 	@Test
 	void formatModel_jsonLD() throws IOException, URISyntaxException {
-		String input = getJsonString("./rdfFormatter/product.jsonld");
+		String input = getFileContentString("rdf/formatter/product.jsonld");
 
 		Model model = RDFParser.fromString(input)
 				.lang(Lang.JSONLD)
 				.toModel();
 
-		String frameType = "http://purl.org/goodrelations/v1#Offering";
-		LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(Map.of(FRAME_TYPE, frameType));
+		String frame = getFileContentString("rdf/formatter/product.frame.jsonld");
+		JsonObject expected = JSON.parse(getFileContentString("rdf/formatter/expected/product.jsonld"));
+
+		LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(Map.of(FRAME, frame));
 
 		String output = LdiRdfWriter.getRdfWriter(writerProperties.withLang(Lang.JSONLD)).write(model);
 
 		JsonObject outputJson = JSON.parse(output);
 
 		assertFalse(outputJson.hasKey("@graph"));
-		assertEquals(9, outputJson.size());
+		assertEquals(expected, outputJson);
 	}
 
 	@Test
 	void formatModel_turtle() throws IOException, URISyntaxException {
-		String input = getJsonString("./rdfFormatter/product.jsonld");
+		String input = getFileContentString("rdf/formatter/product.jsonld");
 
 		Model model = RDFParser.fromString(input)
 				.lang(Lang.JSONLD)
 				.toModel();
 
 		String output = LdiRdfWriter.getRdfWriter(new LdiRdfWriterProperties().withLang(Lang.TURTLE)).write(model);
-		String expected = getJsonString("./rdfFormatter/expected/product.ttl");
+		String expected = getFileContentString("rdf/formatter/expected/product.ttl");
 
 		assertTrue(RDFParser.fromString(output)
 				.lang(Lang.TURTLE)
@@ -60,14 +62,14 @@ public class LdiRdfWriterTest {
 
 	@Test
 	void formatModel_nquads() throws IOException, URISyntaxException {
-		String input = getJsonString("./rdfFormatter/product.jsonld");
+		String input = getFileContentString("rdf/formatter/product.jsonld");
 
 		Model model = RDFParser.fromString(input)
 				.lang(Lang.JSONLD)
 				.toModel();
 
 		String output = LdiRdfWriter.getRdfWriter(new LdiRdfWriterProperties().withLang(Lang.NQUADS)).write(model);
-		String expected = getJsonString("./rdfFormatter/expected/product.nq");
+		String expected = getFileContentString("rdf/formatter/expected/product.nq");
 
 		assertTrue(RDFParser.fromString(output)
 				.lang(Lang.NQUADS)
@@ -76,21 +78,23 @@ public class LdiRdfWriterTest {
 	}
 
 	@Test
-	void getFramedContext() throws URISyntaxException, IOException {
-		Model model = RDFParser.fromString(getJsonString("./rdfFormatter/person.jsonld"))
-				.lang(Lang.JSONLD)
-				.toModel();
-		String frameType = "http://schema.org/Person";
+	void getFramedContext() {
+		String frame = """
+				{
+				  "@context": "http://schema.org/",
+				  "@type": "Person"
+				}
+				""";
 
-		JsonLDWriteContext context = (JsonLDWriteContext) JsonLdWriter.getFramedContext(model, frameType);
+		JsonLDWriteContext context = (JsonLDWriteContext) JsonLdWriter.getFramedContext(frame);
 
 		JsonObject frameObject = JSON.parse((String) context.get(JsonLD10Writer.JSONLD_FRAME));
-		assertEquals(frameType, frameObject.get("@type").getAsString().value());
+		assertTrue(frameObject.hasKey("@type"));
 		assertTrue(frameObject.hasKey("@context"));
 		assertTrue(((JsonLdOptions) context.get(JsonLD10Writer.JSONLD_OPTIONS)).getOmitGraph());
 	}
 
-	private String getJsonString(String resource) throws URISyntaxException, IOException {
+	private String getFileContentString(String resource) throws URISyntaxException, IOException {
 		File file = new File(
 				Objects.requireNonNull(getClass().getClassLoader().getResource(resource)).toURI());
 		return Files.readString(file.toPath());
