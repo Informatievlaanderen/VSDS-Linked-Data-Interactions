@@ -1,11 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.Model;
 
-public class LdioSparqlConstruct extends LdioProcessor {
+public class LdioSparqlConstruct extends LdioTransformer {
 	private final SparqlConstructTransformer transformer;
 
 	public LdioSparqlConstruct(Query query, boolean inferMode) {

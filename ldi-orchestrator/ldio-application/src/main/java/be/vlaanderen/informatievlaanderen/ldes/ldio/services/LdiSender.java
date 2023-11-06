@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import org.apache.jena.rdf.model.Model;
 import org.springframework.context.ApplicationEventPublisher;
@@ -15,7 +15,7 @@ import java.util.Queue;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RUNNING;
 
-public class LdiSender extends LdioProcessor {
+public class LdiSender extends LdioTransformer {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private PipelineStatus pipelineStatus;
 	private final List<LdiOutput> ldiOutputs;

@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioProcessorConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,16 +10,16 @@ import org.springframework.context.annotation.Configuration;
 public class LdioModelSplitTransformerAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitTransformer")
-	public LdioProcessorConfigurator ldiModelSplitConfigurator() {
-		return new LdioModelSplitTransformerProcessorConfigurator();
+	public LdioTransformerConfigurator ldiModelSplitConfigurator() {
+		return new LdioModelSplitTransformerTransformerConfigurator();
 	}
 
-	public static class LdioModelSplitTransformerProcessorConfigurator implements LdioProcessorConfigurator {
+	public static class LdioModelSplitTransformerTransformerConfigurator implements LdioTransformerConfigurator {
 
 		public static final String SUBJECT_TYPE = "split-subject-type";
 
 		@Override
-		public LdioProcessor configure(ComponentProperties config) {
+		public LdioTransformer configure(ComponentProperties config) {
 			final String subjectType = config.getProperty(SUBJECT_TYPE);
 			return new LdioModelSplitter(subjectType);
 		}

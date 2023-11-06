@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioAdapterConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Configuration;
 public class LdioJsonToLdAdapterAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter")
-	public LdioConfigurator ldioJsonToLdAdapterConfigurator() {
+	public LdioAdapterConfigurator ldioJsonToLdAdapterConfigurator() {
 		return new LdioJsonToLdConfigurator();
 	}
 
-	public static class LdioJsonToLdConfigurator implements LdioConfigurator {
+	public static class LdioJsonToLdConfigurator implements LdioAdapterConfigurator {
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
 			String coreContext = config.getProperty("core-context");

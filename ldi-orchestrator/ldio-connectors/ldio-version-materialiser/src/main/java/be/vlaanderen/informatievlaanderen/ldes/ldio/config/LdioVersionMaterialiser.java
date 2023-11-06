@@ -1,11 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 
-public class LdioVersionMaterialiser extends LdioProcessor {
+public class LdioVersionMaterialiser extends LdioTransformer {
 	private final VersionMaterialiser versionMaterialiser;
 
 	public LdioVersionMaterialiser(Property versionOfProperty, boolean restrictToMembers) {

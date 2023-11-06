@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioProcessorConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -12,14 +12,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LdioVersionMaterialiserAutoConfig {
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser")
-	public LdioProcessorConfigurator ldioConfigurator() {
-		return new LdioVersionMaterialiserProcessorConfigurator();
+	public LdioTransformerConfigurator ldioConfigurator() {
+		return new LdioVersionMaterialiserTransformerConfigurator();
 	}
 
-	public static class LdioVersionMaterialiserProcessorConfigurator implements LdioProcessorConfigurator {
+	public static class LdioVersionMaterialiserTransformerConfigurator implements LdioTransformerConfigurator {
 
 		@Override
-		public LdioProcessor configure(ComponentProperties config) {
+		public LdioTransformer configure(ComponentProperties config) {
 			Model initModel = ModelFactory.createDefaultModel();
 
 			Property versionOfProperty = config.getOptionalProperty("versionOf-property")

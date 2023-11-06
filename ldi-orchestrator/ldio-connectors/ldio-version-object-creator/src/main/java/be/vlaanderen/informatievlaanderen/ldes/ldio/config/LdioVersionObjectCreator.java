@@ -2,12 +2,12 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
-public class LdioVersionObjectCreator extends LdioProcessor {
+public class LdioVersionObjectCreator extends LdioTransformer {
 
 	private final VersionObjectCreator versionObjectCreator;
 

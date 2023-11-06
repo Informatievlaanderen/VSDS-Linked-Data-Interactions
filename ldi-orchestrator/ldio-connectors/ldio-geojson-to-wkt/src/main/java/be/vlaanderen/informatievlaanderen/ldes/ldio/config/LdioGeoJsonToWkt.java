@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.GeoJsonToWktTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 
-public class LdioGeoJsonToWkt extends LdioProcessor {
+public class LdioGeoJsonToWkt extends LdioTransformer {
 	private final GeoJsonToWktTransformer transformer;
 
 	public LdioGeoJsonToWkt() {

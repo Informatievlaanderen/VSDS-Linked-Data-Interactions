@@ -6,7 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.SaslSslPlainConfigProvider;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.KafkaKeyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -23,7 +23,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrateg
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy.SASL_SSL_PLAIN;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.*;
 
-public class LdioKafkaOutProcessorConfigurator implements LdioConfigurator {
+public class LdioKafkaOutProcessorConfigurator implements LdioOutputConfigurator {
 
 	@Override
 	public LdiComponent configure(ComponentProperties config) {
@@ -58,7 +58,7 @@ public class LdioKafkaOutProcessorConfigurator implements LdioConfigurator {
 		configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
 		var authStrategy = KafkaAuthStrategy.from(config.getOptionalProperty(SECURITY_PROTOCOL)
-				.orElse(NO_AUTH.name()))
+						.orElse(NO_AUTH.name()))
 				.orElseThrow(() -> new SecurityProtocolNotSupportedException(SECURITY_PROTOCOL));
 
 		if (SASL_SSL_PLAIN.equals(authStrategy)) {

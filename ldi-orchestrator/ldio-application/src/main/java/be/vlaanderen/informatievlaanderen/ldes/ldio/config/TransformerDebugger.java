@@ -1,16 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProcessorDebugger extends LdioProcessor {
+public class TransformerDebugger extends LdioTransformer {
     private final Logger log;
 
-    public ProcessorDebugger(LdioProcessor ldiTransformer) {
+    public TransformerDebugger(LdioTransformer ldiTransformer) {
         log = LoggerFactory.getLogger(ldiTransformer.getClass());
     }
 

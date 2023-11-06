@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 
-public class LdioModelSplitter extends LdioProcessor {
+public class LdioModelSplitter extends LdioTransformer {
 	private final ModelSplitTransformer modelSplitter;
 
 	protected LdioModelSplitter(String subjectType) {

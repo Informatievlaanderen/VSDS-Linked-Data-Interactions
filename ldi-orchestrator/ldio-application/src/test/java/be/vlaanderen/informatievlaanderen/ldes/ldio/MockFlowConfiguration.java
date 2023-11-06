@@ -6,9 +6,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioProcessorConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.*;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioProcessor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,8 +31,8 @@ public class MockFlowConfiguration {
 
 	@Bean
 	@Qualifier("dummyTransform")
-	public LdioProcessorConfigurator dummyTransform() {
-		return new DummyTransformProcessorConfigurator();
+	public LdioTransformerConfigurator dummyTransform() {
+		return new DummyTransformTransformerConfigurator();
 	}
 
 	@Bean
@@ -58,10 +58,10 @@ public class MockFlowConfiguration {
 		}
 	}
 
-	static class DummyTransformProcessorConfigurator implements LdioProcessorConfigurator {
+	static class DummyTransformTransformerConfigurator implements LdioTransformerConfigurator {
 
 		@Override
-		public LdioProcessor configure(ComponentProperties properties) {
+		public LdioTransformer configure(ComponentProperties properties) {
 			return new DummyTransform();
 		}
 	}
