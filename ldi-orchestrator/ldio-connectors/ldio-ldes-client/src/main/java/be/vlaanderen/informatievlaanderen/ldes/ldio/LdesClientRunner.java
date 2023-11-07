@@ -53,8 +53,7 @@ public class LdesClientRunner implements Runnable {
 		Lang sourceFormat = properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
 				.map(RDFLanguages::nameToLang)
 				.orElse(Lang.JSONLD);
-		LdesMetaData ldesMetaData = new LdesMetaData(targetUrl,
-				sourceFormat);
+		LdesMetaData ldesMetaData = new LdesMetaData(targetUrl, sourceFormat);
 		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(statePersistence, requestExecutor, ldesMetaData);
 		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
 

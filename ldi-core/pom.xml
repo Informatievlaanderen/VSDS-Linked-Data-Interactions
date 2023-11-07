@@ -26,6 +26,7 @@
         <module>repository-materialiser</module>
         <module>model-splitter</module>
         <module>ldi-common</module>
+        <module>ldes-client-connector-decorator</module>
     </modules>
 
     <properties>
