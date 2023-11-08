@@ -9,15 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-
-import java.util.List;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
-public class LdioHttpInAutoConfig {
+public class LdioLdesClientConnectorAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn")
 	public LdioHttpInConfigurator ldioConfigurator() {
