@@ -13,74 +13,74 @@ import java.util.List;
 
 public class SparqlConstructTransformer implements LdiOneToManyTransformer {
 
-    private final Query query;
-    private final boolean includeOriginal;
+	private final Query query;
+	private final boolean includeOriginal;
 
-    public SparqlConstructTransformer(Query query, boolean includeOriginal) {
-        this.query = query;
-        this.includeOriginal = includeOriginal;
-        initGeoFunctions();
-    }
+	public SparqlConstructTransformer(Query query, boolean includeOriginal) {
+		this.query = query;
+		this.includeOriginal = includeOriginal;
+		initGeoFunctions();
+	}
 
-    @Override
-    public List<Model> transform(Model linkedDataModel) {
-        final Dataset dataset = queryDataset(linkedDataModel);
-        final List<Model> result = extractModelsFromDataset(dataset);
-        handleIncludeOriginal(result, linkedDataModel);
-        return result;
-    }
+	@Override
+	public List<Model> transform(Model linkedDataModel) {
+		final Dataset dataset = queryDataset(linkedDataModel);
+		final List<Model> result = extractModelsFromDataset(dataset);
+		handleIncludeOriginal(result, linkedDataModel);
+		return result;
+	}
 
-    private Dataset queryDataset(Model linkedDataModel) {
-        final var dataset = DatasetFactory.create(linkedDataModel);
-        try (QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
-            return qexec.execConstructDataset();
-        }
-    }
+	private Dataset queryDataset(Model linkedDataModel) {
+		final var dataset = DatasetFactory.create(linkedDataModel);
+		try (QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+			return qexec.execConstructDataset();
+		}
+	}
 
-    private void handleIncludeOriginal(List<Model> result, Model linkedDataModel) {
-        if (includeOriginal && result.size() == 1) {
-            result.get(0).add(linkedDataModel);
-        }
-    }
+	private void handleIncludeOriginal(List<Model> result, Model linkedDataModel) {
+		if (includeOriginal && result.size() == 1) {
+			result.get(0).add(linkedDataModel);
+		}
+	}
 
-    private List<Model> extractModelsFromDataset(Dataset dataset) {
+	private List<Model> extractModelsFromDataset(Dataset dataset) {
 
-        if (hasMultipleModels(dataset)) {
-            return splitDataset(dataset);
-        } else {
-            return List.of(dataset.getDefaultModel());
-        }
+		if (hasMultipleModels(dataset)) {
+			return splitDataset(dataset);
+		} else {
+			return List.of(dataset.getDefaultModel());
+		}
 
-    }
+	}
 
-    private boolean hasMultipleModels(Dataset dataset) {
-        return dataset.listNames().hasNext();
-    }
+	private boolean hasMultipleModels(Dataset dataset) {
+		return dataset.listNames().hasNext();
+	}
 
-    private List<Model> splitDataset(Dataset dataset) {
-        List<Model> result = new ArrayList<>();
-        Iterator<Resource> it = dataset.listModelNames();
-        while (it.hasNext()) {
-            Model namedModel = dataset.getNamedModel(it.next());
-            namedModel.add(dataset.getDefaultModel());
-            result.add(namedModel);
-        }
+	private List<Model> splitDataset(Dataset dataset) {
+		List<Model> result = new ArrayList<>();
+		Iterator<Resource> it = dataset.listModelNames();
+		while (it.hasNext()) {
+			Model namedModel = dataset.getNamedModel(it.next());
+			namedModel.add(dataset.getDefaultModel());
+			result.add(namedModel);
+		}
 
-        if (result.isEmpty()) {
-            result.add(dataset.getDefaultModel());
-        }
+		if (result.isEmpty()) {
+			result.add(dataset.getDefaultModel());
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    private void initGeoFunctions() {
-        FunctionRegistry functionRegistry = FunctionRegistry.get();
-        functionRegistry.put(FirstCoordinate.NAME, FirstCoordinate.class);
-        functionRegistry.put(LastCoordinate.NAME, LastCoordinate.class);
-        functionRegistry.put(LineLength.NAME, LineLength.class);
-        functionRegistry.put(MidPoint.NAME, MidPoint.class);
-        functionRegistry.put(PointAtFromStart.NAME, PointAtFromStart.class);
-        functionRegistry.put(DistanceFromStart.NAME, DistanceFromStart.class);
-        functionRegistry.put(LineAtIndex.NAME, LineAtIndex.class);
-    }
+	private void initGeoFunctions() {
+		FunctionRegistry functionRegistry = FunctionRegistry.get();
+		functionRegistry.put(FirstCoordinate.NAME, FirstCoordinate.class);
+		functionRegistry.put(LastCoordinate.NAME, LastCoordinate.class);
+		functionRegistry.put(LineLength.NAME, LineLength.class);
+		functionRegistry.put(MidPoint.NAME, MidPoint.class);
+		functionRegistry.put(PointAtFromStart.NAME, PointAtFromStart.class);
+		functionRegistry.put(DistanceFromStart.NAME, DistanceFromStart.class);
+		functionRegistry.put(LineAtIndex.NAME, LineAtIndex.class);
+	}
 }

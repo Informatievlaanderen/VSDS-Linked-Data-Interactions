@@ -39,7 +39,7 @@ public class FlowAutoConfiguration {
 	private final ApplicationEventPublisher eventPublisher;
 
 	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
-	                             ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
+			ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
 		this.orchestratorConfig = orchestratorConfig;
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
@@ -66,7 +66,7 @@ public class FlowAutoConfiguration {
 		List<LdioTransformer> processorChain = new ArrayList<>();
 
 		if (!ldioTransformers.isEmpty()) {
-			processorChain.addAll(ldioTransformers.subList(1, ldioTransformers.size()));
+			processorChain.addAll(ldioTransformers.subList(0, ldioTransformers.size()));
 		}
 
 		processorChain.add(ldiSender);

@@ -23,7 +23,7 @@ public class LdioHttpEnricher extends LdioTransformer {
 	private final RequestPropertyPathExtractors propertyPathExtractors;
 
 	public LdioHttpEnricher(LdiAdapter adapter, RequestExecutor requestExecutor,
-	                        RequestPropertyPathExtractors propertyPathExtractors) {
+			RequestPropertyPathExtractors propertyPathExtractors) {
 		this.adapter = adapter;
 		this.requestExecutor = requestExecutor;
 		this.propertyPathExtractors = propertyPathExtractors;
@@ -101,7 +101,7 @@ public class LdioHttpEnricher extends LdioTransformer {
 					.forEach(model::add);
 		} else {
 			LOGGER.atWarn().log("Failed to enrich model. The request url was {}. " +
-			                    "The http response obtained from the server has code {} and body \"{}\".",
+					"The http response obtained from the server has code {} and body \"{}\".",
 					response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
 		}
 	}

@@ -31,7 +31,8 @@ public class LdioHttpEnricherAutoConfig {
 
 	private LdiAdapter createAdapter(ConfigurableApplicationContext configContext, ComponentProperties config) {
 		final String adapterBeanName = config.getProperty(ADAPTER_NAME);
-		final LdioAdapterConfigurator ldioConfigurator = (LdioAdapterConfigurator) configContext.getBean(adapterBeanName);
+		final LdioAdapterConfigurator ldioConfigurator = (LdioAdapterConfigurator) configContext
+				.getBean(adapterBeanName);
 		return (LdiAdapter) ldioConfigurator.configure(config.extractNestedProperties(ADAPTER_CONFIG));
 	}
 

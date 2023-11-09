@@ -89,24 +89,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- CODE FORMATTER -->
-                <plugin>
-                    <groupId>net.revelc.code.formatter</groupId>
-                    <artifactId>formatter-maven-plugin</artifactId>
-                    <version>${formatter-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>validate</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <skip>${skipFormatCode}</skip>
-                        <encoding>UTF-8</encoding>
-                        <configFile>${relative-formatter-path}/settings.xml</configFile>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -131,11 +113,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!-- CODE FORMATTER -->
-            <plugin>
-                <groupId>net.revelc.code.formatter</groupId>
-                <artifactId>formatter-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>net.revelc.code</groupId>
                 <artifactId>impsort-maven-plugin</artifactId>

@@ -143,7 +143,7 @@ class SparqlConstructFunctionsTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
+		List<Model> result = sparqlConstructTransformer.transform(createGeoModel(line));
 
 		Statement expected = createStatement(INIT_MODEL.createResource(DATA_FROM_SOURCE),
 				INIT_MODEL.createProperty(GEOSPARQL_AS_WKT),
@@ -158,7 +158,7 @@ class SparqlConstructFunctionsTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructLastCoordinateQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
+		List<Model> result = sparqlConstructTransformer.transform(createGeoModel(line));
 
 		Statement expected = createStatement(INIT_MODEL.createResource(DATA_FROM_SOURCE),
 				INIT_MODEL.createProperty(GEOSPARQL_AS_WKT),
@@ -173,7 +173,7 @@ class SparqlConstructFunctionsTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructLineLengthQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
+		List<Model> result = sparqlConstructTransformer.transform(createGeoModel(line));
 
 		double expected = (double) Math.round((Double.parseDouble(offset) * 2) * 100) / 100;
 
@@ -190,7 +190,7 @@ class SparqlConstructFunctionsTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructMidPointQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line));
+		List<Model> result = sparqlConstructTransformer.transform(createGeoModel(line));
 
 		Coordinate expected = SparqlFunctionsUtils.getCoordinatesFromPointAsString(midpoint);
 
@@ -208,7 +208,7 @@ class SparqlConstructFunctionsTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructPointAtFromStartQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(line, offset));
+		List<Model> result = sparqlConstructTransformer.transform(createGeoModel(line, offset));
 
 		Coordinate expected = SparqlFunctionsUtils.getCoordinatesFromPointAsString(midpoint);
 
@@ -227,7 +227,7 @@ class SparqlConstructFunctionsTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(geoConstructDistanceFromStartQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModelTwoLiterals(line, midpoint));
+		List<Model> result = sparqlConstructTransformer.transform(createGeoModelTwoLiterals(line, midpoint));
 
 		double expected = Double.parseDouble(offset);
 		double distanceFromStart = result.get(0).listStatements().nextStatement().getDouble();
@@ -242,7 +242,7 @@ class SparqlConstructFunctionsTest {
 
 		String multiLineString = "MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))";
 		int index = 0;
-		List<Model> result = sparqlConstructTransformer.apply(createGeoModel(multiLineString, index));
+		List<Model> result = sparqlConstructTransformer.transform(createGeoModel(multiLineString, index));
 
 		String lineString = "LINESTRING(10 10, 20 20, 10 40)";
 		Statement expected = createStatement(INIT_MODEL.createResource(DATA_FROM_SOURCE),

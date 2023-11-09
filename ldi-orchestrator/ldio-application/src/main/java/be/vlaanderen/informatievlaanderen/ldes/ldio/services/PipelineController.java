@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +19,15 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.Pipeline
 @RequestMapping(path = "/admin/api/v1/pipeline")
 public class PipelineController {
 
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
-	@Autowired
-	private PipelineService pipelineService;
+	private final ApplicationEventPublisher applicationEventPublisher;
+	private final PipelineService pipelineService;
 
 	private PipelineStatus pipelineStatus = PipelineStatus.RUNNING;
+
+	public PipelineController(ApplicationEventPublisher applicationEventPublisher, PipelineService pipelineService) {
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.pipelineService = pipelineService;
+	}
 
 	@GetMapping(path = "/status")
 	public ResponseEntity<PipelineStatus> getPipelineStatus() {

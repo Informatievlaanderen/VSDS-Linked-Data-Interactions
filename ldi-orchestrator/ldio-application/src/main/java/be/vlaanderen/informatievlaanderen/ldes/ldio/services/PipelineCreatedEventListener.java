@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class PipelineCreatedEventListener implements ApplicationListener<PipelineCreatedEvent> {
 	@Autowired
 	private PipelineService pipelineService;
+
 	@Override
 	public void onApplicationEvent(PipelineCreatedEvent event) {
 		pipelineService.addPipeline(event.pipelineConfig());
