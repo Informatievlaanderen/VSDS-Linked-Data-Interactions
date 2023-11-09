@@ -166,7 +166,7 @@ class VersionObjectCreatorTest {
 		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(), null,
 				DEFAULT_DELIMITER,
 				null, null);
-		versionObjectCreator.apply(initModel);
+		versionObjectCreator.transform(initModel);
 
 		List<ILoggingEvent> logsList = listAppender.list;
 		assertTrue(

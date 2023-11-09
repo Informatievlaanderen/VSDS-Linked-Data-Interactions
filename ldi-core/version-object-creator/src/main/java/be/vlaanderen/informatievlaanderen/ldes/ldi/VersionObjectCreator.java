@@ -34,8 +34,8 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	private final Property versionOfProperty;
 
 	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, Resource memberTypeResource,
-			String delimiter,
-			Property generatedAtTimeProperty, Property versionOfProperty) {
+	                            String delimiter,
+	                            Property generatedAtTimeProperty, Property versionOfProperty) {
 		this.dateObservedPropertyExtractor = dateObservedPropertyExtractor;
 		this.memberTypeResource = memberTypeResource;
 		this.delimiter = delimiter;
@@ -44,7 +44,7 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	}
 
 	@Override
-	public List<Model> apply(Model linkedDataModel) {
+	public Model transform(Model linkedDataModel) {
 		final String dateObserved = getDateObserved(linkedDataModel);
 		Optional<String> memberInfo = extractMemberInfo(linkedDataModel);
 
