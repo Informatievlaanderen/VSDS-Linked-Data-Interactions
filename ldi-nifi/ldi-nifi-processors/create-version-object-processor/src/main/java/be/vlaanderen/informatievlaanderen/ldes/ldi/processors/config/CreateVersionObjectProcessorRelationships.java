@@ -12,4 +12,7 @@ public class CreateVersionObjectProcessorRelationships {
 
 	public static final Relationship DATA_UNPARSEABLE_RELATIONSHIP = new Relationship.Builder().name("unparseable")
 			.description("Unparseable data").build();
+
+	public static final Relationship VALUE_NOT_FOUND_RELATIONSHIP = new Relationship.Builder().name("valueNotFound")
+			.description("Value for defining version is not found").build();
 }

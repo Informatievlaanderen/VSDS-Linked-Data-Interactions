@@ -10,7 +10,7 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
     <artifactId>linked-data-interactions</artifactId>
     <packaging>pom</packaging>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
 
     <modules>
         <module>ldi-api</module>
@@ -72,7 +72,7 @@
         <testcontainers-postgresql.version>1.19.0</testcontainers-postgresql.version>
         <slf4j.version>2.0.7</slf4j.version>
         <byte-buddy-dep.version>1.14.7</byte-buddy-dep.version>
-
+        <logback-classic.version>1.4.11</logback-classic.version>
         <!-- Jacoco -->
         <jacoco.version>0.8.10</jacoco.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>

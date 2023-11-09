@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorPropertyDescriptors.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_RELATIONSHIP;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
@@ -53,6 +52,7 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		relationships = new HashSet<>();
 		relationships.add(DATA_RELATIONSHIP);
 		relationships.add(DATA_UNPARSEABLE_RELATIONSHIP);
+		relationships.add(VALUE_NOT_FOUND_RELATIONSHIP);
 		relationships = Collections.unmodifiableSet(relationships);
 	}
 
@@ -93,9 +93,15 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		String content = FlowManager.receiveData(session, flowFile);
 		try {
 			Model input = RDFParserBuilder.create().fromString(content).lang(lang).toModel();
-			FlowManager.sendRDFToRelation(session, flowFile, versionObjectCreator.transform(input),
-					DATA_RELATIONSHIP, dataDestinationFormat);
+			Model versionObject = versionObjectCreator.transform(input);
 
+			if (versionObject.isIsomorphicWith(input)) {
+				FlowManager.sendRDFToRelation(session, flowFile, versionObject,
+						VALUE_NOT_FOUND_RELATIONSHIP, dataDestinationFormat);
+			} else {
+				FlowManager.sendRDFToRelation(session, flowFile, versionObject,
+						DATA_RELATIONSHIP, dataDestinationFormat);
+			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			FlowManager.sendRDFToRelation(session, flowFile, content, DATA_UNPARSEABLE_RELATIONSHIP, Lang.JSONLD);
