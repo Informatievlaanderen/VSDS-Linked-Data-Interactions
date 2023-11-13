@@ -63,11 +63,7 @@ public class FlowAutoConfiguration {
 
 		LdiSender ldiSender = new LdiSender(eventPublisher, ldiOutputs);
 
-		List<LdioTransformer> processorChain = new ArrayList<>();
-
-		if (!ldioTransformers.isEmpty()) {
-			processorChain.addAll(ldioTransformers.subList(0, ldioTransformers.size()));
-		}
+		List<LdioTransformer> processorChain = new ArrayList<>(ldioTransformers.subList(0, ldioTransformers.size()));
 
 		processorChain.add(ldiSender);
 
