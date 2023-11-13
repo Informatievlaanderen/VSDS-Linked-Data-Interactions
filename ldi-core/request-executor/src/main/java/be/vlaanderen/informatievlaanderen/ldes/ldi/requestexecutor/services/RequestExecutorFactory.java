@@ -2,6 +2,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials.ClientCredentialsConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.EdcConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.TokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.ApiKeyConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 
@@ -19,6 +21,10 @@ public class RequestExecutorFactory {
 			String secret,
 			String tokenEndpoint) {
 		return new ClientCredentialsConfig(clientId, secret, tokenEndpoint).createRequestExecutor();
+	}
+
+	public RequestExecutor createEdcExecutor(TokenService tokenService) {
+		return new EdcConfig(createNoAuthExecutor(), tokenService).createRequestExecutor();
 	}
 
 }

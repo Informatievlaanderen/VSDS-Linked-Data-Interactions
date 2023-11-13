@@ -1,10 +1,6 @@
 //package be.vlaanderen.informatievlaanderen.ldes.ldi;
 //
-//public interface TokenService {
-//
-//    String waitForNewToken();
-//
-//    void invalidateToken();
+//public interface TokenSubscriber {
 //
 //    void updateToken(String token);
 //
