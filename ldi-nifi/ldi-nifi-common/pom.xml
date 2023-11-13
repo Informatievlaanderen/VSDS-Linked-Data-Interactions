@@ -9,10 +9,6 @@
 
     <artifactId>ldi-nifi-common</artifactId>
 
-    <properties>
-        <relative-formatter-path>../..</relative-formatter-path>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.jena</groupId>

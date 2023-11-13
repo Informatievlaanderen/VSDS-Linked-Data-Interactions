@@ -2,11 +2,13 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,14 +31,14 @@ public class MockFlowConfiguration {
 
 	@Bean
 	@Qualifier("dummyTransform")
-	public LdioConfigurator dummyTransform() {
-		return new DummyTransformConfigurator();
+	public LdioTransformerConfigurator dummyTransform() {
+		return new DummyTransformTransformerConfigurator();
 	}
 
 	@Bean
 	@Qualifier("dummyOut")
 	public LdioConfigurator dummyOut() {
-		return new DummyOutConfigurator();
+		return new DummyOutProcessorConfigurator();
 	}
 
 	static class DummyInConfigurator implements LdioInputConfigurator {
@@ -51,25 +53,27 @@ public class MockFlowConfiguration {
 
 	static class DummyAdaptConfigurator implements LdioConfigurator {
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
+		public LdiAdapter configure(ComponentProperties properties) {
 			return new DummyAdapt();
 		}
 	}
 
-	static class DummyTransformConfigurator implements LdioConfigurator {
+	static class DummyTransformTransformerConfigurator implements LdioTransformerConfigurator {
+
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
+		public LdioTransformer configure(ComponentProperties properties) {
 			return new DummyTransform();
 		}
 	}
 
-	static class DummyOutConfigurator implements LdioConfigurator {
+	static class DummyOutProcessorConfigurator implements LdioConfigurator {
 		@Autowired
 		MockVault mockVault;
 
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
+		public LdiOutput configure(ComponentProperties properties) {
 			return new DummyOut(mockVault);
 		}
 	}
+
 }

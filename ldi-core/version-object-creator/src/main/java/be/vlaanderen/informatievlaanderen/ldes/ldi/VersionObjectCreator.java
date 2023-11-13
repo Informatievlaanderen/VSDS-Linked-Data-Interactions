@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.*;
 
-public class VersionObjectCreator implements LdiTransformer {
+public class VersionObjectCreator implements LdiOneToOneTransformer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionObjectCreator.class);
 
@@ -34,8 +34,8 @@ public class VersionObjectCreator implements LdiTransformer {
 	private final Property versionOfProperty;
 
 	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, Resource memberTypeResource,
-			String delimiter,
-			Property generatedAtTimeProperty, Property versionOfProperty) {
+	                            String delimiter,
+	                            Property generatedAtTimeProperty, Property versionOfProperty) {
 		this.dateObservedPropertyExtractor = dateObservedPropertyExtractor;
 		this.memberTypeResource = memberTypeResource;
 		this.delimiter = delimiter;
@@ -44,15 +44,15 @@ public class VersionObjectCreator implements LdiTransformer {
 	}
 
 	@Override
-	public List<Model> apply(Model linkedDataModel) {
+	public Model transform(Model linkedDataModel) {
 		final String dateObserved = getDateObserved(linkedDataModel);
 		Optional<String> memberInfo = extractMemberInfo(linkedDataModel);
 
 		if (memberInfo.isPresent())
-			return List.of(constructVersionObject(linkedDataModel, new MemberInfo(memberInfo.get(), dateObserved)));
+			return constructVersionObject(linkedDataModel, new MemberInfo(memberInfo.get(), dateObserved));
 
 		LOGGER.warn(DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND, dateObserved);
-		return List.of(linkedDataModel);
+		return linkedDataModel;
 	}
 
 	private Optional<String> extractMemberInfo(Model linkedDataModel) {

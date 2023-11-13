@@ -12,11 +12,6 @@
 	<artifactId>rdf4j-repository-materialisation-processor</artifactId>
 	<packaging>nar</packaging>
 
-	<properties>
-		<!-- Code formatter -->
-		<relative-formatter-path>../../..</relative-formatter-path>
-	</properties>
-
 	<dependencies>
 		<!-- VSDS -->
 		<dependency>

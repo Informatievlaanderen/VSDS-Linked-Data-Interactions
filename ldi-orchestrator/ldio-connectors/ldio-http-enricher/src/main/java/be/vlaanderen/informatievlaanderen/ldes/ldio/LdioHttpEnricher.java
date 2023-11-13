@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
@@ -12,10 +12,9 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.List;
 
-public class LdioHttpEnricher implements LdiTransformer {
+public class LdioHttpEnricher extends LdioTransformer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LdioHttpEnricher.class);
 
@@ -31,14 +30,14 @@ public class LdioHttpEnricher implements LdiTransformer {
 	}
 
 	@Override
-	public Collection<Model> apply(Model model) {
+	public void apply(Model model) {
 		final Request request = createRequest(model);
 		final Response response = requestExecutor.execute(request);
 
 		LOGGER.info(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
 
 		addResponseToModel(model, response);
-		return List.of(model);
+		this.next(model);
 	}
 
 	private Request createRequest(Model model) {

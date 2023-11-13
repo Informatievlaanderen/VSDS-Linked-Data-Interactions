@@ -1,39 +1,28 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class ModelSplitTransformerTest {
 
-	@Mock
-	private ModelSplitter modelSplitter;
-
 	@Test
 	void testApply() {
-		String subjectType = "subjectType";
-		ModelSplitTransformer modelSplitTransformer = new ModelSplitTransformer(subjectType, modelSplitter);
-		Model modelA = ModelFactory.createDefaultModel();
-		Model modelB = ModelFactory.createDefaultModel();
-		Model modelC = ModelFactory.createDefaultModel();
-		when(modelSplitter.split(modelA, subjectType)).thenReturn(Set.of(modelB, modelC));
+		String subjectType = "http://schema.org/Movie";
+		ModelSplitTransformer modelSplitTransformer = new ModelSplitTransformer(subjectType);
 
-		List<Model> result = modelSplitTransformer.apply(modelA).stream().toList();
+		Model inputModel = RDFParser.source("generic/input.ttl").toModel();
+
+		List<Model> result = modelSplitTransformer.transform(inputModel).stream().toList();
 
 		assertEquals(2, result.size());
-		assertFalse(result.contains(modelA));
-		assertTrue(result.contains(modelB));
-		assertTrue(result.contains(modelC));
 	}
 
 }

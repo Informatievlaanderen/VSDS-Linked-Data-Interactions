@@ -18,7 +18,6 @@
 
     <properties>
         <nifi.version>1.23.2</nifi.version>
-        <relative-formatter-path>..</relative-formatter-path>
     </properties>
 
     <dependencies>
@@ -44,11 +43,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
         </dependency>
 
         <dependency>

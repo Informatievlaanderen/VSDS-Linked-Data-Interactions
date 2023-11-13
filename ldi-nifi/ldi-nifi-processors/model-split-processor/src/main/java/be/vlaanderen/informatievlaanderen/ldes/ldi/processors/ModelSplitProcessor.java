@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.ModelSplitTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ModelSplitProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -27,7 +27,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 @CapabilityDescription("Splits a single model into multiple models.")
 public class ModelSplitProcessor extends AbstractProcessor {
 
-	private ModelSplitter modelSplitter;
+	private ModelSplitTransformer modelSplitter;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -41,7 +41,7 @@ public class ModelSplitProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		modelSplitter = new ModelSplitter();
+		modelSplitter = new ModelSplitTransformer(ModelSplitProperties.getSubjectType(context));
 	}
 
 	@Override
@@ -51,8 +51,7 @@ public class ModelSplitProcessor extends AbstractProcessor {
 			try {
 				Lang dataSourceFormat = determineDataSourceFormat(flowFile, context);
 				Model inputModel = receiveDataAsModel(session, flowFile, dataSourceFormat);
-				modelSplitter
-						.split(inputModel, ModelSplitProperties.getSubjectType(context))
+				modelSplitter.transform(inputModel)
 						.forEach(model -> sendRDFToRelation(session, session.create(), model, SUCCESS,
 								dataSourceFormat));
 				sendRDFToRelation(session, flowFile, inputModel, PROCESSED_INPUT_FILE, dataSourceFormat);

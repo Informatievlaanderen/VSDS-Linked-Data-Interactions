@@ -64,7 +64,7 @@ class SparqlConstructTransformerTest {
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
-		List<Model> models = sparqlConstructTransformer.apply(model);
+		List<Model> models = sparqlConstructTransformer.transform(model);
 
 		assertTrue(models.get(0).contains(transformedData));
 		assertFalse(models.get(0).contains(originalData));
@@ -78,7 +78,7 @@ class SparqlConstructTransformerTest {
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
-		List<Model> models = sparqlConstructTransformer.apply(model);
+		List<Model> models = sparqlConstructTransformer.transform(model);
 
 		assertTrue(models.get(0).contains(transformedData));
 		assertTrue(models.get(0).contains(originalData));
@@ -91,7 +91,7 @@ class SparqlConstructTransformerTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(constructQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(inputModel);
+		List<Model> result = sparqlConstructTransformer.transform(inputModel);
 
 		assertEquals(3, result.size());
 		assertModels(
@@ -106,7 +106,7 @@ class SparqlConstructTransformerTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(constructQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(inputModel);
+		List<Model> result = sparqlConstructTransformer.transform(inputModel);
 
 		assertEquals(1, result.size());
 		Model expectedResult = RDFParser.source("crowdscan/no-graph-observations.ttl").toModel();
@@ -120,7 +120,7 @@ class SparqlConstructTransformerTest {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
 				QueryFactory.create(constructQuery), false);
 
-		List<Model> result = sparqlConstructTransformer.apply(inputModel);
+		List<Model> result = sparqlConstructTransformer.transform(inputModel);
 
 		assertEquals(10, result.size());
 		assertModels(List.of(

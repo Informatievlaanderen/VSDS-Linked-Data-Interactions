@@ -1,23 +1,22 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToManyTransformer;
 import org.apache.jena.rdf.model.Model;
 
-import java.util.Collection;
+import java.util.List;
 
-public class ModelSplitTransformer implements LdiTransformer {
+public class ModelSplitTransformer implements LdiOneToManyTransformer {
 
 	private final String subjectType;
 	private final ModelSplitter modelSplitter;
 
-	public ModelSplitTransformer(String subjectType, ModelSplitter modelSplitter) {
+	public ModelSplitTransformer(String subjectType) {
 		this.subjectType = subjectType;
-		this.modelSplitter = modelSplitter;
+		this.modelSplitter = new ModelSplitter();
 	}
 
 	@Override
-	public Collection<Model> apply(Model model) {
+	public List<Model> transform(Model model) {
 		return modelSplitter.split(model, subjectType);
 	}
-
 }
