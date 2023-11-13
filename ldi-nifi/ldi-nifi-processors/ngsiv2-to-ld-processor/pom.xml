@@ -13,10 +13,6 @@
     <artifactId>ngsiv2-to-ld-processor</artifactId>
     <packaging>nar</packaging>
 
-    <properties>
-        <relative-formatter-path>../../..</relative-formatter-path>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>

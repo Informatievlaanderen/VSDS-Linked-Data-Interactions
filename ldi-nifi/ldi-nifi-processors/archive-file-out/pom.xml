@@ -12,10 +12,6 @@
     <artifactId>archive-file-out</artifactId>
     <packaging>nar</packaging>
 
-    <properties>
-        <relative-formatter-path>../../..</relative-formatter-path>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>

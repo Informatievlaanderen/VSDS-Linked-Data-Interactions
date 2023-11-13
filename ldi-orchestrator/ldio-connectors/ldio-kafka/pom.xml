@@ -11,10 +11,6 @@
 
     <artifactId>ldio-kafka</artifactId>
 
-    <properties>
-        <relative-formatter-path>../../..</relative-formatter-path>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
