@@ -1,17 +1,21 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdesClientRunner;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ConfigurableApplicationContext;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
@@ -21,21 +25,31 @@ public class LdioLdesClientConnectorAutoConfig {
 		return new LdioHttpInConfigurator();
 	}
 
+	// TODO TVB: 13/11/23 test
+	// TODO TVB: 13/11/23 cleanup
 	public static class LdioHttpInConfigurator implements LdioInputConfigurator {
 
-		@Autowired
-		ConfigurableApplicationContext configContext;
+		private final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
+		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
+		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
+		private final TransferService transferService = new MemoryTransferService(baseRequestExecutor);
+		private final TokenService tokenService = new MemoryTokenService(transferService);
+
+		public void initClient(ComponentExecutor componentExecutor, ComponentProperties properties) {
+			final var edcRequestExecutor = new EdcConfig(baseRequestExecutor, tokenService).createRequestExecutor();
+			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
+			final LdesClientRunner ldesClientRunner =
+					new LdesClientRunner(edcRequestExecutor, properties, componentExecutor, statePersistence);
+
+			// starts the client
+			new LdioLdesClient(componentExecutor, ldesClientRunner);
+		}
 
 		@Override
-		public Object configure(LdiAdapter adapter,
-				ComponentExecutor executor,
-				ComponentProperties config) {
-			String pipelineName = config.getProperty(PIPELINE_NAME);
-			verifyAdapterPresent(pipelineName, adapter);
-
-			LdioHttpIn ldioHttpIn = new LdioHttpIn(executor, adapter, pipelineName);
-
-			return ldioHttpIn.mapping();
+		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
+			initClient(executor, properties);
+			final var pipelineName = properties.getProperty(PIPELINE_NAME);
+			return new LdioLdesClientConnectorApi(pipelineName, transferService, tokenService).endpoints();
 		}
 	}
 }

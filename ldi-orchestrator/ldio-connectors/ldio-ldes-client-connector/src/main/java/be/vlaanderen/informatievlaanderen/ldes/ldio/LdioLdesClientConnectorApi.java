@@ -1,82 +1,50 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.TokenService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.TransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
-import java.util.NoSuchElementException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-import static sun.util.locale.provider.LocaleProviderAdapter.getAdapter;
 
 public class LdioLdesClientConnectorApi {
 
     private static final Logger log = LoggerFactory.getLogger(LdioLdesClientConnectorApi.class);
     private final String pipelineName;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final TransferService transferService;
+    private final TokenService tokenService;
 
-    public LdioLdesClientConnectorApi(ComponentExecutor executor, LdiAdapter adapter, String pipelineName) {
+    public LdioLdesClientConnectorApi(String pipelineName, TransferService transferService, TokenService tokenService) {
         this.pipelineName = pipelineName;
+        this.transferService = transferService;
+        this.tokenService = tokenService;
     }
 
-    public RouterFunction<ServerResponse> mapping() {
+    public RouterFunction<ServerResponse> endpoints() {
         return route(POST("/%s/token".formatted(pipelineName)),
-                req -> {
-                    String contentType = req.headers().contentType()
-                            .orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
-                            .toString();
-
-                    String type = req.headers().contentType().map(MediaType::toString).orElse("(unknown)");
-                    log.info("POST " + "/%s".formatted(pipelineName) + " type:" + type + " length:"
-                            + req.headers().contentLength().orElse(0L));
-
-                    return req.bodyToMono(String.class)
-                            .doOnNext(content -> executorService
-                                    .execute(() -> getAdapter().apply(LdiAdapter.Content.of(content, contentType))
-                                            .forEach(getExecutor()::transformLinkedData)))
+                request -> {
+                    logIncomingRequest(request);
+                    return request.bodyToMono(String.class)
+                            .doOnNext(tokenService::updateToken)
                             .flatMap(body -> ServerResponse.accepted().build());
-                }).andRoute(POST("/%s".formatted("tom")),
-                req -> {
-                    String contentType = req.headers().contentType()
-                            .orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
-                            .toString();
-
-                    String type = req.headers().contentType().map(MediaType::toString).orElse("(unknown)");
-                    log.info("POST " + "/%s".formatted(pipelineName) + " type:" + type + " length:"
-                            + req.headers().contentLength().orElse(0L));
-
-                    return req.bodyToMono(String.class)
-                            .doOnNext(content -> executorService
-                                    .execute(() -> getAdapter().apply(LdiAdapter.Content.of(content, contentType))
-                                            .forEach(getExecutor()::transformLinkedData)))
+                }).andRoute(POST("/%s/transfer".formatted(pipelineName)),
+                request -> {
+                    logIncomingRequest(request);
+                    return request.bodyToMono(String.class)
+                            .doOnNext(transferService::startTransfer)
                             .flatMap(body -> ServerResponse.accepted().build());
                 });
     }
 
-    public RouterFunction<ServerResponse> tom() {
-        return route(POST("/%s".formatted("tom")),
-                req -> {
-                    String contentType = req.headers().contentType()
-                            .orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
-                            .toString();
-
-                    String type = req.headers().contentType().map(MediaType::toString).orElse("(unknown)");
-                    log.info("POST " + "/%s".formatted(pipelineName) + " type:" + type + " length:"
-                            + req.headers().contentLength().orElse(0L));
-
-                    return req.bodyToMono(String.class)
-                            .doOnNext(content -> executorService
-                                    .execute(() -> getAdapter().apply(LdiAdapter.Content.of(content, contentType))
-                                            .forEach(getExecutor()::transformLinkedData)))
-                            .flatMap(body -> ServerResponse.accepted().build());
-                });
+    private void logIncomingRequest(ServerRequest request) {
+        var type = request.headers().contentType().map(MediaType::toString).orElse("(unknown)");
+        long contentLength = request.headers().contentLength().orElse(0L);
+        log.debug("POST /%s type: %s length: %s".formatted(pipelineName, type, contentLength));
     }
 
 }

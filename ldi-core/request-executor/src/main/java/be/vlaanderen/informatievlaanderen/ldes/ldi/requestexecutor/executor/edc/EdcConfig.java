@@ -20,11 +20,7 @@ public class EdcConfig implements RequestExecutorSupplier {
 
     @Override
     public RequestExecutor createRequestExecutor() {
-//        var transferService = new MemoryTransferService(requestExecutor);
-//        var tokenService = new MemoryTokenService(transferService);
         return new EdcRequestExecutor(requestExecutor, tokenService);
     }
-
-
 
 }
