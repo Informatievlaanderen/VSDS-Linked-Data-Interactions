@@ -44,40 +44,6 @@ public class LdioHttpIn extends LdiInput {
 									.execute(() -> getAdapter().apply(Content.of(content, contentType))
 											.forEach(getExecutor()::transformLinkedData)))
 							.flatMap(body -> ServerResponse.accepted().build());
-				}).andRoute(POST("/%s".formatted("tom")),
-				req -> {
-					String contentType = req.headers().contentType()
-							.orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
-							.toString();
-
-					String type = req.headers().contentType().map(MediaType::toString).orElse("(unknown)");
-					LOGGER.info("POST " + "/%s".formatted(endpoint) + " type:" + type + " length:"
-							+ req.headers().contentLength().orElse(0L));
-
-					return req.bodyToMono(String.class)
-							.doOnNext(content -> executorService
-									.execute(() -> getAdapter().apply(Content.of(content, contentType))
-											.forEach(getExecutor()::transformLinkedData)))
-							.flatMap(body -> ServerResponse.accepted().build());
-				});
-	}
-
-	public RouterFunction<ServerResponse> tom() {
-		return route(POST("/%s".formatted("tom")),
-				req -> {
-					String contentType = req.headers().contentType()
-							.orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
-							.toString();
-
-					String type = req.headers().contentType().map(MediaType::toString).orElse("(unknown)");
-					LOGGER.info("POST " + "/%s".formatted(endpoint) + " type:" + type + " length:"
-							+ req.headers().contentLength().orElse(0L));
-
-					return req.bodyToMono(String.class)
-							.doOnNext(content -> executorService
-									.execute(() -> getAdapter().apply(Content.of(content, contentType))
-											.forEach(getExecutor()::transformLinkedData)))
-							.flatMap(body -> ServerResponse.accepted().build());
 				});
 	}
 
