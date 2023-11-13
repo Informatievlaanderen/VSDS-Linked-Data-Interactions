@@ -16,7 +16,7 @@ public class TransformerDebugger extends LdioTransformer {
 
 	@Override
 	public void apply(Model model) {
-		log.debug("Starting model: \n" + RDFWriter.source(model).lang(Lang.TTL).asString());
+		log.debug("Starting model: \n {}", RDFWriter.source(model).lang(Lang.TTL).asString());
 		this.next(model);
 	}
 }
