@@ -1,0 +1,64 @@
+{
+  "@graph" : [
+      {
+        "@id" : "_:b0" ,
+        "@type" : [
+            "id:Vehicle" ,
+            "gr:Individual"
+          ] ,
+        "name" : "Tesla Roadster" ,
+        "page" : "http://www.teslamotors.com/roadster"
+      } ,
+      {
+        "@id" : "_:b1" ,
+        "hasCurrency" : "USD" ,
+        "hasCurrencyValue" : "85000"
+      } ,
+      {
+        "@id" : "http://example.org/cars/for-sale#tesla" ,
+        "@type" : "gr:Offering" ,
+        "acceptedPaymentMethods" : "gr:Cash" ,
+        "description" : "Need to sell fast and furiously" ,
+        "hasBusinessFunction" : "gr:Sell" ,
+        "hasPriceSpecification" : "_:b1" ,
+        "includes" : "_:b0" ,
+        "name" : "Used Tesla Roadster"
+      }
+    ] ,
+  "@context" : {
+      "name" : {"@id" : "http://purl.org/goodrelations/v1#name" } ,
+      "includes" : {
+          "@id" : "http://purl.org/goodrelations/v1#includes" ,
+          "@type" : "@id"
+        } ,
+      "hasPriceSpecification" : {
+          "@id" : "http://purl.org/goodrelations/v1#hasPriceSpecification" ,
+          "@type" : "@id"
+        } ,
+      "hasBusinessFunction" : {
+          "@id" : "http://purl.org/goodrelations/v1#hasBusinessFunction" ,
+          "@type" : "@id"
+        } ,
+      "description" : {"@id" : "http://purl.org/goodrelations/v1#description" } ,
+      "acceptedPaymentMethods" : {
+          "@id" : "http://purl.org/goodrelations/v1#acceptedPaymentMethods" ,
+          "@type" : "@id"
+        } ,
+      "page" : {
+          "@id" : "http://xmlns.com/foaf/0.1/page" ,
+          "@type" : "@id"
+        } ,
+      "hasCurrencyValue" : {
+          "@id" : "http://purl.org/goodrelations/v1#hasCurrencyValue" ,
+          "@type" : "http://www.w3.org/2001/XMLSchema#float"
+        } ,
+      "hasCurrency" : {"@id" : "http://purl.org/goodrelations/v1#hasCurrency" } ,
+      "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ,
+      "xsd" : "http://www.w3.org/2001/XMLSchema#" ,
+      "pto" : "http://www.productontology.org/id/" ,
+      "gr" : "http://purl.org/goodrelations/v1#" ,
+      "v1" : "http://purl.org/goodrelations/v1#" ,
+      "id" : "http://www.productontology.org/id/" ,
+      "foaf" : "http://xmlns.com/foaf/0.1/"
+    }
+}
