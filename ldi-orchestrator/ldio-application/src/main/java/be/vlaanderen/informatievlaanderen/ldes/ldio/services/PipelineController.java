@@ -17,6 +17,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.Pipeline
 
 @RestController
 @RequestMapping(path = "/admin/api/v1/pipeline")
+// TODO redefine pipelinestatus feature
 public class PipelineController {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
