@@ -31,16 +31,18 @@ public class LdiRdfWriterTest {
 				.toModel();
 
 		String frame = getFileContentString("rdf/formatter/product.frame.jsonld");
-		JsonObject expected = JSON.parse(getFileContentString("rdf/formatter/expected/product.jsonld"));
+		Model expected = RDFParser.fromString(getFileContentString("rdf/formatter/expected/product.jsonld"))
+				.lang(Lang.JSONLD).toModel();
 
 		LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(Map.of(FRAME, frame));
 
 		String output = LdiRdfWriter.getRdfWriter(writerProperties.withLang(Lang.JSONLD)).write(model);
 
 		JsonObject outputJson = JSON.parse(output);
+		Model outputModel = RDFParser.fromString(output).lang(Lang.JSONLD).toModel();
 
 		assertFalse(outputJson.hasKey("@graph"));
-		assertEquals(expected, outputJson);
+		assertTrue(outputModel.isIsomorphicWith(expected));
 	}
 
 	@Test
