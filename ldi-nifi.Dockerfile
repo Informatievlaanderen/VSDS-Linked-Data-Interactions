@@ -8,7 +8,7 @@ FROM maven:3.8.5-openjdk-18 AS builder
 # MAVEN: application
 FROM builder as app-stage
 COPY . .
-RUN mvn clean net.revelc.code.formatter:formatter-maven-plugin:format install -DskipTests
+RUN mvn clean install -DskipTests
 
 FROM ldes/nifi:${NIFI_DOCKER_IMAGE_VERSION} AS packaging-stage
 
