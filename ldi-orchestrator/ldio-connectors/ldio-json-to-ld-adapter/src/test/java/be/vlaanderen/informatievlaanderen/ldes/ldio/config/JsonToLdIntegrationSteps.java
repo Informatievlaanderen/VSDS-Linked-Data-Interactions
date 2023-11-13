@@ -35,7 +35,7 @@ public class JsonToLdIntegrationSteps {
 	@And("I create the adapter")
 	public void iCreateAdapter() {
 		ComponentProperties properties = new ComponentProperties(config);
-		adapter = new LdioJsonToLdAdapterAutoConfig.LdioJsonToLdAdapterConfigurator().configure(properties);
+		adapter = new LdioJsonToLdAdapterAutoConfig.LdioJsonToLdConfigurator().configure(properties);
 	}
 
 	@When("I send a json object")

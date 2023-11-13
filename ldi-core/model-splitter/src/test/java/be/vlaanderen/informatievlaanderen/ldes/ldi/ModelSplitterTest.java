@@ -17,7 +17,7 @@ class ModelSplitterTest {
 	@Test
 	void test_generic() {
 		Model inputModel = RDFParser.source("generic/input.ttl").toModel();
-		Set<Model> result = new ModelSplitter().split(inputModel, "http://schema.org/Movie");
+		List<Model> result = new ModelSplitter().split(inputModel, "http://schema.org/Movie");
 
 		assertEquals(2, result.size());
 		assertModels(List.of("generic/member1.ttl", "generic/member2.ttl"), result);
@@ -26,7 +26,7 @@ class ModelSplitterTest {
 	@Test
 	void test_crowdscan() {
 		Model inputModel = RDFParser.source("crowdscan/input.ttl").toModel();
-		Set<Model> result = new ModelSplitter().split(inputModel,
+		List<Model> result = new ModelSplitter().split(inputModel,
 				"http://def.isotc211.org/iso19156/2011/Observation#OM_Observation");
 
 		assertEquals(3, result.size());
@@ -37,7 +37,7 @@ class ModelSplitterTest {
 	@Test
 	void test_traffic() {
 		Model inputModel = RDFParser.source("traffic/input.ttl").toModel();
-		Set<Model> result = new ModelSplitter().split(inputModel,
+		List<Model> result = new ModelSplitter().split(inputModel,
 				"https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeting");
 
 		assertEquals(10, result.size());
@@ -54,7 +54,7 @@ class ModelSplitterTest {
 				"traffic/measure10.ttl"), result);
 	}
 
-	private void assertModels(List<String> expectedModelPaths, Set<Model> result) {
+	private void assertModels(List<String> expectedModelPaths, List<Model> result) {
 		Set<Model> expectedModels = expectedModelPaths
 				.stream()
 				.map(RDFParser::source)

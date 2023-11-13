@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterPro
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,11 +16,11 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWr
 public class LdioHttpOutAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut")
-	public LdioHttpOutConfigurator ldiHttpOutConfigurator() {
+	public LdioOutputConfigurator ldiHttpOutConfigurator() {
 		return new LdioHttpOutConfigurator();
 	}
 
-	public static class LdioHttpOutConfigurator implements LdioConfigurator {
+	public static class LdioHttpOutConfigurator implements LdioOutputConfigurator {
 
 		@Override
 		public LdiComponent configure(ComponentProperties config) {

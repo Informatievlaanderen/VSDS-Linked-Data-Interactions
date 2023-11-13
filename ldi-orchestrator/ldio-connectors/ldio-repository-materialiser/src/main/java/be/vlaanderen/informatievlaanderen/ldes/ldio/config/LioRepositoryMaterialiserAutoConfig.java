@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioRepositoryMaterialiser;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Configuration;
 public class LioRepositoryMaterialiserAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.RepositoryMaterialiser")
-	public LdioConfigurator ldiRepoMaterialiserConfigurator() {
-		return new LdiRepoMaterialiserConfigurator();
+	public LdioOutputConfigurator ldiRepoMaterialiserConfigurator() {
+		return new LdiRepoMaterialiserProcessorConfigurator();
 	}
 
-	public static class LdiRepoMaterialiserConfigurator implements LdioConfigurator {
+	public static class LdiRepoMaterialiserProcessorConfigurator implements LdioOutputConfigurator {
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
 			return new LdioRepositoryMaterialiser(config);

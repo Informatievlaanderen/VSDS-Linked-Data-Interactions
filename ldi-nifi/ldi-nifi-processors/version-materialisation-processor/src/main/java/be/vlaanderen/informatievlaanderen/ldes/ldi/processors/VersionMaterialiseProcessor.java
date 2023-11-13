@@ -56,10 +56,9 @@ public class VersionMaterialiseProcessor extends AbstractProcessor {
 				final Model inputModel = receiveDataAsModel(session, flowFile,
 						RDFLanguages.contentTypeToLang(flowFile.getAttribute("mime.type")));
 
-				versionMaterialiser.apply(inputModel)
-						.forEach(versionMaterialisedModel -> sendRDFToRelation(session, flowFile,
-								versionMaterialisedModel, SUCCESS,
-								RDFLanguages.contentTypeToLang(flowFile.getAttribute("mime.type"))));
+				Model result = versionMaterialiser.transform(inputModel);
+				sendRDFToRelation(session, flowFile, result, SUCCESS,
+						RDFLanguages.contentTypeToLang(flowFile.getAttribute("mime.type")));
 
 			} catch (Exception e) {
 				getLogger().error("Error executing version materialisation: {}", e.getMessage());

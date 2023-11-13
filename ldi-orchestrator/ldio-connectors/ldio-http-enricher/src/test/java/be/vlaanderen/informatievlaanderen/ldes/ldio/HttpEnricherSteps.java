@@ -6,6 +6,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtract
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioVaultTransformer;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -15,10 +17,10 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer.link;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
@@ -26,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpEnricherSteps {
 
-	private List<Model> resultModels;
 	private Model inputModel;
-	private LdioHttpEnricher ldioHttpEnricher;
+	private LdioTransformer ldioHttpEnricher;
+	private LdioVaultTransformer vault;
 	private LdiAdapter ldiAdapter;
 	private String urlPropertyPath;
 	private String bodyPropertyPath;
@@ -73,7 +75,9 @@ public class HttpEnricherSteps {
 				getPropertyPathExtractor(bodyPropertyPath),
 				getPropertyPathExtractor(headerPropertyPath),
 				getPropertyPathExtractor(httpMethodPropertyPath));
-		ldioHttpEnricher = new LdioHttpEnricher(ldiAdapter, requestExecutor, propertyPathExtractors);
+		vault = new LdioVaultTransformer();
+		ldioHttpEnricher = link(new LdioHttpEnricher(ldiAdapter, requestExecutor, propertyPathExtractors),
+				List.of(vault));
 	}
 
 	private PropertyExtractor getPropertyPathExtractor(String propertyPath) {
@@ -97,17 +101,17 @@ public class HttpEnricherSteps {
 
 	@When("I send the model to the enricher")
 	public void iSendTheModelToTheEnricher() {
-		resultModels = new ArrayList<>(ldioHttpEnricher.apply(inputModel));
+		ldioHttpEnricher.apply(inputModel);
 	}
 
 	@Then("The result contains {int} model")
 	public void theResultContainsModel(int resultCount) {
-		assertEquals(resultCount, resultModels.size());
+		assertEquals(resultCount, vault.getModels().size());
 	}
 
 	@Then("The result contains a model with both the input and the http response")
 	public void theResultContainsAModelWithBothTheInputAndTheHttpResponse() {
-		Model resultModel = this.resultModels.get(0);
+		Model resultModel = this.vault.getModels().get(0);
 
 		final Model expectedModel = ModelFactory.createDefaultModel();
 		expectedModel.add(inputModel);

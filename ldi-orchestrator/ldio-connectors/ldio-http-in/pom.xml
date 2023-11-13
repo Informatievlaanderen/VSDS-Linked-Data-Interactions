@@ -9,10 +9,6 @@
 
     <artifactId>ldio-http-in</artifactId>
 
-    <properties>
-        <relative-formatter-path>../../..</relative-formatter-path>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

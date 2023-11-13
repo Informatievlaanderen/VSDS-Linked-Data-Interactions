@@ -4,7 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.RequestPropertyPathExtractors;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioAdapterConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -18,7 +19,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpEnrich
 public class LdioHttpEnricherAutoConfig {
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher")
-	public LdioConfigurator ldioConfigurator(ConfigurableApplicationContext configContext) {
+	public LdioTransformerConfigurator ldioConfigurator(ConfigurableApplicationContext configContext) {
 		return config -> {
 			final LdiAdapter adapter = createAdapter(configContext, config);
 			final RequestPropertyPathExtractors requestPropertyPaths = new PropertyPathExtractorConverter(config)
@@ -30,7 +31,8 @@ public class LdioHttpEnricherAutoConfig {
 
 	private LdiAdapter createAdapter(ConfigurableApplicationContext configContext, ComponentProperties config) {
 		final String adapterBeanName = config.getProperty(ADAPTER_NAME);
-		final LdioConfigurator ldioConfigurator = (LdioConfigurator) configContext.getBean(adapterBeanName);
+		final LdioAdapterConfigurator ldioConfigurator = (LdioAdapterConfigurator) configContext
+				.getBean(adapterBeanName);
 		return (LdiAdapter) ldioConfigurator.configure(config.extractNestedProperties(ADAPTER_CONFIG));
 	}
 

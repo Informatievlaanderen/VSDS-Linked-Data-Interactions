@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ObjectIdentifierException;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.StatementImpl;
 
@@ -9,7 +9,7 @@ import java.util.*;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
-public class VersionMaterialiser implements LdiTransformer {
+public class VersionMaterialiser implements LdiOneToOneTransformer {
 	private final Property versionPredicate;
 	private final boolean restrictToMembers;
 
@@ -19,7 +19,7 @@ public class VersionMaterialiser implements LdiTransformer {
 	}
 
 	@Override
-	public List<Model> apply(Model linkedDataModel) {
+	public Model transform(Model linkedDataModel) {
 		final Model versionMaterialisedModel = ModelFactory.createDefaultModel();
 
 		Map<Resource, Resource> versionIDEntityIDMap = getVersionIDEntityIDMap(linkedDataModel, versionPredicate);
@@ -33,9 +33,9 @@ public class VersionMaterialiser implements LdiTransformer {
 		versionMaterialisedModel.add(deversionedStatements);
 
 		if (restrictToMembers) {
-			return List.of(reduceToLDESMemberOnlyModel(versionMaterialisedModel));
+			return reduceToLDESMemberOnlyModel(versionMaterialisedModel);
 		}
-		return List.of(versionMaterialisedModel);
+		return versionMaterialisedModel;
 	}
 
 	private Statement deversionStatement(Map<Resource, Resource> versionIdEntityIdMap, Statement statement) {
