@@ -25,7 +25,7 @@ public class TreeNodeRequest {
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, lang.getHeaderString())));
 		if (etag != null) {
-			requestHeaders = requestHeaders.addRequestHeader(new RequestHeader(HttpHeaders.IF_NONE_MATCH, etag));
+			requestHeaders = requestHeaders.withRequestHeader(new RequestHeader(HttpHeaders.IF_NONE_MATCH, etag));
 		}
 		return new GetRequest(treeNodeUrl, requestHeaders);
 	}

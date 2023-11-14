@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,15 +14,15 @@ public class MemoryTokenService implements TokenService {
     private final TransferService transferService;
     private final Logger log = LoggerFactory.getLogger(MemoryTokenService.class);
 
-    private String token;
+    private EdcToken token;
 
     public MemoryTokenService(TransferService transferService) {
         this.transferService = transferService;
     }
 
-    public String waitForToken() {
+    public RequestHeader waitForTokenHeader() {
         if (token != null) {
-            return token;
+            return token.getTokenHeader();
         }
 
         try {
@@ -31,7 +32,7 @@ public class MemoryTokenService implements TokenService {
             Thread.currentThread().interrupt();
         }
 
-        return waitForToken();
+        return waitForTokenHeader();
     }
 
     public void invalidateToken() {
@@ -41,7 +42,7 @@ public class MemoryTokenService implements TokenService {
 
     @Override
     public void updateToken(String token) {
-        this.token = token;
+        this.token = EdcToken.fromJsonString(token);
     }
 
 }

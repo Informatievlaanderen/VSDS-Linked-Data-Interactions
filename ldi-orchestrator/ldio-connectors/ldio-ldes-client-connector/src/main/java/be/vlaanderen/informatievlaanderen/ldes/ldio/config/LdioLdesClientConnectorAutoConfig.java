@@ -1,7 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.EdcConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.MemoryTokenService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.MemoryTransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
@@ -9,7 +11,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdesClientRunner;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn")
+	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector")
 	public LdioHttpInConfigurator ldioConfigurator() {
 		return new LdioHttpInConfigurator();
 	}
@@ -29,13 +30,14 @@ public class LdioLdesClientConnectorAutoConfig {
 	// TODO TVB: 13/11/23 cleanup
 	public static class LdioHttpInConfigurator implements LdioInputConfigurator {
 
-		private final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
+		public static final String CONNECTOR_TRANSFER_URL = "connector-transfer-url";
+
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
-		private final TransferService transferService = new MemoryTransferService(baseRequestExecutor);
-		private final TokenService tokenService = new MemoryTokenService(transferService);
 
-		public void initClient(ComponentExecutor componentExecutor, ComponentProperties properties) {
+		public void initClient(ComponentExecutor componentExecutor,
+							   ComponentProperties properties,
+							   MemoryTokenService tokenService) {
 			final var edcRequestExecutor = new EdcConfig(baseRequestExecutor, tokenService).createRequestExecutor();
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 			final LdesClientRunner ldesClientRunner =
@@ -47,8 +49,11 @@ public class LdioLdesClientConnectorAutoConfig {
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
-			initClient(executor, properties);
 			final var pipelineName = properties.getProperty(PIPELINE_NAME);
+			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
+			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);
+			final var tokenService = new MemoryTokenService(transferService);
+			initClient(executor, properties, tokenService);
 			return new LdioLdesClientConnectorApi(pipelineName, transferService, tokenService).endpoints();
 		}
 	}

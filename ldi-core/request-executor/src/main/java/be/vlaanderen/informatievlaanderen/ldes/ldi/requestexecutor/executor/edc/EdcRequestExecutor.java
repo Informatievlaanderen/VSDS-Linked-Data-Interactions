@@ -20,9 +20,8 @@ public class EdcRequestExecutor implements RequestExecutor {
 
     @Override
     public Response execute(Request request) {
-        final String token = tokenService.waitForToken();
-        final var requestHeaders = request.getRequestHeaders();
-        requestHeaders.addRequestHeader(new RequestHeader("Authorization", token));
+        final RequestHeader tokenHeader = tokenService.waitForTokenHeader();
+        final var requestHeaders = request.getRequestHeaders().withRequestHeader(tokenHeader);
         final var requestWithToken = new GetRequest(request.getUrl(), requestHeaders);
 
         try {

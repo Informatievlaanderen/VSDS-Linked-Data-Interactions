@@ -4,6 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.PostRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
+import org.apache.http.HttpHeaders;
+import org.apache.http.entity.ContentType;
 
 import java.util.List;
 
@@ -11,10 +13,12 @@ import java.util.List;
 public class MemoryTransferService implements TransferService {
 
     private final RequestExecutor requestExecutor;
+    private final String consumerConnectorUrl;
     private String transfer;
 
-    public MemoryTransferService(RequestExecutor requestExecutor) {
+    public MemoryTransferService(RequestExecutor requestExecutor, String consumerConnectorUrl) {
         this.requestExecutor = requestExecutor;
+        this.consumerConnectorUrl = consumerConnectorUrl;
     }
 
     @Override
@@ -29,8 +33,9 @@ public class MemoryTransferService implements TransferService {
     }
 
     private void sendTransferRequest() {
-        var requestHeaders = new RequestHeaders(List.of(new RequestHeader("Content-Type", "application/json")));
-        var request = new PostRequest("url", requestHeaders, transfer);
+        var contentType = new RequestHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+        var requestHeaders = new RequestHeaders(List.of(contentType));
+        var request = new PostRequest(consumerConnectorUrl, requestHeaders, transfer);
         this.requestExecutor.execute(request);
     }
 
