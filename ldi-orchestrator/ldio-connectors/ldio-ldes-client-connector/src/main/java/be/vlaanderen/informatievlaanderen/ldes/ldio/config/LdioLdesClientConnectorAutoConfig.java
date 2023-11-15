@@ -1,11 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.EdcConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.valueobjects.EdcUrlProxy;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdesClientRunner;
@@ -37,6 +37,7 @@ public class LdioLdesClientConnectorAutoConfig {
 
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
+		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
 		public void initClient(ComponentExecutor componentExecutor,
 							   ComponentProperties properties,
@@ -45,7 +46,7 @@ public class LdioLdesClientConnectorAutoConfig {
 			final var proxyUrlReplacement = properties.getOptionalProperty(PROXY_URL_REPLACEMENT).orElse("");
 			final var urlProxy = new EdcUrlProxy(proxyUrlToReplace, proxyUrlReplacement);
 			final var edcRequestExecutor =
-					new EdcConfig(baseRequestExecutor, tokenService, urlProxy).createRequestExecutor();
+					requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService, urlProxy);
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 			final LdesClientRunner ldesClientRunner =
 					new LdesClientRunner(edcRequestExecutor, properties, componentExecutor, statePersistence);
