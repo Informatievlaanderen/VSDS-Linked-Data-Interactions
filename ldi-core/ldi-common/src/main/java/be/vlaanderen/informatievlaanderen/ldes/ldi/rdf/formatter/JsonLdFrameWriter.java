@@ -13,10 +13,10 @@ import com.github.jsonldjava.core.JsonLdOptions;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.addPrefixesToModel;
 
-public class JsonLdWriter implements LdiRdfWriter {
+public class JsonLdFrameWriter implements LdiRdfWriter {
 	private final String frame;
 
-	public JsonLdWriter(LdiRdfWriterProperties properties) {
+	public JsonLdFrameWriter(LdiRdfWriterProperties properties) {
 		this.frame = properties.getJsonLdFrame();
 	}
 
