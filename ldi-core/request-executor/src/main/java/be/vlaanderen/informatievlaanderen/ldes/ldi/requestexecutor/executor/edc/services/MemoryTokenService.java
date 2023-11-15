@@ -9,7 +9,6 @@ import java.time.Duration;
 
 import static org.apache.commons.lang3.ThreadUtils.sleep;
 
-// TODO TVB: 13/11/23 test me
 public class MemoryTokenService implements TokenService {
 
     private final TransferService transferService;

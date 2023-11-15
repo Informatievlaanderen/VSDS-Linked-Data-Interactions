@@ -8,7 +8,7 @@ public class EdcToken {
 
     private final JsonObject token;
 
-    public EdcToken(JsonObject token) {
+    private EdcToken(JsonObject token) {
         this.token = token;
     }
 
@@ -17,9 +17,15 @@ public class EdcToken {
     }
 
     public RequestHeader getTokenHeader() {
-        final String authKey = token.get("authKey").getAsString().value();
-        final String authCode = token.get("authCode").getAsString().value();
-        return new RequestHeader(authKey, authCode);
+        final var authKey = token.get("authKey");
+        if (authKey == null) {
+            throw new IllegalArgumentException("Invalid token: authKey not found");
+        }
+        final var authCode = token.get("authCode");
+        if (authCode == null) {
+            throw new IllegalArgumentException("Invalid token: authCode not found");
+        }
+        return new RequestHeader(authKey.getAsString().value(), authCode.getAsString().value());
     }
 
 }
