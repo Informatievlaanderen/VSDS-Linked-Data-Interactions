@@ -22,6 +22,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWr
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LdiRdfWriterTest {
+
 	@Test
 	void formatModel_jsonLD() throws IOException, URISyntaxException {
 		String input = getFileContentString("rdf/formatter/product.jsonld");
@@ -43,6 +44,23 @@ public class LdiRdfWriterTest {
 
 		assertFalse(outputJson.hasKey("@graph"));
 		assertTrue(outputModel.isIsomorphicWith(expected));
+	}
+
+	@Test
+	void formatModel_jsonLD_withoutFrame() throws IOException, URISyntaxException {
+		String input = getFileContentString("rdf/formatter/product.jsonld");
+
+		Model model = RDFParser.fromString(input)
+				.lang(Lang.JSONLD)
+				.toModel();
+
+		LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties();
+
+		String output = LdiRdfWriter.getRdfWriter(writerProperties.withLang(Lang.JSONLD)).write(model);
+
+		JsonObject outputJson = JSON.parse(output);
+
+		assertNotNull(outputJson);
 	}
 
 	@Test
@@ -88,7 +106,7 @@ public class LdiRdfWriterTest {
 				}
 				""";
 
-		JsonLDWriteContext context = (JsonLDWriteContext) JsonLdWriter.getFramedContext(frame);
+		JsonLDWriteContext context = (JsonLDWriteContext) JsonLdFrameWriter.getFramedContext(frame);
 
 		JsonObject frameObject = JSON.parse((String) context.get(JsonLD10Writer.JSONLD_FRAME));
 		assertTrue(frameObject.hasKey("@type"));
