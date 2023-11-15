@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
@@ -13,20 +14,19 @@ import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LdesClientRunner implements Runnable {
+public class LdesClientRunner extends LdioInput implements Runnable {
 
 	private final Logger log = LoggerFactory.getLogger(LdesClientRunner.class);
-
-	private final ComponentExecutor componentExecutor;
 	private final RequestExecutor requestExecutor;
 	private final ComponentProperties properties;
 	private final StatePersistence statePersistence;
 
 	private boolean threadRunning = true;
 
-	public LdesClientRunner(RequestExecutor requestExecutor, ComponentProperties properties,
-			ComponentExecutor componentExecutor, StatePersistence statePersistence) {
-		this.componentExecutor = componentExecutor;
+	public LdesClientRunner(String componentName, String pipelineName, ComponentExecutor componentExecutor,
+	                        RequestExecutor requestExecutor, ComponentProperties properties,
+	                        StatePersistence statePersistence) {
+		super(componentName, pipelineName, componentExecutor, null);
 		this.requestExecutor = requestExecutor;
 		this.properties = properties;
 		this.statePersistence = statePersistence;
@@ -39,7 +39,7 @@ public class LdesClientRunner implements Runnable {
 			MemberSupplier memberSupplier = getMemberSupplier();
 			log.info("LdesClientRunner setup finished");
 			while (threadRunning) {
-				componentExecutor.transformLinkedData(memberSupplier.get().getModel());
+				processModel(memberSupplier.get().getModel());
 			}
 		} catch (EndOfLdesException e) {
 			log.warn(e.getMessage());

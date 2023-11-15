@@ -7,9 +7,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.UnsuccesfulPollingException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
@@ -19,7 +20,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class HttpInputPoller extends LdiInput {
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioMetricValues.*;
+
+public class HttpInputPoller extends LdioInput {
 
 	private final ScheduledExecutorService scheduler;
 	private final RequestExecutor requestExecutor;
@@ -28,13 +31,14 @@ public class HttpInputPoller extends LdiInput {
 	private static final Logger log = LoggerFactory.getLogger(HttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
 
-	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
-			boolean continueOnFail, RequestExecutor requestExecutor) {
-		super(executor, adapter);
+	public HttpInputPoller(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
+	                       boolean continueOnFail, RequestExecutor requestExecutor) {
+		super(componentName, pipelineName, executor, adapter);
 		this.requestExecutor = requestExecutor;
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
+		Metrics.counter(LDIO_DATA_IN, PIPELINE, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 	}
 
 	public void schedulePoller(long interval) {
@@ -65,8 +69,7 @@ public class HttpInputPoller extends LdiInput {
 			String contentType = response.getFirstHeaderValue(CONTENT_TYPE)
 					.orElseThrow(() -> new MissingHeaderException(response.getHttpStatus(), request.getUrl()));
 			String content = response.getBody().orElseThrow();
-			getAdapter().apply(LdiAdapter.Content.of(content, contentType))
-					.forEach(getExecutor()::transformLinkedData);
+			processInput(content, contentType);
 		} else {
 			throw new UnsuccesfulPollingException(response.getHttpStatus(), request.getUrl());
 		}

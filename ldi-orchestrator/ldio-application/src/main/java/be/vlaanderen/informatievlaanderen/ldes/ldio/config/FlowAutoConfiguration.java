@@ -61,7 +61,7 @@ public class FlowAutoConfiguration {
 				.map(this::getLdioOutput)
 				.toList();
 
-		LdiSender ldiSender = new LdiSender(eventPublisher, ldiOutputs);
+		LdiSender ldiSender = new LdiSender(pipelineConfig.getName(), eventPublisher, ldiOutputs);
 
 		List<LdioTransformer> processorChain = new ArrayList<>(ldioTransformers.subList(0, ldioTransformers.size()));
 

@@ -28,6 +28,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterM
 
 @Configuration
 public class LdioKafkaInAutoConfig {
+	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn";
 
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn")
 	public LdioKafkaInConfigurator ldioConfigurator() {
@@ -38,9 +39,10 @@ public class LdioKafkaInAutoConfig {
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties config) {
-			verifyAdapterPresent(config.getProperty(PIPELINE_NAME), adapter);
+			String pipelineName = config.getProperty(PIPELINE_NAME);
+			verifyAdapterPresent(pipelineName, adapter);
 
-			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(executor, adapter, getContentType(config));
+			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(NAME, pipelineName, executor, adapter, getContentType(config));
 			var consumerFactory = new DefaultKafkaConsumerFactory<>(getConsumerConfig(config));
 			ContainerProperties containerProps = new ContainerProperties(config.getProperty(TOPICS).split(","));
 			containerProps.setMessageListener(ldioKafkaIn);

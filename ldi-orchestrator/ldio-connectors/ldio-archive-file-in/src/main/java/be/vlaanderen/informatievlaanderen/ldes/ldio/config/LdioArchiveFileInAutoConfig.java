@@ -16,13 +16,15 @@ import org.springframework.context.annotation.Configuration;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+
 @Configuration
 public class LdioArchiveFileInAutoConfig {
-
+	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn";
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
 	public static final String SOURCE_FORMAT = "source-format";
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn")
+	@Bean(NAME)
 	public LdioInputConfigurator ldiArchiveFileInConfigurator() {
 		return new LdioInputConfigurator() {
 			@Override
@@ -31,8 +33,10 @@ public class LdioArchiveFileInAutoConfig {
 					ComponentProperties config) {
 				ArchiveFileCrawler archiveFileCrawler = new ArchiveFileCrawler(getArchiveDirectoryPath(config));
 				Lang hintLang = getSourceFormat(config);
-				var ldioArchiveFileInRunner = new LdioArchiveFileInRunner(executor, archiveFileCrawler, hintLang);
-				return new LdioArchiveFileIn(executor, ldioArchiveFileInRunner);
+				String pipelineName = config.getProperty(PIPELINE_NAME);
+
+				var ldioArchiveFileInRunner = new LdioArchiveFileInRunner(NAME, pipelineName, executor, archiveFileCrawler, hintLang);
+				return new LdioArchiveFileIn(NAME, pipelineName, executor, ldioArchiveFileInRunner);
 			}
 
 			private Path getArchiveDirectoryPath(ComponentProperties config) {
