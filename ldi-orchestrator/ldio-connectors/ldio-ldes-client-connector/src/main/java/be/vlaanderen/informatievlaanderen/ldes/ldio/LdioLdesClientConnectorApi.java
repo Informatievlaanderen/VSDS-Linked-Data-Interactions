@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.TokenService;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.TransferService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TokenService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;

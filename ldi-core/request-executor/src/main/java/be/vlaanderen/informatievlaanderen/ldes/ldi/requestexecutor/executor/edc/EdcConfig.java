@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TokenService;
 
 /**
  * This implementation of the requestExecutor makes it possible to use the LDES Client within

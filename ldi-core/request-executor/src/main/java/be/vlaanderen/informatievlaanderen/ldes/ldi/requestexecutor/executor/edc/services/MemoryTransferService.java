@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.PostRequest;

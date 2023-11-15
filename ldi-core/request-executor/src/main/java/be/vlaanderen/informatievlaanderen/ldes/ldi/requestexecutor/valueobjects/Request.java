@@ -7,8 +7,8 @@ import static org.apache.commons.lang3.Validate.notNull;
  */
 public abstract class Request {
 
-	private final String url;
-	private final RequestHeaders requestHeaders;
+	final String url;
+	final RequestHeaders requestHeaders;
 
 	protected Request(String url, RequestHeaders requestHeaders) {
 		this.url = url;
@@ -24,5 +24,9 @@ public abstract class Request {
 	}
 
 	public abstract String getMethod();
+
+	public abstract Request with(String url);
+
+	public abstract Request with(RequestHeaders requestHeaders);
 
 }

@@ -17,6 +17,16 @@ public class PostRequest extends Request {
 		return METHOD_NAME;
 	}
 
+	@Override
+	public Request with(String url) {
+		return new PostRequest(url, requestHeaders, body);
+	}
+
+	@Override
+	public Request with(RequestHeaders requestHeaders) {
+		return new PostRequest(url, requestHeaders, body);
+	}
+
 	public String getBody() {
 		return body;
 	}

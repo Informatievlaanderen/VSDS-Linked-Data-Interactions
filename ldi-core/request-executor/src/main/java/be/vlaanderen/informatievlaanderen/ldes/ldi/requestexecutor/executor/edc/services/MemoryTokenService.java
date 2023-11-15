@@ -1,5 +1,6 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.valueobjects.EdcToken;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

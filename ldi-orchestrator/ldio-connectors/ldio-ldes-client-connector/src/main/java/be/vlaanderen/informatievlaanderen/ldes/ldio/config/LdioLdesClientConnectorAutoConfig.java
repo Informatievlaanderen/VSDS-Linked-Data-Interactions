@@ -2,8 +2,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.EdcConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.MemoryTokenService;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.MemoryTransferService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTokenService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;

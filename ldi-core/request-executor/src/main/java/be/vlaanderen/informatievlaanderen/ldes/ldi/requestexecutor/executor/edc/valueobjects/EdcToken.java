@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.valueobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import org.apache.jena.atlas.json.JSON;
