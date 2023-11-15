@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.EdcConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTransferService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.valueobjects.EdcUrlProxy;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
@@ -31,6 +32,8 @@ public class LdioLdesClientConnectorAutoConfig {
 	public static class LdioHttpInConfigurator implements LdioInputConfigurator {
 
 		public static final String CONNECTOR_TRANSFER_URL = "connector-transfer-url";
+		public static final String PROXY_URL_TO_REPLACE = "proxy-url-to-replace";
+		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
 
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
@@ -38,7 +41,11 @@ public class LdioLdesClientConnectorAutoConfig {
 		public void initClient(ComponentExecutor componentExecutor,
 							   ComponentProperties properties,
 							   MemoryTokenService tokenService) {
-			final var edcRequestExecutor = new EdcConfig(baseRequestExecutor, tokenService).createRequestExecutor();
+			final var proxyUrlToReplace = properties.getOptionalProperty(PROXY_URL_TO_REPLACE).orElse("");
+			final var proxyUrlReplacement = properties.getOptionalProperty(PROXY_URL_REPLACEMENT).orElse("");
+			final var urlProxy = new EdcUrlProxy(proxyUrlToReplace, proxyUrlReplacement);
+			final var edcRequestExecutor =
+					new EdcConfig(baseRequestExecutor, tokenService, urlProxy).createRequestExecutor();
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 			final LdesClientRunner ldesClientRunner =
 					new LdesClientRunner(edcRequestExecutor, properties, componentExecutor, statePersistence);
