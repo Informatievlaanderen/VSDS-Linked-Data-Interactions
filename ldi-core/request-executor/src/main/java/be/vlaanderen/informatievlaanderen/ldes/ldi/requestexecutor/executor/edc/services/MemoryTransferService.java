@@ -9,7 +9,6 @@ import org.apache.http.entity.ContentType;
 
 import java.util.List;
 
-// TODO TVB: 08/11/23 test me
 public class MemoryTransferService implements TransferService {
 
     private final RequestExecutor requestExecutor;
@@ -29,6 +28,10 @@ public class MemoryTransferService implements TransferService {
 
     @Override
     public void refreshTransfer() {
+        if (transfer == null) {
+            throw new IllegalStateException("A transfer needs to be started before it can be refreshed!");
+        }
+
         sendTransferRequest();
     }
 
