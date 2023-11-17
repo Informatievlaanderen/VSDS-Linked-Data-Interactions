@@ -38,3 +38,8 @@ This requester supports the below config:
           enabled: true
           max-requests-per-minute: 500
 ```
+
+## Retry
+When retries are enabled, the following statuses are always retried, regardless of the configured statuses-to-retry:
+- 5xx (500 and above)
+- 429

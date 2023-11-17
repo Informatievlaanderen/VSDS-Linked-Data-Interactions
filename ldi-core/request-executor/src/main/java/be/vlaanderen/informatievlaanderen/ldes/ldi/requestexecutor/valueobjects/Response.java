@@ -41,6 +41,10 @@ public class Response {
 		return hasStatus(List.of(HttpStatus.SC_OK));
 	}
 
+	public boolean isFobidden() {
+		return hasStatus(List.of(HttpStatus.SC_FORBIDDEN));
+	}
+
 	public boolean isRedirect() {
 		final int permanentRedirect = 308; // not yet included in apache library
 		return hasStatus(List.of(
