@@ -35,8 +35,10 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		RequestHeaders that = (RequestHeaders) o;
 		return new HashSet<>(headers).containsAll(that.headers)
 				&& new HashSet<>(that.headers).containsAll(headers);

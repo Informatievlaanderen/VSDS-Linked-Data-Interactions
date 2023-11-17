@@ -50,14 +50,14 @@ public class LdioLdesClientConnectorAutoConfig {
 		}
 
 		public void startLdesClient(ComponentExecutor componentExecutor,
-									ComponentProperties properties,
-									MemoryTokenService tokenService) {
+				ComponentProperties properties,
+				MemoryTokenService tokenService) {
 			final var urlProxy = getEdcUrlProxy(properties);
-			final var edcRequestExecutor =
-					requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService, urlProxy);
+			final var edcRequestExecutor = requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService,
+					urlProxy);
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
-			final LdesClientRunner ldesClientRunner =
-					new LdesClientRunner(edcRequestExecutor, properties, componentExecutor, statePersistence);
+			final LdesClientRunner ldesClientRunner = new LdesClientRunner(edcRequestExecutor, properties,
+					componentExecutor, statePersistence);
 
 			// starts the client
 			new LdioLdesClient(componentExecutor, ldesClientRunner);
@@ -66,7 +66,7 @@ public class LdioLdesClientConnectorAutoConfig {
 		private static EdcUrlProxy getEdcUrlProxy(ComponentProperties properties) {
 			final var proxyUrlToReplace = properties.getOptionalProperty(PROXY_URL_TO_REPLACE).orElse("");
 			final var proxyUrlReplacement = properties.getOptionalProperty(PROXY_URL_REPLACEMENT).orElse("");
-            return new EdcUrlProxy(proxyUrlToReplace, proxyUrlReplacement);
+			return new EdcUrlProxy(proxyUrlToReplace, proxyUrlReplacement);
 		}
 	}
 }

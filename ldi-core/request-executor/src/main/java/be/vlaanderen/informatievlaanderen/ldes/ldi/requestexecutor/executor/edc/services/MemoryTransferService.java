@@ -11,35 +11,35 @@ import java.util.List;
 
 public class MemoryTransferService implements TransferService {
 
-    private final RequestExecutor requestExecutor;
-    private final String consumerConnectorUrl;
-    private String transfer;
+	private final RequestExecutor requestExecutor;
+	private final String consumerConnectorUrl;
+	private String transfer;
 
-    public MemoryTransferService(RequestExecutor requestExecutor, String consumerConnectorUrl) {
-        this.requestExecutor = requestExecutor;
-        this.consumerConnectorUrl = consumerConnectorUrl;
-    }
+	public MemoryTransferService(RequestExecutor requestExecutor, String consumerConnectorUrl) {
+		this.requestExecutor = requestExecutor;
+		this.consumerConnectorUrl = consumerConnectorUrl;
+	}
 
-    @Override
-    public void startTransfer(String transfer) {
-        this.transfer = transfer;
-        sendTransferRequest();
-    }
+	@Override
+	public void startTransfer(String transfer) {
+		this.transfer = transfer;
+		sendTransferRequest();
+	}
 
-    @Override
-    public void refreshTransfer() {
-        if (transfer == null) {
-            throw new IllegalStateException("A transfer needs to be started before it can be refreshed!");
-        }
+	@Override
+	public void refreshTransfer() {
+		if (transfer == null) {
+			throw new IllegalStateException("A transfer needs to be started before it can be refreshed!");
+		}
 
-        sendTransferRequest();
-    }
+		sendTransferRequest();
+	}
 
-    private void sendTransferRequest() {
-        var contentType = new RequestHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-        var requestHeaders = new RequestHeaders(List.of(contentType));
-        var request = new PostRequest(consumerConnectorUrl, requestHeaders, transfer);
-        this.requestExecutor.execute(request);
-    }
+	private void sendTransferRequest() {
+		var contentType = new RequestHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+		var requestHeaders = new RequestHeaders(List.of(contentType));
+		var request = new PostRequest(consumerConnectorUrl, requestHeaders, transfer);
+		this.requestExecutor.execute(request);
+	}
 
 }

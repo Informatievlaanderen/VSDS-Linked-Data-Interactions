@@ -16,27 +16,26 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class MemoryTokenServiceTest {
 
-    @Mock
-    private TransferService transferService;
+	@Mock
+	private TransferService transferService;
 
-    @InjectMocks
-    private MemoryTokenService memoryTokenService;
+	@InjectMocks
+	private MemoryTokenService memoryTokenService;
 
-    @Test
-    void test_memoryTokenService() {
-        memoryTokenService.updateToken("{'authKey': 'auth-key', 'authCode': 'auth-code'}");
-        // token is found after update
-        RequestHeader requestHeader = memoryTokenService.waitForTokenHeader();
-        assertNotNull(requestHeader);
+	@Test
+	void test_memoryTokenService() {
+		memoryTokenService.updateToken("{'authKey': 'auth-key', 'authCode': 'auth-code'}");
+		// token is found after update
+		RequestHeader requestHeader = memoryTokenService.waitForTokenHeader();
+		assertNotNull(requestHeader);
 
-        verify(transferService, times(0)).refreshTransfer();
-        memoryTokenService.invalidateToken();
+		verify(transferService, times(0)).refreshTransfer();
+		memoryTokenService.invalidateToken();
 
-        // no token is found after invalidation
-        assertThrows(Error.class, () ->
-                assertTimeoutPreemptively(Duration.ofSeconds(1), () -> memoryTokenService.waitForTokenHeader())
-        );
-        verify(transferService, times(1)).refreshTransfer();
-    }
+		// no token is found after invalidation
+		assertThrows(Error.class,
+				() -> assertTimeoutPreemptively(Duration.ofSeconds(1), () -> memoryTokenService.waitForTokenHeader()));
+		verify(transferService, times(1)).refreshTransfer();
+	}
 
 }

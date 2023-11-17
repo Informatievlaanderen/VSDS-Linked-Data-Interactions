@@ -43,9 +43,7 @@ class PostRequestTest {
 		var req2 = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body");
 		var req3 = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body2");
 
-
 	}
-
 
 	@ParameterizedTest
 	@ArgumentsSource(EqualityTestProvider.class)
@@ -57,26 +55,35 @@ class PostRequestTest {
 		}
 	}
 
-
 	static class EqualityTestProvider implements ArgumentsProvider {
 
-		private static final PostRequest requestA = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body");
+		private static final PostRequest requestA = new PostRequest("url",
+				new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body");
 
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(
 					Arguments.of(equals(), requestA, requestA),
 					Arguments.of(equals(),
-							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body"),
+							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))),
+									"body"),
 							requestA),
 					Arguments.of(notEquals(),
-							new PostRequest("other-url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body"), requestA),
+							new PostRequest("other-url", new RequestHeaders(List.of(new RequestHeader("key", "val"))),
+									"body"),
+							requestA),
 					Arguments.of(notEquals(),
-							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("other-key", "val"))), "body"), requestA),
+							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("other-key", "val"))),
+									"body"),
+							requestA),
 					Arguments.of(notEquals(),
-							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "other-val"))), "body"), requestA),
+							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "other-val"))),
+									"body"),
+							requestA),
 					Arguments.of(notEquals(),
-							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "other-body"), requestA),
+							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))),
+									"other-body"),
+							requestA),
 					Arguments.of(notEquals(), new PostRequest(null, RequestHeaders.empty(), null), requestA));
 		}
 

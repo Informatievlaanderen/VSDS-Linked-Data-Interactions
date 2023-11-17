@@ -25,8 +25,8 @@ public class RequestExecutorFactory {
 	}
 
 	public RequestExecutor createEdcExecutor(RequestExecutor requestExecutor,
-											 TokenService tokenService,
-											 EdcUrlProxy edcUrlProxy) {
+			TokenService tokenService,
+			EdcUrlProxy edcUrlProxy) {
 		return new EdcRequestExecutor(requestExecutor, tokenService, edcUrlProxy);
 	}
 

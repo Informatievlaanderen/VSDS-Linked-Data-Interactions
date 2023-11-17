@@ -4,10 +4,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 
 public interface TokenService {
 
-    RequestHeader waitForTokenHeader();
+	RequestHeader waitForTokenHeader();
 
-    void invalidateToken();
+	void invalidateToken();
 
-    void updateToken(String token);
+	void updateToken(String token);
 
 }

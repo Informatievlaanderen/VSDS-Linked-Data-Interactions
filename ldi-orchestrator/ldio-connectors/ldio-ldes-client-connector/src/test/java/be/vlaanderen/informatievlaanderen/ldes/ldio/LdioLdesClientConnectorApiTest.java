@@ -11,55 +11,54 @@ import reactor.core.publisher.Mono;
 
 import static org.mockito.Mockito.*;
 
-
 class LdioLdesClientConnectorApiTest {
 
-    private WebTestClient client;
-    private final String endpoint = "endpoint";
-    private TransferService transferService;
-    private TokenService tokenService;
+	private WebTestClient client;
+	private final String endpoint = "endpoint";
+	private TransferService transferService;
+	private TokenService tokenService;
 
-    @BeforeEach
-    void setup() {
-        transferService = mock(TransferService.class);
-        tokenService = mock(TokenService.class);
+	@BeforeEach
+	void setup() {
+		transferService = mock(TransferService.class);
+		tokenService = mock(TokenService.class);
 
-        final RouterFunction<ServerResponse> routerFunction =
-                new LdioLdesClientConnectorApi(endpoint, transferService, tokenService).endpoints();
+		final RouterFunction<ServerResponse> routerFunction = new LdioLdesClientConnectorApi(endpoint, transferService,
+				tokenService).endpoints();
 
-        client = WebTestClient
-                .bindToRouterFunction(routerFunction)
-                .build();
-    }
+		client = WebTestClient
+				.bindToRouterFunction(routerFunction)
+				.build();
+	}
 
-    @Test
-    void testTokenEndpoint() {
-        String content = "token";
+	@Test
+	void testTokenEndpoint() {
+		String content = "token";
 
-        client.post()
-                .uri("/%s/token".formatted(endpoint))
-                .body(Mono.just(content), String.class)
-                .exchange()
-                .expectStatus()
-                .isAccepted();
+		client.post()
+				.uri("/%s/token".formatted(endpoint))
+				.body(Mono.just(content), String.class)
+				.exchange()
+				.expectStatus()
+				.isAccepted();
 
-        verify(tokenService).updateToken(content);
-        verify(transferService, times(0)).startTransfer(any());
-    }
+		verify(tokenService).updateToken(content);
+		verify(transferService, times(0)).startTransfer(any());
+	}
 
-    @Test
-    void testTransferEndpoint() {
-        String content = "transfer";
+	@Test
+	void testTransferEndpoint() {
+		String content = "transfer";
 
-        client.post()
-                .uri("/%s/transfer".formatted(endpoint))
-                .body(Mono.just(content), String.class)
-                .exchange()
-                .expectStatus()
-                .isAccepted();
+		client.post()
+				.uri("/%s/transfer".formatted(endpoint))
+				.body(Mono.just(content), String.class)
+				.exchange()
+				.expectStatus()
+				.isAccepted();
 
-        verify(transferService).startTransfer(content);
-        verify(tokenService, times(0)).updateToken(any());
-    }
+		verify(transferService).startTransfer(content);
+		verify(tokenService, times(0)).updateToken(any());
+	}
 
 }

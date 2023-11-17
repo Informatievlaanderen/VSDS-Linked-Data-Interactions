@@ -8,35 +8,34 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EdcTokenTest {
 
+	@Nested
+	class GetTokenHeader {
 
-    @Nested
-    class GetTokenHeader {
+		@Test
+		void shouldThrowException_WhenAuthKeyIsMissing() {
+			EdcToken edcToken = EdcToken.fromJsonString("{'authCode': 'auth-code'}");
 
-        @Test
-        void shouldThrowException_WhenAuthKeyIsMissing() {
-            EdcToken edcToken = EdcToken.fromJsonString("{'authCode': 'auth-code'}");
+			var illegalArgumentException = assertThrows(IllegalArgumentException.class, edcToken::getTokenHeader);
+			assertTrue(illegalArgumentException.getMessage().contains("authKey not found"));
+		}
 
-            var illegalArgumentException = assertThrows(IllegalArgumentException.class, edcToken::getTokenHeader);
-            assertTrue(illegalArgumentException.getMessage().contains("authKey not found"));
-        }
+		@Test
+		void shouldThrowException_WhenAuthCodeIsMissing() {
+			EdcToken edcToken = EdcToken.fromJsonString("{'authKey': 'auth-key'}");
 
-        @Test
-        void shouldThrowException_WhenAuthCodeIsMissing() {
-            EdcToken edcToken = EdcToken.fromJsonString("{'authKey': 'auth-key'}");
+			var illegalArgumentException = assertThrows(IllegalArgumentException.class, edcToken::getTokenHeader);
+			assertTrue(illegalArgumentException.getMessage().contains("authCode not found"));
+		}
 
-            var illegalArgumentException = assertThrows(IllegalArgumentException.class, edcToken::getTokenHeader);
-            assertTrue(illegalArgumentException.getMessage().contains("authCode not found"));
-        }
+		@Test
+		void shouldReturnToken_WhenPresent() {
+			EdcToken edcToken = EdcToken.fromJsonString("{'authKey': 'auth-key', 'authCode': 'auth-code'}");
 
-        @Test
-        void shouldReturnToken_WhenPresent() {
-            EdcToken edcToken = EdcToken.fromJsonString("{'authKey': 'auth-key', 'authCode': 'auth-code'}");
+			RequestHeader tokenHeader = edcToken.getTokenHeader();
 
-            RequestHeader tokenHeader = edcToken.getTokenHeader();
-
-            assertEquals("auth-key", tokenHeader.getKey());
-            assertEquals("auth-code", tokenHeader.getValue());
-        }
-    }
+			assertEquals("auth-key", tokenHeader.getKey());
+			assertEquals("auth-code", tokenHeader.getValue());
+		}
+	}
 
 }

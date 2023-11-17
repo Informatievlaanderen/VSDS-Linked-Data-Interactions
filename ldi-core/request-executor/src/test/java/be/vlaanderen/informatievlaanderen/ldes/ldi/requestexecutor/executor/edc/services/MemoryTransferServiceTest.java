@@ -23,33 +23,33 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class MemoryTransferServiceTest {
 
-    @InjectMocks
-    private MemoryTransferService memoryTransferService;
+	@InjectMocks
+	private MemoryTransferService memoryTransferService;
 
-    @Mock
-    private RequestExecutor requestExecutor;
+	@Mock
+	private RequestExecutor requestExecutor;
 
-    private final String consumerConnectorUrl = "http://example.org";
+	private final String consumerConnectorUrl = "http://example.org";
 
-    @BeforeEach
-    public void setUp() throws IllegalAccessException {
-        FieldUtils.writeField(memoryTransferService, "consumerConnectorUrl", consumerConnectorUrl, true);
-    }
+	@BeforeEach
+	public void setUp() throws IllegalAccessException {
+		FieldUtils.writeField(memoryTransferService, "consumerConnectorUrl", consumerConnectorUrl, true);
+	}
 
-    @Test
-    void refreshTransfer_ShouldThrowException_WhenNoTransferStarted() {
-        assertThrows(IllegalStateException.class, memoryTransferService::refreshTransfer);
-    }
+	@Test
+	void refreshTransfer_ShouldThrowException_WhenNoTransferStarted() {
+		assertThrows(IllegalStateException.class, memoryTransferService::refreshTransfer);
+	}
 
-    @Test
-    void startTransfer_AndrefreshTransfer_ShouldSendTransfer_WhenTransferIsAvailable() {
-        var transfer = "my-transfer";
-        memoryTransferService.startTransfer(transfer);
-        memoryTransferService.refreshTransfer();
+	@Test
+	void startTransfer_AndrefreshTransfer_ShouldSendTransfer_WhenTransferIsAvailable() {
+		var transfer = "my-transfer";
+		memoryTransferService.startTransfer(transfer);
+		memoryTransferService.refreshTransfer();
 
-        var contentType = new RequestHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-        var requestHeaders = new RequestHeaders(List.of(contentType));
-        var request = new PostRequest(consumerConnectorUrl, requestHeaders, transfer);
-        verify(requestExecutor, times(2)).execute(request);
-    }
+		var contentType = new RequestHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+		var requestHeaders = new RequestHeaders(List.of(contentType));
+		var request = new PostRequest(consumerConnectorUrl, requestHeaders, transfer);
+		verify(requestExecutor, times(2)).execute(request);
+	}
 }

@@ -23,38 +23,37 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class EdcRequestExecutorTest {
 
-    @InjectMocks
-    private EdcRequestExecutor edcRequestExecutor;
+	@InjectMocks
+	private EdcRequestExecutor edcRequestExecutor;
 
-    @Mock
-    private EdcUrlProxy urlProxy;
+	@Mock
+	private EdcUrlProxy urlProxy;
 
-    @Mock
-    private RequestExecutor requestExecutor;
+	@Mock
+	private RequestExecutor requestExecutor;
 
-    @Mock
-    private TokenService tokenService;
+	@Mock
+	private TokenService tokenService;
 
-    @Test
-    void test_execute() {
-        final var url = "http://example.org";
-        when(urlProxy.proxy(url)).thenReturn(url);
-        final var requestHeader = new RequestHeader("Authorization", "1234");
-        when(tokenService.waitForTokenHeader()).thenReturn(requestHeader);
+	@Test
+	void test_execute() {
+		final var url = "http://example.org";
+		when(urlProxy.proxy(url)).thenReturn(url);
+		final var requestHeader = new RequestHeader("Authorization", "1234");
+		when(tokenService.waitForTokenHeader()).thenReturn(requestHeader);
 
-        final var request = new GetRequest(url, RequestHeaders.empty());
-        final var edcRequest = new GetRequest(url, new RequestHeaders(List.of(requestHeader)));
-        when(requestExecutor.execute(edcRequest))
-                .thenReturn(new Response(request, List.of(), 403, null))
-                .thenReturn(new Response(request, List.of(), 200, "body"));
+		final var request = new GetRequest(url, RequestHeaders.empty());
+		final var edcRequest = new GetRequest(url, new RequestHeaders(List.of(requestHeader)));
+		when(requestExecutor.execute(edcRequest))
+				.thenReturn(new Response(request, List.of(), 403, null))
+				.thenReturn(new Response(request, List.of(), 200, "body"));
 
+		Response response = edcRequestExecutor.execute(request);
 
-        Response response = edcRequestExecutor.execute(request);
-
-        verify(tokenService).invalidateToken();
-        assertEquals(200, response.getHttpStatus());
-        assertTrue(response.getBody().isPresent());
-        assertEquals("body", response.getBody().get());
-    }
+		verify(tokenService).invalidateToken();
+		assertEquals(200, response.getHttpStatus());
+		assertTrue(response.getBody().isPresent());
+		assertEquals("body", response.getBody().get());
+	}
 
 }

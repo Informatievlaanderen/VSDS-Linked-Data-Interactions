@@ -6,26 +6,26 @@ import org.apache.jena.atlas.json.JsonObject;
 
 public class EdcToken {
 
-    private final JsonObject token;
+	private final JsonObject token;
 
-    private EdcToken(JsonObject token) {
-        this.token = token;
-    }
+	private EdcToken(JsonObject token) {
+		this.token = token;
+	}
 
-    public static EdcToken fromJsonString(String token) {
-        return new EdcToken(JSON.parse(token));
-    }
+	public static EdcToken fromJsonString(String token) {
+		return new EdcToken(JSON.parse(token));
+	}
 
-    public RequestHeader getTokenHeader() {
-        final var authKey = token.get("authKey");
-        if (authKey == null) {
-            throw new IllegalArgumentException("Invalid token: authKey not found");
-        }
-        final var authCode = token.get("authCode");
-        if (authCode == null) {
-            throw new IllegalArgumentException("Invalid token: authCode not found");
-        }
-        return new RequestHeader(authKey.getAsString().value(), authCode.getAsString().value());
-    }
+	public RequestHeader getTokenHeader() {
+		final var authKey = token.get("authKey");
+		if (authKey == null) {
+			throw new IllegalArgumentException("Invalid token: authKey not found");
+		}
+		final var authCode = token.get("authCode");
+		if (authCode == null) {
+			throw new IllegalArgumentException("Invalid token: authCode not found");
+		}
+		return new RequestHeader(authKey.getAsString().value(), authCode.getAsString().value());
+	}
 
 }
