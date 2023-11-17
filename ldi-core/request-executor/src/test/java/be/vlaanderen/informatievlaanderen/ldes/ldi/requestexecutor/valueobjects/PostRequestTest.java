@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects;
 
-import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -35,14 +34,6 @@ class PostRequestTest {
 		final String contentType = "application/json";
 		final List<RequestHeader> requestHeaders = List.of(new RequestHeader("content-type", contentType));
 		assertEquals(contentType, new PostRequest(URL, new RequestHeaders(requestHeaders), BODY).getContentType());
-	}
-
-	@Test
-	void equalsAndHashcode() {
-		var req1 = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body");
-		var req2 = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body");
-		var req3 = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body2");
-
 	}
 
 	@ParameterizedTest
