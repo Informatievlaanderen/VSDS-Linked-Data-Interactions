@@ -18,4 +18,12 @@ class ResponseTest {
 		assertFalse(new Response(null, List.of(), 500, null).isSuccess());
 	}
 
+    @Test
+    void isFobidden() {
+		assertFalse(new Response(null, List.of(), 200, null).isFobidden());
+		assertFalse(new Response(null, List.of(), 400, null).isFobidden());
+		assertTrue(new Response(null, List.of(), 403, null).isFobidden());
+		assertFalse(new Response(null, List.of(), 500, null).isFobidden());
+    }
+
 }
