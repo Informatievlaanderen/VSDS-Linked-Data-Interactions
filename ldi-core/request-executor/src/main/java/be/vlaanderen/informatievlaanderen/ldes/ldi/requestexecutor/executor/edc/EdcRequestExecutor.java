@@ -7,7 +7,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 
 import java.util.List;
 
-// TODO TVB: 13/11/23 test me
 public class EdcRequestExecutor implements RequestExecutor {
 
     private final RequestExecutor requestExecutor;
@@ -20,7 +19,6 @@ public class EdcRequestExecutor implements RequestExecutor {
         this.urlProxy = urlProxy;
     }
 
-    // TODO TVB: 14/11/23 test that no accept header is incluced as this fails
     @Override
     public Response execute(Request request) {
         final Request edcRequest = createEdcRequest(request);
