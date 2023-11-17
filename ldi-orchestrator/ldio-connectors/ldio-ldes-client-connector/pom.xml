@@ -11,10 +11,6 @@
 
     <artifactId>ldio-ldes-client-connector</artifactId>
 
-    <properties>
-        <relative-formatter-path>../../..</relative-formatter-path>
-    </properties>
-
     <dependencies>
 
         <dependency>
