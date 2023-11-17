@@ -37,8 +37,25 @@
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
             <artifactId>ldio-ldes-client</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.bytebuddy</groupId>
+                    <artifactId>byte-buddy-dep</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                </exclusion>
+            </exclusions>
             <version>1.10.0-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
