@@ -28,7 +28,6 @@ public class LdioLdesClientConnectorAutoConfig {
 	}
 
 	// TODO TVB: 13/11/23 test
-	// TODO TVB: 13/11/23 cleanup
 	public static class LdioHttpInConfigurator implements LdioInputConfigurator {
 
 		public static final String CONNECTOR_TRANSFER_URL = "connector-transfer-url";
@@ -39,12 +38,21 @@ public class LdioLdesClientConnectorAutoConfig {
 		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
-		public void initClient(ComponentExecutor componentExecutor,
-							   ComponentProperties properties,
-							   MemoryTokenService tokenService) {
-			final var proxyUrlToReplace = properties.getOptionalProperty(PROXY_URL_TO_REPLACE).orElse("");
-			final var proxyUrlReplacement = properties.getOptionalProperty(PROXY_URL_REPLACEMENT).orElse("");
-			final var urlProxy = new EdcUrlProxy(proxyUrlToReplace, proxyUrlReplacement);
+		@Override
+		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
+			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
+			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);
+			final var tokenService = new MemoryTokenService(transferService);
+			startLdesClient(executor, properties, tokenService);
+
+			final var pipelineName = properties.getProperty(PIPELINE_NAME);
+			return new LdioLdesClientConnectorApi(pipelineName, transferService, tokenService).endpoints();
+		}
+
+		public void startLdesClient(ComponentExecutor componentExecutor,
+									ComponentProperties properties,
+									MemoryTokenService tokenService) {
+			final var urlProxy = getEdcUrlProxy(properties);
 			final var edcRequestExecutor =
 					requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService, urlProxy);
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
@@ -55,14 +63,10 @@ public class LdioLdesClientConnectorAutoConfig {
 			new LdioLdesClient(componentExecutor, ldesClientRunner);
 		}
 
-		@Override
-		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
-			final var pipelineName = properties.getProperty(PIPELINE_NAME);
-			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
-			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);
-			final var tokenService = new MemoryTokenService(transferService);
-			initClient(executor, properties, tokenService);
-			return new LdioLdesClientConnectorApi(pipelineName, transferService, tokenService).endpoints();
+		private static EdcUrlProxy getEdcUrlProxy(ComponentProperties properties) {
+			final var proxyUrlToReplace = properties.getOptionalProperty(PROXY_URL_TO_REPLACE).orElse("");
+			final var proxyUrlReplacement = properties.getOptionalProperty(PROXY_URL_REPLACEMENT).orElse("");
+            return new EdcUrlProxy(proxyUrlToReplace, proxyUrlReplacement);
 		}
 	}
 }
