@@ -17,6 +17,7 @@
         <module>ldio-http-in</module>
         <module>ldio-http-in-poller</module>
         <module>ldio-ldes-client</module>
+        <module>ldio-ldes-client-connector</module>
         <module>ldio-archive-file-in</module>
 
         <module>ldio-rdf-adapter</module>
@@ -91,6 +92,18 @@
             <artifactId>junit-platform-suite</artifactId>
             <version>${junit-platform-suite.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
         </dependency>
 
     </dependencies>
