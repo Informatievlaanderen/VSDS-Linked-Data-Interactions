@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
+@SuppressWarnings("java:S6830")
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
 

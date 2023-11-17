@@ -90,7 +90,8 @@ class PostRequestTest {
 
 	@Test
 	void test_WithUrl() {
-		var initialRequest = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body");
+		var initialRequest = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))),
+				"body");
 
 		var requestWithOtherUrl = initialRequest.with("other-url");
 		assertEquals(initialRequest.getRequestHeaders(), requestWithOtherUrl.getRequestHeaders());
@@ -100,9 +101,11 @@ class PostRequestTest {
 
 	@Test
 	void test_WithRequestHeaders() {
-		var initialRequest = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))), "body");
+		var initialRequest = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))),
+				"body");
 
-		var requestWithOtherUrl = initialRequest.with(new RequestHeaders(List.of(new RequestHeader("other-key", "val"))));
+		var requestWithOtherUrl = initialRequest
+				.with(new RequestHeaders(List.of(new RequestHeader("other-key", "val"))));
 		assertNotEquals(initialRequest.getRequestHeaders(), requestWithOtherUrl.getRequestHeaders());
 		assertEquals(initialRequest.getMethod(), requestWithOtherUrl.getMethod());
 		assertEquals(initialRequest.getUrl(), requestWithOtherUrl.getUrl());

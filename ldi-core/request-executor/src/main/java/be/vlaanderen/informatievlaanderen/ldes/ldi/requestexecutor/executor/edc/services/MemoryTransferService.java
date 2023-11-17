@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.PostRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
 
@@ -21,9 +22,9 @@ public class MemoryTransferService implements TransferService {
 	}
 
 	@Override
-	public void startTransfer(String transfer) {
+	public Response startTransfer(String transfer) {
 		this.transfer = transfer;
-		sendTransferRequest();
+		return sendTransferRequest();
 	}
 
 	@Override
@@ -35,11 +36,11 @@ public class MemoryTransferService implements TransferService {
 		sendTransferRequest();
 	}
 
-	private void sendTransferRequest() {
+	private Response sendTransferRequest() {
 		var contentType = new RequestHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
 		var requestHeaders = new RequestHeaders(List.of(contentType));
 		var request = new PostRequest(consumerConnectorUrl, requestHeaders, transfer);
-		this.requestExecutor.execute(request);
+		return requestExecutor.execute(request);
 	}
 
 }
