@@ -22,12 +22,13 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector")
+	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
+
+	@Bean(NAME)
 	public LdioHttpInConfigurator ldioConfigurator() {
 		return new LdioHttpInConfigurator();
 	}
 
-	// TODO TVB: 13/11/23 test
 	public static class LdioHttpInConfigurator implements LdioInputConfigurator {
 
 		public static final String CONNECTOR_TRANSFER_URL = "connector-transfer-url";

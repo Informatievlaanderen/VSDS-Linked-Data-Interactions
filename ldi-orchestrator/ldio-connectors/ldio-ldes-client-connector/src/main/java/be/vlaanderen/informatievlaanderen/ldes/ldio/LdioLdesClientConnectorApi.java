@@ -44,7 +44,7 @@ public class LdioLdesClientConnectorApi {
 	private void logIncomingRequest(ServerRequest request) {
 		var type = request.headers().contentType().map(MediaType::toString).orElse("(unknown)");
 		long contentLength = request.headers().contentLength().orElse(0L);
-		log.debug("POST /%s type: %s length: %s".formatted(pipelineName, type, contentLength));
+		log.atDebug().log("POST /%s type: %s length: %s".formatted(pipelineName, type, contentLength));
 	}
 
 }

@@ -33,8 +33,9 @@ class MemoryTokenServiceTest {
 		memoryTokenService.invalidateToken();
 
 		// no token is found after invalidation
+		final var duration = Duration.ofSeconds(1);
 		assertThrows(Error.class,
-				() -> assertTimeoutPreemptively(Duration.ofSeconds(1), () -> memoryTokenService.waitForTokenHeader()));
+				() -> assertTimeoutPreemptively(duration, () -> memoryTokenService.waitForTokenHeader()));
 		verify(transferService, times(1)).refreshTransfer();
 	}
 
