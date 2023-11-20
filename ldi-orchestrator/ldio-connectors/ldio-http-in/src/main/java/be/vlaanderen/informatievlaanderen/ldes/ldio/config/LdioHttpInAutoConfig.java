@@ -15,9 +15,8 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterM
 
 @Configuration
 public class LdioHttpInAutoConfig {
-	public final static String componentName = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn";
 
-	@Bean(componentName)
+	@Bean(LdioHttpIn.NAME)
 	public LdioHttpInConfigurator ldioConfigurator() {
 		return new LdioHttpInConfigurator();
 	}
@@ -34,7 +33,7 @@ public class LdioHttpInAutoConfig {
 			String pipelineName = config.getProperty(PIPELINE_NAME);
 			verifyAdapterPresent(pipelineName, adapter);
 
-			LdioHttpIn ldioHttpIn = new LdioHttpIn(componentName, pipelineName, executor, adapter);
+			LdioHttpIn ldioHttpIn = new LdioHttpIn(pipelineName, executor, adapter);
 
 			return ldioHttpIn.mapping();
 		}

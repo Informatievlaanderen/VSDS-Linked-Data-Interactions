@@ -20,18 +20,19 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 
 public class LdioHttpIn extends LdioInput {
 
+	public final static String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioHttpIn.class);
 	private final String endpoint;
 
-	public LdioHttpIn(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter) {
-		super(componentName, pipelineName, executor, adapter);
+	public LdioHttpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter) {
+		super(NAME, pipelineName, executor, adapter);
 		this.endpoint = pipelineName;
 	}
 
 	public RouterFunction<ServerResponse> mapping() {
 		return route(POST("/%s".formatted(endpoint)),
 				req -> {
-					Metrics.counter(LDIO_DATA_IN, PIPELINE, pipelineName, LDIO_COMPONENT_NAME, componentName).increment();
+					Metrics.counter(LDIO_DATA_IN, PIPELINE, pipelineName, LDIO_COMPONENT_NAME, NAME).increment();
 					String contentType = req.headers().contentType()
 							.orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
 							.toString();

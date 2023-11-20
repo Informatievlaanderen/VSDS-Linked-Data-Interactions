@@ -18,15 +18,15 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RUNNING;
 
-public class LdiSender extends LdioTransformer {
+public class LdioSender extends LdioTransformer {
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private PipelineStatus pipelineStatus;
 	private final List<LdiOutput> ldiOutputs;
 	private final Queue<Model> queue = new ArrayDeque<>();
 	private final String pipelineName;
 
-	public LdiSender(String pipelineName, ApplicationEventPublisher applicationEventPublisher,
-	                 List<LdiOutput> ldiOutputs) {
+	public LdioSender(String pipelineName, ApplicationEventPublisher applicationEventPublisher,
+	                  List<LdiOutput> ldiOutputs) {
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.ldiOutputs = ldiOutputs;
 		this.pipelineStatus = RUNNING;
