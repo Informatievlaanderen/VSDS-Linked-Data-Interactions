@@ -10,7 +10,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.UnsuccesfulPollingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
@@ -19,8 +18,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioMetricValues.*;
 
 public class HttpInputPoller extends LdioInput {
 
@@ -38,7 +35,6 @@ public class HttpInputPoller extends LdioInput {
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
-		Metrics.counter(LDIO_DATA_IN, PIPELINE, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 	}
 
 	public void schedulePoller(long interval) {

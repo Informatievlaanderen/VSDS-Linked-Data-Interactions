@@ -14,7 +14,6 @@ public class DummyIn extends LdioInput {
 	public void sendData() {
 		String quad = "_:b0 <http://schema.org/integer> \"" + counter++
 		              + "\"^^<http://www.w3.org/2001/XMLSchema#integer> .";
-		getAdapter().apply(LdiAdapter.Content.of(quad, "application/n-quads"))
-				.forEach(getExecutor()::transformLinkedData);
+		processInput(quad, "application/n-quads");
 	}
 }

@@ -13,7 +13,6 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioMetricValues.LDIO_DATA_OUT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RUNNING;
@@ -24,6 +23,7 @@ public class LdioSender extends LdioTransformer {
 	private final List<LdiOutput> ldiOutputs;
 	private final Queue<Model> queue = new ArrayDeque<>();
 	private final String pipelineName;
+	private final String LDIO_DATA_OUT = "ldio_data_out";
 
 	public LdioSender(String pipelineName, ApplicationEventPublisher applicationEventPublisher,
 	                  List<LdiOutput> ldiOutputs) {
@@ -34,7 +34,7 @@ public class LdioSender extends LdioTransformer {
 		Metrics.counter(LDIO_DATA_OUT, PIPELINE_NAME, pipelineName).increment(0);
 	}
 
-	@SuppressWarnings({ "java:S131", "java:S1301" })
+	@SuppressWarnings({"java:S131", "java:S1301"})
 	@EventListener
 	public void handlePipelineStatus(PipelineStatusEvent statusEvent) {
 		switch (statusEvent.status()) {

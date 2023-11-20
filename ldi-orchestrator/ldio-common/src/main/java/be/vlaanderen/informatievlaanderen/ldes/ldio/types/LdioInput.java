@@ -6,8 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import io.micrometer.core.instrument.Metrics;
 import org.apache.jena.rdf.model.Model;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioMetricValues.*;
-
 /**
  * Base class for the start of a LDIO workflow.
  * <p>
@@ -22,6 +20,10 @@ public abstract class LdioInput implements LdiComponent {
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
 
+	private final String LDIO_DATA_IN = "ldio_data_in";
+	private final String LDIO_COMPONENT_NAME = "ldio_type";
+	private final String PIPELINE_NAME = "pipeline";
+
 	/**
 	 * Creates a LdiInput with its Component Executor and LDI Adapter
 	 *
@@ -35,30 +37,16 @@ public abstract class LdioInput implements LdiComponent {
 		this.pipelineName = pipelineName;
 		this.executor = executor;
 		this.adapter = adapter;
-		Metrics.counter(LDIO_DATA_IN, PIPELINE, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
+		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 	}
 
 	protected void processInput(String content, String contentType) {
-		getAdapter().apply(LdiAdapter.Content.of(content, contentType))
+		adapter.apply(LdiAdapter.Content.of(content, contentType))
 				.forEach(this::processModel);
 	}
 
 	protected void processModel(Model model) {
-		Metrics.counter(LDIO_DATA_IN, PIPELINE, pipelineName, LDIO_COMPONENT_NAME, componentName).increment();
-		getExecutor().transformLinkedData(model);
-	}
-
-	/**
-	 * @return An instance of the configured Component Executor
-	 */
-	public ComponentExecutor getExecutor() {
-		return executor;
-	}
-
-	/**
-	 * @return An instance of the configured LDI Adapter
-	 */
-	public LdiAdapter getAdapter() {
-		return adapter;
+		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment();
+		executor.transformLinkedData(model);
 	}
 }
