@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.ArchiveFileCrawler;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileInRunner;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.riot.Lang;
@@ -35,8 +34,7 @@ public class LdioArchiveFileInAutoConfig {
 				Lang hintLang = getSourceFormat(config);
 				String pipelineName = config.getProperty(PIPELINE_NAME);
 
-				var ldioArchiveFileInRunner = new LdioArchiveFileInRunner(NAME, pipelineName, executor, archiveFileCrawler, hintLang);
-				return new LdioArchiveFileIn(NAME, pipelineName, executor, ldioArchiveFileInRunner);
+				return new LdioArchiveFileIn(NAME, pipelineName, executor, archiveFileCrawler, hintLang);
 			}
 
 			private Path getArchiveDirectoryPath(ComponentProperties config) {

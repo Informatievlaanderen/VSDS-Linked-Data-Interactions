@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdesClientRunner;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
@@ -17,8 +16,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 
 @Configuration
 public class LdioLdesClientAutoConfig {
-	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient";
-	@Bean(NAME)
+	@Bean(LdioLdesClient.NAME)
 	public LdioInputConfigurator ldioConfigurator() {
 		return new LdioLdesClientConfigurator();
 	}
@@ -34,9 +32,9 @@ public class LdioLdesClientAutoConfig {
 			String pipelineName = properties.getProperty(PIPELINE_NAME);
 			RequestExecutor requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
 			StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
-			LdesClientRunner ldesClientRunner = new LdesClientRunner(NAME, pipelineName, componentExecutor, requestExecutor, properties,
+
+			return new LdioLdesClient(pipelineName, componentExecutor, requestExecutor, properties,
 					statePersistence);
-			return new LdioLdesClient(NAME, pipelineName, componentExecutor, ldesClientRunner);
 		}
 
 	}
