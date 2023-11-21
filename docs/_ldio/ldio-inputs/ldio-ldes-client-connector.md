@@ -34,25 +34,16 @@ This component exposes two endpoints:
 | proxy-url-replacement  | Makes it possible to proxy a part of the url of the LDES**. Indicates the replacement url part.                 | No       | memory       | http://consumer-connector:29193                                 | string              |
 ** The url mentioned here are the actual url's used by the LDES Server (hostname). These are included in the results bodies to indicate relations, etc. This is a temporary solution until the client and server support relative urls.
 
-This component uses the "LDIO Http Requester" to make the HTTP request.
-Refer to [LDIO Http Requester](../ldio-core) for the config.
 
 ## Examples
 
 ```yaml
-    server:
-      port: 8082
-orchestrator:
-      pipelines:
-  - name: client-pipeline
-  description: "Simple LdioLdesClientConnector in, console out pipeline."
-  input:
+input:
   name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector
   config:
-  url: http://consumer-connector:29291/public
-  connector-transfer-url: http://consumer-connector:29193/management/v2/transferprocesses
-  proxy-url-to-replace: http://localhost:8081/devices
-  proxy-url-replacement: http://consumer-connector:29291/public
-  source-format: application/n-quads
+    url: http://consumer-connector:29291/public
+    connector-transfer-url: http://consumer-connector:29193/management/v2/transferprocesses
+    proxy-url-to-replace: http://localhost:8081/devices
+    proxy-url-replacement: http://consumer-connector:29291/public
+    source-format: application/n-quads
 ```
-
