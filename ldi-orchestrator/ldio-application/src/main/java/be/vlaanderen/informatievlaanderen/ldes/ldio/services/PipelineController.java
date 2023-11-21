@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +11,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
 
 @RestController
 @RequestMapping(path = "/admin/api/v1/pipeline")
+// TODO redefine pipelinestatus feature
 public class PipelineController {
 
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
+	private final ApplicationEventPublisher applicationEventPublisher;
+	private final PipelineService pipelineService;
 
 	private PipelineStatus pipelineStatus = PipelineStatus.RUNNING;
+
+	public PipelineController(ApplicationEventPublisher applicationEventPublisher, PipelineService pipelineService) {
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.pipelineService = pipelineService;
+	}
 
 	@GetMapping(path = "/status")
 	public ResponseEntity<PipelineStatus> getPipelineStatus() {
@@ -44,9 +52,14 @@ public class PipelineController {
 		};
 	}
 
+	@GetMapping(path = "/overview")
+	public ResponseEntity<List<PipelineConfig>> overview() {
+		return ResponseEntity.ok(pipelineService.getPipelines());
+	}
+
 	@EventListener
 	public void handlePipelineStatusResponse(PipelineStatusEvent statusEvent) {
-		this.pipelineStatus = statusEvent.getStatus();
+		this.pipelineStatus = statusEvent.status();
 	}
 
 	private ResponseEntity<PipelineStatus> resumeHaltedPipeline() {
@@ -58,5 +71,4 @@ public class PipelineController {
 		applicationEventPublisher.publishEvent(new PipelineStatusEvent(HALTED));
 		return ResponseEntity.ok(HALTED);
 	}
-
 }

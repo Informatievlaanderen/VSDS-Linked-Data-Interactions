@@ -75,8 +75,7 @@ public class LdesClient extends AbstractProcessor {
 		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
 		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrl, dataSourceFormat);
 		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(context);
-		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
-				statePersistence, requestExecutor);
+		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
 		boolean keepState = stateKept(context);
 		memberSupplier = new MemberSupplier(treeNodeProcessor, keepState);
 

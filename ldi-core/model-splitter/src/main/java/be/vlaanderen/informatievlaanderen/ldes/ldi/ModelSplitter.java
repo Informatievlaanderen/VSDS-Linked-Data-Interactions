@@ -8,18 +8,18 @@ import org.apache.jena.vocabulary.RDF;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Set;
+import java.util.List;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class ModelSplitter {
 
-	public Set<Model> split(Model inputModel, String subjectType) {
+	public List<Model> split(Model inputModel, String subjectType) {
 		return inputModel
 				.listSubjectsWithProperty(RDF.type, createProperty(subjectType))
 				.mapWith(subject -> extractModelForSubject(inputModel, subject))
-				.toSet();
+				.toList();
 	}
 
 	private Model extractModelForSubject(Model inputModel, Resource subject) {

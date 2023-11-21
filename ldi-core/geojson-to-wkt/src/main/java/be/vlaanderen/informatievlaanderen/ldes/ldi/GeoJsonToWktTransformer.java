@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.rdf.model.*;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOJSON_GEOMETRY;
 
-public class GeoJsonToWktTransformer implements LdiTransformer {
+public class GeoJsonToWktTransformer implements LdiOneToOneTransformer {
 
 	private final WktConverter wktConverter = new WktConverter();
 
@@ -20,7 +20,7 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 	 * containing geosparql#wktLiteral
 	 */
 	@Override
-	public List<Model> apply(Model model) {
+	public Model transform(Model model) {
 		final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)
 				.toList();
 		geometryStatements.forEach(oldGeometryStatement -> {
@@ -29,7 +29,7 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 			model.remove(createModelWithChildStatements(model, oldGeometryStatement));
 			model.add(newGeometryStatement);
 		});
-		return List.of(model);
+		return model;
 	}
 
 	private Statement createNewGeometryStatement(Statement oldStatement, Model geometryModel) {
@@ -60,5 +60,4 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 			statements.add(statement);
 		});
 	}
-
 }

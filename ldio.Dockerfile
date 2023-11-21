@@ -25,6 +25,7 @@ COPY --from=app-stage ldi-orchestrator/ldio-application/target/ldio-application.
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-in/target/ldio-http-in-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-in-poller/target/ldio-http-in-poller-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ldes-client/target/ldio-ldes-client-jar-with-dependencies.jar ./lib/
+COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ldes-client-connector/target/ldio-ldes-client-connector-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-kafka/target/ldio-kafka-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-archive-file-in/target/ldio-archive-file-in-jar-with-dependencies.jar ./lib/
 
@@ -47,7 +48,6 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-azure-blob-out/targe
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-file-out/target/ldio-file-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-repository-materialiser/target/ldio-repository-materialiser-jar-with-dependencies.jar ./lib/
 
-RUN dir -s
 
 RUN mkdir "state"
 RUN chmod -R 777 ./state

@@ -12,7 +12,7 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 		this.headers = requestHeaders;
 	}
 
-	public RequestHeaders addRequestHeader(RequestHeader requestHeader) {
+	public RequestHeaders withRequestHeader(RequestHeader requestHeader) {
 		ArrayList<RequestHeader> updatedRequestHeaders = new ArrayList<>(headers);
 		updatedRequestHeaders.add(requestHeader);
 		return new RequestHeaders(updatedRequestHeaders);
@@ -32,4 +32,21 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 				.filter(header -> Objects.equals(lowerCase(header.getKey()), lowerCase(key)))
 				.findFirst();
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		RequestHeaders that = (RequestHeaders) o;
+		return new HashSet<>(headers).containsAll(that.headers)
+				&& new HashSet<>(that.headers).containsAll(headers);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(headers);
+	}
+
 }

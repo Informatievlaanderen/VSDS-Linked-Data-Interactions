@@ -93,7 +93,7 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		String content = FlowManager.receiveData(session, flowFile);
 		try {
 			Model input = RDFParserBuilder.create().fromString(content).lang(lang).toModel();
-			Model versionObject = versionObjectCreator.apply(input).get(0);
+			Model versionObject = versionObjectCreator.transform(input);
 
 			if (versionObject.isIsomorphicWith(input)) {
 				FlowManager.sendRDFToRelation(session, flowFile, versionObject,

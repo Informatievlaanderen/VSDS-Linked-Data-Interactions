@@ -53,7 +53,7 @@ public class SparqlConstructProcessor extends AbstractProcessor {
 				final Model inputModel = receiveDataAsModel(session, flowFile,
 						SparqlProcessorProperties.getDataSourceFormat(context));
 
-				transformer.apply(inputModel)
+				transformer.transform(inputModel)
 						.forEach(resultModel -> sendRDFToRelation(session, flowFile, resultModel, SUCCESS,
 								SparqlProcessorProperties.getDataSourceFormat(context)));
 			} catch (Exception e) {
