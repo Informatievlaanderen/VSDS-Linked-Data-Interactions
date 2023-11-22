@@ -20,7 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class HttpInputPoller extends LdioInput {
-
+	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller";
 	private final ScheduledExecutorService scheduler;
 	private final RequestExecutor requestExecutor;
 	private final List<? extends Request> requests;
@@ -28,9 +28,9 @@ public class HttpInputPoller extends LdioInput {
 	private static final Logger log = LoggerFactory.getLogger(HttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
 
-	public HttpInputPoller(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
+	public HttpInputPoller(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
 	                       boolean continueOnFail, RequestExecutor requestExecutor) {
-		super(componentName, pipelineName, executor, adapter);
+		super(NAME, pipelineName, executor, adapter);
 		this.requestExecutor = requestExecutor;
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;

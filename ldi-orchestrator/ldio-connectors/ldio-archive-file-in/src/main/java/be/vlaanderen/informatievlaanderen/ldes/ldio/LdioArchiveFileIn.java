@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LdioArchiveFileIn extends LdioInput {
-
+	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn";
 	private final Logger log = LoggerFactory.getLogger(LdioArchiveFileIn.class);
 	private final ArchiveFileCrawler archiveFileCrawler;
 	private final Lang sourceFormat;
 
-	public LdioArchiveFileIn(String componentName, String pipelineName, ComponentExecutor executor, ArchiveFileCrawler crawler, Lang source) {
-		super(componentName, pipelineName, executor, null);
+	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ArchiveFileCrawler crawler, Lang source) {
+		super(NAME, pipelineName, executor, null);
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
 		log.info("Starting with crawling the archive.");

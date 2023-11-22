@@ -17,7 +17,6 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 public class LdioHttpIn extends LdioInput {
-
 	public final static String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioHttpIn.class);
 	private final String endpoint;

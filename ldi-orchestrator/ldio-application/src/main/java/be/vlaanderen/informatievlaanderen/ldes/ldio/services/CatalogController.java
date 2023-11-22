@@ -5,8 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfig
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,31 +24,30 @@ public class CatalogController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Set<String>> catalog() {
-		return ResponseEntity.ok(Stream.of(inputs(), adapters(), transformers(), outputs())
-				.map(HttpEntity::getBody)
+	public Set<String> catalog() {
+		return Stream.of(inputs(), adapters(), transformers(), outputs())
 				.filter(Objects::nonNull)
 				.flatMap(Set::stream)
-				.collect(Collectors.toSet()));
+				.collect(Collectors.toSet());
 	}
 
 	@GetMapping(path = "/inputs")
-	public ResponseEntity<Set<String>> inputs() {
-		return ResponseEntity.ok(context.getBeansOfType(LdioInputConfigurator.class).keySet());
+	public Set<String> inputs() {
+		return context.getBeansOfType(LdioInputConfigurator.class).keySet();
 	}
 
 	@GetMapping(path = "/adapters")
-	public ResponseEntity<Set<String>> adapters() {
-		return ResponseEntity.ok(context.getBeansOfType(LdioAdapterConfigurator.class).keySet());
+	public Set<String> adapters() {
+		return context.getBeansOfType(LdioAdapterConfigurator.class).keySet();
 	}
 
 	@GetMapping(path = "/transformers")
-	public ResponseEntity<Set<String>> transformers() {
-		return ResponseEntity.ok(context.getBeansOfType(LdioTransformerConfigurator.class).keySet());
+	public Set<String> transformers() {
+		return context.getBeansOfType(LdioTransformerConfigurator.class).keySet();
 	}
 
 	@GetMapping(path = "/outputs")
-	public ResponseEntity<Set<String>> outputs() {
-		return ResponseEntity.ok(context.getBeansOfType(LdioOutputConfigurator.class).keySet());
+	public Set<String> outputs() {
+		return context.getBeansOfType(LdioOutputConfigurator.class).keySet();
 	}
 }

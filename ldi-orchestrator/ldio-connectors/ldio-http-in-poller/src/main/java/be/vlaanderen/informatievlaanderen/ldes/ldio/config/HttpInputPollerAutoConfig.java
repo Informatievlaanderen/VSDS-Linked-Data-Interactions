@@ -18,11 +18,9 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 
 @Configuration
 public class HttpInputPollerAutoConfig {
-	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller";
-
 	private static final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
 
-	@Bean(NAME)
+	@Bean(HttpInputPoller.NAME)
 	public HttpInputPollerConfigurator httpInputPollerConfigurator() {
 		return new HttpInputPollerConfigurator();
 	}
@@ -47,7 +45,7 @@ public class HttpInputPollerAutoConfig {
 			}
 
 			var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
-			var httpInputPoller = new HttpInputPoller(NAME, pipelineName, executor, adapter, endpoints, continueOnFail, requestExecutor);
+			var httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, endpoints, continueOnFail, requestExecutor);
 			httpInputPoller.schedulePoller(seconds);
 
 			return httpInputPoller;

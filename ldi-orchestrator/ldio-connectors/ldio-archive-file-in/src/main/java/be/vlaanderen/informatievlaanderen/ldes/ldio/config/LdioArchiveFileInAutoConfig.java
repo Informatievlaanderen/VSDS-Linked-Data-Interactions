@@ -19,11 +19,10 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 
 @Configuration
 public class LdioArchiveFileInAutoConfig {
-	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn";
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
 	public static final String SOURCE_FORMAT = "source-format";
 
-	@Bean(NAME)
+	@Bean(LdioArchiveFileIn.NAME)
 	public LdioInputConfigurator ldiArchiveFileInConfigurator() {
 		return new LdioInputConfigurator() {
 			@Override
@@ -34,7 +33,7 @@ public class LdioArchiveFileInAutoConfig {
 				Lang hintLang = getSourceFormat(config);
 				String pipelineName = config.getProperty(PIPELINE_NAME);
 
-				return new LdioArchiveFileIn(NAME, pipelineName, executor, archiveFileCrawler, hintLang);
+				return new LdioArchiveFileIn(pipelineName, executor, archiveFileCrawler, hintLang);
 			}
 
 			private Path getArchiveDirectoryPath(ComponentProperties config) {

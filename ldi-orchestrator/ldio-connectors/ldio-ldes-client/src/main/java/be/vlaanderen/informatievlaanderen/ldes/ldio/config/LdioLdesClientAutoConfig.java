@@ -33,8 +33,10 @@ public class LdioLdesClientAutoConfig {
 			RequestExecutor requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
 			StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 
-			return new LdioLdesClient(pipelineName, componentExecutor, requestExecutor, properties,
+			var ldesClient = new LdioLdesClient(pipelineName, componentExecutor, requestExecutor, properties,
 					statePersistence);
+			ldesClient.run();
+			return ldesClient;
 		}
 
 	}

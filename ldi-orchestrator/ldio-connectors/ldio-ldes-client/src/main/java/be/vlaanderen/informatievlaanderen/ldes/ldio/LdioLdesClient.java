@@ -30,7 +30,15 @@ public class LdioLdesClient extends LdioInput {
 		this.requestExecutor = requestExecutor;
 		this.properties = properties;
 		this.statePersistence = statePersistence;
-		run();
+	}
+
+	public LdioLdesClient(String componentName, String pipelineName, ComponentExecutor executor,
+	                      RequestExecutor requestExecutor, ComponentProperties properties,
+	                      StatePersistence statePersistence) {
+		super(componentName, pipelineName, executor, null);
+		this.requestExecutor = requestExecutor;
+		this.properties = properties;
+		this.statePersistence = statePersistence;
 	}
 
 	public void run() {
