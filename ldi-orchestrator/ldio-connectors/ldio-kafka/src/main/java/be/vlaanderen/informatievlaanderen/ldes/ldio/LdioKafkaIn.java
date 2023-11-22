@@ -35,7 +35,7 @@ public class LdioKafkaIn extends LdioInput implements MessageListener<String, St
 		final String contentType = determineContentType(data.headers());
 		final var content = LdiAdapter.Content.of(data.value(), contentType);
 		log.atDebug().log("Incoming kafka message: {}", content);
-		processInput(content, contentType);
+		processInput(content);
 	}
 
 	private String determineContentType(Headers headers) {

@@ -41,8 +41,11 @@ public abstract class LdioInput implements LdiComponent {
 	}
 
 	protected void processInput(String content, String contentType) {
-		adapter.apply(LdiAdapter.Content.of(content, contentType))
-				.forEach(this::processModel);
+		processInput(LdiAdapter.Content.of(content, contentType));
+	}
+
+	protected void processInput(LdiAdapter.Content content) {
+		adapter.apply(content).forEach(this::processModel);
 	}
 
 	protected void processModel(Model model) {
