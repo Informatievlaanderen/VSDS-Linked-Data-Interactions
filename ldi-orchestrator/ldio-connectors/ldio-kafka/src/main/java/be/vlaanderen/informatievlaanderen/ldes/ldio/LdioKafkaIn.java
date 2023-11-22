@@ -6,10 +6,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiInput;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.listener.MessageListener;
 
 public class LdioKafkaIn extends LdiInput implements MessageListener<String, String> {
 
+	private static final Logger log = LoggerFactory.getLogger(LdioKafkaIn.class);
 	private final String defaultContentType;
 
 	/**
@@ -30,8 +33,9 @@ public class LdioKafkaIn extends LdiInput implements MessageListener<String, Str
 	@Override
 	public void onMessage(ConsumerRecord<String, String> data) {
 		final String contentType = determineContentType(data.headers());
-		getAdapter().apply(LdiAdapter.Content.of(data.value(), contentType))
-				.forEach(getExecutor()::transformLinkedData);
+		final var content = LdiAdapter.Content.of(data.value(), contentType);
+		log.atDebug().log("Incoming kafka message: {}", content);
+		getAdapter().apply(content).forEach(getExecutor()::transformLinkedData);
 	}
 
 	private String determineContentType(Headers headers) {

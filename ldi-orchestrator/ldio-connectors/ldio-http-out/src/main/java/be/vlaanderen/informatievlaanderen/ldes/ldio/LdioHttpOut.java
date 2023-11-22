@@ -17,7 +17,7 @@ import java.util.List;
 
 public class LdioHttpOut implements LdiOutput {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LdioHttpOut.class);
+	private static final Logger log = LoggerFactory.getLogger(LdioHttpOut.class);
 
 	private final RequestExecutor requestExecutor;
 	private final String targetURL;
@@ -39,9 +39,9 @@ public class LdioHttpOut implements LdiOutput {
 			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), content);
 			Response response = requestExecutor.execute(request);
 			if (response.isSuccess()) {
-				LOGGER.info(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
+				log.debug(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
 			} else {
-				LOGGER.atError().log("Failed to post model. The request url was {}. " +
+				log.atError().log("Failed to post model. The request url was {}. " +
 						"The http response obtained from the server has code {} and body \"{}\".",
 						response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
 			}
