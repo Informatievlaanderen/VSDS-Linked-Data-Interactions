@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -46,9 +47,10 @@ public class LdioLdesClientConnectorApi {
 	}
 
 	private void logIncomingRequest(ServerRequest request) {
+		var httpMethod = HttpMethod.POST.name();
 		var type = request.headers().contentType().map(MediaType::toString).orElse("(unknown)");
 		long contentLength = request.headers().contentLength().orElse(0L);
-		log.atDebug().log("POST /%s type: %s length: %s".formatted(pipelineName, type, contentLength));
+		log.atDebug().log("{} /{} type: {} length: {}", httpMethod, pipelineName, type, contentLength);
 	}
 
 }

@@ -47,7 +47,7 @@ public class LdioHttpIn extends LdiInput {
 		var httpMethod = HttpMethod.POST.name();
 		var type = request.headers().contentType().map(MediaType::toString).orElse("(unknown)");
 		long contentLength = request.headers().contentLength().orElse(0L);
-		log.atDebug().log("%s /%s type: %s length: %s".formatted(httpMethod, endpoint, type, contentLength));
+		log.atDebug().log("{} /{} type: {} length: {}", httpMethod, endpoint, type, contentLength);
 	}
 
 }

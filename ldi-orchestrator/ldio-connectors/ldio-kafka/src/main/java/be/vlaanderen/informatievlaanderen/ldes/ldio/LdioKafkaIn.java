@@ -34,7 +34,7 @@ public class LdioKafkaIn extends LdiInput implements MessageListener<String, Str
 	public void onMessage(ConsumerRecord<String, String> data) {
 		final String contentType = determineContentType(data.headers());
 		final var content = LdiAdapter.Content.of(data.value(), contentType);
-		log.debug("Incoming kafka message: %s".formatted(content));
+		log.atDebug().log("Incoming kafka message: {}", content);
 		getAdapter().apply(content).forEach(getExecutor()::transformLinkedData);
 	}
 
