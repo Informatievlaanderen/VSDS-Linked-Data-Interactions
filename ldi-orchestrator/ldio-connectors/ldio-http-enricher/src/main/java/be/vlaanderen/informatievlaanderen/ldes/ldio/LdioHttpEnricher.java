@@ -16,7 +16,7 @@ import java.util.List;
 
 public class LdioHttpEnricher extends LdioTransformer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LdioHttpEnricher.class);
+	private static final Logger log = LoggerFactory.getLogger(LdioHttpEnricher.class);
 
 	private final LdiAdapter adapter;
 	private final RequestExecutor requestExecutor;
@@ -34,7 +34,7 @@ public class LdioHttpEnricher extends LdioTransformer {
 		final Request request = createRequest(model);
 		final Response response = requestExecutor.execute(request);
 
-		LOGGER.info(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
+		log.debug(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
 
 		addResponseToModel(model, response);
 		this.next(model);
@@ -100,7 +100,7 @@ public class LdioHttpEnricher extends LdioTransformer {
 					.toList()
 					.forEach(model::add);
 		} else {
-			LOGGER.atWarn().log("Failed to enrich model. The request url was {}. " +
+			log.atWarn().log("Failed to enrich model. The request url was {}. " +
 					"The http response obtained from the server has code {} and body \"{}\".",
 					response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
 		}

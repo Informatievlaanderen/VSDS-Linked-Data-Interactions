@@ -25,7 +25,7 @@ public class HttpInputPoller extends LdiInput {
 	private final RequestExecutor requestExecutor;
 	private final List<? extends Request> requests;
 	private final boolean continueOnFail;
-	private static final Logger LOGGER = LoggerFactory.getLogger(HttpInputPoller.class);
+	private static final Logger log = LoggerFactory.getLogger(HttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
 
 	public HttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
@@ -46,7 +46,7 @@ public class HttpInputPoller extends LdiInput {
 			try {
 				executeRequest(request);
 			} catch (Exception e) {
-				LOGGER.error(e.getMessage());
+				log.error(e.getMessage());
 				if (!continueOnFail) {
 					throw e;
 				}
@@ -55,11 +55,11 @@ public class HttpInputPoller extends LdiInput {
 	}
 
 	private void executeRequest(Request request) {
-		LOGGER.atDebug().log("Polling next url: {}", request.getUrl());
+		log.atDebug().log("Polling next url: {}", request.getUrl());
 
 		Response response = requestExecutor.execute(request);
 
-		LOGGER.info(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
+		log.debug(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
 
 		if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
 			String contentType = response.getFirstHeaderValue(CONTENT_TYPE)
