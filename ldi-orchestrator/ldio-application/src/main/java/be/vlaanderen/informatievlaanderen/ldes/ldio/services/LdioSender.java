@@ -23,7 +23,7 @@ public class LdioSender extends LdioTransformer {
 	private final List<LdiOutput> ldiOutputs;
 	private final Queue<Model> queue = new ArrayDeque<>();
 	private final String pipelineName;
-	private final static String LDIO_DATA_OUT = "ldio_data_out";
+	private static final String LDIO_DATA_OUT = "ldio_data_out";
 
 	public LdioSender(String pipelineName, ApplicationEventPublisher applicationEventPublisher,
 	                  List<LdiOutput> ldiOutputs) {
