@@ -15,6 +15,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterM
 
 @Configuration
 public class LdioHttpInAutoConfig {
+	@SuppressWarnings("java:S6830")
 	@Bean(LdioHttpIn.NAME)
 	public LdioHttpInConfigurator ldioConfigurator() {
 		return new LdioHttpInConfigurator();

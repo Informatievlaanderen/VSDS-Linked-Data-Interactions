@@ -16,6 +16,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 
 @Configuration
 public class LdioLdesClientAutoConfig {
+	@SuppressWarnings("java:S6830")
 	@Bean(LdioLdesClient.NAME)
 	public LdioInputConfigurator ldioConfigurator() {
 		return new LdioLdesClientConfigurator();
