@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.ArchiveFileCrawler;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileInRunner;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.riot.Lang;
@@ -16,13 +15,14 @@ import org.springframework.context.annotation.Configuration;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+
 @Configuration
 public class LdioArchiveFileInAutoConfig {
-
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
 	public static final String SOURCE_FORMAT = "source-format";
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn")
+	@Bean(LdioArchiveFileIn.NAME)
 	public LdioInputConfigurator ldiArchiveFileInConfigurator() {
 		return new LdioInputConfigurator() {
 			@Override
@@ -31,8 +31,9 @@ public class LdioArchiveFileInAutoConfig {
 					ComponentProperties config) {
 				ArchiveFileCrawler archiveFileCrawler = new ArchiveFileCrawler(getArchiveDirectoryPath(config));
 				Lang hintLang = getSourceFormat(config);
-				var ldioArchiveFileInRunner = new LdioArchiveFileInRunner(executor, archiveFileCrawler, hintLang);
-				return new LdioArchiveFileIn(executor, ldioArchiveFileInRunner);
+				String pipelineName = config.getProperty(PIPELINE_NAME);
+
+				return new LdioArchiveFileIn(pipelineName, executor, archiveFileCrawler, hintLang);
 			}
 
 			private Path getArchiveDirectoryPath(ComponentProperties config) {

@@ -15,8 +15,8 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterM
 
 @Configuration
 public class LdioHttpInAutoConfig {
-
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn")
+	@SuppressWarnings("java:S6830")
+	@Bean(LdioHttpIn.NAME)
 	public LdioHttpInConfigurator ldioConfigurator() {
 		return new LdioHttpInConfigurator();
 	}
@@ -33,7 +33,7 @@ public class LdioHttpInAutoConfig {
 			String pipelineName = config.getProperty(PIPELINE_NAME);
 			verifyAdapterPresent(pipelineName, adapter);
 
-			LdioHttpIn ldioHttpIn = new LdioHttpIn(executor, adapter, pipelineName);
+			LdioHttpIn ldioHttpIn = new LdioHttpIn(pipelineName, executor, adapter);
 
 			return ldioHttpIn.mapping();
 		}
