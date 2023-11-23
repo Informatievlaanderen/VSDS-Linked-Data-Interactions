@@ -23,7 +23,6 @@
         <module>ldio-rdf-adapter</module>
         <module>ldio-ngsiv2-to-ld-adapter</module>
         <module>ldio-json-to-ld-adapter</module>
-        <module>ldio-model-split</module>
 
         <module>ldio-sparql-construct</module>
         <module>ldio-version-object-creator</module>
