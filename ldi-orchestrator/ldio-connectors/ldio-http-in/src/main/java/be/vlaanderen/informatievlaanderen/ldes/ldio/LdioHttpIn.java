@@ -17,17 +17,15 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 public class LdioHttpIn extends LdioInput {
-	public final static String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn";
+	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioHttpIn.class);
-	private final String endpoint;
 
 	public LdioHttpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter) {
 		super(NAME, pipelineName, executor, adapter);
-		this.endpoint = pipelineName;
 	}
 
 	public RouterFunction<ServerResponse> mapping() {
-		return route(POST("/%s".formatted(endpoint)),
+		return route(POST("/%s".formatted(pipelineName)),
 				req -> {
 					String contentType = req.headers().contentType()
 							.orElseThrow(() -> new NoSuchElementException("No Content-Type header found"))
@@ -45,7 +43,7 @@ public class LdioHttpIn extends LdioInput {
 		var httpMethod = HttpMethod.POST.name();
 		var type = request.headers().contentType().map(MediaType::toString).orElse("(unknown)");
 		long contentLength = request.headers().contentLength().orElse(0L);
-		log.atDebug().log("{} /{} type: {} length: {}", httpMethod, endpoint, type, contentLength);
+		log.atDebug().log("{} /{} type: {} length: {}", httpMethod, pipelineName, type, contentLength);
 	}
 
 }

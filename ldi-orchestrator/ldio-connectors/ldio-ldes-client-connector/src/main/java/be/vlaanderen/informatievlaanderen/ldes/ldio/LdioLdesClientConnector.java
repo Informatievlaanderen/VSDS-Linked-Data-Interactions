@@ -21,7 +21,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class LdioLdesClientConnector extends LdioLdesClient {
 	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
 	private static final Logger log = LoggerFactory.getLogger(LdioLdesClientConnector.class);
-	private final String pipelineName;
 	private final TransferService transferService;
 	private final TokenService tokenService;
 
@@ -29,7 +28,6 @@ public class LdioLdesClientConnector extends LdioLdesClient {
 	                               RequestExecutor edcRequestExecutor, ComponentProperties properties,
 	                               ComponentExecutor executor, StatePersistence statePersistence) {
 		super(NAME, pipelineName, executor, edcRequestExecutor, properties, statePersistence);
-		this.pipelineName = pipelineName;
 		this.transferService = transferService;
 		this.tokenService = tokenService;
 	}

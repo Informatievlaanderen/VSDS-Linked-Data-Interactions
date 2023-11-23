@@ -6,6 +6,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import io.micrometer.core.instrument.Metrics;
 import org.apache.jena.rdf.model.Model;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+
 /**
  * Base class for the start of a LDIO workflow.
  * <p>
@@ -20,9 +22,8 @@ public abstract class LdioInput implements LdiComponent {
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
 
-	private final String LDIO_DATA_IN = "ldio_data_in";
-	private final String LDIO_COMPONENT_NAME = "ldio_type";
-	private final String PIPELINE_NAME = "pipeline";
+	private static final String LDIO_DATA_IN = "ldio_data_in";
+	private static final String LDIO_COMPONENT_NAME = "ldio_type";
 
 	/**
 	 * Creates a LdiInput with its Component Executor and LDI Adapter
