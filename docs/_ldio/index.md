@@ -39,7 +39,7 @@ orchestrator:
 - Note that one orchestrator can have multiple pipelines 
 - Note that one pipeline can have multiple LDI Transformers and LDI Outputs 
 
-## LDIO DEBUG logging
+## LDIO DEBUG Logging
 
 To enable logging the input model for a 
 * [LDIO Adapter](./ldio-adapters)
@@ -56,94 +56,27 @@ Make sure you
     ````
 * Add the ```debug: true``` property to your transformer or output config.
 
-## Complete Workflow
+## LDIO Logging & Monitoring
 
-````mermaid
-flowchart LR
-    subgraph LDIO Input
-        HttpIn(Http In)
-        HttpPoller(Http Poller)
-        LdesClient(LDES Client)
-        ArchiveFileIn(Archive File In)
-        KafkaIn(Kafka In)
-    end
+To provide a better insight in the workings in the LDIO, we expose a prometheus endpoint (`/actuator/prometheus`) that
+encloses some metrics (with included tags):
 
-    HttpIn--Non Linked Data -->Adapter
-    HttpPoller--Non Linked Data -->Adapter
-    LdesClient--Non Linked Data -->Adapter
-    ArchiveFileIn--Non Linked Data -->Adapter
-    KafkaIn--Non Linked Data -->Adapter
+* ldio_data_in_total: Number (Amount of items passed at the start of Transformer Pipeline)
+  * pipeline: String (Refers to the pipeline name)
+  * ldio_type: String (Refers to the LDIO Input Type of pipeline)
+* ldio_data_out_total: Number (Amount of items passed at the end of Transformer Pipeline)
+  * pipeline: String (Refers to the pipeline name)
 
-    subgraph LDIO Adapter
-        Adapter{Adapter}
+To consult these metrics, make sure the prometheus endpoint is enabled by setting
+the following setting:
 
-        Adapter-->RdfAdapter
-        Adapter-->RmlAdapter
-        Adapter-->JsonToJsonLdAdapter
-        Adapter-->NgsiV2Adapter
-
-        RdfAdapter(Rdf Adapter)
-        RmlAdapter(Rml Adapter)
-        JsonToJsonLdAdapter(JSON to JSON LD Adapter)
-        NgsiV2Adapter(NGSI v2 to LD Adapter)
-    end
-
-    RdfAdapter--Linked Data-->TransformerIn
-    RmlAdapter--Linked Data-->TransformerIn
-    JsonToJsonLdAdapter--Linked Data-->TransformerIn
-    NgsiV2Adapter--Linked Data-->TransformerIn
-
-    subgraph LDIO Transformers
-        TransformerIn{Transformer}
-        TransformerOut{Transformer}
-
-        TransformerIn --> HttpEnricherWrapper
-        TransformerIn --> GeoJsonToWkt
-        TransformerIn --> ModelSplitter
-        TransformerIn --> SPARQLConstruct
-        TransformerIn --> VersionMaterialiser
-        TransformerIn --> VersionObjectCreator
-
-        GeoJsonToWkt(GeoJSON to WKT Transformer)
-        ModelSplitter(Model Split Transformer)
-        SPARQLConstruct(SPARQL Construct Transformer)
-        VersionMaterialiser(Version Materialiser)
-        VersionObjectCreator(Version Object Creator)
-
-        subgraph HttpEnricherWrapper[Http Enricher]
-            HttpEnricher(Http Enricher)
-            HttpEnrichAdapter{Adapter}
-            HttpEnrichAdapter --> HttpEnricher
-        end
-
-        HttpEnricherWrapper -- Model --> TransformerOut
-        GeoJsonToWkt -- Model --> TransformerOut
-        ModelSplitter -- Model[] --> TransformerOut
-        SPARQLConstruct -- Model --> TransformerOut
-        VersionMaterialiser -- Model --> TransformerOut
-        VersionObjectCreator -- Model --> TransformerOut
-
-        TransformerOut -- Model --> TransformerIn
-    end
-
-    TransformerOut -- Model --> Output
-
-    subgraph LDIO Out
-        Output{Output}
-
-        Output --> HttpOut
-        Output --> KafkaOut
-        Output --> ConsoleOut
-        Output --> ArchiveOut
-        Output --> AzureBlobOut
-
-        HttpOut
-        KafkaOut
-        ConsoleOut
-        ArchiveOut
-        AzureBlobOut
-    end
+````yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus
 ````
-
 
 [Apache NiFi]: https://nifi.apache.org/

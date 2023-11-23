@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-class LdioLdesClientConnectorApiTest {
+class LdioLdesClientConnectorTest {
 
 	private WebTestClient client;
 	private final String endpoint = "endpoint";
@@ -26,8 +26,8 @@ class LdioLdesClientConnectorApiTest {
 		transferService = mock(TransferService.class);
 		tokenService = mock(TokenService.class);
 
-		final RouterFunction<ServerResponse> routerFunction = new LdioLdesClientConnectorApi(endpoint, transferService,
-				tokenService).endpoints();
+		final RouterFunction<ServerResponse> routerFunction = new LdioLdesClientConnector(endpoint, transferService,
+				tokenService, null, null, null, null).apiEndpoints();
 
 		client = WebTestClient
 				.bindToRouterFunction(routerFunction)
