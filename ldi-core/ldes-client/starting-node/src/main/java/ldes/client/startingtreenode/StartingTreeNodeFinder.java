@@ -34,12 +34,12 @@ public class StartingTreeNodeFinder {
 	public StartingTreeNode determineStartingTreeNode(final StartingNodeRequest startingNodeRequest) {
 		log.atInfo().log("determineStartingTreeNode for: " + startingNodeRequest.url());
 		final Response response = requestExecutor.execute(startingNodeRequest);
-		final Model model = getModelFromResponse(startingNodeRequest.lang(), response.getBody().orElseThrow());
+		final Model model = getModelFromResponse(startingNodeRequest.lang(), response.getBody().orElseThrow(), startingNodeRequest.url());
 		return selectStartingNode(startingNodeRequest, model);
 	}
 
-	private Model getModelFromResponse(Lang lang, String response) {
-		return RDFParser.fromString(response).lang(lang).build().toModel();
+	private Model getModelFromResponse(Lang lang, String response, String baseUrl) {
+		return RDFParser.fromString(response).lang(lang).base(baseUrl).build().toModel();
 	}
 
 	private StartingTreeNode selectStartingNode(StartingNodeRequest startingNodeRequest, Model model) {
