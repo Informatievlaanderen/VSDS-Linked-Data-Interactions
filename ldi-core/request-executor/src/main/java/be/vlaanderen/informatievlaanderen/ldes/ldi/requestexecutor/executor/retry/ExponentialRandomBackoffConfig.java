@@ -4,9 +4,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.Ht
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.RetryConfig;
+import io.micrometer.observation.annotation.Observed;
 
 import java.util.List;
 
+@Observed
 public class ExponentialRandomBackoffConfig {
 
 	private final int maxAttempts;

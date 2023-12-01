@@ -8,6 +8,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,29 +24,39 @@ public class LdioHttpOut implements LdiOutput {
 	private final RequestExecutor requestExecutor;
 	private final String targetURL;
 	private final LdiRdfWriterProperties rdfWriterProperties;
+	private final ObservationRegistry observationRegistry;
 
 	public LdioHttpOut(RequestExecutor requestExecutor, String targetURL,
-			LdiRdfWriterProperties rdfWriterProperties) {
+					   LdiRdfWriterProperties rdfWriterProperties, ObservationRegistry observationRegistry) {
 		this.requestExecutor = requestExecutor;
 		this.targetURL = targetURL;
 		this.rdfWriterProperties = rdfWriterProperties;
+		this.observationRegistry = observationRegistry;
 	}
 
 	@Override
 	public void accept(Model linkedDataModel) {
-		if (!linkedDataModel.isEmpty()) {
-			String content = LdiRdfWriter.getRdfWriter(rdfWriterProperties).write(linkedDataModel);
-			final String contentType = rdfWriterProperties.getLang().getHeaderString();
-			final RequestHeader requestHeader = new RequestHeader(HttpHeaders.CONTENT_TYPE, contentType);
-			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), content);
-			Response response = requestExecutor.execute(request);
-			if (response.isSuccess()) {
-				log.debug(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
-			} else {
-				log.atError().log("Failed to post model. The request url was {}. " +
-						"The http response obtained from the server has code {} and body \"{}\".",
-						response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
-			}
-		}
+		Observation.createNotStarted("LdioHttpOut", observationRegistry)
+				.observe(() -> {
+					if (!linkedDataModel.isEmpty()) {
+						String content = LdiRdfWriter.getRdfWriter(rdfWriterProperties).write(linkedDataModel);
+						final String contentType = rdfWriterProperties.getLang().getHeaderString();
+						final RequestHeader requestHeader = new RequestHeader(HttpHeaders.CONTENT_TYPE, contentType);
+						final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), content);
+						try {
+							Response response = requestExecutor.execute(request);
+							if (response.isSuccess()) {
+								log.info("{} {} {}", request.getMethod(), request.getUrl(), response.getHttpStatus());
+							} else {
+								log.atError().log("Failed to post model. The request url was {}. " +
+												"The http response obtained from the server has code {} and body \"{}\".",
+										response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
+							}
+						} catch (Exception e) {
+							log.atError().log("ERROR - problem='{}', source='LdioHttpOut', when='accept'", e.getMessage());
+							throw e;
+						}
+					}
+				});
 	}
 }

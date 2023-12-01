@@ -10,6 +10,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.UnsuccesfulPollingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
+import io.micrometer.observation.annotation.Observed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
@@ -19,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Observed
 public class HttpInputPoller extends LdioInput {
 	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller";
 	private final ScheduledExecutorService scheduler;
@@ -27,9 +31,10 @@ public class HttpInputPoller extends LdioInput {
 	private final boolean continueOnFail;
 	private static final Logger log = LoggerFactory.getLogger(HttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
+	private ObservationRegistry observationRegistry;
 
 	public HttpInputPoller(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, List<String> endpoints,
-	                       boolean continueOnFail, RequestExecutor requestExecutor) {
+						   boolean continueOnFail, RequestExecutor requestExecutor) {
 		super(NAME, pipelineName, executor, adapter);
 		this.requestExecutor = requestExecutor;
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
@@ -37,21 +42,29 @@ public class HttpInputPoller extends LdioInput {
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
 	}
 
+	public void setObservationRegistry(ObservationRegistry observationRegistry) {
+		this.observationRegistry = observationRegistry;
+	}
+
 	public void schedulePoller(long interval) {
 		scheduler.scheduleAtFixedRate(this::poll, 0, interval, TimeUnit.SECONDS);
 	}
 
 	public void poll() {
-		requests.forEach(request -> {
-			try {
-				executeRequest(request);
-			} catch (Exception e) {
-				log.error(e.getMessage());
-				if (!continueOnFail) {
-					throw e;
-				}
-			}
-		});
+		Observation.createNotStarted("HttpInputPoller", observationRegistry)
+				.contextualName("poll")
+				.observe(() ->
+						requests.forEach(request -> {
+							try {
+								executeRequest(request);
+							} catch (Exception e) {
+								log.atError().log("ERROR - problem='{}', source='HttpInputPoller', when='poll'", e.getMessage());
+								if (!continueOnFail) {
+									throw e;
+								}
+							}
+						})
+				);
 	}
 
 	private void executeRequest(Request request) {
