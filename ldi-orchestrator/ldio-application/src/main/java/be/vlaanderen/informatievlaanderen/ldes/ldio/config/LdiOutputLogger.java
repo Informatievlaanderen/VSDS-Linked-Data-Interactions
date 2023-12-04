@@ -1,30 +1,30 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config.logging;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ComponentExecutorLogger implements ComponentExecutor {
-	private final ComponentExecutor componentExecutor;
+public class LdiOutputLogger implements LdiOutput {
+	private final LdiOutput ldiOutput;
 	private final ObservationRegistry observationRegistry;
 	private final Logger log;
 
-	public ComponentExecutorLogger(ComponentExecutor componentExecutor, ObservationRegistry observationRegistry) {
-		this.componentExecutor = componentExecutor;
+	public LdiOutputLogger(LdiOutput ldiOutput, ObservationRegistry observationRegistry) {
+		this.ldiOutput = ldiOutput;
 		this.observationRegistry = observationRegistry;
-		log = LoggerFactory.getLogger(componentExecutor.getClass());
+		log = LoggerFactory.getLogger(ldiOutput.getClass());
 	}
 
 	@Override
-	public void transformLinkedData(Model linkedDataModel) {
+	public void accept(Model model) {
 		Observation.createNotStarted(this.getClass().getSimpleName(), observationRegistry)
 				.contextualName("accept")
 				.observe(() -> {
 					try {
-						componentExecutor.transformLinkedData(linkedDataModel);
+						ldiOutput.accept(model);
 					} catch (Exception e) {
 						log.atError().log("ERROR - problem='{}', when='accept'", e.getMessage());
 						throw e;

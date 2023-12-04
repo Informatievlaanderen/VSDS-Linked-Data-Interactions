@@ -4,9 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.logging.ComponentExecutorLogger;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.logging.LdiOutputLogger;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.logging.TransformerLogger;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
@@ -81,7 +78,7 @@ public class FlowAutoConfiguration {
 
 		registerBean(pipelineConfig.getName() + "-ldiSender", ldioSender);
 
-		return new ComponentExecutorLogger(new ComponentExecutorImpl(ldioTransformerPipeline), observationRegistry);
+		return new ComponentExecutorImpl(ldioTransformerPipeline);
 	}
 
 	public void initialiseLdiInput(PipelineConfig config) {
@@ -125,9 +122,7 @@ public class FlowAutoConfiguration {
 				.getBean(componentDefinition.getName()))
 				.configure(componentDefinition.getConfig());
 
-		return debug
-				? new TransformerLogger(new TransformerDebugger(ldiTransformer), observationRegistry)
-				: new TransformerLogger(ldiTransformer, observationRegistry);
+		return debug ? new TransformerDebugger(ldiTransformer) : ldiTransformer;
 	}
 
 	private LdiOutput getLdioOutput(ComponentDefinition componentDefinition) {
