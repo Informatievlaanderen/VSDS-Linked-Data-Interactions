@@ -1,15 +1,12 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.config.logging;
 
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationHandler;
-import io.micrometer.observation.aop.ObservedAspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@Component
 public class SimpleLoggingHandler implements ObservationHandler<Observation.Context> {
 	private static final Logger log = LoggerFactory.getLogger(SimpleLoggingHandler.class);
 
@@ -24,7 +21,6 @@ public class SimpleLoggingHandler implements ObservationHandler<Observation.Cont
 	}
 
 	private String getErrorInfo(Observation.Context context) {
-//		var joinPoint = context.getProceedingJoinPoint();
 		String problem = Objects.requireNonNull(context.getError()).getMessage();
 		String source = context.getName();
 		String when = Objects.requireNonNull(context.getContextualName()).split("#")[1];

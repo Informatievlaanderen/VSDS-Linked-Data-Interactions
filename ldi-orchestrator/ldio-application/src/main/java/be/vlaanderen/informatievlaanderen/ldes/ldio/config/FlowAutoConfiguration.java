@@ -4,6 +4,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.logging.ComponentExecutorLogger;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.logging.LdiOutputLogger;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.logging.TransformerLogger;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
@@ -13,6 +16,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.services.LdioSender;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.micrometer.observation.ObservationRegistry;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +41,14 @@ public class FlowAutoConfiguration {
 	private final OrchestratorConfig orchestratorConfig;
 	private final ConfigurableApplicationContext configContext;
 	private final ApplicationEventPublisher eventPublisher;
+	private final ObservationRegistry observationRegistry;
 
 	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
-			ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
+								 ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {
 		this.orchestratorConfig = orchestratorConfig;
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
+		this.observationRegistry = observationRegistry;
 	}
 
 	@PostConstruct
@@ -75,7 +81,7 @@ public class FlowAutoConfiguration {
 
 		registerBean(pipelineConfig.getName() + "-ldiSender", ldioSender);
 
-		return new ComponentExecutorImpl(ldioTransformerPipeline);
+		return new ComponentExecutorLogger(new ComponentExecutorImpl(ldioTransformerPipeline), observationRegistry);
 	}
 
 	public void initialiseLdiInput(PipelineConfig config) {
@@ -85,9 +91,7 @@ public class FlowAutoConfiguration {
 		LdiAdapter adapter = Optional.ofNullable(config.getInput().getAdapter())
 				.map(this::getLdioAdapter)
 				.orElseGet(() -> {
-					LOGGER.warn(
-							"No adapter configured for pipeline %s. Please verify this is a desired scenario."
-									.formatted(config.getName()));
+					LOGGER.warn("No adapter configured for pipeline {}. Please verify this is a desired scenario.", config.getName());
 					return null;
 				});
 
@@ -121,7 +125,9 @@ public class FlowAutoConfiguration {
 				.getBean(componentDefinition.getName()))
 				.configure(componentDefinition.getConfig());
 
-		return debug ? new TransformerDebugger(ldiTransformer) : ldiTransformer;
+		return debug
+				? new TransformerLogger(new TransformerDebugger(ldiTransformer), observationRegistry)
+				: new TransformerLogger(ldiTransformer, observationRegistry);
 	}
 
 	private LdiOutput getLdioOutput(ComponentDefinition componentDefinition) {
@@ -130,7 +136,10 @@ public class FlowAutoConfiguration {
 		LdiOutput ldiOutput = (LdiOutput) getLdiComponent(componentDefinition.getName(),
 				componentDefinition.getConfig());
 
-		return debug ? new OutputDebugger(ldiOutput) : ldiOutput;
+
+		return debug ?
+				new LdiOutputLogger(new OutputDebugger(ldiOutput), observationRegistry) :
+				new LdiOutputLogger(ldiOutput, observationRegistry);
 	}
 
 	private LdiComponent getLdiComponent(String beanName, ComponentProperties config) {
