@@ -26,7 +26,7 @@ public class LdiOutputLogger implements LdiOutput {
 					try {
 						ldiOutput.accept(model);
 					} catch (Exception e) {
-						log.atError().log("ERROR - problem='{}', when='accept'", e.getMessage());
+						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, "output", e.getMessage());
 						throw e;
 					}
 				});
