@@ -59,7 +59,7 @@ public class HttpInputPoller extends LdioInput {
 
 		Response response = requestExecutor.execute(request);
 
-		log.debug(request.getMethod() + " " + request.getUrl() + " " + response.getHttpStatus());
+		log.debug("{} {} {}", request.getMethod() , request.getUrl() , response.getHttpStatus());
 
 		if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
 			String contentType = response.getFirstHeaderValue(CONTENT_TYPE)

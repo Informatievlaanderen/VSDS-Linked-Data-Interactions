@@ -9,7 +9,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioRepository
 
 public class LdioRepositoryMaterialiser implements LdiOutput {
 
-	private Materialiser materialiser;
+	private final Materialiser materialiser;
 
 	public LdioRepositoryMaterialiser(ComponentProperties config) {
 		this.materialiser = new Materialiser(config.getProperty(SPARQL_HOST), config.getProperty(REPOSITORY_ID),

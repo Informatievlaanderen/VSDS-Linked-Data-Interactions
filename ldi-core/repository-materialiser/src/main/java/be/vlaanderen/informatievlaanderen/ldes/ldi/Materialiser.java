@@ -17,9 +17,6 @@ import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.rio.Rio;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,9 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Materialiser {
-
-	private final Logger log = LoggerFactory.getLogger(Materialiser.class);
-
 	private final String repositoryId;
 	private final String namedGraph;
 	protected RepositoryManager repositoryManager;
@@ -73,7 +67,6 @@ public class Materialiser {
 			dbConnection.commit();
 
 		} catch (Exception e) {
-			log.error("Failed to materialise: ", e);
 			throw new MaterialisationFailedException(e);
 		} finally {
 			dbConnection.close();

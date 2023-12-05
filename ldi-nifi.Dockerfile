@@ -6,7 +6,7 @@ ARG NIFI_DOCKER_IMAGE_VERSION
 FROM maven:3.8.5-openjdk-18 AS builder
 
 # MAVEN: application
-FROM builder as app-stage
+FROM builder AS app-stage
 COPY . .
 RUN mvn clean install -DskipTests
 
