@@ -33,7 +33,6 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-rdf-adapter/target/l
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ngsiv2-to-ld-adapter/target/ldio-ngsiv2-to-ld-adapter-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-rml-adapter/target/ldio-rml-adapter-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-json-to-ld-adapter/target/ldio-json-to-ld-adapter-jar-with-dependencies.jar ./lib/
-COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-model-split/target/ldio-model-split-jar-with-dependencies.jar ./lib/
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-sparql-construct/target/ldio-sparql-construct-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-version-materialiser/target/ldio-version-materialiser-jar-with-dependencies.jar ./lib/
