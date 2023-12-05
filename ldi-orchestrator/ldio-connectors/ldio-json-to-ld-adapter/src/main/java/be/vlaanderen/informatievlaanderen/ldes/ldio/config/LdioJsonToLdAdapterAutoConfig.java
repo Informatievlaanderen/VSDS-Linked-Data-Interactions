@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LdioJsonToLdAdapterAutoConfig {
 
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter")
 	public LdioAdapterConfigurator ldioJsonToLdAdapterConfigurator() {
 		return new LdioJsonToLdConfigurator();

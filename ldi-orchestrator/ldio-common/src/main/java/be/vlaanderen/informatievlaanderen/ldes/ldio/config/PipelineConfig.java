@@ -3,11 +3,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.InputComponentDefinition;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PipelineConfig implements Serializable {
+public class PipelineConfig {
 	public static final String PIPELINE_NAME = "pipeline.name";
 	private String name;
 	private String description;

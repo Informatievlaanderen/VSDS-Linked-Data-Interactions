@@ -6,7 +6,7 @@
 FROM maven:3.8.5-openjdk-18 AS builder
 
 # MAVEN: application
-FROM builder as app-stage
+FROM builder AS app-stage
 COPY . .
 RUN mvn clean install -DskipTests
 
@@ -14,7 +14,6 @@ RUN mvn clean install -DskipTests
 # RUN THE APPLICATION
 #
 FROM openjdk:18-ea-bullseye
-RUN apt-get update & apt-get upgrade
 
 RUN useradd -u 2000 ldio
 USER ldio
