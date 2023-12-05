@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LdioRdfAdapterAutoConfig {
 
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter")
 	public LdioAdapterConfigurator ldiHttpOutConfigurator() {
 		return new LdioRdfConfigurator();

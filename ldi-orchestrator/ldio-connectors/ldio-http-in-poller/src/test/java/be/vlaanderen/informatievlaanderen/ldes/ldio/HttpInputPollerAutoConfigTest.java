@@ -17,6 +17,7 @@ import org.mockito.MockedConstruction;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -29,7 +30,7 @@ class HttpInputPollerAutoConfigTest {
 
 	@Test
 	void when_ValidConfig() {
-		try (MockedConstruction<HttpInputPoller> mocked = mockConstruction(HttpInputPoller.class)) {
+		try (MockedConstruction<HttpInputPoller> ignored = mockConstruction(HttpInputPoller.class)) {
 			HttpInputPoller poller = new HttpInputPollerAutoConfig()
 					.httpInputPollerConfigurator()
 					.configure(adapter, executor, createDefaultTestConfig());
@@ -55,12 +56,13 @@ class HttpInputPollerAutoConfigTest {
 	}
 
 	private static ComponentProperties createConfig(String url, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of(HttpInputPollerProperties.URL, url, HttpInputPollerProperties.INTERVAL,
-				interval, HttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
+		return new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline", HttpInputPollerProperties.URL, url,
+				HttpInputPollerProperties.INTERVAL, interval,
+				HttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
 	}
 
 	private static ComponentProperties createDefaultTestConfig() {
-		return createConfig(BASE_URL + ENDPOINT, "PT1S", "false");
+		return createConfig( BASE_URL + ENDPOINT, "PT1S", "false");
 	}
 
 }

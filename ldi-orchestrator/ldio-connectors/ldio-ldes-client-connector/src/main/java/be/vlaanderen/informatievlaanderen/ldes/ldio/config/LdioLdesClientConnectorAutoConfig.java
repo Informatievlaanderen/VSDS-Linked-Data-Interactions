@@ -8,9 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noau
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdesClientRunner;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
@@ -23,14 +21,12 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
 
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
-
-	@Bean(NAME)
-	public LdioHttpInConfigurator ldioConfigurator() {
-		return new LdioHttpInConfigurator();
+	@Bean(LdioLdesClientConnector.NAME)
+	public LdioInputConfigurator ldioConfigurator() {
+		return new LdioClientConnectorConfigurator();
 	}
 
-	public static class LdioHttpInConfigurator implements LdioInputConfigurator {
+	public static class LdioClientConnectorConfigurator implements LdioInputConfigurator {
 
 		public static final String CONNECTOR_TRANSFER_URL = "connector-transfer-url";
 		public static final String PROXY_URL_TO_REPLACE = "proxy-url-to-replace";
@@ -42,27 +38,21 @@ public class LdioLdesClientConnectorAutoConfig {
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
+			final String pipelineName = properties.getProperty(PIPELINE_NAME);
 			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
 			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);
 			final var tokenService = new MemoryTokenService(transferService);
-			startLdesClient(executor, properties, tokenService);
 
-			final var pipelineName = properties.getProperty(PIPELINE_NAME);
-			return new LdioLdesClientConnectorApi(pipelineName, transferService, tokenService).endpoints();
-		}
-
-		public void startLdesClient(ComponentExecutor componentExecutor,
-				ComponentProperties properties,
-				MemoryTokenService tokenService) {
 			final var urlProxy = getEdcUrlProxy(properties);
 			final var edcRequestExecutor = requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService,
 					urlProxy);
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
-			final LdesClientRunner ldesClientRunner = new LdesClientRunner(edcRequestExecutor, properties,
-					componentExecutor, statePersistence);
 
-			// starts the client
-			new LdioLdesClient(componentExecutor, ldesClientRunner);
+			var ldesClientConnector = new LdioLdesClientConnector(pipelineName, transferService, tokenService, edcRequestExecutor, properties,
+					executor, statePersistence);
+
+			ldesClientConnector.run();
+			return ldesClientConnector.apiEndpoints();
 		}
 
 		private static EdcUrlProxy getEdcUrlProxy(ComponentProperties properties) {

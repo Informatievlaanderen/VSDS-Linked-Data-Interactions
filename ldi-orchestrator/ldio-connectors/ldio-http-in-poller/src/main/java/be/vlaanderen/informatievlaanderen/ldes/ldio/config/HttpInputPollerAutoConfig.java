@@ -14,13 +14,13 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @Configuration
 public class HttpInputPollerAutoConfig {
-
 	private static final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller")
+	@Bean(HttpInputPoller.NAME)
 	public HttpInputPollerConfigurator httpInputPollerConfigurator() {
 		return new HttpInputPollerConfigurator();
 	}
@@ -30,6 +30,7 @@ public class HttpInputPollerAutoConfig {
 		@Override
 		public HttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
 				ComponentProperties properties) {
+			String pipelineName = properties.getProperty(PIPELINE_NAME);
 			List<String> endpoints = properties.getPropertyList(URL);
 
 			String pollingInterval = properties.getProperty(INTERVAL);
@@ -44,7 +45,7 @@ public class HttpInputPollerAutoConfig {
 			}
 
 			var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
-			var httpInputPoller = new HttpInputPoller(executor, adapter, endpoints, continueOnFail, requestExecutor);
+			var httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, endpoints, continueOnFail, requestExecutor);
 			httpInputPoller.schedulePoller(seconds);
 
 			return httpInputPoller;

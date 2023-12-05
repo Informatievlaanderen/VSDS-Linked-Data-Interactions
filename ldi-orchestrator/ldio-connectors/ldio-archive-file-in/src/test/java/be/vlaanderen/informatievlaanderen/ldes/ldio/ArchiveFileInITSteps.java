@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioArchiveFileInAutoConfig.ARCHIVE_ROOT_DIR_PROP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,7 +26,8 @@ public class ArchiveFileInITSteps {
 	public void iCreateAnArchiveFileInComponentWithArchiveDir(String archiveDir) {
 		members = new ArrayList<>();
 		ComponentExecutor componentExecutor = linkedDataModel -> members.add(linkedDataModel);
-		var props = new ComponentProperties(Map.of(ARCHIVE_ROOT_DIR_PROP, separatorsToSystem(archiveDir)));
+		var props = new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline",
+				ARCHIVE_ROOT_DIR_PROP, separatorsToSystem(archiveDir)));
 		var ldioInputConfigurator = new LdioArchiveFileInAutoConfig().ldiArchiveFileInConfigurator();
 		ldioInputConfigurator.configure(null, componentExecutor, props);
 	}

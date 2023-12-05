@@ -19,6 +19,7 @@ public class LdioFileOutAutoConfig {
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
 	public static final String TIMESTAMP_PATH_PROP = "timestamp-path";
 
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut")
 	public LdioOutputConfigurator ldiFileOutConfigurator() {
 		return new LdioOutputConfigurator() {

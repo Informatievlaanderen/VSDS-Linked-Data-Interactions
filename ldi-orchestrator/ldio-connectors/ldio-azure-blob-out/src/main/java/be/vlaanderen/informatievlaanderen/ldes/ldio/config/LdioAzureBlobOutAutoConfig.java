@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class LdioAzureBlobOutAutoConfig {
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut")
 	public LdioOutputConfigurator ldioConfigurator() {
 		return new LdioAzureBlobOutConfigurator();

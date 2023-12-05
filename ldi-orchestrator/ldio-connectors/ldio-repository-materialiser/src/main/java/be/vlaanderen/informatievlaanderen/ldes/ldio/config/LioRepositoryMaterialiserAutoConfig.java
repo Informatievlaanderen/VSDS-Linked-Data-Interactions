@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LioRepositoryMaterialiserAutoConfig {
 
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.RepositoryMaterialiser")
 	public LdioOutputConfigurator ldiRepoMaterialiserConfigurator() {
 		return new LdiRepoMaterialiserProcessorConfigurator();

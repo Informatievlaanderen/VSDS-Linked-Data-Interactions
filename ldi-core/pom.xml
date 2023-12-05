@@ -3,7 +3,7 @@
     <parent>
         <artifactId>linked-data-interactions</artifactId>
         <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
-        <version>1.10.0</version>
+        <version>1.11.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,7 +24,6 @@
         <module>json-to-ld-adapter</module>
         <module>file-archiving</module>
         <module>repository-materialiser</module>
-        <module>model-splitter</module>
         <module>ldi-common</module>
     </modules>
 

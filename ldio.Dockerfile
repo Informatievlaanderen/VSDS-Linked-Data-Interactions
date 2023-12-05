@@ -6,7 +6,7 @@
 FROM maven:3.8.5-openjdk-18 AS builder
 
 # MAVEN: application
-FROM builder as app-stage
+FROM builder AS app-stage
 COPY . .
 RUN mvn clean install -DskipTests
 
@@ -14,7 +14,6 @@ RUN mvn clean install -DskipTests
 # RUN THE APPLICATION
 #
 FROM openjdk:18-ea-bullseye
-RUN apt-get update & apt-get upgrade
 
 RUN useradd -u 2000 ldio
 USER ldio
@@ -33,7 +32,6 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-rdf-adapter/target/l
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ngsiv2-to-ld-adapter/target/ldio-ngsiv2-to-ld-adapter-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-rml-adapter/target/ldio-rml-adapter-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-json-to-ld-adapter/target/ldio-json-to-ld-adapter-jar-with-dependencies.jar ./lib/
-COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-model-split/target/ldio-model-split-jar-with-dependencies.jar ./lib/
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-sparql-construct/target/ldio-sparql-construct-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-version-materialiser/target/ldio-version-materialiser-jar-with-dependencies.jar ./lib/
