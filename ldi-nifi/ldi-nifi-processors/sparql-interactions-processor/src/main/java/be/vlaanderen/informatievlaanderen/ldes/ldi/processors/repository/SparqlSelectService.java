@@ -1,12 +1,15 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.repository;
 
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.Iterator;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.apache.jena.rdf.model.RDFNode;
 
 public class SparqlSelectService {
 
@@ -32,9 +35,23 @@ public class SparqlSelectService {
 		Iterator<String> varNames = querySolution.varNames();
 		while (varNames.hasNext()) {
 			final String key = varNames.next();
-			jsonObject.addProperty(key, querySolution.get(key).toString());
+			RDFNode node = querySolution.get(key);
+			if (!node.isLiteral()) {
+				jsonObject.addProperty(key, node.toString());
+				continue;
+			}
+			Literal literal = node.asLiteral();
+			RDFDatatype literalDatatype = literal.getDatatype();
+			switch (literalDatatype.getURI()) {
+				case "http://www.w3.org/2001/XMLSchema#integer" ->
+						jsonObject.addProperty(key, (int) literal.getValue());
+				case "http://www.w3.org/2001/XMLSchema#double" ->
+						jsonObject.addProperty(key, (double) literal.getValue());
+				case "http://www.w3.org/2001/XMLSchema#boolean" ->
+						jsonObject.addProperty(key, (boolean) literal.getValue());
+				default -> jsonObject.addProperty(key, literal.getValue().toString());
+			}
 		}
 		return jsonObject;
 	}
-
 }
