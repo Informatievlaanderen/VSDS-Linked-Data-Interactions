@@ -10,7 +10,7 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
     <artifactId>linked-data-interactions</artifactId>
     <packaging>pom</packaging>
-    <version>1.12.0-SNAPSHOT</version>
+    <version>1.11.0-SNAPSHOT</version>
 
     <modules>
         <module>ldi-api</module>

@@ -41,11 +41,11 @@ public class FlowAutoConfiguration {
 	private final ObservationRegistry observationRegistry;
 
 	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
-								 ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher) {
+								 ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {
 		this.orchestratorConfig = orchestratorConfig;
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
-		this.observationRegistry = ObserveConfiguration.observationRegistry();
+		this.observationRegistry = observationRegistry;
 	}
 
 	@PostConstruct

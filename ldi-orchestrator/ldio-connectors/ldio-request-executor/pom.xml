@@ -6,7 +6,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
         <artifactId>ldio-connectors</artifactId>
-        <version>1.12.0-SNAPSHOT</version>
+        <version>1.11.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>ldio-request-executor</artifactId>
