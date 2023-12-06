@@ -50,4 +50,4 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-repository-materiali
 RUN mkdir "state"
 RUN chmod -R 777 ./state
 
-CMD ["java", "-cp", "ldio-application.jar", "-Dloader.path=lib/", "org.springframework.boot.loader.PropertiesLauncher"]
+CMD ["java", "-cp", "ldio-application.jar", "-Dloader.path=lib/", "org.springframework.boot.loader.launch.PropertiesLauncher"]
