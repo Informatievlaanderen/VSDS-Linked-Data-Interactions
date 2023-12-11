@@ -32,10 +32,13 @@ class SparqlSelectProcessorTest {
 	@Test
 	void testSuccessFlow_1() throws Exception {
 		String selectQuery = """
-				SELECT ?x ?fname ?gname
+				SELECT ?x ?fname ?gname ?number
 				WHERE {
 				    ?x  <http://www.w3.org/2001/vcard-rdf/3.0#FN>  ?fname .
 				    ?x  <http://www.w3.org/2001/vcard-rdf/3.0#N>/<http://www.w3.org/2001/vcard-rdf/3.0#Given> ?gname .
+				    OPTIONAL {
+				      ?x <http://test-number/>  ?number .
+				    }
 				}
 				""";
 

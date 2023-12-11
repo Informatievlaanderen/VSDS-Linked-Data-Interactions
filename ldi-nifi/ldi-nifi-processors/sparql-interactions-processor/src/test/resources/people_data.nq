@@ -1,14 +1,17 @@
 <http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Matt Jones" .
+<http://somewhere/MattJones/> <http://test-number/> "1.663E-4"^^<http://www.w3.org/2001/XMLSchema#double> .
 <http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid1 .
 _:genid1 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Jones" .
 _:genid1 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Matthew" .
 
 <http://somewhere/RebeccaSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Becky Smith" .
+<http://somewhere/RebeccaSmith/> <http://test-number/> "14"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://somewhere/RebeccaSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid2 .
 _:genid2 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Smith" .
 _:genid2 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Rebecca" .
 
 <http://somewhere/JohnSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "John Smith" .
+<http://somewhere/JohnSmith/> <http://test-number/> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 <http://somewhere/JohnSmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid3 .
 _:genid3 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Smith" .
 _:genid3 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "John" .
