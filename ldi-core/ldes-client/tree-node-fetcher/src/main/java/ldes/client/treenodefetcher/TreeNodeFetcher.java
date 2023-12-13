@@ -42,7 +42,7 @@ public class TreeNodeFetcher {
 
 	private TreeNodeResponse createOkResponse(TreeNodeRequest treeNodeRequest, Response response) {
 		final String responseBody = response.getBody().orElseThrow();
-		final Model model = RDFParser.fromString(responseBody).forceLang(treeNodeRequest.getLang()).toModel();
+		final Model model = RDFParser.fromString(responseBody).forceLang(treeNodeRequest.getLang()).base(treeNodeRequest.getTreeNodeUrl()).toModel();
 		final ModelResponse modelResponse = new ModelResponse(model);
 		final MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
 		return new TreeNodeResponse(modelResponse.getRelations(), modelResponse.getMembers(), mutabilityStatus);

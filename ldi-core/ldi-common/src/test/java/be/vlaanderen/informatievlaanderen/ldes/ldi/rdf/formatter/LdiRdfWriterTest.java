@@ -21,7 +21,7 @@ import com.github.jsonldjava.core.JsonLdOptions;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.FRAME;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LdiRdfWriterTest {
+class LdiRdfWriterTest {
 
 	@Test
 	void formatModel_jsonLD() throws IOException, URISyntaxException {

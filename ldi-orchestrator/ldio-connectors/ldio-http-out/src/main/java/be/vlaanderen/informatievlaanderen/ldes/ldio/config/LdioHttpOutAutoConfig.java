@@ -15,6 +15,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWr
 @Configuration
 public class LdioHttpOutAutoConfig {
 
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut")
 	public LdioOutputConfigurator ldiHttpOutConfigurator() {
 		return new LdioHttpOutConfigurator();

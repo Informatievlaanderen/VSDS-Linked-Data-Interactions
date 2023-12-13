@@ -34,6 +34,10 @@ public class TreeNodeRequest {
 		return lang;
 	}
 
+	public String getTreeNodeUrl() {
+		return treeNodeUrl;
+	}
+
 	@Override
 	public String toString() {
 		return "TreeNodeRequest{" +

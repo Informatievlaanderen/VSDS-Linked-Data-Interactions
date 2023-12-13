@@ -3,8 +3,13 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.types;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.ObserveConfiguration;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
@@ -21,6 +26,8 @@ public abstract class LdioInput implements LdiComponent {
 	protected final String pipelineName;
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final ObservationRegistry observationRegistry;
 
 	private static final String LDIO_DATA_IN = "ldio_data_in";
 	private static final String LDIO_COMPONENT_NAME = "ldio_type";
@@ -38,6 +45,7 @@ public abstract class LdioInput implements LdiComponent {
 		this.pipelineName = pipelineName;
 		this.executor = executor;
 		this.adapter = adapter;
+		this.observationRegistry = ObserveConfiguration.observationRegistry();
 		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 	}
 
@@ -46,11 +54,29 @@ public abstract class LdioInput implements LdiComponent {
 	}
 
 	protected void processInput(LdiAdapter.Content content) {
-		adapter.apply(content).forEach(this::processModel);
+		Observation.createNotStarted(this.componentName, observationRegistry)
+				.contextualName(this.pipelineName)
+				.observe(() -> {
+					try {
+						adapter.apply(content).forEach(this::processModel);
+					} catch (Exception e) {
+						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, this.pipelineName, e.getMessage());
+						throw e;
+					}
+				});
 	}
 
 	protected void processModel(Model model) {
 		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment();
-		executor.transformLinkedData(model);
+		Observation.createNotStarted(this.componentName, observationRegistry)
+				.contextualName(this.pipelineName)
+				.observe(() -> {
+					try {
+						executor.transformLinkedData(model);
+					} catch (Exception e) {
+						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, this.pipelineName, e.getMessage());
+						throw e;
+					}
+				});
 	}
 }

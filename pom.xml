@@ -57,6 +57,12 @@
 
         <jena.version>4.8.0</jena.version>
 
+        <!-- LOGGING -->
+        <micrometer-prometheus.version>1.12.0</micrometer-prometheus.version>
+        <micrometer-tracing.version>1.2.0</micrometer-tracing.version>
+        <zipkin-reporter.version>2.16.4</zipkin-reporter.version>
+        <loki.version>1.4.2</loki.version>
+
         <!-- Testing -->
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
@@ -223,6 +229,26 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer-prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-tracing-bridge-otel</artifactId>
+                <version>${micrometer-tracing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.zipkin.reporter2</groupId>
+                <artifactId>zipkin-reporter-brave</artifactId>
+                <version>${zipkin-reporter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.loki4j</groupId>
+                <artifactId>loki-logback-appender</artifactId>
+                <version>${loki.version}</version>
             </dependency>
 
             <!-- Testing -->

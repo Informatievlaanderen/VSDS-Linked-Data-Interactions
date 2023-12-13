@@ -81,7 +81,7 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 		String versionObjectId = memberInfo.generateVersionObjectId(delimiter);
 		Resource subject = versionObjectModel.createResource(versionObjectId);
 
-		LOGGER.info("Created version: " + versionObjectId);
+		LOGGER.info("Created version: {}", versionObjectId);
 
 		List<Statement> statementList = inputModel.listStatements().toList();
 		statementList.stream()

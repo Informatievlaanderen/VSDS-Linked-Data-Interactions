@@ -42,6 +42,10 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
 
         <!-- TEST -->
 
@@ -161,15 +165,6 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-rml-adapter</artifactId>
-                    <version>${project.version}</version>
-                </dependency></dependencies>
-        </profile>
-        <profile>
-            <id>ldio-model-split-adapter</id>
-            <dependencies>
-                <dependency>
-                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-model-split</artifactId>
                     <version>${project.version}</version>
                 </dependency></dependencies>
         </profile>

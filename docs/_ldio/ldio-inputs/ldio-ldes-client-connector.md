@@ -1,7 +1,7 @@
 ---
   layout: default
   parent: LDIO Inputs
-  title: LDES Client
+  title: LDES Client with Connector
 ---
 
 # LDIO Ldes Client Connector
