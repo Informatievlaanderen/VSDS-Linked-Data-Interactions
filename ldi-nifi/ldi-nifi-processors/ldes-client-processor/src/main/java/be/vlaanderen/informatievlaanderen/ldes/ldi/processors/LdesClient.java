@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retr
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.github.resilience4j.retry.Retry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
@@ -39,6 +40,7 @@ import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier.getCustomHeaders;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
 @Tags({ "ldes-client", "vsds" })
@@ -98,12 +100,13 @@ public class LdesClient extends AbstractProcessor {
 	}
 
 	private RequestExecutor getRequestExecutor(final ProcessContext context) {
+		ComponentProperties properties = new ComponentProperties(context.getAllProperties());
 		return switch (getAuthorizationStrategy(context)) {
-			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
-			case API_KEY -> requestExecutorFactory.createApiKeyExecutor(getApiKeyHeader(context), getApiKey(context));
+			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor(getCustomHeaders(properties));
+			case API_KEY -> requestExecutorFactory.createApiKeyExecutor(getApiKeyHeader(context), getApiKey(context), getCustomHeaders(properties));
 			case OAUTH2_CLIENT_CREDENTIALS ->
 				requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
-						getOauthClientSecret(context), getOauthTokenEndpoint(context));
+						getOauthClientSecret(context), getOauthTokenEndpoint(context), getCustomHeaders(properties));
 		};
 	}
 

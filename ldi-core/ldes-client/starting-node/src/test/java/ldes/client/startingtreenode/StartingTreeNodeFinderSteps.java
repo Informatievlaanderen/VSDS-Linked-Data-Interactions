@@ -10,6 +10,8 @@ import ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode;
 import ldes.client.startingtreenode.exception.StartingNodeNotFoundException;
 import org.apache.jena.riot.RDFLanguages;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StartingTreeNodeFinderSteps {
@@ -19,7 +21,7 @@ public class StartingTreeNodeFinderSteps {
 
 	@Given("I have a StartingTreeNodeFinder$")
 	public void initializeCalculator() {
-		startingTreeNodeFinder = new StartingTreeNodeFinder(new DefaultConfig().createRequestExecutor());
+		startingTreeNodeFinder = new StartingTreeNodeFinder(new DefaultConfig().createRequestExecutor(new ArrayList<>()));
 	}
 
 	@Then("the starting Tree Node of the LDES Stream is the url of the View: {string}")

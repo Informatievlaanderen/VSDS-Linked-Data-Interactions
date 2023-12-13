@@ -9,6 +9,7 @@ Feature: RequestExecutor
     And I create a Request with the RequestHeaders and url: <endpoint>
     And I execute the request
     Then I obtain a response with status code 200
+    And I obtain the custom headers from the response
 
     Examples:
       | requestExecutor                  | endpoint                                          |
@@ -24,6 +25,7 @@ Feature: RequestExecutor
     And I create a PostRequest with body {"name": "Joe"} and the RequestHeaders and url: <endpoint>
     And I execute the request
     Then I obtain a response with status code 200
+    And I obtain the custom headers from the response
 
     Examples:
       | requestExecutor                  | endpoint                                               |
@@ -39,6 +41,7 @@ Feature: RequestExecutor
     And I execute the request
     Then I obtain a response with status code 302
     And I obtain a location header: "http://localhost:10101/redirect-location"
+    And I obtain the custom headers from the response
 
     Examples:
       | requestExecutor                  |
@@ -53,6 +56,7 @@ Feature: RequestExecutor
     And I create a Request with the RequestHeaders and url: http://localhost:10101/304-response
     And I execute the request
     Then I obtain a response with status code 304
+    And I obtain the custom headers from the response
 
     Examples:
       | requestExecutor                  |
@@ -75,6 +79,7 @@ Feature: RequestExecutor
     And I execute the request
     And I execute the request
     Then I will have called the token endpoint only once
+    And I obtain the custom headers from the response
 
   Scenario: Obtaining the response with retries
     Given I have a requestExecutor which does 3 retries
@@ -95,10 +100,12 @@ Feature: RequestExecutor
     Then I will have called "/418-response" 3 times
     And I obtain a response with status code 418
 
+
   Scenario: Obtaining the response with a rateLimiter.
     Given I have a requestExecutor which limits the requests to 1 per second
     When I create a Request with the RequestHeaders and url: http://localhost:10101/418-response
     Then It takes approximately 3000 ms to execute the request 4 times
+    And I obtain the custom headers from the response
 
   Scenario: Obtaining the response with retries and rateLimiter
     Given I have a requestExecutor which does 3 retries with custom http status code 418 and limits requests
@@ -108,3 +115,4 @@ Feature: RequestExecutor
     Then I will have called "/418-response" 3 times
     And Approximately 2000 ms have passed
     And I obtain a response with status code 418
+    And I obtain the custom headers from the response

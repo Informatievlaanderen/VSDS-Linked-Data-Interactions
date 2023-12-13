@@ -15,6 +15,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.RequestExecutorProperties.*;
@@ -59,7 +60,7 @@ class LdioRequestExecutorSupplierTest {
 				API_KEY_HEADER, "key-header",
 				API_KEY, "key"));
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createApiKeyExecutor("key-header", "key")).thenReturn(requestExecutor);
+		when(requestExecutorFactory.createApiKeyExecutor("key-header", "key", new ArrayList<>())).thenReturn(requestExecutor);
 		RequestExecutorDecorator requestExecutorDecorator = mock(RequestExecutorDecorator.class);
 		when(requestExecutorDecorator.with((Retry) any())).thenReturn(requestExecutorDecorator);
 		when(requestExecutorDecorator.with((RateLimiter) any())).thenReturn(requestExecutorDecorator);
@@ -104,7 +105,7 @@ class LdioRequestExecutorSupplierTest {
 				CLIENT_SECRET, "secret",
 				TOKEN_ENDPOINT, "token"));
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createClientCredentialsExecutor("client", "secret", "token"))
+		when(requestExecutorFactory.createClientCredentialsExecutor("client", "secret", "token", new ArrayList<>()))
 				.thenReturn(requestExecutor);
 
 		RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);

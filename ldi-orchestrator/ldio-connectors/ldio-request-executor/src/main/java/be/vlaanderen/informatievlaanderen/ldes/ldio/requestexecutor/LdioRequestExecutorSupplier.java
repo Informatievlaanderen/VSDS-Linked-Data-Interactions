@@ -10,11 +10,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.retry.Retry;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier.getCustomHeaders;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy.NO_AUTH;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.RequestExecutorProperties.*;
 
@@ -71,18 +70,20 @@ public class LdioRequestExecutorSupplier {
 				.from(componentProperties.getOptionalProperty(AUTH_TYPE).orElse(NO_AUTH.name()));
 		if (authentication.isPresent()) {
 			return switch (authentication.get()) {
-				case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
+				case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor(getCustomHeaders(componentProperties));
 				case API_KEY ->
 					requestExecutorFactory
 							.createApiKeyExecutor(
 									componentProperties.getOptionalProperty(API_KEY_HEADER)
 											.orElse(DEFAULT_API_KEY_HEADER),
-									componentProperties.getProperty(API_KEY));
+									componentProperties.getProperty(API_KEY),
+									getCustomHeaders(componentProperties));
 				case OAUTH2_CLIENT_CREDENTIALS ->
 					requestExecutorFactory.createClientCredentialsExecutor(
 							componentProperties.getProperty(CLIENT_ID),
 							componentProperties.getProperty(CLIENT_SECRET),
-							componentProperties.getProperty(TOKEN_ENDPOINT));
+							componentProperties.getProperty(TOKEN_ENDPOINT),
+							getCustomHeaders(componentProperties));
 			};
 		}
 		throw new UnsupportedOperationException("Requested authentication not available: "

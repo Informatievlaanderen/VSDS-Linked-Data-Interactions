@@ -14,6 +14,7 @@ import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 class TreeNodeProcessorFactory {
@@ -26,7 +27,7 @@ class TreeNodeProcessorFactory {
 			case FILE -> createFileStatePersistence();
 			case POSTGRES -> createPostgresPersistence();
 		};
-		final RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
+		final RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor(new ArrayList<>());
 		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
 	}
 

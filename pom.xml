@@ -68,6 +68,7 @@
         <slf4j.version>2.0.7</slf4j.version>
         <byte-buddy-dep.version>1.14.7</byte-buddy-dep.version>
         <logback-classic.version>1.4.11</logback-classic.version>
+        <assertj-core.version>3.24.2</assertj-core.version>
         <!-- Jacoco -->
         <jacoco.version>0.8.10</jacoco.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -243,7 +244,11 @@
                 <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj-core.version}</version>
+            </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>

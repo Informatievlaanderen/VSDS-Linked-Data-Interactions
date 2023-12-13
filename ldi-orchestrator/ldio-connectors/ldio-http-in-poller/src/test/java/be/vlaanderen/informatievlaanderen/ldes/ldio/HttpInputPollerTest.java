@@ -5,22 +5,24 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
-import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+
+import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.after;
 
 @WireMockTest(httpPort = 10101)
 class HttpInputPollerTest {
@@ -32,7 +34,7 @@ class HttpInputPollerTest {
 	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 	private static final String CONTENT_TYPE = "application/n-quads";
 	private HttpInputPoller httpInputPoller;
-	private static final RequestExecutor noAuthExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+	private static final RequestExecutor noAuthExecutor = new RequestExecutorFactory().createNoAuthExecutor(new ArrayList<>());
 
 	@BeforeEach
     void setUp() {

@@ -15,6 +15,7 @@ import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier.getCustomHeaders;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @SuppressWarnings("java:S6830")
@@ -33,11 +34,11 @@ public class LdioLdesClientConnectorAutoConfig {
 		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
 
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
-		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
+			final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor(getCustomHeaders(properties));
 			final String pipelineName = properties.getProperty(PIPELINE_NAME);
 			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
 			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);

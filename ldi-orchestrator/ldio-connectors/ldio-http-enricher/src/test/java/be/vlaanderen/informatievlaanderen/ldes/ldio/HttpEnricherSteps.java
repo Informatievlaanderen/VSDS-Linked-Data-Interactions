@@ -17,6 +17,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -69,7 +70,7 @@ public class HttpEnricherSteps {
 
 	@And("I create an LdioHttpEnricher with the configured properties")
 	public void iCreateAnLdioHttpEnricherWithTheConfiguredProperties() {
-		final RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+		final RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthExecutor(new ArrayList<>());
 		var propertyPathExtractors = new RequestPropertyPathExtractors(
 				getPropertyPathExtractor(urlPropertyPath),
 				getPropertyPathExtractor(bodyPropertyPath),

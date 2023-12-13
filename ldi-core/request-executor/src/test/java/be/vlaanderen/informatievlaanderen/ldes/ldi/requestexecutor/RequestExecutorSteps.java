@@ -14,11 +14,15 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.retry.Retry;
+import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
+import org.apache.http.message.BasicHeader;
+import org.assertj.core.api.Assertions;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -27,27 +31,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RequestExecutorSteps {
 
+	public static final String THE_KEY = "theKey";
+	public static final String THE_VALUE = "theValue";
 	private LocalDateTime start;
 	private final RequestExecutorFactory factory = new RequestExecutorFactory();
 	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
 	private RequestHeaders requestHeaders = new RequestHeaders(List.of());
+	private final Collection<Header> customHeaders = List.of(new BasicHeader(THE_KEY, THE_VALUE));
 
 	@Given("I have a ApiKeyRequestExecutor")
 	public void aApiKeyRequestExecutorIsAvailable() {
-		requestExecutor = factory.createApiKeyExecutor("X-API-KEY", "test123");
+		requestExecutor = factory.createApiKeyExecutor("X-API-KEY", "test123", customHeaders);
 	}
 
 	@Given("I have a ClientCredentialsRequestExecutor")
 	public void aClientCredentialsRequestExecutorIsAvailable() {
 		requestExecutor = factory.createClientCredentialsExecutor("clientId", "clientSecret",
-				"http://localhost:10101/token");
+				"http://localhost:10101/token", customHeaders);
 	}
 
 	@Given("I have a DefaultRequestExecutor")
 	public void aDefaultRequestExecutorIsAvailable() {
-		requestExecutor = factory.createNoAuthExecutor();
+		requestExecutor = factory.createNoAuthExecutor(customHeaders);
 	}
 
 	@Then("I obtain a response with status code {int}")
@@ -105,13 +112,13 @@ public class RequestExecutorSteps {
 	@Given("I have a requestExecutor which does {int} retries")
 	public void iHaveARequestExecutorWhichDoesRetries(int retryCount) {
 		Retry retry = RetryConfig.of(retryCount, List.of()).getRetry();
-		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry).get();
+		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor(List.of())).with(retry).get();
 	}
 
 	@Given("I have a requestExecutor which does {int} retries with custom http status code {int}")
 	public void iHaveARequestExecutorWhichDoesRetries(int retryCount, int httpStatus) {
 		Retry retry = RetryConfig.of(retryCount, List.of(httpStatus)).getRetry();
-		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry).get();
+		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor(List.of())).with(retry).get();
 	}
 
 	@Then("I will have called {string} {int} times")
@@ -137,7 +144,7 @@ public class RequestExecutorSteps {
 	public void iHaveARequestExecutorWithRateLimiter() {
 		Duration waitTime = Duration.ofSeconds(1);
 		RateLimiter rateLimiter = new RateLimiterConfig(1, waitTime, waitTime).getRateLimiter();
-		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(rateLimiter).get();
+		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor(customHeaders)).with(rateLimiter).get();
 	}
 
 	@Then("It takes approximately {int} ms to execute the request {int} times")
@@ -158,7 +165,7 @@ public class RequestExecutorSteps {
 		Duration waitTime = Duration.ofSeconds(1);
 		RateLimiter rateLimiter = new RateLimiterConfig(1, waitTime, waitTime).getRateLimiter();
 		Retry retry = RetryConfig.of(retryCount, List.of(httpStatus)).getRetry();
-		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry)
+		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor(customHeaders)).with(retry)
 				.with(rateLimiter).get();
 	}
 
@@ -173,5 +180,10 @@ public class RequestExecutorSteps {
 		long actualMillisPassed = Duration.between(start, end).toMillis();
 		assertTrue(actualMillisPassed > expectedMillisPassed - 250);
 		assertTrue(actualMillisPassed < expectedMillisPassed + 250);
+	}
+
+	@And("I obtain the custom headers from the response")
+	public void checkIfCustomHeaderWasAdded(){
+		Assertions.assertThat(response.getFirstHeaderValue(THE_KEY)).hasValue(THE_VALUE);
 	}
 }

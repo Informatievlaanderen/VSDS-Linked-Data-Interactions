@@ -5,6 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.apache.http.Header;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
-
-import com.github.scribejava.core.model.OAuth2AccessToken;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,6 +31,9 @@ class ClientCredentialsRequestExecutorTest {
 
 	@Mock
 	private OAuth20ServiceTokenCacheWrapper oAuthService;
+
+	@Mock
+	private Collection<Header> customHeaders;
 
 	@Nested
 	class Apply {

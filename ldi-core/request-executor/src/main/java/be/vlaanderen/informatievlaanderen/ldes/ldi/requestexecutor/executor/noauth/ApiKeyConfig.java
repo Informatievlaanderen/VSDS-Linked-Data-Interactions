@@ -2,8 +2,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noa
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier;
+import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -18,8 +20,8 @@ public class ApiKeyConfig implements RequestExecutorSupplier {
 		this.apiKey = notNull(apiKey, "apiKey cannot be null");
 	}
 
-	public RequestExecutor createRequestExecutor() {
-		return new DefaultConfig().createRequestExecutor(List.of(createBasicHeader()));
+	public RequestExecutor createRequestExecutor(Collection<Header> customHeaders) {
+		return new DefaultConfig().createRequestExecutor(List.of(createBasicHeader()), customHeaders);
 	}
 
 	private BasicHeader createBasicHeader() {

@@ -17,6 +17,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -60,7 +61,7 @@ public class MemberSupplierSteps {
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				new StatePersistence(memberRepository, treeNodeRecordRepository),
-				new DefaultConfig().createRequestExecutor());
+				new DefaultConfig().createRequestExecutor(new ArrayList<>()));
 	}
 
 	@Then("Member {string} is processed")
@@ -161,10 +162,10 @@ public class MemberSupplierSteps {
 	public void aStatePersistenceStrategyProcessorAndAStatePersistenceStrategyProcessor(String arg0, String arg1) {
 		memberSuppliers[0] = new MemberSupplier(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
-				new DefaultConfig().createRequestExecutor()), false);
+				new DefaultConfig().createRequestExecutor(new ArrayList<>())), false);
 		memberSuppliers[1] = new MemberSupplier(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
-				new DefaultConfig().createRequestExecutor()), false);
+				new DefaultConfig().createRequestExecutor(new ArrayList<>())), false);
 	}
 
 	@When("I request one member from the MemberSuppliers")

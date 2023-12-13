@@ -10,13 +10,13 @@ import java.util.Collection;
 
 public class DefaultConfig implements RequestExecutorSupplier {
 
-	public RequestExecutor createRequestExecutor() {
-		return createRequestExecutor(new ArrayList<>());
-	}
+    public RequestExecutor createRequestExecutor(Collection<Header> customHeaders) {
+        return createRequestExecutor(new ArrayList<>(), customHeaders);
+    }
 
-	public RequestExecutor createRequestExecutor(Collection<Header> headers) {
-		return new DefaultRequestExecutor(
-				HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build());
-	}
+    public RequestExecutor createRequestExecutor(Collection<Header> headers, Collection<Header> customHeaders) {
+        return new DefaultRequestExecutor(
+                HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build(), customHeaders);
+    }
 
 }

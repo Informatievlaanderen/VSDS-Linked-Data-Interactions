@@ -9,6 +9,8 @@ import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import org.apache.jena.riot.RDFLanguages;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -20,7 +22,7 @@ public class TreeNodeFetcherSteps {
 
 	@Given("I have a TreeNodeFetcher")
 	public void initializeCalculator() {
-		treeNodeFetcher = new TreeNodeFetcher(new DefaultConfig().createRequestExecutor());
+		treeNodeFetcher = new TreeNodeFetcher(new DefaultConfig().createRequestExecutor(new ArrayList<>()));
 	}
 
 	@When("I create a TreeNodeRequest with Lang {string} and url {string}")

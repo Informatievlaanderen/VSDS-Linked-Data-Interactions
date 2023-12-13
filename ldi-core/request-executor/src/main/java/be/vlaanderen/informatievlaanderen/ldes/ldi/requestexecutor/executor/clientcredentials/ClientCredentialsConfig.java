@@ -2,8 +2,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.cli
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier;
+import org.apache.http.Header;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+
+import java.util.Collection;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.builder.api.DefaultApi20;
@@ -24,8 +27,8 @@ public class ClientCredentialsConfig implements RequestExecutorSupplier {
 		this.tokenEndpoint = notNull(tokenEndpoint);
 	}
 
-	public RequestExecutor createRequestExecutor() {
-		return new ClientCredentialsRequestExecutor(new OAuth20ServiceTokenCacheWrapper(createService()));
+	public RequestExecutor createRequestExecutor(Collection<Header> customHeaders) {
+		return new ClientCredentialsRequestExecutor(new OAuth20ServiceTokenCacheWrapper(createService()), customHeaders);
 	}
 
 	private OAuth20Service createService() {
