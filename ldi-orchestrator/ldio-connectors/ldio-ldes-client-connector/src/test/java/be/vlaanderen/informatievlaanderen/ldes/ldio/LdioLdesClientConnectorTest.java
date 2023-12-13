@@ -26,8 +26,8 @@ class LdioLdesClientConnectorTest {
 		transferService = mock(TransferService.class);
 		tokenService = mock(TokenService.class);
 
-		final RouterFunction<ServerResponse> routerFunction =
-				new LdioLdesClientConnectorApi(transferService, tokenService, endpoint).apiEndpoints();
+		final RouterFunction<ServerResponse> routerFunction = new LdioLdesClientConnector(endpoint, transferService,
+				tokenService, null, null, null, null, null).apiEndpoints();
 
 		client = WebTestClient
 				.bindToRouterFunction(routerFunction)

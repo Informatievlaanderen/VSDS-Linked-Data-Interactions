@@ -11,6 +11,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +34,16 @@ public class LdioLdesClientConnectorAutoConfig {
 		public static final String CONNECTOR_TRANSFER_URL = "connector-transfer-url";
 		public static final String PROXY_URL_TO_REPLACE = "proxy-url-to-replace";
 		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
+		private final ObservationRegistry observationRegistry;
 
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
+		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
+
+		public LdioClientConnectorConfigurator(ObservationRegistry observationRegistry) {
+			this.observationRegistry = observationRegistry;
+		}
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
