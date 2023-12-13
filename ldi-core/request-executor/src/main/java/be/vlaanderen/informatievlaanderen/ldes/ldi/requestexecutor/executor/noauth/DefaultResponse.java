@@ -18,16 +18,16 @@ public class DefaultResponse {
 
 	private final HttpResponse httpResponse;
 	private final Request request;
-	private final List<Header> headers;
+	private final List<Header> customHeaders;
 
 	public DefaultResponse(Request request, List<Header> customHeaders, HttpResponse httpResponse) {
 		this.request = request;
 		this.httpResponse = httpResponse;
-		this.headers = customHeaders;
+		this.customHeaders = customHeaders;
 	}
 
 	public Response getResponse() throws IOException {
-		final List<Header> headers = concat(Arrays.stream(httpResponse.getAllHeaders()), this.headers.stream()).collect(toCollection(ArrayList::new));
+		final List<Header> headers = concat(Arrays.stream(httpResponse.getAllHeaders()), this.customHeaders.stream()).collect(toCollection(ArrayList::new));
 		final int statusCode = httpResponse.getStatusLine().getStatusCode();
 		final String body = httpResponse.getEntity() != null ? EntityUtils.toString(httpResponse.getEntity()) : null;
 		return new Response(request, headers, statusCode, body);

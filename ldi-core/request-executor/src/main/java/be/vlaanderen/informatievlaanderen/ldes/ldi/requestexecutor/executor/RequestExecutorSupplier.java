@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public interface RequestExecutorSupplier {
 
 	String CUSTOM_HEADERS = "headers.custom";
+
 	RequestExecutor createRequestExecutor(Collection<Header> customHeaders);
 
 	static Collection<Header> getCustomHeaders(ComponentProperties props) {
@@ -20,6 +20,6 @@ public interface RequestExecutorSupplier {
 		return customHeaders.map(stringStringMap -> stringStringMap.entrySet()
 				.stream()
 				.map(entry -> (Header) new BasicHeader(entry.getKey(), entry.getValue()))
-				.collect(Collectors.toList())).orElse(List.of());
+				.toList()).orElse(List.of());
 	}
 }
