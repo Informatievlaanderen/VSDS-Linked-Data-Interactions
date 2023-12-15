@@ -8,7 +8,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noau
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientController;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
@@ -21,7 +22,9 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
 
-	@Bean(LdioLdesClientConnector.NAME)
+	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
+
+	@Bean(NAME)
 	public LdioInputConfigurator ldioConfigurator() {
 		return new LdioClientConnectorConfigurator();
 	}
@@ -48,11 +51,12 @@ public class LdioLdesClientConnectorAutoConfig {
 					urlProxy);
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 
-			var ldesClientConnector = new LdioLdesClientConnector(pipelineName, transferService, tokenService, edcRequestExecutor, properties,
-					executor, statePersistence);
+			LdioLdesClientController ldesClientController =
+					LdioLdesClientController.from(pipelineName, executor, edcRequestExecutor, properties, statePersistence);
 
-			ldesClientConnector.run();
-			return ldesClientConnector.apiEndpoints();
+			ldesClientController.start();
+
+			return new LdioLdesClientConnectorApi(transferService, tokenService, pipelineName).apiEndpoints();
 		}
 
 		private static EdcUrlProxy getEdcUrlProxy(ComponentProperties properties) {

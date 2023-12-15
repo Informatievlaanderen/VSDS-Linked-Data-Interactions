@@ -23,19 +23,12 @@ public class LdioLdesClient extends LdioInput {
 
 	private boolean threadRunning = true;
 
-	public LdioLdesClient(String pipelineName, ComponentExecutor componentExecutor,
-	                      RequestExecutor requestExecutor, ComponentProperties properties,
-	                      StatePersistence statePersistence) {
-		super(NAME, pipelineName, componentExecutor, null);
-		this.requestExecutor = requestExecutor;
-		this.properties = properties;
-		this.statePersistence = statePersistence;
-	}
-
-	public LdioLdesClient(String componentName, String pipelineName, ComponentExecutor executor,
-	                      RequestExecutor requestExecutor, ComponentProperties properties,
-	                      StatePersistence statePersistence) {
-		super(componentName, pipelineName, executor, null);
+	LdioLdesClient(String pipelineName,
+				   ComponentExecutor executor,
+				   RequestExecutor requestExecutor,
+				   ComponentProperties properties,
+				   StatePersistence statePersistence) {
+		super(NAME , pipelineName, executor, null);
 		this.requestExecutor = requestExecutor;
 		this.properties = properties;
 		this.statePersistence = statePersistence;
