@@ -9,6 +9,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.retry.Retry;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,17 +71,24 @@ public class LdioRequestExecutorSupplier {
 	private RequestExecutor getBaseRequestExecutor(ComponentProperties componentProperties) {
 		Optional<AuthStrategy> authentication = AuthStrategy
 				.from(componentProperties.getOptionalProperty(AUTH_TYPE).orElse(NO_AUTH.name()));
+		final List<Header> headers = getHttpHeaders(componentProperties);
+
 		if (authentication.isPresent()) {
 			return switch (authentication.get()) {
-				case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
-				case API_KEY ->
-					requestExecutorFactory
-							.createApiKeyExecutor(
-									componentProperties.getOptionalProperty(API_KEY_HEADER)
-											.orElse(DEFAULT_API_KEY_HEADER),
-									componentProperties.getProperty(API_KEY));
+				case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor(headers);
+				case API_KEY -> {
+					String apiKeyHeader = componentProperties
+							.getOptionalProperty(API_KEY_HEADER)
+							.orElse(DEFAULT_API_KEY_HEADER);
+					String apiKey = componentProperties.getProperty(API_KEY);
+
+					List<Header> headersWithApiKey = new ArrayList<>(headers);
+					headersWithApiKey.add(new BasicHeader(apiKeyHeader, apiKey));
+					yield requestExecutorFactory.createNoAuthExecutor(headersWithApiKey);
+				}
 				case OAUTH2_CLIENT_CREDENTIALS ->
 					requestExecutorFactory.createClientCredentialsExecutor(
+							headers,
 							componentProperties.getProperty(CLIENT_ID),
 							componentProperties.getProperty(CLIENT_SECRET),
 							componentProperties.getProperty(TOKEN_ENDPOINT));
@@ -87,6 +96,33 @@ public class LdioRequestExecutorSupplier {
 		}
 		throw new UnsupportedOperationException("Requested authentication not available: "
 				+ componentProperties.getOptionalProperty(AUTH_TYPE).orElse("No auth type provided"));
+	}
+
+	// TODO TVB: 15/12/23 cleanup
+	private static List<Header> getHttpHeaders(ComponentProperties componentProperties) {
+		ComponentProperties headers = componentProperties.extractNestedProperties("http.headers");
+		List<Header> result = new ArrayList<>();
+		int i = 0;
+		while(!headers.extractNestedProperties(String.valueOf(i)).getConfig().isEmpty()) {
+			ComponentProperties headerProperties = headers.extractNestedProperties(String.valueOf(i));
+			BasicHeader basicHeader = new BasicHeader(
+					headerProperties.getProperty("key"),
+					headerProperties.getProperty("value")
+			);
+			result.add(basicHeader);
+			i++;
+		}
+		return result;
+
+
+//		return componentProperties
+//				.extractNestedProperties(HTTP_HEADERS)
+//				.getConfig()
+//				.entrySet()
+//				.stream()
+//				.map(headerConfig -> new BasicHeader(headerConfig.getKey(), headerConfig.getValue()))
+//				.map(Header.class::cast)
+//				.toList();
 	}
 
 }

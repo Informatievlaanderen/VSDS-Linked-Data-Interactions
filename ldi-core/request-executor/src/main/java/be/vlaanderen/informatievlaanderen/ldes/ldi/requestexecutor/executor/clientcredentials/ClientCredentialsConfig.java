@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.cli
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutorSupplier;
+import org.apache.http.Header;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 
@@ -10,15 +11,19 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.httpclient.apache.ApacheHttpClient;
 
+import java.util.Collection;
+
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class ClientCredentialsConfig implements RequestExecutorSupplier {
 
+	private final Collection<Header> headers;
 	private final String clientId;
 	private final String secret;
 	private final String tokenEndpoint;
 
-	public ClientCredentialsConfig(String clientId, String secret, String tokenEndpoint) {
+	public ClientCredentialsConfig(Collection<Header> headers, String clientId, String secret, String tokenEndpoint) {
+		this.headers = headers;
 		this.clientId = notNull(clientId);
 		this.secret = notNull(secret);
 		this.tokenEndpoint = notNull(tokenEndpoint);
@@ -31,7 +36,7 @@ public class ClientCredentialsConfig implements RequestExecutorSupplier {
 	private OAuth20Service createService() {
 		final RequestConfig clientConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
 		final ApacheHttpClient apacheHttpClient = new ApacheHttpClient(
-				HttpAsyncClientBuilder.create().setDefaultRequestConfig(clientConfig).build());
+				HttpAsyncClientBuilder.create().setDefaultRequestConfig(clientConfig).setDefaultHeaders(headers).build());
 		final DefaultApi20 authorizationApi = createAuthorizationApi(tokenEndpoint);
 		return new ServiceBuilder(clientId)
 				.apiSecret(secret)

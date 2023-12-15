@@ -34,11 +34,6 @@ public class RequestExecutorSteps {
 	private Request request;
 	private RequestHeaders requestHeaders = new RequestHeaders(List.of());
 
-	@Given("I have a ApiKeyRequestExecutor")
-	public void aApiKeyRequestExecutorIsAvailable() {
-		requestExecutor = factory.createApiKeyExecutor("X-API-KEY", "test123");
-	}
-
 	@Given("I have a ClientCredentialsRequestExecutor")
 	public void aClientCredentialsRequestExecutorIsAvailable() {
 		requestExecutor = factory.createClientCredentialsExecutor("clientId", "clientSecret",
