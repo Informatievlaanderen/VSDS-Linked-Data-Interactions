@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy.NO_AUTH;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.RequestExecutorProperties.*;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 /**
  * Creates a RequestExecutor based on the config provided using LDIO
@@ -98,31 +99,18 @@ public class LdioRequestExecutorSupplier {
 				+ componentProperties.getOptionalProperty(AUTH_TYPE).orElse("No auth type provided"));
 	}
 
-	// TODO TVB: 15/12/23 cleanup
-	private static List<Header> getHttpHeaders(ComponentProperties componentProperties) {
-		ComponentProperties headers = componentProperties.extractNestedProperties("http.headers");
-		List<Header> result = new ArrayList<>();
-		int i = 0;
-		while(!headers.extractNestedProperties(String.valueOf(i)).getConfig().isEmpty()) {
+	private List<Header> getHttpHeaders(ComponentProperties componentProperties) {
+		final ComponentProperties headers = componentProperties.extractNestedProperties(HTTP_HEADERS);
+		final List<Header> result = new ArrayList<>();
+		for (int i = 0; isNotEmpty(headers.extractNestedProperties(String.valueOf(i)).getConfig()); i++) {
 			ComponentProperties headerProperties = headers.extractNestedProperties(String.valueOf(i));
 			BasicHeader basicHeader = new BasicHeader(
-					headerProperties.getProperty("key"),
-					headerProperties.getProperty("value")
+					headerProperties.getProperty(HTTP_HEADERS_KEY),
+					headerProperties.getProperty(HTTP_HEADERS_VALUE)
 			);
 			result.add(basicHeader);
-			i++;
 		}
 		return result;
-
-
-//		return componentProperties
-//				.extractNestedProperties(HTTP_HEADERS)
-//				.getConfig()
-//				.entrySet()
-//				.stream()
-//				.map(headerConfig -> new BasicHeader(headerConfig.getKey(), headerConfig.getValue()))
-//				.map(Header.class::cast)
-//				.toList();
 	}
 
 }

@@ -6,6 +6,8 @@ public class RequestExecutorProperties {
 	}
 
 	public static final String HTTP_HEADERS = "http.headers";
+	public static final String HTTP_HEADERS_KEY = "key";
+	public static final String HTTP_HEADERS_VALUE = "value";
 	public static final String HTTP_METHOD = "http.method";
 	public static final String HTTP_CONTENT_TYPE = "http.content-type";
 
