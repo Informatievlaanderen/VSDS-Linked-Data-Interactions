@@ -3,14 +3,20 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects
 import org.apache.http.HttpHeaders;
 import org.apache.http.entity.ContentType;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class PostRequest extends Request {
 
 	public static final String METHOD_NAME = "POST";
-	private final String body;
+	private final byte[] body;
 
 	public PostRequest(String url, RequestHeaders requestHeaders, String body) {
+		super(url, requestHeaders);
+		this.body = body == null ? null : body.getBytes();
+	}
+
+	public PostRequest(String url, RequestHeaders requestHeaders, byte[] body) {
 		super(url, requestHeaders);
 		this.body = body;
 	}
@@ -29,7 +35,11 @@ public class PostRequest extends Request {
 		return new PostRequest(url, requestHeaders, body);
 	}
 
-	public String getBody() {
+	public String getBodyAsString() {
+		return new String(body);
+	}
+
+	public byte[] getBody() {
 		return body;
 	}
 
@@ -49,12 +59,12 @@ public class PostRequest extends Request {
 		if (!super.equals(o))
 			return false;
 		PostRequest that = (PostRequest) o;
-		return Objects.equals(body, that.body);
+		return Arrays.equals(body, that.body);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), body);
+		return Objects.hash(super.hashCode(), Arrays.hashCode(body));
 	}
 
 }

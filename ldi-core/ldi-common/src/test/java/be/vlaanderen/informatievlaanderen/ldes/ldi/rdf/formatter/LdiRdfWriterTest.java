@@ -21,6 +21,8 @@ import com.github.jsonldjava.core.JsonLdOptions;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.FRAME;
 import static org.junit.jupiter.api.Assertions.*;
 
+// TODO: test new write
+
 class LdiRdfWriterTest {
 
 	@Test

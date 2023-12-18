@@ -11,6 +11,7 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 
+import java.io.ByteArrayInputStream;
 import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
@@ -53,7 +54,7 @@ public class LdesPropertiesExtractor {
 				.execute(new StartingNodeRequest(url, lang, new RedirectHistory()));
 
 		return RDFParser
-				.fromString(response.getBody().orElseThrow())
+				.source(response.getBody().map(ByteArrayInputStream::new).orElseThrow())
 				.lang(lang)
 				.build()
 				.toModel();

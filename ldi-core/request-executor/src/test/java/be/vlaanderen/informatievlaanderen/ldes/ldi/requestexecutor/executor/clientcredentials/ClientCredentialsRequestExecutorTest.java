@@ -17,7 +17,8 @@ import java.util.Map;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,35 +49,40 @@ class ClientCredentialsRequestExecutorTest {
 			Response response = clientCredentialsRequestExecutor.execute(request);
 
 			verify(oAuthService).signRequest(any(), any());
-			assertEquals(scribeResponse.getCode(), response.getHttpStatus());
-			assertTrue(response.getBody().isPresent());
-			assertEquals(scribeResponse.getBody(), response.getBody().get());
-			assertTrue(response.getFirstHeaderValue("key").isPresent());
-			assertEquals(scribeResponse.getHeader("key"), response.getFirstHeaderValue("key").get());
+			assertThat(response.getHttpStatus()).isEqualTo(scribeResponse.getCode());
+			assertThat(response.getBodyAsString()).contains(scribeResponse.getBody());
+			assertThat(response.getFirstHeaderValue("key")).contains(scribeResponse.getHeader("key"));
 		}
 
 		@Test
 		void shouldThrowHtppException_whenIOException() throws Exception {
 			Request request = new GetRequest("url", RequestHeaders.empty());
 			when(oAuthService.execute(any())).thenThrow(IOException.class);
-			assertThrows(HttpRequestException.class, () -> clientCredentialsRequestExecutor.execute(request));
 
+			assertThatThrownBy(() -> clientCredentialsRequestExecutor.execute(request))
+					.isInstanceOf(HttpRequestException.class)
+					.hasCauseInstanceOf(IOException.class);
 		}
 
 		@Test
 		void shouldThrowHtppException_whenInterrupted() throws Exception {
 			Request request = new GetRequest("url", RequestHeaders.empty());
+
 			when(oAuthService.execute(any())).thenThrow(InterruptedException.class);
 
-			assertThrows(HttpRequestException.class, () -> clientCredentialsRequestExecutor.execute(request));
+			assertThatThrownBy(() ->clientCredentialsRequestExecutor.execute(request))
+					.isInstanceOf(HttpRequestException.class)
+					.hasCauseInstanceOf(InterruptedException.class);
 		}
 
 		@Test
-		void shouldNotThrowHtppException_whenInterrupted() throws Exception {
+		void shouldNotThrowHttpException_whenInterrupted() throws Exception {
 			Request request = new GetRequest("url", RequestHeaders.empty());
+
 			when(oAuthService.execute(any())).thenThrow(NullPointerException.class);
 
-			assertThrows(NullPointerException.class, () -> clientCredentialsRequestExecutor.execute(request));
+			assertThatThrownBy(() -> clientCredentialsRequestExecutor.execute(request))
+					.isInstanceOf(NullPointerException.class);
 		}
 
 	}

@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PostRequestTest {
 
@@ -21,25 +20,26 @@ class PostRequestTest {
 
 	@Test
 	void getMethod() {
-		assertEquals("POST", new PostRequest(URL, RequestHeaders.empty(), BODY).getMethod());
+		assertThat(new PostRequest(URL, RequestHeaders.empty(), BODY).getMethod()).isEqualTo("POST");
 	}
 
 	@Test
 	void getBody() {
-		assertEquals(BODY, new PostRequest(URL, RequestHeaders.empty(), BODY).getBody());
+		assertThat(new PostRequest(URL, RequestHeaders.empty(), BODY).getBodyAsString()).isEqualTo(BODY);
 	}
 
 	@Test
 	void getContentType() {
 		final String contentType = "application/json";
 		final List<RequestHeader> requestHeaders = List.of(new RequestHeader("content-type", contentType));
-		assertEquals(contentType, new PostRequest(URL, new RequestHeaders(requestHeaders), BODY).getContentType());
+		assertThat(new PostRequest(URL, new RequestHeaders(requestHeaders), BODY).getContentType())
+				.isEqualTo(contentType);
 	}
 
 	@ParameterizedTest
 	@ArgumentsSource(EqualityTestProvider.class)
 	void testEqualsAndHashCode(BiConsumer<Object, Object> assertion, PostRequest a, PostRequest b) {
-		assertNotNull(assertion);
+		assertThat(assertion).isNotNull();
 		assertion.accept(a, b);
 		if (a != null && b != null) {
 			assertion.accept(a.hashCode(), b.hashCode());
@@ -75,15 +75,15 @@ class PostRequestTest {
 							new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))),
 									"other-body"),
 							requestA),
-					Arguments.of(notEquals(), new PostRequest(null, RequestHeaders.empty(), null), requestA));
+					Arguments.of(notEquals(), new PostRequest(null, RequestHeaders.empty(), (String) null), requestA));
 		}
 
 		private static BiConsumer<Object, Object> equals() {
-			return Assertions::assertEquals;
+			return (a, b) -> assertThat(a).isEqualTo(b);
 		}
 
 		private static BiConsumer<Object, Object> notEquals() {
-			return Assertions::assertNotEquals;
+			return (a, b) -> assertThat(a).isNotEqualTo(b);
 		}
 
 	}
@@ -94,9 +94,11 @@ class PostRequestTest {
 				"body");
 
 		var requestWithOtherUrl = initialRequest.with("other-url");
-		assertEquals(initialRequest.getRequestHeaders(), requestWithOtherUrl.getRequestHeaders());
-		assertEquals(initialRequest.getMethod(), requestWithOtherUrl.getMethod());
-		assertNotEquals(initialRequest.getUrl(), requestWithOtherUrl.getUrl());
+
+		assertThat(requestWithOtherUrl.getUrl()).isNotEqualTo(initialRequest.getUrl());
+		assertThat(requestWithOtherUrl)
+				.hasFieldOrPropertyWithValue("method", initialRequest.getMethod())
+				.hasFieldOrPropertyWithValue("requestHeaders", initialRequest.getRequestHeaders());
 	}
 
 	@Test
@@ -104,11 +106,13 @@ class PostRequestTest {
 		var initialRequest = new PostRequest("url", new RequestHeaders(List.of(new RequestHeader("key", "val"))),
 				"body");
 
-		var requestWithOtherUrl = initialRequest
+		var requestWithOtherHeaders = initialRequest
 				.with(new RequestHeaders(List.of(new RequestHeader("other-key", "val"))));
-		assertNotEquals(initialRequest.getRequestHeaders(), requestWithOtherUrl.getRequestHeaders());
-		assertEquals(initialRequest.getMethod(), requestWithOtherUrl.getMethod());
-		assertEquals(initialRequest.getUrl(), requestWithOtherUrl.getUrl());
+
+		assertThat(requestWithOtherHeaders.getRequestHeaders()).isNotEqualTo(initialRequest.getRequestHeaders());
+		assertThat(requestWithOtherHeaders)
+				.hasFieldOrPropertyWithValue("method", initialRequest.getMethod())
+				.hasFieldOrPropertyWithValue("url", initialRequest.getUrl());
 	}
 
 }

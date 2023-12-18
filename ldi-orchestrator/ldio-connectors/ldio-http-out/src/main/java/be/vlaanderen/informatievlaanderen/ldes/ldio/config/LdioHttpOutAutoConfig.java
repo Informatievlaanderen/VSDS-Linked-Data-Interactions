@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import org.apache.jena.riot.RDFLanguages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,9 +29,10 @@ public class LdioHttpOutAutoConfig {
 			final RequestExecutor requestExecutor = new LdioRequestExecutorSupplier().getRequestExecutor(config);
 
 			String targetURL = config.getProperty("endpoint");
+			String contentType = config.getOptionalProperty("content-type").orElse("text/turtle");
+			var properties = new LdiRdfWriterProperties(config.extractNestedProperties(RDF_WRITER).getConfig()).withLang(RDFLanguages.nameToLang(contentType));
 
-			return new LdioHttpOut(requestExecutor, targetURL,
-					new LdiRdfWriterProperties(config.extractNestedProperties(RDF_WRITER).getConfig()));
+			return new LdioHttpOut(requestExecutor, targetURL, properties);
 		}
 	}
 }
