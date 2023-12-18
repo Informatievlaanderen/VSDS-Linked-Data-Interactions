@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientController;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -35,10 +34,10 @@ public class LdioLdesClientAutoConfig {
 			RequestExecutor requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
 			StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 
-			final var ldesClientController =
-					LdioLdesClientController.from(pipelineName, componentExecutor, requestExecutor, properties, statePersistence);
-			ldesClientController.start();
-			return ldesClientController.getLdioLdesClient();
+			final var ldesClient =
+					new LdioLdesClient(pipelineName, componentExecutor, requestExecutor, properties, statePersistence);
+			ldesClient.start();
+			return ldesClient;
 		}
 
 	}

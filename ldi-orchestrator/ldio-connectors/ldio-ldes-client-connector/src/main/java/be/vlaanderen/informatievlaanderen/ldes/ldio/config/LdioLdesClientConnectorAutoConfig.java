@@ -8,8 +8,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noau
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientController;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
@@ -51,10 +51,9 @@ public class LdioLdesClientConnectorAutoConfig {
 					urlProxy);
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 
-			LdioLdesClientController ldesClientController =
-					LdioLdesClientController.from(pipelineName, executor, edcRequestExecutor, properties, statePersistence);
-
-			ldesClientController.start();
+			LdioLdesClient ldesClient =
+					new LdioLdesClient(pipelineName, executor, edcRequestExecutor, properties, statePersistence);
+			ldesClient.start();
 
 			return new LdioLdesClientConnectorApi(transferService, tokenService, pipelineName).apiEndpoints();
 		}

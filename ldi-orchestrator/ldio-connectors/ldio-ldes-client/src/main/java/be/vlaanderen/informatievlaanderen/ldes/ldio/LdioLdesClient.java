@@ -14,6 +14,10 @@ import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ExecutorService;
+
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
+
 public class LdioLdesClient extends LdioInput {
 	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient";
 	private final Logger log = LoggerFactory.getLogger(LdioLdesClient.class);
@@ -23,7 +27,7 @@ public class LdioLdesClient extends LdioInput {
 
 	private boolean threadRunning = true;
 
-	LdioLdesClient(String pipelineName,
+	public LdioLdesClient(String pipelineName,
 				   ComponentExecutor executor,
 				   RequestExecutor requestExecutor,
 				   ComponentProperties properties,
@@ -34,7 +38,12 @@ public class LdioLdesClient extends LdioInput {
 		this.statePersistence = statePersistence;
 	}
 
-	public void run() {
+	public void start() {
+		final ExecutorService executorService = newSingleThreadExecutor();
+		executorService.submit(this::run);
+	}
+
+	private void run() {
 		try {
 			log.info("Starting LdesClientRunner run setup");
 			MemberSupplier memberSupplier = getMemberSupplier();
