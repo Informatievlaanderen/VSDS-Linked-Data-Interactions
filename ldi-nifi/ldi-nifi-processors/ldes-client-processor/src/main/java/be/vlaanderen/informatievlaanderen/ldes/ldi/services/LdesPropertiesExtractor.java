@@ -42,9 +42,9 @@ public class LdesPropertiesExtractor {
 
 		Model model = getModelFromStartingTreeNode(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
 
-		String timestampPath = getResource(needTimestampPath, getResource(model), LDES_TIMESTAMP_PATH);
-		String versionOfPath = getResource(needVersionOfPath, getVersionOfPath(model), LDES_VERSION_OF);
-		String shape = getResource(needShape, getShaclShape(model), TREE_SHAPE);
+		String timestampPath = getResource(needTimestampPath, model, LDES_TIMESTAMP_PATH);
+		String versionOfPath = getResource(needVersionOfPath, model, LDES_VERSION_OF);
+		String shape = getResource(needShape, model, TREE_SHAPE);
 		return new LdesProperties(timestampPath, versionOfPath, shape);
 	}
 
@@ -60,22 +60,13 @@ public class LdesPropertiesExtractor {
 				.toModel();
 	}
 
-	private String getResource(boolean resourceNeeded, Optional<String> resource, Property property) {
-		return resourceNeeded ? resource
-				.orElseThrow(() -> new LdesPropertyNotFoundException(property.toString()))
+	private String getResource(boolean resourceNeeded, Model model, Property property) {
+		return resourceNeeded
+				? getResource(model, property).orElseThrow(() -> new LdesPropertyNotFoundException(property.toString()))
 				: null;
 	}
 
-	public Optional<String> getResource(Model model) {
-		return getPropertyValue(model, LDES_TIMESTAMP_PATH);
+	public Optional<String> getResource(Model model, Property property) {
+		return getPropertyValue(model, property);
 	}
-
-	public Optional<String> getVersionOfPath(Model model) {
-		return getPropertyValue(model, LDES_VERSION_OF);
-	}
-
-	public Optional<String> getShaclShape(Model model) {
-		return getPropertyValue(model, TREE_SHAPE);
-	}
-
 }
