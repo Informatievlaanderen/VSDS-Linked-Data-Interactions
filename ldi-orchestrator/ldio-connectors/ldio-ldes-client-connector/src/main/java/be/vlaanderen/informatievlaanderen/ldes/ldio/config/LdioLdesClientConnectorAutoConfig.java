@@ -25,8 +25,8 @@ public class LdioLdesClientConnectorAutoConfig {
 	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
 
 	@Bean(NAME)
-	public LdioInputConfigurator ldioConfigurator() {
-		return new LdioClientConnectorConfigurator();
+	public LdioInputConfigurator ldioConfigurator(ObservationRegistry observationRegistry) {
+		return new LdioClientConnectorConfigurator(observationRegistry);
 	}
 
 	public static class LdioClientConnectorConfigurator implements LdioInputConfigurator {
@@ -37,7 +37,6 @@ public class LdioLdesClientConnectorAutoConfig {
 		private final ObservationRegistry observationRegistry;
 
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
-		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
 
@@ -58,7 +57,7 @@ public class LdioLdesClientConnectorAutoConfig {
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 
 			LdioLdesClient ldesClient =
-					new LdioLdesClient(pipelineName, executor, edcRequestExecutor, properties, statePersistence);
+					new LdioLdesClient(pipelineName, executor, observationRegistry, edcRequestExecutor, properties, statePersistence);
 			ldesClient.start();
 
 			return new LdioLdesClientConnectorApi(transferService, tokenService, pipelineName).apiEndpoints();

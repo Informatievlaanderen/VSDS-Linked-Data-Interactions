@@ -42,7 +42,7 @@ public class LdioLdesClientAutoConfig {
 
 			var ldesClient = new LdioLdesClient(pipelineName, componentExecutor, observationRegistry, requestExecutor,
 					properties, statePersistence);
-			ldesClient.run();
+			ldesClient.start();
 			return ldesClient;
 		}
 
