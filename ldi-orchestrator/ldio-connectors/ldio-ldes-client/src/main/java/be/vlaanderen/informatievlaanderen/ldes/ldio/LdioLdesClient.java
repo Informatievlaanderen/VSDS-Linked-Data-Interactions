@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
@@ -28,16 +29,18 @@ public class LdioLdesClient extends LdioInput {
 	private boolean threadRunning = true;
 
 	public LdioLdesClient(String pipelineName,
-				   ComponentExecutor executor,
-				   RequestExecutor requestExecutor,
-				   ComponentProperties properties,
-				   StatePersistence statePersistence) {
-		super(NAME , pipelineName, executor, null);
+						  ComponentExecutor componentExecutor,
+						  ObservationRegistry observationRegistry,
+						  RequestExecutor requestExecutor,
+						  ComponentProperties properties,
+						  StatePersistence statePersistence) {
+		super(NAME, pipelineName, componentExecutor, null, observationRegistry);
 		this.requestExecutor = requestExecutor;
 		this.properties = properties;
 		this.statePersistence = statePersistence;
 	}
 
+	@SuppressWarnings("java:S2095")
 	public void start() {
 		final ExecutorService executorService = newSingleThreadExecutor();
 		executorService.submit(this::run);
@@ -72,8 +75,8 @@ public class LdioLdesClient extends LdioInput {
 	}
 
 	private TreeNodeProcessor getTreeNodeProcessor(StatePersistence statePersistenceStrategy,
-	                                               RequestExecutor requestExecutor,
-	                                               LdesMetaData ldesMetaData) {
+												   RequestExecutor requestExecutor,
+												   LdesMetaData ldesMetaData) {
 		return new TreeNodeProcessor(ldesMetaData, statePersistenceStrategy, requestExecutor);
 	}
 

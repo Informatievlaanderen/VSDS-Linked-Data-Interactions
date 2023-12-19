@@ -40,12 +40,12 @@ public abstract class LdioInput implements LdiComponent {
 	 * @param adapter  Instance of the LDI Adapter. Facilitates transforming the input
 	 *                 data to a linked data model (RDF).
 	 */
-	protected LdioInput(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter) {
+	protected LdioInput(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry) {
 		this.componentName = componentName;
 		this.pipelineName = pipelineName;
 		this.executor = executor;
 		this.adapter = adapter;
-		this.observationRegistry = ObserveConfiguration.observationRegistry();
+		this.observationRegistry = observationRegistry;
 		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 	}
 
@@ -55,12 +55,11 @@ public abstract class LdioInput implements LdiComponent {
 
 	protected void processInput(LdiAdapter.Content content) {
 		Observation.createNotStarted(this.componentName, observationRegistry)
-				.contextualName(this.pipelineName)
 				.observe(() -> {
 					try {
 						adapter.apply(content).forEach(this::processModel);
 					} catch (Exception e) {
-						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, this.pipelineName, e.getMessage());
+						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, this.pipelineName + ":processInput", e.getMessage());
 						throw e;
 					}
 				});
@@ -69,12 +68,11 @@ public abstract class LdioInput implements LdiComponent {
 	protected void processModel(Model model) {
 		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment();
 		Observation.createNotStarted(this.componentName, observationRegistry)
-				.contextualName(this.pipelineName)
 				.observe(() -> {
 					try {
 						executor.transformLinkedData(model);
 					} catch (Exception e) {
-						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, this.pipelineName, e.getMessage());
+						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, this.pipelineName + ":processModel", e.getMessage());
 						throw e;
 					}
 				});

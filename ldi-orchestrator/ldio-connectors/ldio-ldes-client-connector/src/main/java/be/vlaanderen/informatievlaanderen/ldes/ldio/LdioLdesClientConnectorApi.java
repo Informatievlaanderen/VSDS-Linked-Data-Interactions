@@ -20,6 +20,7 @@ public class LdioLdesClientConnectorApi {
 	private final TokenService tokenService;
 	private final String pipelineName;
 
+	@SuppressWarnings("java:S107")
 	public LdioLdesClientConnectorApi(TransferService transferService, TokenService tokenService, String pipelineName) {
 		this.transferService = transferService;
 		this.tokenService = tokenService;
@@ -34,15 +35,15 @@ public class LdioLdesClientConnectorApi {
 							.doOnNext(tokenService::updateToken)
 							.flatMap(body -> ServerResponse.accepted().build());
 				}).andRoute(POST("/%s/transfer".formatted(pipelineName)),
-						request -> {
-							logIncomingRequest(request);
-							return request.bodyToMono(String.class)
-									.flatMap(requestString -> {
-										var response = transferService.startTransfer(requestString).getBody()
-												.orElse("");
-										return ServerResponse.accepted().body(Mono.just(response), String.class);
-									});
-						});
+				request -> {
+					logIncomingRequest(request);
+					return request.bodyToMono(String.class)
+							.flatMap(requestString -> {
+								var response = transferService.startTransfer(requestString).getBody()
+										.orElse("");
+								return ServerResponse.accepted().body(Mono.just(response), String.class);
+							});
+				});
 	}
 
 	private void logIncomingRequest(ServerRequest request) {

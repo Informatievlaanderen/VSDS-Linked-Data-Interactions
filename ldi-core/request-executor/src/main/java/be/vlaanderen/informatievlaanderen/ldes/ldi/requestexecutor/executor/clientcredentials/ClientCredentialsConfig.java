@@ -6,12 +6,12 @@ import org.apache.http.Header;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 
+import java.util.Collection;
+
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.httpclient.apache.ApacheHttpClient;
-
-import java.util.Collection;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
