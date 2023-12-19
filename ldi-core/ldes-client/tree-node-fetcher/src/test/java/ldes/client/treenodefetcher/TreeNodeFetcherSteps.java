@@ -1,6 +1,6 @@
 package ldes.client.treenodefetcher;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -14,13 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TreeNodeFetcherSteps {
 
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 	private TreeNodeFetcher treeNodeFetcher;
 	private TreeNodeRequest treeNodeRequest;
 	private TreeNodeResponse treeNodeResponse;
 
 	@Given("I have a TreeNodeFetcher")
 	public void initializeCalculator() {
-		treeNodeFetcher = new TreeNodeFetcher(new DefaultConfig().createRequestExecutor());
+		treeNodeFetcher = new TreeNodeFetcher(requestExecutorFactory.createNoAuthExecutor());
 	}
 
 	@When("I create a TreeNodeRequest with Lang {string} and url {string}")
@@ -41,7 +42,7 @@ public class TreeNodeFetcherSteps {
 
 	@When("I create a TreeNodeRequest with Lang {string} and url {string} and etag {string}")
 	public void iCreateATreeNodeRequestWithLangAndUrlAndEtag(String lang, String url, String etag) {
-		treeNodeRequest = new TreeNodeRequest(url, RDFLanguages.nameToLang(lang), etag.equals("") ? null : etag);
+		treeNodeRequest = new TreeNodeRequest(url, RDFLanguages.nameToLang(lang), etag.isEmpty() ? null : etag);
 	}
 
 	@Then("An UnSupportedOperationException is thrown")

@@ -7,6 +7,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.retry.Retry;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,10 +17,13 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.RequestExecutorProperties.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -49,6 +54,30 @@ class LdioRequestExecutorSupplierTest {
 		}
 	}
 
+	/**
+	 * Required for test purposes. The mock compares on equals which is not implemented in BasicHeader.
+	 */
+	static class BasicHeaderWithEquals extends BasicHeader {
+
+		public BasicHeaderWithEquals(String name, String value) {
+			super(name, value);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof Header header)) return false;
+			return Objects.equals(getName(), header.getName()) && Objects.equals(getValue(), header.getValue());
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(getName(), getValue());
+		}
+
+	}
+
+
 	@Test
 	void shouldReturnRetryExecutorWithConfiguredProperties_whenPropertiesConfigured() {
 		String maxRetries = "10";
@@ -57,9 +86,19 @@ class LdioRequestExecutorSupplierTest {
 				STATUSES_TO_RETRY, "400,404",
 				AUTH_TYPE, AuthStrategy.API_KEY.name(),
 				API_KEY_HEADER, "key-header",
-				API_KEY, "key"));
+				API_KEY, "key",
+				HTTP_HEADERS + ".0.key", "header-key",
+				HTTP_HEADERS + ".0.value", "header-value",
+				HTTP_HEADERS + ".1.key", "other-header-key",
+				HTTP_HEADERS + ".1.value", "other-header-value"));
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createApiKeyExecutor("key-header", "key")).thenReturn(requestExecutor);
+		List<Header> expectedHeaders =
+				List.of(
+						new BasicHeaderWithEquals("header-key", "header-value"),
+						new BasicHeaderWithEquals("other-header-key", "other-header-value"),
+						new BasicHeaderWithEquals("key-header", "key")
+				);
+		when(requestExecutorFactory.createNoAuthExecutor(expectedHeaders)).thenReturn(requestExecutor);
 		RequestExecutorDecorator requestExecutorDecorator = mock(RequestExecutorDecorator.class);
 		when(requestExecutorDecorator.with((Retry) any())).thenReturn(requestExecutorDecorator);
 		when(requestExecutorDecorator.with((RateLimiter) any())).thenReturn(requestExecutorDecorator);
@@ -104,7 +143,7 @@ class LdioRequestExecutorSupplierTest {
 				CLIENT_SECRET, "secret",
 				TOKEN_ENDPOINT, "token"));
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createClientCredentialsExecutor("client", "secret", "token"))
+		when(requestExecutorFactory.createClientCredentialsExecutor(List.of(), "client", "secret", "token"))
 				.thenReturn(requestExecutor);
 
 		RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);

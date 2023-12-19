@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.valueobjects.EdcUrlProxy;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
@@ -36,8 +35,8 @@ public class LdioLdesClientConnectorAutoConfig {
 		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
 
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
-		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
