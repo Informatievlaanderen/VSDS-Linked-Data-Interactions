@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioArchiveFileInAuto
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 
@@ -28,7 +29,7 @@ public class ArchiveFileInITSteps {
 		ComponentExecutor componentExecutor = linkedDataModel -> members.add(linkedDataModel);
 		var props = new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline",
 				ARCHIVE_ROOT_DIR_PROP, separatorsToSystem(archiveDir)));
-		var ldioInputConfigurator = new LdioArchiveFileInAutoConfig().ldiArchiveFileInConfigurator();
+		var ldioInputConfigurator = new LdioArchiveFileInAutoConfig().ldiArchiveFileInConfigurator(ObservationRegistry.create());
 		ldioInputConfigurator.configure(null, componentExecutor, props);
 	}
 

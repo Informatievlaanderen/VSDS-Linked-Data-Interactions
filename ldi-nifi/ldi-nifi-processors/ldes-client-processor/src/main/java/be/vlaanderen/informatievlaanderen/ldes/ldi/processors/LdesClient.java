@@ -15,6 +15,8 @@ import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;
@@ -100,7 +102,12 @@ public class LdesClient extends AbstractProcessor {
 	private RequestExecutor getRequestExecutor(final ProcessContext context) {
 		return switch (getAuthorizationStrategy(context)) {
 			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
-			case API_KEY -> requestExecutorFactory.createApiKeyExecutor(getApiKeyHeader(context), getApiKey(context));
+			case API_KEY -> {
+				List<Header> headers = List.of(
+						new BasicHeader(getApiKeyHeader(context), getApiKey(context))
+				);
+				yield requestExecutorFactory.createNoAuthExecutor(headers);
+			}
 			case OAUTH2_CLIENT_CREDENTIALS ->
 				requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
 						getOauthClientSecret(context), getOauthTokenEndpoint(context));
