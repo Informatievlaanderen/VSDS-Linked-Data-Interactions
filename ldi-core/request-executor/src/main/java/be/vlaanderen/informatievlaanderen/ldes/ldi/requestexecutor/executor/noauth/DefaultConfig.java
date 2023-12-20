@@ -5,16 +5,17 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import org.apache.http.Header;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class DefaultConfig implements RequestExecutorSupplier {
 
-	public RequestExecutor createRequestExecutor() {
-		return createRequestExecutor(new ArrayList<>());
+	private final Collection<Header> headers;
+
+	public DefaultConfig(Collection<Header> headers) {
+		this.headers = headers;
 	}
 
-	public RequestExecutor createRequestExecutor(Collection<Header> headers) {
+	public RequestExecutor createRequestExecutor() {
 		return new DefaultRequestExecutor(
 				HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build());
 	}

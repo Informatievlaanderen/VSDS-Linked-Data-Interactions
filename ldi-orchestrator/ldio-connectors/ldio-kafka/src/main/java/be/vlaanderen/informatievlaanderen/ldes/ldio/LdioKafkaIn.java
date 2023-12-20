@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import io.micrometer.observation.ObservationRegistry;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
@@ -25,8 +26,8 @@ public class LdioKafkaIn extends LdioInput implements MessageListener<String, St
 	 * @param adapter       Instance of the LDI Adapter. Facilitates transforming the input
 	 *                      data to a linked data model (RDF).
 	 */
-	public LdioKafkaIn(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter, String defaultContentType) {
-		super(componentName, pipelineName, executor, adapter);
+	public LdioKafkaIn(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry, String defaultContentType) {
+		super(componentName, pipelineName, executor, adapter, observationRegistry);
 		this.defaultContentType = defaultContentType;
 	}
 
