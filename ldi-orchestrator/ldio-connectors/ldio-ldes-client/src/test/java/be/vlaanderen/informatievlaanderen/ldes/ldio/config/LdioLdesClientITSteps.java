@@ -34,7 +34,7 @@ public class LdioLdesClientITSteps {
 		ComponentExecutor componentExecutor = linkedDataModel -> members.add(linkedDataModel);
 		var props = new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline",
 				LdioLdesClientProperties.URL, wireMockServer.baseUrl() + url));
-		var ldioInputConfigurator = new LdioLdesClientAutoConfig().ldioConfigurator(null);
+		var ldioInputConfigurator = new LdioLdesClientAutoConfig().ldioConfigurator();
 		ldioInputConfigurator.configure(null, componentExecutor, props);
 	}
 

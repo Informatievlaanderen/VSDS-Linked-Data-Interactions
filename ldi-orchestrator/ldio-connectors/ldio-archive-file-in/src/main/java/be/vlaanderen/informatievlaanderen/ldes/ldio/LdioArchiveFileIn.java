@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -15,8 +14,8 @@ public class LdioArchiveFileIn extends LdioInput {
 	private final ArchiveFileCrawler archiveFileCrawler;
 	private final Lang sourceFormat;
 
-	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ArchiveFileCrawler crawler, Lang source) {
-		super(NAME, pipelineName, executor, null, observationRegistry);
+	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ArchiveFileCrawler crawler, Lang source) {
+		super(NAME, pipelineName, executor, null);
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
 		log.info("Starting with crawling the archive.");

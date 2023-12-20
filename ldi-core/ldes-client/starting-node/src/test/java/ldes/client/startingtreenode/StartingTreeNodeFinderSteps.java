@@ -1,6 +1,6 @@
 package ldes.client.startingtreenode;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -10,18 +10,16 @@ import ldes.client.startingtreenode.domain.valueobjects.StartingTreeNode;
 import ldes.client.startingtreenode.exception.StartingNodeNotFoundException;
 import org.apache.jena.riot.RDFLanguages;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StartingTreeNodeFinderSteps {
 
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 	private StartingTreeNodeFinder startingTreeNodeFinder;
 	private StartingNodeRequest startingNodeRequest;
 
 	@Given("I have a StartingTreeNodeFinder$")
 	public void initializeCalculator() {
-		startingTreeNodeFinder = new StartingTreeNodeFinder(requestExecutorFactory.createNoAuthExecutor());
+		startingTreeNodeFinder = new StartingTreeNodeFinder(new DefaultConfig().createRequestExecutor());
 	}
 
 	@Then("the starting Tree Node of the LDES Stream is the url of the View: {string}")

@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import io.micrometer.observation.ObservationRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
@@ -21,8 +20,8 @@ public class LdioHttpIn extends LdioInput {
 	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioHttpIn.class);
 
-	public LdioHttpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry) {
-		super(NAME, pipelineName, executor, adapter, observationRegistry);
+	public LdioHttpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter) {
+		super(NAME, pipelineName, executor, adapter);
 	}
 
 	public RouterFunction<ServerResponse> mapping() {

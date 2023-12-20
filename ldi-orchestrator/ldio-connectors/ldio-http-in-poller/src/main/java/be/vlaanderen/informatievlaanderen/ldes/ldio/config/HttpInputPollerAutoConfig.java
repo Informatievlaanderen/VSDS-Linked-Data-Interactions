@@ -6,7 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import io.micrometer.observation.ObservationRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,18 +20,12 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 public class HttpInputPollerAutoConfig {
 	private static final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
 
-	@SuppressWarnings("java:S6830")
 	@Bean(HttpInputPoller.NAME)
-	public HttpInputPollerConfigurator httpInputPollerConfigurator(ObservationRegistry observationRegistry) {
-		return new HttpInputPollerConfigurator(observationRegistry);
+	public HttpInputPollerConfigurator httpInputPollerConfigurator() {
+		return new HttpInputPollerConfigurator();
 	}
 
 	public static class HttpInputPollerConfigurator implements LdioInputConfigurator {
-		private final ObservationRegistry observationRegistry;
-
-		public HttpInputPollerConfigurator(ObservationRegistry observationRegistry) {
-			this.observationRegistry = observationRegistry;
-		}
 
 		@Override
 		public HttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
@@ -52,7 +45,7 @@ public class HttpInputPollerAutoConfig {
 			}
 
 			var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
-			var httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, observationRegistry, endpoints, continueOnFail, requestExecutor);
+			var httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, endpoints, continueOnFail, requestExecutor);
 			httpInputPoller.schedulePoller(seconds);
 
 			return httpInputPoller;

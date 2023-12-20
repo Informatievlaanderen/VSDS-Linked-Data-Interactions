@@ -1,4 +1,4 @@
-Feature: LdesClientIntegrationTest
+Feature: ArchiveFileInIntegrationTest
   As a user
   I want to be able to use an LDES Client as input for LDIO
 

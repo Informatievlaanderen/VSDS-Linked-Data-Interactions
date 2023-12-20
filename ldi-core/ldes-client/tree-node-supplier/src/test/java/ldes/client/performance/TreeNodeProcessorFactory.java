@@ -1,7 +1,7 @@
 package ldes.client.performance;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
@@ -18,8 +18,6 @@ import java.util.Map;
 
 class TreeNodeProcessorFactory {
 
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
-
 	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, String url) {
 		final LdesMetaData ldesMetaData = new LdesMetaData(url, Lang.TURTLE);
 		final StatePersistence statePersistence = switch (statePersistenceStrategy) {
@@ -28,7 +26,7 @@ class TreeNodeProcessorFactory {
 			case FILE -> createFileStatePersistence();
 			case POSTGRES -> createPostgresPersistence();
 		};
-		final RequestExecutor requestExecutor = requestExecutorFactory.createNoAuthExecutor();
+		final RequestExecutor requestExecutor = new DefaultConfig().createRequestExecutor();
 		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
 	}
 

@@ -8,7 +8,7 @@ public class DummyIn extends LdioInput {
 	private int counter = 0;
 
 	public DummyIn(ComponentExecutor executor, LdiAdapter adapter) {
-		super("DummyIn", "test", executor, adapter, null);
+		super("DummyIn", "test", executor, adapter);
 	}
 
 	public void sendData() {

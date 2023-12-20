@@ -1,6 +1,6 @@
 package ldes.client.treenodesupplier;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MemberSupplierSteps {
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 	private TreeNodeProcessor treeNodeProcessor;
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
@@ -34,7 +33,7 @@ public class MemberSupplierSteps {
 
 	// Multi MemberSupplier
 	private final MemberSupplier[] memberSuppliers = new MemberSupplier[2];
-	private final SuppliedMember[] suppliedMembers = new SuppliedMember[2];
+	private SuppliedMember[] suppliedMembers = new SuppliedMember[2];
 
 	@When("I request one member from the MemberSupplier")
 	public void iRequestOneMemberFromTheMemberSupplier() {
@@ -61,7 +60,7 @@ public class MemberSupplierSteps {
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				new StatePersistence(memberRepository, treeNodeRecordRepository),
-				requestExecutorFactory.createNoAuthExecutor());
+				new DefaultConfig().createRequestExecutor());
 	}
 
 	@Then("Member {string} is processed")
@@ -162,10 +161,10 @@ public class MemberSupplierSteps {
 	public void aStatePersistenceStrategyProcessorAndAStatePersistenceStrategyProcessor(String arg0, String arg1) {
 		memberSuppliers[0] = new MemberSupplier(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
-				requestExecutorFactory.createNoAuthExecutor()), false);
+				new DefaultConfig().createRequestExecutor()), false);
 		memberSuppliers[1] = new MemberSupplier(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
-				requestExecutorFactory.createNoAuthExecutor()), false);
+				new DefaultConfig().createRequestExecutor()), false);
 	}
 
 	@When("I request one member from the MemberSuppliers")

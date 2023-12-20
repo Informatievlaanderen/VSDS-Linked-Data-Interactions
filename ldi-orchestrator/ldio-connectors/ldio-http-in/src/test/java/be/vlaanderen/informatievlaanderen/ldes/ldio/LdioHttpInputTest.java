@@ -31,7 +31,7 @@ class LdioHttpInputTest {
 
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
-		RouterFunction<?> routerFunction = (RouterFunction<?>) new LdioHttpInAutoConfig.LdioHttpInConfigurator(null)
+		RouterFunction<?> routerFunction = (RouterFunction<?>) new LdioHttpInAutoConfig.LdioHttpInConfigurator()
 				.configure(adapter, executor, new ComponentProperties(Map.of(PIPELINE_NAME, endpoint)));
 
 		client = WebTestClient

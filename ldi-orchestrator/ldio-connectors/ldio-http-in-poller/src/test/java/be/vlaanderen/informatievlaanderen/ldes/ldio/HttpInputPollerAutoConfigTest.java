@@ -32,7 +32,7 @@ class HttpInputPollerAutoConfigTest {
 	void when_ValidConfig() {
 		try (MockedConstruction<HttpInputPoller> ignored = mockConstruction(HttpInputPoller.class)) {
 			HttpInputPoller poller = new HttpInputPollerAutoConfig()
-					.httpInputPollerConfigurator(null)
+					.httpInputPollerConfigurator()
 					.configure(adapter, executor, createDefaultTestConfig());
 			verify(poller, times(1)).schedulePoller(1);
 		}
@@ -42,7 +42,7 @@ class HttpInputPollerAutoConfigTest {
 	@ArgumentsSource(InvalidIntervalArgumentsProvider.class)
 	void whenInvalidIntervalConfigured_thenCatchException(String interval) {
 		Executable configurePoller = () -> new HttpInputPollerAutoConfig()
-				.httpInputPollerConfigurator(null)
+				.httpInputPollerConfigurator()
 				.configure(adapter, executor, createConfig(BASE_URL + ENDPOINT, interval, "false"));
 
 		assertThrows(IllegalArgumentException.class, configurePoller);

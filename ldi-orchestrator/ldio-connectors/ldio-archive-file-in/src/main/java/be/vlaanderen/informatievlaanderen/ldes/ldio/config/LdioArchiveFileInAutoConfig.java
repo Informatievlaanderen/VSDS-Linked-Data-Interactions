@@ -7,7 +7,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.ArchiveFileCrawler;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +22,8 @@ public class LdioArchiveFileInAutoConfig {
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
 	public static final String SOURCE_FORMAT = "source-format";
 
-	@SuppressWarnings("java:S6830")
 	@Bean(LdioArchiveFileIn.NAME)
-	public LdioInputConfigurator ldiArchiveFileInConfigurator(ObservationRegistry observationRegistry) {
+	public LdioInputConfigurator ldiArchiveFileInConfigurator() {
 		return new LdioInputConfigurator() {
 			@Override
 			public LdiComponent configure(LdiAdapter adapter,
@@ -35,7 +33,7 @@ public class LdioArchiveFileInAutoConfig {
 				Lang hintLang = getSourceFormat(config);
 				String pipelineName = config.getProperty(PIPELINE_NAME);
 
-				return new LdioArchiveFileIn(pipelineName, executor, observationRegistry, archiveFileCrawler, hintLang);
+				return new LdioArchiveFileIn(pipelineName, executor, archiveFileCrawler, hintLang);
 			}
 
 			private Path getArchiveDirectoryPath(ComponentProperties config) {

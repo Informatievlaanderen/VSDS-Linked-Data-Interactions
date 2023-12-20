@@ -4,14 +4,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.valueobjects.EdcUrlProxy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.noauth.DefaultConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,11 +21,9 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
 
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
-
-	@Bean(NAME)
-	public LdioInputConfigurator ldioConfigurator(ObservationRegistry observationRegistry) {
-		return new LdioClientConnectorConfigurator(observationRegistry);
+	@Bean(LdioLdesClientConnector.NAME)
+	public LdioInputConfigurator ldioConfigurator() {
+		return new LdioClientConnectorConfigurator();
 	}
 
 	public static class LdioClientConnectorConfigurator implements LdioInputConfigurator {
@@ -34,15 +31,10 @@ public class LdioLdesClientConnectorAutoConfig {
 		public static final String CONNECTOR_TRANSFER_URL = "connector-transfer-url";
 		public static final String PROXY_URL_TO_REPLACE = "proxy-url-to-replace";
 		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
-		private final ObservationRegistry observationRegistry;
 
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
+		private final RequestExecutor baseRequestExecutor = new DefaultConfig().createRequestExecutor();
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
-		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
-
-		public LdioClientConnectorConfigurator(ObservationRegistry observationRegistry) {
-			this.observationRegistry = observationRegistry;
-		}
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
@@ -56,11 +48,11 @@ public class LdioLdesClientConnectorAutoConfig {
 					urlProxy);
 			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
 
-			LdioLdesClient ldesClient =
-					new LdioLdesClient(pipelineName, executor, observationRegistry, edcRequestExecutor, properties, statePersistence);
-			ldesClient.start();
+			var ldesClientConnector = new LdioLdesClientConnector(pipelineName, transferService, tokenService, edcRequestExecutor, properties,
+					executor, statePersistence);
 
-			return new LdioLdesClientConnectorApi(transferService, tokenService, pipelineName).apiEndpoints();
+			ldesClientConnector.run();
+			return ldesClientConnector.apiEndpoints();
 		}
 
 		private static EdcUrlProxy getEdcUrlProxy(ComponentProperties properties) {

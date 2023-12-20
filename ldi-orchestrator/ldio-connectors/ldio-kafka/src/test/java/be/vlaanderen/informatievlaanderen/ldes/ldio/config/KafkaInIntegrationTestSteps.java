@@ -56,7 +56,7 @@ public class KafkaInIntegrationTestSteps {
 			adapterResult.add(content);
 			return Stream.of(toModel(content));
 		};
-		var ldioKafkaInConfigurator = new LdioKafkaInAutoConfig().ldioConfigurator(null);
+		var ldioKafkaInConfigurator = new LdioKafkaInAutoConfig().ldioConfigurator();
 		var ldioKafkaInContainer = (KafkaMessageListenerContainer<Object, Object>) ldioKafkaInConfigurator
 				.configure(adapter, componentExecutor, properties);
 		ldioKafkaInContainer.start();
