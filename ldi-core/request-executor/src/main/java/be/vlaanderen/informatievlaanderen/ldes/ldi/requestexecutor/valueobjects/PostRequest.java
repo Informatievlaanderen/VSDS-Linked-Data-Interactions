@@ -12,8 +12,7 @@ public class PostRequest extends Request {
 	private final byte[] body;
 
 	public PostRequest(String url, RequestHeaders requestHeaders, String body) {
-		super(url, requestHeaders);
-		this.body = body == null ? null : body.getBytes();
+		this(url, requestHeaders, body == null ? null : body.getBytes());
 	}
 
 	public PostRequest(String url, RequestHeaders requestHeaders, byte[] body) {

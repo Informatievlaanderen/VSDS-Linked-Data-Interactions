@@ -35,7 +35,7 @@ public class LdioHttpOut implements LdiOutput {
 	public void accept(Model linkedDataModel) {
 		if (!linkedDataModel.isEmpty()) {
 			final ByteArrayOutputStream output = new ByteArrayOutputStream();
-			LdiRdfWriter.getRdfWriter(rdfWriterProperties).write(linkedDataModel, output);
+			LdiRdfWriter.getRdfWriter(rdfWriterProperties).writeToOutputStream(linkedDataModel, output);
 			final String contentType = rdfWriterProperties.getLang().getHeaderString();
 			final RequestHeader requestHeader = new RequestHeader(HttpHeaders.CONTENT_TYPE, contentType);
 			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), output.toByteArray());

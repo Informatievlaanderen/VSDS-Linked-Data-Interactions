@@ -19,10 +19,7 @@ public class Response {
 	private final byte[] body;
 
 	public Response(Request request, List<Header> headers, int httpStatus, String body) {
-		this.request = request;
-		this.httpStatus = httpStatus;
-		this.headers = headers;
-		this.body = body == null ? null : body.getBytes();
+		this(request, headers, httpStatus, body == null ? null : body.getBytes());
 	}
 	public Response(Request request, List<Header> headers, int httpStatus, byte[] body) {
 		this.request = request;

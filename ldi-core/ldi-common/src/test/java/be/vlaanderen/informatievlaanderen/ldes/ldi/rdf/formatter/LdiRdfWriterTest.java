@@ -104,7 +104,7 @@ class LdiRdfWriterTest {
 		Model expectedModel = RDFParser.source("rdf/formatter/expected/product.nq").lang(Lang.NQUADS).toModel();
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		LdiRdfWriter.getRdfWriter(new LdiRdfWriterProperties().withLang(outputLang)).write(model, byteArrayOutputStream);
+		LdiRdfWriter.getRdfWriter(new LdiRdfWriterProperties().withLang(outputLang)).writeToOutputStream(model, byteArrayOutputStream);
 		byte[] modelBytes = byteArrayOutputStream.toByteArray();
 		Model outputModel = RDFParser.source(new ByteArrayInputStream(modelBytes)).lang(outputLang).toModel();
 
