@@ -94,7 +94,7 @@ public class LdioHttpEnricher extends LdioTransformer {
 	private void addResponseToModel(Model model, Response response) {
 		if (response.isSuccess()) {
 			response
-					.getBody()
+					.getBodyAsString()
 					.stream()
 					.flatMap(body -> adapter.apply(toContent(body, response)))
 					.toList()
@@ -102,7 +102,7 @@ public class LdioHttpEnricher extends LdioTransformer {
 		} else {
 			log.atWarn().log("Failed to enrich model. The request url was {}. " +
 							"The http response obtained from the server has code {} and body \"{}\".",
-					response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
+					response.getRequestedUrl(), response.getHttpStatus(), response.getBodyAsString().orElse(null));
 		}
 	}
 

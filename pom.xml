@@ -64,6 +64,7 @@
         <loki.version>1.4.2</loki.version>
 
         <!-- Testing -->
+        <assertj.version>3.24.2</assertj.version>
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
         <byte-buddy.version>1.14.11</byte-buddy.version>
@@ -251,6 +252,11 @@
             </dependency>
 
             <!-- Testing -->
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
