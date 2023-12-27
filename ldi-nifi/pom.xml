@@ -17,7 +17,7 @@
     </modules>
 
     <properties>
-        <nifi.version>1.23.2</nifi.version>
+        <nifi.version>1.24.0</nifi.version>
     </properties>
 
     <dependencies>
