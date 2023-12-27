@@ -19,7 +19,8 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +41,7 @@ class BasicIntervalFunctionDecoratorTest {
 
 		Long result = basicIntervalFunctionDecorator.apply(attempt, Either.left(null));
 
-		assertThat(result).isEqualTo(interval);
+		assertEquals(interval, result);
 	}
 
 	@Test
@@ -48,38 +49,34 @@ class BasicIntervalFunctionDecoratorTest {
 		int attempt = 10;
 		long interval = 50L;
 		when(intervalFunction.apply(attempt)).thenReturn(interval);
-		Response response = new Response(null, List.of(), HttpStatus.SC_SERVICE_UNAVAILABLE, "body");
+		Response response = new Response(null, List.of(), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
 		Long result = basicIntervalFunctionDecorator.apply(attempt, Either.right(response));
 
-		assertThat(result).isEqualTo(interval);
+		assertEquals(interval, result);
 	}
 
 	@Test
 	void should_returnMilliSecondsBasedOnRetryAfterHeader_when_retryAfterHeaderIsPresentWithSeconds() {
 		BasicHeader basicHeader = new BasicHeader(HttpHeaders.RETRY_AFTER, "25");
-		Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, "body");
+		Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
 		Long result = basicIntervalFunctionDecorator.apply(5, Either.right(response));
 
 		// we allow a margin of 5000ms for the code to be executed.
-		assertThat(result)
-				.isGreaterThan(20000L)
-				.isLessThanOrEqualTo(25000L);
+		assertTrue(result > 20000 && result <= 25000);
 		verifyNoInteractions(intervalFunction);
 	}
 
 	@Test
 	void should_returnMilliSecondsBasedOnRetryAfterHeader_when_retryAfterHeaderIsPresentWithDate() {
 		Header basicHeader = new BasicHeader(HttpHeaders.RETRY_AFTER, getHttpDateString(25));
-		Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, "body");
+		Response response = new Response(null, List.of(basicHeader), HttpStatus.SC_SERVICE_UNAVAILABLE, null);
 
 		Long result = basicIntervalFunctionDecorator.apply(5, Either.right(response));
 
 		// we allow a margin of 5000ms for the code to be executed.
-		assertThat(result)
-				.isGreaterThan(20000L)
-				.isLessThanOrEqualTo(25000L);
+		assertTrue(result > 20000 && result <= 25000);
 		verifyNoInteractions(intervalFunction);
 	}
 

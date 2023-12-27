@@ -39,7 +39,7 @@ public class LdioLdesClientConnectorApi {
 					logIncomingRequest(request);
 					return request.bodyToMono(String.class)
 							.flatMap(requestString -> {
-								var response = transferService.startTransfer(requestString).getBodyAsString()
+								var response = transferService.startTransfer(requestString).getBody()
 										.orElse("");
 								return ServerResponse.accepted().body(Mono.just(response), String.class);
 							});

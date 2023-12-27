@@ -23,7 +23,7 @@ public class EdcRequestExecutor implements RequestExecutor {
 	public Response execute(Request request) {
 		final Request edcRequest = createEdcRequest(request);
 		var response = requestExecutor.execute(edcRequest);
-		if (response.isForbidden()) {
+		if (response.isFobidden()) {
 			tokenService.invalidateToken();
 			return execute(request);
 		} else {

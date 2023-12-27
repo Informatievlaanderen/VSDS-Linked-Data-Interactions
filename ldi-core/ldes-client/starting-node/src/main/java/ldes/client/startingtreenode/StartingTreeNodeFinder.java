@@ -10,7 +10,6 @@ import org.apache.jena.riot.RDFParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.util.List;
 
 public class StartingTreeNodeFinder {
@@ -39,8 +38,8 @@ public class StartingTreeNodeFinder {
 		return selectStartingNode(startingNodeRequest, model);
 	}
 
-	private Model getModelFromResponse(Lang lang, byte[] responseBody, String baseUrl) {
-		return RDFParser.source(new ByteArrayInputStream(responseBody)).lang(lang).base(baseUrl).build().toModel();
+	private Model getModelFromResponse(Lang lang, String response, String baseUrl) {
+		return RDFParser.fromString(response).lang(lang).base(baseUrl).build().toModel();
 	}
 
 	private StartingTreeNode selectStartingNode(StartingNodeRequest startingNodeRequest, Model model) {

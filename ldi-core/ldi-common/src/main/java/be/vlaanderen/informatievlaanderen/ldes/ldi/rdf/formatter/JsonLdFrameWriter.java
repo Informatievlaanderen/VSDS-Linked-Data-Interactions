@@ -1,36 +1,31 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
-import com.github.jsonldjava.core.JsonLdOptions;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.JsonLDWriteContext;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
-import org.apache.jena.riot.RDFWriterBuilder;
 import org.apache.jena.riot.writer.JsonLD10Writer;
 import org.apache.jena.sparql.util.Context;
 
-import java.io.OutputStream;
+import com.github.jsonldjava.core.JsonLdOptions;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.addPrefixesToModel;
 
 public class JsonLdFrameWriter implements LdiRdfWriter {
-	private final RDFWriterBuilder rdfWriter;
+	private final String frame;
 
 	public JsonLdFrameWriter(LdiRdfWriterProperties properties) {
-		String frame = properties.getJsonLdFrame();
-		this.rdfWriter = RDFWriter.create().context(getFramedContext(frame)).format(RDFFormat.JSONLD10_FRAME_PRETTY);
+		this.frame = properties.getJsonLdFrame();
 	}
 
 	@Override
 	public String write(Model model) {
-		return rdfWriter.source(addPrefixesToModel(model)).asString();
-	}
-
-	@Override
-	public void writeToOutputStream(Model model, OutputStream outputStream) {
-		rdfWriter.source(addPrefixesToModel(model)).output(outputStream);
+		return RDFWriter.source(addPrefixesToModel(model))
+				.context(getFramedContext(frame))
+				.format(RDFFormat.JSONLD10_FRAME_PRETTY)
+				.asString();
 	}
 
 	protected static Context getFramedContext(String context) {

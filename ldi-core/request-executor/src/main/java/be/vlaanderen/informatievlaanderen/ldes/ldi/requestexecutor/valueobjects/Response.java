@@ -16,12 +16,9 @@ public class Response {
 	private final Request request;
 	private final int httpStatus;
 	private final List<Header> headers;
-	private final byte[] body;
+	private final String body;
 
 	public Response(Request request, List<Header> headers, int httpStatus, String body) {
-		this(request, headers, httpStatus, body == null ? null : body.getBytes());
-	}
-	public Response(Request request, List<Header> headers, int httpStatus, byte[] body) {
 		this.request = request;
 		this.httpStatus = httpStatus;
 		this.headers = headers;
@@ -44,7 +41,7 @@ public class Response {
 		return hasStatus(List.of(HttpStatus.SC_OK));
 	}
 
-	public boolean isForbidden() {
+	public boolean isFobidden() {
 		return hasStatus(List.of(HttpStatus.SC_FORBIDDEN));
 	}
 
@@ -79,12 +76,8 @@ public class Response {
 		});
 	}
 
-	public Optional<byte[]> getBody() {
+	public Optional<String> getBody() {
 		return Optional.ofNullable(body);
-	}
-
-	public Optional<String> getBodyAsString() {
-		return Optional.ofNullable(body).map(input -> new String(body));
 	}
 
 	public Optional<String> getFirstHeaderValue(final String key) {

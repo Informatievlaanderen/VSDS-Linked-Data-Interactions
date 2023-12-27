@@ -15,7 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,14 +45,15 @@ class EdcRequestExecutorTest {
 		final var request = new GetRequest(url, RequestHeaders.empty());
 		final var edcRequest = new GetRequest(url, new RequestHeaders(List.of(requestHeader)));
 		when(requestExecutor.execute(edcRequest))
-				.thenReturn(new Response(request, List.of(), 403, (String) null))
+				.thenReturn(new Response(request, List.of(), 403, null))
 				.thenReturn(new Response(request, List.of(), 200, "body"));
 
 		Response response = edcRequestExecutor.execute(request);
 
 		verify(tokenService).invalidateToken();
-		assertThat(response.getHttpStatus()).isEqualTo(200);
-		assertThat(response.getBodyAsString()).contains("body");
+		assertEquals(200, response.getHttpStatus());
+		assertTrue(response.getBody().isPresent());
+		assertEquals("body", response.getBody().get());
 	}
 
 }

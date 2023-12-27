@@ -23,7 +23,7 @@ public class DefaultResponse {
 	public Response getResponse() throws IOException {
 		final List<Header> headers = Arrays.stream(httpResponse.getAllHeaders()).toList();
 		final int statusCode = httpResponse.getStatusLine().getStatusCode();
-		final byte[] body = httpResponse.getEntity() != null ? EntityUtils.toByteArray(httpResponse.getEntity()) : null;
+		final String body = httpResponse.getEntity() != null ? EntityUtils.toString(httpResponse.getEntity()) : null;
 		return new Response(request, headers, statusCode, body);
 	}
 

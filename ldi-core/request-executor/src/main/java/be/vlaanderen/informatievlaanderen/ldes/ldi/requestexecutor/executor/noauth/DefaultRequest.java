@@ -7,8 +7,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 
 import java.nio.charset.StandardCharsets;
 
@@ -34,7 +34,7 @@ public class DefaultRequest {
 				final PostRequest postRequest = (PostRequest) request;
 				final ContentType contentType = ContentType.create(postRequest.getContentType(),
 						StandardCharsets.UTF_8);
-				post.setEntity(new ByteArrayEntity(postRequest.getBody(), contentType));
+				post.setEntity(new StringEntity(postRequest.getBody(), contentType));
 				yield post;
 			}
 			default -> throw new IllegalStateException("Http method not supported: " + request.getMethod());
