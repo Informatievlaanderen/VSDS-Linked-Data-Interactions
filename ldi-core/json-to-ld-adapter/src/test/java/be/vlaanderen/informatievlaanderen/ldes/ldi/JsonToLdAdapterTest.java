@@ -24,14 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class JsonToLdAdapterTest {
 
 	private static final String CORE_CONTEXT = "http://localhost:10101/core-context.json";
-	private static final String LOCAL_CONTEXT = "http://localhost:10101/context.json";
 	private static final String MIMETYPE = "application/json";
 
 	private JsonToLdAdapter translator;
 
 	@BeforeEach
 	void setUp() {
-		translator = new JsonToLdAdapter(CORE_CONTEXT, LOCAL_CONTEXT, false);
+		translator = new JsonToLdAdapter(CORE_CONTEXT, false);
 	}
 
 	@Test
@@ -49,7 +48,7 @@ class JsonToLdAdapterTest {
 		String data = Files.readString(Path.of("src/test/resources/example.json"));
 		Model expected = readModelFromFile("src/test/resources/expected-ld.json");
 
-		translator = new JsonToLdAdapter(CORE_CONTEXT, LOCAL_CONTEXT, true);
+		translator = new JsonToLdAdapter(CORE_CONTEXT, true);
 		Model actual = translator.apply(new LdiAdapter.Content(data, "application/tom")).toList().get(0);
 
 		assertTrue(expected.isIsomorphicWith(actual));

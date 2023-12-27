@@ -30,7 +30,6 @@ public class JsonToLdProcessor extends AbstractProcessor {
 	protected JsonToLdAdapter adapter;
 
 	protected String coreContext;
-	protected String ldContext;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -39,16 +38,15 @@ public class JsonToLdProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(CORE_CONTEXT, LD_CONTEXT, FORCE_CONTENT_TYPE);
+		return List.of(CORE_CONTEXT, FORCE_CONTENT_TYPE);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		coreContext = JsonToLdProcessorProperties.getCoreContext(context);
-		ldContext = JsonToLdProcessorProperties.getLdContext(context);
 		boolean forceContentType = getForceContentType(context);
 
-		adapter = new JsonToLdAdapter(coreContext, ldContext, forceContentType);
+		adapter = new JsonToLdAdapter(coreContext, forceContentType);
 	}
 
 	@Override

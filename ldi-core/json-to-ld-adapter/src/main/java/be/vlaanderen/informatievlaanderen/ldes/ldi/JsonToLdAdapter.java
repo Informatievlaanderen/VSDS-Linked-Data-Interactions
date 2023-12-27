@@ -22,29 +22,24 @@ public class JsonToLdAdapter implements LdiAdapter {
 	private final Logger log = LoggerFactory.getLogger(JsonToLdAdapter.class);
 
 	private final String coreContext;
-	private final String ldContext;
 	private static final String MIMETYPE = "application/json";
 	private final boolean forceContentType;
 
 	public JsonToLdAdapter(String coreContext) {
-		this(coreContext, null, false);
+		this(coreContext, false);
 	}
 
-	public JsonToLdAdapter(String coreContext, String ldContext, boolean forceContentType) {
+	public JsonToLdAdapter(String coreContext, boolean forceContentType) {
 		if (coreContext == null) {
 			throw new IllegalArgumentException("Core context can't be null");
 		}
 		this.coreContext = coreContext;
-		this.ldContext = ldContext;
 		this.forceContentType = forceContentType;
 	}
 
 	private void addContexts(JsonObject json) {
 		JsonArray contexts = new JsonArray();
 		contexts.add(coreContext);
-		if (ldContext != null) {
-			contexts.add(ldContext);
-		}
 		json.put("@context", contexts);
 	}
 
