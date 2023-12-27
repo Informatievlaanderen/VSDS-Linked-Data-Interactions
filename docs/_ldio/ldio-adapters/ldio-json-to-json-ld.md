@@ -7,7 +7,7 @@ title: Json To JsonLd Transformer
 # LDIO Json To JsonLd Transformer
 ***be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter***
 
-An LDIO wrapper component for the [LDI Json To JsonLd building block](../../core/ldi-adapters/json-to-json-ld)
+An LDIO wrapper component for the [LDI Json To JsonLd building block](../../_core/ldi-adapters/json-to-json-ld)
 
 ## Config
 
