@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class LdioHttpOut implements LdiOutput {
@@ -33,17 +34,18 @@ public class LdioHttpOut implements LdiOutput {
 	@Override
 	public void accept(Model linkedDataModel) {
 		if (!linkedDataModel.isEmpty()) {
-			String content = LdiRdfWriter.getRdfWriter(rdfWriterProperties).write(linkedDataModel);
+			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			LdiRdfWriter.getRdfWriter(rdfWriterProperties).writeToOutputStream(linkedDataModel, output);
 			final String contentType = rdfWriterProperties.getLang().getHeaderString();
 			final RequestHeader requestHeader = new RequestHeader(HttpHeaders.CONTENT_TYPE, contentType);
-			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), content);
+			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), output.toByteArray());
 			Response response = requestExecutor.execute(request);
 			if (response.isSuccess()) {
 				log.debug("{} {} {}", request.getMethod(), request.getUrl(), response.getHttpStatus());
 			} else {
 				log.atError().log("Failed to post model. The request url was {}. " +
 						"The http response obtained from the server has code {} and body \"{}\".",
-						response.getRequestedUrl(), response.getHttpStatus(), response.getBody().orElse(null));
+						response.getRequestedUrl(), response.getHttpStatus(), response.getBodyAsString().orElse(null));
 			}
 		}
 	}

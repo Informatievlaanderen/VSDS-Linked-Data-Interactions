@@ -18,28 +18,28 @@ class HttpStatusRetryPredicateTest {
 
 	@Test
 	void should_ReturnTrue_when_ResponseStatusIsGreaterOrEqualsThan500() {
-		Response response500 = new Response(null, List.of(), 500, null);
-		Response response502 = new Response(null, List.of(), 502, null);
+		Response response500 = new Response(null, List.of(), 500, (String) null);
+		Response response502 = new Response(null, List.of(), 502, (String) null);
 		assertTrue(new HttpStatusRetryPredicate(List.of()).test(response500));
 		assertTrue(new HttpStatusRetryPredicate(List.of()).test(response502));
 	}
 
 	@Test
 	void should_ReturnTrue_when_ResponseStatusIsTooManyRequests() {
-		Response response = new Response(null, List.of(), 429, null);
+		Response response = new Response(null, List.of(), 429, (String) null);
 		assertTrue(new HttpStatusRetryPredicate(List.of()).test(response));
 	}
 
 	@Test
 	void should_ReturnTrue_when_ResponseStatusIsIncludedInStatusesToRetry() {
 		int customStatusThatShouldTriggerRetry = 418;
-		Response response = new Response(null, List.of(), customStatusThatShouldTriggerRetry, null);
+		Response response = new Response(null, List.of(), customStatusThatShouldTriggerRetry, (String) null);
 		assertTrue(new HttpStatusRetryPredicate(List.of(customStatusThatShouldTriggerRetry)).test(response));
 	}
 
 	@Test
 	void should_ReturnFalse_when_StatusIsValid() {
-		Response response = new Response(null, List.of(), 200, null);
+		Response response = new Response(null, List.of(), 200, (String) null);
 		assertFalse(new HttpStatusRetryPredicate(List.of()).test(response));
 	}
 }

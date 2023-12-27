@@ -65,7 +65,7 @@ public class HttpInputPoller extends LdioInput {
 		if (HttpStatusCode.valueOf(response.getHttpStatus()).is2xxSuccessful()) {
 			String contentType = response.getFirstHeaderValue(CONTENT_TYPE)
 					.orElseThrow(() -> new MissingHeaderException(response.getHttpStatus(), request.getUrl()));
-			String content = response.getBody().orElseThrow();
+			String content = response.getBodyAsString().orElseThrow();
 			processInput(content, contentType);
 		} else {
 			throw new UnsuccesfulPollingException(response.getHttpStatus(), request.getUrl());

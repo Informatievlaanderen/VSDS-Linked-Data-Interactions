@@ -10,6 +10,8 @@ import org.apache.http.HttpHeaders;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,8 +43,8 @@ public class TreeNodeFetcher {
 	}
 
 	private TreeNodeResponse createOkResponse(TreeNodeRequest treeNodeRequest, Response response) {
-		final String responseBody = response.getBody().orElseThrow();
-		final Model model = RDFParser.fromString(responseBody).forceLang(treeNodeRequest.getLang()).base(treeNodeRequest.getTreeNodeUrl()).toModel();
+		final InputStream responseBody = response.getBody().map(ByteArrayInputStream::new).orElseThrow();
+		final Model model = RDFParser.source(responseBody).forceLang(treeNodeRequest.getLang()).base(treeNodeRequest.getTreeNodeUrl()).toModel();
 		final ModelResponse modelResponse = new ModelResponse(model);
 		final MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
 		return new TreeNodeResponse(modelResponse.getRelations(), modelResponse.getMembers(), mutabilityStatus);
