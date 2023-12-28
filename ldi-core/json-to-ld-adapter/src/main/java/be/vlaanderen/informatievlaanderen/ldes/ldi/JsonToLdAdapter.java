@@ -50,7 +50,6 @@ public class JsonToLdAdapter implements LdiAdapter {
 		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase(MIMETYPE);
 	}
 
-	// TODO TVB: 28/12/23 test array flow
 	// TODO TVB: 28/12/23 test exception flow
 	private Stream<Model> translateJsonToLD(String data) {
 		try {
@@ -70,6 +69,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 		}
 	}
 
+	// TODO TVB: 28/12/23 test exceptionFlow
 	private Model translateJsonToLD(JsonValue json) {
 		if (json.isObject()) {
 			final var jsonObject = json.getAsObject();

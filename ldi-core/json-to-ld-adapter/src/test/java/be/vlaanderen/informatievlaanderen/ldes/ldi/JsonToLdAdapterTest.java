@@ -3,10 +3,12 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ParseToJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,9 +17,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest(httpPort = 10101)
@@ -41,6 +43,22 @@ class JsonToLdAdapterTest {
 		Model actual = translator.apply(new LdiAdapter.Content(data, MIMETYPE)).toList().get(0);
 
 		assertTrue(expected.isIsomorphicWith(actual));
+	}
+
+	@Test
+	void when_ValidJsonArray_Then_ModelsAreIsomorphic() throws IOException {
+		String data = Files.readString(Path.of("src/test/resources/example-array.json"));
+		Model expected_1 = readModelFromFile("src/test/resources/expected-ld-array-1.json");
+		Model expected_2 = readModelFromFile("src/test/resources/expected-ld-array-2.json");
+
+		List<Model> actual = translator.apply(new LdiAdapter.Content(data, MIMETYPE)).toList();
+
+		assertThat(actual)
+				.hasSize(2)
+				.areExactly(1,
+						new Condition<>(model -> model.isIsomorphicWith(expected_1), "is isomorphic with exampleID_1"))
+				.areExactly(1,
+						new Condition<>(model -> model.isIsomorphicWith(expected_2), "is isomorphic with exampleID_2"));
 	}
 
 	@Test
