@@ -4,10 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ParseToJsonExcepti
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import org.apache.http.entity.ContentType;
-import org.apache.jena.atlas.json.JSON;
-import org.apache.jena.atlas.json.JsonArray;
-import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.json.JsonParseException;
+import org.apache.jena.atlas.json.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
@@ -53,13 +50,37 @@ public class JsonToLdAdapter implements LdiAdapter {
 		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase(MIMETYPE);
 	}
 
+	// TODO TVB: 28/12/23 test array flow
+	// TODO TVB: 28/12/23 test exception flow
 	private Stream<Model> translateJsonToLD(String data) {
 		try {
-			JsonObject json = JSON.parse(data);
-			addContexts(json);
-			return Stream.of(json).map(this::toRDFModel);
+			final var json = JSON.parseAny(data);
+			if (json.isObject()) {
+				return Stream.of(translateJsonToLD(json));
+			}
+
+			if (json.isArray()) {
+				final JsonArray jsonArray = json.getAsArray();
+				return jsonArray.stream().map(this::translateJsonToLD);
+			}
+
+			throw new IllegalArgumentException("Only objects and arrays can be transformed to RDF");
 		} catch (JsonParseException e) {
 			throw new ParseToJsonException(e, data);
+		}
+	}
+
+	private Model translateJsonToLD(JsonValue json) {
+		if (json.isObject()) {
+			final var jsonObject = json.getAsObject();
+			addContexts(jsonObject);
+			Model model = ModelFactory.createDefaultModel();
+			RDFParser.fromString(jsonObject.toString())
+					.lang(Lang.JSONLD)
+					.parse(model);
+			return model;
+		} else {
+			throw new IllegalArgumentException("Only objects can be transformed to RDF");
 		}
 	}
 
@@ -67,14 +88,6 @@ public class JsonToLdAdapter implements LdiAdapter {
 		JsonArray contexts = new JsonArray();
 		contexts.add(coreContext);
 		json.put("@context", contexts);
-	}
-
-	private Model toRDFModel(JsonObject json) {
-		Model model = ModelFactory.createDefaultModel();
-		RDFParser.fromString(json.toString())
-				.lang(Lang.JSONLD)
-				.parse(model);
-		return model;
 	}
 
 }
