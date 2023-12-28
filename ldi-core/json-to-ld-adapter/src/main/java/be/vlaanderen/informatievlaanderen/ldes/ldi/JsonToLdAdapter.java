@@ -50,27 +50,26 @@ public class JsonToLdAdapter implements LdiAdapter {
 		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase(MIMETYPE);
 	}
 
-	// TODO TVB: 28/12/23 test exception flow
 	private Stream<Model> translateJsonToLD(String data) {
 		try {
 			final var json = JSON.parseAny(data);
 			if (json.isObject()) {
-				return Stream.of(translateJsonToLD(json));
+				return Stream.of(mapJsonObjectToModel(json));
 			}
 
 			if (json.isArray()) {
 				final JsonArray jsonArray = json.getAsArray();
-				return jsonArray.stream().map(this::translateJsonToLD);
+				return jsonArray.stream().map(this::mapJsonObjectToModel);
 			}
 
-			throw new IllegalArgumentException("Only objects and arrays can be transformed to RDF");
+			throw new IllegalArgumentException("Only objects and arrays can be transformed to RDF. " +
+					"The following json does not match this criteria: " + json);
 		} catch (JsonParseException e) {
 			throw new ParseToJsonException(e, data);
 		}
 	}
 
-	// TODO TVB: 28/12/23 test exceptionFlow
-	private Model translateJsonToLD(JsonValue json) {
+	private Model mapJsonObjectToModel(JsonValue json) {
 		if (json.isObject()) {
 			final var jsonObject = json.getAsObject();
 			addContexts(jsonObject);
@@ -80,7 +79,8 @@ public class JsonToLdAdapter implements LdiAdapter {
 					.parse(model);
 			return model;
 		} else {
-			throw new IllegalArgumentException("Only objects can be transformed to RDF");
+			throw new IllegalArgumentException("Only objects can be transformed to RDF. " +
+					"The following json does not match this criteria: " + json);
 		}
 	}
 

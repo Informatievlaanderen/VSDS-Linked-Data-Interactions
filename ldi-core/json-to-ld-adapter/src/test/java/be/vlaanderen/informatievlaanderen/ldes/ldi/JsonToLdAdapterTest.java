@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest(httpPort = 10101)
@@ -82,6 +84,30 @@ class JsonToLdAdapterTest {
 
 		assertEquals("Could not parse string to JSON. String with value:\n"
 				+ data + "\nCause: " + "Illegal: [null]", e.getMessage());
+	}
+
+	@Test
+	void when_ValidJson_IsNotAnObject_OrArray_Then_ExceptionIsThrown() throws IOException {
+		String data = Files.readString(Path.of("src/test/resources/invalid-string.json"));
+		LdiAdapter.Content content = new LdiAdapter.Content(data, MIMETYPE);
+
+		Exception e = assertThrows(IllegalArgumentException.class,
+				() -> translator.apply(content));
+
+		assertEquals("Only objects and arrays can be transformed to RDF. " +
+				"The following json does not match this criteria: \"Valid json but not an object...\"", e.getMessage());
+	}
+
+	@Test
+	void when_JsonArrayContainsAnythingOtherThanObjects_Then_ExceptionIsThrown() throws IOException {
+		String data = Files.readString(Path.of("src/test/resources/invalid-array-containing-string.json"));
+		LdiAdapter.Content content = new LdiAdapter.Content(data, MIMETYPE);
+
+		final Stream<Model> result = translator.apply(content);
+		assertThatThrownBy(result::toList) // end operation to trigger stream
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage("Only objects can be transformed to RDF. " +
+						"The following json does not match this criteria: \"Valid json but not an object...\"");
 	}
 
 	@Test
