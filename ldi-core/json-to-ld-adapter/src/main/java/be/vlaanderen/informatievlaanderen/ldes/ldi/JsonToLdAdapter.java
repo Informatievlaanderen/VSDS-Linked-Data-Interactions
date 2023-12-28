@@ -21,8 +21,8 @@ public class JsonToLdAdapter implements LdiAdapter {
 
 	private final Logger log = LoggerFactory.getLogger(JsonToLdAdapter.class);
 
-	private final String coreContext;
 	private static final String MIMETYPE = "application/json";
+	private final String coreContext;
 	private final boolean forceContentType;
 
 	public JsonToLdAdapter(String coreContext) {
@@ -35,30 +35,6 @@ public class JsonToLdAdapter implements LdiAdapter {
 		}
 		this.coreContext = coreContext;
 		this.forceContentType = forceContentType;
-	}
-
-	private void addContexts(JsonObject json) {
-		JsonArray contexts = new JsonArray();
-		contexts.add(coreContext);
-		json.put("@context", contexts);
-	}
-
-	private Stream<Model> translateJsonToLD(String data) {
-		try {
-			JsonObject json = JSON.parse(data);
-			addContexts(json);
-			return Stream.of(json).map(this::toRDFModel);
-		} catch (JsonParseException e) {
-			throw new ParseToJsonException(e, data);
-		}
-	}
-
-	private Model toRDFModel(JsonObject json) {
-		Model model = ModelFactory.createDefaultModel();
-		RDFParser.fromString(json.toString())
-				.lang(Lang.JSONLD)
-				.parse(model);
-		return model;
 	}
 
 	@Override
@@ -75,6 +51,30 @@ public class JsonToLdAdapter implements LdiAdapter {
 
 	private boolean validateMimeType(String mimeType) {
 		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase(MIMETYPE);
+	}
+
+	private Stream<Model> translateJsonToLD(String data) {
+		try {
+			JsonObject json = JSON.parse(data);
+			addContexts(json);
+			return Stream.of(json).map(this::toRDFModel);
+		} catch (JsonParseException e) {
+			throw new ParseToJsonException(e, data);
+		}
+	}
+
+	private void addContexts(JsonObject json) {
+		JsonArray contexts = new JsonArray();
+		contexts.add(coreContext);
+		json.put("@context", contexts);
+	}
+
+	private Model toRDFModel(JsonObject json) {
+		Model model = ModelFactory.createDefaultModel();
+		RDFParser.fromString(json.toString())
+				.lang(Lang.JSONLD)
+				.parse(model);
+		return model;
 	}
 
 }
