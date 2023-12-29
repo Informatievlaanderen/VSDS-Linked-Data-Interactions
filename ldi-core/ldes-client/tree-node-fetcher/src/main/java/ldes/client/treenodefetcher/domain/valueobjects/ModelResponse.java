@@ -54,21 +54,25 @@ public class ModelResponse {
 	private TreeMember processMember(Model treeNodeModel, Statement memberStatement) {
 		Model memberModel = modelExtract.extract(memberStatement.getObject().asResource(), treeNodeModel);
 		String id = memberStatement.getObject().toString();
-		memberModel.add(memberStatement);
 
-		treeNodeModel.listStatements(ANY_RESOURCE, ANY_PROPERTY, memberStatement.getResource())
-				.filterKeep(statement -> statement.getSubject().isURIResource()).filterDrop(memberStatement::equals)
-				.forEach(statement -> {
+		findStatementsPointingToMemberStatement(treeNodeModel, memberStatement).forEach(memberModel::add);
+
+		return new TreeMember(id, memberModel);
+	}
+
+	private List<Model> findStatementsPointingToMemberStatement(Model treeNodeModel, Statement memberStatement) {
+		return treeNodeModel.listStatements(ANY_RESOURCE, ANY_PROPERTY, memberStatement.getResource())
+				.filterKeep(statement -> statement.getSubject().isURIResource())
+				.filterDrop(memberStatement::equals)
+				.mapWith(statement -> {
 					Model reversePropertyModel = modelExtract.extract(statement.getSubject(), treeNodeModel);
 					List<Statement> otherMembers = reversePropertyModel
 							.listStatements(statement.getSubject(), statement.getPredicate(), ANY_RESOURCE).toList();
 					otherMembers.forEach(otherMember -> reversePropertyModel
 							.remove(modelExtract.extract(otherMember.getResource(), reversePropertyModel)));
-
-					memberModel.add(reversePropertyModel);
-				});
-
-		return new TreeMember(id, memberModel);
+					return reversePropertyModel;
+				})
+				.toList();
 	}
 
 	private Stream<Statement> extractRelations(Model treeNodeModel) {
