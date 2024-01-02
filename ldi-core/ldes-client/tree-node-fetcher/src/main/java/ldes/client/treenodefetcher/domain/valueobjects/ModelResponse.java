@@ -14,7 +14,6 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 public class ModelResponse {
 
 	protected static final Resource ANY_RESOURCE = null;
-	protected static final Property ANY_PROPERTY = null;
 	public static final String W3C_TREE = "https://w3id.org/tree#";
 	public static final Property W3ID_TREE_RELATION = createProperty(W3C_TREE, "relation");
 	public static final Property W3ID_TREE_MEMBER = createProperty(W3C_TREE, "member");
