@@ -19,14 +19,6 @@ public class JsonToLdProcessorProperties {
 			.addValidator(StandardValidators.URL_VALIDATOR)
 			.build();
 
-	public static final PropertyDescriptor LD_CONTEXT = new PropertyDescriptor.Builder()
-			.name("LD_CONTEXT")
-			.displayName("additional JSON-LD context")
-			.description("URL of an additional JSON-LD context")
-			.required(false)
-			.addValidator(StandardValidators.URL_VALIDATOR)
-			.build();
-
 	public static final PropertyDescriptor FORCE_CONTENT_TYPE = new PropertyDescriptor.Builder()
 			.name("FORCE_CONTENT_TYPE")
 			.displayName("Force content type")
@@ -37,10 +29,6 @@ public class JsonToLdProcessorProperties {
 
 	public static String getCoreContext(final ProcessContext context) {
 		return context.getProperty(CORE_CONTEXT).getValue();
-	}
-
-	public static String getLdContext(final ProcessContext context) {
-		return context.getProperty(LD_CONTEXT).getValue();
 	}
 
 	public static boolean getForceContentType(final ProcessContext context) {
