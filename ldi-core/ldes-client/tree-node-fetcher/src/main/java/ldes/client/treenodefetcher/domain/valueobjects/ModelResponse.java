@@ -2,13 +2,7 @@ package ldes.client.treenodefetcher.domain.valueobjects;
 
 import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import org.apache.jena.graph.TripleBoundary;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelExtract;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StatementTripleBoundary;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +34,8 @@ public class ModelResponse {
 	}
 
 	public List<TreeMember> getMembers() {
-		return extractMembers().map(memberStatement -> processMember(model, memberStatement))
+		return extractMembers()
+				.map(memberStatement -> processMember(model, memberStatement))
 				.toList();
 	}
 
@@ -52,27 +47,9 @@ public class ModelResponse {
 	}
 
 	private TreeMember processMember(Model treeNodeModel, Statement memberStatement) {
-		Model memberModel = modelExtract.extract(memberStatement.getObject().asResource(), treeNodeModel);
-		String id = memberStatement.getObject().toString();
-
-		findStatementsPointingToMemberStatement(treeNodeModel, memberStatement).forEach(memberModel::add);
-
+		final Model memberModel = modelExtract.extract(memberStatement.getObject().asResource(), treeNodeModel);
+		final String id = memberStatement.getObject().toString();
 		return new TreeMember(id, memberModel);
-	}
-
-	private List<Model> findStatementsPointingToMemberStatement(Model treeNodeModel, Statement memberStatement) {
-		return treeNodeModel.listStatements(ANY_RESOURCE, ANY_PROPERTY, memberStatement.getResource())
-				.filterKeep(statement -> statement.getSubject().isURIResource())
-				.filterDrop(memberStatement::equals)
-				.mapWith(statement -> {
-					Model reversePropertyModel = modelExtract.extract(statement.getSubject(), treeNodeModel);
-					List<Statement> otherMembers = reversePropertyModel
-							.listStatements(statement.getSubject(), statement.getPredicate(), ANY_RESOURCE).toList();
-					otherMembers.forEach(otherMember -> reversePropertyModel
-							.remove(modelExtract.extract(otherMember.getResource(), reversePropertyModel)));
-					return reversePropertyModel;
-				})
-				.toList();
 	}
 
 	private Stream<Statement> extractRelations(Model treeNodeModel) {
