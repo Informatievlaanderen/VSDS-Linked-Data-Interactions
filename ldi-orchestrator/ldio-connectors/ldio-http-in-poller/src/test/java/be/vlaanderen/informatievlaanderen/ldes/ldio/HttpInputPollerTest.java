@@ -9,6 +9,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderExce
 import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -25,6 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,10 +44,10 @@ class HttpInputPollerTest {
 	private static final String CONTENT_TYPE = "application/n-quads";
 	private HttpInputPoller httpInputPoller;
 	private static final RequestExecutor noAuthExecutor = new RequestExecutorFactory().createNoAuthExecutor();
-
 	@BeforeEach
     void setUp() {
-		WireMock.resetAllRequests();
+		reset();
+
         when(adapter.apply(any()))
                 .thenReturn(Stream.of())
                 .thenReturn(Stream.of())
@@ -54,6 +56,11 @@ class HttpInputPollerTest {
 
 		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), true, noAuthExecutor);
     }
+
+	@AfterEach
+	void tearDown() {
+		httpInputPoller.shutdown();
+	}
 
 	@Test
 	void testClientPolling() {
@@ -83,7 +90,7 @@ class HttpInputPollerTest {
 
 		httpInputPoller.schedulePoller(pollingInterval);
 
-		Mockito.verify(adapter, timeout(2000).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+		Mockito.verify(adapter, timeout(4000).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		WireMock.verify(2, getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
@@ -125,7 +132,7 @@ class HttpInputPollerTest {
 
 		httpInputPoller.schedulePoller(pollingInterval);
 
-		Mockito.verify(adapter, after(2000).never()).apply(any());
+		Mockito.verify(adapter, after(4000).never()).apply(any());
 		WireMock.verify(new CountMatchingStrategy(CountMatchingStrategy.GREATER_THAN_OR_EQUAL, 2),
 				getRequestedFor(urlEqualTo(ENDPOINT)));
 
@@ -181,8 +188,8 @@ class HttpInputPollerTest {
 
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-			return Stream.of(Arguments.of(new PollingInterval(new CronTrigger("*/1 * * * * *"))),
-					Arguments.of(new PollingInterval(Duration.of(1, ChronoUnit.SECONDS))));
+			return Stream.of(Arguments.of(new PollingInterval(new CronTrigger("*/2 * * * * *"))),
+					Arguments.of(new PollingInterval(Duration.of(2, ChronoUnit.SECONDS))));
 		}
 	}
 
