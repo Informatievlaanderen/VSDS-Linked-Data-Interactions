@@ -12,7 +12,7 @@ import java.util.Objects;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
 
 public class PollingInterval {
-	private static final Logger logger = LoggerFactory.getLogger(HttpInputPollerAutoConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(PollingInterval.class);
 	private CronTrigger cronTrigger;
 	private Duration duration;
 
@@ -66,5 +66,5 @@ public class PollingInterval {
 		return Objects.hash(cronTrigger, duration);
 	}
 
-	public static enum TYPE {CRON, INTERVAL}
+	public enum TYPE {CRON, INTERVAL}
 }
