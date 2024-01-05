@@ -32,7 +32,7 @@ public class PollingInterval {
 	}
 
 	public static PollingInterval withInterval(String interval) {
-		logger.info(INTERVAL_MIGRATION_WARNING);
+		logger.warn(INTERVAL_MIGRATION_WARNING);
 
 		try {
 			return new PollingInterval(Duration.parse(interval));
