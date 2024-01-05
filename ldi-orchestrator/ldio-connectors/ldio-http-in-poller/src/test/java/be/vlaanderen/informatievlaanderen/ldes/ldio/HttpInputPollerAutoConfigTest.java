@@ -2,16 +2,15 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidCronArgumentsProvider;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidIntervalArgumentsProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.MockedConstruction;
 import org.springframework.scheduling.support.CronTrigger;
@@ -19,7 +18,6 @@ import org.springframework.scheduling.support.CronTrigger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,13 +48,6 @@ class HttpInputPollerAutoConfigTest {
 
 	private static ComponentProperties createDefaultCronTestConfig() {
 		return createConfigWithCron(BASE_URL + ENDPOINT, "* * * * * *", "false");
-	}
-
-	static class InvalidIntervalArgumentsProvider implements ArgumentsProvider {
-		@Override
-		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
-			return Stream.of(Arguments.of("P12S"), Arguments.of("Invalid time"), Arguments.of("0 * * * * ?"));
-		}
 	}
 
 	@Test
@@ -97,14 +88,6 @@ class HttpInputPollerAutoConfigTest {
 				.configure(adapter, executor, createConfigWithCron(BASE_URL + ENDPOINT, cron, "false"));
 
 		assertThrows(IllegalArgumentException.class, configurePoller);
-	}
-
-	static class InvalidCronArgumentsProvider implements ArgumentsProvider {
-
-		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
-			return Stream.of(Arguments.of("P12S"), Arguments.of("Invalid time"), Arguments.of("0 * * * *"));
-		}
 	}
 
 }
