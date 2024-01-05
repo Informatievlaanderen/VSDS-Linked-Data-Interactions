@@ -38,14 +38,16 @@ public class HttpInputPoller extends LdioInput implements Runnable {
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;
 		this.scheduler = new ThreadPoolTaskScheduler();
-		this.scheduler.initialize();
+		this.scheduler.setErrorHandler(t -> {
+		});
 	}
 
 	public void schedulePoller(PollingInterval pollingInterval) {
+		scheduler.initialize();
 		if (pollingInterval.getType() == CRON) {
 			scheduler.schedule(this, pollingInterval.getCronTrigger());
 		} else {
-			scheduler.scheduleAtFixedRate(this, Instant.EPOCH, pollingInterval.getDuration());
+			scheduler.scheduleAtFixedRate(this, Instant.now(), pollingInterval.getDuration());
 		}
 	}
 

@@ -11,8 +11,14 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.Mockito;
+import org.springframework.scheduling.support.CronTrigger;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -39,6 +45,7 @@ class HttpInputPollerTest {
 
 	@BeforeEach
     void setUp() {
+		WireMock.resetAllRequests();
         when(adapter.apply(any()))
                 .thenReturn(Stream.of())
                 .thenReturn(Stream.of())
@@ -69,13 +76,14 @@ class HttpInputPollerTest {
 		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
-	@Test
-	void whenPeriodicPolling_thenReturnTwoTimesTheSameResponse() {
+	@ParameterizedTest
+	@ArgumentsSource(PollingIntervalArgumentsProvider.class)
+	void whenPeriodicPolling_thenReturnTwoTimesTheSameResponse(PollingInterval pollingInterval) {
 		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 
-		httpInputPoller.schedulePoller(new PollingInterval(Duration.of(1, ChronoUnit.SECONDS)));
+		httpInputPoller.schedulePoller(pollingInterval);
 
-		Mockito.verify(adapter, timeout(1500).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+		Mockito.verify(adapter, timeout(2000).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		WireMock.verify(2, getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
@@ -93,8 +101,9 @@ class HttpInputPollerTest {
 		WireMock.verify(getRequestedFor(urlEqualTo(otherEndpoint)));
 	}
 
-	@Test
-	void whenPeriodicPollingMultipleEndpoints_thenReturnTwoTimesTheSameResponse() {
+	@ParameterizedTest
+	@ArgumentsSource(PollingIntervalArgumentsProvider.class)
+	void whenPeriodicPollingMultipleEndpoints_thenReturnTwoTimesTheSameResponse(PollingInterval pollingInterval) {
 		String endpoint = "/endpoint";
 		stubFor(get(endpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 		String otherEndpoint = "/other-endpoint";
@@ -102,18 +111,19 @@ class HttpInputPollerTest {
 		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + endpoint, BASE_URL + otherEndpoint),
 				true, noAuthExecutor);
 
-		httpInputPoller.schedulePoller(new PollingInterval(Duration.of(1, ChronoUnit.SECONDS)));
+		httpInputPoller.schedulePoller(pollingInterval);
 
-		Mockito.verify(adapter, timeout(1500).times(4)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+		Mockito.verify(adapter, timeout(6000).times(4)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		WireMock.verify(2, getRequestedFor(urlEqualTo(endpoint)));
 		WireMock.verify(2, getRequestedFor(urlEqualTo(otherEndpoint)));
 	}
 
-	@Test
-	void when_OnContinueIsTrueAndPeriodPollingReturnsNot2xx_thenKeepPolling() {
+	@ParameterizedTest
+	@ArgumentsSource(PollingIntervalArgumentsProvider.class)
+	void when_OnContinueIsTrueAndPeriodPollingReturnsNot2xx_thenKeepPolling(PollingInterval pollingInterval) {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		httpInputPoller.schedulePoller(new PollingInterval(Duration.of(1, ChronoUnit.SECONDS)));
+		httpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, after(2000).never()).apply(any());
 		WireMock.verify(new CountMatchingStrategy(CountMatchingStrategy.GREATER_THAN_OR_EQUAL, 2),
@@ -121,12 +131,25 @@ class HttpInputPollerTest {
 
 	}
 
-	@Test
-	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling() {
+	@ParameterizedTest
+	@ArgumentsSource(PollingIntervalArgumentsProvider.class)
+	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling(PollingInterval pollingInterval) {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
 		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
-		httpInputPoller.schedulePoller(new PollingInterval(Duration.of(1, ChronoUnit.SECONDS)));
+		httpInputPoller.schedulePoller(pollingInterval);
+
+		Mockito.verify(adapter, after(2000).never()).apply(any());
+		WireMock.verify(1, getRequestedFor(urlEqualTo(ENDPOINT)));
+	}
+
+	@ParameterizedTest
+	@ArgumentsSource(PollingIntervalArgumentsProvider.class)
+	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling_Cron(PollingInterval pollingInterval) {
+		stubFor(get(ENDPOINT).willReturn(forbidden()));
+
+		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
+		httpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, after(2000).never()).apply(any());
 		WireMock.verify(1, getRequestedFor(urlEqualTo(ENDPOINT)));
@@ -152,6 +175,15 @@ class HttpInputPollerTest {
 
 		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
 		Mockito.verifyNoInteractions(adapter);
+	}
+
+	static class PollingIntervalArgumentsProvider implements ArgumentsProvider {
+
+		@Override
+		public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+			return Stream.of(Arguments.of(new PollingInterval(new CronTrigger("*/1 * * * * *"))),
+					Arguments.of(new PollingInterval(Duration.of(1, ChronoUnit.SECONDS))));
+		}
 	}
 
 }
