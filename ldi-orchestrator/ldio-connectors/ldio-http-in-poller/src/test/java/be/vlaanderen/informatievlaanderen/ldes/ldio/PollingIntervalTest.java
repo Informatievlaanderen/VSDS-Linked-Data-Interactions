@@ -17,7 +17,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterva
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PollingIntervalTest {
+class PollingIntervalTest {
 	@Test
 	void when_withInterval_ExpectValidObject() {
 		PollingInterval pollingInterval = PollingInterval.withInterval("PT1S");
