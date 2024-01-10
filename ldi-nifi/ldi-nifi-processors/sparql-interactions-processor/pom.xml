@@ -21,6 +21,12 @@
             <artifactId>sparql-construct</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${xml-bind.version}</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>

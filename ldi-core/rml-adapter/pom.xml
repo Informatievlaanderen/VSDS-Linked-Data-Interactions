@@ -12,7 +12,7 @@
     <artifactId>rml-adapter</artifactId>
 
     <properties>
-        <carml.version>0.4.8</carml.version>
+        <carml.version>0.4.9</carml.version>
     </properties>
 
     <dependencies>
@@ -26,6 +26,12 @@
             <groupId>io.carml</groupId>
             <artifactId>carml-converters-jena</artifactId>
             <version>${carml.version}</version>
+        </dependency>
+        <!-- Limitation of CARML -->
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-arq</artifactId>
+            <version>4.9.0</version>
         </dependency>
 
         <!-- Choose the resolvers to suit your need -->
