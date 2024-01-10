@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.apache.sis.non-free</groupId>
             <artifactId>sis-embedded-data</artifactId>
-            <version>1.4</version>
+            <version>${sis-embedded-db.version}</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
