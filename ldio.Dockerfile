@@ -15,7 +15,7 @@ RUN mvn clean install -DskipTests
 #
 FROM amazoncorretto:17-alpine-jdk
 
-RUN useradd -u 2000 ldio
+RUN adduser -D -u 2000 ldio
 USER ldio
 WORKDIR /ldio
 
