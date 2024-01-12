@@ -15,4 +15,6 @@ public class LdioLdesClientProperties {
 	public static final String POSTGRES_PASSWORD = "postgres.password";
 	public static final String POSTGRES_URL = "postgres.url";
 
+	public static final String TIMESTAMP_PATH_PROP = "timestamp-path";
+
 }

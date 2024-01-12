@@ -5,9 +5,11 @@ import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.filebased.mapper.MemberRecordMapper;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileBasedMemberRepository implements MemberRepository {
 	public static final String UNPROCESSED_MEMBERS = "membersUnprocessed.txt";
@@ -26,7 +28,7 @@ public class FileBasedMemberRepository implements MemberRepository {
 		return fileManager
 				.getRecords(UNPROCESSED_MEMBERS)
 				.map(mapper::toMemberRecord)
-				.findFirst();
+				.min(Comparator.comparing(MemberRecord::getCreatedAt));
 	}
 
 	@Override
@@ -35,6 +37,11 @@ public class FileBasedMemberRepository implements MemberRepository {
 				.getRecords(PROCESSED_MEMBERS)
 				.map(mapper::toMemberRecord)
 				.anyMatch(memberRecord -> memberRecord.equals(member));
+	}
+
+	@Override
+	public void saveTreeMembers(Stream<MemberRecord> treeMemberStream) {
+		treeMemberStream.forEach(this::saveTreeMember);
 	}
 
 	@Override
