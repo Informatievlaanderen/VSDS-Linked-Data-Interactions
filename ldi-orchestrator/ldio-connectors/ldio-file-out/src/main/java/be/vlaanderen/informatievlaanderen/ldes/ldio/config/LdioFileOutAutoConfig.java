@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromCurrentTimeExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.rdf.model.ResourceFactory;

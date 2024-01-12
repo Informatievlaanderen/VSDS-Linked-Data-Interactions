@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor;
 
 import org.apache.jena.rdf.model.Model;
 
