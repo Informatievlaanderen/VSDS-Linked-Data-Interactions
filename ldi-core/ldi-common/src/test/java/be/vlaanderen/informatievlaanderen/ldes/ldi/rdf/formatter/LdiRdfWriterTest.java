@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
-import com.github.jsonldjava.core.JsonLdOptions;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
@@ -24,6 +23,8 @@ import java.nio.file.Files;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import com.github.jsonldjava.core.JsonLdOptions;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.FRAME;
 import static org.assertj.core.api.Assertions.assertThat;

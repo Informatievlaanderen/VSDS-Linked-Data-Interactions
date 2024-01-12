@@ -1,6 +1,7 @@
 package ldes.client.treenodefetcher;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -21,7 +22,7 @@ public class TreeNodeFetcherSteps {
 
 	@Given("I have a TreeNodeFetcher")
 	public void initializeCalculator() {
-		treeNodeFetcher = new TreeNodeFetcher(requestExecutorFactory.createNoAuthExecutor());
+		treeNodeFetcher = new TreeNodeFetcher(requestExecutorFactory.createNoAuthExecutor(), new TimestampFromCurrentTimeExtractor());
 	}
 
 	@When("I create a TreeNodeRequest with Lang {string} and url {string}")

@@ -6,6 +6,7 @@ import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
@@ -95,6 +96,14 @@ public final class LdesProcessorProperties {
 			.required(false)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(FALSE.toString())
+			.build();
+
+	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
+			.name("TIMESTAMP_PATH")
+			.displayName("Property path determining the timestamp used to order the members within a fragment")
+			.required(false)
+			.addValidator(Validator.VALID)
+			.defaultValue("")
 			.build();
 
 	public static final PropertyDescriptor STREAM_TIMESTAMP_PATH_PROPERTY = new PropertyDescriptor.Builder()
@@ -236,6 +245,10 @@ public final class LdesProcessorProperties {
 
 	public static Lang getDataDestinationFormat(final ProcessContext context) {
 		return RDFLanguages.nameToLang(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
+	}
+
+	public static String getTimestampPath(final ProcessContext context) {
+		return context.getProperty(TIMESTAMP_PATH).getValue();
 	}
 
 	public static boolean streamTimestampPathProperty(final ProcessContext context) {
