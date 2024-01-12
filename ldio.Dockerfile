@@ -3,7 +3,7 @@
 #
 # INSTALL MAVEN DEPENDENCIES
 #
-FROM maven:3.8.5-openjdk-18 AS builder
+FROM maven:3.8.5-amazoncorretto-17 AS builder
 
 # MAVEN: application
 FROM builder AS app-stage
@@ -13,7 +13,7 @@ RUN mvn clean install -DskipTests
 #
 # RUN THE APPLICATION
 #
-FROM openjdk:18-ea-bullseye
+FROM amazoncorretto:17-alpine-jdk
 
 RUN useradd -u 2000 ldio
 USER ldio
