@@ -5,6 +5,7 @@ import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 
@@ -23,7 +24,7 @@ public class SqlMemberRepository implements MemberRepository {
 	public Optional<MemberRecord> getUnprocessedTreeMember() {
 
 		return entityManager
-				.createNamedQuery("Member.getByMemberStatus", MemberRecordEntity.class)
+				.createNamedQuery("Member.getFirstByMemberStatus", MemberRecordEntity.class)
 				.setParameter("memberStatus", MemberStatus.UNPROCESSED)
 				.getResultStream()
 				.map(MemberRecordEntity::toMemberRecord)
@@ -38,6 +39,14 @@ public class SqlMemberRepository implements MemberRepository {
 				.setParameter("memberStatus", MemberStatus.PROCESSED)
 				.setParameter("id", member.getMemberId())
 				.getSingleResult() > 0;
+	}
+
+	@Override
+	public void saveTreeMembers(Stream<MemberRecord> treeMemberStream) {
+		entityManager.getTransaction().begin();
+		treeMemberStream.map(MemberRecordEntity::fromMemberRecord)
+				.forEach(entityManager::merge);
+		entityManager.getTransaction().commit();
 	}
 
 	@Override

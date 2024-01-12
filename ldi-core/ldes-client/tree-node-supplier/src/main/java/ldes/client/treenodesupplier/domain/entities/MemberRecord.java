@@ -4,22 +4,27 @@ import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class MemberRecord {
+import com.sun.istack.NotNull;
+
+public class MemberRecord implements Comparable<MemberRecord>{
 	private final String memberId;
 
 	private MemberStatus memberStatus;
+	private LocalDateTime createdAt;
 	private Model model;
 
-	public MemberRecord(String memberId, Model model) {
-		this(memberId, model, MemberStatus.UNPROCESSED);
+	public MemberRecord(String memberId, Model model, LocalDateTime createdAt) {
+		this(memberId, model, MemberStatus.UNPROCESSED, createdAt);
 	}
 
-	public MemberRecord(String memberId, Model model, MemberStatus memberStatus) {
+	public MemberRecord(String memberId, Model model, MemberStatus memberStatus, LocalDateTime createdAt) {
 		this.memberId = memberId;
 		this.model = model;
 		this.memberStatus = memberStatus;
+		this.createdAt = createdAt;
 	}
 
 	public void processedMemberRecord() {
@@ -55,5 +60,14 @@ public class MemberRecord {
 	@Override
 	public int hashCode() {
 		return Objects.hash(memberId);
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	@Override
+	public int compareTo(@NotNull MemberRecord member) {
+		return getCreatedAt().compareTo(member.getCreatedAt());
 	}
 }
