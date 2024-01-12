@@ -2,6 +2,9 @@ package ldes.client.treenodefetcher;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import ldes.client.treenodefetcher.domain.valueobjects.ModelResponse;
 import ldes.client.treenodefetcher.domain.valueobjects.MutabilityStatus;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
@@ -15,9 +18,14 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static ldes.client.treenodefetcher.domain.valueobjects.Constants.ANY_RESOURCE;
+import static ldes.client.treenodefetcher.domain.valueobjects.Constants.W3ID_LDES_TIMESTAMP_PATH;
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+
 public class TreeNodeFetcher {
 
 	private final RequestExecutor requestExecutor;
+	private TimestampExtractor timestampExtractor;
 
 	public TreeNodeFetcher(RequestExecutor requestExecutor) {
 		this.requestExecutor = requestExecutor;
@@ -45,7 +53,8 @@ public class TreeNodeFetcher {
 	private TreeNodeResponse createOkResponse(TreeNodeRequest treeNodeRequest, Response response) {
 		final InputStream responseBody = response.getBody().map(ByteArrayInputStream::new).orElseThrow();
 		final Model model = RDFParser.source(responseBody).forceLang(treeNodeRequest.getLang()).base(treeNodeRequest.getTreeNodeUrl()).toModel();
-		final ModelResponse modelResponse = new ModelResponse(model);
+		initialiseTimestampExtractor(model);
+		final ModelResponse modelResponse = new ModelResponse(model, timestampExtractor);
 		final MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
 		return new TreeNodeResponse(modelResponse.getRelations(), modelResponse.getMembers(), mutabilityStatus);
 	}
@@ -68,4 +77,13 @@ public class TreeNodeFetcher {
 				.orElseGet(MutabilityStatus::empty);
 	}
 
+	private void initialiseTimestampExtractor(Model model) {
+		if (timestampExtractor != null) {
+			return;
+		}
+		model.listStatements(ANY_RESOURCE, W3ID_LDES_TIMESTAMP_PATH, ANY_RESOURCE)
+				.nextOptional()
+				.ifPresentOrElse(timestampPathStatement -> this.timestampExtractor = new TimestampFromPathExtractor(createProperty(String.valueOf(timestampPathStatement.getObject()))),
+						() -> this.timestampExtractor = new TimestampFromCurrentTimeExtractor());
+	}
 }

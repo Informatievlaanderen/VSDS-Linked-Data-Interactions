@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.ArchiveFile;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromCurrentTimeExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromPathExtractor;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;

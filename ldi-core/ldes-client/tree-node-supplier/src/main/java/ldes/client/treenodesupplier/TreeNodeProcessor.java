@@ -49,11 +49,10 @@ public class TreeNodeProcessor {
 				.filter(treeNodeId -> !treeNodeRecordRepository.existsById(treeNodeId))
 				.map(TreeNodeRecord::new)
 				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
-		treeNodeResponse.getMembers()
+		memberRepository.saveTreeMembers(treeNodeResponse.getMembers()
 				.stream()
-				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel()))
-				.filter(member -> !memberRepository.isProcessed(member))
-				.forEach(memberRepository::saveTreeMember);
+				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt()))
+				.filter(member -> !memberRepository.isProcessed(member)));
 
 	}
 
