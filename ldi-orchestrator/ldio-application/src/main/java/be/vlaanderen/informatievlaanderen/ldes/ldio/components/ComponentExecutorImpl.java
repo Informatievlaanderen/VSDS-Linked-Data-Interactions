@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.components;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;

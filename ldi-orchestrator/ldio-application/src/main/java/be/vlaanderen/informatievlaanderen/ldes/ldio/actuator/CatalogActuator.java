@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.actuator;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioAdapterConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;

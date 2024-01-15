@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PipelineService {
+public class PipelineCreationService {
 	private final List<PipelineConfig> pipelines = new ArrayList<>();
 
 	public void addPipeline(PipelineConfig pipeline) {

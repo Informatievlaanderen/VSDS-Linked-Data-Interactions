@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PipelineCreatedEventListener implements ApplicationListener<PipelineCreatedEvent> {
-	private final PipelineService pipelineService;
+	private final PipelineCreationService pipelineCreationService;
 
-	public PipelineCreatedEventListener(PipelineService pipelineService) {
-		this.pipelineService = pipelineService;
+	public PipelineCreatedEventListener(PipelineCreationService pipelineCreationService) {
+		this.pipelineCreationService = pipelineCreationService;
 	}
 
 	@Override
 	public void onApplicationEvent(PipelineCreatedEvent event) {
-		pipelineService.addPipeline(event.pipelineConfig());
+		pipelineCreationService.addPipeline(event.pipelineConfig());
 	}
 }

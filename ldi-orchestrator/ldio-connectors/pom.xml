@@ -15,6 +15,7 @@
         <module>ldio-request-executor</module>
 
         <module>ldio-http-in</module>
+        <module>ldio-http-in2</module>
         <module>ldio-http-in-poller</module>
         <module>ldio-ldes-client</module>
         <module>ldio-ldes-client-connector</module>
