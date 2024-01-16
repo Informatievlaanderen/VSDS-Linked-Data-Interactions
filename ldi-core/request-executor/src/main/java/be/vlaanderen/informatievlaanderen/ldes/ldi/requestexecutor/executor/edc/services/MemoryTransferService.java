@@ -40,6 +40,10 @@ public class MemoryTransferService implements TransferService {
 		var contentType = new RequestHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
 		var requestHeaders = new RequestHeaders(List.of(contentType));
 		var request = new PostRequest(consumerConnectorUrl, requestHeaders, transfer);
+//		var response = requestExecutor.execute(request);
+//		System.out.println(response.getHttpStatus());
+//		System.out.println(response.getFirstHeaderValue("Date").get());
+//		System.out.println(response.getBodyAsString().get());
 		return requestExecutor.execute(request);
 	}
 

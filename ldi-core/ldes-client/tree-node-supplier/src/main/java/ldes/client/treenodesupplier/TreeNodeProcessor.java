@@ -1,6 +1,7 @@
 package ldes.client.treenodesupplier;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
@@ -25,11 +26,11 @@ public class TreeNodeProcessor {
 	private MemberRecord memberRecord;
 
 	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
-			RequestExecutor requestExecutor) {
+							 RequestExecutor requestExecutor, TimestampExtractor timestampExtractor) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
 		this.requestExecutor = requestExecutor;
-		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor);
+		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor, timestampExtractor);
 		this.ldesMetaData = ldesMetaData;
 	}
 
