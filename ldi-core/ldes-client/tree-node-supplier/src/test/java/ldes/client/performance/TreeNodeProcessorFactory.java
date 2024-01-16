@@ -2,6 +2,8 @@ package ldes.client.performance;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
@@ -29,7 +31,8 @@ class TreeNodeProcessorFactory {
 			case POSTGRES -> createPostgresPersistence();
 		};
 		final RequestExecutor requestExecutor = requestExecutorFactory.createNoAuthExecutor();
-		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
+		final TimestampExtractor timestampExtractor = new TimestampFromCurrentTimeExtractor();
+		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor);
 	}
 
 	private PostgreSQLContainer startPostgresContainer() {

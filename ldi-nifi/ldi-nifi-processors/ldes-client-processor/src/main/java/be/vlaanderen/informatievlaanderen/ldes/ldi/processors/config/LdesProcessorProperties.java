@@ -3,10 +3,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
-import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public final class LdesProcessorProperties {
 	/**
@@ -102,8 +101,9 @@ public final class LdesProcessorProperties {
 	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
 			.name("TIMESTAMP_PATH")
 			.displayName("Property path determining the timestamp used to order the members within a fragment")
-			.required(true)
-			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.required(false)
+			.addValidator(Validator.VALID)
+			.defaultValue("")
 			.build();
 
 	public static final PropertyDescriptor STREAM_TIMESTAMP_PATH_PROPERTY = new PropertyDescriptor.Builder()
@@ -247,8 +247,8 @@ public final class LdesProcessorProperties {
 		return RDFLanguages.nameToLang(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
 	}
 
-	public static Property getTimestampPath(final ProcessContext context) {
-		return createProperty(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
+	public static String getTimestampPath(final ProcessContext context) {
+		return context.getProperty(TIMESTAMP_PATH).getValue();
 	}
 
 	public static boolean streamTimestampPathProperty(final ProcessContext context) {
