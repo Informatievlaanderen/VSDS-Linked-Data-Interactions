@@ -1,8 +1,6 @@
 package ldes.client.treenodefetcher.domain.valueobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import org.apache.jena.graph.TripleBoundary;
 import org.apache.jena.rdf.model.*;
@@ -14,7 +12,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static ldes.client.treenodefetcher.domain.valueobjects.Constants.*;
-import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class ModelResponse {
 	private TimestampExtractor timestampExtractor;

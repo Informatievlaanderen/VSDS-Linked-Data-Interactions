@@ -2,6 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
@@ -18,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class LdioLdesClient extends LdioInput {
 	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient";
@@ -68,7 +72,9 @@ public class LdioLdesClient extends LdioInput {
 				.orElse(Lang.JSONLD);
 		LdesMetaData ldesMetaData = new LdesMetaData(targetUrl,
 				sourceFormat);
-		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(statePersistence, requestExecutor, ldesMetaData);
+		TimestampExtractor timestampExtractor = properties.getOptionalProperty(LdioLdesClientProperties.TIMESTAMP_PATH_PROP).map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
+				.orElseGet(TimestampFromCurrentTimeExtractor::new);
+		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(statePersistence, requestExecutor, ldesMetaData, timestampExtractor);
 		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
 
 		return new MemberSupplier(treeNodeProcessor, keepState);
@@ -76,8 +82,9 @@ public class LdioLdesClient extends LdioInput {
 
 	private TreeNodeProcessor getTreeNodeProcessor(StatePersistence statePersistenceStrategy,
 												   RequestExecutor requestExecutor,
-												   LdesMetaData ldesMetaData) {
-		return new TreeNodeProcessor(ldesMetaData, statePersistenceStrategy, requestExecutor);
+												   LdesMetaData ldesMetaData,
+												   TimestampExtractor timestampExtractor) {
+		return new TreeNodeProcessor(ldesMetaData, statePersistenceStrategy, requestExecutor, timestampExtractor);
 	}
 
 	public void stopThread() {
