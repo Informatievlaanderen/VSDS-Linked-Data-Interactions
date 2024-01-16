@@ -16,7 +16,7 @@ public class MemberRecordMapper {
 	private DateTimeFormatter dateTimeFormatter;
 
 	public MemberRecordMapper() {
-		dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+		dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
 	}
 
 	public String fromMemberRecord(MemberRecord memberRecord) {

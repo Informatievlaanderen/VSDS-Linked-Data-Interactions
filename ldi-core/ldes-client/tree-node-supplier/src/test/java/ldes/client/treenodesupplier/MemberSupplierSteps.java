@@ -1,6 +1,9 @@
 package ldes.client.treenodesupplier;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -19,6 +22,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.io.StringWriter;
 import java.util.Map;
 
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,6 +39,12 @@ public class MemberSupplierSteps {
 	// Multi MemberSupplier
 	private final MemberSupplier[] memberSuppliers = new MemberSupplier[2];
 	private final SuppliedMember[] suppliedMembers = new SuppliedMember[2];
+
+	private String timestampPath;
+	@Before
+	public void setup() {
+		timestampPath = "";
+	}
 
 	@When("I request one member from the MemberSupplier")
 	public void iRequestOneMemberFromTheMemberSupplier() {
@@ -57,11 +67,17 @@ public class MemberSupplierSteps {
 				Lang.JSONLD);
 	}
 
+	@Given("I set a timestamp path {string}")
+	public void setTimestampPath(String timestampPath) {
+		this.timestampPath = timestampPath;
+	}
+
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				new StatePersistence(memberRepository, treeNodeRecordRepository),
-				requestExecutorFactory.createNoAuthExecutor());
+				requestExecutorFactory.createNoAuthExecutor(),
+				timestampPath.isEmpty() ? new TimestampFromCurrentTimeExtractor() : new TimestampFromPathExtractor(createProperty(timestampPath)));
 	}
 
 	@Then("Member {string} is processed")
@@ -162,10 +178,14 @@ public class MemberSupplierSteps {
 	public void aStatePersistenceStrategyProcessorAndAStatePersistenceStrategyProcessor(String arg0, String arg1) {
 		memberSuppliers[0] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
+				requestExecutorFactory.createNoAuthExecutor(),
+				new TimestampFromCurrentTimeExtractor()), false);
+		memberSuppliers[1] = new MemberSupplier(new TreeNodeProcessor(ldesMetaData,
 				requestExecutorFactory.createNoAuthExecutor()), false);
 		memberSuppliers[1] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
-				requestExecutorFactory.createNoAuthExecutor()), false);
+				requestExecutorFactory.createNoAuthExecutor(),
+				new TimestampFromCurrentTimeExtractor()), false);
 	}
 
 	@When("I request one member from the MemberSuppliers")
