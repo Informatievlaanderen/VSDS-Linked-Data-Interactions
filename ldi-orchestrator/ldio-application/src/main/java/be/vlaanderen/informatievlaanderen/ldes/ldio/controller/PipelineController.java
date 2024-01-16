@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineCreationService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.SenderQueueingService;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +24,8 @@ public class PipelineController {
 
 	// Pipeline Creation
 	@GetMapping(path = "/overview")
-	public ResponseEntity<List<PipelineConfig>> overview() {
-		return ResponseEntity.ok(pipelineCreationService.getPipelines());
+	public ResponseEntity<List<PipelineConfigTO>> overview() {
+		return ResponseEntity.ok(pipelineCreationService.getPipelines().stream().map(PipelineConfigTO::fromPipelineConfig).toList());
 	}
 
 	// Status Endpoints

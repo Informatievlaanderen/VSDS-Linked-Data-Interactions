@@ -18,6 +18,10 @@ public class ComponentDefinition {
 		return config;
 	}
 
+	public Map<String, String> getConfigMap() {
+		return config.getConfig();
+	}
+
 	public void setConfig(Map<String, String> config) {
 		this.config = new ComponentProperties(config);
 	}

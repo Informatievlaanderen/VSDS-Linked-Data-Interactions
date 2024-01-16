@@ -7,20 +7,22 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@Component
 public class PipelineStatusConverter implements HttpMessageConverter<PipelineStatus> {
 	@Override
 	public boolean canRead(Class<?> clazz, MediaType mediaType) {
-		return false;
+		return clazz.equals(PipelineStatus.class);
 	}
 
 	@Override
 	public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-		return true;
+		return clazz.equals(PipelineStatus.class);
 	}
 
 	@Override
