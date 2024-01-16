@@ -1,0 +1,10 @@
+[
+  {
+    "id": "exampleID",
+    "type": "Model",
+    "example": {
+      "value": "value"
+    }
+  },
+  "Valid json but not an object..."
+]

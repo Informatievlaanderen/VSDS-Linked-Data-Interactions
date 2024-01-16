@@ -10,9 +10,8 @@ import io.micrometer.observation.ObservationRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.Duration;
-import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
@@ -36,27 +35,27 @@ public class HttpInputPollerAutoConfig {
 
 		@Override
 		public HttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
-				ComponentProperties properties) {
+		                                 ComponentProperties properties) {
 			String pipelineName = properties.getProperty(PIPELINE_NAME);
 			List<String> endpoints = properties.getPropertyList(URL);
 
-			String pollingInterval = properties.getProperty(INTERVAL);
 			boolean continueOnFail = properties.getOptionalBoolean(CONTINUE_ON_FAIL).orElse(true);
 
-			long seconds;
-			try {
-				seconds = Duration.parse(pollingInterval).getSeconds();
-			} catch (DateTimeParseException e) {
-				throw new IllegalArgumentException("Invalid config for the ldio http in poller: " + INTERVAL
-						+ " cannot have following value: " + pollingInterval);
-			}
-
 			var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
+
 			var httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, observationRegistry, endpoints, continueOnFail, requestExecutor);
-			httpInputPoller.schedulePoller(seconds);
+
+			httpInputPoller.schedulePoller(getPollingInterval(properties));
 
 			return httpInputPoller;
 		}
 
+		private PollingInterval getPollingInterval(ComponentProperties properties) {
+			Optional<String> expression = properties.getOptionalProperty(CRON);
+
+			return expression.map(PollingInterval::withCron)
+					.orElseGet(() -> PollingInterval.withInterval(properties.getProperty(INTERVAL)));
+		}
 	}
+
 }

@@ -10,7 +10,7 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
     <artifactId>linked-data-interactions</artifactId>
     <packaging>pom</packaging>
-    <version>1.12.0-SNAPSHOT</version>
+    <version>1.13.0-SNAPSHOT</version>
 
     <modules>
         <module>ldi-api</module>
@@ -55,7 +55,9 @@
 
         <impsort-maven-plugin.version>1.9.0</impsort-maven-plugin.version>
 
-        <jena.version>4.8.0</jena.version>
+        <jena.version>4.10.0</jena.version>
+        <sis-embedded-db.version>1.4</sis-embedded-db.version>
+        <xml-bind.version>4.0.1</xml-bind.version>
 
         <!-- LOGGING -->
         <micrometer-prometheus.version>1.12.0</micrometer-prometheus.version>
@@ -64,9 +66,10 @@
         <loki.version>1.4.2</loki.version>
 
         <!-- Testing -->
+        <assertj.version>3.24.2</assertj.version>
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <byte-buddy.version>1.14.6</byte-buddy.version>
+        <byte-buddy.version>1.14.11</byte-buddy.version>
         <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
         <mockito-core.version>5.5.0</mockito-core.version>
         <mockito-junit.version>5.5.0</mockito-junit.version>
@@ -251,6 +254,11 @@
             </dependency>
 
             <!-- Testing -->
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>

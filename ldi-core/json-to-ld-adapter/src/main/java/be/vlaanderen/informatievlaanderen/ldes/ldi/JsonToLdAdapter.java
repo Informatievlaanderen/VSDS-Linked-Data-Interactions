@@ -4,10 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ParseToJsonExcepti
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import org.apache.http.entity.ContentType;
-import org.apache.jena.atlas.json.JSON;
-import org.apache.jena.atlas.json.JsonArray;
-import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.json.JsonParseException;
+import org.apache.jena.atlas.json.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
@@ -21,49 +18,20 @@ public class JsonToLdAdapter implements LdiAdapter {
 
 	private final Logger log = LoggerFactory.getLogger(JsonToLdAdapter.class);
 
-	private final String coreContext;
-	private final String ldContext;
 	private static final String MIMETYPE = "application/json";
+	private final String coreContext;
 	private final boolean forceContentType;
 
 	public JsonToLdAdapter(String coreContext) {
-		this(coreContext, null, false);
+		this(coreContext, false);
 	}
 
-	public JsonToLdAdapter(String coreContext, String ldContext, boolean forceContentType) {
+	public JsonToLdAdapter(String coreContext, boolean forceContentType) {
 		if (coreContext == null) {
 			throw new IllegalArgumentException("Core context can't be null");
 		}
 		this.coreContext = coreContext;
-		this.ldContext = ldContext;
 		this.forceContentType = forceContentType;
-	}
-
-	private void addContexts(JsonObject json) {
-		JsonArray contexts = new JsonArray();
-		contexts.add(coreContext);
-		if (ldContext != null) {
-			contexts.add(ldContext);
-		}
-		json.put("@context", contexts);
-	}
-
-	private Stream<Model> translateJsonToLD(String data) {
-		try {
-			JsonObject json = JSON.parse(data);
-			addContexts(json);
-			return Stream.of(json).map(this::toRDFModel);
-		} catch (JsonParseException e) {
-			throw new ParseToJsonException(e, data);
-		}
-	}
-
-	private Model toRDFModel(JsonObject json) {
-		Model model = ModelFactory.createDefaultModel();
-		RDFParser.fromString(json.toString())
-				.lang(Lang.JSONLD)
-				.parse(model);
-		return model;
 	}
 
 	@Override
@@ -80,6 +48,46 @@ public class JsonToLdAdapter implements LdiAdapter {
 
 	private boolean validateMimeType(String mimeType) {
 		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase(MIMETYPE);
+	}
+
+	private Stream<Model> translateJsonToLD(String data) {
+		try {
+			final var json = JSON.parseAny(data);
+			if (json.isObject()) {
+				return Stream.of(mapJsonObjectToModel(json));
+			}
+
+			if (json.isArray()) {
+				final JsonArray jsonArray = json.getAsArray();
+				return jsonArray.stream().map(this::mapJsonObjectToModel);
+			}
+
+			throw new IllegalArgumentException("Only objects and arrays can be transformed to RDF. " +
+					"The following json does not match this criteria: " + json);
+		} catch (JsonParseException e) {
+			throw new ParseToJsonException(e, data);
+		}
+	}
+
+	private Model mapJsonObjectToModel(JsonValue json) {
+		if (json.isObject()) {
+			final var jsonObject = json.getAsObject();
+			addContexts(jsonObject);
+			Model model = ModelFactory.createDefaultModel();
+			RDFParser.fromString(jsonObject.toString())
+					.lang(Lang.JSONLD)
+					.parse(model);
+			return model;
+		} else {
+			throw new IllegalArgumentException("Only objects can be transformed to RDF. " +
+					"The following json does not match this criteria: " + json);
+		}
+	}
+
+	private void addContexts(JsonObject json) {
+		JsonArray contexts = new JsonArray();
+		contexts.add(coreContext);
+		json.put("@context", contexts);
 	}
 
 }
