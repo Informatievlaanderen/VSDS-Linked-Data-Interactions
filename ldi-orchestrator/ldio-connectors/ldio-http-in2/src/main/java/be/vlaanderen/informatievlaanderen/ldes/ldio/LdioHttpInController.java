@@ -16,7 +16,7 @@ import static java.util.Optional.ofNullable;
 
 @RestController
 public class LdioHttpInController {
-	private static final Logger log = LoggerFactory.getLogger(LdioHttpInProcess.class);
+	private static final Logger log = LoggerFactory.getLogger(LdioHttpInController.class);
 
 	private final Map<String, LdioHttpInProcess> httpInProcesses = new HashMap<>();
 
