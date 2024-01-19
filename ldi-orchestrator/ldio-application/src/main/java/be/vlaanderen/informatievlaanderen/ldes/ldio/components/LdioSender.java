@@ -53,7 +53,6 @@ public class LdioSender extends LdioTransformer {
 		if (pipelineStatus == RUNNING) {
 			Metrics.counter(LDIO_DATA_OUT, PIPELINE_NAME, pipelineName).increment();
 			ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(model));
-			applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.RESUMING));
 		} else {
 			queue.add(model);
 		}

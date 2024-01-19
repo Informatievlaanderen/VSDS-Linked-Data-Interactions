@@ -65,9 +65,9 @@ class PipelineIntegrationTest {
 		await().until(() -> mockVault.getReceivedObjects().size() == 10);
 
 		// Halt Pipeline
-		mockMvc.perform(post("http://localhost:8080/admin/api/v1/pipeline/status/%s/halt".formatted(pipeline))).andExpect(status().isOk());
+		mockMvc.perform(post("http://localhost:8080/admin/api/v1/pipeline/%s/halt".formatted(pipeline))).andExpect(status().isOk());
 		await().until(() -> {
-			var result = mockMvc.perform(get("http://localhost:8080/admin/api/v1/pipeline/status/%s".formatted(pipeline))).andReturn();
+			var result = mockMvc.perform(get("http://localhost:8080/admin/api/v1/pipeline/%s/status".formatted(pipeline))).andReturn();
 			return result.getResponse().getContentAsString().equals("HALTED");
 		});
 
@@ -76,9 +76,9 @@ class PipelineIntegrationTest {
 		Assertions.assertEquals(10, mockVault.getReceivedObjects().size());
 
 		// Resume Pipeline
-		mockMvc.perform(post("http://localhost:8080/admin/api/v1/pipeline/status/%s/resume".formatted(pipeline))).andExpect(status().isOk());
+		mockMvc.perform(post("http://localhost:8080/admin/api/v1/pipeline/%s/resume".formatted(pipeline))).andExpect(status().isOk());
 		await().until(() -> {
-			var result = mockMvc.perform(get("http://localhost:8080/admin/api/v1/pipeline/status/%s".formatted(pipeline))).andReturn();
+			var result = mockMvc.perform(get("http://localhost:8080/admin/api/v1/pipeline/%s/status".formatted(pipeline))).andReturn();
 			return result.getResponse().getContentAsString().equals("RUNNING");
 		});
 

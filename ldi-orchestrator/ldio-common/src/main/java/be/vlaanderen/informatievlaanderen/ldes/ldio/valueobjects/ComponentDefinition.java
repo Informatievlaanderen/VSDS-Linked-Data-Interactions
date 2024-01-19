@@ -3,6 +3,15 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 import java.util.Map;
 
 public class ComponentDefinition {
+
+	public ComponentDefinition(String name, Map<String, String> config) {
+		this.name = name;
+		this.config = new ComponentProperties(config);
+	}
+
+	public ComponentDefinition() {
+	}
+
 	private String name;
 	private ComponentProperties config = new ComponentProperties();
 

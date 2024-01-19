@@ -4,6 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.components.LdioSender;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.SenderCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -16,33 +18,35 @@ import java.util.stream.Collectors;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
 
 @Component
-public class SenderQueueingService {
+public class PipelineStatusService {
+	private final Logger logger = LoggerFactory.getLogger(PipelineStatusService.class);
 	private final ApplicationEventPublisher applicationEventPublisher;
-	private final Map<String, SenderStatus> senderStatus;
+	private final Map<String, SavedPipeline> savedPipelines;
 
-	public SenderQueueingService(ApplicationEventPublisher applicationEventPublisher) {
+	public PipelineStatusService(ApplicationEventPublisher applicationEventPublisher) {
 		this.applicationEventPublisher = applicationEventPublisher;
-		this.senderStatus = new HashMap<>();
+		this.savedPipelines = new HashMap<>();
 	}
 
 	public PipelineStatus getPipelineStatus(String pipelineName) {
-		return Optional.ofNullable(senderStatus.get(pipelineName))
-				.map(SenderStatus::getStatus)
+		return Optional.ofNullable(savedPipelines.get(pipelineName))
+				.map(SavedPipeline::getStatus)
 				.orElseThrow(() -> new IllegalArgumentException("No pipeline defined for name " + pipelineName));
 	}
 
 	@EventListener
 	public void handlePipelineStatusResponse(PipelineStatusEvent statusEvent) {
-		SenderStatus currentSenderStatus = senderStatus.get(statusEvent.pipelineId());
-		if (currentSenderStatus == null) {
+		SavedPipeline currentSavedPipeline = savedPipelines.get(statusEvent.pipelineId());
+		if (currentSavedPipeline == null) {
+			logger.warn("Non initialized pipeline received status update: {}", statusEvent.pipelineId());
 			return;
 		}
-		currentSenderStatus.updateStatus(statusEvent.status());
+		currentSavedPipeline.updateStatus(statusEvent.status());
 	}
 
 	@EventListener
 	public void handleSenderCreated(SenderCreatedEvent event) {
-		senderStatus.put(event.pipelineName(), new SenderStatus(event.ldioSender(), RUNNING));
+		savedPipelines.put(event.pipelineName(), new SavedPipeline(event.ldioSender(), RUNNING));
 	}
 
 	public PipelineStatus resumeHaltedPipeline(String pipelineId) {
@@ -52,7 +56,7 @@ public class SenderQueueingService {
 			case RUNNING -> RUNNING;
 			case HALTED -> {
 				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineId, RESUMING));
-				senderStatus.get(pipelineId).getLdioSender().updateStatus(RESUMING);
+				savedPipelines.get(pipelineId).getLdioSender().updateStatus(RESUMING);
 				yield RESUMING;
 			}
 			case RESUMING -> RESUMING;
@@ -67,7 +71,7 @@ public class SenderQueueingService {
 		return switch (pipelineStatus) {
 			case RUNNING, RESUMING -> {
 				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineId, HALTED));
-				senderStatus.get(pipelineId).getLdioSender().updateStatus(HALTED);
+				savedPipelines.get(pipelineId).getLdioSender().updateStatus(HALTED);
 				yield HALTED;
 			}
 			case HALTED -> HALTED;
@@ -77,16 +81,16 @@ public class SenderQueueingService {
 	}
 
 	public Map<String, PipelineStatus> getPipelineStatusOverview() {
-		return senderStatus.entrySet()
+		return savedPipelines.entrySet()
 				.stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getStatus()));
 	}
 
-	static class SenderStatus {
+	static class SavedPipeline {
 		private final LdioSender ldioSender;
 		private PipelineStatus status;
 
-		public SenderStatus(LdioSender ldioSender, PipelineStatus status) {
+		public SavedPipeline(LdioSender ldioSender, PipelineStatus status) {
 			this.ldioSender = ldioSender;
 			this.status = status;
 		}

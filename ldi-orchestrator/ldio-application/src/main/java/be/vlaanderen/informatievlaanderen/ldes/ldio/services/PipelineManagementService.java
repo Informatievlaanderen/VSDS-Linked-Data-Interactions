@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PipelineCreationService {
+public class PipelineManagementService {
 	private final List<PipelineConfig> pipelines = new ArrayList<>();
 
 	@EventListener
