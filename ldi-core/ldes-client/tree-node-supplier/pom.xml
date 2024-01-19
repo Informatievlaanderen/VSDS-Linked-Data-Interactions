@@ -12,6 +12,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
             <artifactId>tree-node-fetcher</artifactId>
             <version>${project.version}</version>
@@ -25,7 +30,6 @@
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>version-materialiser</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Persistence -->
@@ -64,10 +68,6 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikari.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldi-common</artifactId>
         </dependency>
     </dependencies>
 
