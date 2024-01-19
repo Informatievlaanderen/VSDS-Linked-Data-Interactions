@@ -49,7 +49,7 @@ public abstract class LdioInput implements LdiComponent {
 		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 	}
 
-	protected void processInput(String content, String contentType) {
+	public void processInput(String content, String contentType) {
 		processInput(LdiAdapter.Content.of(content, contentType));
 	}
 

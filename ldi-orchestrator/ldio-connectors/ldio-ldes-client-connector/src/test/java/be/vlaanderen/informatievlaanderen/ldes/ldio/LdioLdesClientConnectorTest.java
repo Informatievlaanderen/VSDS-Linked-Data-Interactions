@@ -3,20 +3,32 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Mono;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest(classes = LdioLdesClientConnectorApiController.class)
+@AutoConfigureMockMvc
 class LdioLdesClientConnectorTest {
 
-	private WebTestClient client;
+	@Autowired
+	ApplicationEventPublisher eventPublisher;
+	@Autowired
+	private MockMvc mockMvc;
 	private final String endpoint = "endpoint";
 	private TransferService transferService;
 	private TokenService tokenService;
@@ -26,43 +38,30 @@ class LdioLdesClientConnectorTest {
 		transferService = mock(TransferService.class);
 		tokenService = mock(TokenService.class);
 
-		final RouterFunction<ServerResponse> routerFunction =
-				new LdioLdesClientConnectorApi(transferService, tokenService, endpoint).apiEndpoints();
-
-		client = WebTestClient
-				.bindToRouterFunction(routerFunction)
-				.build();
+		eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(endpoint, new LdioLdesClientConnectorApi(transferService, tokenService)));
 	}
 
 	@Test
-	void testTokenEndpoint() {
+	void testTokenEndpoint() throws Exception {
 		String content = "token";
 
-		client.post()
-				.uri("/%s/token".formatted(endpoint))
-				.body(Mono.just(content), String.class)
-				.exchange()
-				.expectStatus()
-				.isAccepted();
+		mockMvc.perform(post("/%s/token".formatted(endpoint)).content(content)).andExpect(status().isAccepted());
 
 		verify(tokenService).updateToken(content);
 		verify(transferService, times(0)).startTransfer(any());
 	}
 
 	@Test
-	void testTransferEndpoint() {
+	void testTransferEndpoint() throws Exception {
 		String content = "transfer";
 		String transferResult = "transfer-result";
 		when(transferService.startTransfer(content)).thenReturn(new Response(null, List.of(), 200, "transfer-result"));
 
-		client.post()
-				.uri("/%s/transfer".formatted(endpoint))
-				.body(Mono.just(content), String.class)
-				.exchange()
-				.expectStatus()
-				.isAccepted()
-				.expectBody(String.class)
-				.isEqualTo(transferResult);
+		MvcResult result = mockMvc.perform(post("/%s/transfer".formatted(endpoint)).content(content))
+				.andExpect(status().isAccepted())
+				.andReturn();
+
+		assertEquals(transferResult, result.getResponse().getContentAsString());
 
 		verify(transferService).startTransfer(content);
 		verify(tokenService, times(0)).updateToken(any());

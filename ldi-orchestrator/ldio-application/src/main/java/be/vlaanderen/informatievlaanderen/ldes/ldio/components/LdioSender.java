@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.components;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
@@ -7,7 +7,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import io.micrometer.core.instrument.Metrics;
 import org.apache.jena.rdf.model.Model;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -35,16 +34,15 @@ public class LdioSender extends LdioTransformer {
 	}
 
 	@SuppressWarnings({"java:S131", "java:S1301"})
-	@EventListener
-	public void handlePipelineStatus(PipelineStatusEvent statusEvent) {
-		switch (statusEvent.status()) {
+	public void updateStatus(PipelineStatus statusEvent) {
+		switch (statusEvent) {
 			case RESUMING -> {
 				while (!queue.isEmpty()) {
 					Metrics.counter(LDIO_DATA_OUT, PIPELINE_NAME, pipelineName).increment();
 					ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(queue.poll()));
 				}
 				this.pipelineStatus = RUNNING;
-				applicationEventPublisher.publishEvent(new PipelineStatusEvent(RUNNING));
+				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, RUNNING));
 			}
 			case HALTED -> this.pipelineStatus = HALTED;
 		}
