@@ -17,7 +17,7 @@ public class RateLimiterConfig {
 	private final Duration limitRefreshPeriod;
 	private final Duration timeoutDuration;
 
-	public RateLimiterConfig(int limitForPeriod, Duration limitRefreshPeriod, Duration timeoutDuration) {
+	private RateLimiterConfig(int limitForPeriod, Duration limitRefreshPeriod, Duration timeoutDuration) {
 		this.limitForPeriod = limitForPeriod;
 		this.limitRefreshPeriod = limitRefreshPeriod;
 		this.timeoutDuration = timeoutDuration;

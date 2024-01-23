@@ -130,8 +130,7 @@ public class RequestExecutorSteps {
 
 	@Given("I have a requestExecutor which limits the requests to 1 per second")
 	public void iHaveARequestExecutorWithRateLimiter() {
-		Duration waitTime = Duration.ofSeconds(1);
-		RateLimiter rateLimiter = new RateLimiterConfig(1, waitTime, waitTime).getRateLimiter();
+		RateLimiter rateLimiter = RateLimiterConfig.limitForPeriod(1, "PT1S").getRateLimiter();
 		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(rateLimiter).get();
 	}
 
@@ -150,8 +149,7 @@ public class RequestExecutorSteps {
 	@Given("I have a requestExecutor which does {int} retries with custom http status code {int} and limits requests")
 	public void iHaveARequestExecutorWhichDoesRetriesWithCustomHttpStatusCodeAndLimitsRequests(int retryCount,
 			int httpStatus) {
-		Duration waitTime = Duration.ofSeconds(1);
-		RateLimiter rateLimiter = new RateLimiterConfig(1, waitTime, waitTime).getRateLimiter();
+		RateLimiter rateLimiter = RateLimiterConfig.limitForPeriod(1, "PT1S").getRateLimiter();
 		Retry retry = RetryConfig.of(retryCount, List.of(httpStatus)).getRetry();
 		requestExecutor = RequestExecutorDecorator.decorate(factory.createNoAuthExecutor()).with(retry)
 				.with(rateLimiter).get();

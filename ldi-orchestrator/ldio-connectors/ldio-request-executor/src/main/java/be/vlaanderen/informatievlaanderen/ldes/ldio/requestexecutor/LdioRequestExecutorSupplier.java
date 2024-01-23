@@ -55,8 +55,8 @@ public class LdioRequestExecutorSupplier {
         return props.getOptionalInteger(MAX_REQUESTS_PER_MINUTE)
                 .map(maxRequestsPerMinute -> RateLimiterConfig.limitPerMinute(maxRequestsPerMinute).getRateLimiter())
                 .orElseGet(() -> {
-                    String period = props.getOptionalProperty(RATE_LIMIT_PERIOD).orElse(DEFAULT_RATE_LIMIT_PERIOD);
-                    int limit = props.getOptionalInteger(RATE_LIMIT_LIMIT).orElse(500);
+                    final String period = props.getOptionalProperty(RATE_LIMIT_PERIOD).orElse(DEFAULT_RATE_LIMIT_PERIOD);
+                    final int limit = props.getOptionalInteger(RATE_LIMIT_LIMIT).orElse(500);
                     return RateLimiterConfig.limitForPeriod(limit, period).getRateLimiter();
                 });
     }
