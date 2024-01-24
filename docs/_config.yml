@@ -38,10 +38,6 @@ just_the_docs:
     ldi-nifi:
       name: Linked Data Interactions for Apache NiFi
 
-nav_external_links:
-  - title: VSDS Technical Docs
-    url: https://informatievlaanderen.github.io/VSDS-Tech-Docs/
-    hide_icon: false # set to true to hide the external link icon - defaults to false
 
 enable_copy_code_button: true
 

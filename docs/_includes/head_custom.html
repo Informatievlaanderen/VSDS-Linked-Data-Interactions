@@ -4,14 +4,96 @@
             src="{{ '/assets/images/divider_globalheader.svg' | relative_url }}" alt="divider" data-v-df634f57=""><span
             class="header-title header-font" data-v-df634f57="">Vlaamse Smart Data Space</span><span class="spacer"
             data-v-df634f57=""></span>
-        <div id="help-needed" data-v-df634f57=""><span class="header-font" data-v-df634f57="">Hulp nodig</span><img
+        <div id="help-needed" data-v-df634f57=""><span class="header-font" data-v-df634f57="">Hulp nodig</span><a id="help" href="https://www.vlaanderen.be/vlaamse-smart-data-space-portaal/contact"><img
                 class="question-menu-item" src="{{ '/assets/images/question-mark.svg' | relative_url }}" alt="?"
-                data-v-df634f57=""></div>
+                data-v-df634f57=""></a></div>
     </div>
     <hr class="divider" data-v-df634f57="">
 </div>
 
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+    <div class="container-fluid">
 
+
+    
+        
+<a href="https://www.vlaanderen.be/vlaamse-smart-data-space-portaal/blog">
+    <button type="button" class="btn btn-navbar custom-border" >
+        <span class="nav-icon-bar">Blog posts</span>
+    </button>
+</a>
+
+<a href="https://informatievlaanderen.github.io/OSLO-mapping/">
+    <button type="button" class="btn btn-navbar custom-border" >
+        <span class="nav-icon-bar">OSLO mapping</span>
+    </button>
+</a>
+
+  <a href="https://informatievlaanderen.github.io/VSDS-Linked-Data-Interactions/">
+    <button type="button" class="btn btn-navbar custom-border-activated" >
+        <span class="nav-icon-bar">Linked Data Interactions</span>
+    </button>
+</a>
+
+<a href="https://informatievlaanderen.github.io/VSDS-LDESServer4J/">
+    <button type="button" class="btn btn-navbar custom-border" >
+        <span class="nav-icon-bar">LDES server</span>
+    </button>
+</a>
+
+  <a href="https://informatievlaanderen.github.io/VSDS-Linked-Data-Interactions/ldio/ldio-inputs/ldio-ldes-client">
+    <button type="button" class="btn btn-navbar custom-border" >
+        <span class="nav-icon-bar">LDES client</span>
+    </button>
+</a>
+
+<a href="https://github.com/Informatievlaanderen/VSDS-Onboarding-Example">
+    <button type="button" class="btn btn-navbar custom-border" >
+        <span class="nav-icon-bar">Learn by doing</span>
+    </button>
+
+<a href="https://informatievlaanderen.github.io/VSDS-Tech-Docs/">
+    <button type="button" class="btn btn-navbar custom-border" >
+        <span class="nav-icon-bar">Home</span>
+    </button>
+
+</a>
+
+<!--            <form class="navbar-search pull-right" 
+action="http://google.com/search" method="get">
+{% if site.safe %}
+            <input type="hidden" name="q" value="site:{{ site.url | remove_first:'http://' }}">
+{% else %}
+            <input type="hidden" name="q" value="site:{{ site.url | domain_name }}">
+{% endif %}
+            <input type="text" name="q" class="input-medium search-query" placeholder="Search">
+        </form> -->
+        <div class="nav-collapse collapse">
+            <ul class="nav">
+{% for node in site.navbar_list %}
+{% if node.name == page.group %}{% assign active = 'active' %}
+{% else %}{% assign active = nil %}{% endif %}
+{% if node.dropdown %}
+                <li class="dropdown dropdown-container {{ active }}">
+                    <a class="dropdown-link" href="{{ site.baseurl }}{{ node.link }}">{{ node.name }}</a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ node.name }}<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+    {% for sub in node.dropdown %}
+                        <li><a href="{{ site.baseurl }}{{ sub.link }}">{{ sub.name }}</a></li>
+    {% endfor %}
+                    </ul>
+                </li>
+{% else %}
+                <li class="{{ active }}">
+                    <a href="{{ site.baseurl }}{{ node.link }}">{{ node.name }}</a>
+                </li>
+{% endif %}
+{% endfor %}
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
 
 <style>
 
@@ -19,9 +101,24 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    background-image: url(/assets/images/hulp_nodig.svg | relative_url);
+    background-image: url(https://informatievlaanderen.github.io/OSLO-mapping/assets/images/hulp_nodig.svg);
+
     width: 144px;
     height: 44px;
+}
+
+.custom-border-activated {
+background-color: rgb(255, 230, 21);
+}
+
+.custom-border {
+    border: 0.3px solid rgb(0, 200, 171); /* Randkleur */
+    /* Voeg hier eventueel andere stijlelementen toe */
+}
+
+.navbar-fixed-top .navbar-inner {
+margin-top:42px;
+height: 35px;
 }
 
 .global-header[data-v-df634f57] {
@@ -30,7 +127,6 @@
     align-items: center;
     position: fixed;
     width: 100%;
-    border-bottom:0.5px solid rgb(138, 138, 138);
     background-color: white;
     z-index: 100;
 
@@ -39,9 +135,20 @@
 .test-header{
     margin-bottom: 20px;
     overflow:hidden;
+    z-index: 100;
 }
 
+.navbar .btn-navbar {
+float:right;
+z-index: 100;
+}
 
+.navbar navbar-fixed-top{
+    margin-bottom: 20px;
+    overflow:hidden;
+    top:200px;
+    z-index: 100;
+}
 
 element.style {
 }
@@ -73,5 +180,74 @@ element.style {
 #help-needed > span[data-v-df634f57] {
     margin-left: 25px;
 }
+
+/* title of the site */
+#header {
+    height: 80px;
+}
+#header hgroup {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+}
+#header h1 {
+    margin: 0;
+    font-size: 1.75em;
+    font-weight: bold;
+}
+#header h2 {
+    color: #ccc;
+    margin: 0 0 4px 16px;
+    line-height: 0.8;
+    font-size: 1.0em;
+    font-weight: normal;
+}
+#header a,
+#header a:hover,
+#header a:visited {
+    text-decoration: none;
+}
+
+/* header.html: navbar */
+.navbar-fixed-top {
+    margin-bottom: 20px;
+    position: static;
+    top:500px;
+    z-index: 100;
+}
+.navbar-fixed-top .navbar-inner {
+    padding: 0;
+    border-top: 1px solid #d4d4d4;
+    z-index: 100;
+}
+.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus {
+    box-shadow: none;
+}
+.navbar .btn-navbar {
+    margin-bottom: 5px;
+}
+.lt-ie9 .collapse {
+    overflow: visible; /* removed from 2.1.1, but still IE need this */
+}
+
+/* header.html: dropdown container */
+.navbar .nav > li.dropdown-container {
+    position: relative !important;
+}
+.navbar .nav > li.dropdown-container .dropdown-link {
+    position: absolute !important;
+    top: 200px;
+    left: 0;
+    z-index: 1;
+}
+.navbar .nav > li.dropdown-container .caret {
+    margin-left: 1.5em;
+}
+.navbar .nav > li.dropdown-container .dropdown-link + .dropdown-toggle {
+    z-index: 0;
+}
+
 
 </style>
