@@ -1,5 +1,5 @@
 ---
-title: Home
+title: Linked Data Interactions
 layout: home
 nav_order: 0
 ---
