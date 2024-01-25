@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.SerializationToJsonException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.properties.LinkedDataAttribute;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.valueproperties.DateTimeValue;
 import org.apache.jena.rdf.model.Model;
@@ -87,6 +88,7 @@ public class LinkedDataModel extends LinkedDataAttributeBase {
 		Model model = ModelFactory.createDefaultModel();
 		RDFParser.fromString(toString())
 				.lang(Lang.JSONLD)
+				.context(JenaContextProvider.create().getContext())
 				.parse(model);
 		return model;
 	}

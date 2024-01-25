@@ -5,11 +5,12 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtrac
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.riot.RDFParser;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
@@ -92,7 +93,12 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 
 		String content = FlowManager.receiveData(session, flowFile);
 		try {
-			Model input = RDFParserBuilder.create().fromString(content).lang(lang).toModel();
+			Model input =
+					RDFParser
+							.fromString(content)
+							.context(JenaContextProvider.create().getContext())
+							.lang(lang)
+							.toModel();
 			Model versionObject = versionObjectCreator.transform(input);
 
 			if (versionObject.isIsomorphicWith(input)) {

@@ -9,6 +9,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.sparql.util.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,16 +23,15 @@ public class JsonToLdAdapter implements LdiAdapter {
 	private final String coreContext;
 	private final boolean forceContentType;
 
-	public JsonToLdAdapter(String coreContext) {
-		this(coreContext, false);
-	}
+	private final Context jenaContext;
 
-	public JsonToLdAdapter(String coreContext, boolean forceContentType) {
+	public JsonToLdAdapter(String coreContext, boolean forceContentType, Context jenaContext) {
 		if (coreContext == null) {
 			throw new IllegalArgumentException("Core context can't be null");
 		}
 		this.coreContext = coreContext;
 		this.forceContentType = forceContentType;
+		this.jenaContext = jenaContext;
 	}
 
 	@Override
@@ -76,6 +76,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 			Model model = ModelFactory.createDefaultModel();
 			RDFParser.fromString(jsonObject.toString())
 					.lang(Lang.JSONLD)
+					.context(jenaContext)
 					.parse(model);
 			return model;
 		} else {

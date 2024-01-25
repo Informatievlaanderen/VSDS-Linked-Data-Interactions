@@ -23,6 +23,10 @@
             <artifactId>json-to-ld-adapter</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-common</artifactId>
+        </dependency>
 
         <!-- TEST -->
         <dependency>

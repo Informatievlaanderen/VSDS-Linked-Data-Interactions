@@ -10,4 +10,11 @@
     </parent>
 
     <artifactId>json-to-ld-adapter</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

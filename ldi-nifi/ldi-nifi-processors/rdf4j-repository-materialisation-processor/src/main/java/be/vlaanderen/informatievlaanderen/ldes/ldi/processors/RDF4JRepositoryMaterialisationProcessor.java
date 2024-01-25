@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.nifi.annotation.behavior.InputRequirement;
@@ -77,7 +78,11 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			String content = FlowManager.receiveData(session, flowFile);
 
 			try {
-				materialiser.process(RDFParser.fromString(content).lang(dataSourceFormat).toModel());
+				materialiser.process(RDFParser
+						.fromString(content)
+						.context(JenaContextProvider.create().getContext())
+						.lang(dataSourceFormat)
+						.toModel());
 				session.transfer(flowFile, SUCCESS);
 			} catch (Exception e) {
 				getLogger().error("Error sending model to repository", e.getMessage());
