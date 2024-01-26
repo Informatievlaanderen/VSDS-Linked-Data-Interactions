@@ -118,7 +118,7 @@ class LdioRequestExecutorSupplierTest {
 	void shouldReturnRateLimitExecutorWithConfiguredProperties_whenPropertiesConfigured() {
 		ComponentProperties properties = new ComponentProperties(Map.of(
 				RATE_LIMIT_ENABLED, "true",
-				MAX_REQUESTS_PER_MINUTE, "100"));
+				RATE_LIMIT_LIMIT, "100"));
 		RequestExecutorDecorator requestExecutorDecorator = mock(RequestExecutorDecorator.class);
 		when(requestExecutorDecorator.with((Retry) any())).thenReturn(requestExecutorDecorator);
 		when(requestExecutorDecorator.with((RateLimiter) any())).thenReturn(requestExecutorDecorator);
