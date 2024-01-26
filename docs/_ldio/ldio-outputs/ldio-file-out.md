@@ -8,7 +8,7 @@ title: File Out
 ***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut***
 
 The LDIO File Out is used to write models to files based on a timestamp path property on the model.
-Please refer to the [core documentation](../../core/ldi-outputs/file-archiving.md) for more information.
+Please refer to the [core documentation](../../core/ldi-outputs/file-archiving) for more information.
 
 ## LDIO Config
 
