@@ -22,7 +22,6 @@ public class JsonToLdAdapter implements LdiAdapter {
 	private static final String MIMETYPE = "application/json";
 	private final String coreContext;
 	private final boolean forceContentType;
-
 	private final Context jenaContext;
 
 	public JsonToLdAdapter(String coreContext, boolean forceContentType, Context jenaContext) {

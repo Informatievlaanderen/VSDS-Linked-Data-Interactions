@@ -22,7 +22,6 @@ public class RdfAdapter implements LdiAdapter {
 		return Stream.of(
 				RDFParser
 						.fromString(input.content())
-
 						.context(context)
 						.lang(nameToLang(input.mimeType()))
 						.toModel()
