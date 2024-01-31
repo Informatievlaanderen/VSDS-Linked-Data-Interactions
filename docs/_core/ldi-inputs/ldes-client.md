@@ -16,4 +16,4 @@ It will be ignored when an attempt is made to queue a known immutable fragment. 
 
 Processed members of mutable fragments are also kept in state. They are ignored if presented more than once.
 
-[VSDS Tech Docs]: https://informatievlaanderen.github.io/VSDS-Tech-Docs/docs/LDES_client.html
+[VSDS Tech Docs]: https://informatievlaanderen.github.io/VSDS-Tech-Docs/introduction/LDES_client
