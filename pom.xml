@@ -17,6 +17,7 @@
         <module>ldi-core</module>
         <module>ldi-orchestrator</module>
         <module>ldi-nifi</module>
+        <module>ldi-ldes-discoverer</module>
     </modules>
 
     <developers>
