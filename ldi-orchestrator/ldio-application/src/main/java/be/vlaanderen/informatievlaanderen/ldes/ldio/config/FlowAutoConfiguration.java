@@ -4,17 +4,17 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.components.ComponentExecutorImpl;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.components.LdioSender;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.ComponentExecutorImpl;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.LdioSender;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.SenderCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
@@ -22,6 +22,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -41,15 +43,16 @@ public class FlowAutoConfiguration {
 	private final ObservationRegistry observationRegistry;
 
 	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
-								 ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {
+	                             ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher,
+	                             ObservationRegistry observationRegistry) {
 		this.orchestratorConfig = orchestratorConfig;
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
 		this.observationRegistry = observationRegistry;
 	}
 
-	@PostConstruct
-	public void registerInputBeans() {
+	@EventListener
+	public void registerInputBeans(ContextRefreshedEvent event) {
 		orchestratorConfig.getPipelines().forEach(this::initialiseLdiInput);
 	}
 
@@ -77,6 +80,8 @@ public class FlowAutoConfiguration {
 		}
 
 		registerBean(pipelineConfig.getName() + "-ldiSender", ldioSender);
+
+		eventPublisher.publishEvent(new SenderCreatedEvent(pipelineConfig.getName(), ldioSender));
 
 		return new ComponentExecutorImpl(ldioTransformerPipeline);
 	}

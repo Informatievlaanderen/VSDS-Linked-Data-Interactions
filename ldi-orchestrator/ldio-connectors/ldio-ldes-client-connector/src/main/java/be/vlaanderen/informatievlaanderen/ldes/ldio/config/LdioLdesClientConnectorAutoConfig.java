@@ -10,9 +10,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,8 +27,9 @@ public class LdioLdesClientConnectorAutoConfig {
 	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
 
 	@Bean(NAME)
-	public LdioInputConfigurator ldioConfigurator(ObservationRegistry observationRegistry) {
-		return new LdioClientConnectorConfigurator(observationRegistry);
+	public LdioInputConfigurator ldioConfigurator(ApplicationEventPublisher eventPublisher,
+	                                              ObservationRegistry observationRegistry) {
+		return new LdioClientConnectorConfigurator(eventPublisher, observationRegistry);
 	}
 
 	public static class LdioClientConnectorConfigurator implements LdioInputConfigurator {
@@ -34,13 +37,14 @@ public class LdioLdesClientConnectorAutoConfig {
 		public static final String CONNECTOR_TRANSFER_URL = "connector-transfer-url";
 		public static final String PROXY_URL_TO_REPLACE = "proxy-url-to-replace";
 		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
+		private final ApplicationEventPublisher eventPublisher;
 		private final ObservationRegistry observationRegistry;
-
 		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
 
-		public LdioClientConnectorConfigurator(ObservationRegistry observationRegistry) {
+		public LdioClientConnectorConfigurator(ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {
+			this.eventPublisher = eventPublisher;
 			this.observationRegistry = observationRegistry;
 		}
 
@@ -59,8 +63,9 @@ public class LdioLdesClientConnectorAutoConfig {
 			LdioLdesClient ldesClient =
 					new LdioLdesClient(pipelineName, executor, observationRegistry, edcRequestExecutor, properties, statePersistence);
 			ldesClient.start();
+			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService)));
 
-			return new LdioLdesClientConnectorApi(transferService, tokenService, pipelineName).apiEndpoints();
+			return ldesClient;
 		}
 
 		private static EdcUrlProxy getEdcUrlProxy(ComponentProperties properties) {
