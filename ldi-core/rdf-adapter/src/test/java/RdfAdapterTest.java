@@ -1,10 +1,17 @@
 import be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import com.apicatalog.jsonld.JsonLdOptions;
+import com.apicatalog.jsonld.context.cache.LruCache;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.riot.RIOT;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ContextAccumulator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.apache.jena.riot.lang.LangJSONLD11.JSONLD_OPTIONS;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RdfAdapterTest {
@@ -20,10 +27,18 @@ class RdfAdapterTest {
 	private static final Model expectedModel = RDFParserBuilder.create().fromString(expectedQuads).lang(Lang.NQUADS)
 			.toModel();
 
+	private RdfAdapter adapter;
+
+	@BeforeEach
+	void setUp() {
+		final var options = new JsonLdOptions();
+		options.setDocumentCache(new LruCache<>(5));
+		final var context = ContextAccumulator.newBuilder(RIOT::getContext).context().set(JSONLD_OPTIONS, options);
+		adapter = new RdfAdapter(context);
+	}
+
 	@Test
 	void adapt_jsonLd() {
-		RdfAdapter adapter = new RdfAdapter();
-
 		String content = """
 				{
 				  "@context": "http://schema.org/",
@@ -43,8 +58,6 @@ class RdfAdapterTest {
 
 	@Test
 	void adapt_turtle() {
-		RdfAdapter adapter = new RdfAdapter();
-
 		String content = """
 				@prefix schema: <http://schema.org/> .
 

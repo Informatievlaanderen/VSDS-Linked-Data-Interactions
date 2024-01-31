@@ -10,4 +10,10 @@
     </parent>
 
     <artifactId>ngsiv2-to-ld-adapter</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>
