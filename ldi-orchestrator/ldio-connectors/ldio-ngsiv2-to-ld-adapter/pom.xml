@@ -6,7 +6,7 @@
     <parent>
         <artifactId>ldio-connectors</artifactId>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-        <version>1.14.0-SNAPSHOT</version>
+        <version>1.15.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>ldio-ngsiv2-to-ld-adapter</artifactId>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>ngsiv2-to-ld-adapter</artifactId>
-            <version>1.14.0-SNAPSHOT</version>
+            <version>1.15.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
