@@ -13,7 +13,7 @@ class MemberSupplierTest {
 	void ShouldThrowEndOfLdesException_whenThisExceptionIsThrownWithinTheExecutorService() {
 		TreeNodeProcessor treeNodeProcessor = mock(TreeNodeProcessor.class);
 		doThrow(EndOfLdesException.class).when(treeNodeProcessor).getMember();
-		MemberSupplier memberSupplier = new MemberSupplier(treeNodeProcessor, false);
+		MemberSupplier memberSupplier = new MemberSupplierImpl(treeNodeProcessor, false);
 
 		assertThrows(EndOfLdesException.class, memberSupplier::get);
 	}

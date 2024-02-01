@@ -123,12 +123,12 @@ public class MemberSupplierSteps {
 
 	@When("I create a MemberSupplier with state")
 	public void iCreateAMemberSupplierWithState() {
-		memberSupplier = new MemberSupplier(treeNodeProcessor, true);
+		memberSupplier = new MemberSupplierImpl(treeNodeProcessor, true);
 	}
 
 	@When("I create a MemberSupplier without state")
 	public void iCreateAMemberSupplierWithoutState() {
-		memberSupplier = new MemberSupplier(treeNodeProcessor, false);
+		memberSupplier = new MemberSupplierImpl(treeNodeProcessor, false);
 	}
 
 	@And("Postgres TestContainer is started")
@@ -160,10 +160,10 @@ public class MemberSupplierSteps {
 
 	@And("a {word} MemberSupplier and a {word} MemberSupplier")
 	public void aStatePersistenceStrategyProcessorAndAStatePersistenceStrategyProcessor(String arg0, String arg1) {
-		memberSuppliers[0] = new MemberSupplier(new TreeNodeProcessor(ldesMetaData,
+		memberSuppliers[0] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
 				requestExecutorFactory.createNoAuthExecutor()), false);
-		memberSuppliers[1] = new MemberSupplier(new TreeNodeProcessor(ldesMetaData,
+		memberSuppliers[1] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
 				requestExecutorFactory.createNoAuthExecutor()), false);
 	}

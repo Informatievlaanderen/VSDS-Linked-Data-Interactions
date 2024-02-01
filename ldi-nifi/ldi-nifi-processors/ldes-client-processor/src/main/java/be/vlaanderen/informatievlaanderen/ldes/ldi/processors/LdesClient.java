@@ -10,6 +10,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
 import io.github.resilience4j.retry.Retry;
 import ldes.client.treenodesupplier.MemberSupplier;
+import ldes.client.treenodesupplier.MemberSupplierImpl;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
@@ -79,7 +80,7 @@ public class LdesClient extends AbstractProcessor {
 		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(context);
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
 		boolean keepState = stateKept(context);
-		memberSupplier = new MemberSupplier(treeNodeProcessor, keepState);
+		memberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
 
 		determineLdesProperties(ldesMetaData, requestExecutor, context);
 

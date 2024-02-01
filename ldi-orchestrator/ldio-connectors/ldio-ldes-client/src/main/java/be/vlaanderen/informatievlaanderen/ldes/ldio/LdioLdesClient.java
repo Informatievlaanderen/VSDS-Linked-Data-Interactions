@@ -6,6 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
+import ldes.client.treenodesupplier.MemberSupplierImpl;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
@@ -66,21 +67,16 @@ public class LdioLdesClient extends LdioInput {
 		Lang sourceFormat = properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
 				.map(RDFLanguages::nameToLang)
 				.orElse(Lang.JSONLD);
-		LdesMetaData ldesMetaData = new LdesMetaData(targetUrl,
-				sourceFormat);
-		TreeNodeProcessor treeNodeProcessor = getTreeNodeProcessor(statePersistence, requestExecutor, ldesMetaData);
+
+		TreeNodeProcessor treeNodeProcessor =
+				new TreeNodeProcessor(new LdesMetaData(targetUrl, sourceFormat), statePersistence, requestExecutor);
+
 		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
-
-		return new MemberSupplier(treeNodeProcessor, keepState);
-	}
-
-	private TreeNodeProcessor getTreeNodeProcessor(StatePersistence statePersistenceStrategy,
-												   RequestExecutor requestExecutor,
-												   LdesMetaData ldesMetaData) {
-		return new TreeNodeProcessor(ldesMetaData, statePersistenceStrategy, requestExecutor);
+		return new MemberSupplierImpl(treeNodeProcessor, keepState);
 	}
 
 	public void stopThread() {
 		threadRunning = false;
 	}
+
 }

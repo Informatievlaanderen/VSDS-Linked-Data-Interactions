@@ -21,6 +21,12 @@
             <artifactId>starting-node</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>version-materialiser</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Persistence -->
         <dependency>
