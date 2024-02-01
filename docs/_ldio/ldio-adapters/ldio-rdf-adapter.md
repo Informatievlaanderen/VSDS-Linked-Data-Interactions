@@ -12,6 +12,6 @@ An LDIO wrapper component for the [LDI RDF Adapter building block](../../core/ld
 ## Config
 
 
-| Property                  | Description                                                                                                  | Required | Default | Example | Supported values |
-|:--------------------------|:-------------------------------------------------------------------------------------------------------------|:---------|:--------|:--------|:-----------------|
-| max-jsonld-cache-capacity | A cache is used when fetching json-ld contexts. The size of this cache can be configured with this property. | No       | 100     | 100     | Integer          |
+| Property                  | Description                                                                                                           | Required | Default | Example | Supported values |
+|:--------------------------|:----------------------------------------------------------------------------------------------------------------------|:---------|:--------|:--------|:-----------------|
+| max-jsonld-cache-capacity | A cache is used when fetching json-ld contexts. The number of cached contexts can be configured with this property.   | No       | 100     | 100     | Integer          |
