@@ -32,7 +32,7 @@ public class LdioKafkaInAutoConfig {
 	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn";
 
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn")
+	@Bean(NAME)
 	public LdioKafkaInConfigurator ldioConfigurator(ObservationRegistry observationRegistry) {
 		return new LdioKafkaInConfigurator(observationRegistry);
 	}
