@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.JmsConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
@@ -10,7 +11,6 @@ import org.apache.jena.riot.RDFLanguages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,9 +20,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterM
 
 @Configuration
 public class LdioAmqpInAutoConfig {
-	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn";
-
-	@Bean(NAME)
+	@Bean(LdioAmqpIn.NAME)
 	public LdioJmsInConfigurator ldioConfigurator(LdioAmqpInRegistrator ldioAmqpInRegistrator,
 	                                              ObservationRegistry observationRegistry) {
 		return new LdioJmsInConfigurator(ldioAmqpInRegistrator, observationRegistry);
@@ -44,17 +42,11 @@ public class LdioAmqpInAutoConfig {
 			String pipelineName = config.getProperty(PIPELINE_NAME);
 			verifyAdapterPresent(pipelineName, adapter);
 
-			LdioAmqpIn ldioAmqpIn = new LdioAmqpIn(NAME, pipelineName, executor, adapter, observationRegistry,
-					getContentType(config), ldioAmqpInRegistrator);
+			JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),
+					getRemoteUrl(config), config.getProperty(QUEUE));
 
-			Optional<String> username = config.getOptionalProperty(USERNAME);
-
-			if (username.isPresent()) {
-				return ldioAmqpIn.registerListener(username.get(), config.getProperty(PASSWORD),
-						getRemoteUrl(config), config.getProperty(TOPIC));
-			} else {
-				return ldioAmqpIn.registerListener(getRemoteUrl(config), config.getProperty(TOPIC));
-			}
+			return new LdioAmqpIn(pipelineName, executor, adapter, observationRegistry,
+					getContentType(config), jmsConfig, ldioAmqpInRegistrator);
 		}
 
 		private String getContentType(ComponentProperties config) {

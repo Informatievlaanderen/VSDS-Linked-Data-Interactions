@@ -6,6 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpInConfigKeys;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -30,34 +31,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
-	public LdioAmqpInRegistrator ldioAmqpInRegistrator = jmsInRegistrator();
-	ArtemisContainer activemq = new ArtemisContainer("apache/activemq-artemis:2.30.0-alpine")
+	private final LdioAmqpInRegistrator ldioAmqpInRegistrator = jmsInRegistrator();
+	private final ArtemisContainer activemq = new ArtemisContainer("apache/activemq-artemis:2.30.0-alpine")
 			.withUser("user")
 			.withPassword("password")
 			.withExposedPorts(61616);
 	private Model inputModel;
-	private String topic;
+	private String queue;
 	private String contentType;
 	private Map<String, String> config;
 	private List<LdiAdapter.Content> adapterResult;
 	private List<Model> componentExecutorResult;
 	private Session session;
-	private Connection connection;
 	private MessageProducer producer;
 
-	@Given("^I create a topic for my scenario: (.*)$")
-	public void iCreateATopic(String topic) throws JMSException {
-		this.topic = topic;
+	@Given("^I create a queue for my scenario: (.*)$")
+	public void iCreateAQueue(String queueName) throws JMSException {
+		this.queue = queueName;
 		activemq.start();
 
 		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(activemq.getBrokerUrl());
-		connection = connectionFactory.createConnection(activemq.getUser(), activemq.getPassword());
+		Connection connection = connectionFactory.createConnection(activemq.getUser(), activemq.getPassword());
 		connection.start();
 
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
 		// Getting the queue
-		Queue queue = session.createQueue(topic);
+		Queue queue = session.createQueue(queueName);
 
 		// Creating the producer & consumer
 		producer = session.createProducer(queue);
@@ -71,7 +71,7 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 
 	@SuppressWarnings("unchecked")
 	@And("I start a listener with an LdioJmsIn component")
-	public void iCreateAnLdioKafkaInComponent() {
+	public void iCreateAnLdioJmsInComponent() {
 		ComponentProperties properties = new ComponentProperties(config);
 		final ComponentExecutor componentExecutor = linkedDataModel -> componentExecutorResult.add(linkedDataModel);
 		final LdiAdapter adapter = content -> {
@@ -82,8 +82,8 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 		ldioJmsInConfigurator.configure(adapter, componentExecutor, properties);
 	}
 
-	@And("^I send a model from (.*) and (.*) to broker using the kafka producer")
-	public void iSendAModelFromContentAndContentTypeToBrokerUsingTheKafkaProducer(String modelString, String contentType) throws JMSException {
+	@And("^I send a model from (.*) and (.*) to broker using the amqp producer")
+	public void iSendAModelFromContentAndContentTypeToBrokerUsingTheAMQPProducer(String modelString, String contentType) throws JMSException {
 		this.contentType = contentType;
 		this.inputModel = RDFParser.fromString(modelString).lang(contentTypeToLang(contentType)).toModel();
 
@@ -104,7 +104,7 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 		config.put(AmqpInConfigKeys.REMOTE_URL, "amqp://%s:%d".formatted(activemq.getHost(), activemq.getMappedPort(61616)));
 		config.put(AmqpInConfigKeys.USERNAME, activemq.getUser());
 		config.put(AmqpInConfigKeys.PASSWORD, activemq.getPassword());
-		config.put(AmqpInConfigKeys.TOPIC, topic);
+		config.put(AmqpInConfigKeys.QUEUE, queue);
 		config.put(AmqpInConfigKeys.CONTENT_TYPE, contentType);
 		config.put(OrchestratorConfig.ORCHESTRATOR_NAME, "orchestratorName");
 		config.put(PipelineConfig.PIPELINE_NAME, "pipelineName");
@@ -113,11 +113,6 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	@Then("Wait for the message")
 	public void theListenerWillWaitForTheMessage() {
 		await().until(() -> adapterResult.size() == 1);
-	}
-
-	@And("^The result header will contain the (.*)$")
-	public void theResultHeaderWillContainTheContentType(String expectedContentType) {
-		assertEquals(expectedContentType, adapterResult.get(0).mimeType());
 	}
 
 	@And("The result value will contain the model")
@@ -130,6 +125,11 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	@And("The componentExecutor will have been called")
 	public void theComponentExecutorWillHaveBeenCalled() {
 		assertEquals(1, componentExecutorResult.size());
+	}
+
+	@ParameterType(value = "true|True|TRUE|false|False|FALSE")
+	public Boolean booleanValue(String value) {
+		return Boolean.valueOf(value);
 	}
 
 }

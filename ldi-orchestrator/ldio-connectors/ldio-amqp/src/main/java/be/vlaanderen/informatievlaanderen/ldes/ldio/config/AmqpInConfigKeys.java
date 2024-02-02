@@ -5,7 +5,7 @@ public class AmqpInConfigKeys {
 	public static final String CONTENT_TYPE = "content-type";
 	public static final String USERNAME = "username";
 	public static final String PASSWORD = "password";
-	public static final String TOPIC = "topic";
+	public static final String QUEUE = "queue";
 	// Remote url
 	public static final String REMOTE_URL = "remote-url";
 	public static final String REMOTE_URL_REGEX = "^(amqp|amqps|amqpws|amqpwss)://[a-zA-Z0-9.-]+:\\d+(.*)?$";

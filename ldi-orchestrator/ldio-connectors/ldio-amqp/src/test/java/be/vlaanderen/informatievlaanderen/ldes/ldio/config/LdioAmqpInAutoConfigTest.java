@@ -14,7 +14,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorCo
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LdioAmqpInAutoConfigTest {
+class LdioAmqpInAutoConfigTest {
 	@Test
 	void shouldThrowExceptionWhenInvalidUrlConfig() {
 		var configurator = new LdioAmqpInAutoConfig.LdioJmsInConfigurator(
@@ -48,7 +48,7 @@ public class LdioAmqpInAutoConfigTest {
 		config.put(AmqpInConfigKeys.REMOTE_URL, "amqp://localhost:61616");
 		config.put(AmqpInConfigKeys.USERNAME, "user");
 		config.put(AmqpInConfigKeys.PASSWORD, "pass");
-		config.put(AmqpInConfigKeys.TOPIC, "topic");
+		config.put(AmqpInConfigKeys.QUEUE, "queue");
 		config.put(ORCHESTRATOR_NAME, "orchestrator.name");
 		config.put(PIPELINE_NAME, "pipeline.name");
 		return config;
