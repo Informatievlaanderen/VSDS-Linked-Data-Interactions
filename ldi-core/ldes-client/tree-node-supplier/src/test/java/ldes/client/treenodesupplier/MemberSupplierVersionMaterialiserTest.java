@@ -1,47 +1,49 @@
 package ldes.client.treenodesupplier;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class MemberSupplierVersionMaterialiserTest {
 
+    @Mock
+    private MemberSupplier memberSupplier;
+    
+    @Mock
+    private VersionMaterialiser versionMaterialiser;
+    
+    @InjectMocks
+    private MemberSupplierVersionMaterialiser memberSupplierVersionMaterialiser;
+
     @Test
-    void testVersionMaterialiseMemberOnly() {
-        Model initModel = ModelFactory.createDefaultModel();
+    void when_GetIsCalled_then_TheWrappedMemberSupplierIsCalledAndTheResultIsMaterialized() {
+        Model versionMember = RDFParser.source("__files/ldes-member-versioned.ttl").toModel();
+        Model stateMember = RDFParser.source("__files/ldes-member-unversioned.ttl").toModel();
 
-        VersionMaterialiser versionMaterialiser = new VersionMaterialiser(
-                initModel.createProperty("http://purl.org/dc/terms/isVersionOf"), true);
+        when(memberSupplier.get()).thenReturn(new SuppliedMember(versionMember));
+        when(versionMaterialiser.transform(versionMember)).thenReturn(stateMember);
 
-        Model versionedMember = RDFParser.source("__files/ldes-member-versioned.ttl").toModel();
-
-        Model output = versionMaterialiser.transform(versionedMember);
-
-        Model comparisonModel =
-                RDFParser.source("__files/ldes-member-unversioned.ttl").toModel();
-
-        assertTrue(output.isIsomorphicWith(comparisonModel));
+        SuppliedMember suppliedMember = memberSupplierVersionMaterialiser.get();
+        
+        assertThat(suppliedMember.getModel().isIsomorphicWith(stateMember)).isTrue();
     }
 
     @Test
-    void testVersionMaterialiseWithContext() {
-        Model initModel = ModelFactory.createDefaultModel();
+    void when_DestroyStateIsCalled_then_TheWrappedMemberSupplierIsCalled() {
+        memberSupplierVersionMaterialiser.destroyState();
 
-        VersionMaterialiser versionMaterialiser = new VersionMaterialiser(
-                initModel.createProperty("http://purl.org/dc/terms/isVersionOf"), false);
-
-        Model versionedMember = RDFParser.source("__files/ldes-member-versioned.ttl").toModel();
-
-        Model output = versionMaterialiser.transform(versionedMember);
-
-        Model comparisonModel =
-                RDFParser.source("__files/ldes-member-unversioned-context-included.ttl").toModel();
-
-        assertTrue(output.isIsomorphicWith(comparisonModel));
+        verify(memberSupplier).destroyState();
     }
 
 }
