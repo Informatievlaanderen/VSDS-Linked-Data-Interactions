@@ -38,6 +38,7 @@ public class HttpInputPoller extends LdioInput implements Runnable {
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;
 		this.scheduler = new ThreadPoolTaskScheduler();
+		this.scheduler.setWaitForTasksToCompleteOnShutdown(false);
 		this.scheduler.setErrorHandler(t -> log.error(t.getMessage()));
 	}
 
