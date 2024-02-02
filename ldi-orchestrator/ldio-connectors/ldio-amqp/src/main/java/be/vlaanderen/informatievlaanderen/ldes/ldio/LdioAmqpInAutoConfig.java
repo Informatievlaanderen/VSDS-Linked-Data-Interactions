@@ -45,8 +45,8 @@ public class LdioAmqpInAutoConfig {
 			JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),
 					getRemoteUrl(config), config.getProperty(QUEUE));
 
-			return new LdioAmqpIn(pipelineName, executor, adapter, observationRegistry,
-					getContentType(config), jmsConfig, ldioAmqpInRegistrator);
+			return new LdioAmqpIn(pipelineName, executor, adapter, getContentType(config), jmsConfig, ldioAmqpInRegistrator, observationRegistry
+			);
 		}
 
 		private String getContentType(ComponentProperties config) {

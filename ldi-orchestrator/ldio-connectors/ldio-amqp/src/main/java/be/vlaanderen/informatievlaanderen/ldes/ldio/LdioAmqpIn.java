@@ -16,26 +16,23 @@ import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 public class LdioAmqpIn extends LdioInput implements MessageListener {
 	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioAmqpIn.class);
-	private final LdioAmqpInRegistrator jmsInRegistrator;
 	private final String defaultContentType;
 
 	/**
 	 * Creates a LdiInput with its Component Executor and LDI Adapter
 	 *
-	 * @param pipelineName
+	 * @param pipelineName        Unique identifier for the pipeline.
 	 * @param executor            Instance of the Component Executor. Allows the LDI Input to pass
 	 *                            data on the pipeline
 	 * @param adapter             Instance of the LDI Adapter. Facilitates transforming the input
 	 *                            data to a linked data model (RDF).
+	 * @param jmsConfig           Configuration class containing the necessary info to spin up a listener
+	 * @param jmsInRegistrator    Global service to maintain JMS listeners.
 	 * @param observationRegistry
-	 * @param jmsConfig
-	 * @param jmsInRegistrator
 	 */
 	protected LdioAmqpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
-	                     ObservationRegistry observationRegistry, String defaultContentType, JmsConfig jmsConfig,
-	                     LdioAmqpInRegistrator jmsInRegistrator) {
+	                     String defaultContentType, JmsConfig jmsConfig, LdioAmqpInRegistrator jmsInRegistrator, ObservationRegistry observationRegistry) {
 		super(NAME, pipelineName, executor, adapter, observationRegistry);
-		this.jmsInRegistrator = jmsInRegistrator;
 		this.defaultContentType = defaultContentType;
 		jmsInRegistrator.registerListener(jmsConfig, listenerEndpoint(jmsConfig.queue()));
 	}
