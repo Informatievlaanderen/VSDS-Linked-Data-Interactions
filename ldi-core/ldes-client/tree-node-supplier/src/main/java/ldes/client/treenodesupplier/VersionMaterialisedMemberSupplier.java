@@ -8,12 +8,12 @@ import org.apache.jena.rdf.model.Model;
  * This is a decorator for the {@link MemberSupplier} which makes it possible to materialize the version objects to
  * state objects before providing them.
  */
-public class MemberSupplierVersionMaterialiser implements MemberSupplier {
+public class VersionMaterialisedMemberSupplier implements MemberSupplier {
 
     private final MemberSupplier memberSupplier;
     private final VersionMaterialiser versionMaterialiser;
 
-    public MemberSupplierVersionMaterialiser(MemberSupplier memberSupplier, VersionMaterialiser versionMaterialiser) {
+    public VersionMaterialisedMemberSupplier(MemberSupplier memberSupplier, VersionMaterialiser versionMaterialiser) {
         this.memberSupplier = memberSupplier;
         this.versionMaterialiser = versionMaterialiser;
     }

@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MemberSupplierVersionMaterialiserTest {
+class VersionMaterialisedMemberSupplierTest {
 
     @Mock
     private MemberSupplier memberSupplier;
@@ -24,7 +24,7 @@ class MemberSupplierVersionMaterialiserTest {
     private VersionMaterialiser versionMaterialiser;
     
     @InjectMocks
-    private MemberSupplierVersionMaterialiser memberSupplierVersionMaterialiser;
+    private VersionMaterialisedMemberSupplier versionMaterialisedMemberSupplier;
 
     @Test
     void when_GetIsCalled_then_TheWrappedMemberSupplierIsCalledAndTheResultIsMaterialized() {
@@ -34,14 +34,14 @@ class MemberSupplierVersionMaterialiserTest {
         when(memberSupplier.get()).thenReturn(new SuppliedMember(versionMember));
         when(versionMaterialiser.transform(versionMember)).thenReturn(stateMember);
 
-        SuppliedMember suppliedMember = memberSupplierVersionMaterialiser.get();
+        SuppliedMember suppliedMember = versionMaterialisedMemberSupplier.get();
         
         assertThat(suppliedMember.getModel().isIsomorphicWith(stateMember)).isTrue();
     }
 
     @Test
     void when_DestroyStateIsCalled_then_TheWrappedMemberSupplierIsCalled() {
-        memberSupplierVersionMaterialiser.destroyState();
+        versionMaterialisedMemberSupplier.destroyState();
 
         verify(memberSupplier).destroyState();
     }
