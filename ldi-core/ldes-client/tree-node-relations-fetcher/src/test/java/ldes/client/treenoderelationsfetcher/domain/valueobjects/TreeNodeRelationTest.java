@@ -1,4 +1,4 @@
-package ldes.client.treenodefetcher.domain.valueobjects;
+package ldes.client.treenoderelationsfetcher.domain.valueobjects;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TreeNodeRelationTest {
-
 	@Test
 	void test_GetRelations() {
 		final Model relationModel = RDFDataMgr.loadModel("tree-node-relations/tree-node-relation.ttl");

@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/302-redirects",
+    "headers": {
+      "Accept": {
+        "contains": "text/turtle"
+      }
+    }
+  },
+  "response": {
+    "status": 302,
+    "headers": {
+      "Location": "http://localhost:10101/200-treenode-is-also-view"
+    }
+  }
+}

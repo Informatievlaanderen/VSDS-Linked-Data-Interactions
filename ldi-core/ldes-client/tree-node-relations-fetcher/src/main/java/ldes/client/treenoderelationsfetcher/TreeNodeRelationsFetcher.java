@@ -1,10 +1,10 @@
-package ldes.client.treenodefetcher;
+package ldes.client.treenoderelationsfetcher;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
-import ldes.client.treenodefetcher.domain.valueobjects.ModelResponse;
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRelation;
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
+import ldes.client.treenoderelationsfetcher.domain.valueobjects.ModelResponse;
+import ldes.client.treenoderelationsfetcher.domain.valueobjects.TreeNodeRelation;
+import ldes.client.treenoderelationsfetcher.domain.valueobjects.TreeNodeRequest;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
@@ -13,10 +13,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-public class TreeRelationsFetcher {
+public class TreeNodeRelationsFetcher {
 	private final RequestExecutor requestExecutor;
 
-	public TreeRelationsFetcher(RequestExecutor requestExecutor) {
+	public TreeNodeRelationsFetcher(RequestExecutor requestExecutor) {
 		this.requestExecutor = requestExecutor;
 	}
 

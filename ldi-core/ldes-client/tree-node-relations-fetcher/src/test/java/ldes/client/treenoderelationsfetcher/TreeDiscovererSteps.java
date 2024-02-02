@@ -1,11 +1,11 @@
-package ldes.client.treenodesupplier;
+package ldes.client.treenoderelationsfetcher;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRelation;
+import ldes.client.treenoderelationsfetcher.domain.valueobjects.TreeNodeRelation;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;

@@ -32,12 +32,6 @@ public class ModelResponse {
 				.toList();
 	}
 
-	public List<TreeNodeRelation> getTreeNodeRelations() {
-		return extractRelations()
-				.map(this::mapToTreeNodeRelation)
-				.toList();
-	}
-
 	public List<TreeMember> getMembers() {
 		return extractMembers()
 				.map(memberStatement -> processMember(model, memberStatement))
@@ -60,14 +54,5 @@ public class ModelResponse {
 	private Stream<Statement> extractRelations() {
 		return Stream.iterate(model.listStatements(ANY_RESOURCE, W3ID_TREE_RELATION, ANY_RESOURCE),
 				Iterator::hasNext, UnaryOperator.identity()).map(Iterator::next);
-	}
-
-	private TreeNodeRelation mapToTreeNodeRelation(Statement statement) {
-		final StmtIterator relationsStatements = statement.getResource().listProperties();
-		final Model treeNodeRelation = ModelFactory.createDefaultModel()
-				.add(statement)
-				.add(relationsStatements);
-
-		return new TreeNodeRelation(treeNodeRelation);
 	}
 }

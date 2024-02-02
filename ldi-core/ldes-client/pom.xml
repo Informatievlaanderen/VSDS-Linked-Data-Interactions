@@ -17,6 +17,7 @@
         <module>starting-node</module>
         <module>tree-node-fetcher</module>
         <module>tree-node-supplier</module>
+        <module>tree-node-relations-fetcher</module>
     </modules>
 
     <properties>

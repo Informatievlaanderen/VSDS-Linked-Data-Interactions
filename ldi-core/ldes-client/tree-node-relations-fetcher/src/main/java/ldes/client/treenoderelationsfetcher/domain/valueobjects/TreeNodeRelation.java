@@ -1,4 +1,4 @@
-package ldes.client.treenodefetcher.domain.valueobjects;
+package ldes.client.treenoderelationsfetcher.domain.valueobjects;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;

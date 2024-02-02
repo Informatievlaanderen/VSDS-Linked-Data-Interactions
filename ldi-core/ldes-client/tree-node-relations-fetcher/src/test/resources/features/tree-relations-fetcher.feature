@@ -17,4 +17,4 @@ Feature: TreeRelationsFetcher
   Scenario: Fetching a not-found Response
     Given I have a TreeRelationsFetcher
     When I create a TreeNodeRequest with Lang "turtle" and url "http://localhost:10101/404-not-found"
-    Then An UnSupportedOperationException is thrown by the TreeRelationsFetcher
+    Then An UnSupportedOperationException is thrown
