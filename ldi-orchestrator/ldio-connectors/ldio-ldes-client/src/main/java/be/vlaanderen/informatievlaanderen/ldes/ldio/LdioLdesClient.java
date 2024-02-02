@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
@@ -7,10 +8,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.MemberSupplierImpl;
+import ldes.client.treenodesupplier.MemberSupplierVersionMaterialiser;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
@@ -18,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 public class LdioLdesClient extends LdioInput {
@@ -63,16 +68,50 @@ public class LdioLdesClient extends LdioInput {
 	}
 
 	private MemberSupplier getMemberSupplier() {
-		String targetUrl = properties.getProperty(LdioLdesClientProperties.URL);
-		Lang sourceFormat = properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
-				.map(RDFLanguages::nameToLang)
-				.orElse(Lang.JSONLD);
+        final MemberSupplier baseMemberSupplier =
+                new MemberSupplierImpl(getTreeNodeProcessor(), getKeepState());
+        if (useVersionMaterialisation()) {
+            return new MemberSupplierVersionMaterialiser(baseMemberSupplier, createVersionMaterialiser());
+        } else {
+            return baseMemberSupplier;
+        }
+	}
 
-		TreeNodeProcessor treeNodeProcessor =
-				new TreeNodeProcessor(new LdesMetaData(targetUrl, sourceFormat), statePersistence, requestExecutor);
+    private Boolean getKeepState() {
+        return properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
+    }
 
-		boolean keepState = properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
-		return new MemberSupplierImpl(treeNodeProcessor, keepState);
+    private TreeNodeProcessor getTreeNodeProcessor() {
+        String targetUrl = properties.getProperty(LdioLdesClientProperties.URL);
+        Lang sourceFormat = getSourceFormat();
+        LdesMetaData ldesMetaData = new LdesMetaData(targetUrl, sourceFormat);
+        return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
+    }
+
+    private boolean useVersionMaterialisation() {
+        return properties
+                .getOptionalBoolean(USE_VERSION_MATERIALISATION)
+                .orElseGet(() -> {
+                    log.warn("Version-materialization in the LDES Client hasn’t been turned on. " +
+                            "Please note that in the future, this will be the default output of the LDES Client " +
+                            "and having version-objects as output will have to be configured explicitly.");
+                    return false;
+                });
+    }
+
+    private Lang getSourceFormat() {
+        return properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
+                .map(RDFLanguages::nameToLang)
+                .orElse(Lang.JSONLD);
+    }
+
+    private VersionMaterialiser createVersionMaterialiser() {
+		final Property versionOfProperty = properties
+                .getOptionalProperty(VERSION_OF_PROPERTY)
+				.map(ResourceFactory::createProperty)
+				.orElseGet(() -> ResourceFactory.createProperty("http://purl.org/dc/terms/isVersionOf"));
+		final boolean restrictToMembers = properties.getOptionalBoolean(RESTRICT_TO_MEMBERS).orElse(false);
+        return new VersionMaterialiser(versionOfProperty, restrictToMembers);
 	}
 
 	public void stopThread() {
