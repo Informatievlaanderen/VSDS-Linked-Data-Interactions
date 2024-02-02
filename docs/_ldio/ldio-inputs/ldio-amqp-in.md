@@ -9,7 +9,7 @@ title: AMQP In
 ***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn***
 
 The LDIO AMQP In listens to messages from
-a [amqp queue](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol).
+an [AMQP 1.0 queue](https://www.amqp.org/resources/specifications).
 
 ## Config
 
