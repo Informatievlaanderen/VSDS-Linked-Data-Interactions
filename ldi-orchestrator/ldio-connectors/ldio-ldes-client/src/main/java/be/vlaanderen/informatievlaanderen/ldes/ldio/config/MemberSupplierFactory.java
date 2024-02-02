@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.MemberSupplierImpl;
@@ -25,9 +24,11 @@ public class MemberSupplierFactory {
     private final Logger log = LoggerFactory.getLogger(MemberSupplierFactory.class);
 
     private final ComponentProperties properties;
+    private final RequestExecutor requestExecutor;
 
-    public MemberSupplierFactory(ComponentProperties properties) {
+    public MemberSupplierFactory(ComponentProperties properties, RequestExecutor requestExecutor) {
         this.properties = properties;
+        this.requestExecutor = requestExecutor;
     }
 
     public MemberSupplier getMemberSupplier() {
@@ -46,15 +47,11 @@ public class MemberSupplierFactory {
         String targetUrl = properties.getProperty(LdioLdesClientProperties.URL);
         Lang sourceFormat = getSourceFormat();
         LdesMetaData ldesMetaData = new LdesMetaData(targetUrl, sourceFormat);
-        return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), getRequestExecutor());
+        return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor);
     }
 
     private StatePersistence getStatePersistence() {
         return new StatePersistenceFactory().getStatePersistence(properties);
-    }
-
-    private RequestExecutor getRequestExecutor() {
-        return new LdioRequestExecutorSupplier().getRequestExecutor(properties);
     }
 
     private Boolean getKeepState() {

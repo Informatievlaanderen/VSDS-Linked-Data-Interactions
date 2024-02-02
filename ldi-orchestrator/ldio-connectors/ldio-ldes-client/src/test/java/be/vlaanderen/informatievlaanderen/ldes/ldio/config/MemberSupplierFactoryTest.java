@@ -28,7 +28,7 @@ class MemberSupplierFactoryTest {
         defaultInputConfig.put("use-version-materialisation", "true");
         final var componentProperties = new ComponentProperties(defaultInputConfig);
 
-        MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties).getMemberSupplier();
+        MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null).getMemberSupplier();
 
         assertThat(memberSupplier).isInstanceOf(VersionMaterialisedMemberSupplier.class);
     }
@@ -37,7 +37,7 @@ class MemberSupplierFactoryTest {
     void when_VersionMaterialisationIsNotEnabled_then_MemberSupplierImplIsReturned() {
         final var componentProperties = new ComponentProperties(defaultInputConfig);
 
-        MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties).getMemberSupplier();
+        MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null).getMemberSupplier();
 
         assertThat(memberSupplier).isInstanceOf(MemberSupplierImpl.class);
     }
