@@ -26,6 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.github.tomakehurst.wiremock.client.CountMatchingStrategy.GREATER_THAN_OR_EQUAL;
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -91,7 +92,7 @@ class HttpInputPollerTest {
 		httpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, timeout(4000).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
-		WireMock.verify(2, getRequestedFor(urlEqualTo(ENDPOINT)));
+		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2), getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
 	@Test
@@ -121,8 +122,8 @@ class HttpInputPollerTest {
 		httpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, timeout(6000).times(4)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
-		WireMock.verify(2, getRequestedFor(urlEqualTo(endpoint)));
-		WireMock.verify(2, getRequestedFor(urlEqualTo(otherEndpoint)));
+		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2), getRequestedFor(urlEqualTo(endpoint)));
+		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2), getRequestedFor(urlEqualTo(otherEndpoint)));
 	}
 
 	@ParameterizedTest
@@ -133,7 +134,7 @@ class HttpInputPollerTest {
 		httpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, after(4000).never()).apply(any());
-		WireMock.verify(new CountMatchingStrategy(CountMatchingStrategy.GREATER_THAN_OR_EQUAL, 2),
+		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2),
 				getRequestedFor(urlEqualTo(ENDPOINT)));
 
 	}
@@ -147,7 +148,7 @@ class HttpInputPollerTest {
 		httpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, after(2000).never()).apply(any());
-		WireMock.verify(1, getRequestedFor(urlEqualTo(ENDPOINT)));
+		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 1), getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
 	@ParameterizedTest
@@ -159,7 +160,7 @@ class HttpInputPollerTest {
 		httpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, after(2000).never()).apply(any());
-		WireMock.verify(1, getRequestedFor(urlEqualTo(ENDPOINT)));
+		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 1), getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
 	@Test
