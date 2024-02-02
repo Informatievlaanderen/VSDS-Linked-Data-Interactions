@@ -16,6 +16,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.jena.sparql.util.Context;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.config.NgsiV2ToLdMapping.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.services.NgsiLdURIParser.toNgsiLdUri;
@@ -37,10 +38,12 @@ public class LinkedDataModel extends LinkedDataAttributeBase {
 	private DateTimeValue dateCreated;
 	private DateTimeValue dateModified;
 	private DateTimeValue dateObserved;
+	private final Context jenaContext;
 
 	public LinkedDataModel() {
 		super();
 		this.contexts = new ArrayList<>();
+		this.jenaContext = JenaContextProvider.create().getContext();
 	}
 
 	/**
@@ -88,7 +91,7 @@ public class LinkedDataModel extends LinkedDataAttributeBase {
 		Model model = ModelFactory.createDefaultModel();
 		RDFParser.fromString(toString())
 				.lang(Lang.JSONLD)
-				.context(JenaContextProvider.create().getContext())
+				.context(jenaContext)
 				.parse(model);
 		return model;
 	}

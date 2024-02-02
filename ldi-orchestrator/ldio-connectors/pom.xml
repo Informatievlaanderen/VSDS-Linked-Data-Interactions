@@ -13,6 +13,7 @@
 
     <modules>
         <module>ldio-request-executor</module>
+        <module>ldio-amqp</module>
 
         <module>ldio-http-in</module>
         <module>ldio-http-in-poller</module>
