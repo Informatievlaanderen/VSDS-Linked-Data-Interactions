@@ -175,14 +175,16 @@ public class MemberSupplierSteps {
 
 	@And("a {word} MemberSupplier and a {word} MemberSupplier")
 	public void aStatePersistenceStrategyProcessorAndAStatePersistenceStrategyProcessor(String arg0, String arg1) {
+		timestampPath = "http://www.w3.org/ns/prov#generatedAtTime";
+
 		memberSuppliers[0] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
 				requestExecutorFactory.createNoAuthExecutor(),
-				new TimestampFromCurrentTimeExtractor()), false);
+				new TimestampFromPathExtractor(createProperty(timestampPath))), false);
 		memberSuppliers[1] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg1),
 				requestExecutorFactory.createNoAuthExecutor(),
-				new TimestampFromCurrentTimeExtractor()), false);
+				new TimestampFromPathExtractor(createProperty(timestampPath))), false);
 	}
 
 	@When("I request one member from the MemberSuppliers")
