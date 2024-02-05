@@ -2,7 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.MemberSupplierImpl;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class MemberSupplierFactory {
 
@@ -44,10 +47,14 @@ public class MemberSupplierFactory {
     }
 
     private TreeNodeProcessor getTreeNodeProcessor() {
-        String targetUrl = properties.getProperty(LdioLdesClientProperties.URL);
+	    String targetUrl = properties.getProperty(URL);
         Lang sourceFormat = getSourceFormat();
         LdesMetaData ldesMetaData = new LdesMetaData(targetUrl, sourceFormat);
-        return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor);
+	    TimestampExtractor timestampExtractor = properties.getOptionalProperty(TIMESTAMP_PATH_PROP)
+			    .map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
+			    .orElseGet(TimestampFromCurrentTimeExtractor::new);
+
+	    return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor);
     }
 
     private StatePersistence getStatePersistence() {
@@ -55,7 +62,7 @@ public class MemberSupplierFactory {
     }
 
     private Boolean getKeepState() {
-        return properties.getOptionalBoolean(LdioLdesClientProperties.KEEP_STATE).orElse(false);
+	    return properties.getOptionalBoolean(KEEP_STATE).orElse(false);
     }
 
     private boolean useVersionMaterialisation() {
@@ -70,7 +77,7 @@ public class MemberSupplierFactory {
     }
 
     private Lang getSourceFormat() {
-        return properties.getOptionalProperty(LdioLdesClientProperties.SOURCE_FORMAT)
+	    return properties.getOptionalProperty(SOURCE_FORMAT)
                 .map(RDFLanguages::nameToLang)
                 .orElse(Lang.JSONLD);
     }
@@ -79,7 +86,7 @@ public class MemberSupplierFactory {
         final Property versionOfProperty = properties
                 .getOptionalProperty(VERSION_OF_PROPERTY)
                 .map(ResourceFactory::createProperty)
-                .orElseGet(() -> ResourceFactory.createProperty("http://purl.org/dc/terms/isVersionOf"));
+		        .orElseGet(() -> createProperty("http://purl.org/dc/terms/isVersionOf"));
         final boolean restrictToMembers = properties.getOptionalBoolean(RESTRICT_TO_MEMBERS).orElse(false);
         return new VersionMaterialiser(versionOfProperty, restrictToMembers);
     }
