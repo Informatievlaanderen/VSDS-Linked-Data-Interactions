@@ -23,8 +23,7 @@ import java.io.StringWriter;
 import java.util.Map;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MemberSupplierSteps {
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
@@ -180,10 +179,8 @@ public class MemberSupplierSteps {
 				defineStatePersistence(arg0),
 				requestExecutorFactory.createNoAuthExecutor(),
 				new TimestampFromCurrentTimeExtractor()), false);
-		memberSuppliers[1] = new MemberSupplier(new TreeNodeProcessor(ldesMetaData,
-				requestExecutorFactory.createNoAuthExecutor()), false);
 		memberSuppliers[1] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
-				defineStatePersistence(arg0),
+				defineStatePersistence(arg1),
 				requestExecutorFactory.createNoAuthExecutor(),
 				new TimestampFromCurrentTimeExtractor()), false);
 	}
@@ -196,8 +193,12 @@ public class MemberSupplierSteps {
 
 	@Then("Member {string} is processed in both MemberSuppliers")
 	public void memberIsProcessedInBothMemberSuppliers(String memberId) {
-		assertTrue(toString(suppliedMembers[0].getModel(), Lang.JSONLD).contains(memberId));
-		assertTrue(toString(suppliedMembers[1].getModel(), Lang.JSONLD).contains(memberId));
+		var property = createProperty("http://purl.org/dc/terms/created");
+
+		var supplier0MemberId = suppliedMembers[0].getModel().listSubjectsWithProperty(property).nextResource().asNode().toString();
+		assertEquals(memberId, supplier0MemberId);
+		var supplier1MemberId = suppliedMembers[1].getModel().listSubjectsWithProperty(property).nextResource().asNode().toString();
+		assertEquals(memberId, supplier1MemberId);
 	}
 
 	@Then("MemberSuppliers are destroyed")
