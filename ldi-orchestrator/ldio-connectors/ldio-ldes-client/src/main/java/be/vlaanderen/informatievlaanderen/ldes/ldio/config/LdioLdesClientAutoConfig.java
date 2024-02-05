@@ -9,7 +9,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfig
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.MemberSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,8 +25,6 @@ public class LdioLdesClientAutoConfig {
 
 	public static class LdioLdesClientConfigurator implements LdioInputConfigurator {
 
-		private final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
-		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 		private final ObservationRegistry observationRegistry;
 
 		public LdioLdesClientConfigurator(ObservationRegistry observationRegistry) {
@@ -37,11 +35,9 @@ public class LdioLdesClientAutoConfig {
 		public LdiComponent configure(LdiAdapter adapter, ComponentExecutor componentExecutor,
 		                              ComponentProperties properties) {
 			String pipelineName = properties.getProperty(PIPELINE_NAME);
-			RequestExecutor requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
-			StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
-
-			var ldesClient = new LdioLdesClient(pipelineName, componentExecutor, observationRegistry, requestExecutor,
-					properties, statePersistence);
+			RequestExecutor requestExecutor = new LdioRequestExecutorSupplier().getRequestExecutor(properties);
+			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor).getMemberSupplier();
+			var ldesClient = new LdioLdesClient(pipelineName, componentExecutor, observationRegistry, memberSupplier);
 			ldesClient.start();
 			return ldesClient;
 		}
