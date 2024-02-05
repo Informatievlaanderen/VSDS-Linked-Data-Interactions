@@ -36,6 +36,7 @@ import static org.mockito.Mockito.*;
 
 @WireMockTest(httpPort = 10101)
 class HttpInputPollerTest {
+
 	private final LdiAdapter adapter = mock(LdiAdapter.class);
 	private final ComponentExecutor executor = mock(ComponentExecutor.class);
 	private final static String pipelineName = "pipeline";
@@ -45,6 +46,7 @@ class HttpInputPollerTest {
 	private static final String CONTENT_TYPE = "application/n-quads";
 	private HttpInputPoller httpInputPoller;
 	private static final RequestExecutor noAuthExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+
 	@BeforeEach
     void setUp() {
 		reset();
@@ -147,19 +149,7 @@ class HttpInputPollerTest {
 		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
 		httpInputPoller.schedulePoller(pollingInterval);
 
-		Mockito.verify(adapter, after(2000).never()).apply(any());
-		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 1), getRequestedFor(urlEqualTo(ENDPOINT)));
-	}
-
-	@ParameterizedTest
-	@ArgumentsSource(PollingIntervalArgumentsProvider.class)
-	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling_Cron(PollingInterval pollingInterval) {
-		stubFor(get(ENDPOINT).willReturn(forbidden()));
-
-		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
-		httpInputPoller.schedulePoller(pollingInterval);
-
-		Mockito.verify(adapter, after(2000).never()).apply(any());
+		Mockito.verify(adapter, after(4000).never()).apply(any());
 		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 1), getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
