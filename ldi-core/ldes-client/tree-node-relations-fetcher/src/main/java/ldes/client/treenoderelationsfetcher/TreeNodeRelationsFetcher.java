@@ -20,7 +20,7 @@ public class TreeNodeRelationsFetcher {
 		this.requestExecutor = requestExecutor;
 	}
 
-	public List<TreeNodeRelation> fetchTreeRelations(TreeNodeRequest treeNodeRequest) {
+	public List<TreeNodeRelation> fetchTreeRelations(TreeNodeRequest treeNodeRequest) throws UnsupportedOperationException {
 		final Response response = requestExecutor.execute(treeNodeRequest.createRequest());
 
 		if (response.isOk()) {
@@ -45,7 +45,7 @@ public class TreeNodeRelationsFetcher {
 	private List<TreeNodeRelation> createRedirectResponse(Response response) {
 		return List.of(
 				response.getRedirectLocation()
-						.map(url -> new TreeNodeRelation(ModelFactory.createDefaultModel()))
+						.map(url -> new TreeNodeRelation(url, ModelFactory.createDefaultModel()))
 						.orElseThrow(() -> new IllegalStateException("No Location Header in redirect"))
 		);
 	}

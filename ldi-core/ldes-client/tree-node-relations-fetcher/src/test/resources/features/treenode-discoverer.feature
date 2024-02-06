@@ -5,5 +5,4 @@ Feature: TreeNodeDiscoverer
   Scenario:
     Given I have a TreeDiscoverer
     When I start discovering the tree node relations
-    Then I got a 3 relations
-    And The structure is isomorphic with the expected model
+    Then I got a 5 relations

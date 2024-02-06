@@ -11,7 +11,7 @@
   "response": {
     "status": 302,
     "headers": {
-      "Location": "http://localhost:10101/200-treenode-is-also-view"
+      "Location": "http://localhost:10101/200-no-relations"
     }
   }
 }

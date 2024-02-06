@@ -1,9 +1,10 @@
 package ldes.client.treenoderelationsfetcher;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 public class WireMockConfig {
 

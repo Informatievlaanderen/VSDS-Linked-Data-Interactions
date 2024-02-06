@@ -8,21 +8,50 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 public class TreeNodeRelation {
 	public static final String W3C_TREE = "https://w3id.org/tree#";
 	public static final Property W3ID_TREE_NODE = createProperty(W3C_TREE, "node");
+	private final String relationUri;
 	private final Model relationModel;
 
-	public TreeNodeRelation(Model relationModel) {
+	public TreeNodeRelation(String relationUri, Model relationModel) {
+		this.relationUri = relationUri;
 		this.relationModel = relationModel;
+	}
+
+	public static TreeNodeRelation fromModel(Model relationModel) {
+		final String relationUri = relationModel.listObjectsOfProperty(W3ID_TREE_NODE)
+				.nextOptional()
+				.map(Object::toString)
+				.orElseThrow(() -> new IllegalStateException("No tree node found for this relation"));
+
+		return new TreeNodeRelation(relationUri, relationModel);
 	}
 
 	public Model getRelationModel() {
 		return relationModel;
 	}
 
-	public String getRelation() {
-		return relationModel.listObjectsOfProperty(W3ID_TREE_NODE)
-				.nextOptional()
-				.map(Object::toString)
-				.orElseThrow(() -> new IllegalStateException("No tree node found for this relation"));
+	public String getRelationUri() {
+		return relationUri;
 	}
 
+	public boolean isNotEmpty() {
+		return !relationModel.isEmpty();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		TreeNodeRelation that = (TreeNodeRelation) o;
+
+		if (!relationUri.equals(that.relationUri)) return false;
+		return relationModel.isIsomorphicWith(that.relationModel);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = relationUri.hashCode();
+		result = 31 * result + relationModel.hashCode();
+		return result;
+	}
 }

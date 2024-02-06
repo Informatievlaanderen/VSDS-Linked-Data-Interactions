@@ -13,6 +13,7 @@ public class ModelResponse {
 	private static final Resource ANY_RESOURCE = null;
 	private static final String W3C_TREE = "https://w3id.org/tree#";
 	private static final Property W3ID_TREE_RELATION = createProperty(W3C_TREE, "relation");
+	public static final Property W3ID_TREE_NODE = createProperty(W3C_TREE, "node");
 	private final Model model;
 
 	public ModelResponse(Model model) {
@@ -32,10 +33,11 @@ public class ModelResponse {
 
 	private TreeNodeRelation mapToTreeNodeRelation(Statement statement) {
 		final StmtIterator relationsStatements = statement.getResource().listProperties();
+		final String relationUri = statement.getResource().getProperty(W3ID_TREE_NODE).getResource().toString();
 		final Model treeNodeRelation = ModelFactory.createDefaultModel()
 				.add(statement)
 				.add(relationsStatements);
 
-		return new TreeNodeRelation(treeNodeRelation);
+		return new TreeNodeRelation(relationUri, treeNodeRelation);
 	}
 }

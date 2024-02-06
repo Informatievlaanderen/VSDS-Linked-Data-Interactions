@@ -10,7 +10,7 @@
   },
   "response": {
     "status": 200,
-    "bodyFileName": "2-relations.ttl",
+    "bodyFileName": "4-relations.ttl",
     "headers": {
       "Content-Type": "text/turtle;charset=UTF-8"
     }
