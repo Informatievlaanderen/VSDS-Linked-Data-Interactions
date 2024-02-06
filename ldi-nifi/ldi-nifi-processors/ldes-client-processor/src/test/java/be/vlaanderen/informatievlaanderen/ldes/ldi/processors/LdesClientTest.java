@@ -211,7 +211,7 @@ class LdesClientTest {
 							"API_KEY_PROPERTY", "key")),
 					Arguments.of(Map.of("AUTHORIZATION_STRATEGY", "OAUTH2_CLIENT_CREDENTIALS",
 							"OAUTH_CLIENT_ID", "clientId", "OAUTH_CLIENT_SECRET", "secret",
-							"OAUTH_TOKEN_ENDPOINT", "http://localhost:10101/token")));
+							"OAUTH_TOKEN_ENDPOINT", "http://localhost:10101/token", "OAUTH_SCOPE", "default")));
 		}
 	}
 }

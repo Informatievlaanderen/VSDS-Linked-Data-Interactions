@@ -96,7 +96,8 @@ public class LdioRequestExecutorSupplier {
                         headers,
                         componentProperties.getProperty(CLIENT_ID),
                         componentProperties.getProperty(CLIENT_SECRET),
-                        componentProperties.getProperty(TOKEN_ENDPOINT));
+                        componentProperties.getProperty(TOKEN_ENDPOINT),
+                        componentProperties.getOptionalProperty(AUTH_SCOPE).orElse(null));
             };
         }
         throw new UnsupportedOperationException("Requested authentication not available: "

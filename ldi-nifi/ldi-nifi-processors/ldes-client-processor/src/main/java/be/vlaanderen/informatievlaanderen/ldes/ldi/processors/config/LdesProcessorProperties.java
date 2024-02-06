@@ -158,6 +158,13 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.URL_VALIDATOR)
 			.build();
 
+	public static final PropertyDescriptor OAUTH_SCOPE = new PropertyDescriptor.Builder()
+			.name("OAUTH_SCOPE")
+			.displayName("Scope used for Oauth2 client credentials flow.")
+			.required(false)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
 	public static final PropertyDescriptor AUTHORIZATION_STRATEGY = new PropertyDescriptor.Builder()
 			.name("AUTHORIZATION_STRATEGY")
 			.displayName("Authorization strategy for the internal http client.")
@@ -234,6 +241,10 @@ public final class LdesProcessorProperties {
 
 	public static String getOauthTokenEndpoint(final ProcessContext context) {
 		return context.getProperty(OAUTH_TOKEN_ENDPOINT).getValue();
+	}
+
+	public static String getOauthScope(final ProcessContext context) {
+		return context.getProperty(OAUTH_SCOPE).getValue();
 	}
 
 	public static AuthStrategy getAuthorizationStrategy(final ProcessContext context) {

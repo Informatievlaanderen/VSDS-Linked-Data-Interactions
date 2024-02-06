@@ -66,7 +66,7 @@ public class LdesClient extends AbstractProcessor {
 		return List.of(DATA_SOURCE_URL, DATA_SOURCE_FORMAT, DATA_DESTINATION_FORMAT, KEEP_STATE,
 				STATE_PERSISTENCE_STRATEGY,
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY,
-				API_KEY_HEADER_PROPERTY,
+				API_KEY_HEADER_PROPERTY, OAUTH_SCOPE,
 				API_KEY_PROPERTY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY,
 				RETRIES_ENABLED, MAX_RETRIES, STATUSES_TO_RETRY, POSTGRES_URL, POSTGRES_USERNAME, POSTGRES_PASSWORD);
 	}
@@ -111,7 +111,7 @@ public class LdesClient extends AbstractProcessor {
 			}
 			case OAUTH2_CLIENT_CREDENTIALS ->
 				requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
-						getOauthClientSecret(context), getOauthTokenEndpoint(context));
+						getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
 		};
 	}
 
