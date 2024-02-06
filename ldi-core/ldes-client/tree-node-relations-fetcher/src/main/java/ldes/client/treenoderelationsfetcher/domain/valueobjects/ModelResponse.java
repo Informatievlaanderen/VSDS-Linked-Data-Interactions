@@ -32,8 +32,9 @@ public class ModelResponse {
 	}
 
 	private TreeNodeRelation mapToTreeNodeRelation(Statement statement) {
-		final StmtIterator relationsStatements = statement.getResource().listProperties();
-		final String relationUri = statement.getResource().getProperty(W3ID_TREE_NODE).getResource().toString();
+		final Resource relationResource = statement.getResource();
+		final StmtIterator relationsStatements = relationResource.listProperties();
+		final String relationUri = relationResource.getProperty(W3ID_TREE_NODE).getResource().toString();
 		final Model treeNodeRelation = ModelFactory.createDefaultModel()
 				.add(statement)
 				.add(relationsStatements);
