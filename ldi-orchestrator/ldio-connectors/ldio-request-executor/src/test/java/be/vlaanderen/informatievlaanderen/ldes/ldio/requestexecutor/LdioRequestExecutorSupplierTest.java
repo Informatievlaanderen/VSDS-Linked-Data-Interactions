@@ -143,7 +143,7 @@ class LdioRequestExecutorSupplierTest {
 				CLIENT_SECRET, "secret",
 				TOKEN_ENDPOINT, "token"));
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createClientCredentialsExecutor(List.of(), "client", "secret", "token", "scope"))
+		when(requestExecutorFactory.createClientCredentialsExecutor(List.of(), "client", "secret", "token", null))
 				.thenReturn(requestExecutor);
 
 		RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
