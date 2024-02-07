@@ -20,7 +20,7 @@ public class TreeNodeRelation {
 		final String relationUri = relationModel.listObjectsOfProperty(W3ID_TREE_NODE)
 				.nextOptional()
 				.map(Object::toString)
-				.orElseThrow(() -> new IllegalStateException("No tree node found for this relation"));
+				.orElseThrow(() -> new IllegalArgumentException("No tree node found for this relation"));
 
 		return new TreeNodeRelation(relationUri, relationModel);
 	}
@@ -35,23 +35,5 @@ public class TreeNodeRelation {
 
 	public boolean isNotEmpty() {
 		return !relationModel.isEmpty();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		TreeNodeRelation that = (TreeNodeRelation) o;
-
-		if (!relationUri.equals(that.relationUri)) return false;
-		return relationModel.isIsomorphicWith(that.relationModel);
-	}
-
-	@Override
-	public int hashCode() {
-		int result = relationUri.hashCode();
-		result = 31 * result + relationModel.hashCode();
-		return result;
 	}
 }

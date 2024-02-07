@@ -16,7 +16,7 @@ public class LdesDiscovererConfig {
 
 	public String getUrl() {
 		if (url == null) {
-			throw new IllegalArgumentException("Missing value for discoverer.url");
+			throw new IllegalArgumentException("Missing value for 'discoverer.url'");
 		}
 		return url;
 	}
