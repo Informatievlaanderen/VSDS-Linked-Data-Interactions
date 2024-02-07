@@ -28,6 +28,9 @@ collections:
   ldi-nifi:
     permalink: "/:collection/:path"
     output: true
+  ldi-extensions:
+    permalink: "/:collection/:path"
+    output: true
 
 just_the_docs:
   collections:
@@ -37,6 +40,8 @@ just_the_docs:
       name: Linked Data Interactions Orchestrator
     ldi-nifi:
       name: Linked Data Interactions for Apache NiFi
+    ldi-extensions:
+      name: Linked Data Interactions Extensions
 
 nav_external_links:
   - title: VSDS Technical Docs
