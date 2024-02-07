@@ -19,6 +19,6 @@ RUN adduser -D -u 2000 ldes-discoverer
 USER ldes-discoverer
 WORKDIR /ldes-discoverer
 
-COPY --from=app-stage ldi-ldes-discoverer/target/ldi-ldes-discoverer.jar ./lib/
+COPY --from=app-stage ldi-extensions/ldes-discoverer/target/ldes-discoverer.jar ./lib/
 
 ENTRYPOINT ["java", "-jar", "./lib/ldi-ldes-discoverer.jar"]
