@@ -21,4 +21,4 @@ WORKDIR /ldes-discoverer
 
 COPY --from=app-stage ldi-extensions/ldes-discoverer/target/ldes-discoverer.jar ./lib/
 
-ENTRYPOINT ["java", "-jar", "./lib/ldi-ldes-discoverer.jar"]
+ENTRYPOINT ["java", "-jar", "./lib/ldes-discoverer.jar"]
