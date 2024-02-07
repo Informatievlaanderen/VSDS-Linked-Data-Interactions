@@ -24,14 +24,16 @@ public class RequestExecutorFactory {
     public RequestExecutor createClientCredentialsExecutor(Collection<Header> headers,
                                                            String clientId,
                                                            String secret,
-                                                           String tokenEndpoint) {
-        return new ClientCredentialsConfig(headers, clientId, secret, tokenEndpoint).createRequestExecutor();
+                                                           String tokenEndpoint,
+                                                           String scope) {
+        return new ClientCredentialsConfig(headers, clientId, secret, tokenEndpoint, scope).createRequestExecutor();
     }
 
     public RequestExecutor createClientCredentialsExecutor(String clientId,
                                                            String secret,
-                                                           String tokenEndpoint) {
-        return createClientCredentialsExecutor(new ArrayList<>(), clientId, secret, tokenEndpoint);
+                                                           String tokenEndpoint,
+                                                           String scope) {
+        return createClientCredentialsExecutor(new ArrayList<>(), clientId, secret, tokenEndpoint, scope);
     }
 
     public RequestExecutor createEdcExecutor(RequestExecutor requestExecutor,
