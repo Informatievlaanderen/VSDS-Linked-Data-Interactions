@@ -41,7 +41,8 @@ class LdesDiscovererTest {
 
 		@Test
 		void when_DiscoverRelations_then_ReturnListOfThreeRelations() throws IOException {
-			String bodyFirstResponse = readDataFromFile("tree-nodes/3-relations.ttl");
+			final List<String> expectedRelationUris = readTreeRelations().stream().map(TreeNodeRelation::getRelationUri).toList();
+			final String bodyFirstResponse = readDataFromFile("tree-nodes/3-relations.ttl");
 			stubFor(get("/200-first-2-relations").willReturn(okForContentType(CONTENT_TYPE, bodyFirstResponse)));
 			String bodySecondResponse = readDataFromFile("tree-nodes/1-relation.ttl");
 			stubFor(get("/200-first-relation").willReturn(okForContentType(CONTENT_TYPE, bodySecondResponse)));
@@ -53,7 +54,8 @@ class LdesDiscovererTest {
 
 			assertThat(treeNodeRelations)
 					.hasSize(4)
-					.containsExactlyInAnyOrderElementsOf(readTreeRelations());
+					.map(TreeNodeRelation::getRelationUri)
+					.containsExactlyInAnyOrderElementsOf(expectedRelationUris);
 			verify(getRequestedFor(urlEqualTo("/200-first-2-relations")));
 		}
 
