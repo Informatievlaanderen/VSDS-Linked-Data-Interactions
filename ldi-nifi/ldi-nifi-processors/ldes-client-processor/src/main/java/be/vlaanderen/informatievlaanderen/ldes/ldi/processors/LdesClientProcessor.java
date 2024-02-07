@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
@@ -12,6 +13,7 @@ import io.github.resilience4j.retry.Retry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.MemberSupplierImpl;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
+import ldes.client.treenodesupplier.VersionMaterialisedMemberSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
@@ -42,14 +44,15 @@ import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
 @Tags({ "ldes-client", "vsds" })
 @CapabilityDescription("Extract members from an LDES source and send them to the next processor")
 @Stateful(description = "Stores mutable fragments to allow processor restart", scopes = Scope.LOCAL)
-public class LdesClient extends AbstractProcessor {
+public class LdesClientProcessor extends AbstractProcessor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LdesClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LdesClientProcessor.class);
 	private MemberSupplier memberSupplier;
 	private LdesProperties ldesProperties;
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
@@ -68,7 +71,8 @@ public class LdesClient extends AbstractProcessor {
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY,
 				API_KEY_HEADER_PROPERTY, OAUTH_SCOPE,
 				API_KEY_PROPERTY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY,
-				RETRIES_ENABLED, MAX_RETRIES, STATUSES_TO_RETRY, POSTGRES_URL, POSTGRES_USERNAME, POSTGRES_PASSWORD);
+				RETRIES_ENABLED, MAX_RETRIES, STATUSES_TO_RETRY, POSTGRES_URL, POSTGRES_USERNAME, POSTGRES_PASSWORD,
+				USE_VERSION_MATERIALISATION, RESTRICT_TO_MEMBERS, VERSION_OF_PROPERTY);
 	}
 
 	@OnScheduled
@@ -80,7 +84,16 @@ public class LdesClient extends AbstractProcessor {
 		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(context);
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
 		boolean keepState = stateKept(context);
-		memberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
+		if (useVersionMaterialisation(context)) {
+            final var versionOfProperty = createProperty(getVersionOfProperty(context));
+            final var versionMaterialiser = new VersionMaterialiser(versionOfProperty, restrictToMembers(context));
+            memberSupplier = new VersionMaterialisedMemberSupplier(
+                    new MemberSupplierImpl(treeNodeProcessor, keepState),
+                    versionMaterialiser
+			);
+		} else {
+			memberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
+		}
 
 		determineLdesProperties(ldesMetaData, requestExecutor, context);
 

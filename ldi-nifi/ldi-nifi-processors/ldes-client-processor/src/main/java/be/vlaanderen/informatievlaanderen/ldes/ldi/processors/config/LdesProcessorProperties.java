@@ -199,6 +199,33 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
+	public static final PropertyDescriptor USE_VERSION_MATERIALISATION = new PropertyDescriptor.Builder()
+			.name("USE_VERSION_MATERIALISATION")
+			.displayName("Indicates of retries are enabled when the http request fails.")
+			.required(false)
+			.defaultValue(FALSE.toString())
+			.allowableValues(FALSE.toString(), TRUE.toString())
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor RESTRICT_TO_MEMBERS = new PropertyDescriptor.Builder()
+			.name("RESTRICT_TO_MEMBERS")
+			.displayName("Restrict output to members")
+			.description("When enabled, only the member and the blank nodes references are included.")
+			.required(false)
+			.defaultValue(FALSE.toString())
+			.allowableValues(FALSE.toString(), TRUE.toString())
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor VERSION_OF_PROPERTY = new PropertyDescriptor.Builder()
+			.name("VERSION_OF_PROPERTY")
+			.required(true)
+			.defaultValue("http://purl.org/dc/terms/isVersionOf")
+			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+			.addValidator(StandardValidators.URI_VALIDATOR)
+			.build();
+
 	public static String getDataSourceUrl(final ProcessContext context) {
 		return context.getProperty(DATA_SOURCE_URL).getValue();
 	}
@@ -289,6 +316,18 @@ public final class LdesProcessorProperties {
 
 	public static String getPostgresPassword(final ProcessContext context) {
 		return context.getProperty(POSTGRES_PASSWORD).getValue();
+	}
+
+	public static boolean useVersionMaterialisation(final ProcessContext context) {
+		return TRUE.equals(context.getProperty(USE_VERSION_MATERIALISATION).asBoolean());
+	}
+
+	public static boolean restrictToMembers(final ProcessContext context) {
+		return TRUE.equals(context.getProperty(RESTRICT_TO_MEMBERS).asBoolean());
+	}
+
+	public static String getVersionOfProperty(final ProcessContext context) {
+		return context.getProperty(VERSION_OF_PROPERTY).getValue();
 	}
 
 }
