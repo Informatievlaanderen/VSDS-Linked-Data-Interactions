@@ -5,6 +5,10 @@ nav_order: 0
 ---
 
 # Linked Data Interactions Extensions
-LDI Extensions are more small applications that can run individually, aside from [LDIO](./../_ldio) or the [LDI NiFi Processors](./../_ldi-nifi).
 
-For now on, we only have one LDI Extension, namely the [LDI LDES Discoverer](./ldes-discoverer.md)
+LDI Extensions are more small applications that can run individually, aside from [LDIO](./../_ldio) or
+the [LDI NiFi Processors](./../_ldi-nifi).
+
+This is an overview of the LDI Extensions
+
+* [LDI LDES Discoverer](./ldes-discoverer.md)

@@ -7,6 +7,10 @@
         <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
         <version>1.15.0-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>tree-node-relations-fetcher</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
@@ -15,7 +19,4 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>tree-node-relations-fetcher</artifactId>
-
 </project>
