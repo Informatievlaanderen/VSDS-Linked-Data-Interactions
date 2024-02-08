@@ -41,10 +41,25 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_ENV
       - name: Define docker variables
         run: |
-          echo "IMAGE_TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-          echo "IMAGES=${{ env.REGISTRY }}/Informatievlaanderen/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
-          echo "LATEST=latest" >> $GITHUB_ENV
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "IMAGE_TAG=${{ env.version }}" >> $GITHUB_ENV
+            echo "IMAGES=ldes/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+            if [[ "${{ env.version }}" != *"SNAPSHOT"* ]]; then
+              echo "LATEST=latest" >> $GITHUB_ENV
+            fi
+          else
+            echo "IMAGE_TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.REGISTRY }}/Informatievlaanderen/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "LATEST=latest" >> $GITHUB_ENV
+          fi
+      - name: Log in to the DockerHub Container registry
+        if: github.ref_name == 'main'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Log in to the GitHub Container registry
+        if: github.ref_name != 'main'
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
