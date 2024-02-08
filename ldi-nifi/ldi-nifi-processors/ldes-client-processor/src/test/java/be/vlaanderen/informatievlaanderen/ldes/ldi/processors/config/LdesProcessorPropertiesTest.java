@@ -36,8 +36,10 @@ class LdesProcessorPropertiesTest {
 	void test_getDatasourceUrl() {
 		assertDoesNotThrow(() -> getMockContext("http://localhost/endpoint"));
 		assertDoesNotThrow(() -> getMockContext("http://localhost/endpoint,http://localhost/other"));
-		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(getMockContext("inv alid")));
-		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(getMockContext("inv alid,http://localhost/other")));
+		var singleInvalidUri = getMockContext("inv alid");
+		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(singleInvalidUri));
+		var multiInvalidUri = getMockContext("inv alid,http://localhost/other");
+		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(multiInvalidUri));
 	}
 
 	private static MockProcessContext getMockContext(String value) {
