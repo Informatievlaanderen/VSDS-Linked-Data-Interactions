@@ -62,7 +62,7 @@ class LdesClientProcessorTest {
 	@ParameterizedTest
 	@ArgumentsSource(MatchNumberOfFlowFilesArgumentsProvider.class)
 	void shouldMatchNumberOfFlowFiles(String dataSourceUrl, int numberOfRuns) {
-		testRunner.setProperty("DATA_SOURCE_URL", dataSourceUrl);
+		testRunner.setProperty("DATA_SOURCE_URLS", dataSourceUrl);
 		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY",
 				"SQLITE");
 
@@ -78,7 +78,7 @@ class LdesClientProcessorTest {
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
 	void when_NecessaryPropertiesAreSet_then_statePersistenceCanBeCreated(Map<String, String> properties) {
-		testRunner.setProperty("DATA_SOURCE_URL",
+		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
 		properties.forEach((key, value) -> testRunner.setProperty(key, value));
 
@@ -101,7 +101,7 @@ class LdesClientProcessorTest {
 	@Test
 	void shouldSupportRedirectLogic() {
 		testRunner.setProperty("AUTHORIZATION_STRATEGY", "NO_AUTH");
-		testRunner.setProperty("DATA_SOURCE_URL", "http://localhost:10101/200-response-with-indirect-url");
+		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/200-response-with-indirect-url");
 		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("STREAM_TIMESTAMP_PATH_PROPERTY", Boolean.FALSE.toString());
@@ -119,7 +119,7 @@ class LdesClientProcessorTest {
 	void shouldBeAbleToEndGracefully() {
 		// This is an immutable fragment with 1 member and no relations. We reach the
 		// end of the ldes after 1 run.
-		testRunner.setProperty("DATA_SOURCE_URL",
+		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/end-of-ldes?generatedAtTime=2022-05-03T00:00:00.000Z");
 		testRunner.setProperty("AUTHORIZATION_STRATEGY", "NO_AUTH");
 		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
@@ -138,7 +138,7 @@ class LdesClientProcessorTest {
 	@ParameterizedTest
 	@ArgumentsSource(RequestExecutorProvider.class)
 	void shouldSupportDifferentHttpRequestExecutors(Map<String, String> properties) {
-		testRunner.setProperty("DATA_SOURCE_URL",
+		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
 		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
@@ -153,7 +153,7 @@ class LdesClientProcessorTest {
 
 	@Test
 	void shouldSupportRetry() {
-		testRunner.setProperty("DATA_SOURCE_URL", "http://localhost:10101/retry");
+		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/retry");
 		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("RETRIES_ENABLED", Boolean.TRUE.toString());
@@ -171,7 +171,7 @@ class LdesClientProcessorTest {
 
 	@Test
 	void shouldSupportVersionMaterialisation() {
-		testRunner.setProperty("DATA_SOURCE_URL",
+		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
 		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
@@ -196,7 +196,7 @@ class LdesClientProcessorTest {
 
 	@Test
 	void when_runningLdesClientWithStreamPropertiesFlags_expectsLdesPropertiesInFlowFile() {
-		testRunner.setProperty("DATA_SOURCE_URL",
+		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?scenario=gml-data");
 		testRunner.setProperty("STREAM_SHAPE_PROPERTY", Boolean.TRUE.toString());
 

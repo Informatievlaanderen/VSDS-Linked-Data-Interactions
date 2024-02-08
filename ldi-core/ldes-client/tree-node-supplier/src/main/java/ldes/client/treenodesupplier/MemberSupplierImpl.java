@@ -1,11 +1,9 @@
 package ldes.client.treenodesupplier;
 
-import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,8 +24,10 @@ public class MemberSupplierImpl implements MemberSupplier {
 
     @Override
     public SuppliedMember get() {
+	    return treeNodeProcessor.getMember();
+        /*
         try {
-            return executorService.submit(treeNodeProcessor::getMember).get();
+            return treeNodeProcessor.getMember();
         } catch (ExecutionException e) {
             if (e.getCause() instanceof EndOfLdesException endOfLdesException) {
                 throw endOfLdesException;
@@ -37,6 +37,7 @@ public class MemberSupplierImpl implements MemberSupplier {
             Thread.currentThread().interrupt();
             throw new ClientInterruptedException(e);
         }
+         */
     }
 
     @Override

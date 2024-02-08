@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getDataSourceUrl;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LdesProcessorPropertiesTest {
 
@@ -30,6 +30,14 @@ class LdesProcessorPropertiesTest {
 		assertTrue(statusesToRetry.contains(200));
 		assertTrue(statusesToRetry.contains(204));
 		assertFalse(statusesToRetry.contains(500));
+	}
+
+	@Test
+	void test_getDatasourceUrl() {
+		assertDoesNotThrow(() -> getMockContext("http://localhost/endpoint"));
+		assertDoesNotThrow(() -> getMockContext("http://localhost/endpoint,http://localhost/other"));
+		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(getMockContext("inv alid")));
+		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(getMockContext("inv alid,http://localhost/other")));
 	}
 
 	private static MockProcessContext getMockContext(String value) {

@@ -54,3 +54,40 @@ Feature: MemberSupplier
       | SQLITE                   |
       | FILE                     |
       | POSTGRES                 |
+
+  Scenario Outline: Obtaining the members from multiple endpoints
+    Given Starting urls
+      | http://localhost:10101/items/grouped?group=1 |
+      | http://localhost:10101/items/grouped?group=2 |
+    And Postgres TestContainer is started
+    And a StatePersistenceStrategy <statePersistenceStrategy>
+    And I set a timestamp path "http://www.w3.org/ns/prov#generatedAtTime"
+    And The TreeNode is not processed: "http://localhost:10101/items/grouped?group=1"
+    And The TreeNode is not processed: "http://localhost:10101/items/grouped?group=2"
+    When I create a Processor
+    When I create a MemberSupplier without state
+    When I request one member from the MemberSupplier
+    Then Member "http://localhost:10101/items/1" is processed
+    When I request one member from the MemberSupplier
+    Then Member "http://localhost:10101/items/2" is processed
+    When I request one member from the MemberSupplier
+    Then Member "http://localhost:10101/items/3" is processed
+    When I request one member from the MemberSupplier
+    Then Member "http://localhost:10101/items/4" is processed
+    When I request one member from the MemberSupplier
+    Then Member "http://localhost:10101/items/5" is processed
+    When I request one member from the MemberSupplier
+    Then Member "http://localhost:10101/items/6" is processed
+    When I request one member from the MemberSupplier
+    Then Member "http://localhost:10101/items/7" is processed
+    When I request one member from the MemberSupplier
+    Then Member "http://localhost:10101/items/8" is processed
+    Then MemberSupplier is destroyed
+    And Postgres TestContainer is stopped
+
+    Examples:
+      | statePersistenceStrategy |
+      | MEMORY                   |
+#      | SQLITE                   |
+#      | FILE                     |
+#      | POSTGRES                 |

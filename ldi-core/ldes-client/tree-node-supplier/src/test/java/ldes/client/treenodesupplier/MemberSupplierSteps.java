@@ -20,6 +20,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
@@ -40,6 +41,7 @@ public class MemberSupplierSteps {
 	private final SuppliedMember[] suppliedMembers = new SuppliedMember[2];
 
 	private String timestampPath;
+
 	@Before
 	public void setup() {
 		timestampPath = "";
@@ -62,8 +64,12 @@ public class MemberSupplierSteps {
 
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
-		ldesMetaData = new LdesMetaData(url,
-				Lang.JSONLD);
+		ldesMetaData = new LdesMetaData(List.of(url), Lang.JSONLD);
+	}
+
+	@Given("^Starting urls$")
+	public void startingUrls(List<String> urls) {
+		ldesMetaData = new LdesMetaData(urls, Lang.TURTLE);
 	}
 
 	@Given("I set a timestamp path {string}")
