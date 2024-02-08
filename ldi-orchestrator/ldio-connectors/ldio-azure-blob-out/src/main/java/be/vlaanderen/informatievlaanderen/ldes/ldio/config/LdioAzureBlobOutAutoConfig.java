@@ -7,10 +7,12 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut.NAME;
+
 @Configuration
 public class LdioAzureBlobOutAutoConfig {
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut")
+	@Bean(NAME)
 	public LdioOutputConfigurator ldioConfigurator() {
 		return new LdioAzureBlobOutConfigurator();
 	}

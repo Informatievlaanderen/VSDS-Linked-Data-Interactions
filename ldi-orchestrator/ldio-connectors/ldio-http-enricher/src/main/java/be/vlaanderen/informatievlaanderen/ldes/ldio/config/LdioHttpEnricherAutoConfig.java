@@ -12,13 +12,14 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpEnricherProperties.ADAPTER_CONFIG;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpEnricherProperties.ADAPTER_NAME;
 
 @Configuration
 public class LdioHttpEnricherAutoConfig {
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher")
+	@Bean(NAME)
 	public LdioTransformerConfigurator ldioConfigurator(ConfigurableApplicationContext configContext) {
 		return config -> {
 			final LdiAdapter adapter = createAdapter(configContext, config);

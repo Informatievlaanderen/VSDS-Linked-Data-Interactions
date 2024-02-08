@@ -6,7 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import io.micrometer.observation.ObservationRegistry;
 
 public class LdioHttpInProcess extends LdioInput {
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn";
+	public static final String NAME = "Ldio:HttpIn";
 
 	public LdioHttpInProcess(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry) {
 		super(NAME, pipelineName, executor, adapter, observationRegistry);

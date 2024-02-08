@@ -7,11 +7,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioRepositoryMaterialiser.NAME;
+
 @Configuration
 public class LioRepositoryMaterialiserAutoConfig {
 
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.RepositoryMaterialiser")
+	@Bean(NAME)
 	public LdioOutputConfigurator ldiRepoMaterialiserConfigurator() {
 		return new LdiRepoMaterialiserProcessorConfigurator();
 	}

@@ -17,7 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class LdioHttpOut implements LdiOutput {
-
+	public static final String NAME = "Ldio:HttpOut";
 	private static final Logger log = LoggerFactory.getLogger(LdioHttpOut.class);
 
 	private final RequestExecutor requestExecutor;

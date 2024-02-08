@@ -11,12 +11,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.RDF_WRITER;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut.NAME;
 
 @Configuration
 public class LdioHttpOutAutoConfig {
 
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut")
+	@Bean(NAME)
 	public LdioOutputConfigurator ldiHttpOutConfigurator() {
 		return new LdioHttpOutConfigurator();
 	}

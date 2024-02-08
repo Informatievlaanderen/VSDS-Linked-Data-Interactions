@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 import java.util.Optional;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
@@ -21,7 +22,7 @@ public class HttpInputPollerAutoConfig {
 	private static final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
 
 	@SuppressWarnings("java:S6830")
-	@Bean(HttpInputPoller.NAME)
+	@Bean(NAME)
 	public HttpInputPollerConfigurator httpInputPollerConfigurator(ObservationRegistry observationRegistry) {
 		return new HttpInputPollerConfigurator(observationRegistry);
 	}

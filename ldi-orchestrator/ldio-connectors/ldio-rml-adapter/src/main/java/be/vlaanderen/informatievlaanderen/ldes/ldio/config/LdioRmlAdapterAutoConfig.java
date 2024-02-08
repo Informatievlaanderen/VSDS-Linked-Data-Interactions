@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class LdioRmlAdapterAutoConfig {
 
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.RmlAdapter")
+	@Bean("Ldio:RmlAdapter")
 	public LdioAdapterConfigurator ldiHttpOutConfigurator() {
 		return new LdioRmlAdapterProcessorConfigurator();
 	}

@@ -23,7 +23,7 @@ import java.util.List;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval.TYPE.CRON;
 
 public class HttpInputPoller extends LdioInput implements Runnable {
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller";
+	public static final String NAME = "Ldio:HttpInPoller";
 	private final ThreadPoolTaskScheduler scheduler;
 	private final RequestExecutor requestExecutor;
 	private final List<? extends Request> requests;

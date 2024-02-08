@@ -8,7 +8,7 @@ import org.apache.jena.rdf.model.Model;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioRepositoryMaterialiserProperties.*;
 
 public class LdioRepositoryMaterialiser implements LdiOutput {
-
+	public static final String NAME = "Ldio:RepositoryMaterialiser";
 	private final Materialiser materialiser;
 
 	public LdioRepositoryMaterialiser(ComponentProperties config) {

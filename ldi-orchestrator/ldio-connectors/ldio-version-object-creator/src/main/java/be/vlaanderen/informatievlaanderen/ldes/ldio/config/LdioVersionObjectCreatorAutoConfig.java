@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioVersionObjectCreator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -15,9 +16,11 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioVersionObjectCreator.NAME;
+
 @Configuration
 public class LdioVersionObjectCreatorAutoConfig {
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator")
+	@Bean(NAME)
 	public LdioTransformerConfigurator ldioConfigurator() {
 		return new LdioVersionObjectCreatorTransformerConfigurator();
 	}

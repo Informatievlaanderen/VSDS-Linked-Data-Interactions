@@ -14,7 +14,7 @@ public class LdioRdfAdapterAutoConfig {
 	public static final String MAX_JSONLD_CACHE_CAPACITY = "max-jsonld-cache-capacity";
 
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter")
+	@Bean("Ldio:RdfAdapter")
 	public LdioAdapterConfigurator ldiHttpOutConfigurator() {
 		return new LdioRdfConfigurator();
 	}
