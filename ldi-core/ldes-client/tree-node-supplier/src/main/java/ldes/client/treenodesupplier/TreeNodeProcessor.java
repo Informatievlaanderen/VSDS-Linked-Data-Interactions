@@ -26,12 +26,33 @@ public class TreeNodeProcessor {
 	private MemberRecord memberRecord;
 
 	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
-							 RequestExecutor requestExecutor, TimestampExtractor timestampExtractor) {
+	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
 		this.requestExecutor = requestExecutor;
 		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor, timestampExtractor);
 		this.ldesMetaData = ldesMetaData;
+	}
+
+	public SuppliedMember getMember() {
+		savePreviousState();
+		if (!treeNodeRecordRepository.containsTreeNodeRecords()) {
+			initializeTreeNodeRecordRepository();
+		}
+		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
+		while (unprocessedTreeMember.isEmpty()) {
+			processTreeNode();
+			unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
+		}
+		MemberRecord treeMember = unprocessedTreeMember.get();
+		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
+		treeMember.processedMemberRecord();
+		memberRecord = treeMember;
+		return suppliedMember;
+	}
+
+	public LdesMetaData getLdesMetaData() {
+		return ldesMetaData;
 	}
 
 	private void processTreeNode() {
@@ -69,27 +90,13 @@ public class TreeNodeProcessor {
 		}
 	}
 
-	public SuppliedMember getMember() {
-		savePreviousState();
-		if (!treeNodeRecordRepository.containsTreeNodeRecords()) {
-			initializeTreeNodeRecordRepository();
-		}
-		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
-		while (unprocessedTreeMember.isEmpty()) {
-			processTreeNode();
-			unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
-		}
-		MemberRecord treeMember = unprocessedTreeMember.get();
-		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
-		treeMember.processedMemberRecord();
-		memberRecord = treeMember;
-		return suppliedMember;
-	}
-
 	private void initializeTreeNodeRecordRepository() {
-		StartingTreeNode start = new StartingTreeNodeSupplier(requestExecutor)
-				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
-		treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(start.getStartingNodeUrl()));
+		ldesMetaData.getStartingNodeUrls()
+				.stream()
+				.map(startingNode -> new StartingTreeNodeSupplier(requestExecutor)
+						.getStart(startingNode, ldesMetaData.getLang()))
+				.map(start -> new TreeNodeRecord(start.getStartingNodeUrl()))
+				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
 	}
 
 	private void savePreviousState() {
