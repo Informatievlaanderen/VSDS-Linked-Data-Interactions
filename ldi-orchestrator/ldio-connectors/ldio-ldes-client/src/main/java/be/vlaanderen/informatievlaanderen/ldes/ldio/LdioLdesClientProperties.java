@@ -6,7 +6,7 @@ public class LdioLdesClientProperties {
 	}
 
 	// general properties
-	public static final String URL = "url";
+	public static final String URLS = "urls";
 	public static final String SOURCE_FORMAT = "source-format";
 
 	public static final String STATE = "state";

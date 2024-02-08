@@ -19,6 +19,8 @@ import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
@@ -47,9 +49,10 @@ public class MemberSupplierFactory {
     }
 
     private TreeNodeProcessor getTreeNodeProcessor() {
-	    String targetUrl = properties.getProperty(URL);
+        List<String> targetUrls = properties.getPropertyList(URLS);
+
         Lang sourceFormat = getSourceFormat();
-        LdesMetaData ldesMetaData = new LdesMetaData(targetUrl, sourceFormat);
+        LdesMetaData ldesMetaData = new LdesMetaData(targetUrls, sourceFormat);
 	    TimestampExtractor timestampExtractor = properties.getOptionalProperty(TIMESTAMP_PATH_PROP)
 			    .map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
 			    .orElseGet(TimestampFromCurrentTimeExtractor::new);

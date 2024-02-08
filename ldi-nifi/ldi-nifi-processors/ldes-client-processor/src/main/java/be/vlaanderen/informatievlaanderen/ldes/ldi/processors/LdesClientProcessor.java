@@ -69,7 +69,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(DATA_SOURCE_URL, DATA_SOURCE_FORMAT, DATA_DESTINATION_FORMAT, KEEP_STATE, TIMESTAMP_PATH,
+		return List.of(DATA_SOURCE_URLS, DATA_SOURCE_FORMAT, DATA_DESTINATION_FORMAT, KEEP_STATE, TIMESTAMP_PATH,
 				STATE_PERSISTENCE_STRATEGY,
 				STREAM_TIMESTAMP_PATH_PROPERTY, STREAM_VERSION_OF_PROPERTY, STREAM_SHAPE_PROPERTY,
 				API_KEY_HEADER_PROPERTY, OAUTH_SCOPE,
@@ -80,10 +80,10 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		String dataSourceUrl = LdesProcessorProperties.getDataSourceUrl(context);
+		List<String> dataSourceUrls = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
-		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrl, dataSourceFormat);
+		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrls, dataSourceFormat);
 		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(context);
 		String timestampPath = LdesProcessorProperties.getTimestampPath(context);
 		TimestampExtractor timestampExtractor = timestampPath.isBlank() ? new TimestampFromCurrentTimeExtractor() :
@@ -103,8 +103,8 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 		determineLdesProperties(ldesMetaData, requestExecutor, context);
 
-		LOGGER.info("LDES extraction processor {} with base url {} (expected LDES source format: {})",
-				context.getName(), dataSourceUrl, dataSourceFormat);
+		LOGGER.info("LDES Client processor {} configured to follow (sub)streams {} (expected LDES source format: {})",
+				context.getName(), dataSourceUrls, dataSourceFormat);
 	}
 
 	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {

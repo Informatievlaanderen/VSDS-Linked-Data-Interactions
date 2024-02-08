@@ -16,13 +16,14 @@ import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.util.List;
 import java.util.Map;
 
 class TreeNodeProcessorFactory {
 
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
-	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, String url) {
+	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, List<String> url) {
 		final LdesMetaData ldesMetaData = new LdesMetaData(url, Lang.TURTLE);
 		final StatePersistence statePersistence = switch (statePersistenceStrategy) {
 			case MEMORY -> createInMemoryStatePersistence();
