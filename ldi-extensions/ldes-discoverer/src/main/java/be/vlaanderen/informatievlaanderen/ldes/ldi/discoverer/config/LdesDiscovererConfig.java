@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "discoverer")
+@ConfigurationProperties
 public class LdesDiscovererConfig {
 	public static final String DEFAULT_SOURCE_FORMAT = "application/n-quads";
 	public static final String DEFAULT_OUTPUT_FORMAT = "text/turtle";
@@ -16,7 +16,7 @@ public class LdesDiscovererConfig {
 
 	public String getUrl() {
 		if (url == null) {
-			throw new IllegalArgumentException("Missing value for 'discoverer.url'");
+			throw new IllegalArgumentException("Missing value for 'url'");
 		}
 		return url;
 	}

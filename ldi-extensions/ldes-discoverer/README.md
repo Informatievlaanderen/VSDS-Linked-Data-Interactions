@@ -8,11 +8,11 @@ follow, the structure can be discovered first.
 
 ## Config
 
-| Property                 | Description                                                         | Required | Default             | Example                   | Supported values                                              |
-|:-------------------------|:--------------------------------------------------------------------|:---------|:--------------------|:--------------------------|:--------------------------------------------------------------|
-| discoverer.url           | Url where from the discoverer needs to start                        | Yes      | N/A                 | http://example.com/my-api | HTTP and HTTPS url                                            |
-| discoverer.source-format | The 'Content-Type' that should be requested to the server.          | No       | application/n-quads | text/turtle               | Any type supported by [Apache Jena](https://jena.apache.org/) |
-| discoverer.output-format | The RDF format that will be used to display all the found relations | No       | text/turtle         | application/ld+json       | Any type supported by [Apache Jena](https://jena.apache.org/) |
+| Property      | Description                                                         | Required | Default             | Example                   | Supported values                                              |
+|:--------------|:--------------------------------------------------------------------|:---------|:--------------------|:--------------------------|:--------------------------------------------------------------|
+| url           | Url where from the discoverer needs to start                        | Yes      | N/A                 | http://example.com/my-api | HTTP and HTTPS url                                            |
+| source-format | The 'Content-Type' that should be requested to the server.          | No       | application/n-quads | text/turtle               | Any type supported by [Apache Jena](https://jena.apache.org/) |
+| output-format | The RDF format that will be used to display all the found relations | No       | text/turtle         | application/ld+json       | Any type supported by [Apache Jena](https://jena.apache.org/) |
 
 ## How to run
 
@@ -23,7 +23,7 @@ For simplicity, we recommend passing the config as arguments to the application
 ### Maven
 
 ```shell
-mvn spring-boot:run -Dspring-boot.run.arguments=--discoverer.url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+mvn spring-boot:run -Dspring-boot.run.arguments=--url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
 ```
 
 ### Running the JAR
@@ -37,13 +37,13 @@ mvn package -DskipTests
 Now the JAR can be executed with the following command:
 
 ```shell
-java -jar ./target/ldi-ldes-discoverer.jar --discoverer.url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+java -jar ./target/ldi-ldes-discoverer.jar --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
 ```
 
 ### Docker
 
 ```shell
-docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --discoverer.url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
 ```
 
 > **NOTE**: when an url contains a `&` symbol, which will be picked up by the shell as an operator. In this example, if

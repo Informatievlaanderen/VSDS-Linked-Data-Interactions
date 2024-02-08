@@ -38,7 +38,7 @@ class LdesDiscovererConfigTest {
 	void given_EmptyConfig_when_GetUrl_then_ReturnUrl() {
 		assertThatThrownBy(() -> config.getUrl())
 				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("Missing value for 'discoverer.url'");
+				.hasMessage("Missing value for 'url'");
 	}
 
 	@Test

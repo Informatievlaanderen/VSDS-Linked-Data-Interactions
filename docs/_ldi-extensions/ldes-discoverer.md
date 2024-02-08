@@ -14,21 +14,21 @@ follow, the structure can be discovered first.
 
 ## Config
 
-| Property                 | Description                                                         | Required | Default             | Example                   | Supported values                                              |
-|:-------------------------|:--------------------------------------------------------------------|:---------|:--------------------|:--------------------------|:--------------------------------------------------------------|
-| discoverer.url           | Url where from the discoverer needs to start                        | Yes      | N/A                 | http://example.com/my-api | HTTP and HTTPS url                                            |
-| discoverer.source-format | The 'Content-Type' that should be requested to the server.          | No       | application/n-quads | text/turtle               | Any type supported by [Apache Jena](https://jena.apache.org/) |
-| discoverer.output-format | The RDF format that will be used to display all the found relations | No       | text/turtle         | application/ld+json       | Any type supported by [Apache Jena](https://jena.apache.org/) |
+| Property      | Description                                                         | Required | Default             | Example                   | Supported values                                              |
+|:--------------|:--------------------------------------------------------------------|:---------|:--------------------|:--------------------------|:--------------------------------------------------------------|
+| url           | Url where from the discoverer needs to start                        | Yes      | N/A                 | http://example.com/my-api | HTTP and HTTPS url                                            |
+| source-format | The 'Content-Type' that should be requested to the server.          | No       | application/n-quads | text/turtle               | Any type supported by [Apache Jena](https://jena.apache.org/) |
+| output-format | The RDF format that will be used to display all the found relations | No       | text/turtle         | application/ld+json       | Any type supported by [Apache Jena](https://jena.apache.org/) |
 
 ## How to run
 
-This tutorial will show how to use the discoverer in Docker. 
+This tutorial will show how to use the discoverer in Docker.
 In this example, we will try to discover the structure of an event stream of Geomobility.
 
 For simplicity, we recommend passing the config as arguments, like shown below:
 
 ```shell
-docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --discoverer.url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
 ```
 
 > **NOTE**: when an url contains a `&` symbol, which will be picked up by the shell as an operator. In this example, if
