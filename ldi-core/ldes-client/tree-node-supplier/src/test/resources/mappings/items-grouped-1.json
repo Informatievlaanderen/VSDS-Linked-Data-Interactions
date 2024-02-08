@@ -10,7 +10,7 @@
       "response-template"
     ],
     "headers": {
-      "Content-Type": "application/ld+json;charset=UTF-8",
+      "Content-Type": "text/turtle;charset=UTF-8",
       "Cache-Control": "public, max-age=604800, immutable"
     }
   }

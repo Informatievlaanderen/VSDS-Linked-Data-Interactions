@@ -1,11 +1,11 @@
 {
   "request": {
     "method": "GET",
-    "url": "/items/grouped?group=2"
+    "url": "/items/grouped?group=3"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "items-group-2-fragment.ttl",
+    "bodyFileName": "items-group-3-fragment.ttl",
     "transformers": [
       "response-template"
     ],

@@ -25,19 +25,6 @@ public class MemberSupplierImpl implements MemberSupplier {
     @Override
     public SuppliedMember get() {
 	    return treeNodeProcessor.getMember();
-        /*
-        try {
-            return treeNodeProcessor.getMember();
-        } catch (ExecutionException e) {
-            if (e.getCause() instanceof EndOfLdesException endOfLdesException) {
-                throw endOfLdesException;
-            }
-            throw new ClientInterruptedException(e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new ClientInterruptedException(e);
-        }
-         */
     }
 
     @Override

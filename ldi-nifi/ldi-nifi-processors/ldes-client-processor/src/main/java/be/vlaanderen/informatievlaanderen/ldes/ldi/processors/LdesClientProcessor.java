@@ -104,7 +104,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 		determineLdesProperties(ldesMetaData, requestExecutor, context);
 
 		LOGGER.info("LDES Client processor {} configured to follow (sub)streams {} (expected LDES source format: {})",
-				context.getName(), dataSourceUrls.toString(), dataSourceFormat);
+				context.getName(), dataSourceUrls, dataSourceFormat);
 	}
 
 	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {

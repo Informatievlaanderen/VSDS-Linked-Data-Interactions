@@ -20,6 +20,6 @@ public class LdiConsoleOut implements LdiOutput {
 
 	@Override
 	public void accept(Model model) {
-		log.debug(getRdfWriter(properties).write(model));
+		log.info(getRdfWriter(properties).write(model));
 	}
 }

@@ -19,6 +19,9 @@ public class LdesMetaData {
 	}
 
 	public String getStartingNodeUrl() {
+		if (startingNodeUrls.isEmpty()) {
+			throw new IllegalArgumentException("No starting nodes defined for LDES Client.");
+		}
 		return startingNodeUrls.get(0);
 	}
 

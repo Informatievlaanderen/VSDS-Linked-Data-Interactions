@@ -17,6 +17,7 @@ import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.junit.After;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.StringWriter;
@@ -45,6 +46,14 @@ public class MemberSupplierSteps {
 	@Before
 	public void setup() {
 		timestampPath = "";
+	}
+
+	@After
+	public void teardown() {
+		if (postgreSQLContainer != null) {
+			postgreSQLContainer.stop();
+			postgreSQLContainer = null;
+		}
 	}
 
 	@When("I request one member from the MemberSupplier")
@@ -110,6 +119,12 @@ public class MemberSupplierSteps {
 
 	@And("a StatePersistenceStrategy POSTGRES")
 	public StatePersistence aPostgresStatePersistenceStrategy() {
+		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
+				.withDatabaseName("integration-test-client-persistence")
+				.withUsername("sa")
+				.withPassword("sa");
+		postgreSQLContainer.start();
+
 		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.POSTGRES,
@@ -150,23 +165,6 @@ public class MemberSupplierSteps {
 	@When("I create a MemberSupplier without state")
 	public void iCreateAMemberSupplierWithoutState() {
 		memberSupplier = new MemberSupplierImpl(treeNodeProcessor, false);
-	}
-
-	@And("Postgres TestContainer is started")
-	public void postgresTestcontainerIsStarted() {
-		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
-				.withDatabaseName("integration-test-client-persistence")
-				.withUsername("sa")
-				.withPassword("sa");
-		postgreSQLContainer.start();
-	}
-
-	@And("Postgres TestContainer is stopped")
-	public void postgresTestContainerIsStopped() {
-		if (postgreSQLContainer != null) {
-			postgreSQLContainer.stop();
-			postgreSQLContainer = null;
-		}
 	}
 
 	private StatePersistence defineStatePersistence(String persistenceStrategy) {

@@ -231,7 +231,9 @@ public final class LdesProcessorProperties {
 			.build();
 
 	public static List<String> getDataSourceUrl(final ProcessContext context) {
-		var urls = Arrays.stream(context.getProperty(DATA_SOURCE_URLS).getValue().split(",")).toList();
+		var urls = Arrays.stream(context.getProperty(DATA_SOURCE_URLS).getValue().split(","))
+				.map(String::trim)
+				.toList();
 
 		if (urls.stream().allMatch(LdesProcessorProperties::isValidUrl)) {
 			return urls;
