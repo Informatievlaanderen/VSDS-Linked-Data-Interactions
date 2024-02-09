@@ -5,7 +5,8 @@ title: Console Out
 ---
 
 # LDIO Console Out
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut***
+
+***Ldio:ConsoleOut***
 
 The LDIO Console Out will output its given model to the console.
 
