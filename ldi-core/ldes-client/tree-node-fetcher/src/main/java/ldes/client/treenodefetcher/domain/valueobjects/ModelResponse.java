@@ -26,7 +26,7 @@ public class ModelResponse {
 	}
 
 	public List<String> getRelations() {
-		return extractRelations(model)
+		return extractRelations()
 				.map(relationStatement -> relationStatement.getResource()
 						.getProperty(W3ID_TREE_NODE).getResource().toString())
 				.toList();
@@ -51,8 +51,8 @@ public class ModelResponse {
 		return new TreeMember(id, memberModel);
 	}
 
-	private Stream<Statement> extractRelations(Model treeNodeModel) {
-		return Stream.iterate(treeNodeModel.listStatements(ANY_RESOURCE, W3ID_TREE_RELATION, ANY_RESOURCE),
+	private Stream<Statement> extractRelations() {
+		return Stream.iterate(model.listStatements(ANY_RESOURCE, W3ID_TREE_RELATION, ANY_RESOURCE),
 				Iterator::hasNext, UnaryOperator.identity()).map(Iterator::next);
 	}
 }

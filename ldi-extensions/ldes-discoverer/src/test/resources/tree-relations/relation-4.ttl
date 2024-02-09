@@ -1,0 +1,11 @@
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix terms: <http://purl.org/dc/terms/> .
+@prefix tree:  <https://w3id.org/tree#> .
+
+<http://localhost:10101/200-first-relation>
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <http://localhost:10101/200-only-members> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05"^^<http://www.w3.org/2001/XMLSchema#gYearMonth>
+                        ] .

@@ -9,8 +9,8 @@ import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import org.apache.jena.riot.RDFLanguages;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TreeNodeFetcherSteps {
 
@@ -36,8 +36,8 @@ public class TreeNodeFetcherSteps {
 
 	@Then("the obtained TreeNode has {int} members and {int} relations")
 	public void theObtainedTreeNodeHasMembersAndRelations(int numberOfMembers, int numberOfRelations) {
-		assertEquals(numberOfMembers, treeNodeResponse.getMembers().size());
-		assertEquals(numberOfRelations, treeNodeResponse.getRelations().size());
+		assertThat(treeNodeResponse.getMembers()).hasSize(numberOfMembers);
+		assertThat(treeNodeResponse.getRelations()).hasSize(numberOfRelations);
 	}
 
 	@When("I create a TreeNodeRequest with Lang {string} and url {string} and etag {string}")
@@ -47,10 +47,9 @@ public class TreeNodeFetcherSteps {
 
 	@Then("An UnSupportedOperationException is thrown")
 	public void anUnSupportedOperationExceptionIsThrown() {
-		UnsupportedOperationException unsupportedOperationException = assertThrows(UnsupportedOperationException.class,
-				() -> treeNodeFetcher.fetchTreeNode(treeNodeRequest));
-		assertEquals(
-				"Cannot handle response 404 of TreeNodeRequest TreeNodeRequest{treeNodeUrl='http://localhost:10101/404-not-found', lang=Lang:Turtle, etag='null'}",
-				unsupportedOperationException.getMessage());
+		final String expectedErrorMessage = "Cannot handle response 404 of TreeNodeRequest TreeNodeRequest{treeNodeUrl='http://localhost:10101/404-not-found', lang=Lang:Turtle, etag='null'}";
+		assertThatThrownBy(() -> treeNodeFetcher.fetchTreeNode(treeNodeRequest))
+				.isInstanceOf(UnsupportedOperationException.class)
+				.hasMessage(expectedErrorMessage);
 	}
 }

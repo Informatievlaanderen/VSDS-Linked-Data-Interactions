@@ -1,0 +1,13 @@
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix terms: <http://purl.org/dc/terms/> .
+@prefix tree:  <https://w3id.org/tree#> .
+
+<https://brugge-ldes.geomobility.eu/observations/by-time?year=2023>
+        rdf:type        tree:Node ;
+        terms:isPartOf  <https://brugge-ldes.geomobility.eu/observations> ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05"^^<http://www.w3.org/2001/XMLSchema#gYearMonth>
+                        ] .
