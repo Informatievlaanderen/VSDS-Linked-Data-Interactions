@@ -12,7 +12,7 @@ public class LdioNgsiv2ToLdAdapterAutoConfig {
 
 	@SuppressWarnings("java:S6830")
 	@Bean("Ldio:NgsiV2ToLdAdapter")
-	public LdioAdapterConfigurator ldiHttpOutConfigurator() {
+	public LdioAdapterConfigurator ldioAdapterConfigurator() {
 		return new LdioSparqlConstructProcessorConfigurator();
 	}
 

@@ -12,7 +12,7 @@ public class LdioRmlAdapterAutoConfig {
 
 	@SuppressWarnings("java:S6830")
 	@Bean("Ldio:RmlAdapter")
-	public LdioAdapterConfigurator ldiHttpOutConfigurator() {
+	public LdioAdapterConfigurator ldioAdapterConfigurator() {
 		return new LdioRmlAdapterProcessorConfigurator();
 	}
 

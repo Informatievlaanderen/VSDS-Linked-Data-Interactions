@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-public class HttpInputPollerProperties {
+public class LdioHttpInputPollerProperties {
 
-	private HttpInputPollerProperties() {
+	private LdioHttpInputPollerProperties() {
 	}
 
 	public static final String URL = "url";

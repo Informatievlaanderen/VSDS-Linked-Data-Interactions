@@ -22,17 +22,17 @@ import java.util.List;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval.TYPE.CRON;
 
-public class HttpInputPoller extends LdioInput implements Runnable {
+public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	public static final String NAME = "Ldio:HttpInPoller";
 	private final ThreadPoolTaskScheduler scheduler;
 	private final RequestExecutor requestExecutor;
 	private final List<? extends Request> requests;
 	private final boolean continueOnFail;
-	private static final Logger log = LoggerFactory.getLogger(HttpInputPoller.class);
+	private static final Logger log = LoggerFactory.getLogger(LdioHttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
 
-	public HttpInputPoller(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry, List<String> endpoints,
-	                       boolean continueOnFail, RequestExecutor requestExecutor) {
+	public LdioHttpInputPoller(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry, List<String> endpoints,
+	                           boolean continueOnFail, RequestExecutor requestExecutor) {
 		super(NAME, pipelineName, executor, adapter, observationRegistry);
 		this.requestExecutor = requestExecutor;
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();

@@ -15,7 +15,7 @@ public class LdioRdfAdapterAutoConfig {
 
 	@SuppressWarnings("java:S6830")
 	@Bean("Ldio:RdfAdapter")
-	public LdioAdapterConfigurator ldiHttpOutConfigurator() {
+	public LdioAdapterConfigurator ldioAdapterConfigurator() {
 		return new LdioRdfConfigurator();
 	}
 

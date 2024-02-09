@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInputPoller;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -13,12 +13,12 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 import java.util.Optional;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller.NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInputPoller.NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @Configuration
-public class HttpInputPollerAutoConfig {
+public class LdioHttpInputPollerAutoConfig {
 	private static final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
 
 	@SuppressWarnings("java:S6830")
@@ -35,8 +35,8 @@ public class HttpInputPollerAutoConfig {
 		}
 
 		@Override
-		public HttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
-		                                 ComponentProperties properties) {
+		public LdioHttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
+		                                     ComponentProperties properties) {
 			String pipelineName = properties.getProperty(PIPELINE_NAME);
 			List<String> endpoints = properties.getPropertyList(URL);
 
@@ -44,7 +44,7 @@ public class HttpInputPollerAutoConfig {
 
 			var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
 
-			var httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, observationRegistry, endpoints, continueOnFail, requestExecutor);
+			var httpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, observationRegistry, endpoints, continueOnFail, requestExecutor);
 
 			httpInputPoller.schedulePoller(getPollingInterval(properties));
 

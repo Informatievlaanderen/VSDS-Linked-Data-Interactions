@@ -35,7 +35,7 @@ import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.*;
 
 @WireMockTest(httpPort = 10101)
-class HttpInputPollerTest {
+class LdioHttpInputPollerTest {
 
 	private final LdiAdapter adapter = mock(LdiAdapter.class);
 	private final ComponentExecutor executor = mock(ComponentExecutor.class);
@@ -44,7 +44,7 @@ class HttpInputPollerTest {
 	private static final String ENDPOINT = "/resource";
 	private static final String CONTENT = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 	private static final String CONTENT_TYPE = "application/n-quads";
-	private HttpInputPoller httpInputPoller;
+	private LdioHttpInputPoller ldioHttpInputPoller;
 	private static final RequestExecutor noAuthExecutor = new RequestExecutorFactory().createNoAuthExecutor();
 
 	@BeforeEach
@@ -57,12 +57,12 @@ class HttpInputPollerTest {
                 .thenReturn(Stream.of())
                 .thenReturn(Stream.of());
 
-		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), true, noAuthExecutor);
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), true, noAuthExecutor);
     }
 
 	@AfterEach
 	void tearDown() {
-		httpInputPoller.shutdown();
+		ldioHttpInputPoller.shutdown();
 	}
 
 	@Test
@@ -70,7 +70,7 @@ class HttpInputPollerTest {
 		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type",
 				CONTENT_TYPE).withBody(CONTENT)));
 
-		httpInputPoller.run();
+		ldioHttpInputPoller.run();
 		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
 	}
 
@@ -78,8 +78,8 @@ class HttpInputPollerTest {
 	void whenPolling_andMissesHeader() {
 		stubFor(get(ENDPOINT).willReturn(ok().withBody(CONTENT)));
 
-		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
-		Executable polling = () -> httpInputPoller.run();
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
+		Executable polling = () -> ldioHttpInputPoller.run();
 
 		assertThrows(MissingHeaderException.class, polling);
 		Mockito.verifyNoInteractions(adapter);
@@ -91,7 +91,7 @@ class HttpInputPollerTest {
 	void whenPeriodicPolling_thenReturnTwoTimesTheSameResponse(PollingInterval pollingInterval) {
 		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 
-		httpInputPoller.schedulePoller(pollingInterval);
+		ldioHttpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, timeout(4000).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2), getRequestedFor(urlEqualTo(ENDPOINT)));
@@ -102,10 +102,10 @@ class HttpInputPollerTest {
 		stubFor(get(ENDPOINT).willReturn(serverError().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 		String otherEndpoint = "/other-resource";
 		stubFor(get(otherEndpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
-		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT, BASE_URL + otherEndpoint),
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT, BASE_URL + otherEndpoint),
 				true, noAuthExecutor);
 
-		httpInputPoller.run();
+		ldioHttpInputPoller.run();
 
 		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
 		WireMock.verify(getRequestedFor(urlEqualTo(otherEndpoint)));
@@ -118,10 +118,10 @@ class HttpInputPollerTest {
 		stubFor(get(endpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 		String otherEndpoint = "/other-endpoint";
 		stubFor(get(otherEndpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
-		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + endpoint, BASE_URL + otherEndpoint),
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + endpoint, BASE_URL + otherEndpoint),
 				true, noAuthExecutor);
 
-		httpInputPoller.schedulePoller(pollingInterval);
+		ldioHttpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, timeout(6000).times(4)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2), getRequestedFor(urlEqualTo(endpoint)));
@@ -133,7 +133,7 @@ class HttpInputPollerTest {
 	void when_OnContinueIsTrueAndPeriodPollingReturnsNot2xx_thenKeepPolling(PollingInterval pollingInterval) {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		httpInputPoller.schedulePoller(pollingInterval);
+		ldioHttpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, after(4000).never()).apply(any());
 		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2),
@@ -146,8 +146,8 @@ class HttpInputPollerTest {
 	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling(PollingInterval pollingInterval) {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
-		httpInputPoller.schedulePoller(pollingInterval);
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
+		ldioHttpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, after(4000).never()).apply(any());
 		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 1), getRequestedFor(urlEqualTo(ENDPOINT)));
@@ -156,10 +156,10 @@ class HttpInputPollerTest {
 	@Test
 	void when_EndpointDoesNotExist_Then_NoDataIsSent() {
 		String wrongEndpoint = "/non-existing-resource";
-		httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + wrongEndpoint), true,
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + wrongEndpoint), true,
 				noAuthExecutor);
 
-		httpInputPoller.run();
+		ldioHttpInputPoller.run();
 
 		WireMock.verify(getRequestedFor(urlEqualTo(wrongEndpoint)));
 		Mockito.verifyNoInteractions(adapter);
@@ -169,7 +169,7 @@ class HttpInputPollerTest {
 	void when_ResponseIsNot200_Then_NoDataIsSent() {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		httpInputPoller.run();
+		ldioHttpInputPoller.run();
 
 		WireMock.verify(getRequestedFor(urlEqualTo(ENDPOINT)));
 		Mockito.verifyNoInteractions(adapter);
