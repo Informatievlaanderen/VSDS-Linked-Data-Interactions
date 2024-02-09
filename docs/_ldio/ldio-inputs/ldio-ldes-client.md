@@ -8,7 +8,7 @@ title: LDES Client
 
 ***Ldio:LdesClient***
 
-An LDIO wrapper component for the [LDI LDES Client building block](../../core/ldi-inputs/ldes-client)
+An LDIO wrapper component for the [LDI LDES Client building block](../../_core/ldi-inputs/ldes-client)
 
 ## Config
 
