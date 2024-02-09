@@ -43,7 +43,7 @@ java -jar ./target/ldes-discoverer.jar --url="https://brugge-ldes.geomobility.eu
 ### Docker
 
 ```shell
-docker run ghcr.io/informatievlaanderen/ldes-discoverer --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+docker run ldes/ldes-discoverer --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
 ```
 
 > **NOTE**: when an url contains a `&` symbol, which will be picked up by the shell as an operator. In this example, if
