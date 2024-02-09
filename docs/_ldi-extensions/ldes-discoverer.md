@@ -28,7 +28,7 @@ In this example, we will try to discover the structure of an event stream of Geo
 For simplicity, we recommend passing the config as arguments, like shown below:
 
 ```shell
-docker run ghcr.io/informatievlaanderen/ldes-discoverer --url="https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11"
+docker run ldes/ldes-discoverer --url="https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11"
 ```
 
 > **NOTE**: when an url contains a `&` symbol, which will be picked up by the shell as an operator. In this example, if
