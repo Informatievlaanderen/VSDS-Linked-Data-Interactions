@@ -37,9 +37,6 @@ public class RedirectRequestExecutor {
 									"No Location Header in redirect.")));
 			return execute(newStartingNodeRequest);
 		}
-		System.out.println(response.getHttpStatus());
-		System.out.println(response.getFirstHeaderValue("Date"));
-		System.out.println(response.getBodyAsString().get());
 		throw new StartingNodeNotFoundException(startingNodeRequest.url(),
 				"Unable to hande response " + response.getHttpStatus());
 	}
