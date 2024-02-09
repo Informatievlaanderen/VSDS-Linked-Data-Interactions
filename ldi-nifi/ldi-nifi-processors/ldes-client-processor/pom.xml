@@ -42,10 +42,6 @@
             <version>${testcontainers-postgresql.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldi-common</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
