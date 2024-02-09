@@ -25,7 +25,7 @@ class MemberSupplierFactoryTest {
 
     @Test
     void when_VersionMaterialisationIsEnabled_then_VersionMaterialisedMemberSupplierIsReturned() {
-        defaultInputConfig.put("use-version-materialisation", "true");
+        defaultInputConfig.put("materialisation.use-version-materialisation", "true");
         final var componentProperties = new ComponentProperties(defaultInputConfig);
 
         MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null).getMemberSupplier();
