@@ -1,4 +1,4 @@
-name: 2.b Build LDI LDES Discoverer Docker
+name: 2.b Build LDES Discoverer Docker
 
 on:
   push:

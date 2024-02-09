@@ -23,7 +23,7 @@ For simplicity, we recommend passing the config as arguments to the application
 ### Maven
 
 ```shell
-mvn spring-boot:run -Dspring-boot.run.arguments=--url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+mvn spring-boot:run -Dspring-boot.run.arguments=--url="http://ldes-server/observations/by-time?year=2023&month=05&day=11"
 ```
 
 ### Running the JAR
@@ -37,13 +37,13 @@ mvn package -DskipTests
 Now the JAR can be executed with the following command:
 
 ```shell
-java -jar ./target/ldi-ldes-discoverer.jar --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+java -jar ./target/ldes-discoverer.jar --url="http://ldes-server/observations/by-time?year=2023&month=05&day=11"
 ```
 
 ### Docker
 
 ```shell
-docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+docker run ghcr.io/informatievlaanderen/ldes-discoverer --url="http://ldes-server/observations/by-time?year=2023&month=05&day=11"
 ```
 
 > **NOTE**: when an url contains a `&` symbol, which will be picked up by the shell as an operator. In this example, if
@@ -59,39 +59,39 @@ docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --url="https://brugg
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix tree: <https://w3id.org/tree#> .
 
-<https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=3>
+<http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=3>
         tree:relation  [ rdf:type   tree:Relation;
-                         tree:node  <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=4>
+                         tree:node  <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=4>
                        ] .
 
-<https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=2>
+<http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=2>
         tree:relation  [ rdf:type   tree:Relation;
-                         tree:node  <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=3>
+                         tree:node  <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=3>
                        ] .
 
-<https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11>
+<http://ldes-server/observations/by-time?year=2023&month=05&day=11>
         tree:relation  [ rdf:type    tree:InBetweenRelation;
-                         tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=00>;
+                         tree:node   <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=00>;
                          tree:path   prov:generatedAtTime;
                          tree:value  "2023-05-11T00"
                        ];
         tree:relation  [ rdf:type    tree:InBetweenRelation;
-                         tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=05>;
+                         tree:node   <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05>;
                          tree:path   prov:generatedAtTime;
                          tree:value  "2023-05-11T05"
                        ];
         [...]
         tree:relation  [ rdf:type    tree:InBetweenRelation;
-                         tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=20>;
+                         tree:node   <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=20>;
                          tree:path   prov:generatedAtTime;
                          tree:value  "2023-05-11T20"
                        ] .
 
 [...]
 
-<https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=05>
+<http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05>
         tree:relation  [ rdf:type   tree:Relation;
-                         tree:node  <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=1>
+                         tree:node  <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=1>
                        ] .
 
 ```

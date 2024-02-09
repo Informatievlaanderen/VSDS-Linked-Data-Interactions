@@ -28,7 +28,7 @@ In this example, we will try to discover the structure of an event stream of Geo
 For simplicity, we recommend passing the config as arguments, like shown below:
 
 ```shell
-docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --url="https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11"
+docker run ldes/ldes-discoverer --url="http://ldes-server/observations/by-time?year=2023&month=05&day=11"
 ```
 
 > **NOTE**: when an url contains a `&` symbol, which will be picked up by the shell as an operator. In this example, if
@@ -42,45 +42,45 @@ docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --url="https://geo.m
 In the logging of the application, both the total number of relations and the relations itself will be displayed. This
 will be present as the last logging statement of the app and would look something like this: 
 ```text
-2024-02-08T14:26:25.279+01:00  INFO 48176 --- [           main] b.v.i.l.l.d.common.LdesDiscoverer        : Total of 97 relations found for url https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11
+2024-02-08T14:26:25.279+01:00  INFO 48176 --- [           main] b.v.i.l.l.d.common.LdesDiscoverer        : Total of 97 relations found for url http://ldes-server/observations/by-time?year=2023&month=05&day=11
 
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix tree: <https://w3id.org/tree#> .
 
-<https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=3>
+<http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=3>
         tree:relation  [ rdf:type   tree:Relation;
-                         tree:node  <https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=4>
+                         tree:node  <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=4>
                        ] .
 
-<https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=2>
+<http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=2>
         tree:relation  [ rdf:type   tree:Relation;
-                         tree:node  <https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=3>
+                         tree:node  <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=3>
                        ] .
 
-<https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11>
+<http://ldes-server/observations/by-time?year=2023&month=05&day=11>
         tree:relation  [ rdf:type    tree:InBetweenRelation;
-                         tree:node   <https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=00>;
+                         tree:node   <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=00>;
                          tree:path   prov:generatedAtTime;
                          tree:value  "2023-05-11T00"
                        ];
         tree:relation  [ rdf:type    tree:InBetweenRelation;
-                         tree:node   <https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=05>;
+                         tree:node   <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05>;
                          tree:path   prov:generatedAtTime;
                          tree:value  "2023-05-11T05"
                        ];
         [...]
         tree:relation  [ rdf:type    tree:InBetweenRelation;
-                         tree:node   <https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=20>;
+                         tree:node   <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=20>;
                          tree:path   prov:generatedAtTime;
                          tree:value  "2023-05-11T20"
                        ] .
 
 [...]
 
-<https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=05>
+<http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05>
         tree:relation  [ rdf:type   tree:Relation;
-                         tree:node  <https://geo.mobilitiy.org/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=1>
+                         tree:node  <http://ldes-server/observations/by-time?year=2023&month=05&day=11&hour=05&pageNumber=1>
                        ] .
 
 ```
