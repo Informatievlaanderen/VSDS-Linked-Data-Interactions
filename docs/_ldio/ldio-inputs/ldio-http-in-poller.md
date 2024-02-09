@@ -5,7 +5,8 @@ title: HTTP In Poller
 ---
 
 # LDIO HTTP In Poller
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller***
+
+***Ldio:HttpInPoller***
 
 The LDIO Http In Poller is a basic Http Poller that will poll a target URL on a specified interval. 
 
@@ -24,7 +25,7 @@ Refer to [LDIO Http Requester](../ldio-core) for the config.
 The Http In Poller supports polling multiple endpoints. Example configuration:
 
 ```yaml
-name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller
+name: Ldio:HttpInPoller
 config:
   auth:
     type: API_KEY

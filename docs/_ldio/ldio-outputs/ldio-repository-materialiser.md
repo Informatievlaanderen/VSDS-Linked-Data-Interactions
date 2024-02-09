@@ -5,7 +5,8 @@ title: Repository Materialization
 ---
 
 # Repository Materialiser
-***be.vlaanderen.informatievlaanderen.ldes.ldi.RepositoryMaterialiser***
+
+***Ldio:RepositoryMaterialiser***
 
 The repository materialiser is used to materialise an LDES stream into a triplestore.
 Any triplestore that supports the RDF4J remote repository API can be used.

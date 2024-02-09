@@ -5,7 +5,8 @@ title: RML Adapter
 ---
 
 # LDIO RML Adapter
-***be.vlaanderen.informatievlaanderen.ldes.ldi.RmlAdapter***
+
+***Ldio:RmlAdapter***
 
 An LDIO wrapper component for the [LDI RML Adapter building block](../../core/ldi-adapters/rml-adapter)
 

@@ -5,7 +5,8 @@ title: Version Object Creator
 ---
 
 # LDIO Version Object Creator
-***be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator***
+
+***Ldio:VersionObjectCreator***
 
 An LDIO wrapper component for the [LDI Version Object Creator building block](../../core/ldi-transformers/version-object-creator)
 

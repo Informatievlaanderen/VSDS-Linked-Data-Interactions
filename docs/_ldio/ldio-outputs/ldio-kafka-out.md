@@ -5,7 +5,8 @@ title: Kafka Out
 ---
 
 # LDIO Kafka Out
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut***
+
+***Ldio:KafkaOut***
 
 The LDIO Kafka Out sends messages to a [kafka topic](https://kafka.apache.org).
 Two security protocols are supported:
@@ -31,7 +32,7 @@ Two security protocols are supported:
 
 ```yaml
 outputs:
-  - name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut
+  - name: Ldio:KafkaOut
     config:
       bootstrap-servers: localhost:9092
       topic: quickstart-events
@@ -42,7 +43,7 @@ outputs:
 
 ```yaml
 outputs:
-  - name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut
+  - name: Ldio:KafkaOut
     config:
       bootstrap-servers: localhost:9092
       topic: quickstart-events

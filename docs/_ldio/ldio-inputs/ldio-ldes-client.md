@@ -6,7 +6,7 @@ title: LDES Client
 
 # LDIO Ldes Client
 
-***be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient***
+***Ldio:LdesClient***
 
 An LDIO wrapper component for the [LDI LDES Client building block](../../core/ldi-inputs/ldes-client)
 
@@ -33,7 +33,7 @@ Refer to [LDIO Http Requester](../ldio-core) for the config.
 
 ```yaml
   input:
-    name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient
+    name: Ldio:LdesClient
     config:
       urls:
         - http://localhost:8080/my-ldes
@@ -49,7 +49,7 @@ Refer to [LDIO Http Requester](../ldio-core) for the config.
 
 ```yaml
   input:
-    name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient
+    name: Ldio:LdesClient
     config:
       urls:
         - http://localhost:8080/my-ldes

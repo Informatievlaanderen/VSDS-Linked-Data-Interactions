@@ -6,7 +6,7 @@ title: LDES Client with Connector
 
 # LDIO Ldes Client Connector
 
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector***
+***Ldio:LdesClientConnector***
 
 An EDC (Eclipse dataspace Connector) LDIO wrapper component for
 the [LDI LDES Client building block](../../core/ldi-inputs/ldes-client)
@@ -45,7 +45,7 @@ This component exposes two endpoints:
 
 ```yaml
 input:
-   name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector
+   name: Ldio:LdesClientConnector
    config:
       url: http://consumer-connector:29291/public
       connector-transfer-url: http://consumer-connector:29193/management/v2/transferprocesses

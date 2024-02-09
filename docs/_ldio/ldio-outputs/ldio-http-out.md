@@ -5,7 +5,8 @@ title: HTTP Out
 ---
 
 # LDIO HTTP Out
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpOut***
+
+***Ldio:HttpOut***
 
 The LDIO HTTP Out is a basic Http Client that will send the given Linked Data model to a target url.
 
