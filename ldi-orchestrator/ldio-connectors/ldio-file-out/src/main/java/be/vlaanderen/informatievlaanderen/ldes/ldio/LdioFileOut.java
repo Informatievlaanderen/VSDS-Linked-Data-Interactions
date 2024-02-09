@@ -13,7 +13,7 @@ import java.nio.file.Files;
 
 @SuppressWarnings("java:S112")
 public class LdioFileOut implements LdiOutput {
-
+	public static final String NAME = "Ldio:FileOut";
 	private final TimestampExtractor timestampExtractor;
 	private final String archiveRootDir;
 

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LdioArchiveFileIn extends LdioInput {
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn";
+	public static final String NAME = "Ldio:ArchiveFileIn";
 	private final Logger log = LoggerFactory.getLogger(LdioArchiveFileIn.class);
 	private final ArchiveFileCrawler archiveFileCrawler;
 	private final Lang sourceFormat;

@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut.NAME;
+
 @Configuration
 public class LdioFileOutAutoConfig {
 
@@ -20,7 +22,7 @@ public class LdioFileOutAutoConfig {
 	public static final String TIMESTAMP_PATH_PROP = "timestamp-path";
 
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut")
+	@Bean(NAME)
 	public LdioOutputConfigurator ldiFileOutConfigurator() {
 		return new LdioOutputConfigurator() {
 			@Override

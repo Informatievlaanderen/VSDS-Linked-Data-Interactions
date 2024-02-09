@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class LdioHttpEnricher extends LdioTransformer {
-
+	public static final String NAME = "Ldio:HttpEnricher";
 	private static final Logger log = LoggerFactory.getLogger(LdioHttpEnricher.class);
 
 	private final LdiAdapter adapter;

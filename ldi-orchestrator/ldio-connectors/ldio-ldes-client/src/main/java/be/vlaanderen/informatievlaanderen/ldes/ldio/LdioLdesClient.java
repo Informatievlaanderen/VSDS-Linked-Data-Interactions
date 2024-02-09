@@ -14,7 +14,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 public class LdioLdesClient extends LdioInput {
 
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient";
+	public static final String NAME = "Ldio:LdesClient";
 
 	private final Logger log = LoggerFactory.getLogger(LdioLdesClient.class);
 

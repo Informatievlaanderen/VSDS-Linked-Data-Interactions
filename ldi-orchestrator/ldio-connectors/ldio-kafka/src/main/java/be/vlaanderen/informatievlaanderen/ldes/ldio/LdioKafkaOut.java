@@ -13,7 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaOutConfigKeys.CONTENT_TYPE;
 
 public class LdioKafkaOut implements LdiOutput {
-
+	public static final String NAME = "Ldio:KafkaOut";
 	private final KafkaTemplate<String, String> kafkaTemplate;
 	private final Lang lang;
 	private final String topic;

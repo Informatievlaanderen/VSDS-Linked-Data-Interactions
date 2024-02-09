@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class LdioNgsiv2ToLdAdapterAutoConfig {
 
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter")
-	public LdioAdapterConfigurator ldiHttpOutConfigurator() {
+	@Bean("Ldio:NgsiV2ToLdAdapter")
+	public LdioAdapterConfigurator ldioAdapterConfigurator() {
 		return new LdioSparqlConstructProcessorConfigurator();
 	}
 

@@ -4,8 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidCronArgumentsProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidIntervalArgumentsProvider;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerAutoConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class HttpInputPollerAutoConfigTest {
+class LdioLdioHttpInputPollerAutoConfigTest {
 
 	private final LdiAdapter adapter = mock(LdiAdapter.class);
 	private final ComponentExecutor executor = mock(ComponentExecutor.class);
@@ -31,15 +31,15 @@ class HttpInputPollerAutoConfigTest {
 	private static final String ENDPOINT = "/resource";
 
 	private static ComponentProperties createConfigWithInterval(String url, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline", HttpInputPollerProperties.URL, url,
-				HttpInputPollerProperties.INTERVAL, interval,
-				HttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
+		return new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline", LdioHttpInputPollerProperties.URL, url,
+				LdioHttpInputPollerProperties.INTERVAL, interval,
+				LdioHttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
 	}
 
 	private static ComponentProperties createConfigWithCron(String url, String cron, String continueOnFail) {
-		return new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline", HttpInputPollerProperties.URL, url,
-				HttpInputPollerProperties.CRON, cron,
-				HttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
+		return new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline", LdioHttpInputPollerProperties.URL, url,
+				LdioHttpInputPollerProperties.CRON, cron,
+				LdioHttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
 	}
 
 	private static ComponentProperties createDefaultISOTestConfig() {
@@ -52,8 +52,8 @@ class HttpInputPollerAutoConfigTest {
 
 	@Test
 	void when_ValidIntervalConfig() {
-		try (MockedConstruction<HttpInputPoller> ignored = mockConstruction(HttpInputPoller.class)) {
-			HttpInputPoller poller = new HttpInputPollerAutoConfig()
+		try (MockedConstruction<LdioHttpInputPoller> ignored = mockConstruction(LdioHttpInputPoller.class)) {
+			LdioHttpInputPoller poller = new LdioHttpInputPollerAutoConfig()
 					.httpInputPollerConfigurator(null)
 					.configure(adapter, executor, createDefaultISOTestConfig());
 			verify(poller, times(1)).schedulePoller(new PollingInterval(Duration.of(1, ChronoUnit.SECONDS)));
@@ -62,8 +62,8 @@ class HttpInputPollerAutoConfigTest {
 
 	@Test
 	void when_ValidCronConfig() {
-		try (MockedConstruction<HttpInputPoller> ignored = mockConstruction(HttpInputPoller.class)) {
-			HttpInputPoller poller = new HttpInputPollerAutoConfig()
+		try (MockedConstruction<LdioHttpInputPoller> ignored = mockConstruction(LdioHttpInputPoller.class)) {
+			LdioHttpInputPoller poller = new LdioHttpInputPollerAutoConfig()
 					.httpInputPollerConfigurator(null)
 					.configure(adapter, executor, createDefaultCronTestConfig());
 			verify(poller, times(1)).schedulePoller(new PollingInterval(new CronTrigger("* * * * * *")));
@@ -73,7 +73,7 @@ class HttpInputPollerAutoConfigTest {
 	@ParameterizedTest
 	@ArgumentsSource(InvalidIntervalArgumentsProvider.class)
 	void whenInvalidIntervalConfigured_thenCatchException(String interval) {
-		Executable configurePoller = () -> new HttpInputPollerAutoConfig()
+		Executable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
 				.httpInputPollerConfigurator(null)
 				.configure(adapter, executor, createConfigWithInterval(BASE_URL + ENDPOINT, interval, "false"));
 
@@ -83,7 +83,7 @@ class HttpInputPollerAutoConfigTest {
 	@ParameterizedTest
 	@ArgumentsSource(InvalidCronArgumentsProvider.class)
 	void whenInvalidCronConfigured_thenCatchException(String cron) {
-		Executable configurePoller = () -> new HttpInputPollerAutoConfig()
+		Executable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
 				.httpInputPollerConfigurator(null)
 				.configure(adapter, executor, createConfigWithCron(BASE_URL + ENDPOINT, cron, "false"));
 
