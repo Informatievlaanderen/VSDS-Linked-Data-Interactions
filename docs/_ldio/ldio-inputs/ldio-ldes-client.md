@@ -32,10 +32,10 @@ An LDIO wrapper component for the [LDI LDES Client building block](../../_core/l
 
 ### Version materialisation properties
 
-| Property                                    | Description                                                                             | Required | Default                              | Example                                                        | Supported values                                              |
-|:--------------------------------------------|:----------------------------------------------------------------------------------------|:---------|:-------------------------------------|:---------------------------------------------------------------|:--------------------------------------------------------------|
-| materialisation.use-version-materialisation | Indicates if the client should return state-objects (true) or version-objects (false).  | No       | false                                | true                                                           | true or false                                                 |
-| materialisation.version-of-property         | Property that points to the versionOfPath.                                              | No       | http://purl.org/dc/terms/isVersionOf | "http://purl.org/dc/terms/isVersionOf"                         | true or false                                                 |
+| Property                            | Description                                                                             | Required | Default                              | Example                                                        | Supported values                                              |
+|:------------------------------------|:----------------------------------------------------------------------------------------|:---------|:-------------------------------------|:---------------------------------------------------------------|:--------------------------------------------------------------|
+| materialisation.enabled             | Indicates if the client should return state-objects (true) or version-objects (false).  | No       | false                                | true                                                           | true or false                                                 |
+| materialisation.version-of-property | Property that points to the versionOfPath.                                              | No       | http://purl.org/dc/terms/isVersionOf | "http://purl.org/dc/terms/isVersionOf"                         | true or false                                                 |
 
 This component uses the "LDIO Http Requester" to make the HTTP request.
 Refer to [LDIO Http Requester](../ldio-core) for the config.
@@ -50,7 +50,7 @@ Refer to [LDIO Http Requester](../ldio-core) for the config.
         - http://localhost:8080/my-ldes
       sourceFormat: text/turtle
       materialisation:
-        use-version-materialisation: true
+        enabled: true
       retries:
         enabled: true
       auth:

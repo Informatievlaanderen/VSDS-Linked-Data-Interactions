@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.USE_VERSION_MATERIALISATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberSupplierFactoryTest {
@@ -25,7 +26,7 @@ class MemberSupplierFactoryTest {
 
     @Test
     void when_VersionMaterialisationIsEnabled_then_VersionMaterialisedMemberSupplierIsReturned() {
-        defaultInputConfig.put("materialisation.use-version-materialisation", "true");
+        defaultInputConfig.put(USE_VERSION_MATERIALISATION, "true");
         final var componentProperties = new ComponentProperties(defaultInputConfig);
 
         MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null).getMemberSupplier();

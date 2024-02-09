@@ -17,7 +17,7 @@ public class LdioLdesClientProperties {
 	public static final String TIMESTAMP_PATH_PROP = "timestamp-path";
 
 	// version materialisation properties
-	public static final String USE_VERSION_MATERIALISATION = "materialisation.use-version-materialisation";
+	public static final String USE_VERSION_MATERIALISATION = "materialisation.enabled";
 	public static final String VERSION_OF_PROPERTY = "materialisation.version-of-property";
 
 }
