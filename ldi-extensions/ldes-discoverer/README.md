@@ -37,13 +37,13 @@ mvn package -DskipTests
 Now the JAR can be executed with the following command:
 
 ```shell
-java -jar ./target/ldi-ldes-discoverer.jar --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+java -jar ./target/ldes-discoverer.jar --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
 ```
 
 ### Docker
 
 ```shell
-docker run ghcr.io/informatievlaanderen/ldi-ldes-discoverer --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
+docker run ghcr.io/informatievlaanderen/ldes-discoverer --url="https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11"
 ```
 
 > **NOTE**: when an url contains a `&` symbol, which will be picked up by the shell as an operator. In this example, if
