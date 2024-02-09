@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ldi-ldes-discoverer
+  IMAGE_NAME: ldes-discoverer
 
 jobs:
   build-docker-ldio:
