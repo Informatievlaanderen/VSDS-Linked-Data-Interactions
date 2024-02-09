@@ -1,20 +1,21 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class LdioAzureBlobOutAutoConfig {
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut")
-	public LdioConfigurator ldioConfigurator() {
+	public LdioOutputConfigurator ldioConfigurator() {
 		return new LdioAzureBlobOutConfigurator();
 	}
 
-	public static class LdioAzureBlobOutConfigurator implements LdioConfigurator {
+	public static class LdioAzureBlobOutConfigurator implements LdioOutputConfigurator {
 		public static final String PROPERTY_LANG = "lang";
 		public static final String PROPERTY_STORAGE_ACCOUNT_NAME = "storage-account-name";
 		public static final String PROPERTY_CONNECTION_STRING = "connection-string";
@@ -24,7 +25,7 @@ public class LdioAzureBlobOutAutoConfig {
 		public static final String DEFAULT_JSON_CONTEXT_URI = "";
 
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
+		public LdiOutput configure(ComponentProperties properties) {
 			String outputLanguage = properties.getOptionalProperty(PROPERTY_LANG)
 					.orElse(DEFAULT_OUTPUT_LANG);
 			String storageAccountName = properties.getProperty(PROPERTY_STORAGE_ACCOUNT_NAME);

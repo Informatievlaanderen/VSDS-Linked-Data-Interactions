@@ -7,16 +7,19 @@
   {
     "x": "http://somewhere/JohnSmith/",
     "fname": "John Smith",
-    "gname": "John"
+    "gname": "John",
+    "number": false
   },
   {
     "x": "http://somewhere/RebeccaSmith/",
     "fname": "Becky Smith",
-    "gname": "Rebecca"
+    "gname": "Rebecca",
+    "number": 14
   },
   {
     "x": "http://somewhere/MattJones/",
     "fname": "Matt Jones",
-    "gname": "Matthew"
+    "gname": "Matthew",
+    "number": 1.663E-4
   }
 ]

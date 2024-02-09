@@ -21,6 +21,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.model.util.ModelCollector;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
@@ -53,7 +54,8 @@ public class RmlAdapter implements LdiAdapter {
 
 	@Override
 	public Stream<Model> apply(Content content) {
-		Dataset dataset = rmlMapper.mapToModel(IOUtils.toInputStream(content.content(), StandardCharsets.UTF_8))
+		Dataset dataset = Objects.requireNonNull(rmlMapper.map(IOUtils.toInputStream(content.content(), StandardCharsets.UTF_8))
+						.collect(ModelCollector.toModel()).share().block())
 				.stream().map(JenaConverters::toQuad)
 				.collect(JenaCollectors.toDataset());
 

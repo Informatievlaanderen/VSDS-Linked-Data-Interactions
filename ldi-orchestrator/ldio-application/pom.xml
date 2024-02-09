@@ -3,7 +3,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-orchestrator</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.14.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,7 +17,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -31,6 +31,24 @@
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>ldi-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldio-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
+
+        <!-- TEST -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
@@ -50,11 +68,6 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldio-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -117,6 +130,16 @@
             </dependencies>
         </profile>
         <profile>
+            <id>ldio-ldes-client-connector</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-ldes-client-connector</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>ldio-archive-file-in</id>
             <dependencies>
                 <dependency>
@@ -142,15 +165,6 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-rml-adapter</artifactId>
-                    <version>${project.version}</version>
-                </dependency></dependencies>
-        </profile>
-        <profile>
-            <id>ldio-model-split-adapter</id>
-            <dependencies>
-                <dependency>
-                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-model-split</artifactId>
                     <version>${project.version}</version>
                 </dependency></dependencies>
         </profile>
@@ -190,6 +204,16 @@
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
                     <artifactId>ldio-geojson-to-wkt</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ldio-http-enricher</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-http-enricher</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>

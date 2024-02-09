@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TimestampFromCurrentTimeExtractorTest {
 
@@ -17,7 +18,7 @@ class TimestampFromCurrentTimeExtractorTest {
 		LocalDateTime result = new TimestampFromCurrentTimeExtractor().extractTimestamp(model);
 
 		assertNotNull(result);
-		assertTrue(result.isBefore(LocalDateTime.now()));
+		assertTrue(result.isBefore(LocalDateTime.now().plusMinutes(5)));
 		// We give a generous 5 minutes to run the test.
 		assertTrue(result.isAfter(LocalDateTime.now().minusMinutes(5)));
 	}

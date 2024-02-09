@@ -1,0 +1,19 @@
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://example.org/cars/for-sale#tesla>
+  a gr:Offering ;
+  gr:acceptedPaymentMethods gr:Cash ;
+  gr:description "Need to sell fast and furiously"^^xsd:string ;
+  gr:hasBusinessFunction gr:Sell ;
+  gr:hasPriceSpecification [
+    gr:hasCurrency "USD"^^xsd:string ;
+    gr:hasCurrencyValue "85000"^^xsd:float
+  ] ;
+  gr:includes [
+    a gr:Individual, <http://www.productontology.org/id/Vehicle> ;
+    gr:name "Tesla Roadster"^^xsd:string ;
+    foaf:page <http://www.teslamotors.com/roadster>
+  ] ;
+  gr:name "Used Tesla Roadster"^^xsd:string .

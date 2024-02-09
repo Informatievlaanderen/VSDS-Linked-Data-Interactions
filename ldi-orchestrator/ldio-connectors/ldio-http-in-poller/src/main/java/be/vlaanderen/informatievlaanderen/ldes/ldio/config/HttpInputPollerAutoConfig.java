@@ -4,47 +4,58 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.HttpInputPoller;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.micrometer.observation.ObservationRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.Duration;
-import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @Configuration
 public class HttpInputPollerAutoConfig {
+	private static final LdioRequestExecutorSupplier ldioRequestExecutorSupplier = new LdioRequestExecutorSupplier();
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller")
-	public HttpInputPollerConfigurator httpInputPollerConfigurator() {
-		return new HttpInputPollerConfigurator();
+	@SuppressWarnings("java:S6830")
+	@Bean(HttpInputPoller.NAME)
+	public HttpInputPollerConfigurator httpInputPollerConfigurator(ObservationRegistry observationRegistry) {
+		return new HttpInputPollerConfigurator(observationRegistry);
 	}
 
 	public static class HttpInputPollerConfigurator implements LdioInputConfigurator {
+		private final ObservationRegistry observationRegistry;
+
+		public HttpInputPollerConfigurator(ObservationRegistry observationRegistry) {
+			this.observationRegistry = observationRegistry;
+		}
 
 		@Override
 		public HttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
-				ComponentProperties properties) {
+		                                 ComponentProperties properties) {
+			String pipelineName = properties.getProperty(PIPELINE_NAME);
 			List<String> endpoints = properties.getPropertyList(URL);
 
-			String pollingInterval = properties.getProperty(INTERVAL);
 			boolean continueOnFail = properties.getOptionalBoolean(CONTINUE_ON_FAIL).orElse(true);
 
-			long seconds;
-			try {
-				seconds = Duration.parse(pollingInterval).getSeconds();
-			} catch (DateTimeParseException e) {
-				throw new IllegalArgumentException("Invalid config for the ldio http in poller: " + INTERVAL
-						+ " cannot have following value: " + pollingInterval);
-			}
+			var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
 
-			HttpInputPoller httpInputPoller = new HttpInputPoller(executor, adapter, endpoints, continueOnFail);
-			httpInputPoller.schedulePoller(seconds);
+			var httpInputPoller = new HttpInputPoller(pipelineName, executor, adapter, observationRegistry, endpoints, continueOnFail, requestExecutor);
+
+			httpInputPoller.schedulePoller(getPollingInterval(properties));
 
 			return httpInputPoller;
 		}
 
+		private PollingInterval getPollingInterval(ComponentProperties properties) {
+			Optional<String> expression = properties.getOptionalProperty(CRON);
+
+			return expression.map(PollingInterval::withCron)
+					.orElseGet(() -> PollingInterval.withInterval(properties.getProperty(INTERVAL)));
+		}
 	}
+
 }

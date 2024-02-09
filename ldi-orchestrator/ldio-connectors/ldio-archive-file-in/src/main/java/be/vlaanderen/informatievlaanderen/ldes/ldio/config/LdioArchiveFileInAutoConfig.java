@@ -5,9 +5,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.ArchiveFileCrawler;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileInRunner;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.springframework.context.annotation.Bean;
@@ -16,14 +16,16 @@ import org.springframework.context.annotation.Configuration;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+
 @Configuration
 public class LdioArchiveFileInAutoConfig {
-
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
 	public static final String SOURCE_FORMAT = "source-format";
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn")
-	public LdioInputConfigurator ldiArchiveFileInConfigurator() {
+	@SuppressWarnings("java:S6830")
+	@Bean(LdioArchiveFileIn.NAME)
+	public LdioInputConfigurator ldiArchiveFileInConfigurator(ObservationRegistry observationRegistry) {
 		return new LdioInputConfigurator() {
 			@Override
 			public LdiComponent configure(LdiAdapter adapter,
@@ -31,8 +33,9 @@ public class LdioArchiveFileInAutoConfig {
 					ComponentProperties config) {
 				ArchiveFileCrawler archiveFileCrawler = new ArchiveFileCrawler(getArchiveDirectoryPath(config));
 				Lang hintLang = getSourceFormat(config);
-				var ldioArchiveFileInRunner = new LdioArchiveFileInRunner(executor, archiveFileCrawler, hintLang);
-				return new LdioArchiveFileIn(executor, ldioArchiveFileInRunner);
+				String pipelineName = config.getProperty(PIPELINE_NAME);
+
+				return new LdioArchiveFileIn(pipelineName, executor, observationRegistry, archiveFileCrawler, hintLang);
 			}
 
 			private Path getArchiveDirectoryPath(ComponentProperties config) {

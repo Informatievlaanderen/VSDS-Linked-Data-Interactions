@@ -4,6 +4,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtrac
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -15,6 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +27,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -81,7 +87,7 @@ class VersionObjectCreatorTest {
 		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType,
 				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
 
-		Model versionObject = versionObjectCreator.apply(inputModel).get(0);
+		Model versionObject = versionObjectCreator.transform(inputModel);
 
 		final LocalDateTime startTestTime = LocalDateTime.now();
 
@@ -118,8 +124,7 @@ class VersionObjectCreatorTest {
 				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
 
 		String result = versionObjectCreator
-				.apply(inputModel)
-				.get(0)
+				.transform(inputModel)
 				.listSubjectsWithProperty(RDF.type, initModel.createResource("http://example.org/Something"))
 				.mapWith(RDFNode::asResource)
 				.mapWith(Resource::getURI)
@@ -140,7 +145,7 @@ class VersionObjectCreatorTest {
 				model.createResource(memberType),
 				DEFAULT_DELIMITER, null, null);
 
-		Model versionObject = versionObjectCreator.apply(model).get(0);
+		Model versionObject = versionObjectCreator.transform(model);
 
 		final String minuteTheTestStarted = getPartOfLocalDateTime(startTestTime);
 		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(startTestTime.plusMinutes(1));
@@ -149,6 +154,24 @@ class VersionObjectCreatorTest {
 				.stream()
 				.anyMatch(stmt -> stmt.getSubject().toString().contains(expectedId + minuteTheTestStarted) ||
 						stmt.getSubject().toString().contains(expectedId + minuteAfterTheTestStarted)));
+	}
+
+	@Test
+	void when_memberInfoExtractionFails_warningMessageIsLogged() {
+		Logger vocLogger = (Logger) LoggerFactory.getLogger(VersionObjectCreator.class);
+		ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+		listAppender.start();
+		vocLogger.addAppender(listAppender);
+
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(), null,
+				DEFAULT_DELIMITER,
+				null, null);
+		versionObjectCreator.transform(initModel);
+
+		List<ILoggingEvent> logsList = listAppender.list;
+		assertTrue(
+				logsList.get(0).getMessage().contains(VersionObjectCreator.DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND));
+		assertEquals(Level.WARN, logsList.get(0).getLevel());
 	}
 
 	private String getPartOfLocalDateTime(LocalDateTime time) {

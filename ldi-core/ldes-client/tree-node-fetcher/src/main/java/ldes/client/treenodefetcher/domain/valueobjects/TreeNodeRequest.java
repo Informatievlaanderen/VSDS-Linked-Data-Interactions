@@ -1,5 +1,6 @@
 package ldes.client.treenodefetcher.domain.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.GetRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Request;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
@@ -24,13 +25,17 @@ public class TreeNodeRequest {
 		RequestHeaders requestHeaders = new RequestHeaders(
 				List.of(new RequestHeader(HttpHeaders.ACCEPT, lang.getHeaderString())));
 		if (etag != null) {
-			requestHeaders = requestHeaders.addRequestHeader(new RequestHeader(HttpHeaders.IF_NONE_MATCH, etag));
+			requestHeaders = requestHeaders.withRequestHeader(new RequestHeader(HttpHeaders.IF_NONE_MATCH, etag));
 		}
-		return new Request(treeNodeUrl, requestHeaders);
+		return new GetRequest(treeNodeUrl, requestHeaders);
 	}
 
 	public Lang getLang() {
 		return lang;
+	}
+
+	public String getTreeNodeUrl() {
+		return treeNodeUrl;
 	}
 
 	@Override

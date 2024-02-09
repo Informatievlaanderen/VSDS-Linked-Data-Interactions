@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.SaslSslPlainConfigProvi
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -28,19 +29,27 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterM
 
 @Configuration
 public class LdioKafkaInAutoConfig {
+	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn";
 
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn")
-	public LdioKafkaInConfigurator ldioConfigurator() {
-		return new LdioKafkaInConfigurator();
+	public LdioKafkaInConfigurator ldioConfigurator(ObservationRegistry observationRegistry) {
+		return new LdioKafkaInConfigurator(observationRegistry);
 	}
 
 	public static class LdioKafkaInConfigurator implements LdioInputConfigurator {
+		private final ObservationRegistry observationRegistry;
+
+		public LdioKafkaInConfigurator(ObservationRegistry observationRegistry) {
+			this.observationRegistry = observationRegistry;
+		}
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties config) {
-			verifyAdapterPresent(config.getProperty(PIPELINE_NAME), adapter);
+			String pipelineName = config.getProperty(PIPELINE_NAME);
+			verifyAdapterPresent(pipelineName, adapter);
 
-			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(executor, adapter, getContentType(config));
+			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(NAME, pipelineName, executor, adapter, observationRegistry, getContentType(config));
 			var consumerFactory = new DefaultKafkaConsumerFactory<>(getConsumerConfig(config));
 			ContainerProperties containerProps = new ContainerProperties(config.getProperty(TOPICS).split(","));
 			containerProps.setMessageListener(ldioKafkaIn);
@@ -66,7 +75,7 @@ public class LdioKafkaInAutoConfig {
 			props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
 			var authStrategy = KafkaAuthStrategy.from(config.getOptionalProperty(SECURITY_PROTOCOL)
-					.orElse(KafkaAuthStrategy.NO_AUTH.name()))
+							.orElse(KafkaAuthStrategy.NO_AUTH.name()))
 					.orElseThrow(() -> new SecurityProtocolNotSupportedException(SECURITY_PROTOCOL));
 
 			if (KafkaAuthStrategy.SASL_SSL_PLAIN.equals(authStrategy)) {

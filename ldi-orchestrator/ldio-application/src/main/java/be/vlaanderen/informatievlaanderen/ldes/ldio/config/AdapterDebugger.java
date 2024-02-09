@@ -8,17 +8,17 @@ import org.slf4j.LoggerFactory;
 import java.util.stream.Stream;
 
 public class AdapterDebugger implements LdiAdapter {
-	private final Logger logger;
+	private final Logger log;
 	private final LdiAdapter adapter;
 
 	public AdapterDebugger(LdiAdapter adapter) {
-		this.logger = LoggerFactory.getLogger(adapter.getClass());
+		this.log = LoggerFactory.getLogger(adapter.getClass());
 		this.adapter = adapter;
 	}
 
 	@Override
 	public Stream<Model> apply(Content content) {
-		logger.debug("Starting point: " + content);
+		log.atDebug().log("Starting point: {}", content);
 
 		return adapter.apply(content);
 	}

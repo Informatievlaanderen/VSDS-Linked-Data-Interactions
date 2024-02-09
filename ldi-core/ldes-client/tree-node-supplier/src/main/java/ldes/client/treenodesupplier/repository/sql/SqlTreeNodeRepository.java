@@ -5,8 +5,9 @@ import ldes.client.treenodesupplier.domain.services.TreeNodeRecordComparator;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
 
 public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 

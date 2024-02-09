@@ -25,8 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_RELATIONSHIP;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -89,7 +88,7 @@ class CreateVersionObjectProcessorTest {
 		testRunner.enqueue(JSON_SNIPPET);
 		testRunner.run(1);
 
-		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_UNPARSEABLE_RELATIONSHIP);
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(VALUE_NOT_FOUND_RELATIONSHIP);
 		assertEquals(1, dataFlowfiles.size());
 	}
 

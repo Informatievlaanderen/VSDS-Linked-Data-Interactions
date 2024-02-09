@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 public class RequestHeaders implements Iterable<RequestHeader> {
 
@@ -12,7 +12,7 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 		this.headers = requestHeaders;
 	}
 
-	public RequestHeaders addRequestHeader(RequestHeader requestHeader) {
+	public RequestHeaders withRequestHeader(RequestHeader requestHeader) {
 		ArrayList<RequestHeader> updatedRequestHeaders = new ArrayList<>(headers);
 		updatedRequestHeaders.add(requestHeader);
 		return new RequestHeaders(updatedRequestHeaders);
@@ -25,6 +25,28 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 	@Override
 	public Iterator<RequestHeader> iterator() {
 		return headers.iterator();
+	}
+
+	public Optional<RequestHeader> getFirst(String key) {
+		return headers.stream()
+				.filter(header -> Objects.equals(lowerCase(header.getKey()), lowerCase(key)))
+				.findFirst();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		RequestHeaders that = (RequestHeaders) o;
+		return new HashSet<>(headers).containsAll(that.headers)
+				&& new HashSet<>(that.headers).containsAll(headers);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(headers);
 	}
 
 }

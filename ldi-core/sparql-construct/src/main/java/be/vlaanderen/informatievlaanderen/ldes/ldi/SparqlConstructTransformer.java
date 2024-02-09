@@ -1,15 +1,17 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sparqlfunctions.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToManyTransformer;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.function.FunctionRegistry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class SparqlConstructTransformer implements LdiTransformer {
+public class SparqlConstructTransformer implements LdiOneToManyTransformer {
 
 	private final Query query;
 	private final boolean includeOriginal;
@@ -17,10 +19,11 @@ public class SparqlConstructTransformer implements LdiTransformer {
 	public SparqlConstructTransformer(Query query, boolean includeOriginal) {
 		this.query = query;
 		this.includeOriginal = includeOriginal;
+		initGeoFunctions();
 	}
 
 	@Override
-	public List<Model> apply(Model linkedDataModel) {
+	public List<Model> transform(Model linkedDataModel) {
 		final Dataset dataset = queryDataset(linkedDataModel);
 		final List<Model> result = extractModelsFromDataset(dataset);
 		handleIncludeOriginal(result, linkedDataModel);
@@ -70,4 +73,14 @@ public class SparqlConstructTransformer implements LdiTransformer {
 		return result;
 	}
 
+	private void initGeoFunctions() {
+		FunctionRegistry functionRegistry = FunctionRegistry.get();
+		functionRegistry.put(FirstCoordinate.NAME, FirstCoordinate.class);
+		functionRegistry.put(LastCoordinate.NAME, LastCoordinate.class);
+		functionRegistry.put(LineLength.NAME, LineLength.class);
+		functionRegistry.put(MidPoint.NAME, MidPoint.class);
+		functionRegistry.put(PointAtFromStart.NAME, PointAtFromStart.class);
+		functionRegistry.put(DistanceFromStart.NAME, DistanceFromStart.class);
+		functionRegistry.put(LineAtIndex.NAME, LineAtIndex.class);
+	}
 }

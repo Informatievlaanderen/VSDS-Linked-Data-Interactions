@@ -2,10 +2,11 @@ package ldes.client.treenodesupplier.repository.sql.postgres;
 
 import ldes.client.treenodesupplier.repository.sql.EntityManagerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 
 @SuppressWarnings("java:S2696")
 public class PostgresEntityManagerFactory implements EntityManagerFactory {

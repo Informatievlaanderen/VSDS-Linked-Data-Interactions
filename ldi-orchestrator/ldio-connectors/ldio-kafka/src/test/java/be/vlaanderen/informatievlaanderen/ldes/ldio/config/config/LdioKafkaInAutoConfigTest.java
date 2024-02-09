@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioKafkaInAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ class LdioKafkaInAutoConfigTest {
 
 	@Test
 	void shouldThrowExceptionWhenInvalidAuthConfig() {
-		var configurator = new LdioKafkaInAutoConfig.LdioKafkaInConfigurator();
+		var configurator = new LdioKafkaInAutoConfig.LdioKafkaInConfigurator(ObservationRegistry.create());
 
 		Map<String, String> config = getBasicConfig();
 		config.put(KafkaInConfigKeys.SECURITY_PROTOCOL, "Fantasy protocol");
@@ -33,7 +34,7 @@ class LdioKafkaInAutoConfigTest {
 
 	@Test
 	void shouldNotThrowExceptionWhenNoAuthConfig() {
-		var configurator = new LdioKafkaInAutoConfig.LdioKafkaInConfigurator();
+		var configurator = new LdioKafkaInAutoConfig.LdioKafkaInConfigurator(ObservationRegistry.create());
 
 		Map<String, String> config = getBasicConfig();
 
@@ -43,7 +44,7 @@ class LdioKafkaInAutoConfigTest {
 
 	@Test
 	void shouldNotThrowExceptionWhenSaslSslPlain() {
-		var configurator = new LdioKafkaInAutoConfig.LdioKafkaInConfigurator();
+		var configurator = new LdioKafkaInAutoConfig.LdioKafkaInConfigurator(ObservationRegistry.create());
 
 		Map<String, String> config = getBasicConfig();
 		config.put(KafkaInConfigKeys.SECURITY_PROTOCOL, KafkaAuthStrategy.SASL_SSL_PLAIN.name());

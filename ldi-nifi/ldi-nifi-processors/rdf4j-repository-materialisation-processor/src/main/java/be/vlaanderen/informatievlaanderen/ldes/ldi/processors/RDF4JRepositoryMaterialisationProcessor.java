@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.nifi.annotation.behavior.InputRequirement;

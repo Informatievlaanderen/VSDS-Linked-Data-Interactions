@@ -1,0 +1,16 @@
+[
+  {
+    "id": "exampleID_1",
+    "type": "Model",
+    "example": {
+      "value": "value_1"
+    }
+  },
+  {
+    "id": "exampleID_2",
+    "type": "Model",
+    "example": {
+      "value": "value_2"
+    }
+  }
+]

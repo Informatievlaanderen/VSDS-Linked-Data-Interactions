@@ -4,14 +4,19 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.domain.valueobjects.LdesPrope
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.LdesPropertiesExtractor;
+import io.github.resilience4j.retry.Retry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;
@@ -72,8 +77,7 @@ public class LdesClient extends AbstractProcessor {
 		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
 		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrl, dataSourceFormat);
 		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(context);
-		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
-				statePersistence, requestExecutor);
+		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
 		boolean keepState = stateKept(context);
 		memberSupplier = new MemberSupplier(treeNodeProcessor, keepState);
 
@@ -84,17 +88,26 @@ public class LdesClient extends AbstractProcessor {
 	}
 
 	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {
-		final RequestExecutor requestExecutor = getRequestExecutor(context);
-		return retriesEnabled(context)
-				? requestExecutorFactory.createRetryExecutor(requestExecutor, getMaxRetries(context),
-						getStatusesToRetry(context))
-				: requestExecutor;
+		return RequestExecutorDecorator.decorate(getRequestExecutor(context)).with(getRetry(context)).get();
+	}
+
+	private Retry getRetry(final ProcessContext context) {
+		if (retriesEnabled(context)) {
+			return RetryConfig.of(getMaxRetries(context), getStatusesToRetry(context)).getRetry();
+		} else {
+			return null;
+		}
 	}
 
 	private RequestExecutor getRequestExecutor(final ProcessContext context) {
 		return switch (getAuthorizationStrategy(context)) {
 			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
-			case API_KEY -> requestExecutorFactory.createApiKeyExecutor(getApiKeyHeader(context), getApiKey(context));
+			case API_KEY -> {
+				List<Header> headers = List.of(
+						new BasicHeader(getApiKeyHeader(context), getApiKey(context))
+				);
+				yield requestExecutorFactory.createNoAuthExecutor(headers);
+			}
 			case OAUTH2_CLIENT_CREDENTIALS ->
 				requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
 						getOauthClientSecret(context), getOauthTokenEndpoint(context));

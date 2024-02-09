@@ -6,7 +6,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
         <artifactId>ldio-connectors</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.14.0-SNAPSHOT</version>
     </parent>
     <artifactId>ldio-http-in-poller</artifactId>
 
@@ -23,8 +23,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>request-executor</artifactId>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+            <artifactId>ldio-request-executor</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>

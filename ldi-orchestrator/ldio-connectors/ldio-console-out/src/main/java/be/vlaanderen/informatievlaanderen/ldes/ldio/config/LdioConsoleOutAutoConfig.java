@@ -1,32 +1,31 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdiConsoleOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import org.apache.jena.riot.Lang;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdiConsoleOut.getLang;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.RDF_WRITER;
 
 @Configuration
 public class LdioConsoleOutAutoConfig {
+	@SuppressWarnings("java:S6830")
 	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut")
-	public LdioConfigurator ldioConfigurator() {
+	public LdioOutputConfigurator ldioConfigurator() {
 		return new LdioConsoleOutConfigurator();
 	}
 
-	public static class LdioConsoleOutConfigurator implements LdioConfigurator {
-		private static final Lang DEFAULT_OUTPUT_LANG = Lang.NQUADS;
+	public static class LdioConsoleOutConfigurator implements LdioOutputConfigurator {
 
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
-			Lang outputLanguage = properties.getOptionalProperty("content-type")
-					.map(contentType -> getLang(MediaType.valueOf(contentType)))
-					.orElse(DEFAULT_OUTPUT_LANG);
-			return new LdiConsoleOut(outputLanguage);
+		public LdiComponent configure(ComponentProperties config) {
+			LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(
+					config.extractNestedProperties(RDF_WRITER).getConfig());
+
+			return new LdiConsoleOut(writerProperties);
 		}
 	}
 }

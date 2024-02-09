@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -120,6 +121,24 @@ class ComponentPropertiesTest {
 		@Test
 		void shouldReturnFileContentsWhenFileExistsAndIsReadable() {
 			assertEquals("sparql", componentProperties.getOptionalPropertyFromFile("query").get());
+		}
+
+		@Test
+		void shouldReturnEmptyIfNotFilePath() {
+			ComponentProperties componentProperties = new ComponentProperties(
+					Map.of("query", """
+							PREFIX schema: <http://schema.org/>
+
+							CONSTRUCT {
+							  ?s ?p ?o .
+							  ?s schema:hasCar "car" .
+							}
+							WHERE {
+							  ?s ?p ?o .
+							}
+							"""));
+
+			assertEquals(Optional.empty(), componentProperties.getOptionalPropertyFromFile("query"));
 		}
 	}
 }

@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/200-get-response"
+  },
+  "response": {
+    "status": 200,
+    "body": "<http://example.org/John> <http://example.org/hasWife> <http://example.org/Hillary> ."
+  }
+}

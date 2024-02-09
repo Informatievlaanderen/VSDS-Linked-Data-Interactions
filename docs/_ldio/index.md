@@ -39,7 +39,7 @@ orchestrator:
 - Note that one orchestrator can have multiple pipelines 
 - Note that one pipeline can have multiple LDI Transformers and LDI Outputs 
 
-## LDIO DEBUG logging
+## LDIO DEBUG Logging
 
 To enable logging the input model for a 
 * [LDIO Adapter](./ldio-adapters)
@@ -56,26 +56,27 @@ Make sure you
     ````
 * Add the ```debug: true``` property to your transformer or output config.
 
-## LDIO Process Flow 
+## LDIO Logging & Monitoring
 
-````mermaid
-sequenceDiagram
-    LDI Input->>+LDI Adapter: Received Content.
-    loop For every Linked Data Model
-        LDI Adapter->>-LDI Input: Returns Model
-        
-    end
-    LDI Input->>ComponentExecutor: Process Model
-    loop For every LDI Transformer in pipeline
-        ComponentExecutor->>+LDI Transformer: Start Transformation
-        LDI Transformer->>-ComponentExecutor: Return Transformed Model
-    end
+To provide a better insight in the workings in the LDIO, we expose a prometheus endpoint (`/actuator/prometheus`) that
+encloses some metrics (with included tags):
 
-    loop For every LDI Output in pipeline
-        ComponentExecutor->>+LDI Output: Start Output
-        Note right of LDI Output: Model exported!
-    end
+* ldio_data_in_total: Number (Amount of items passed at the start of Transformer Pipeline)
+  * pipeline: String (Refers to the pipeline name)
+  * ldio_type: String (Refers to the LDIO Input Type of pipeline)
+* ldio_data_out_total: Number (Amount of items passed at the end of Transformer Pipeline)
+  * pipeline: String (Refers to the pipeline name)
+
+To consult these metrics, make sure the prometheus endpoint is enabled by setting
+the following setting:
+
+````yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus
 ````
-
 
 [Apache NiFi]: https://nifi.apache.org/
