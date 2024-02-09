@@ -6,7 +6,7 @@ title: Azure Blob Out
 
 # LDIO Kafka Out
 
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut***
+***Ldio:AzureBlobOut***
 
 The LDIO Azure Blob Out writes out messages to an Azure Blob Container.
 Messages can be written out in any format supported by Apache Jena or in json format.
@@ -29,7 +29,7 @@ Messages can be written out in any format supported by Apache Jena or in json fo
 
 ```yaml
 outputs:
-  - name: "be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut"
+  - name: "Ldio:AzureBlobOut"
     config:
       lang: "json"
       storage-account-name: "storageaccount"
@@ -42,7 +42,7 @@ outputs:
 
 ```yaml
 outputs:
-  - name: "be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut"
+  - name: "Ldio:AzureBlobOut"
     config:
       lang: "n-quads"
       storage-account-name: "storageaccount"

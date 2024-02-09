@@ -4,11 +4,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut.NAME;
+
 @Configuration
 public class LdioKafkaOutAutoConfig {
 
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut")
+	@Bean(NAME)
 	public LdioOutputConfigurator ldiKafkaOutConfigurator() {
 		return new LdioKafkaOutProcessorConfigurator();
 	}

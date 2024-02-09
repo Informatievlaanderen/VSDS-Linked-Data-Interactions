@@ -9,7 +9,7 @@ import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.HttpInputPollerProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties.*;
 
 public class PollingInterval {
 	private static final Logger logger = LoggerFactory.getLogger(PollingInterval.class);

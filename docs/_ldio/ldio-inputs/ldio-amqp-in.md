@@ -6,7 +6,7 @@ title: AMQP In
 
 # LDIO AMQP In
 
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn***
+***Ldio:AmqpIn***
 
 The LDIO AMQP In listens to messages from
 an [AMQP 1.0 queue](https://www.amqp.org/resources/specifications).
@@ -25,7 +25,7 @@ an [AMQP 1.0 queue](https://www.amqp.org/resources/specifications).
 
 ```yaml
       input:
-        name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn
+        name: Ldio:AmqpIn
         config:
           remote-url: amqp://localhost:61616
           username: artemis

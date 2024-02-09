@@ -1,6 +1,9 @@
 package ldes.client.treenodesupplier;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -14,13 +17,15 @@ import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.junit.After;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MemberSupplierSteps {
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
@@ -35,6 +40,21 @@ public class MemberSupplierSteps {
 	// Multi MemberSupplier
 	private final MemberSupplier[] memberSuppliers = new MemberSupplier[2];
 	private final SuppliedMember[] suppliedMembers = new SuppliedMember[2];
+
+	private String timestampPath;
+
+	@Before
+	public void setup() {
+		timestampPath = "";
+	}
+
+	@After
+	public void teardown() {
+		if (postgreSQLContainer != null) {
+			postgreSQLContainer.stop();
+			postgreSQLContainer = null;
+		}
+	}
 
 	@When("I request one member from the MemberSupplier")
 	public void iRequestOneMemberFromTheMemberSupplier() {
@@ -53,15 +73,25 @@ public class MemberSupplierSteps {
 
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
-		ldesMetaData = new LdesMetaData(url,
-				Lang.JSONLD);
+		ldesMetaData = new LdesMetaData(List.of(url), Lang.JSONLD);
+	}
+
+	@Given("^Starting urls$")
+	public void startingUrls(List<String> urls) {
+		ldesMetaData = new LdesMetaData(urls, Lang.TURTLE);
+	}
+
+	@Given("I set a timestamp path {string}")
+	public void setTimestampPath(String timestampPath) {
+		this.timestampPath = timestampPath;
 	}
 
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				new StatePersistence(memberRepository, treeNodeRecordRepository),
-				requestExecutorFactory.createNoAuthExecutor());
+				requestExecutorFactory.createNoAuthExecutor(),
+				timestampPath.isEmpty() ? new TimestampFromCurrentTimeExtractor() : new TimestampFromPathExtractor(createProperty(timestampPath)));
 	}
 
 	@Then("Member {string} is processed")
@@ -89,6 +119,12 @@ public class MemberSupplierSteps {
 
 	@And("a StatePersistenceStrategy POSTGRES")
 	public StatePersistence aPostgresStatePersistenceStrategy() {
+		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
+				.withDatabaseName("integration-test-client-persistence")
+				.withUsername("sa")
+				.withPassword("sa");
+		postgreSQLContainer.start();
+
 		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.POSTGRES,
@@ -131,23 +167,6 @@ public class MemberSupplierSteps {
 		memberSupplier = new MemberSupplierImpl(treeNodeProcessor, false);
 	}
 
-	@And("Postgres TestContainer is started")
-	public void postgresTestcontainerIsStarted() {
-		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
-				.withDatabaseName("integration-test-client-persistence")
-				.withUsername("sa")
-				.withPassword("sa");
-		postgreSQLContainer.start();
-	}
-
-	@And("Postgres TestContainer is stopped")
-	public void postgresTestContainerIsStopped() {
-		if (postgreSQLContainer != null) {
-			postgreSQLContainer.stop();
-			postgreSQLContainer = null;
-		}
-	}
-
 	private StatePersistence defineStatePersistence(String persistenceStrategy) {
 		return switch (persistenceStrategy) {
 			case "FILE" -> aFileStatePersistenceStrategy();
@@ -160,12 +179,16 @@ public class MemberSupplierSteps {
 
 	@And("a {word} MemberSupplier and a {word} MemberSupplier")
 	public void aStatePersistenceStrategyProcessorAndAStatePersistenceStrategyProcessor(String arg0, String arg1) {
+		timestampPath = "http://www.w3.org/ns/prov#generatedAtTime";
+
 		memberSuppliers[0] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
-				requestExecutorFactory.createNoAuthExecutor()), false);
+				requestExecutorFactory.createNoAuthExecutor(),
+				new TimestampFromPathExtractor(createProperty(timestampPath))), false);
 		memberSuppliers[1] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
-				defineStatePersistence(arg0),
-				requestExecutorFactory.createNoAuthExecutor()), false);
+				defineStatePersistence(arg1),
+				requestExecutorFactory.createNoAuthExecutor(),
+				new TimestampFromPathExtractor(createProperty(timestampPath))), false);
 	}
 
 	@When("I request one member from the MemberSuppliers")
@@ -176,8 +199,12 @@ public class MemberSupplierSteps {
 
 	@Then("Member {string} is processed in both MemberSuppliers")
 	public void memberIsProcessedInBothMemberSuppliers(String memberId) {
-		assertTrue(toString(suppliedMembers[0].getModel(), Lang.JSONLD).contains(memberId));
-		assertTrue(toString(suppliedMembers[1].getModel(), Lang.JSONLD).contains(memberId));
+		var property = createProperty("http://purl.org/dc/terms/created");
+
+		var supplier0MemberId = suppliedMembers[0].getModel().listSubjectsWithProperty(property).nextResource().asNode().toString();
+		assertEquals(memberId, supplier0MemberId);
+		var supplier1MemberId = suppliedMembers[1].getModel().listSubjectsWithProperty(property).nextResource().asNode().toString();
+		assertEquals(memberId, supplier1MemberId);
 	}
 
 	@Then("MemberSuppliers are destroyed")

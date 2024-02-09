@@ -5,7 +5,8 @@ title: Kafka In
 ---
 
 # LDIO Kafka In
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn***
+
+***Ldio:KafkaIn***
 
 The LDIO Kafka In listens to messages from a [kafka topic](https://kafka.apache.org).
 
@@ -31,7 +32,7 @@ Two security protocols are supported:
 
 ```yaml
 outputs:
-  - name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn
+  - name: Ldio:KafkaIn
     config:
       content-type: application/n-quads
       topics: quickstart-events
@@ -42,7 +43,7 @@ outputs:
 
 ```yaml
 outputs:
-  - name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn
+  - name: Ldio:KafkaIn
     config:
       content-type: application/n-quads
       topics: quickstart-events

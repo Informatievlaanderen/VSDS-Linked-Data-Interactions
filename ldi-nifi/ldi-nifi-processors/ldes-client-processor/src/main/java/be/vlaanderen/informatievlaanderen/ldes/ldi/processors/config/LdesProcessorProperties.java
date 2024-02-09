@@ -6,9 +6,12 @@ import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +34,12 @@ public final class LdesProcessorProperties {
 	private LdesProcessorProperties() {
 	}
 
-	public static final PropertyDescriptor DATA_SOURCE_URL = new PropertyDescriptor.Builder()
-			.name("DATA_SOURCE_URL")
-			.displayName("Data source url")
-			.description("Url to data source")
+	public static final PropertyDescriptor DATA_SOURCE_URLS = new PropertyDescriptor.Builder()
+			.name("DATA_SOURCE_URLS")
+			.displayName("Data source urls")
+			.description("Comma separated list of ldes endpoints. Must be part of same view of an LDES.")
 			.required(true)
-			.addValidator(StandardValidators.URL_VALIDATOR)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
@@ -95,6 +98,14 @@ public final class LdesProcessorProperties {
 			.required(false)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(FALSE.toString())
+			.build();
+
+	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
+			.name("TIMESTAMP_PATH")
+			.displayName("Property path determining the timestamp used to order the members within a fragment")
+			.required(false)
+			.addValidator(Validator.VALID)
+			.defaultValue("")
 			.build();
 
 	public static final PropertyDescriptor STREAM_TIMESTAMP_PATH_PROPERTY = new PropertyDescriptor.Builder()
@@ -226,8 +237,16 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.URI_VALIDATOR)
 			.build();
 
-	public static String getDataSourceUrl(final ProcessContext context) {
-		return context.getProperty(DATA_SOURCE_URL).getValue();
+	public static List<String> getDataSourceUrl(final ProcessContext context) {
+		var urls = Arrays.stream(context.getProperty(DATA_SOURCE_URLS).getValue().split(","))
+				.map(String::trim)
+				.toList();
+
+		if (urls.stream().allMatch(LdesProcessorProperties::isValidUrl)) {
+			return urls;
+		} else {
+			throw new IllegalArgumentException("Not a (valid list of) datasource url(s)");
+		}
 	}
 
 	public static Lang getDataSourceFormat(final ProcessContext context) {
@@ -236,6 +255,10 @@ public final class LdesProcessorProperties {
 
 	public static Lang getDataDestinationFormat(final ProcessContext context) {
 		return RDFLanguages.nameToLang(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
+	}
+
+	public static String getTimestampPath(final ProcessContext context) {
+		return context.getProperty(TIMESTAMP_PATH).getValue();
 	}
 
 	public static boolean streamTimestampPathProperty(final ProcessContext context) {
@@ -328,6 +351,15 @@ public final class LdesProcessorProperties {
 
 	public static String getVersionOfProperty(final ProcessContext context) {
 		return context.getProperty(VERSION_OF_PROPERTY).getValue();
+	}
+
+	private static boolean isValidUrl(String url) {
+		try {
+			new URI(url);
+			return true;
+		} catch (URISyntaxException e) {
+			return false;
+		}
 	}
 
 }

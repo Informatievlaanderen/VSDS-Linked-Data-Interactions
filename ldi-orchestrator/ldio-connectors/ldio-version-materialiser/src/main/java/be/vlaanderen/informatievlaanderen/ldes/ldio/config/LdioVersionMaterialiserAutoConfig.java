@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioVersionMaterialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -9,9 +10,11 @@ import org.apache.jena.rdf.model.Property;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioVersionMaterialiser.NAME;
+
 @Configuration
 public class LdioVersionMaterialiserAutoConfig {
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser")
+	@Bean(NAME)
 	public LdioTransformerConfigurator ldioConfigurator() {
 		return new LdioVersionMaterialiserTransformerConfigurator();
 	}

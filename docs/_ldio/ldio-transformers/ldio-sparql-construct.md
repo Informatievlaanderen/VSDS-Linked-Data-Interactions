@@ -5,7 +5,8 @@ title: SPARQL Construct
 ---
 
 # LDIO SPARQL Construct
-***be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer***
+
+***Ldio:SparqlConstructTransformer***
 
 An LDIO wrapper component for the [LDI SPARQL Construct building block](../../core/ldi-transformers/sparql-construct)
 

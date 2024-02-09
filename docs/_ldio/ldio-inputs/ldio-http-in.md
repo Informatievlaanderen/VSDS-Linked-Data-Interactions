@@ -5,7 +5,8 @@ title: HTTP In
 ---
 
 # LDIO HTTP In
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn***
+
+***Ldio:HttpIn***
 
 The LDIO Http In is a basic Http Listener. 
 

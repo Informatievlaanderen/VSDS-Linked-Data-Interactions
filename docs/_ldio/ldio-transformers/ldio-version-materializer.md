@@ -5,7 +5,8 @@ title: Version Materializer
 ---
 
 # LDIO Version Materializer
-***be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser***
+
+***Ldio:VersionMaterialiser***
 
 An LDIO wrapper component for the [LDI Version Materializer building block](../../core/ldi-transformers/version-materializer)
 

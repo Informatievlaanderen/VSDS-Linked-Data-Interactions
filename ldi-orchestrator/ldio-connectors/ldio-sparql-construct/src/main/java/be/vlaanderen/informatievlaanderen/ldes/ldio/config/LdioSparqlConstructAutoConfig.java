@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioSparqlConstruct;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -8,10 +9,12 @@ import org.apache.jena.query.QueryFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioSparqlConstruct.NAME;
+
 @Configuration
 public class LdioSparqlConstructAutoConfig {
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer")
+	@Bean(NAME)
 	public LdioTransformerConfigurator ldioConfigurator() {
 		return new LdioSparqlConstructTransformerConfigurator();
 	}

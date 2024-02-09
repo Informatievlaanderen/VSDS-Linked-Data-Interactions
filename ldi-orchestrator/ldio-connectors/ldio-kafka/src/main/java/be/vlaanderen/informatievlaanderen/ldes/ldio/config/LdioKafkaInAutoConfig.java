@@ -22,6 +22,7 @@ import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
@@ -29,7 +30,6 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterM
 
 @Configuration
 public class LdioKafkaInAutoConfig {
-	private static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn";
 
 	@SuppressWarnings("java:S6830")
 	@Bean(NAME)

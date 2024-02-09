@@ -1,0 +1,36 @@
+@prefix tree:   <https://w3id.org/tree#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ldes:   <https://w3id.org/ldes#> .
+@prefix schema: <http://schema.org/> .
+@prefix terms:  <http://purl.org/dc/terms/> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+
+<http://localhost:10101/items/grouped?group=2>
+    rdf:type       tree:Node ;
+    terms:isPartOf <http://localhost:10101/items> .
+
+
+<http://localhost:10101/items>
+    rdf:type    ldes:EventStream ;
+    tree:member <http://localhost:10101/items/5>, <http://localhost:10101/items/6>, <http://localhost:10101/items/7>,
+                <http://localhost:10101/items/8> .
+
+<http://localhost:10101/items/5>
+    a                    schema:Person ;
+    schema:name          "Jane Doe" ;
+    prov:generatedAtTime "2024-02-07T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<http://localhost:10101/items/6>
+    a                    schema:Person ;
+    schema:name          "Jack Doe" ;
+    prov:generatedAtTime "2024-02-07T00:00:00.001Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<http://localhost:10101/items/7>
+    a                    schema:Person ;
+    schema:name          "Joe Doe" ;
+    prov:generatedAtTime "2024-02-07T00:00:00.002Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<http://localhost:10101/items/8>
+    a                    schema:Person ;
+    schema:name          "James Doe" ;
+    prov:generatedAtTime "2024-02-07T00:00:00.003Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .

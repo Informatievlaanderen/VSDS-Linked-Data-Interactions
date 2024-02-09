@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -12,7 +13,7 @@ import java.nio.file.Files;
 
 @SuppressWarnings("java:S112")
 public class LdioFileOut implements LdiOutput {
-
+	public static final String NAME = "Ldio:FileOut";
 	private final TimestampExtractor timestampExtractor;
 	private final String archiveRootDir;
 

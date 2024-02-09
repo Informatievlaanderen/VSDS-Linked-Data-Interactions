@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 
 public class LdioAmqpIn extends LdioInput implements MessageListener {
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn";
+	public static final String NAME = "Ldio:AmqpIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioAmqpIn.class);
 	private final String defaultContentType;
 

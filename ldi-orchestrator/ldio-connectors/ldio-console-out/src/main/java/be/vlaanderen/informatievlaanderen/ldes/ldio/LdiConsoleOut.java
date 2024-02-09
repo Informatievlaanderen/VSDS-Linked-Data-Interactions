@@ -10,6 +10,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWr
 
 @SuppressWarnings("java:S2629")
 public class LdiConsoleOut implements LdiOutput {
+	public static final String NAME = "Ldio:ConsoleOut";
 	private final Logger log = LoggerFactory.getLogger(LdiConsoleOut.class);
 
 	private final LdiRdfWriterProperties properties;

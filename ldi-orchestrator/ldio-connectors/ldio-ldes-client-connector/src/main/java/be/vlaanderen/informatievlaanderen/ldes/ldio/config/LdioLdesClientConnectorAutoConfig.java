@@ -24,7 +24,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
 
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
+	public static final String NAME = "Ldio:LdesClientConnector";
 
 	@Bean(NAME)
 	public LdioInputConfigurator ldioConfigurator(ApplicationEventPublisher eventPublisher,
