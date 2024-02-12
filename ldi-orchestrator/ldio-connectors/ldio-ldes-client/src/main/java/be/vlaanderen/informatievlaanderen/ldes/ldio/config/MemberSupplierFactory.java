@@ -90,8 +90,7 @@ public class MemberSupplierFactory {
                 .getOptionalProperty(VERSION_OF_PROPERTY)
                 .map(ResourceFactory::createProperty)
 		        .orElseGet(() -> createProperty("http://purl.org/dc/terms/isVersionOf"));
-        final boolean restrictToMembers = properties.getOptionalBoolean(RESTRICT_TO_MEMBERS).orElse(false);
-        return new VersionMaterialiser(versionOfProperty, restrictToMembers);
+        return new VersionMaterialiser(versionOfProperty, false);
     }
 
 
