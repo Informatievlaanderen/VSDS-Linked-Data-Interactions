@@ -13,7 +13,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfig
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.MemberSupplier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
 
-	public static final String NAME = "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnector";
+	public static final String NAME = "Ldio:LdesClientConnector";
 
 	@Bean(NAME)
 	public LdioInputConfigurator ldioConfigurator(ApplicationEventPublisher eventPublisher,
@@ -39,7 +39,6 @@ public class LdioLdesClientConnectorAutoConfig {
 		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
 		private final ApplicationEventPublisher eventPublisher;
 		private final ObservationRegistry observationRegistry;
-		private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
 
@@ -58,10 +57,8 @@ public class LdioLdesClientConnectorAutoConfig {
 			final var urlProxy = getEdcUrlProxy(properties);
 			final var edcRequestExecutor = requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService,
 					urlProxy);
-			final StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(properties);
-
-			LdioLdesClient ldesClient =
-					new LdioLdesClient(pipelineName, executor, observationRegistry, edcRequestExecutor, properties, statePersistence);
+			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, edcRequestExecutor).getMemberSupplier();
+			var ldesClient = new LdioLdesClient(pipelineName, executor, observationRegistry, memberSupplier);
 			ldesClient.start();
 			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService)));
 

@@ -59,7 +59,10 @@ public abstract class LdioInput implements LdiComponent {
 					try {
 						adapter.apply(content).forEach(this::processModel);
 					} catch (Exception e) {
-						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, this.pipelineName + ":processInput", e.getMessage());
+						final var errorLocation = this.pipelineName + ":processInput";
+						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, errorLocation, e.getMessage());
+						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, errorLocation,
+								"Processing below message.%n%n###mime###%n%s%n###content###%n%s".formatted(content.mimeType(), content.content()));
 						throw e;
 					}
 				});

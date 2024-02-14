@@ -23,11 +23,11 @@ orchestrator:
     - name: data
       description: "This pipeline uses a HTTP listener to read incoming RDF data and writes them to the console"
       input:
-        name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn
+        name: Ldio:HttpIn
         adapter:
-          name: be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter
+          name: Ldio:RdfAdapter
       outputs:
-        - name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut
+        - name: Ldio:ConsoleOut
 ````
 
 ## Execution

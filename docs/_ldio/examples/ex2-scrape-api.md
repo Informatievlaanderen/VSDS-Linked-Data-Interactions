@@ -70,23 +70,23 @@ orchestrator:
   pipelines:
     - name: data
       input:
-        name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInPoller
+        name: Ldio:HttpInPoller
         config:
           url: https://www.cheapshark.com/api/1.0/deals?pageSize=1000
           interval: PT30M
         adapter:
-          name: be.vlaanderen.informatievlaanderen.ldes.ldi.RmlAdapter
+          name: Ldio:RmlAdapter
           config:
             mapping: "mapping.ttl"
       transformers:
-        - name: be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator
+        - name: Ldio:VersionObjectCreator
           config:
             date-observed-property: "http://www.cheapshark.com/lastChange"
             member-type: "http://www.cheapshark.com/GameDeal"
             generatedAt-property: "https://w3id.org/ldes#timestampPath"
             versionOf-property: "https://w3id.org/ldes#versionOfPath"
       outputs:
-        - name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut
+        - name: Ldio:ConsoleOut
           config:
             content-type: text/turtle
 ```

@@ -33,5 +33,6 @@ public class RequestExecutorProperties {
     public static final String CLIENT_ID = "auth.client-id";
     public static final String CLIENT_SECRET = "auth.client-secret";
     public static final String TOKEN_ENDPOINT = "auth.token-endpoint";
+    public static final String AUTH_SCOPE = "auth.scope";
 
 }

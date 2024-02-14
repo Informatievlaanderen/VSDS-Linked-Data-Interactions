@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 

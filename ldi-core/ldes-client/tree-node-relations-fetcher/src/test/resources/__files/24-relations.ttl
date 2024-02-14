@@ -1,0 +1,128 @@
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix terms: <http://purl.org/dc/terms/> .
+@prefix tree:  <https://w3id.org/tree#> .
+
+<https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11>
+        rdf:type        tree:Node ;
+        terms:isPartOf  <https://brugge-ldes.geomobility.eu/observations> ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=19> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T19"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=02> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T02"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=13> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T13"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=22> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T22"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=20> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T20"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=09> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T09"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=00> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T00"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=21> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T21"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=14> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T14"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=10> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T10"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=07> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T07"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=06> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T06"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=01> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T01"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=18> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T18"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=15> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T15"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=04> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T04"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=03> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T03"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=16> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T16"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=08> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T08"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=11> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T11"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=05> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T05"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=12> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T12"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=23> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T23"
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=17> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05-11T17"
+                        ] .

@@ -16,4 +16,6 @@ It will be ignored when an attempt is made to queue a known immutable fragment. 
 
 Processed members of mutable fragments are also kept in state. They are ignored if presented more than once.
 
-[VSDS Tech Docs]: https://informatievlaanderen.github.io/VSDS-Tech-Docs/docs/LDES_client.html
+Within a fragment, members can be ordered based on a timestamp. The path to this timestamp has to be configured. If this path is missing, the members are ordered randomly.
+
+[VSDS Tech Docs]: https://informatievlaanderen.github.io/VSDS-Tech-Docs/introduction/LDES_client

@@ -1,0 +1,23 @@
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix terms: <http://purl.org/dc/terms/> .
+@prefix tree:  <https://w3id.org/tree#> .
+
+<http://localhost:10101/200-first-2-relations>
+        rdf:type        tree:Node ;
+        terms:isPartOf  <https://brugge-ldes.geomobility.eu/observations> ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <http://localhost:10101/200-first-relation> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05"^^<http://www.w3.org/2001/XMLSchema#gYearMonth>
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <http://localhost:10101/302-redirects> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05"^^<http://www.w3.org/2001/XMLSchema#gYearMonth>
+                        ] ;
+        tree:relation   [ rdf:type    tree:InBetweenRelation ;
+                          tree:node   <http://localhost:10101/200-no-relations> ;
+                          tree:path   prov:generatedAtTime ;
+                          tree:value  "2023-05"^^<http://www.w3.org/2001/XMLSchema#gYearMonth>
+                        ] .

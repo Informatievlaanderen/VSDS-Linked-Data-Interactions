@@ -1,32 +1,30 @@
 package ldes.client.treenodefetcher.domain.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import org.apache.jena.graph.TripleBoundary;
 import org.apache.jena.rdf.model.*;
 
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+import static ldes.client.treenodefetcher.domain.valueobjects.Constants.*;
 
 public class ModelResponse {
-
-	protected static final Resource ANY_RESOURCE = null;
-	public static final String W3C_TREE = "https://w3id.org/tree#";
-	public static final Property W3ID_TREE_RELATION = createProperty(W3C_TREE, "relation");
-	public static final Property W3ID_TREE_MEMBER = createProperty(W3C_TREE, "member");
-	public static final Property W3ID_TREE_NODE = createProperty(W3C_TREE, "node");
+	private TimestampExtractor timestampExtractor;
 	private final ModelExtract modelExtract = new ModelExtract(new StatementTripleBoundary(TripleBoundary.stopNowhere));
 	private final Model model;
 
-	public ModelResponse(Model model) {
+	public ModelResponse(Model model, TimestampExtractor timestampExtractor) {
 		this.model = model;
+		this.timestampExtractor = timestampExtractor;
 	}
 
 	public List<String> getRelations() {
-		return extractRelations(model)
+		return extractRelations()
 				.map(relationStatement -> relationStatement.getResource()
 						.getProperty(W3ID_TREE_NODE).getResource().toString())
 				.toList();
@@ -47,12 +45,13 @@ public class ModelResponse {
 
 	private TreeMember processMember(Model treeNodeModel, Statement memberStatement) {
 		final Model memberModel = modelExtract.extract(memberStatement.getObject().asResource(), treeNodeModel);
+		LocalDateTime createdAt = timestampExtractor.extractTimestamp(memberModel);
 		final String id = memberStatement.getObject().toString();
-		return new TreeMember(id, memberModel);
+		return new TreeMember(id, createdAt, memberModel);
 	}
 
-	private Stream<Statement> extractRelations(Model treeNodeModel) {
-		return Stream.iterate(treeNodeModel.listStatements(ANY_RESOURCE, W3ID_TREE_RELATION, ANY_RESOURCE),
+	private Stream<Statement> extractRelations() {
+		return Stream.iterate(model.listStatements(ANY_RESOURCE, W3ID_TREE_RELATION, ANY_RESOURCE),
 				Iterator::hasNext, UnaryOperator.identity()).map(Iterator::next);
 	}
 }

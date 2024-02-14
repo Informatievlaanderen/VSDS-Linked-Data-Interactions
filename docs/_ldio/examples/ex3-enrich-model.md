@@ -68,21 +68,21 @@ orchestrator:
   pipelines:
     - name: "to-graph"
       input:
-        name: "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn"
+        name: "Ldio:HttpIn"
         adapter:
-          name: "be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter"
+          name: "Ldio:RdfAdapter"
       outputs:
-        - name: "be.vlaanderen.informatievlaanderen.ldes.ldi.RepositoryMaterialiser"
+        - name: "Ldio:RepositoryMaterialiser"
           config:
             sparql-host: http://localhost:8081/rdf4j-server
             repository-id: test
     - name: "enriched"
       input:
-        name: "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpIn"
+        name: "Ldio:HttpIn"
         adapter:
-          name: "be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter"
+          name: "Ldio:RdfAdapter"
       transformers:
-        - name: "be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer"
+        - name: "Ldio:SparqlConstructTransformer"
           config:
             query: "
               PREFIX schema: <http://schema.org/>
@@ -100,7 +100,7 @@ orchestrator:
               }
             "
       outputs:
-        - name: "be.vlaanderen.informatievlaanderen.ldes.ldio.LdioConsoleOut"
+        - name: "Ldio:ConsoleOut"
 ```
 
 ## Execution

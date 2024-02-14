@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInProcess.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
@@ -18,7 +19,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterM
 public class LdioHttpInAutoConfig {
 
 	@SuppressWarnings("java:S6830")
-	@Bean(LdioHttpInProcess.NAME)
+	@Bean(NAME)
 	public LdioHttpInConfigurator ldioConfigurator(ApplicationEventPublisher eventPublisher,
 	                                               ObservationRegistry observationRegistry) {
 		return new LdioHttpInConfigurator(eventPublisher, observationRegistry);

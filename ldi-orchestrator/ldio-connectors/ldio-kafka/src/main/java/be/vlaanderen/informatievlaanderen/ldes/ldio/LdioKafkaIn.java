@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.listener.MessageListener;
 
 public class LdioKafkaIn extends LdioInput implements MessageListener<String, String> {
-
+	public static final String NAME = "Ldio:KafkaIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioKafkaIn.class);
 	private final String defaultContentType;
 

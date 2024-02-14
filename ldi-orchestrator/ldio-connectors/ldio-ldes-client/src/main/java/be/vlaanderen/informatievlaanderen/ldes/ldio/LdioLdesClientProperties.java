@@ -6,7 +6,7 @@ public class LdioLdesClientProperties {
 	}
 
 	// general properties
-	public static final String URL = "url";
+	public static final String URLS = "urls";
 	public static final String SOURCE_FORMAT = "source-format";
 
 	public static final String STATE = "state";
@@ -14,5 +14,10 @@ public class LdioLdesClientProperties {
 	public static final String POSTGRES_USERNAME = "postgres.username";
 	public static final String POSTGRES_PASSWORD = "postgres.password";
 	public static final String POSTGRES_URL = "postgres.url";
+	public static final String TIMESTAMP_PATH_PROP = "timestamp-path";
+
+	// version materialisation properties
+	public static final String USE_VERSION_MATERIALISATION = "materialisation.enabled";
+	public static final String VERSION_OF_PROPERTY = "materialisation.version-of-property";
 
 }

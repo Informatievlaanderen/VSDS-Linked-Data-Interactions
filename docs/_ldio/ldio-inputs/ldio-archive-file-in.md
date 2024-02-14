@@ -5,10 +5,11 @@ title: Archive File In
 ---
 
 # LDIO File Out
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn***
+
+***Ldio:ArchiveFileIn***
 
 The LDIO Archive File In is used to read models from files and feed them to the pipeline.
-Please refer to the [core documentation](../../core/ldi-inputs/file-archiving.md) for more information.
+Please refer to the [core documentation](../../core/ldi-inputs/file-archiving) for more information.
 
 ## Config
 

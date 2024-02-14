@@ -6,21 +6,36 @@ title: LDES Client
 
 # LDIO Ldes Client
 
-***be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient***
+***Ldio:LdesClient***
 
 An LDIO wrapper component for the [LDI LDES Client building block](../../core/ldi-inputs/ldes-client)
 
 ## Config
 
-| Property                           | Description                                                                                   | Required | Default             | Example                                                        | Supported values                                              |
-|:-----------------------------------|:----------------------------------------------------------------------------------------------|:---------|:--------------------|:---------------------------------------------------------------|:--------------------------------------------------------------|
-| url                                | The url of the LDES server                                                                    | Yes      | N/A                 | http://localhost:8080/my-ldes                                  | HTTP and HTTPS urls                                           |
-| source-format                      | The 'Content-Type' that should be requested to the server.                                    | No       | application/ld+json | application/n-quads                                            | Any type supported by [Apache Jena](https://jena.apache.org/) |
-| state                              | 'sqlite', 'memory', 'file' or 'postgres' to indicate how the state should be persisted.       | No       | memory              | sqlite                                                         | 'sqlite' or 'memory'                                          |
-| keep-state                         | Indicates if the state should be persisted on shutdown (n/a for in memory states)             | No       | false               | false                                                          | true or false                                                 |
-| postgres.url                       | JDBC url of the Postgres database.                                                            | No       | N/A                 | jdbc:postgresql://test.postgres.database.azure.com:5432/sample | String                                                        |
-| postgres.username                  | Username used to connect to Postgres database.                                                | No       | N/A                 | myUsername@test                                                | String                                                        |
-| postgres.password                  | Password used to connect to Postgres database.                                                | No       | N/A                 | myPassword                                                     | String                                                        |
+### General properties
+
+| Property                    | Description                                                                             | Required | Default                              | Example                                                        | Supported values                                              |
+|:----------------------------|:----------------------------------------------------------------------------------------|:---------|:-------------------------------------|:---------------------------------------------------------------|:--------------------------------------------------------------|
+| urls                        | List of URLs of the LDES data sources                                                   | Yes      | N/A                                  | http://localhost:8080/my-ldes                                  | HTTP and HTTPS urls                                           |
+| source-format               | The 'Content-Type' that should be requested to the server.                              | No       | application/ld+json                  | application/n-quads                                            | Any type supported by [Apache Jena](https://jena.apache.org/) |
+| state                       | 'sqlite', 'memory', 'file' or 'postgres' to indicate how the state should be persisted. | No       | memory                               | sqlite                                                         | 'sqlite', 'files' or 'memory'                                 |
+| keep-state                  | Indicates if the state should be persisted on shutdown (n/a for in memory states)       | No       | false                                | false                                                          | true or false                                                 |
+| timestamp-path              | The property-path used to determine the timestamp on which the members will be ordered  | No       | N/A                                  | http://www.w3.org/ns/prov#generatedAtTime                      | A property path                                               |
+
+### Postgres properties
+
+| Property                    | Description                                                                             | Required | Default                              | Example                                                        | Supported values                                              |
+|:----------------------------|:----------------------------------------------------------------------------------------|:---------|:-------------------------------------|:---------------------------------------------------------------|:--------------------------------------------------------------|
+| postgres.url                | JDBC url of the Postgres database.                                                      | No       | N/A                                  | jdbc:postgresql://test.postgres.database.azure.com:5432/sample | String                                                        |
+| postgres.username           | Username used to connect to Postgres database.                                          | No       | N/A                                  | myUsername@test                                                | String                                                        |
+| postgres.password           | Password used to connect to Postgres database.                                          | No       | N/A                                  | myPassword                                                     | String                                                        |
+
+### Version materialisation properties
+
+| Property                            | Description                                                                             | Required | Default                              | Example                                                        | Supported values                                              |
+|:------------------------------------|:----------------------------------------------------------------------------------------|:---------|:-------------------------------------|:---------------------------------------------------------------|:--------------------------------------------------------------|
+| materialisation.enabled             | Indicates if the client should return state-objects (true) or version-objects (false).  | No       | false                                | true                                                           | true or false                                                 |
+| materialisation.version-of-property | Property that points to the versionOfPath.                                              | No       | http://purl.org/dc/terms/isVersionOf | "http://purl.org/dc/terms/isVersionOf"                         | true or false                                                 |
 
 This component uses the "LDIO Http Requester" to make the HTTP request.
 Refer to [LDIO Http Requester](../ldio-core) for the config.
@@ -29,10 +44,13 @@ Refer to [LDIO Http Requester](../ldio-core) for the config.
 
 ```yaml
   input:
-    name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient
+    name: Ldio:LdesClient
     config:
-      url: http://localhost:8080/my-ldes
+      urls:
+        - http://localhost:8080/my-ldes
       sourceFormat: text/turtle
+      materialisation:
+        enabled: true
       retries:
         enabled: true
       auth:
@@ -44,9 +62,10 @@ Refer to [LDIO Http Requester](../ldio-core) for the config.
 
 ```yaml
   input:
-    name: be.vlaanderen.informatievlaanderen.ldes.ldi.client.LdioLdesClient
+    name: Ldio:LdesClient
     config:
-      url: http://localhost:8080/my-ldes
+      urls:
+        - http://localhost:8080/my-ldes
       sourceFormat: text/turtle
       retries:
         enabled: true

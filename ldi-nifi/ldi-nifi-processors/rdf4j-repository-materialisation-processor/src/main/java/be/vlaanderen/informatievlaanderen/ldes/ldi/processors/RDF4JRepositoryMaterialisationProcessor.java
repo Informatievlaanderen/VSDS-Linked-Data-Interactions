@@ -2,8 +2,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.sparql.util.Context;
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -32,6 +34,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 	private Materialiser materialiser;
+	private Context jenaContext;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -60,6 +63,8 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 					context.getProperty(REPOSITORY_ID).getValue(),
 					context.getProperty(NAMED_GRAPH).getValue());
 		}
+
+		jenaContext = JenaContextProvider.create().getContext();
 	}
 
 	@Override
@@ -77,7 +82,11 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 			String content = FlowManager.receiveData(session, flowFile);
 
 			try {
-				materialiser.process(RDFParser.fromString(content).lang(dataSourceFormat).toModel());
+				materialiser.process(RDFParser
+						.fromString(content)
+						.context(jenaContext)
+						.lang(dataSourceFormat)
+						.toModel());
 				session.transfer(flowFile, SUCCESS);
 			} catch (Exception e) {
 				getLogger().error("Error sending model to repository", e.getMessage());

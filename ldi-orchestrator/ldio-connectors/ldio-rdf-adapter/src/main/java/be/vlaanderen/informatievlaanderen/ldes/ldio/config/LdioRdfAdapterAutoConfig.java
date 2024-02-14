@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioAdapterConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -10,16 +11,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LdioRdfAdapterAutoConfig {
 
+	public static final String MAX_JSONLD_CACHE_CAPACITY = "max-jsonld-cache-capacity";
+
 	@SuppressWarnings("java:S6830")
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter")
-	public LdioAdapterConfigurator ldiHttpOutConfigurator() {
+	@Bean("Ldio:RdfAdapter")
+	public LdioAdapterConfigurator ldioAdapterConfigurator() {
 		return new LdioRdfConfigurator();
 	}
 
 	public static class LdioRdfConfigurator implements LdioAdapterConfigurator {
+
 		@Override
 		public LdiAdapter configure(ComponentProperties config) {
-			return new RdfAdapter();
+			final int maxCacheCapacity = config.getOptionalInteger(MAX_JSONLD_CACHE_CAPACITY).orElse(100);
+			final var context = JenaContextProvider.create().withMaxJsonLdCacheCapacity(maxCacheCapacity).getContext();
+			return new RdfAdapter(context);
 		}
+
 	}
 }

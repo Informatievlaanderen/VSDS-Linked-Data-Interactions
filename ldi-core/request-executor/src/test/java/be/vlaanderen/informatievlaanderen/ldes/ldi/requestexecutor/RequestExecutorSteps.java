@@ -37,7 +37,7 @@ public class RequestExecutorSteps {
 	@Given("I have a ClientCredentialsRequestExecutor")
 	public void aClientCredentialsRequestExecutorIsAvailable() {
 		requestExecutor = factory.createClientCredentialsExecutor("clientId", "clientSecret",
-				"http://localhost:10101/token");
+				"http://localhost:10101/token", "default");
 	}
 
 	@Given("I have a DefaultRequestExecutor")

@@ -5,23 +5,23 @@ title: Http Enricher Transformer
 ---
 
 # LDIO Http Enricher
-***be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher***
+
+***Ldio:HttpEnricher***
 
 A transformer which allows to send a GET or POST HTTP request to a dynamic URL provided by the model. 
 The response is converted to linked data and added to the incoming model.
 
 ## Config
 
-
-| Property                            | Description                                                                                                 | Required | Default | Example                                                | Supported values                                               |
-|:------------------------------------|:------------------------------------------------------------------------------------------------------------|:---------|:--------|:-------------------------------------------------------|:---------------------------------------------------------------|
-| adapter.name                        | This transformer requires an [ldio-adapter](../ldio-adapters) to convert the responses to linked data.      | Yes      | N/A     | be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter | Paths of supported LDIO Adapters                               |
-| adapter.config.xxx                  | Optional config that may be required by the adapter                                                         | No       | N/A     | be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter | Paths of supported LDIO Adapters                               |
-| url-property-path                   | Path defining the url that needs to be selected on the model for the http request.                          | Yes      | N/A     | <http://example.org/url>                               | Valid property paths                                           |
-| header-property-path                | Path defining the headers that needs to be selected on the model for the http request.                      | No       | N/A     | <http://example.org/header>                            | Valid property paths                                           |
-| body-property-path                  | Path defining the body that needs to be selected on the model to be added when a POST http request is used. | No       | N/A     | <http://example.org/meta>/<http://example.org/body>    | Valid property paths                                           |
-| http-method-property-path           | Path defining the http method that needs to be selected on the model for the http request.                  | No       | GET     | GET                                                    | GET or POST                                                    |
-| auth.xxx retries.xxx rate-limit.xxx | LDIO Http Requester Config                                                                                  | No       | N/A     | N/A                                                    | [LDIO Http Requester Config](../ldio-core/ldio-http-requester) |
+| Property                            | Description                                                                                                 | Required | Default | Example                                             | Supported values                                               |
+|:------------------------------------|:------------------------------------------------------------------------------------------------------------|:---------|:--------|:----------------------------------------------------|:---------------------------------------------------------------|
+| adapter.name                        | This transformer requires an [ldio-adapter](../ldio-adapters) to convert the responses to linked data.      | Yes      | N/A     | Ldio:RdfAdapter                                     | Paths of supported LDIO Adapters                               |
+| adapter.config.xxx                  | Optional config that may be required by the adapter                                                         | No       | N/A     | Ldio:RdfAdapter                                     | Paths of supported LDIO Adapters                               |
+| url-property-path                   | Path defining the url that needs to be selected on the model for the http request.                          | Yes      | N/A     | <http://example.org/url>                            | Valid property paths                                           |
+| header-property-path                | Path defining the headers that needs to be selected on the model for the http request.                      | No       | N/A     | <http://example.org/header>                         | Valid property paths                                           |
+| body-property-path                  | Path defining the body that needs to be selected on the model to be added when a POST http request is used. | No       | N/A     | <http://example.org/meta>/<http://example.org/body> | Valid property paths                                           |
+| http-method-property-path           | Path defining the http method that needs to be selected on the model for the http request.                  | No       | GET     | GET                                                 | GET or POST                                                    |
+| auth.xxx retries.xxx rate-limit.xxx | LDIO Http Requester Config                                                                                  | No       | N/A     | N/A                                                 | [LDIO Http Requester Config](../ldio-core/ldio-http-requester) |
 
 Note that all adapters are supported. When the adapter requires additional config, this can be added as seen below in the example.
 
@@ -31,10 +31,10 @@ This example contains a JsonToLdAdapter which needs "core-context" as config.
 At the bottom there is also "auth" config provided for the request executor.
 
 ```yaml
-        - name: be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher
+        - name: Ldio:HttpEnricher
           config:
             adapter:
-              name: be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter
+              name: Ldio:JsonToLdAdapter
               config:
                 core-context: file:///ldio/jsonld/observation.jsonld
             url-property-path: <http://example.org/url>

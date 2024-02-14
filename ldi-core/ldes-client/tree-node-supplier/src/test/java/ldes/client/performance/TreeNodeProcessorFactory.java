@@ -2,6 +2,8 @@ package ldes.client.performance;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
@@ -14,13 +16,14 @@ import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.util.List;
 import java.util.Map;
 
 class TreeNodeProcessorFactory {
 
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
-	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, String url) {
+	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, List<String> url) {
 		final LdesMetaData ldesMetaData = new LdesMetaData(url, Lang.TURTLE);
 		final StatePersistence statePersistence = switch (statePersistenceStrategy) {
 			case MEMORY -> createInMemoryStatePersistence();
@@ -29,7 +32,8 @@ class TreeNodeProcessorFactory {
 			case POSTGRES -> createPostgresPersistence();
 		};
 		final RequestExecutor requestExecutor = requestExecutorFactory.createNoAuthExecutor();
-		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor);
+		final TimestampExtractor timestampExtractor = new TimestampFromCurrentTimeExtractor();
+		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor);
 	}
 
 	private PostgreSQLContainer startPostgresContainer() {
