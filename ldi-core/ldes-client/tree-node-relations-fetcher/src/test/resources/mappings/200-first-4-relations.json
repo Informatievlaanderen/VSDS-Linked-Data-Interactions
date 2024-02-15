@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/200-first-2-relations",
+    "url": "/200-first-4-relations",
     "headers": {
       "Accept": {
         "contains": "text/turtle"

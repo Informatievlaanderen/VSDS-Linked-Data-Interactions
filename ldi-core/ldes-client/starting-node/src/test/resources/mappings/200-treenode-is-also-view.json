@@ -4,13 +4,13 @@
     "url": "/200-treenode-is-also-view",
     "headers": {
       "Accept": {
-        "contains": "application/ld+json"
+        "contains": "application/n-quads"
       }
     }
   },
   "response": {
     "status": 200,
-    "body": "{\"@context\":[\"https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld\"],\"@id\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z\",\"@type\":\"Node\",\"viewOf\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances\",\"collectionInfo\":{\"@id\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances\",\"@type\":\"EventStream\",\"shape\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances/shape\",\"timestampPath\":\"prov:generatedAtTime\",\"versionOfPath\":\"dct:isVersionOf\"},\"tree:relation\":[{\"tree:node\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:37:18.577Z\",\"@type\":\"tree:GreaterThanRelation\",\"tree:path\":\"prov:generatedAtTime\",\"tree:value\":\"2020-12-28T09:37:18.577Z\"}]}",
+    "bodyFileName": "tree-node-is-also-view.nq",
     "headers": {
       "Content-Type": "application/ld+json;charset=UTF-8"
     }
