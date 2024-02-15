@@ -1,11 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineManagementService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,7 +28,20 @@ public class PipelineManagementController {
 	public List<PipelineTO> overview() {
 		return pipelineManagementService.getPipelines()
 				.stream()
-				.map(config -> fromPipelineConfig(config, pipelineStatusService.getPipelineStatus(config.getName())))
+				.map(config -> fromPipelineConfig(config, pipelineStatusService.getPipelineStatus(config.name())))
 				.toList();
+	}
+
+	@PostMapping()
+	public PipelineTO orchestratorConfig(@RequestBody PipelineConfig config) {
+		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineManagementService.addPipeline(config));
+
+		return fromPipelineConfig(pipelineConfig, pipelineStatusService.getPipelineStatus(pipelineConfig.name()));
+	}
+
+	@DeleteMapping("/{pipeline}")
+	@ResponseStatus(HttpStatus.OK)
+	public void deletePipeline(@RequestParam String pipeline) {
+		pipelineManagementService.deletePipeline(pipeline);
 	}
 }
