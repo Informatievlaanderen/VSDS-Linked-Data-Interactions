@@ -8,6 +8,7 @@ nav_order: 2
 
 # LDIO Inputs
 
-The LDI Core module contains the components maintained by the VSDS team in order to accommodate the onboarding of LDES onboarders.
 
-Each component can be wrapped in a desired implementation framework (LDI-orchestrator, NiFi, ...) to be used.
+The LDI Core module contains the components the VSDS team maintains to accommodate LDES onboarders' onboarding.
+
+Each component can be wrapped in a desired implementation framework (LDI-orchestrator, NiFi, etc.).

@@ -6,13 +6,32 @@ title: RDF Adapter
 
 # LDIO RDF Adapter
 
-***Ldio:RdfAdapter***
+<b>LDIO Component Name:</b> <i>`Ldio:RdfAdapter`</i>
+
+<br>
 
 An LDIO wrapper component for the [LDI RDF Adapter building block](../../core/ldi-adapters/rdf-adapter)
 
+```mermaid
+graph LR
+    L[...] --> H[RDF writer]
+    H --> S[correct RDF]
+
+    subgraph LDIO
+    H
+    end
+```
+
+## Example
+
+```yml
+orchestrator:
+  pipelines:
+    - name: example
+      adapter:
+        name: Ldio:RdfAdapter
+```
+
 ## Config
 
-
-| Property                  | Description                                                                                                           | Required | Default | Example | Supported values |
-|:--------------------------|:----------------------------------------------------------------------------------------------------------------------|:---------|:--------|:--------|:-----------------|
-| max-jsonld-cache-capacity | A cache is used when fetching json-ld contexts. The number of cached contexts can be configured with this property.   | No       | 100     | 100     | Integer          |
+This component has no required config
