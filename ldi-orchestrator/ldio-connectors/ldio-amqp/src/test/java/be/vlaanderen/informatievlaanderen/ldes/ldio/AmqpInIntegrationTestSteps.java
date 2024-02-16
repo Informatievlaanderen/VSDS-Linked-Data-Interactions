@@ -2,9 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpInConfigKeys;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.And;

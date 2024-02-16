@@ -1,8 +1,8 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.JmsConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
@@ -11,15 +11,14 @@ import org.apache.jena.riot.RDFLanguages;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpInConfigKeys.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
 public class LdioAmqpInAutoConfig {
+
+	@SuppressWarnings("java:S6830")
 	@Bean(LdioAmqpIn.NAME)
 	public LdioJmsInConfigurator ldioConfigurator(LdioAmqpInRegistrator ldioAmqpInRegistrator,
 	                                              ObservationRegistry observationRegistry) {
@@ -42,8 +41,9 @@ public class LdioAmqpInAutoConfig {
 			String pipelineName = config.getProperty(PIPELINE_NAME);
 			verifyAdapterPresent(pipelineName, adapter);
 
+			String remoteUrl = new RemoteUrlExtractor(config).getRemoteUrl();
 			JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),
-					getRemoteUrl(config), config.getProperty(QUEUE));
+					remoteUrl, config.getProperty(QUEUE));
 
 			return new LdioAmqpIn(pipelineName, executor, adapter, getContentType(config), jmsConfig, ldioAmqpInRegistrator, observationRegistry
 			);
@@ -57,17 +57,5 @@ public class LdioAmqpInAutoConfig {
 					.orElse(Lang.NQUADS.getHeaderString());
 		}
 
-		private String getRemoteUrl(ComponentProperties config) {
-			String remoteUrl = config.getProperty(REMOTE_URL);
-
-			Pattern pattern = Pattern.compile(REMOTE_URL_REGEX, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(remoteUrl);
-			boolean matchFound = matcher.find();
-			if (matchFound) {
-				return remoteUrl;
-			} else {
-				throw new IllegalArgumentException(REMOTE_URL_REGEX_ERROR);
-			}
-		}
 	}
 }

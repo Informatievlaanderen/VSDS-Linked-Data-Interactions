@@ -1,7 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpInAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpInRegistrator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;

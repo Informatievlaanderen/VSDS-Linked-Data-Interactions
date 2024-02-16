@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.InputComponentD
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class PipelineConfig {
 	public static final String PIPELINE_NAME = "pipeline.name";
@@ -46,8 +47,13 @@ public class PipelineConfig {
 		this.transformers = transformers;
 	}
 
+	// TODO TVB: add test
 	public List<ComponentDefinition> getOutputs() {
-		return outputs;
+		return outputs.stream().map(componentDefinition -> {
+			Map<String, String> properties = componentDefinition.getConfig().getConfig();
+			properties.put(PIPELINE_NAME, name);
+			return new ComponentDefinition(componentDefinition.getName(), properties);
+		}).toList();
 	}
 
 	public void setOutputs(List<ComponentDefinition> outputs) {
