@@ -1,17 +1,17 @@
-Feature: AMQPInIntegrationTest
+Feature: AMQPOutIntegrationTest
   As a user
-  I want to use an AMQP input component to receive data from a AMQP broker
+  I want to use an AMQP output component to send data to an AMQP broker
 
-  Scenario Outline: Receiving a basic message from an amqp queue
+  Scenario Outline: Sending a basic message to an amqp queue
     Given I create a queue for my scenario: <queue>
-    And I create a message producer
-    And I prepare the result lists
-    And I create default config for LdioJmsIn with <content-type>
-    And I start a listener with an LdioJmsIn component
-    And I send a model from <content> and <content-type> to broker using the amqp producer
-    Then Wait for the message
-    And The result value will contain the model
-    And The componentExecutor will have been called
+    And I create a message consumer
+    And I create a model with <content-type> and <content>
+    And I create default config for LdioAmqpOut
+    And I create an LdioAmqpOut component
+    And I send the model to the LdioAmqpOut component
+    Then The mock listener will wait for the message
+    And The mock listener result will contain the content-type
+    And The mock listener result will contain the model
 
     Examples:
       | queue  | content-type        | content                                                                                                                                                                                                                                      |

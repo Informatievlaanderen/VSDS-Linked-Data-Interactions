@@ -40,7 +40,6 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 		jmsInRegistrator.registerListener(jmsConfig, listenerEndpoint(jmsConfig.queue()));
 	}
 
-	// TODO TVB: add test
 	@Override
 	public void onMessage(Message message) {
 		final LdiAdapter.Content content;
