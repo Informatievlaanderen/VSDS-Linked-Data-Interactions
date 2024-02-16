@@ -99,11 +99,11 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	@And("^I create default config for LdioJmsIn with (.*)")
 	public void iCreateDefaultConfigForLdioJmsInWithContentType(String contentType) {
 		config = new HashMap<>();
-		config.put(AmqpInConfigKeys.REMOTE_URL, "amqp://%s:%d".formatted(activemq.getHost(), activemq.getMappedPort(61616)));
-		config.put(AmqpInConfigKeys.USERNAME, activemq.getUser());
-		config.put(AmqpInConfigKeys.PASSWORD, activemq.getPassword());
-		config.put(AmqpInConfigKeys.QUEUE, queue);
-		config.put(AmqpInConfigKeys.CONTENT_TYPE, contentType);
+		config.put(AmqpConfig.REMOTE_URL, "amqp://%s:%d".formatted(activemq.getHost(), activemq.getMappedPort(61616)));
+		config.put(AmqpConfig.USERNAME, activemq.getUser());
+		config.put(AmqpConfig.PASSWORD, activemq.getPassword());
+		config.put(AmqpConfig.QUEUE, queue);
+		config.put(AmqpConfig.CONTENT_TYPE, contentType);
 		config.put(OrchestratorConfig.ORCHESTRATOR_NAME, "orchestratorName");
 		config.put(PipelineConfig.PIPELINE_NAME, "pipelineName");
 	}
