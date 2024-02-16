@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 
 public class StartingTreeNodeRelationsFinder {
-	// TODO: clean up magic strings
-	public static final String W3C_TREE = "https://w3id.org/tree#";
-	public static final Property W3ID_TREE_RELATION = createProperty(W3C_TREE, "relation");
+	private static final String W3C_TREE = "https://w3id.org/tree#";
+	private static final Property RDF_SYNTAX_TYPE = createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+	private static final Resource LDES_EVENT_STREAM_RESOURCE = createResource("https://w3id.org/ldes#EventStream");
 	private final Logger log = LoggerFactory.getLogger(StartingTreeNodeRelationsFinder.class);
 	private final RedirectRequestExecutor requestExecutor;
 
@@ -45,12 +46,12 @@ public class StartingTreeNodeRelationsFinder {
 	}
 
 	private boolean isResponseAnEventStream(String requestedUrl, Model model) {
-		return model.contains(model.createResource(requestedUrl), model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), model.createResource("https://w3id.org/ldes#EventStream"));
+		return model.contains(createResource(requestedUrl), RDF_SYNTAX_TYPE, LDES_EVENT_STREAM_RESOURCE);
 	}
 
 	private List<StartingTreeNode> extractStartingNodesFromEventStream(Model model) {
 		return model
-				.listStatements(null, createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), createProperty("https://w3id.org/tree#Node"))
+				.listStatements(null, RDF_SYNTAX_TYPE, createProperty(W3C_TREE, "Node"))
 				.toList().stream()
 				.map(stmt -> stmt.getSubject().toString())
 				.map(StartingTreeNode::new)
@@ -58,11 +59,11 @@ public class StartingTreeNodeRelationsFinder {
 	}
 
 	private List<StartingTreeNode> extractStartingNodesFromView(Model model) {
-		return model.listStatements(null, W3ID_TREE_RELATION, (Resource) null)
+		return model.listStatements(null, createProperty(W3C_TREE, "relation"), (Resource) null)
 				.toList()
 				.stream()
 				.map(Statement::getResource)
-				.map(resource -> resource.listProperties(model.createProperty("https://w3id.org/tree#node")).nextOptional())
+				.map(resource -> resource.listProperties(model.createProperty(W3C_TREE, "node")).nextOptional())
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.map(statement -> statement.getObject().toString())

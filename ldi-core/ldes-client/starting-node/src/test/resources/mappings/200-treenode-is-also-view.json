@@ -12,7 +12,7 @@
     "status": 200,
     "bodyFileName": "tree-node-is-also-view.nq",
     "headers": {
-      "Content-Type": "application/ld+json;charset=UTF-8"
+      "Content-Type": "application/n-quads;charset=UTF-8"
     }
   }
 }
