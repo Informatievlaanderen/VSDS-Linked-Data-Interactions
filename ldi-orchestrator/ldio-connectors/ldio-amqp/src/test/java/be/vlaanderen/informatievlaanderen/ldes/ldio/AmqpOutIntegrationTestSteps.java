@@ -19,6 +19,7 @@ import org.apache.jena.riot.RDFParser;
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpOut.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.CONTENT_TYPE_HEADER;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,7 @@ public class AmqpOutIntegrationTestSteps {
 
     @And("I create an LdioAmqpOut component")
     public void iCreateAnLdioAmqpOutComponent() {
-        ComponentProperties properties = new ComponentProperties(config);
+        ComponentProperties properties = new ComponentProperties("pipeline", NAME, config);
         ldioAmqpOut = (LdiOutput) new LdioAmqpOutAutoConfig().ldioConfigurator().configure(properties);
     }
 
