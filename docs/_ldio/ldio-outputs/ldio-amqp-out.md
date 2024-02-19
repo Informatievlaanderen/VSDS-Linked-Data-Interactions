@@ -14,12 +14,13 @@ is added as a header to the message with key "contentType".
 
 ## Config
 
-| Property     | Description                                 | Required | Default             | Example             | Supported values                                                                                                                                 |
-|--------------|---------------------------------------------|----------|---------------------|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| remote-url   | URI to AMQP queue                           | Yes      | N/A                 | amqp://server:61616 | In line with `amqp[s]://hostname:port[?option=value[&option2=value...]]` or `amqpws[s]://hostname:port[/path][?option=value[&option2=value...]]` |
-| queue        | Name of the queue                           | Yes      | N/A                 | quickstart-events   | String                                                                                                                                           |
-| username     | Username used in authentication             | Yes      | N/A                 | client              | String                                                                                                                                           |
-| password     | Password used in the authentication         | Yes      | N/A                 | secret              | String                                                                                                                                           |
+| Property    | Description                         | Required | Default        | Example             | Supported values                                                                                                                                 |
+|-------------|-------------------------------------|----------|----------------|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| remote-url  | URI to AMQP queue                   | Yes      | N/A            | amqp://server:61616 | In line with `amqp[s]://hostname:port[?option=value[&option2=value...]]` or `amqpws[s]://hostname:port[/path][?option=value[&option2=value...]]` |
+| queue       | Name of the queue                   | Yes      | N/A            | quickstart-events   | String                                                                                                                                           |
+| username    | Username used in authentication     | Yes      | N/A            | client              | String                                                                                                                                           |
+| password    | Password used in the authentication | Yes      | N/A            | secret              | String                                                                                                                                           |
+| rdf-writer  | LDI RDF Writer Config               | No       | Empty Config   | N/A                 | [LDI RDF Writer Config](../ldio-core/ldio-rdf-writer)                                                                                            |
 
 ## Example
 
@@ -31,4 +32,6 @@ is added as a header to the message with key "contentType".
           username: artemis
           password: artemis
           queue: example
+          rdf-writer:
+            content-type: application/n-quads
 ```
