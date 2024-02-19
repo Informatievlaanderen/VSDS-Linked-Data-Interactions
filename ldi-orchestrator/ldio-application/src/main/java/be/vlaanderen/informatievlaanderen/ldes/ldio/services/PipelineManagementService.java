@@ -1,41 +1,43 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.PipelineCreationException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.creation.PipelineBeanCreatorService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PipelineManagementService {
 	private final Logger log = LoggerFactory.getLogger(PipelineManagementService.class);
-	private final List<PipelineConfig> pipelines;
-	private final PipelineBeanCreatorService pipelineBeanCreatorService;
+	private final PipelineCreatorService pipelineCreatorService;
 	private final PipelineRepository pipelineRepository;
 
-	public PipelineManagementService(PipelineBeanCreatorService pipelineBeanCreatorService,
+	public PipelineManagementService(PipelineCreatorService pipelineCreatorService,
 	                                 PipelineFileRepository pipelineRepository) {
-		this.pipelineBeanCreatorService = pipelineBeanCreatorService;
+		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineRepository = pipelineRepository;
-		this.pipelines = new ArrayList<>();
 	}
 
-	public PipelineConfig addPipeline(PipelineConfig pipeline) throws PipelineCreationException {
+	public PipelineConfig addPipeline(PipelineConfig pipeline) throws PipelineAlreadyExistsException {
+		return addPipeline(pipeline, false);
+	}
+
+	public PipelineConfig addPipeline(PipelineConfig pipeline, boolean restoring) throws PipelineException {
 		try {
-			if (pipelineRepository.exists(pipeline.getName())) {
-				throw new PipelineCreationException(pipeline.getName());
+			if (pipelineRepository.exists(pipeline.getName()) && !restoring) {
+				throw new PipelineAlreadyExistsException(pipeline.getName());
 			} else {
-				pipelineBeanCreatorService.initialisePipeline(pipeline);
-				pipelineRepository.save(pipeline);
-				pipelines.add(pipeline);
+				pipelineCreatorService.initialisePipeline(pipeline);
+				if (!restoring) {
+					pipelineRepository.save(pipeline);
+				}
 				return pipeline;
 			}
 
@@ -48,8 +50,7 @@ public class PipelineManagementService {
 		return pipelineRepository.findAll();
 	}
 
-
-	public boolean deletePipeline(String pipeline) {
-		return pipelineRepository.delete(pipeline);
+	public void deletePipeline(String pipeline) {
+		pipelineRepository.delete(pipeline);
 	}
 }

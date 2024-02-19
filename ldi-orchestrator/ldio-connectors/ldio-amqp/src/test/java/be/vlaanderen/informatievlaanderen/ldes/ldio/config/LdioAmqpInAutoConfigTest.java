@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdioAmqpInAutoConfigTest {
@@ -20,7 +20,7 @@ class LdioAmqpInAutoConfigTest {
 
 		Map<String, String> config = getBasicConfig();
 		config.put(AmqpConfig.REMOTE_URL, "localhost:61616");
-		ComponentProperties componentProperties = new ComponentProperties(config);
+		ComponentProperties componentProperties = new ComponentProperties("pipelineName", NAME, config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
 				() -> configurator.configure((content) -> Stream.of(), null, componentProperties));
@@ -38,7 +38,7 @@ class LdioAmqpInAutoConfigTest {
 		Map<String, String> config = getBasicConfig();
 
 		assertDoesNotThrow(
-				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties(config)));
+				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 	private Map<String, String> getBasicConfig() {
@@ -48,7 +48,6 @@ class LdioAmqpInAutoConfigTest {
 		config.put(AmqpConfig.PASSWORD, "pass");
 		config.put(AmqpConfig.QUEUE, "queue");
 		config.put(ORCHESTRATOR_NAME, "orchestrator.name");
-		config.put(PIPELINE_NAME, "pipeline.name");
 		return config;
 	}
 }

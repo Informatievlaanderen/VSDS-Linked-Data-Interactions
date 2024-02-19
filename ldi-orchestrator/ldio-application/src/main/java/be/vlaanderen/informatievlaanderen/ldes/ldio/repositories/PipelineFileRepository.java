@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,11 @@ import java.util.stream.Stream;
 
 @Service
 public class PipelineFileRepository implements PipelineRepository {
+	public static final String EXTENSION = ".yaml";
 	private final File directory = new File("pipelines");
 	private final File backupDirectory = new File(directory, "backup");
 	Logger log = LoggerFactory.getLogger(PipelineFileRepository.class);
-	ObjectMapper mapper = new ObjectMapper();
+	ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 	ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
 	ObjectReader reader = mapper.readerFor(PipelineConfig.class);
 
@@ -42,7 +44,7 @@ public class PipelineFileRepository implements PipelineRepository {
 		try (Stream<Path> files = Files.list(directory.toPath())) {
 			return files
 					.filter(path -> !Files.isDirectory(path))
-					.filter(path -> path.toFile().getName().endsWith(".json"))
+					.filter(path -> path.toFile().getName().endsWith(EXTENSION))
 					.collect(Collectors.toMap(Path::toFile, path -> {
 						try (Stream<String> content = Files.lines(path)) {
 							var json = content.collect(Collectors.joining("\n"));
@@ -84,10 +86,14 @@ public class PipelineFileRepository implements PipelineRepository {
 
 		if (!new File(directory, file.getName()).renameTo(new File(backupDirectory, file.getName()))) {
 			AtomicInteger count = new AtomicInteger();
-			boolean success;
+			boolean success = false;
 			do {
-				String backupName = file.getName().replace(".json", "(%d).json".formatted(count.incrementAndGet()));
-				success = pipelineFile(file.getName()).renameTo(new File(backupDirectory, backupName));
+				try {
+					String backupName = file.getName().replace(EXTENSION, ("(%d)%s").formatted(count.incrementAndGet(), EXTENSION));
+					Files.move(new File(directory, file.getName()).toPath(), new File(backupDirectory, backupName).toPath());
+					success = true;
+				} catch (IOException ignored) {
+				}
 			} while (!success);
 		}
 	}
@@ -100,7 +106,7 @@ public class PipelineFileRepository implements PipelineRepository {
 	}
 
 	public String fileName(String pipeline) {
-		return "%s.json".formatted(pipeline);
+		return "%s%s".formatted(pipeline, EXTENSION);
 	}
 
 	private File pipelineFile(String pipeline) {

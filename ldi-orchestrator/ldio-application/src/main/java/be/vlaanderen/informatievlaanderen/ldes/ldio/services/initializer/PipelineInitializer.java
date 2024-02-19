@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.services.creation;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.services.initializer;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 

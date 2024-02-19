@@ -13,6 +13,10 @@ import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpInConfigKeys.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
@@ -38,7 +42,7 @@ public class LdioAmqpInAutoConfig {
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties config) {
-			String pipelineName = config.getProperty(PIPELINE_NAME);
+			String pipelineName = config.getPipelineName();
 			verifyAdapterPresent(pipelineName, adapter);
 
 			String remoteUrl = new RemoteUrlExtractor(config).getRemoteUrl();

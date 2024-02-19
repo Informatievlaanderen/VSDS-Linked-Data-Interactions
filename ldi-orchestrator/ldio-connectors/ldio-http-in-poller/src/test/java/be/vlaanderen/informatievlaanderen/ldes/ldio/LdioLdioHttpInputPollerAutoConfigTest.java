@@ -19,7 +19,6 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -31,13 +30,13 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 	private static final String ENDPOINT = "/resource";
 
 	private static ComponentProperties createConfigWithInterval(String url, String interval, String continueOnFail) {
-		return new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline", LdioHttpInputPollerProperties.URL, url,
+		return new ComponentProperties("pipelineName", "", Map.of(LdioHttpInputPollerProperties.URL, url,
 				LdioHttpInputPollerProperties.INTERVAL, interval,
 				LdioHttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
 	}
 
 	private static ComponentProperties createConfigWithCron(String url, String cron, String continueOnFail) {
-		return new ComponentProperties(Map.of(PIPELINE_NAME, "pipeline", LdioHttpInputPollerProperties.URL, url,
+		return new ComponentProperties("pipelineName", "", Map.of(LdioHttpInputPollerProperties.URL, url,
 				LdioHttpInputPollerProperties.CRON, cron,
 				LdioHttpInputPollerProperties.CONTINUE_ON_FAIL, continueOnFail));
 	}

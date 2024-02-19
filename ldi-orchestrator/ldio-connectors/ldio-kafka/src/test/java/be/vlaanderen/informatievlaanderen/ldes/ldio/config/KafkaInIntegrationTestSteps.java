@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.bootstrapServer;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.topic;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.CONTENT_TYPE;
@@ -50,7 +51,7 @@ public class KafkaInIntegrationTestSteps {
 	@SuppressWarnings("unchecked")
 	@And("I start a listener with an LdioKafkaIn component")
 	public void iCreateAnLdioKafkaInComponent() {
-		ComponentProperties properties = new ComponentProperties(config);
+		ComponentProperties properties = new ComponentProperties("pipelineName", NAME, config);
 		final ComponentExecutor componentExecutor = linkedDataModel -> componentExecutorResult.add(linkedDataModel);
 		final LdiAdapter adapter = content -> {
 			adapterResult.add(content);

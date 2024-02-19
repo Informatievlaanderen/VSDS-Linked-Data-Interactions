@@ -29,16 +29,16 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LdioRequestExecutorSupplierTest {
-
+	private final String pipelineName = "pName";
+	private final String componentName = "cName";
 	@Mock
 	private RequestExecutorFactory requestExecutorFactory;
-
 	@InjectMocks
 	private LdioRequestExecutorSupplier requestExecutorSupplier;
 
 	@Test
 	void shouldReturnRetryExecutorWithDefaults_whenNoProperties() {
-		ComponentProperties properties = new ComponentProperties(Map.of());
+		ComponentProperties properties = new ComponentProperties(pipelineName, componentName);
 		RequestExecutorDecorator requestExecutorDecorator = mock(RequestExecutorDecorator.class);
 		when(requestExecutorDecorator.with((Retry) any())).thenReturn(requestExecutorDecorator);
 		when(requestExecutorDecorator.with((RateLimiter) any())).thenReturn(requestExecutorDecorator);
@@ -81,7 +81,7 @@ class LdioRequestExecutorSupplierTest {
 	@Test
 	void shouldReturnRetryExecutorWithConfiguredProperties_whenPropertiesConfigured() {
 		String maxRetries = "10";
-		ComponentProperties properties = new ComponentProperties(Map.of(
+		ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of(
 				MAX_RETRIES, maxRetries,
 				STATUSES_TO_RETRY, "400,404",
 				AUTH_TYPE, AuthStrategy.API_KEY.name(),
@@ -116,7 +116,7 @@ class LdioRequestExecutorSupplierTest {
 
 	@Test
 	void shouldReturnRateLimitExecutorWithConfiguredProperties_whenPropertiesConfigured() {
-		ComponentProperties properties = new ComponentProperties(Map.of(
+		ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of(
 				RATE_LIMIT_ENABLED, "true",
 				RATE_LIMIT_LIMIT, "100"));
 		RequestExecutorDecorator requestExecutorDecorator = mock(RequestExecutorDecorator.class);
@@ -136,7 +136,7 @@ class LdioRequestExecutorSupplierTest {
 
 	@Test
 	void shouldReturnNonRetryExecutorWithConfiguredProperties_whenPropertiesConfigured() {
-		ComponentProperties properties = new ComponentProperties(Map.of(
+		ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of(
 				RETRIES_ENABLED, "false",
 				AUTH_TYPE, AuthStrategy.OAUTH2_CLIENT_CREDENTIALS.name(),
 				CLIENT_ID, "client",
@@ -153,7 +153,7 @@ class LdioRequestExecutorSupplierTest {
 
 	@Test
 	void shouldThrowException_whenAuthTypeNotSupported() {
-		ComponentProperties properties = new ComponentProperties(Map.of(AUTH_TYPE, "fantasy"));
+		ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of(AUTH_TYPE, "fantasy"));
 		assertThrows(UnsupportedOperationException.class,
 				() -> requestExecutorSupplier.getRequestExecutor(properties));
 	}

@@ -1,26 +1,26 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.actuator;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioAdapterConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
-import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
-import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 
 @RestController
-@Endpoint(id = "catalog")
-public class CatalogActuator {
+@RequestMapping(path = "/admin/api/v1/catalog")
+public class CatalogController {
 	private final ConfigurableApplicationContext context;
 
-	public CatalogActuator(ConfigurableApplicationContext context) {
+	public CatalogController(ConfigurableApplicationContext context) {
 		this.context = context;
 	}
 
-	@ReadOperation
+	@GetMapping
 	public LdioCatalog catalog() {
 		return new LdioCatalog(inputs(), adapters(), transformers(), outputs());
 	}

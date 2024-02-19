@@ -9,8 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpEnricher.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpEnricherProperties.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PropertyPathExtractorConverterTest {
 
@@ -31,7 +32,7 @@ class PropertyPathExtractorConverterTest {
 		model.add(ResourceFactory.createResource(), model.createProperty(body), body);
 		model.add(ResourceFactory.createResource(), model.createProperty(httpMethod), httpMethod);
 
-		RequestPropertyPathExtractors result = new PropertyPathExtractorConverter(new ComponentProperties(propertyMap))
+		RequestPropertyPathExtractors result = new PropertyPathExtractorConverter(new ComponentProperties("pipelineName", NAME, propertyMap))
 				.mapToPropertyPathExtractors();
 
 		assertEquals(url, result.urlPropertyPathExtractor().getProperties(model).get(0).toString());

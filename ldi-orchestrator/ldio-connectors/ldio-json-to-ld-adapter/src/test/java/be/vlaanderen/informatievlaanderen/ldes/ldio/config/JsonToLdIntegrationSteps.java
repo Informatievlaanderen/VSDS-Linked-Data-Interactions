@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioJsonToLdAdapterAutoConfig.NAME;
 import static org.junit.Assert.assertTrue;
 
 public class JsonToLdIntegrationSteps {
@@ -34,7 +35,7 @@ public class JsonToLdIntegrationSteps {
 
 	@And("I create the adapter")
 	public void iCreateAdapter() {
-		ComponentProperties properties = new ComponentProperties(config);
+		ComponentProperties properties = new ComponentProperties("pipeline", NAME, config);
 		adapter = new LdioJsonToLdAdapterAutoConfig.LdioJsonToLdConfigurator().configure(properties);
 	}
 

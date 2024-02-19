@@ -3,6 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpInConfigKeys;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.And;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn.NAME;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;
@@ -51,7 +54,7 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 
 	@And("I start a listener with an LdioJmsIn component")
 	public void iCreateAnLdioJmsInComponent() {
-		ComponentProperties properties = new ComponentProperties(config);
+		ComponentProperties properties = new ComponentProperties("pipelineName", NAME, config);
 		final ComponentExecutor componentExecutor = linkedDataModel -> componentExecutorResult.add(linkedDataModel);
 		final LdiAdapter adapter = content -> {
 			adapterResult.add(content);
@@ -85,7 +88,6 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 		config.put(AmqpConfig.QUEUE, testContext.queue.getQueueName());
 		config.put(AmqpConfig.CONTENT_TYPE, contentType);
 		config.put(OrchestratorConfig.ORCHESTRATOR_NAME, "orchestratorName");
-		config.put(PipelineConfig.PIPELINE_NAME, "pipelineName");
 	}
 
 	@Then("Wait for the message")

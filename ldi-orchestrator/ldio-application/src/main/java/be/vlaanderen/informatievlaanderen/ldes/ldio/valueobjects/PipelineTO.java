@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
 import java.util.List;
-import java.util.Map;
 
 public record PipelineTO(String name, PipelineStatus status, String description, InputComponentDefinitionTO input,
                          List<ComponentDefinitionTO> transformers, List<ComponentDefinitionTO> outputs) {
@@ -17,12 +16,5 @@ public record PipelineTO(String name, PipelineStatus status, String description,
 		}
 		var outputs = config.outputs().stream().map(componentDefinition -> new ComponentDefinitionTO(componentDefinition.name(), componentDefinition.config())).toList();
 		return new PipelineTO(config.name(), status, config.description(), input, transformers, outputs);
-	}
-
-
-	public record InputComponentDefinitionTO(String name, ComponentDefinitionTO adapter, Map<String, String> config) {
-	}
-
-	public record ComponentDefinitionTO(String name, Map<String, String> config) {
 	}
 }

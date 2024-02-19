@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineManagementService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
@@ -33,15 +32,15 @@ public class PipelineManagementController {
 	}
 
 	@PostMapping()
-	public PipelineTO orchestratorConfig(@RequestBody PipelineConfig config) {
-		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineManagementService.addPipeline(config));
+	public PipelineTO orchestratorConfig(@RequestBody PipelineConfigTO config) {
+		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineManagementService.addPipeline(config.toPipelineConfig()));
 
 		return fromPipelineConfig(pipelineConfig, pipelineStatusService.getPipelineStatus(pipelineConfig.name()));
 	}
 
 	@DeleteMapping("/{pipeline}")
 	@ResponseStatus(HttpStatus.OK)
-	public void deletePipeline(@RequestParam String pipeline) {
+	public void deletePipeline(@PathVariable String pipeline) {
 		pipelineManagementService.deletePipeline(pipeline);
 	}
 }

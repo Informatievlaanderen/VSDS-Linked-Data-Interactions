@@ -1,8 +1,9 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.services.creation;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.services.initializer;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.PipelineCreationException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,18 +25,21 @@ public class ConfigPipelineInitializer implements PipelineInitializer {
 
 	@Override
 	public String name() {
-		return "LDI Orchestrator Config Initializer";
+		return "LDI Orchestrator Spring Config Initializer";
 	}
 
 	@Override
 	public List<PipelineConfig> initPipelines() {
-		log.warn("Spring config is second priority to ");
+		log.warn("{} DEPRECATED. Any configs with the same name will be ignored", name());
 		return orchestratorConfig.getPipelines()
 				.stream()
 				.map(pipeline -> {
 					try {
 						return pipelineManagementService.addPipeline(pipeline);
-					} catch (PipelineCreationException e) {
+					} catch (PipelineAlreadyExistsException e) {
+						log.warn(e.getMessage());
+						return null;
+					} catch (PipelineException e) {
 						log.error(e.getMessage());
 						return null;
 					}

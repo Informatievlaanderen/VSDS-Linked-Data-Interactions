@@ -1,6 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.components;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.ObserveConfiguration;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
