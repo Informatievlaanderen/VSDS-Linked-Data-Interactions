@@ -2,21 +2,17 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpInConfigKeys;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import jakarta.jms.*;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageProducer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RDFWriter;
-import org.testcontainers.activemq.ArtemisContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,45 +27,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
+
 	private final LdioAmqpInRegistrator ldioAmqpInRegistrator = jmsInRegistrator();
-	private final ArtemisContainer activemq = new ArtemisContainer("apache/activemq-artemis:2.30.0-alpine")
-			.withUser("user")
-			.withPassword("password")
-			.withExposedPorts(61616);
 	private Model inputModel;
-	private String queue;
 	private String contentType;
 	private Map<String, String> config;
 	private List<LdiAdapter.Content> adapterResult;
 	private List<Model> componentExecutorResult;
-	private Session session;
+
+	private final TestContext testContext = TestContextContainer.getTestContext();
 	private MessageProducer producer;
 
-	@Given("^I create a queue for my scenario: (.*)$")
-	public void iCreateAQueue(String queueName) throws JMSException {
-		this.queue = queueName;
-		activemq.start();
-
-		ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(activemq.getBrokerUrl());
-		Connection connection = connectionFactory.createConnection(activemq.getUser(), activemq.getPassword());
-		connection.start();
-
-		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-		// Getting the queue
-		Queue queue = session.createQueue(queueName);
-
-		// Creating the producer & consumer
-		producer = session.createProducer(queue);
+	@And("I create a message producer")
+	public void iCreateAMessageProducer() throws JMSException {
+		producer = testContext.session.createProducer(testContext.queue);
 	}
 
-	@And("I prepare the result lists")
+    @And("I prepare the result lists")
 	public void iPrepareTheResultLists() {
 		adapterResult = new ArrayList<>();
 		componentExecutorResult = new ArrayList<>();
 	}
 
-	@SuppressWarnings("unchecked")
 	@And("I start a listener with an LdioJmsIn component")
 	public void iCreateAnLdioJmsInComponent() {
 		ComponentProperties properties = new ComponentProperties(config);
@@ -89,9 +68,8 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 
 		final String value = RDFWriter.source(inputModel).lang(contentTypeToLang(contentType)).build().asString();
 
-		producer.send(session.createTextMessage(value));
+		producer.send(testContext.session.createTextMessage(value));
 	}
-
 
 	private Model toModel(LdiAdapter.Content content) {
 		return RDFParserBuilder.create()
@@ -99,13 +77,13 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	}
 
 	@And("^I create default config for LdioJmsIn with (.*)")
-	public void iCreateDefaultConfigForLdioJmsInWithContentType(String contentType) {
+	public void iCreateDefaultConfigForLdioJmsInWithContentType(String contentType) throws JMSException {
 		config = new HashMap<>();
-		config.put(AmqpInConfigKeys.REMOTE_URL, "amqp://%s:%d".formatted(activemq.getHost(), activemq.getMappedPort(61616)));
-		config.put(AmqpInConfigKeys.USERNAME, activemq.getUser());
-		config.put(AmqpInConfigKeys.PASSWORD, activemq.getPassword());
-		config.put(AmqpInConfigKeys.QUEUE, queue);
-		config.put(AmqpInConfigKeys.CONTENT_TYPE, contentType);
+		config.put(AmqpConfig.REMOTE_URL, "amqp://%s:%d".formatted(testContext.activemq.getHost(), testContext.activemq.getMappedPort(61616)));
+		config.put(AmqpConfig.USERNAME, testContext.activemq.getUser());
+		config.put(AmqpConfig.PASSWORD, testContext.activemq.getPassword());
+		config.put(AmqpConfig.QUEUE, testContext.queue.getQueueName());
+		config.put(AmqpConfig.CONTENT_TYPE, contentType);
 		config.put(OrchestratorConfig.ORCHESTRATOR_NAME, "orchestratorName");
 		config.put(PipelineConfig.PIPELINE_NAME, "pipelineName");
 	}
@@ -131,5 +109,4 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	public Boolean booleanValue(String value) {
 		return Boolean.valueOf(value);
 	}
-
 }

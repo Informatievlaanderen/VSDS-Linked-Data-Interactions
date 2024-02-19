@@ -1,7 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpInAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpInRegistrator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
@@ -21,7 +19,7 @@ class LdioAmqpInAutoConfigTest {
 				new LdioAmqpInRegistrator(null), ObservationRegistry.create());
 
 		Map<String, String> config = getBasicConfig();
-		config.put(AmqpInConfigKeys.REMOTE_URL, "localhost:61616");
+		config.put(AmqpConfig.REMOTE_URL, "localhost:61616");
 		ComponentProperties componentProperties = new ComponentProperties(config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
@@ -45,10 +43,10 @@ class LdioAmqpInAutoConfigTest {
 
 	private Map<String, String> getBasicConfig() {
 		Map<String, String> config = new HashMap<>();
-		config.put(AmqpInConfigKeys.REMOTE_URL, "amqp://localhost:61616");
-		config.put(AmqpInConfigKeys.USERNAME, "user");
-		config.put(AmqpInConfigKeys.PASSWORD, "pass");
-		config.put(AmqpInConfigKeys.QUEUE, "queue");
+		config.put(AmqpConfig.REMOTE_URL, "amqp://localhost:61616");
+		config.put(AmqpConfig.USERNAME, "user");
+		config.put(AmqpConfig.PASSWORD, "pass");
+		config.put(AmqpConfig.QUEUE, "queue");
 		config.put(ORCHESTRATOR_NAME, "orchestrator.name");
 		config.put(PIPELINE_NAME, "pipeline.name");
 		return config;

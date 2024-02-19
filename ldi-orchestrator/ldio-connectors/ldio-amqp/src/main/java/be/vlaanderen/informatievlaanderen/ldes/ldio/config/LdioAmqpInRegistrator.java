@@ -1,6 +1,5 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.JmsConfig;
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;

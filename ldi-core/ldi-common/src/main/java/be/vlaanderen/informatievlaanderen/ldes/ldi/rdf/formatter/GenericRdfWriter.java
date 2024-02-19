@@ -8,10 +8,18 @@ import java.io.OutputStream;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.*;
 
 public class GenericRdfWriter implements LdiRdfWriter {
+
 	private final RDFWriterBuilder rdfWriter;
+	private final String contentType;
 
 	public GenericRdfWriter(LdiRdfWriterProperties properties) {
+		contentType = properties.getLang().getHeaderString();
 		this.rdfWriter = RDFWriter.create().lang(properties.getLang());
+	}
+
+	@Override
+	public String getContentType() {
+		return contentType;
 	}
 
 	@Override
