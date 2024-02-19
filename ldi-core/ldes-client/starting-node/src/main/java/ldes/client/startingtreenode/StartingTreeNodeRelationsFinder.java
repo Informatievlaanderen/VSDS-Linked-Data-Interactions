@@ -18,12 +18,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
-import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 
 public class StartingTreeNodeRelationsFinder {
 	private static final String W3C_TREE = "https://w3id.org/tree#";
+	private static final Property W3IC_TREE_RELATION = createProperty(W3C_TREE, "relation");
 	private static final Property RDF_SYNTAX_TYPE = createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-	private static final Resource LDES_EVENT_STREAM_RESOURCE = createResource("https://w3id.org/ldes#EventStream");
 	private final Logger log = LoggerFactory.getLogger(StartingTreeNodeRelationsFinder.class);
 	private final RedirectRequestExecutor requestExecutor;
 
@@ -35,30 +34,31 @@ public class StartingTreeNodeRelationsFinder {
 		final Response response = requestExecutor.execute(startingNodeRequest);
 		final Model model = getModelFromResponse(startingNodeRequest.lang(), response.getBody().orElseThrow(), startingNodeRequest.url());
 		log.atInfo().log("Parsing response for: " + startingNodeRequest.url());
-		if (isResponseAnEventStream(startingNodeRequest.url(), model)) {
-			return extractStartingNodesFromEventStream(model);
-		}
-		return extractStartingNodesFromView(model);
+		return extractStartingNodes(model);
 	}
 
 	private Model getModelFromResponse(Lang lang, byte[] responseBody, String baseUrl) {
 		return RDFParser.source(new ByteArrayInputStream(responseBody)).lang(lang).base(baseUrl).build().toModel();
 	}
 
-	private boolean isResponseAnEventStream(String requestedUrl, Model model) {
-		return model.contains(createResource(requestedUrl), RDF_SYNTAX_TYPE, LDES_EVENT_STREAM_RESOURCE);
+	private List<StartingTreeNode> extractStartingNodes(Model model) {
+		if (model.contains(null, W3IC_TREE_RELATION, (Resource) null)) {
+			return extractStartingNodesFromTreeNode(model);
+		}
+		return extractStartingNodesFromEventStream(model);
 	}
 
 	private List<StartingTreeNode> extractStartingNodesFromEventStream(Model model) {
 		return model
-				.listStatements(null, RDF_SYNTAX_TYPE, createProperty(W3C_TREE, "Node"))
-				.toList().stream()
-				.map(stmt -> stmt.getSubject().toString())
+				.listSubjectsWithProperty(RDF_SYNTAX_TYPE, createProperty(W3C_TREE, "Node"))
+				.toList()
+				.stream()
+				.map(Object::toString)
 				.map(StartingTreeNode::new)
 				.toList();
 	}
 
-	private List<StartingTreeNode> extractStartingNodesFromView(Model model) {
+	private List<StartingTreeNode> extractStartingNodesFromTreeNode(Model model) {
 		return model.listStatements(null, createProperty(W3C_TREE, "relation"), (Resource) null)
 				.toList()
 				.stream()
