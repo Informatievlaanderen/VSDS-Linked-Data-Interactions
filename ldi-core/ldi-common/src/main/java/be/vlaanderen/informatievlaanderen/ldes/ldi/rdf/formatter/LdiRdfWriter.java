@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public interface LdiRdfWriter {
+
+	String getContentType();
+
 	String write(Model model);
 
 	void writeToOutputStream(Model model, OutputStream outputStream);

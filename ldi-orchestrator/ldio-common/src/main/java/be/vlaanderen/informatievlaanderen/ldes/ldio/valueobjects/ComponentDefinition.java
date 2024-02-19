@@ -4,6 +4,9 @@ import java.util.Map;
 
 public class ComponentDefinition {
 
+	private String name;
+	private ComponentProperties config = new ComponentProperties();
+
 	public ComponentDefinition(String name, Map<String, String> config) {
 		this.name = name;
 		this.config = new ComponentProperties(config);
@@ -11,9 +14,6 @@ public class ComponentDefinition {
 
 	public ComponentDefinition() {
 	}
-
-	private String name;
-	private ComponentProperties config = new ComponentProperties();
 
 	public String getName() {
 		return name;
