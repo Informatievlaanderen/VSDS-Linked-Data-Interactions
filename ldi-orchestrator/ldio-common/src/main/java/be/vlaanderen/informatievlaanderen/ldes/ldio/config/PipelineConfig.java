@@ -47,7 +47,6 @@ public class PipelineConfig {
 		this.transformers = transformers;
 	}
 
-	// TODO TVB: add test
 	public List<ComponentDefinition> getOutputs() {
 		return outputs.stream().map(componentDefinition -> {
 			Map<String, String> properties = componentDefinition.getConfig().getConfig();
