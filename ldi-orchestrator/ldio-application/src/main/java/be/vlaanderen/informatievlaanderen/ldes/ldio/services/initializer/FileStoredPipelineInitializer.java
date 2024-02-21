@@ -18,12 +18,12 @@ import java.util.Objects;
 public class FileStoredPipelineInitializer implements PipelineInitializer {
 	private final Logger log = LoggerFactory.getLogger(FileStoredPipelineInitializer.class);
 	private final PipelineManagementService pipelineManagementService;
-	private final Map<File, PipelineConfigTO> pipelineFileMapping;
+	private final Map<File, PipelineConfigTO> pipelineFileMappings;
 
 	public FileStoredPipelineInitializer(PipelineManagementService pipelineManagementService,
 	                                     PipelineFileRepository repository) {
 		this.pipelineManagementService = pipelineManagementService;
-		this.pipelineFileMapping = repository.pipelineToFileMapping();
+		this.pipelineFileMappings = repository.pipelineToFileMapping();
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class FileStoredPipelineInitializer implements PipelineInitializer {
 
 	@Override
 	public List<PipelineConfig> initPipelines() {
-		return pipelineFileMapping
+		return pipelineFileMappings
 				.entrySet()
 				.stream()
 				.map(pipelineFileMapping -> {

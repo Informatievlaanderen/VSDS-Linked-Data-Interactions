@@ -31,7 +31,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.Pipeline
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository.EXTENSION_YML;
 import static org.junit.Assert.assertEquals;
 
-public class LdioStepdefs extends PipelineManagementTest {
+public class LdioStepdefs {
 	private File testDirectory;
 	private ConfigurableWebApplicationContext context;
 	private WebTestClient client;

@@ -3,16 +3,20 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.repositories;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistsException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineParsingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -29,6 +33,7 @@ import static java.util.Optional.ofNullable;
 public class PipelineFileRepository implements PipelineRepository {
 	public static final String EXTENSION_YML = ".yml";
 	public static final String EXTENSION_YAML = ".yaml";
+	private final Logger log = LoggerFactory.getLogger(PipelineFileRepository.class);
 	private final Map<String, SavedPipeline> activePipelines;
 	private final File directory;
 	private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -57,11 +62,11 @@ public class PipelineFileRepository implements PipelineRepository {
 							var json = content.collect(Collectors.joining("\n"));
 							return reader.readValue(json, PipelineConfigTO.class);
 						} catch (IOException e) {
-							throw new RuntimeException(e);
+							throw new PipelineParsingException(path.getFileName().toString());
 						}
 					}));
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 
@@ -81,6 +86,7 @@ public class PipelineFileRepository implements PipelineRepository {
 					writer.writeValue(savedFile, pipelineConfig);
 					success = true;
 				} catch (IOException ignored) {
+					log.debug("Saving file {} failed. Already exists. Retrying with new name... ", savedFile.getName());
 				}
 			} while (!success);
 		}
@@ -96,15 +102,20 @@ public class PipelineFileRepository implements PipelineRepository {
 
 	@Override
 	public void delete(String pipelineName) {
-		var deleteResult = ofNullable(activePipelines.get(pipelineName))
+		ofNullable(activePipelines.get(pipelineName))
 				.map(savedPipeline -> {
 					activePipelines.remove(pipelineName);
-					return savedPipeline.file().delete();
-				}).orElse(false);
-
-		if (!deleteResult) {
-			throw new PipelineDoesNotExistsException(pipelineName);
-		}
+					try {
+						Files.delete(savedPipeline.file.toPath());
+						return true;
+					} catch (IOException e) {
+						return false;
+					}
+				}).ifPresentOrElse(ignored -> {
+					log.info("Pipeline {} was successfully removed and deleted", pipelineName);
+				}, () -> {
+					throw new PipelineDoesNotExistsException(pipelineName);
+				});
 	}
 
 	public boolean exists(String pipeline) {
