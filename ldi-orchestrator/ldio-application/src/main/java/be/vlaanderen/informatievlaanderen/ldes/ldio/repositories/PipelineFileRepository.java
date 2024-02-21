@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.repositories;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineParsingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
@@ -51,7 +52,7 @@ public class PipelineFileRepository implements PipelineRepository {
 		return activePipelines.values().stream().map(SavedPipeline::pipelineConfig).toList();
 	}
 
-	public Map<File, PipelineConfigTO> pipelineToFileMapping() {
+	public Map<File, PipelineConfigTO> getStoredPipelines() {
 		try (Stream<Path> files = Files.list(directory.toPath())) {
 			return files
 					.filter(path -> !Files.isDirectory(path))
@@ -73,6 +74,9 @@ public class PipelineFileRepository implements PipelineRepository {
 
 	@Override
 	public void save(PipelineConfig pipeline) {
+		if (exists(pipeline.getName())) {
+			throw new PipelineAlreadyExistsException(pipeline.getName());
+		}
 		var pipelineConfig = fromPipelineConfig(pipeline);
 		var savedFile = pipelineFile(pipeline.getName());
 		try {

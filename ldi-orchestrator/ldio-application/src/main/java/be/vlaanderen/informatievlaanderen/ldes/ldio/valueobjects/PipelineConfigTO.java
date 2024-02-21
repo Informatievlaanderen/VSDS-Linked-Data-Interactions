@@ -16,9 +16,10 @@ public record PipelineConfigTO(String name, String description, InputComponentDe
 	}
 
 	public static PipelineConfigTO fromPipelineConfig(PipelineConfig config) {
-		var input = new InputComponentDefinitionTO(config.getInput().getName(),
-				new ComponentDefinitionTO(config.getInput().getAdapter().getName(), config.getInput().getAdapter().getConfigMap()),
-				config.getInput().getConfigMap());
+		var adapter = config.getInput().getAdapter() == null ? null :
+				new ComponentDefinitionTO(config.getInput().getAdapter().getName(), config.getInput().getAdapter().getConfigMap());
+
+		var input = new InputComponentDefinitionTO(config.getInput().getName(), adapter, config.getInput().getConfigMap());
 		var transformers = config.getTransformers().stream().map(componentDefinition -> new ComponentDefinitionTO(componentDefinition.getName(), componentDefinition.getConfigMap())).toList();
 		var outputs = config.getOutputs().stream().map(componentDefinition -> new ComponentDefinitionTO(componentDefinition.getName(), componentDefinition.getConfigMap())).toList();
 		return new PipelineConfigTO(config.getName(), config.getDescription(), input, transformers, outputs);

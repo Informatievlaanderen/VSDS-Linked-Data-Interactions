@@ -10,6 +10,7 @@ import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.spring.CucumberContextConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -31,6 +32,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.Pipeline
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository.EXTENSION_YML;
 import static org.junit.Assert.assertEquals;
 
+@CucumberContextConfiguration
 public class LdioStepdefs {
 	private File testDirectory;
 	private ConfigurableWebApplicationContext context;

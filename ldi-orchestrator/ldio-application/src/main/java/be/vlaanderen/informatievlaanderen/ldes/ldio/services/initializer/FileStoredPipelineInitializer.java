@@ -18,12 +18,12 @@ import java.util.Objects;
 public class FileStoredPipelineInitializer implements PipelineInitializer {
 	private final Logger log = LoggerFactory.getLogger(FileStoredPipelineInitializer.class);
 	private final PipelineManagementService pipelineManagementService;
-	private final Map<File, PipelineConfigTO> pipelineFileMappings;
+	private final Map<File, PipelineConfigTO> storedPipelines;
 
 	public FileStoredPipelineInitializer(PipelineManagementService pipelineManagementService,
 	                                     PipelineFileRepository repository) {
 		this.pipelineManagementService = pipelineManagementService;
-		this.pipelineFileMappings = repository.pipelineToFileMapping();
+		this.storedPipelines = repository.getStoredPipelines();
 	}
 
 	@Override
@@ -33,14 +33,14 @@ public class FileStoredPipelineInitializer implements PipelineInitializer {
 
 	@Override
 	public List<PipelineConfig> initPipelines() {
-		return pipelineFileMappings
+		return storedPipelines
 				.entrySet()
 				.stream()
-				.map(pipelineFileMapping -> {
+				.map(storedPipeline -> {
 					try {
-						return pipelineManagementService.addPipeline(pipelineFileMapping.getValue().toPipelineConfig(), pipelineFileMapping.getKey());
+						return pipelineManagementService.addPipeline(storedPipeline.getValue().toPipelineConfig(), storedPipeline.getKey());
 					} catch (PipelineException e) {
-						log.error("File \"%s\": %s".formatted(pipelineFileMapping.getKey().getName(), e.getMessage()));
+						log.error("File \"%s\": %s".formatted(storedPipeline.getKey().getName(), e.getMessage()));
 						return null;
 					}
 				})
