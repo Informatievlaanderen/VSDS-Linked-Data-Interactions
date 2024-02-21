@@ -43,8 +43,7 @@ class MaterialiserTest {
 	private static final String CHANGED_FILE = "src/test/resources/people_data_03.nq";
 
 	@BeforeEach
-	public void setUp() throws Exception {
-		materialiser = new Materialiser(LOCAL_SERVER_URL, LOCAL_REPOSITORY_ID, "");
+	public void setUp() {
 		subject = new LocalRepositoryManager(dataDir);
 		subject.init();
 
@@ -52,7 +51,7 @@ class MaterialiserTest {
 				new RepositoryConfig(LOCAL_REPOSITORY_ID, new SailRepositoryConfig(new MemoryStoreConfig(true))));
 		connection = subject.getRepository(LOCAL_REPOSITORY_ID).getConnection();
 
-		materialiser.initRepositoryManager(subject);
+		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, "", 1, 10);
 	}
 
 	@AfterEach

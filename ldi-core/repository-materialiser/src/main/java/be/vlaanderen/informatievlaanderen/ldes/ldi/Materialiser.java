@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ModelParseIOException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MaterialiserConnectionHolder;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;
 import org.eclipse.rdf4j.common.transaction.IsolationLevels;
@@ -23,32 +24,43 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 public class Materialiser {
 	private final String repositoryId;
 	private final String namedGraph;
 	protected RepositoryManager repositoryManager;
+	private ScheduledExecutorService scheduledExecutorService;
+	private final int batchSize;
+	private final int batchTimeout;
+	private int uncommittedMembers = 0;
+	private final MaterialiserConnectionHolder connectionHolder;
+	private final RepositoryConnection dbConnection;
 
-	public Materialiser(String hostUrl, String repositoryId, String namedGraph) {
-		this.repositoryId = repositoryId;
-		this.namedGraph = namedGraph;
-		initRepositoryManager(new RemoteRepositoryManager(hostUrl));
+
+	public Materialiser(String hostUrl, String repositoryId, String namedGraph, int batchSize, int batchTimeout) {
+		this(new RemoteRepositoryManager(hostUrl), repositoryId, namedGraph, batchSize, batchTimeout);
 	}
 
-	protected void initRepositoryManager(RepositoryManager manager) {
-		this.repositoryManager = manager;
+	public Materialiser(RepositoryManager repositoryManager, String repositoryId, String namedGraph, int batchSize, int batchTimeout) {
+		this.repositoryManager = repositoryManager;
+		this.repositoryId = repositoryId;
+		this.namedGraph = namedGraph;
+		this.batchSize = batchSize;
+		this.batchTimeout = batchTimeout;
+		this.connectionHolder = MaterialiserConnectionHolder.initializeFromRepository(repositoryManager.getRepository(repositoryId));
+		this.dbConnection = repositoryManager.getRepository(repositoryId).getConnection();
 	}
 
 	public void process(org.apache.jena.rdf.model.Model jenaModel) {
-		final Repository repository = repositoryManager.getRepository(repositoryId);
-
-		final RepositoryConnection dbConnection;
-		if (repository instanceof HTTPRepository) {
-			dbConnection = new CustomHTTPRepositoryConnection(repository);
-		} else {
-			dbConnection = repository.getConnection();
-		}
+//		final RepositoryConnection dbConnection = connectionHolder.getConnection();
 
 		try {
 			dbConnection.setIsolationLevel(IsolationLevels.NONE);
@@ -65,21 +77,30 @@ public class Materialiser {
 			} else {
 				dbConnection.add(updateModel);
 			}
-			dbConnection.commit();
+
+			uncommittedMembers++;
+
+			if (uncommittedMembers >= batchSize) {
+				dbConnection.commit();
+				uncommittedMembers = 0;
+			}
 
 		} catch (Exception e) {
 			throw new MaterialisationFailedException(e);
-		} finally {
-			dbConnection.close();
 		}
 
+	}
+
+	public void shutdown() {
+		dbConnection.commit();
+		dbConnection.close();
+		repositoryManager.shutDown();
 	}
 
 	/**
 	 * Returns all subjects ('real' URIs) present in the model.
 	 *
-	 * @param model
-	 *            A graph
+	 * @param model A graph
 	 * @return A set of subject URIs.
 	 */
 	protected static Set<Resource> getSubjectsFromModel(Model model) {
@@ -97,10 +118,8 @@ public class Materialiser {
 	/**
 	 * Delete an entity, including its blank nodes, from a repository.
 	 *
-	 * @param entityIds
-	 *            The subjects of the entities to delete.
-	 * @param connection
-	 *            The DB connection.
+	 * @param entityIds  The subjects of the entities to delete.
+	 * @param connection The DB connection.
 	 */
 	protected static void deleteEntitiesFromRepo(Set<Resource> entityIds, RepositoryConnection connection) {
 		Deque<Resource> subjectStack = new ArrayDeque<>();
@@ -135,4 +154,22 @@ public class Materialiser {
 			throw new ModelParseIOException(content, e.getMessage());
 		}
 	}
+
+
+	private void commitMembers() {
+		dbConnection.commit();
+		uncommittedMembers = 0;
+		dbConnection.begin();
+	}
+
+	private void initExecutor() {
+		scheduledExecutorService = newSingleThreadScheduledExecutor();
+		scheduledExecutorService.schedule(this::commitMembers, batchTimeout, TimeUnit.MILLISECONDS);
+	}
+
+	private void resetExecutor() {
+		scheduledExecutorService.shutdownNow();
+		initExecutor();
+	}
+
 }
