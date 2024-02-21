@@ -111,9 +111,7 @@ public class PipelineFileRepository implements PipelineRepository {
 					} catch (IOException e) {
 						return false;
 					}
-				}).ifPresentOrElse(ignored -> {
-					log.info("Pipeline {} was successfully removed and deleted", pipelineName);
-				}, () -> {
+				}).ifPresentOrElse(ignored -> log.info("Pipeline {} was successfully removed and deleted", pipelineName), () -> {
 					throw new PipelineDoesNotExistsException(pipelineName);
 				});
 	}

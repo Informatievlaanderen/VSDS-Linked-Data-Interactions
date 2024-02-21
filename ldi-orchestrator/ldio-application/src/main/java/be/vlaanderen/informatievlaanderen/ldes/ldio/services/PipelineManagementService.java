@@ -9,7 +9,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigT
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -23,18 +22,13 @@ public class PipelineManagementService {
 		this.pipelineRepository = pipelineRepository;
 	}
 
-	public PipelineConfig addPipeline(PipelineConfig pipeline) throws PipelineAlreadyExistsException {
-		try {
-			if (pipelineRepository.exists(pipeline.getName())) {
-				throw new PipelineAlreadyExistsException(pipeline.getName());
-			} else {
-				pipelineCreatorService.initialisePipeline(pipeline);
-				pipelineRepository.save(pipeline);
-				return pipeline;
-			}
-
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+	public PipelineConfig addPipeline(PipelineConfig pipeline) throws PipelineException {
+		if (pipelineRepository.exists(pipeline.getName())) {
+			throw new PipelineAlreadyExistsException(pipeline.getName());
+		} else {
+			pipelineCreatorService.initialisePipeline(pipeline);
+			pipelineRepository.save(pipeline);
+			return pipeline;
 		}
 	}
 

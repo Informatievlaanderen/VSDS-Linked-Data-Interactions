@@ -15,16 +15,6 @@ public class PipelineConfig {
 	private List<ComponentDefinition> transformers = new LinkedList<>();
 	private List<ComponentDefinition> outputs;
 
-	//TODO remove this with removal of Spring based config
-	public void updatePipelineName() {
-		input.setPipelineName(name);
-		if (input.getAdapter() != null) {
-			input.getAdapter().setPipelineName(name);
-		}
-		transformers.forEach(transformer -> transformer.setPipelineName(name));
-		outputs.forEach(output -> output.setPipelineName(name));
-	}
-
 	public String getName() {
 		return name;
 	}

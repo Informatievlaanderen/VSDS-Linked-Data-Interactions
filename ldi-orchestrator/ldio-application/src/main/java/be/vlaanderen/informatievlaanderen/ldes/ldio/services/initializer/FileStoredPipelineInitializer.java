@@ -16,6 +16,7 @@ import java.util.Objects;
 
 @Service
 public class FileStoredPipelineInitializer implements PipelineInitializer {
+	private final String NAME = "File Stored Config Initializer";
 	private final Logger log = LoggerFactory.getLogger(FileStoredPipelineInitializer.class);
 	private final PipelineManagementService pipelineManagementService;
 	private final Map<File, PipelineConfigTO> pipelineFileMappings;
@@ -28,7 +29,7 @@ public class FileStoredPipelineInitializer implements PipelineInitializer {
 
 	@Override
 	public String name() {
-		return "File Stored Config Initializer";
+		return NAME;
 	}
 
 	@Override

@@ -18,8 +18,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.context.ApplicationEventPublisher;
@@ -37,7 +35,6 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Service
 public class PipelineCreatorService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PipelineManagementService.class);
 	private final Pattern pattern = Pattern.compile(NAME_PATTERN);
 	private final String orchestratorName;
 	private final ConfigurableApplicationContext configContext;
