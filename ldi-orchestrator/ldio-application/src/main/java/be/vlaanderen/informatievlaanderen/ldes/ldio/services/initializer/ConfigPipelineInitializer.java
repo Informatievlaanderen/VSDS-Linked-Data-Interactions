@@ -31,6 +31,9 @@ public class ConfigPipelineInitializer implements PipelineInitializer {
 	@Override
 	public List<PipelineConfig> initPipelines() {
 		log.warn("{} DEPRECATED. Any configs with the same name will be ignored", name());
+		if (orchestratorConfig.getPipelines() == null) {
+			return List.of();
+		}
 		return orchestratorConfig.getPipelines()
 				.stream()
 				.map(pipeline -> {

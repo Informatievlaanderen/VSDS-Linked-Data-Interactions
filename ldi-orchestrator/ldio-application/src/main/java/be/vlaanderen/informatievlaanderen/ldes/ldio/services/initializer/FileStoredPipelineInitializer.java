@@ -14,19 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository.EXTENSION;
-
 @Service
 public class FileStoredPipelineInitializer implements PipelineInitializer {
 	private final Logger log = LoggerFactory.getLogger(FileStoredPipelineInitializer.class);
 	private final PipelineManagementService pipelineManagementService;
-	private final PipelineFileRepository repository;
 	private final Map<File, PipelineConfigTO> pipelineFileMapping;
 
 	public FileStoredPipelineInitializer(PipelineManagementService pipelineManagementService,
 	                                     PipelineFileRepository repository) {
 		this.pipelineManagementService = pipelineManagementService;
-		this.repository = repository;
 		this.pipelineFileMapping = repository.pipelineToFileMapping();
 	}
 
@@ -41,31 +37,14 @@ public class FileStoredPipelineInitializer implements PipelineInitializer {
 				.entrySet()
 				.stream()
 				.map(pipelineFileMapping -> {
-					boolean needsRestoring = false;
 					try {
-						needsRestoring = checkForRenaming(pipelineFileMapping.getKey(), pipelineFileMapping.getValue());
-						var pipeline = pipelineManagementService.addPipeline(pipelineFileMapping.getValue().toPipelineConfig(), needsRestoring);
-						repository.cleanupBackup(pipelineFileMapping.getKey());
-						return pipeline;
+						return pipelineManagementService.addPipeline(pipelineFileMapping.getValue().toPipelineConfig(), pipelineFileMapping.getKey());
 					} catch (PipelineException e) {
-						if (needsRestoring) {
-							repository.backup(pipelineFileMapping.getKey());
-						}
 						log.error("File \"%s\": %s".formatted(pipelineFileMapping.getKey().getName(), e.getMessage()));
 						return null;
 					}
 				})
 				.filter(Objects::nonNull)
 				.toList();
-	}
-
-	private boolean checkForRenaming(File file, PipelineConfigTO pipeline) {
-		String fileName = file.getName().replace(EXTENSION, "");
-		if (!fileName.equals(pipeline.name())) {
-			log.warn("File \"{}\" was not in line with its pipeline name \"{}\". This will be renamed", file.getName(), pipeline.name());
-			repository.backup(file);
-			return false;
-		}
-		return true;
 	}
 }

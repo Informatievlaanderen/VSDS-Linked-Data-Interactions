@@ -17,10 +17,12 @@ public class WebConfig implements WebMvcConfigurer {
 		messageConverters.add(new YamlJackson2HttpMessageConverter());
 		messageConverters.add(new MappingJackson2HttpMessageConverter());
 	}
-}
 
-final class YamlJackson2HttpMessageConverter extends AbstractJackson2HttpMessageConverter {
-	YamlJackson2HttpMessageConverter() {
-		super(new YAMLMapper(), MediaType.parseMediaType("application/yaml"));
+	static final class YamlJackson2HttpMessageConverter extends AbstractJackson2HttpMessageConverter {
+		YamlJackson2HttpMessageConverter() {
+			super(new YAMLMapper(), MediaType.parseMediaType("application/yaml"));
+		}
 	}
 }
+
+
