@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @Service
 public class ConfigPipelineInitializer implements PipelineInitializer {
-	private final static String name = "LDI Orchestrator Spring Config Initializer";
+	private static final String name = "LDI Orchestrator Spring Config Initializer";
 	private final Logger log = LoggerFactory.getLogger(ConfigPipelineInitializer.class);
 	private final OrchestratorConfig orchestratorConfig;
 	private final PipelineManagementService pipelineManagementService;

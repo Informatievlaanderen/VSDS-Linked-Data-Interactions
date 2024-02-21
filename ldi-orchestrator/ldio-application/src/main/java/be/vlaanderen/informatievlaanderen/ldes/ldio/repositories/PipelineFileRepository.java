@@ -79,27 +79,31 @@ public class PipelineFileRepository implements PipelineRepository {
 		}
 		var pipelineConfig = fromPipelineConfig(pipeline);
 		var savedFile = pipelineFile(pipeline.getName());
-		try {
-			writer.writeValue(savedFile, fromPipelineConfig(pipeline));
-		} catch (IOException e) {
+
+		if (savedFile.exists()) {
 			AtomicInteger count = new AtomicInteger();
 			boolean success = false;
 			do {
-				try {
-					savedFile = new File(savedFile.getName().replace(EXTENSION_YML, ("(%d)%s").formatted(count.incrementAndGet(), EXTENSION_YML)));
-					writer.writeValue(savedFile, pipelineConfig);
+				savedFile = new File(directory, savedFile.getName().replace(EXTENSION_YML, ("(%d)%s").formatted(count.incrementAndGet(), EXTENSION_YML)));
+				if (!savedFile.exists()) {
 					success = true;
-				} catch (IOException ignored) {
-					log.debug("Saving file {} failed. Already exists. Retrying with new name... ", savedFile.getName());
 				}
 			} while (!success);
 		}
 
-		activePipelines.put(pipeline.getName(), new SavedPipeline(pipelineConfig, savedFile));
+		try {
+			writer.writeValue(savedFile, pipelineConfig);
+			activePipelines.put(pipeline.getName(), new SavedPipeline(pipelineConfig, savedFile));
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
 	}
 
 	@Override
 	public void save(PipelineConfig pipeline, File persistedFile) {
+		if (exists(pipeline.getName())) {
+			throw new PipelineAlreadyExistsException(pipeline.getName());
+		}
 		activePipelines.put(pipeline.getName(), new SavedPipeline(fromPipelineConfig(pipeline), persistedFile));
 	}
 

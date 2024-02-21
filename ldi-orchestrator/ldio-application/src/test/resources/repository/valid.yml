@@ -1,9 +1,11 @@
-name: valid-pipeline
+---
+name: "valid-pipeline"
+description: null
 input:
-  name: dummyIn
-  adapter:
-    name: dummyAdapt
-transformers:
-  - name: dummyTransform
+  name: "Ldio:TestIn"
+  adapter: null
+  config: { }
+transformers: [ ]
 outputs:
-  - name: dummyOut
+  - name: "Ldio:TestOut"
+    config: { }

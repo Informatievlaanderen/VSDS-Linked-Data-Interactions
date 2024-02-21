@@ -55,7 +55,7 @@ class PipelineFileRepositoryTest {
 		assertTrue(storedPipelines.values().stream().anyMatch(pipeline -> pipeline.name().equals(existingPipeline)));
 
 		var config = new PipelineConfig();
-		String pipelineName = "pName";
+		String pipelineName = "valid";
 		config.setName(pipelineName);
 		config.setInput(new InputComponentDefinition(pipelineName, "Ldio:TestIn", Map.of(), null));
 		config.setOutputs(List.of(new ComponentDefinition(pipelineName, "Ldio:TestOut", Map.of())));
@@ -67,7 +67,7 @@ class PipelineFileRepositoryTest {
 
 		assertEquals(2, activePipelines.size());
 		assertEquals(2, storedPipelines.size());
-		assertTrue(storedPipelines.keySet().stream().anyMatch(file -> (pipelineName + ".yml").equals(file.getName())));
+		assertTrue(storedPipelines.keySet().stream().anyMatch(file -> (pipelineName + "(1).yml").equals(file.getName())));
 		assertTrue(storedPipelines.values().stream().anyMatch(pipeline -> pipeline.name().equals(pipelineName)));
 
 		repository.delete(pipelineName);
@@ -83,10 +83,14 @@ class PipelineFileRepositoryTest {
 
 	@Test()
 	void saveExistingFile() {
-		repository.getStoredPipelines().forEach((file, config) -> {
-			repository.save(config.toPipelineConfig(), file);
-			assertThrows(PipelineAlreadyExistsException.class, () ->
-					repository.save(config.toPipelineConfig()));
-		});
+		var storedPipeline = repository.getStoredPipelines()
+				.entrySet()
+				.stream()
+				.findFirst()
+				.orElseThrow();
+
+		// Init pipeline
+		repository.save(storedPipeline.getValue().toPipelineConfig(), storedPipeline.getKey());
+		assertThrows(PipelineAlreadyExistsException.class, () -> repository.save(storedPipeline.getValue().toPipelineConfig()));
 	}
 }
