@@ -53,6 +53,7 @@ public class Materialiser {
 				resetExecutor();
 			}
 		} catch (Exception e) {
+			dbConnection.rollback();
 			throw new MaterialisationFailedException(e);
 		}
 	}

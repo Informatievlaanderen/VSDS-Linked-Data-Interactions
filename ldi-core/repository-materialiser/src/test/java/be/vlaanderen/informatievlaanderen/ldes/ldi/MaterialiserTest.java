@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -23,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -155,17 +155,42 @@ class MaterialiserTest {
 			when(connection.getStatements(any(), isNull(), isNull()))
 					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 
-			RDFParser.source("10_people_data.nq").lang(Lang.NQ).toModel()
-					.listStatements()
-					.toList()
-					.stream()
-					.map(statement -> ModelFactory.createDefaultModel().add(statement))
-					.forEach(materialiser::process);
-
+			readTenModelsFromFile().forEach(materialiser::process);
 
 			verify(connection, times(10)).remove(any(Resource.class), isNull(), isNull());
 			verify(connection, times(10)).add(any(Model.class));
 			verify(connection, timeout(BATCH_TIMEOUT)).commit();
+		}
+
+		@Test
+		void when_ErrorOccursHalfway_then_NoModelsAreCommitted() {
+			when(connection.getStatements(any(), isNull(), isNull()))
+					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+					.thenThrow(RuntimeException.class);
+
+			try {
+				readTenModelsFromFile().forEach(materialiser::process);
+			} catch (Exception e) {
+				assertThat(e)
+						.isInstanceOf(MaterialisationFailedException.class)
+						.hasCauseInstanceOf(RuntimeException.class);
+			}
+
+			verify(connection, times(3)).remove(any(Resource.class), isNull(), isNull());
+			verify(connection, times(3)).add(any(Model.class));
+			verify(connection).rollback();
+			verify(connection, never()).commit();
+
+		}
+
+		private Stream<org.apache.jena.rdf.model.Model> readTenModelsFromFile() {
+			return RDFParser.source("10_people_data.nq").lang(Lang.NQ).toModel()
+					.listStatements()
+					.toList()
+					.stream()
+					.map(statement -> ModelFactory.createDefaultModel().add(statement));
 		}
 
 	}
