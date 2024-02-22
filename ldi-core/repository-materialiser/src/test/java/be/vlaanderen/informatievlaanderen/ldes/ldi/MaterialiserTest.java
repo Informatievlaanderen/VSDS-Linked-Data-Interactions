@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFai
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
-import org.eclipse.rdf4j.common.transaction.IsolationLevels;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
@@ -47,13 +46,6 @@ class MaterialiserTest {
 	private Repository repository;
 	private Materialiser materialiser;
 
-
-	@BeforeEach
-	void setUp() {
-		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
-		when(repository.getConnection()).thenReturn(connection);
-	}
-
 	@AfterEach
 	void tearDown() {
 		materialiser.shutdown();
@@ -77,17 +69,17 @@ class MaterialiserTest {
 			assertThat(entityIds)
 					.as("Expected all subjects from test data")
 					.hasSize(2);
-			verify(connection).begin();
-			verify(connection).setIsolationLevel(IsolationLevels.NONE);
-			verifyNoMoreInteractions(connection);
+			verifyNoInteractions(repositoryManager, repository, connection);
 		}
 
 
 		@Test
 		void when_DeleteEntities_Then_EntitiesRemovedFromStore() throws Exception {
-			Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
+			when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+			when(repository.getConnection()).thenReturn(connection);
 			when(connection.getStatements(any(), isNull(), isNull()))
 					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
+			Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
 			Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
 
 			materialiser.deleteEntitiesFromRepo(entityIds);
@@ -99,6 +91,8 @@ class MaterialiserTest {
 
 		@Test
 		void when_UpdateEntities_Then_OldTriplesRemoved() throws Exception {
+			when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+			when(repository.getConnection()).thenReturn(connection);
 			when(connection.getStatements(any(), isNull(), isNull()))
 					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 			Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
@@ -118,6 +112,8 @@ class MaterialiserTest {
 
 		@BeforeEach
 		void setUp() {
+			when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+			when(repository.getConnection()).thenReturn(connection);
 			materialiser = new Materialiser(repositoryManager, REPOSITORY_ID, "", BATCH_SIZE, BATCH_TIMEOUT);
 		}
 
@@ -147,6 +143,8 @@ class MaterialiserTest {
 
 		@BeforeEach
 		void setUp() {
+			when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+			when(repository.getConnection()).thenReturn(connection);
 			materialiser = new Materialiser(repositoryManager, REPOSITORY_ID, "", BATCH_SIZE, BATCH_TIMEOUT);
 		}
 

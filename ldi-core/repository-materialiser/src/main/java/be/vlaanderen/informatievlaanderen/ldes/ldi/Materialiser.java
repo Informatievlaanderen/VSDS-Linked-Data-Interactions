@@ -2,16 +2,12 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.JenaToRDF4JConverter;
-import org.eclipse.rdf4j.common.transaction.IsolationLevels;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MaterialiserConnection;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.base.AbstractIRI;
-import org.eclipse.rdf4j.repository.Repository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.http.CustomHTTPRepositoryConnection;
-import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
@@ -25,25 +21,25 @@ import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 public class Materialiser {
-	private final String namedGraph;
-	protected RepositoryManager repositoryManager;
+	private final MaterialiserConnection materialiserConnection;
 	private ScheduledExecutorService scheduledExecutorService;
 	private final int batchSize;
 	private final int batchTimeout;
 	private int uncommittedMembers = 0;
-	protected final RepositoryConnection dbConnection;
 
 	public Materialiser(String hostUrl, String repositoryId, String namedGraph, int batchSize, int batchTimeout) {
 		this(new RemoteRepositoryManager(hostUrl), repositoryId, namedGraph, batchSize, batchTimeout);
 	}
 
 	public Materialiser(RepositoryManager repositoryManager, String repositoryId, String namedGraph, int batchSize, int batchTimeout) {
-		this.repositoryManager = repositoryManager;
-		this.namedGraph = namedGraph;
+		this.materialiserConnection = new MaterialiserConnection(repositoryManager, repositoryId, namedGraph);
 		this.batchSize = batchSize;
 		this.batchTimeout = batchTimeout;
-		this.dbConnection = initRepositoryConnection(repositoryManager.getRepository(repositoryId));
 		initExecutor();
+	}
+
+	protected MaterialiserConnection getMaterialiserConnection() {
+		return materialiserConnection;
 	}
 
 	public void process(org.apache.jena.rdf.model.Model jenaModel) {
@@ -52,23 +48,21 @@ public class Materialiser {
 
 			Set<Resource> entityIds = getSubjectsFromModel(updateModel);
 			deleteEntitiesFromRepo(entityIds);
-			addModelToConnection(updateModel);
+			materialiserConnection.add(updateModel);
+			uncommittedMembers++;
 
 			if (uncommittedMembers >= batchSize) {
 				commitMembers();
 				resetExecutor();
 			}
 		} catch (Exception e) {
-			dbConnection.rollback();
+			materialiserConnection.rollback();
 			throw new MaterialisationFailedException(e);
 		}
 	}
 
 	public void shutdown() {
-		if (dbConnection.isActive()) {
-			dbConnection.commit();
-		}
-		dbConnection.close();
+		materialiserConnection.shutdown();
 		scheduledExecutorService.shutdown();
 	}
 
@@ -108,31 +102,20 @@ public class Materialiser {
 		while (!subjectStack.isEmpty()) {
 			Resource subject = subjectStack.pop();
 
-			dbConnection.getStatements(subject, null, null).forEach((Statement statement) -> {
+			materialiserConnection.getStatements(subject, null, null).forEach((Statement statement) -> {
 				Value object = statement.getObject();
 				if (object.isBNode()) {
 					subjectStack.push((Resource) object);
 				}
 			});
 
-			dbConnection.remove(subject, null, null);
+			materialiserConnection.remove(subject, null, null);
 		}
-	}
-
-	private void addModelToConnection(Model updateModel) {
-		if (namedGraph != null && !namedGraph.isEmpty()) {
-			var namedGraphIRI = dbConnection.getValueFactory().createIRI(namedGraph);
-			dbConnection.add(updateModel, namedGraphIRI);
-		} else {
-			dbConnection.add(updateModel);
-		}
-		uncommittedMembers++;
 	}
 
 	private void commitMembers() {
-		dbConnection.commit();
+		materialiserConnection.commit();
 		uncommittedMembers = 0;
-		dbConnection.begin();
 	}
 
 	private void resetExecutor() {
@@ -145,13 +128,4 @@ public class Materialiser {
 		scheduledExecutorService.schedule(this::commitMembers, batchTimeout, TimeUnit.MILLISECONDS);
 	}
 
-	private RepositoryConnection initRepositoryConnection(Repository repository) {
-		final RepositoryConnection connection = repository instanceof HTTPRepository
-				? new CustomHTTPRepositoryConnection(repository)
-				: repository.getConnection();
-
-		connection.begin(IsolationLevels.READ_UNCOMMITTED);
-
-		return connection;
-	}
 }

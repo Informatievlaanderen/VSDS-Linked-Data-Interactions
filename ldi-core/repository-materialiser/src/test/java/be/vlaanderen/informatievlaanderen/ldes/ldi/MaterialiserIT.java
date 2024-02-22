@@ -1,12 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MaterialiserConnection;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.repository.manager.LocalRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
@@ -37,8 +37,6 @@ class MaterialiserIT {
 
 	private static RepositoryManager subject;
 	private static Materialiser materialiser;
-	private static RepositoryConnection connection;
-
 	@TempDir
 	File dataDir;
 
@@ -56,7 +54,6 @@ class MaterialiserIT {
 				new RepositoryConfig(LOCAL_REPOSITORY_ID, new SailRepositoryConfig(new MemoryStoreConfig(true))));
 
 		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, NAMED_GRAPH, BATCH_SIZE, BATCH_TIMEOUT);
-		connection = materialiser.dbConnection;
 	}
 
 	@AfterEach
@@ -85,7 +82,8 @@ class MaterialiserIT {
 
 		materialiser.deleteEntitiesFromRepo(entityIds);
 
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+		List<Statement> statements = materialiser.getMaterialiserConnection()
+				.getStatements(null, null, null).stream().toList();
 
 		assertThat(statements)
 				.containsExactlyInAnyOrderElementsOf(updateModel2)
@@ -102,7 +100,8 @@ class MaterialiserIT {
 				.map(statement -> ModelFactory.createDefaultModel().add(statement))
 				.forEach(materialiser::process);
 
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+		List<Statement> statements = materialiser.getMaterialiserConnection()
+				.getStatements(null, null, null).stream().toList();
 
 		assertThat(testModelInStatements(updateModel, statements)).isFalse();
 		assertThat(testModelInStatements(changedModel, statements)).isTrue();
@@ -122,7 +121,8 @@ class MaterialiserIT {
 			assertThat(e).hasCauseInstanceOf(NullPointerException.class);
 		}
 
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+		List<Statement> statements = materialiser.getMaterialiserConnection()
+				.getStatements(null, null, null).stream().toList();
 
 		assertThat(statements)
 				.hasSize(4)
@@ -131,6 +131,7 @@ class MaterialiserIT {
 	}
 
 	void populateAndCheckRepository(List<String> files) throws IOException {
+		final MaterialiserConnection connection = materialiser.getMaterialiserConnection();
 		List<Model> models = new ArrayList<>();
 		for (String testFile : files) {
 			var model = Rio.parse(new FileInputStream(testFile), "", RDFFormat.NQUADS);
@@ -138,7 +139,6 @@ class MaterialiserIT {
 			models.add(model);
 		}
 		connection.commit();
-		connection.begin();
 
 		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
 
