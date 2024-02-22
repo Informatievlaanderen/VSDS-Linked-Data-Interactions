@@ -25,13 +25,13 @@ is added as a header to the message with key "contentType".
 ## Example
 
 ```yaml
-      input:
-        name: Ldio:AmqpOut
-        config:
-          remote-url: amqp://localhost:61616
-          username: artemis
-          password: artemis
-          queue: example
-          rdf-writer:
-            content-type: application/n-quads
+      outputs:
+        - name: Ldio:AmqpOut
+          config:
+            remote-url: amqp://localhost:61616
+            username: artemis
+            password: artemis
+            queue: example
+            rdf-writer:
+              content-type: application/n-quads
 ```
