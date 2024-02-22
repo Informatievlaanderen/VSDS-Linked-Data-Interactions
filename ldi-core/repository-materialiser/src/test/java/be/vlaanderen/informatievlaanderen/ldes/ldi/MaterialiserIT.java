@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
@@ -30,8 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MaterialiserIT {
 	private static final String LOCAL_REPOSITORY_ID = "test";
 	private static final String NAMED_GRAPH = "";
-	private static final int BATCH_SIZE = 1;
-	private static final int BATCH_TIMEOUT = 10;
+	private static final int BATCH_SIZE = 2;
+	private static final int BATCH_TIMEOUT = 120000;
 
 	private static RepositoryManager subject;
 	private static Materialiser materialiser;
@@ -96,12 +98,36 @@ class MaterialiserIT {
 		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
 		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		materialiser.process(RDFParser.source(CHANGED_FILE).toModel());
+		RDFParser.source(CHANGED_FILE).toModel().listStatements().toList().stream()
+				.map(statement -> ModelFactory.createDefaultModel().add(statement))
+				.forEach(materialiser::process);
 
 		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
 
 		assertThat(testModelInStatements(updateModel, statements)).isFalse();
 		assertThat(testModelInStatements(changedModel, statements)).isTrue();
+	}
+
+	@Test
+	void when_ErrorOccurs_then_ChangesAreRolledBack() throws IOException {
+		populateAndCheckRepository(List.of(TEST_FILES));
+		org.apache.jena.rdf.model.Model jenaModel = ModelFactory.createDefaultModel().add(
+				RDFParser.source(CHANGED_FILE).toModel().listStatements()
+		);
+
+		materialiser.process(jenaModel);
+		try {
+			materialiser.process(null);
+		} catch (MaterialisationFailedException e) {
+			assertThat(e).hasCauseInstanceOf(NullPointerException.class);
+		}
+
+		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+
+		assertThat(statements)
+				.hasSize(4)
+				.noneMatch(statement -> statement.getObject().stringValue().equals("Changed"));
+
 	}
 
 	void populateAndCheckRepository(List<String> files) throws IOException {
@@ -111,6 +137,8 @@ class MaterialiserIT {
 			connection.add(model);
 			models.add(model);
 		}
+		connection.commit();
+		connection.begin();
 
 		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
 

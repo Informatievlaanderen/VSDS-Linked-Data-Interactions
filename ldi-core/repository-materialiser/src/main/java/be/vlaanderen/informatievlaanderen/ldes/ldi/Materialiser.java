@@ -3,7 +3,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.JenaToRDF4JConverter;
 import org.eclipse.rdf4j.common.transaction.IsolationLevels;
-import org.eclipse.rdf4j.model.*;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.base.AbstractIRI;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
@@ -12,7 +15,10 @@ import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +65,7 @@ public class Materialiser {
 	}
 
 	public void shutdown() {
-		if(dbConnection.isActive()) {
+		if (dbConnection.isActive()) {
 			dbConnection.commit();
 		}
 		dbConnection.close();
@@ -87,7 +93,7 @@ public class Materialiser {
 	/**
 	 * Delete an entity, including its blank nodes, from a repository.
 	 *
-	 * @param entityIds  The subjects of the entities to delete.
+	 * @param entityIds The subjects of the entities to delete.
 	 */
 	protected void deleteEntitiesFromRepo(Set<Resource> entityIds) {
 		Deque<Resource> subjectStack = new ArrayDeque<>();
@@ -144,8 +150,7 @@ public class Materialiser {
 				? new CustomHTTPRepositoryConnection(repository)
 				: repository.getConnection();
 
-		connection.setIsolationLevel(IsolationLevels.NONE);
-		connection.begin();
+		connection.begin(IsolationLevels.READ_UNCOMMITTED);
 
 		return connection;
 	}
