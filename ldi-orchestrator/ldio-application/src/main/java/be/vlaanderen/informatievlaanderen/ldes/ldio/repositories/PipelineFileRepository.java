@@ -20,9 +20,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,14 +56,18 @@ public class PipelineFileRepository implements PipelineRepository {
 					.filter(path -> !Files.isDirectory(path))
 					.filter(path -> path.toFile().getName().endsWith(EXTENSION_YML)
 							|| path.toFile().getName().endsWith(EXTENSION_YAML))
-					.collect(Collectors.toMap(Path::toFile, path -> {
-						try (Stream<String> content = Files.lines(path)) {
-							var json = content.collect(Collectors.joining("\n"));
-							return reader.readValue(json, PipelineConfigTO.class);
-						} catch (IOException e) {
-							throw new PipelineParsingException(path.getFileName().toString());
+					.map(path -> {
+						try {
+							return Map.of(path.toFile(), readConfigFile(path));
+						} catch (PipelineParsingException e) {
+							log.error(e.getMessage());
+							return null;
 						}
-					}));
+					})
+					.filter(Objects::nonNull)
+					.map(Map::entrySet)
+					.flatMap(Collection::stream)
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
@@ -128,7 +130,16 @@ public class PipelineFileRepository implements PipelineRepository {
 		return activePipelines.containsKey(pipeline);
 	}
 
-	public String fileName(String pipeline) {
+	protected PipelineConfigTO readConfigFile(Path path) throws PipelineParsingException {
+		try (Stream<String> content = Files.lines(path)) {
+			var json = content.collect(Collectors.joining("\n"));
+			return reader.readValue(json, PipelineConfigTO.class);
+		} catch (IOException e) {
+			throw new PipelineParsingException(path.getFileName().toString());
+		}
+	}
+
+	private String fileName(String pipeline) {
 		return "%s%s".formatted(pipeline, EXTENSION_YML);
 	}
 

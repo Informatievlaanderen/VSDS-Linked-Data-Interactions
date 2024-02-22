@@ -3,11 +3,14 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.repositories;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineParsingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.InputComponentDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PipelineFileRepositoryTest {
 	private final String existingPipeline = "valid-pipeline";
 	private final String existingPipelineFile = "valid.yml";
-	PipelineFileRepository repository;
+	private PipelineFileRepository repository;
 
 	@BeforeEach
 	void setUp() {
@@ -81,7 +84,7 @@ class PipelineFileRepositoryTest {
 		assertTrue(repository.exists(existingPipeline));
 	}
 
-	@Test()
+	@Test
 	void saveExistingFile() {
 		var storedPipeline = repository.getStoredPipelines()
 				.entrySet()
@@ -92,5 +95,12 @@ class PipelineFileRepositoryTest {
 		// Init pipeline
 		repository.save(storedPipeline.getValue().toPipelineConfig(), storedPipeline.getKey());
 		assertThrows(PipelineAlreadyExistsException.class, () -> repository.save(storedPipeline.getValue().toPipelineConfig()));
+	}
+
+	@Test
+	void parsingError() {
+		Path invalidFile = new File("src/test/resources/repository/invalid.yml").toPath();
+
+		assertThrows(PipelineParsingException.class, () -> repository.readConfigFile(invalidFile));
 	}
 }
