@@ -1,125 +1,172 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.eclipse.rdf4j.common.transaction.IsolationLevels;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.config.RepositoryConfig;
-import org.eclipse.rdf4j.repository.manager.LocalRepositoryManager;
+import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
-import org.eclipse.rdf4j.repository.sail.config.SailRepositoryConfig;
+import org.eclipse.rdf4j.repository.sparql.federation.CollectionIteration;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
-import org.eclipse.rdf4j.sail.memory.config.MemoryStoreConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class MaterialiserTest {
-	private static final String LOCAL_SERVER_URL = "http://localhost:8080/rdf4j-server";
-	private static final String LOCAL_REPOSITORY_ID = "test";
-	private static RepositoryManager subject;
-	private static Materialiser materialiser;
-	private static RepositoryConnection connection;
-
-	@TempDir
-	File dataDir;
-
-	private static final String[] TEST_FILES = new String[] {
+	private static final String[] TEST_FILES = new String[]{
 			"src/test/resources/people_data_01.nq",
-			"src/test/resources/people_data_02.nq" };
+			"src/test/resources/people_data_02.nq"};
 	private static final String CHANGED_FILE = "src/test/resources/people_data_03.nq";
 
+	private static final String REPOSITORY_ID = "repo-id";
+	private static final int BATCH_TIMEOUT = 2000;
+	@Mock
+	private RepositoryConnection connection;
+	@Mock
+	private RepositoryManager repositoryManager;
+	@Mock
+	private Repository repository;
+	private Materialiser materialiser;
+
+
 	@BeforeEach
-	public void setUp() {
-		subject = new LocalRepositoryManager(dataDir);
-		subject.init();
-
-		subject.addRepositoryConfig(
-				new RepositoryConfig(LOCAL_REPOSITORY_ID, new SailRepositoryConfig(new MemoryStoreConfig(true))));
-		connection = subject.getRepository(LOCAL_REPOSITORY_ID).getConnection();
-
-		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, "", 1, 10);
+	void setUp() {
+		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+		when(repository.getConnection()).thenReturn(connection);
 	}
 
 	@AfterEach
-	public void tearDown() throws Exception {
-		connection.close();
-		subject.shutDown();
+	void tearDown() {
+		materialiser.shutdown();
 	}
 
-	@Test
-	void when_DataPresent_Then_GetEntityIds() throws Exception {
-		var updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
+	@Nested
+	class BatchSizeOne {
+		private static final int BATCH_SIZE = 1;
 
-		Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
-
-		assertEquals(2, entityIds.size(), "Expected all subjects from test data");
-
-	}
-
-	@Test
-	void when_DeleteEntities_Then_EntitiesRemovedFromStore() throws Exception {
-		populateAndCheckRepository(List.of(TEST_FILES));
-		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
-		Model updateModel2 = Rio.parse(new FileInputStream(TEST_FILES[1]), "", RDFFormat.NQUADS);
-		Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
-
-		Materialiser.deleteEntitiesFromRepo(entityIds, connection);
-
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
-		statements.forEach(statement -> assertTrue(updateModel2.contains(statement)));
-		statements.forEach(statement -> assertFalse(updateModel.contains(statement)));
-	}
-
-	@Test
-	void when_UpdateEntities_Then_OldTriplesRemoved() throws Exception {
-		populateAndCheckRepository(List.of(TEST_FILES));
-		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
-		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
-
-		materialiser.process(RDFParser.source(CHANGED_FILE).toModel());
-
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
-		assertTrue(testModelInStatements(changedModel, statements));
-		assertFalse(testModelInStatements(updateModel, statements));
-	}
-
-	void populateAndCheckRepository(List<String> files) throws IOException {
-		List<Model> models = new ArrayList<>();
-		for (String testFile : files) {
-			var model = Rio.parse(new FileInputStream(testFile), "", RDFFormat.NQUADS);
-			connection.add(model);
-			models.add(model);
+		@BeforeEach
+		void setUp() {
+			materialiser = new Materialiser(repositoryManager, REPOSITORY_ID, "", BATCH_SIZE, BATCH_TIMEOUT);
 		}
 
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+		@Test
+		void when_DataPresent_Then_GetEntityIds() throws Exception {
+			var updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
 
-		for (Model testModel : models) {
-			assertTrue(testModelInStatements(testModel, statements));
+			Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
+
+			assertThat(entityIds)
+					.as("Expected all subjects from test data")
+					.hasSize(2);
+			verify(connection).begin();
+			verify(connection).setIsolationLevel(IsolationLevels.NONE);
+			verifyNoMoreInteractions(connection);
+		}
+
+
+		@Test
+		void when_DeleteEntities_Then_EntitiesRemovedFromStore() throws Exception {
+			Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
+			when(connection.getStatements(any(), isNull(), isNull()))
+					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
+			Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
+
+			materialiser.deleteEntitiesFromRepo(entityIds);
+
+			Stream.of("http://somewhere/SarahJones/", "http://somewhere/MattJones/")
+					.map(subject -> SimpleValueFactory.getInstance().createIRI(subject))
+					.forEach(subjectIri -> verify(connection).remove(subjectIri, null, null));
+		}
+
+		@Test
+		void when_UpdateEntities_Then_OldTriplesRemoved() throws Exception {
+			when(connection.getStatements(any(), isNull(), isNull()))
+					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
+			Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
+
+			materialiser.process(RDFParser.source(CHANGED_FILE).toModel());
+
+			verify(connection).remove(SimpleValueFactory.getInstance().createIRI("http://somewhere/DickJones/"), null, null);
+			verify(connection).remove(SimpleValueFactory.getInstance().createIRI("http://somewhere/SarahJones/"), null, null);
+			verify(connection).add(changedModel);
+			verify(connection).commit();
 		}
 	}
 
-	private boolean testModelInStatements(Model model, List<Statement> statements) {
-		AtomicBoolean result = new AtomicBoolean(true);
-		model.getStatements(null, null, null).forEach(statement -> {
-			if (!statements.contains(statement)) {
-				result.set(false);
-			}
-		});
-		return result.get();
+	@Nested
+	class BatchSizeFive {
+		private static final int BATCH_SIZE = 5;
+
+		@BeforeEach
+		void setUp() {
+			materialiser = new Materialiser(repositoryManager, REPOSITORY_ID, "", BATCH_SIZE, BATCH_TIMEOUT);
+		}
+
+		@Test
+		void when_BatchSizeReachedTwice_then_CommitTwice() {
+			when(connection.getStatements(any(), isNull(), isNull()))
+					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
+
+			RDFParser.source("10_people_data.nq").lang(Lang.NQ).toModel()
+					.listStatements()
+					.toList()
+					.stream()
+					.map(statement -> ModelFactory.createDefaultModel().add(statement))
+					.forEach(materialiser::process);
+
+
+			verify(connection, times(10)).remove(any(Resource.class), isNull(), isNull());
+			verify(connection, times(10)).add(any(Model.class));
+			verify(connection, times(2)).commit();
+		}
+
 	}
 
+	@Nested
+	class BatchSizeFifteen {
+		private static final int BATCH_SIZE = 15;
+
+		@BeforeEach
+		void setUp() {
+			materialiser = new Materialiser(repositoryManager, REPOSITORY_ID, "", BATCH_SIZE, BATCH_TIMEOUT);
+		}
+
+		@Test
+		void when_BatchSizeIsNotReached_then_CommitAfterBatchTimeout() {
+			when(connection.getStatements(any(), isNull(), isNull()))
+					.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
+
+			RDFParser.source("10_people_data.nq").lang(Lang.NQ).toModel()
+					.listStatements()
+					.toList()
+					.stream()
+					.map(statement -> ModelFactory.createDefaultModel().add(statement))
+					.forEach(materialiser::process);
+
+
+			verify(connection, times(10)).remove(any(Resource.class), isNull(), isNull());
+			verify(connection, times(10)).add(any(Model.class));
+			verify(connection, timeout(BATCH_TIMEOUT)).commit();
+		}
+
+	}
 }

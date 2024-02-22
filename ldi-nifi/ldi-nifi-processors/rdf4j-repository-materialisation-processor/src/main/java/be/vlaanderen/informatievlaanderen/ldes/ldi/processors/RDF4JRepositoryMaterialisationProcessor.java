@@ -61,7 +61,9 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		if (materialiser == null) {
 			materialiser = new Materialiser(context.getProperty(SPARQL_HOST).getValue(),
 					context.getProperty(REPOSITORY_ID).getValue(),
-					context.getProperty(NAMED_GRAPH).getValue());
+					context.getProperty(NAMED_GRAPH).getValue(),
+					context.getProperty(BATCH_SIZE).asInteger(),
+					context.getProperty(BATCH_TIMEOUT).asInteger());
 		}
 
 		jenaContext = JenaContextProvider.create().getContext();

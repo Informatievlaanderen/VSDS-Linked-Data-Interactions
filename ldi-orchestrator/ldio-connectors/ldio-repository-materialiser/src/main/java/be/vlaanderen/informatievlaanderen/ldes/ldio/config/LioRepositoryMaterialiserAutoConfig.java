@@ -21,7 +21,7 @@ public class LioRepositoryMaterialiserAutoConfig {
 	public static class LdiRepoMaterialiserProcessorConfigurator implements LdioOutputConfigurator {
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
-			return new LdioRepositoryMaterialiser(config);
+			return new LdioRepositoryMaterialiser(new LdioRepositoryMaterialiserProperties(config));
 		}
 	}
 }
