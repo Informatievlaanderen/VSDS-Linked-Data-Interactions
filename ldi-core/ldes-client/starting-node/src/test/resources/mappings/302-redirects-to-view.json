@@ -4,7 +4,7 @@
     "url": "/302-redirects-to-view",
     "headers": {
       "Accept": {
-        "contains": "application/ld+json"
+        "contains": "application/n-quads"
       }
     }
   },

@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/200-treenode-is-not-view",
+    "url": "/200-first-4-relations",
     "headers": {
       "Accept": {
         "contains": "text/turtle"
@@ -10,9 +10,9 @@
   },
   "response": {
     "status": 200,
-    "bodyFileName": "tree-node-is-not-a-view.ttl",
+    "bodyFileName": "4-relations.ttl",
     "headers": {
-      "Content-Type": "text/turtle"
+      "Content-Type": "text/turtle;charset=UTF-8"
     }
   }
 }

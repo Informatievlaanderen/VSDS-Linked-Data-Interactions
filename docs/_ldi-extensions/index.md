@@ -11,4 +11,4 @@ the [LDI NiFi Processors](./../_ldi-nifi).
 
 This is an overview of the LDI Extensions
 
-* [LDI LDES Discoverer](./ldes-discoverer.md)
+* [LDI LDES Discoverer](./ldes-discoverer)
