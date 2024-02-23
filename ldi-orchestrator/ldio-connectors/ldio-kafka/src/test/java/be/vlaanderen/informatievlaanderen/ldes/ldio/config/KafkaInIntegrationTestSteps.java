@@ -13,9 +13,9 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,8 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class KafkaInIntegrationTestSteps {
+public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
+	private final ApplicationEventPublisher applicationEventPublisher = applicationEventPublisher();
 	private Model inputModel;
 
 	private String contentType;
@@ -58,9 +59,8 @@ public class KafkaInIntegrationTestSteps {
 			return Stream.of(toModel(content));
 		};
 		var ldioKafkaInConfigurator = new LdioKafkaInAutoConfig().ldioConfigurator(null);
-		var ldioKafkaInContainer = (KafkaMessageListenerContainer<Object, Object>) ldioKafkaInConfigurator
-				.configure(adapter, componentExecutor, properties);
-		ldioKafkaInContainer.start();
+		var ldioKafkaInContainer = ldioKafkaInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
+//		ldioKafkaInContainer.start();
 	}
 
 	private Model toModel(LdiAdapter.Content content) {

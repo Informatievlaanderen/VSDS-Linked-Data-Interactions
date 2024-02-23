@@ -29,9 +29,15 @@ public class LdioHttpInController {
 		var contentType = contentTypeHeader.split(";")[0];
 		logIncomingRequest(contentType, contentLength, pipeline);
 
-		ofNullable(httpInProcesses.get(pipeline))
-				.orElseThrow(() -> new PipelineDoesNotExistException(pipeline))
-				.processInput(content, contentType);
+
+		LdioHttpInProcess inputProcess = ofNullable(httpInProcesses.get(pipeline))
+				.orElseThrow(() -> new PipelineDoesNotExistException(pipeline));
+		if (inputProcess.isHalted()) {
+			return ResponseEntity.status(503).body("This LDIO pipeline is currently paused.");
+		} else {
+			inputProcess.processInput(content, contentType);
+		}
+
 		return ResponseEntity.accepted().build();
 	}
 

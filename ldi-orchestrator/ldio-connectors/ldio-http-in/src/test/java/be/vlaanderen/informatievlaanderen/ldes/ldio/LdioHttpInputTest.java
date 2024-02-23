@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInAutoConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInProcess.NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RESUMING;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,10 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LdioHttpInputTest {
 	private final String endpoint = "endpoint";
 	@Autowired
-	ApplicationEventPublisher eventPublisher;
+	private ApplicationEventPublisher eventPublisher;
 	@Autowired
 	private MockMvc mockMvc;
 	private LdiAdapter adapter;
+	private LdioInput input;
 
 	@BeforeEach
 	void setup() {
@@ -39,18 +43,29 @@ class LdioHttpInputTest {
 
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
-		new LdioHttpInAutoConfig.LdioHttpInConfigurator(eventPublisher, null)
-				.configure(adapter, executor, new ComponentProperties(endpoint, NAME));
+		input = (LdioInput) new LdioHttpInAutoConfig.LdioHttpInConfigurator(eventPublisher, null)
+				.configure(adapter, executor, eventPublisher, new ComponentProperties(endpoint, NAME));
 	}
 
 	@Test
 	void testHttpEndpoint() throws Exception {
 		String content = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 		String contentType = "application/n-quads";
+		input.updateStatus(RESUMING);
 
 		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().isAccepted());
 
 		verify(adapter).apply(LdiAdapter.Content.of(content, contentType));
+	}
+	@Test
+	void when_PipelineIsHalted_Then_MessageIsNotProcessed() throws Exception {
+		String content = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
+		String contentType = "application/n-quads";
+		input.updateStatus(HALTED);
+
+		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().is(503));
+
+		verifyNoInteractions(adapter);
 	}
 
 }

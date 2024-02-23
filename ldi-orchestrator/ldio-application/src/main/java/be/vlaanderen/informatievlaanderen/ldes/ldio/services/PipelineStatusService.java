@@ -1,12 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.components.LdioSender;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.SenderCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -16,21 +16,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
 
 @Component
 public class PipelineStatusService {
 	private final Logger logger = LoggerFactory.getLogger(PipelineStatusService.class);
-	private final ApplicationEventPublisher applicationEventPublisher;
 	private final Map<String, SavedPipeline> savedPipelines;
 
-	public PipelineStatusService(ApplicationEventPublisher applicationEventPublisher) {
-		this.applicationEventPublisher = applicationEventPublisher;
+	public PipelineStatusService() {
 		this.savedPipelines = new HashMap<>();
 	}
 
 	public PipelineStatus getPipelineStatus(String pipelineName) {
 		return Optional.ofNullable(savedPipelines.get(pipelineName))
 				.map(SavedPipeline::getStatus)
+				.orElseThrow(() -> new IllegalArgumentException("No pipeline defined for name " + pipelineName));
+	}
+
+	public StatusChangeSource getPipelineStatusChangeSource(String pipelineName) {
+		return Optional.ofNullable(savedPipelines.get(pipelineName))
+				.map(SavedPipeline::getLastStatusChangeSource)
 				.orElseThrow(() -> new IllegalArgumentException("No pipeline defined for name " + pipelineName));
 	}
 
@@ -41,12 +46,12 @@ public class PipelineStatusService {
 			logger.warn("Non initialized pipeline received status update: {}", statusEvent.pipelineId());
 			return;
 		}
-		currentSavedPipeline.updateStatus(statusEvent.status());
+		currentSavedPipeline.updateStatus(statusEvent.status(), statusEvent.statusChangeSource());
 	}
 
 	@EventListener
-	public void handleSenderCreated(SenderCreatedEvent event) {
-		savedPipelines.put(event.pipelineName(), new SavedPipeline(event.ldioSender(), RUNNING));
+	public void handlePipelineCreated(InputCreatedEvent event) {
+		savedPipelines.put(event.pipelineName(), new SavedPipeline(event.ldioInput(), RUNNING));
 	}
 
 	public PipelineStatus resumeHaltedPipeline(String pipelineId) {
@@ -54,12 +59,15 @@ public class PipelineStatusService {
 
 		return switch (pipelineStatus) {
 			case RUNNING -> RUNNING;
+			case STARTING -> STARTING;
+			case INIT -> INIT;
 			case HALTED -> {
-				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineId, RESUMING));
-				savedPipelines.get(pipelineId).getLdioSender().updateStatus(RESUMING);
+				savedPipelines.get(pipelineId).getLdioInput().updateStatus(RESUMING);
 				yield RESUMING;
 			}
 			case RESUMING -> RESUMING;
+			case STOPPED -> STOPPED;
+			case STOPPING -> STOPPING;
 		};
 
 
@@ -70,14 +78,23 @@ public class PipelineStatusService {
 
 		return switch (pipelineStatus) {
 			case RUNNING, RESUMING -> {
-				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineId, HALTED));
-				savedPipelines.get(pipelineId).getLdioSender().updateStatus(HALTED);
+				savedPipelines.get(pipelineId).getLdioInput().updateStatus(HALTED);
 				yield HALTED;
 			}
 			case HALTED -> HALTED;
+			case INIT -> INIT;
+			case STARTING -> STARTING;
+			case STOPPED -> STOPPED;
+			case STOPPING -> STOPPING;
 		};
 
 
+	}
+
+	public PipelineStatus stopPipeline(String pipelineId) {
+		savedPipelines.get(pipelineId).getLdioInput().updateStatus(STOPPING);
+		//pick in on dynamic pipeline removal
+		return STOPPED;
 	}
 
 	public Map<String, PipelineStatus> getPipelineStatusOverview() {
@@ -87,24 +104,31 @@ public class PipelineStatusService {
 	}
 
 	static class SavedPipeline {
-		private final LdioSender ldioSender;
+		private final LdioInput ldioInput;
 		private PipelineStatus status;
+		private StatusChangeSource lastStatusChangeSource;
 
-		public SavedPipeline(LdioSender ldioSender, PipelineStatus status) {
-			this.ldioSender = ldioSender;
+		public SavedPipeline(LdioInput ldioInput, PipelineStatus status) {
+			this.ldioInput = ldioInput;
 			this.status = status;
+			lastStatusChangeSource = AUTO;
 		}
 
-		public void updateStatus(PipelineStatus status) {
+		public void updateStatus(PipelineStatus status, StatusChangeSource statusChangeSource) {
 			this.status = status;
+			this.lastStatusChangeSource = statusChangeSource;
 		}
 
 		public PipelineStatus getStatus() {
 			return status;
 		}
 
-		public LdioSender getLdioSender() {
-			return ldioSender;
+		public LdioInput getLdioInput() {
+			return ldioInput;
+		}
+
+		public StatusChangeSource getLastStatusChangeSource() {
+			return lastStatusChangeSource;
 		}
 	}
 }

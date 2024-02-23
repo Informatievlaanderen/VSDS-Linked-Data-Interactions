@@ -26,7 +26,7 @@ public class PipelineStatusController {
 		return pipelineStatusService.getPipelineStatus(pipelineId);
 	}
 
-	@PostMapping(path = "{pipelineId}/halt")
+	@PostMapping(path = {"{pipelineId}/halt", "{pipelineId}/siesta"})
 	public PipelineStatus haltPipeline(@PathVariable("pipelineId") String pipelineId) {
 		return pipelineStatusService.haltRunningPipeline(pipelineId);
 	}
@@ -34,6 +34,11 @@ public class PipelineStatusController {
 	@PostMapping(path = "{pipelineId}/resume")
 	public PipelineStatus resumePipeline(@PathVariable("pipelineId") String pipelineId) {
 		return pipelineStatusService.resumeHaltedPipeline(pipelineId);
+	}
+
+	@PostMapping(path = "{pipelineId}/stop")
+	public PipelineStatus stopPipeline(@PathVariable("pipelineId") String pipelineId) {
+		return pipelineStatusService.stopPipeline(pipelineId);
 	}
 
 }

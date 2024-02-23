@@ -3,6 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,8 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorCo
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdioAmqpInAutoConfigTest {
+	@Autowired
+	ApplicationEventPublisher applicationEventPublisher;
 	@Test
 	void shouldThrowExceptionWhenInvalidUrlConfig() {
 		var configurator = new LdioAmqpInAutoConfig.LdioJmsInConfigurator(
@@ -23,7 +27,7 @@ class LdioAmqpInAutoConfigTest {
 		ComponentProperties componentProperties = new ComponentProperties("pipelineName", NAME, config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-				() -> configurator.configure((content) -> Stream.of(), null, componentProperties));
+				() -> configurator.configure((content) -> Stream.of(), null, applicationEventPublisher, componentProperties));
 
 		assertEquals("Property remote-url is not in format of either " +
 		             "'amqp[s]://hostname:port[?option=value[&option2=value...]]' or " +
@@ -38,7 +42,7 @@ class LdioAmqpInAutoConfigTest {
 		Map<String, String> config = getBasicConfig();
 
 		assertDoesNotThrow(
-				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties("pipelineName", NAME, config)));
+				() -> configurator.configure((content) -> Stream.of(), null, applicationEventPublisher, new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 	private Map<String, String> getBasicConfig() {

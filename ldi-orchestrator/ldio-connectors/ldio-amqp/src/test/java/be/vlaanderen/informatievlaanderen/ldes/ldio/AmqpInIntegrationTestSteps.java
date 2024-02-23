@@ -16,6 +16,8 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RDFWriter;
+import org.springframework.context.ApplicationEventPublisher;
+import org.testcontainers.activemq.ArtemisContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +64,7 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 			return Stream.of(toModel(content));
 		};
 		var ldioJmsInConfigurator = new LdioAmqpInAutoConfig().ldioConfigurator(ldioAmqpInRegistrator, null);
-		ldioJmsInConfigurator.configure(adapter, componentExecutor, properties);
+		ldioJmsInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
 	}
 
 	@And("^I send a model from (.*) and (.*) to broker using the amqp producer")

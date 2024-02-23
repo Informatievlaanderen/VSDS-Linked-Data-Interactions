@@ -32,13 +32,15 @@ class LdioLdesClientConnectorTest {
 	private final String endpoint = "endpoint";
 	private TransferService transferService;
 	private TokenService tokenService;
+	private LdioLdesClient ldesClient;
 
 	@BeforeEach
 	void setup() {
 		transferService = mock(TransferService.class);
 		tokenService = mock(TokenService.class);
+		ldesClient = mock(LdioLdesClient.class);
 
-		eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(endpoint, new LdioLdesClientConnectorApi(transferService, tokenService)));
+		eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(endpoint, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
 	}
 
 	@Test

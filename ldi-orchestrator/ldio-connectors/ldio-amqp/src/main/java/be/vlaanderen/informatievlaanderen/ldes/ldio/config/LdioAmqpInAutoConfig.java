@@ -4,15 +4,18 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 @Configuration
 public class LdioAmqpInAutoConfig {
@@ -36,7 +39,7 @@ public class LdioAmqpInAutoConfig {
 		}
 
 		@Override
-		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties config) {
+		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
 			String pipelineName = config.getPipelineName();
 			verifyAdapterPresent(pipelineName, adapter);
 
@@ -44,8 +47,10 @@ public class LdioAmqpInAutoConfig {
 			JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),
 					remoteUrl, config.getProperty(QUEUE));
 
-			return new LdioAmqpIn(pipelineName, executor, adapter, getContentType(config), jmsConfig, ldioAmqpInRegistrator, observationRegistry
-			);
+			LdioAmqpIn ldioIn = new LdioAmqpIn(pipelineName, executor, adapter, getContentType(config), jmsConfig, ldioAmqpInRegistrator,
+					observationRegistry, applicationEventPublisher);
+			ldioIn.updateStatus(STARTING);
+			return ldioIn;
 		}
 
 		private String getContentType(ComponentProperties config) {

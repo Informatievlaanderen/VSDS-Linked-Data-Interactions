@@ -14,6 +14,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import io.micrometer.observation.ObservationRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -32,8 +33,8 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	private static final String CONTENT_TYPE = "Content-Type";
 
 	public LdioHttpInputPoller(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry, List<String> endpoints,
-	                           boolean continueOnFail, RequestExecutor requestExecutor) {
-		super(NAME, pipelineName, executor, adapter, observationRegistry);
+							   boolean continueOnFail, RequestExecutor requestExecutor, ApplicationEventPublisher applicationEventPublisher) {
+		super(NAME, pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);
 		this.requestExecutor = requestExecutor;
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;
@@ -55,7 +56,9 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	public void run() {
 		requests.forEach(request -> {
 			try {
-				executeRequest(request);
+				if (!isHalted()) {
+					executeRequest(request);
+				}
 			} catch (Exception e) {
 				if (!continueOnFail) {
 					throw e;
@@ -84,4 +87,14 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 			throw new UnsuccesfulPollingException(response.getHttpStatus(), request.getUrl());
 		}
 	}
+
+	@Override
+	protected void resume() {
+		//Handled by status check
+	}
+
+	@Override
+	protected void pause() {
+		//Handled by status check
+    }
 }

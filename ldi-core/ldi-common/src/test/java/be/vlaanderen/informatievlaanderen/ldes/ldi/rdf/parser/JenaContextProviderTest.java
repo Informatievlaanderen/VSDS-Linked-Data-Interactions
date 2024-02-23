@@ -1,9 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser;
 
+import org.junit.jupiter.api.Test;
+
 import com.apicatalog.jsonld.JsonLdOptions;
 import com.apicatalog.jsonld.context.cache.Cache;
 import com.apicatalog.jsonld.document.Document;
-import org.junit.jupiter.api.Test;
 
 import static org.apache.jena.riot.lang.LangJSONLD11.JSONLD_OPTIONS;
 import static org.assertj.core.api.Assertions.assertThat;

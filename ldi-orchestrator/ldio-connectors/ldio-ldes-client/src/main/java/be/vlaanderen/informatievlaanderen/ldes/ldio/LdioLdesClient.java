@@ -7,6 +7,7 @@ import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.concurrent.ExecutorService;
 
@@ -24,8 +25,9 @@ public class LdioLdesClient extends LdioInput {
 	public LdioLdesClient(String pipelineName,
 						  ComponentExecutor componentExecutor,
 						  ObservationRegistry observationRegistry,
-						  MemberSupplier memberSupplier) {
-		super(NAME, pipelineName, componentExecutor, null, observationRegistry);
+						  MemberSupplier memberSupplier,
+						  ApplicationEventPublisher applicationEventPublisher) {
+		super(NAME, pipelineName, componentExecutor, null, observationRegistry, applicationEventPublisher);
 		this.memberSupplier = memberSupplier;
 	}
 
@@ -35,9 +37,17 @@ public class LdioLdesClient extends LdioInput {
 		executorService.submit(this::run);
 	}
 
-	private void run() {
+	private synchronized void run() {
 		try {
 			while (threadRunning) {
+				while (this.isHalted()) {
+					try {
+						this.wait();
+					}  catch (InterruptedException e) {
+						log.error("Thread interrupted: {}", e.getMessage());
+						Thread.currentThread().interrupt();
+					}
+				}
 				processModel(memberSupplier.get().getModel());
 			}
 		} catch (EndOfLdesException e) {
@@ -50,5 +60,15 @@ public class LdioLdesClient extends LdioInput {
 	@Override
 	public void shutdown() {
 		threadRunning = false;
+	}
+
+	@Override
+	protected synchronized void resume() {
+		this.notifyAll();
+	}
+
+	@Override
+	protected void pause() {
+		//Handled by status check
 	}
 }

@@ -8,6 +8,9 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 public class LdioArchiveFileIn extends LdioInput {
 	public static final String NAME = "Ldio:ArchiveFileIn";
@@ -15,17 +18,26 @@ public class LdioArchiveFileIn extends LdioInput {
 	private final ArchiveFileCrawler archiveFileCrawler;
 	private final Lang sourceFormat;
 
-	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ArchiveFileCrawler crawler, Lang source) {
-		super(NAME, pipelineName, executor, null, observationRegistry);
+	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher, ArchiveFileCrawler crawler, Lang source) {
+		super(NAME, pipelineName, executor, null, observationRegistry, applicationEventPublisher);
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
+		updateStatus(STARTING);
 		log.info("Starting with crawling the archive.");
 		crawlArchive();
 		log.info("Finished crawling the archive.");
 	}
 
-	public void crawlArchive() {
+	public synchronized void crawlArchive() {
 		archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
+			while (this.isHalted()) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+					log.error("Thread interrupted: {}", e.getMessage());
+                    Thread.currentThread().interrupt();
+                }
+            }
 			Model model = RDFParser.source(file).lang(sourceFormat).toModel();
 			processModel(model);
 		});
@@ -34,5 +46,14 @@ public class LdioArchiveFileIn extends LdioInput {
 	@Override
 	public void shutdown() {
 		// Implemented in other story
+	}
+	@Override
+	protected synchronized void resume() {
+		this.notifyAll();
+	}
+
+	@Override
+	protected void pause() {
+		//Handled by status check
 	}
 }

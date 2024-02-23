@@ -1,8 +1,5 @@
 package ldes.client.performance;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import ldes.client.performance.csvwriter.CsvFile;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import org.junit.jupiter.api.*;
@@ -10,6 +7,10 @@ import org.junit.jupiter.api.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 

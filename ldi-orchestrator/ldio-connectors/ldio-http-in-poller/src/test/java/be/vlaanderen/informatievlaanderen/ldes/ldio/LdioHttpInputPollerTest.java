@@ -6,9 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
-import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +16,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.support.CronTrigger;
 
 import java.time.Duration;
@@ -26,19 +25,25 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+
 import static com.github.tomakehurst.wiremock.client.CountMatchingStrategy.GREATER_THAN_OR_EQUAL;
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.after;
 
 @WireMockTest(httpPort = 10101)
 class LdioHttpInputPollerTest {
 
 	private final LdiAdapter adapter = mock(LdiAdapter.class);
 	private final ComponentExecutor executor = mock(ComponentExecutor.class);
+	@Autowired
+	ApplicationEventPublisher applicationEventPublisher;
 	private final static String pipelineName = "pipeline";
 	private static final String BASE_URL = "http://localhost:10101";
 	private static final String ENDPOINT = "/resource";
@@ -57,7 +62,7 @@ class LdioHttpInputPollerTest {
                 .thenReturn(Stream.of())
                 .thenReturn(Stream.of());
 
-		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), true, noAuthExecutor);
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), true, noAuthExecutor, applicationEventPublisher);
     }
 
 	@AfterEach
@@ -78,7 +83,7 @@ class LdioHttpInputPollerTest {
 	void whenPolling_andMissesHeader() {
 		stubFor(get(ENDPOINT).willReturn(ok().withBody(CONTENT)));
 
-		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor, applicationEventPublisher);
 		Executable polling = () -> ldioHttpInputPoller.run();
 
 		assertThrows(MissingHeaderException.class, polling);
@@ -103,7 +108,7 @@ class LdioHttpInputPollerTest {
 		String otherEndpoint = "/other-resource";
 		stubFor(get(otherEndpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT, BASE_URL + otherEndpoint),
-				true, noAuthExecutor);
+				true, noAuthExecutor, applicationEventPublisher);
 
 		ldioHttpInputPoller.run();
 
@@ -119,7 +124,7 @@ class LdioHttpInputPollerTest {
 		String otherEndpoint = "/other-endpoint";
 		stubFor(get(otherEndpoint).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + endpoint, BASE_URL + otherEndpoint),
-				true, noAuthExecutor);
+				true, noAuthExecutor, applicationEventPublisher);
 
 		ldioHttpInputPoller.schedulePoller(pollingInterval);
 
@@ -146,7 +151,7 @@ class LdioHttpInputPollerTest {
 	void when_OnContinueIsFalseAndPeriodPollingReturnsNot2xx_thenStopPolling(PollingInterval pollingInterval) {
 		stubFor(get(ENDPOINT).willReturn(forbidden()));
 
-		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor);
+		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), false, noAuthExecutor, applicationEventPublisher);
 		ldioHttpInputPoller.schedulePoller(pollingInterval);
 
 		Mockito.verify(adapter, after(4000).never()).apply(any());
@@ -157,7 +162,7 @@ class LdioHttpInputPollerTest {
 	void when_EndpointDoesNotExist_Then_NoDataIsSent() {
 		String wrongEndpoint = "/non-existing-resource";
 		ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + wrongEndpoint), true,
-				noAuthExecutor);
+				noAuthExecutor, applicationEventPublisher);
 
 		ldioHttpInputPoller.run();
 

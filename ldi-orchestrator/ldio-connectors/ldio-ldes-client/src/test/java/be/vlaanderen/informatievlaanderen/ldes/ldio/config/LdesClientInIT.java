@@ -3,6 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import org.junit.platform.suite.api.IncludeEngines;
 import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
@@ -12,4 +14,9 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 @SelectClasspathResource("features")
 @WireMockTest(httpPort = 10101)
 public class LdesClientInIT {
+    @Autowired
+    ApplicationEventPublisher applicationEventPublisher;
+    public ApplicationEventPublisher applicationEventPublisher() {
+        return applicationEventPublisher;
+    }
 }
