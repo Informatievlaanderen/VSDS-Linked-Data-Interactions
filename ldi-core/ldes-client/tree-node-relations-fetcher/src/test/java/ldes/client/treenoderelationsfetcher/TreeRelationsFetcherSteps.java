@@ -5,8 +5,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ldes.client.treenoderelationsfetcher.domain.valueobjects.TreeNodeRelation;
 import ldes.client.treenoderelationsfetcher.domain.valueobjects.TreeNodeRequest;
+import ldes.client.treenoderelationsfetcher.domain.valueobjects.TreeRelation;
 import org.apache.jena.riot.RDFLanguages;
 
 import java.util.List;
@@ -14,20 +14,20 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class TreeNodeRelationsFetcherSteps {
+public class TreeRelationsFetcherSteps {
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 	private TreeNodeRequest treeNodeRequest;
-	private TreeNodeRelationsFetcher treeNodeRelationsFetcher;
-	private List<TreeNodeRelation> treeNodeRelations;
+	private TreeRelationsFetcher treeRelationsFetcher;
+	private List<TreeRelation> treeNodeRelations;
 
 	@Given("I have a TreeRelationsFetcher")
 	public void iHaveATreeRelationsFetcher() {
-		treeNodeRelationsFetcher = new TreeNodeRelationsFetcher(requestExecutorFactory.createNoAuthExecutor());
+		treeRelationsFetcher = new TreeRelationsFetcher(requestExecutorFactory.createNoAuthExecutor());
 	}
 
 	@And("I fetch the TreeNodeRelations")
 	public void iFetchTheTreeNodeRelations() {
-		treeNodeRelations = treeNodeRelationsFetcher.fetchTreeRelations(treeNodeRequest);
+		treeNodeRelations = treeRelationsFetcher.fetchTreeRelations(treeNodeRequest);
 	}
 
 	@Then("the obtained TreeNodeRelation has {int} relations")
@@ -38,7 +38,7 @@ public class TreeNodeRelationsFetcherSteps {
 	@Then("An UnSupportedOperationException is thrown")
 	public void anUnSupportedOperationExceptionIsThrown() {
 		final String expectedErrorMessage = "Cannot handle response 404 of TreeNodeRequest TreeNodeRequest{treeNodeUrl='http://localhost:10101/404-not-found', lang=Lang:Turtle}";
-		assertThatThrownBy(() -> treeNodeRelationsFetcher.fetchTreeRelations(treeNodeRequest))
+		assertThatThrownBy(() -> treeRelationsFetcher.fetchTreeRelations(treeNodeRequest))
 				.isInstanceOf(UnsupportedOperationException.class)
 				.hasMessage(expectedErrorMessage);
 	}

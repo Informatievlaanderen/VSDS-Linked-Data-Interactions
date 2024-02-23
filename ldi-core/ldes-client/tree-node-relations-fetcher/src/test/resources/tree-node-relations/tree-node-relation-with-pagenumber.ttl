@@ -1,0 +1,10 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix terms: <http://purl.org/dc/terms/> .
+@prefix tree:  <https://w3id.org/tree#> .
+
+<https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=06>
+        rdf:type        tree:Node;
+        terms:isPartOf  <https://brugge-ldes.geomobility.eu/observations>;
+        tree:relation   [ rdf:type   tree:Relation;
+                          tree:node  <https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05&day=11&hour=06&pageNumber=1>
+                        ] .

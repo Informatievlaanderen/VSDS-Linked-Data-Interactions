@@ -1,0 +1,18 @@
+https://brugge-ldes.geomobility.eu/observations
++- https://brugge-ldes.geomobility.eu/observations/by-location
+|  +- https://brugge-ldes.geomobility.eu/observations/by-location?tile=0/0/0
+|     +- https://brugge-ldes.geomobility.eu/observations/by-location?tile=13/14/205
+|     +- https://brugge-ldes.geomobility.eu/observations/by-location?tile=13/16/215
++- https://brugge-ldes.geomobility.eu/observations/by-page
++- https://brugge-ldes.geomobility.eu/observations/by-time
+   +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2022
+   +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023
+      +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=01
+      |  +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=01&day=01
+      |  +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=01&day=06
+      |  +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=01&day=11
+      |  +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=01&day=16
+      |  +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=01&day=21
+      +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=02
+      +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=04
+      +- https://brugge-ldes.geomobility.eu/observations/by-time?year=2023&month=05

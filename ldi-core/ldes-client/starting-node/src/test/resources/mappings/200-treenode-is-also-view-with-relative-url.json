@@ -10,7 +10,7 @@
   },
   "response": {
     "status": 200,
-    "body": "{\"@context\":[{\"tree\": \"https://w3id.org/tree#\",\"view\":\"tree:view\",\"viewOf\": {\"@reverse\":\"view\",\"@type\":\"@id\"}}],\"@id\":\"?generatedAtTime=2020-12-28T09:36:09.72Z\",\"@type\":\"Node\",\"viewOf\":\"\",\"collectionInfo\":{\"@id\":\"\",\"@type\":\"EventStream\",\"shape\":\"/shape\",\"timestampPath\":\"prov:generatedAtTime\",\"versionOfPath\":\"dct:isVersionOf\"},\"https://w3id.org/tree#:relation\":[{\"https://w3id.org/tree#:node\":\"?generatedAtTime=2020-12-28T09:37:18.577Z\",\"@type\":\"https://w3id.org/tree#:GreaterThanRelation\",\"https://w3id.org/tree#:path\":\"prov:generatedAtTime\",\"https://w3id.org/tree#:value\":\"2020-12-28T09:37:18.577Z\"}]}",
+    "bodyFileName": "tree-node-is-also-view-with-relative-urls.jsonld",
     "headers": {
       "Content-Type": "application/ld+json;charset=UTF-8"
     }

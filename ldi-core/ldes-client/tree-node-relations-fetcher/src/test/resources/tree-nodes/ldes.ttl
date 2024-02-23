@@ -1,0 +1,48 @@
+@prefix by-location:                <http://localhost:10203/ldes/by-location/> .
+@prefix by-page:                    <http://localhost:10203/ldes/by-page/> .
+@prefix by-time:                    <http://localhost:10203/ldes/by-time/> .
+@prefix core:                       <http://www.w3.org/2004/02/skos/core#> .
+@prefix ldes:                       <https://w3id.org/ldes#> .
+@prefix observations:               <http://localhost:10203/ldes/> .
+@prefix prov:                       <http://www.w3.org/ns/prov#> .
+@prefix rdf:                        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:                       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix shacl:                      <http://www.w3.org/ns/shacl#> .
+@prefix terms:                      <http://purl.org/dc/terms/> .
+@prefix tree:                       <https://w3id.org/tree#> .
+@prefix vsds-verkeersmetingen:      <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#> .
+
+<http://localhost:10203/ldes>
+        rdf:type            ldes:EventStream ;
+        ldes:timestampPath  prov:generatedAtTime ;
+        ldes:versionOfPath  terms:isVersionOf ;
+        tree:shape          [ rdf:type           shacl:NodeShape ;
+                              shacl:targetClass  vsds-verkeersmetingen:Verkeerstelling
+                            ] ;
+        tree:view           observations:by-time , observations:by-page .
+
+
+by-time:description  rdf:type       tree:ViewDescription ;
+        ldes:retentionPolicy        [ rdf:type    ldes:DurationAgoPolicy ;
+                                      tree:value  "P2Y"^^<http://www.w3.org/2001/XMLSchema#duration>
+                                    ] ;
+        tree:fragmentationStrategy  ( [ rdf:type                tree:HierarchicalTimeBasedFragmentation ;
+                                        tree:fragmentationPath  "http://www.w3.org/ns/prov#generatedAtTime" ;
+                                        tree:maxGranularity     "hour"
+                                      ]
+                                    ) ;
+        tree:pageSize               "250"^^<http://www.w3.org/2001/XMLSchema#int> .
+
+observations:by-page  rdf:type  tree:Node , rdfs:Resource ;
+        tree:viewDescription  by-page:description .
+
+observations:by-time  rdf:type  tree:Node , rdfs:Resource ;
+        tree:viewDescription  by-time:description .
+
+
+by-page:description  rdf:type       tree:ViewDescription ;
+        ldes:retentionPolicy        [ rdf:type    ldes:DurationAgoPolicy ;
+                                      tree:value  "P2Y"^^<http://www.w3.org/2001/XMLSchema#duration>
+                                    ] ;
+        tree:fragmentationStrategy  () ;
+        tree:pageSize               "250"^^<http://www.w3.org/2001/XMLSchema#int> .

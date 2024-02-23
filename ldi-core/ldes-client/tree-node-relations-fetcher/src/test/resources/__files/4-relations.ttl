@@ -3,7 +3,7 @@
 @prefix terms: <http://purl.org/dc/terms/> .
 @prefix tree:  <https://w3id.org/tree#> .
 
-<http://localhost:10101/200-first-2-relations>
+<http://localhost:10101/200-first-4-relations>
         rdf:type        tree:Node ;
         terms:isPartOf  <https://brugge-ldes.geomobility.eu/observations> ;
         tree:relation   [ rdf:type    tree:InBetweenRelation ;

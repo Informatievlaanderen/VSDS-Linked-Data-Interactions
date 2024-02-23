@@ -1,5 +1,6 @@
 package ldes.client.startingtreenode;
 
+import io.cucumber.junit.CucumberOptions;
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
 import org.junit.platform.suite.api.SelectClasspathResource;
