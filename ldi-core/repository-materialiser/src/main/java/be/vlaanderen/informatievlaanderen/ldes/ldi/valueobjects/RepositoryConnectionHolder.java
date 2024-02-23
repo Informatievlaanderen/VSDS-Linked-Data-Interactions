@@ -17,7 +17,7 @@ public class RepositoryConnectionHolder {
 		this.repositoryId = repositoryId;
 	}
 
-	public RepositoryConnection getConnection() {
+	public synchronized RepositoryConnection getConnection() {
 		if (connection == null || !connection.isOpen()) {
 			final Repository repository = repositoryManager.getRepository(repositoryId);
 			connection = repository instanceof HTTPRepository

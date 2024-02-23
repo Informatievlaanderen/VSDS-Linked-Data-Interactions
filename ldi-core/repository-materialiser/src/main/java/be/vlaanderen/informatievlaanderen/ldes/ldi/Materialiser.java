@@ -42,23 +42,26 @@ public class Materialiser {
 		return materialiserConnection;
 	}
 
-	public void process(org.apache.jena.rdf.model.Model jenaModel) {
-		try {
-			Model updateModel = JenaToRDF4JConverter.convert(jenaModel);
+	public synchronized void process(org.apache.jena.rdf.model.Model jenaModel) {
+		synchronized (materialiserConnection) {
+			try {
+				Model updateModel = JenaToRDF4JConverter.convert(jenaModel);
 
-			Set<Resource> entityIds = getSubjectsFromModel(updateModel);
-			deleteEntitiesFromRepo(entityIds);
-			materialiserConnection.add(updateModel);
-			uncommittedMembers++;
+				Set<Resource> entityIds = getSubjectsFromModel(updateModel);
+				deleteEntitiesFromRepo(entityIds);
+				materialiserConnection.add(updateModel);
+				uncommittedMembers++;
 
-			if (uncommittedMembers >= batchSize) {
-				commitMembers();
-				resetExecutor();
+				if (uncommittedMembers >= batchSize) {
+					commitMembers();
+					resetExecutor();
+				}
+			} catch (Exception e) {
+				materialiserConnection.rollback();
+				throw new MaterialisationFailedException(e);
 			}
-		} catch (Exception e) {
-			materialiserConnection.rollback();
-			throw new MaterialisationFailedException(e);
 		}
+
 	}
 
 	public void shutdown() {
@@ -113,7 +116,7 @@ public class Materialiser {
 		}
 	}
 
-	private void commitMembers() {
+	private synchronized void commitMembers() {
 		materialiserConnection.commit();
 		uncommittedMembers = 0;
 	}

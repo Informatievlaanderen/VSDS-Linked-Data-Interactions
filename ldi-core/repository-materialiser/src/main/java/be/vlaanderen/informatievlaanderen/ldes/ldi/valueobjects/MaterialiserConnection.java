@@ -32,12 +32,12 @@ public class MaterialiserConnection {
 		holder.getConnection().remove(subject, predicate, object);
 	}
 
-	public void commit() {
+	public synchronized void commit() {
 		holder.getConnection().commit();
 		holder.getConnection().close();
 	}
 
-	public void rollback() {
+	public synchronized void rollback() {
 		holder.getConnection().rollback();
 		holder.getConnection().close();
 	}

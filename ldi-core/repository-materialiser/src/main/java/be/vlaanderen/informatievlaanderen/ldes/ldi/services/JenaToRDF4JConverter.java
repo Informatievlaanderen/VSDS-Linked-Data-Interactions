@@ -28,7 +28,10 @@ public class JenaToRDF4JConverter {
 	}
 
 	private static Resource convertResource(org.apache.jena.rdf.model.Resource resource) {
-		return SimpleValueFactory.getInstance().createIRI(resource.getURI());
+		if(resource.isURIResource()) {
+			return SimpleValueFactory.getInstance().createIRI(resource.getURI());
+		}
+		return SimpleValueFactory.getInstance().createBNode(resource.getId().getLabelString());
 	}
 
 	private static IRI convertProperty(org.apache.jena.rdf.model.Property property) {
@@ -38,7 +41,7 @@ public class JenaToRDF4JConverter {
 	private static Value convertValue(RDFNode node) {
 		if (node.isResource()) {
 			org.apache.jena.rdf.model.Resource resource = (org.apache.jena.rdf.model.Resource) node;
-			return SimpleValueFactory.getInstance().createIRI(resource.getURI());
+			return convertResource(resource);
 		} else {
 			return SimpleValueFactory.getInstance().createLiteral(node.toString());
 		}
