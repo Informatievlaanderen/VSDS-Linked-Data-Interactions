@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.repositories;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineParsingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -46,11 +45,17 @@ public class PipelineFileRepository implements PipelineRepository {
 	}
 
 	@Override
-	public List<PipelineConfigTO> findAll() {
+	public List<PipelineConfigTO> getActivePipelines() {
 		return activePipelines.values().stream().map(SavedPipeline::pipelineConfig).toList();
 	}
 
-	public Map<File, PipelineConfigTO> getStoredPipelines() {
+	/**
+	 * Retrieves a map of inactive pipelines.
+	 *
+	 * @return A map where the keys are File objects representing the persisted files of the pipelines,
+	 * and the values are PipelineConfigTO objects representing the pipeline configurations.
+	 */
+	public Map<File, PipelineConfigTO> getInactivePipelines() {
 		try (Stream<Path> files = Files.list(directory.toPath())) {
 			return files
 					.filter(path -> !Files.isDirectory(path))
@@ -67,15 +72,15 @@ public class PipelineFileRepository implements PipelineRepository {
 					.filter(Objects::nonNull)
 					.map(Map::entrySet)
 					.flatMap(Collection::stream)
+					.filter(pipelineConfigTOEntry -> !exists(pipelineConfigTOEntry.getValue().name()))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
 	}
 
-
 	@Override
-	public void save(PipelineConfig pipeline) {
+	public void activateNewPipeline(PipelineConfig pipeline) {
 		if (exists(pipeline.getName())) {
 			throw new PipelineAlreadyExistsException(pipeline.getName());
 		}
@@ -102,7 +107,7 @@ public class PipelineFileRepository implements PipelineRepository {
 	}
 
 	@Override
-	public void save(PipelineConfig pipeline, File persistedFile) {
+	public void activateExistingPipeline(PipelineConfig pipeline, File persistedFile) {
 		if (exists(pipeline.getName())) {
 			throw new PipelineAlreadyExistsException(pipeline.getName());
 		}
@@ -110,9 +115,17 @@ public class PipelineFileRepository implements PipelineRepository {
 	}
 
 
+	/**
+	 * Deletes a pipeline given its name.
+	 *
+	 * @param pipelineName The name of the pipeline to be deleted.
+	 * @return A boolean indicating whether the deletion was successful.
+	 *         Returns true if the pipeline was found and successfully deleted,
+	 *         false if the pipeline was not found or could not be deleted due to an IOException.
+	 */
 	@Override
-	public void delete(String pipelineName) {
-		ofNullable(activePipelines.get(pipelineName))
+	public boolean delete(String pipelineName) {
+		return ofNullable(activePipelines.get(pipelineName))
 				.map(savedPipeline -> {
 					activePipelines.remove(pipelineName);
 					try {
@@ -121,19 +134,17 @@ public class PipelineFileRepository implements PipelineRepository {
 					} catch (IOException e) {
 						return false;
 					}
-				}).ifPresentOrElse(ignored -> log.info("Pipeline {} was successfully removed and deleted", pipelineName), () -> {
-					throw new PipelineDoesNotExistsException(pipelineName);
-				});
+				}).orElse(false);
 	}
 
+	@Override
 	public boolean exists(String pipeline) {
 		return activePipelines.containsKey(pipeline);
 	}
 
 	protected PipelineConfigTO readConfigFile(Path path) throws PipelineParsingException {
-		try (Stream<String> content = Files.lines(path)) {
-			var json = content.collect(Collectors.joining("\n"));
-			return reader.readValue(json, PipelineConfigTO.class);
+		try {
+			return reader.readValue(path.toFile(), PipelineConfigTO.class);
 		} catch (IOException e) {
 			throw new PipelineParsingException(path.getFileName().toString());
 		}

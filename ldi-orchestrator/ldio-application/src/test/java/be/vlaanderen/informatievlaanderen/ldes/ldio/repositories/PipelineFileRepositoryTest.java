@@ -30,8 +30,8 @@ class PipelineFileRepositoryTest {
 
 	@Test
 	void findAll() {
-		var activePipelines = repository.findAll();
-		var storedPipelines = repository.getStoredPipelines();
+		var activePipelines = repository.getActivePipelines();
+		var storedPipelines = repository.getInactivePipelines();
 
 		assertEquals(0, activePipelines.size());
 		assertEquals(1, storedPipelines.size());
@@ -41,16 +41,15 @@ class PipelineFileRepositoryTest {
 
 	@Test
 	void repostitoryFlow() {
-		var storedPipelines = repository.getStoredPipelines();
+		var storedPipelines = repository.getInactivePipelines();
 
 		assertEquals(1, storedPipelines.size());
 
-		storedPipelines.forEach((file, pipelineConfigTO) -> {
-			repository.save(pipelineConfigTO.toPipelineConfig(), file);
-		});
+		storedPipelines.forEach((file, pipelineConfigTO) ->
+				repository.activateExistingPipeline(pipelineConfigTO.toPipelineConfig(), file));
 
-		var activePipelines = repository.findAll();
-		storedPipelines = repository.getStoredPipelines();
+		var activePipelines = repository.getActivePipelines();
+		storedPipelines = repository.getInactivePipelines();
 
 		assertEquals(1, activePipelines.size());
 		assertEquals(1, storedPipelines.size());
@@ -63,10 +62,10 @@ class PipelineFileRepositoryTest {
 		config.setInput(new InputComponentDefinition(pipelineName, "Ldio:TestIn", Map.of(), null));
 		config.setOutputs(List.of(new ComponentDefinition(pipelineName, "Ldio:TestOut", Map.of())));
 
-		repository.save(config);
+		repository.activateNewPipeline(config);
 
-		activePipelines = repository.findAll();
-		storedPipelines = repository.getStoredPipelines();
+		activePipelines = repository.getActivePipelines();
+		storedPipelines = repository.getInactivePipelines();
 
 		assertEquals(2, activePipelines.size());
 		assertEquals(2, storedPipelines.size());
@@ -75,8 +74,8 @@ class PipelineFileRepositoryTest {
 
 		repository.delete(pipelineName);
 
-		activePipelines = repository.findAll();
-		storedPipelines = repository.getStoredPipelines();
+		activePipelines = repository.getActivePipelines();
+		storedPipelines = repository.getInactivePipelines();
 
 		assertEquals(1, activePipelines.size());
 		assertEquals(1, storedPipelines.size());
@@ -86,15 +85,15 @@ class PipelineFileRepositoryTest {
 
 	@Test
 	void saveExistingFile() {
-		var storedPipeline = repository.getStoredPipelines()
+		var storedPipeline = repository.getInactivePipelines()
 				.entrySet()
 				.stream()
 				.findFirst()
 				.orElseThrow();
 
 		// Init pipeline
-		repository.save(storedPipeline.getValue().toPipelineConfig(), storedPipeline.getKey());
-		assertThrows(PipelineAlreadyExistsException.class, () -> repository.save(storedPipeline.getValue().toPipelineConfig()));
+		repository.activateExistingPipeline(storedPipeline.getValue().toPipelineConfig(), storedPipeline.getKey());
+		assertThrows(PipelineAlreadyExistsException.class, () -> repository.activateNewPipeline(storedPipeline.getValue().toPipelineConfig()));
 	}
 
 	@Test

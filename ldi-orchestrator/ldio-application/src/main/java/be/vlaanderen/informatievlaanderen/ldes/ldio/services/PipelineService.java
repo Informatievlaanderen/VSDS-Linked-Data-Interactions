@@ -12,12 +12,12 @@ import java.io.File;
 import java.util.List;
 
 @Service
-public class PipelineManagementService {
+public class PipelineService {
 	private final PipelineCreatorService pipelineCreatorService;
 	private final PipelineRepository pipelineRepository;
 
-	public PipelineManagementService(PipelineCreatorService pipelineCreatorService,
-	                                 PipelineFileRepository pipelineRepository) {
+	public PipelineService(PipelineCreatorService pipelineCreatorService,
+	                       PipelineFileRepository pipelineRepository) {
 		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineRepository = pipelineRepository;
 	}
@@ -27,7 +27,7 @@ public class PipelineManagementService {
 			throw new PipelineAlreadyExistsException(pipeline.getName());
 		} else {
 			pipelineCreatorService.initialisePipeline(pipeline);
-			pipelineRepository.save(pipeline);
+			pipelineRepository.activateNewPipeline(pipeline);
 			return pipeline;
 		}
 	}
@@ -37,16 +37,16 @@ public class PipelineManagementService {
 			throw new PipelineAlreadyExistsException(pipeline.getName());
 		} else {
 			pipelineCreatorService.initialisePipeline(pipeline);
-			pipelineRepository.save(pipeline, persistedFile);
+			pipelineRepository.activateExistingPipeline(pipeline, persistedFile);
 			return pipeline;
 		}
 	}
 
 	public List<PipelineConfigTO> getPipelines() {
-		return pipelineRepository.findAll();
+		return pipelineRepository.getActivePipelines();
 	}
 
-	public void deletePipeline(String pipeline) {
-		pipelineRepository.delete(pipeline);
+	public boolean deletePipeline(String pipeline) {
+		return pipelineRepository.delete(pipeline);
 	}
 }

@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineManagementService;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,11 +17,11 @@ public class ConfigPipelineInitializer implements PipelineInitializer {
 	private static final String name = "LDI Orchestrator Spring Config Initializer";
 	private final Logger log = LoggerFactory.getLogger(ConfigPipelineInitializer.class);
 	private final OrchestratorConfig orchestratorConfig;
-	private final PipelineManagementService pipelineManagementService;
+	private final PipelineService pipelineService;
 
-	public ConfigPipelineInitializer(OrchestratorConfig orchestratorConfig, PipelineManagementService pipelineManagementService) {
+	public ConfigPipelineInitializer(OrchestratorConfig orchestratorConfig, PipelineService pipelineService) {
 		this.orchestratorConfig = orchestratorConfig;
-		this.pipelineManagementService = pipelineManagementService;
+		this.pipelineService = pipelineService;
 	}
 
 	@Override
@@ -31,15 +31,15 @@ public class ConfigPipelineInitializer implements PipelineInitializer {
 
 	@Override
 	public List<PipelineConfig> initPipelines() {
-		log.warn("{} DEPRECATED. Any configs with the same name will be ignored", name);
 		if (orchestratorConfig.getPipelines() == null) {
 			return List.of();
 		}
+		log.warn("{} DEPRECATED. Any configs with the same name will be ignored", name);
 		return orchestratorConfig.getPipelines()
 				.stream()
 				.map(pipeline -> {
 					try {
-						return pipelineManagementService.addPipeline(pipeline);
+						return pipelineService.addPipeline(pipeline);
 					} catch (PipelineAlreadyExistsException e) {
 						log.warn(e.getMessage());
 						return null;

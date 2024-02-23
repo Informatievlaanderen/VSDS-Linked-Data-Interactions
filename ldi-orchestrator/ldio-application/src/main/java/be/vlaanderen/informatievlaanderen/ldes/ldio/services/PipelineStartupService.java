@@ -23,7 +23,7 @@ public class PipelineStartupService {
 	}
 
 	@EventListener
-	public void initPipelines(ContextRefreshedEvent event) {
+	public void initPipelines(ContextRefreshedEvent ignored) {
 		pipelineInitiators.forEach(initializer -> {
 			log.info("=== Processing pipelines with {} ===", initializer.name());
 			var pipelines = initializer.initPipelines();

@@ -35,7 +35,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 @Service
 public class PipelineCreatorService {
 
-	private final Pattern pattern = Pattern.compile(NAME_PATTERN);
+	private final Pattern validPipelineNamePattern = Pattern.compile(NAME_PATTERN);
 	private final String orchestratorName;
 	private final ConfigurableApplicationContext configContext;
 	private final ApplicationEventPublisher eventPublisher;
@@ -146,7 +146,7 @@ public class PipelineCreatorService {
 	}
 
 	private void validateName(String name) {
-		Matcher matcher = pattern.matcher(name);
+		Matcher matcher = validPipelineNamePattern.matcher(name);
 
 		if (!matcher.matches()) {
 			throw new InvalidPipelineNameException(name);

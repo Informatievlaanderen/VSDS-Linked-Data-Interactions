@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.services.initializer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineManagementService;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +17,13 @@ import java.util.Objects;
 @Service
 public class FileStoredPipelineInitializer implements PipelineInitializer {
 	private final Logger log = LoggerFactory.getLogger(FileStoredPipelineInitializer.class);
-	private final PipelineManagementService pipelineManagementService;
+	private final PipelineService pipelineService;
 	private final Map<File, PipelineConfigTO> storedPipelines;
 
-	public FileStoredPipelineInitializer(PipelineManagementService pipelineManagementService,
+	public FileStoredPipelineInitializer(PipelineService pipelineService,
 	                                     PipelineFileRepository repository) {
-		this.pipelineManagementService = pipelineManagementService;
-		this.storedPipelines = repository.getStoredPipelines();
+		this.pipelineService = pipelineService;
+		this.storedPipelines = repository.getInactivePipelines();
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class FileStoredPipelineInitializer implements PipelineInitializer {
 				.stream()
 				.map(storedPipeline -> {
 					try {
-						return pipelineManagementService.addPipeline(storedPipeline.getValue().toPipelineConfig(), storedPipeline.getKey());
+						return pipelineService.addPipeline(storedPipeline.getValue().toPipelineConfig(), storedPipeline.getKey());
 					} catch (PipelineException e) {
 						log.error("File \"%s\": %s".formatted(storedPipeline.getKey().getName(), e.getMessage()));
 						return null;

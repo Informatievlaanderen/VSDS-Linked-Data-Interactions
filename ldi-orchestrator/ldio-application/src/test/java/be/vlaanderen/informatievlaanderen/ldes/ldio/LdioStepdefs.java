@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.apache.commons.io.IOUtils;
@@ -40,7 +39,6 @@ public class LdioStepdefs {
 	private PipelineFileRepository repository;
 	private Map<File, PipelineConfigTO> initConfig;
 	private URI managementURI;
-	private WebTestClient.ResponseSpec response;
 
 	public void init() throws URISyntaxException {
 		repository = context.getBean(PipelineFileRepository.class);
@@ -52,7 +50,7 @@ public class LdioStepdefs {
 	@After
 	public void after() {
 		if (repository != null)
-			repository.findAll()
+			repository.getActivePipelines()
 					.stream()
 					.filter(pipelineConfigTO -> !initConfig.containsValue(pipelineConfigTO))
 					.forEach(pipelineConfigTO -> repository.delete(pipelineConfigTO.name()));
@@ -79,62 +77,61 @@ public class LdioStepdefs {
 	}
 
 	// Create pipeline
+	@And("I post a {string} {string} pipeline with a {int} response")
+	public void iPostAFileTypePipelineWithAStatusCodeResponse(String file, String type, int statusCode) throws IOException {
+		var contentType = switch (type) {
+			case "json":
+				yield "application/json";
+			case "yml":
+				yield "application/yaml";
+			default:
+				yield "";
+		};
 
-	@And("^I post a valid json pipeline$")
-	public void iPostAValidJsonPipeline() throws IOException {
-		postPipeline("src/test/resources/management/valid.json", "application/json");
-	}
-
-	@And("I post an invalid json pipeline")
-	public void iPostAnInvalidJsonPipeline() throws IOException {
-		postPipeline("src/test/resources/management/invalid.json", "application/json");
-	}
-
-	@And("I post a valid yaml pipeline")
-	public void iPostAValidYamlPipeline() throws IOException {
-		postPipeline("src/test/resources/management/valid.yml", "application/yaml");
-	}
-
-	@And("I post an invalid yaml pipeline")
-	public void iPostAnInvalidYamlPipeline() throws IOException {
-		postPipeline("src/test/resources/management/invalid.yml", "application/yaml");
+		postPipeline("src/test/resources/management/%s/%s.%s".formatted(type, file, type), contentType, statusCode);
 	}
 
 	// Delete Pipeline
-	@And("I delete the {string} pipeline")
-	public void iDeleteThePipeline(String pipeline) throws URISyntaxException {
-		response = client.delete()
+	@And("I delete the {string} pipeline with a {int} response")
+	public void iDeleteThePipeline(String pipeline, int statusCode) throws URISyntaxException {
+		client.delete()
 				.uri(new URI("%s/%s".formatted(managementURI.getPath(), pipeline)))
-				.exchange();
+				.exchange()
+				.expectStatus()
+				.isEqualTo(statusCode);
 	}
 
 	// Assertions
 
-	@Then("^I expect a (\\d+) response$")
-	public void iExpectAResponse(int statusCode) {
-		response.expectStatus()
-				.isEqualTo(statusCode);
-	}
-
 	@And("^I expect (\\d+) pipelines$")
 	public void iExpectPipelines(int count) {
-		assertEquals(count, repository.findAll().size());
+		client.get()
+				.uri(managementURI)
+				.exchange()
+				.expectStatus().isOk()
+				.expectHeader()
+				.contentType("application/json")
+				.expectBody()
+				.jsonPath("$.length()")
+				.isEqualTo(count);
 	}
 
 	@And("^The expected pipeline has (\\d+) transformers$")
 	public void theExpectedPipelineHasOneTransformer(int count) {
-		var transformer = repository.findAll().stream().findAny().orElseThrow();
+		var transformer = repository.getActivePipelines().stream().findAny().orElseThrow();
 		assertEquals(count, transformer.transformers().size());
 
 	}
 
-	private void postPipeline(String filePath, String contentType) throws IOException {
+	private void postPipeline(String filePath, String contentType, int statusCode) throws IOException {
 		var content = IOUtils.toString(new FileInputStream(filePath));
-		response = client.post()
+		client.post()
 				.uri(managementURI)
 				.contentType(MediaType.valueOf(contentType))
 				.bodyValue(content)
-				.exchange();
+				.exchange()
+				.expectStatus()
+				.isEqualTo(statusCode);
 	}
 
 	private Map<File, PipelineConfigTO> getInitialFiles() {

@@ -26,7 +26,7 @@ class PipelineTOTest {
 	void fromPipelineConfig() {
 		PipelineConfigTO createdPipeline = getPipelineConfig();
 
-		PipelineTO pipelineTO = PipelineTO.fromPipelineConfig(createdPipeline, RUNNING);
+		PipelineTO pipelineTO = PipelineTO.build(createdPipeline, RUNNING);
 
 		assertEquals("pipeline", pipelineTO.name());
 		assertEquals(RUNNING, pipelineTO.status());

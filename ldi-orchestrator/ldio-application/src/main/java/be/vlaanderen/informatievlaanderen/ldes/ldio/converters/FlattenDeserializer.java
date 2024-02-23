@@ -10,7 +10,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * A custom deserializer that flattens a JSON object into a Map<String, String>.
+ * The keys in the map are the JSON paths of the values in the input JSON.
+ * This deserializer extends the JsonDeserializer class from the Jackson library.
+ */
 public class FlattenDeserializer extends JsonDeserializer<Map<String, String>> {
+	/**
+	 * Deserializes a JSON object into a flattened map.
+	 *
+	 * @param p    The JSON parser.
+	 * @param ctxt The deserialization context.
+	 * @return A map where the keys are JSON paths and the values are the corresponding values from the input JSON.
+	 * @throws IOException If an input or output exception occurred.
+	 */
 	@Override
 	public Map<String, String> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
 		Map<String, String> result = new HashMap<>();
@@ -19,6 +32,13 @@ public class FlattenDeserializer extends JsonDeserializer<Map<String, String>> {
 		return result;
 	}
 
+	/**
+	 * Recursively flattens a JSON node.
+	 *
+	 * @param prefix The current path prefix.
+	 * @param node The current JSON node.
+	 * @param result The result map.
+	 */
 	private void flatten(String prefix, JsonNode node, Map<String, String> result) {
 		if (node.isObject()) {
 			Iterator<Map.Entry<String, JsonNode>> fields = node.fields();
