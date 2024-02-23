@@ -36,7 +36,7 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 	 * @param jmsInRegistrator    Global service to maintain JMS listeners.
 	 * @param observationRegistry
 	 */
-	protected LdioAmqpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
+	public LdioAmqpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
 						 String defaultContentType, JmsConfig jmsConfig, LdioAmqpInRegistrator jmsInRegistrator,
 						 ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher) {
 		super(NAME, pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);

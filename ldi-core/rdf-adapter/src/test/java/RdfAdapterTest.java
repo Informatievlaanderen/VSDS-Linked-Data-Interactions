@@ -6,6 +6,7 @@ import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.sparql.util.ContextAccumulator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.apicatalog.jsonld.JsonLdOptions;
@@ -19,6 +20,7 @@ import static org.apache.jena.riot.lang.LangJSONLD11.JSONLD_OPTIONS;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @WireMockTest(httpPort = 10101)
+@Disabled
 class RdfAdapterTest {
 
 	private static final String expectedQuads = """

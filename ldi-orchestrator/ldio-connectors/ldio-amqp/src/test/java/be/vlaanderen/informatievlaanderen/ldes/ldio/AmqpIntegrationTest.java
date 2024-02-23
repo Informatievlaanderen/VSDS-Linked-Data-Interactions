@@ -11,6 +11,8 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 
+import static org.mockito.Mockito.mock;
+
 @Suite
 @SpringBootTest
 @ExtendWith(OutputCaptureExtension.class)
@@ -20,8 +22,8 @@ import org.springframework.context.ApplicationEventPublisher;
 public class AmqpIntegrationTest {
 	@Autowired
 	ApplicationContext applicationContext;
-	@Autowired
-	ApplicationEventPublisher applicationEventPublisher;
+
+	ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 
 	public LdioAmqpInRegistrator jmsInRegistrator() {
 		return new LdioAmqpInRegistrator(applicationContext);
