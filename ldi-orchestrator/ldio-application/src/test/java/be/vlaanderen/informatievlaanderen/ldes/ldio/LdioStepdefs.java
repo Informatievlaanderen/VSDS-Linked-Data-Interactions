@@ -1,11 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
@@ -21,14 +17,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository.EXTENSION_YAML;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository.EXTENSION_YML;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepositoryTest.getInitialFiles;
 import static org.junit.Assert.assertEquals;
 
 @CucumberContextConfiguration
@@ -42,7 +33,7 @@ public class LdioStepdefs {
 
 	public void init() throws URISyntaxException {
 		repository = context.getBean(PipelineFileRepository.class);
-		initConfig = getInitialFiles();
+		initConfig = getInitialFiles(testDirectory);
 		client = MockMvcWebTestClient.bindToApplicationContext(context).build();
 		managementURI = new URI("/admin/api/v1/pipeline");
 	}
@@ -132,27 +123,5 @@ public class LdioStepdefs {
 				.exchange()
 				.expectStatus()
 				.isEqualTo(statusCode);
-	}
-
-	private Map<File, PipelineConfigTO> getInitialFiles() {
-		testDirectory.mkdirs();
-		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		ObjectReader reader = mapper.readerFor(PipelineConfig.class);
-		try (Stream<Path> files = Files.list(testDirectory.toPath())) {
-			return files
-					.filter(path -> !Files.isDirectory(path))
-					.filter(path -> path.toFile().getName().endsWith(EXTENSION_YML)
-							|| path.toFile().getName().endsWith(EXTENSION_YAML))
-					.collect(Collectors.toMap(Path::toFile, path -> {
-						try (Stream<String> content = Files.lines(path)) {
-							var json = content.collect(Collectors.joining("\n"));
-							return reader.readValue(json, PipelineConfigTO.class);
-						} catch (IOException e) {
-							throw new RuntimeException(e);
-						}
-					}));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 }
