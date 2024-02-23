@@ -10,9 +10,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class LdioJsonToLdAdapterAutoConfig {
+	public static final String NAME = "Ldio:JsonToLdAdapter";
 
 	@SuppressWarnings("java:S6830")
-	@Bean("Ldio:JsonToLdAdapter")
+	@Bean(NAME)
 	public LdioAdapterConfigurator ldioJsonToLdAdapterConfigurator() {
 		return new LdioJsonToLdConfigurator();
 	}

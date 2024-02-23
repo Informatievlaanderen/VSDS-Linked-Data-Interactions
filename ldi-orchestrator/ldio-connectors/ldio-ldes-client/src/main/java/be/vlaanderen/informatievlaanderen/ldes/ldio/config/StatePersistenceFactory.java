@@ -8,8 +8,6 @@ import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
-
 public class StatePersistenceFactory {
 
 	public static final StatePersistenceStrategy DEFAULT_STATE_PERSISTENCE_STRATEGY = StatePersistenceStrategy.MEMORY;
@@ -23,7 +21,7 @@ public class StatePersistenceFactory {
 		if (state.equals(StatePersistenceStrategy.POSTGRES)) {
 			persistenceProperties = createPostgresProperties(properties);
 		}
-		return StatePersistence.from(state, persistenceProperties, properties.getProperty(PIPELINE_NAME));
+		return StatePersistence.from(state, persistenceProperties, properties.getPipelineName());
 	}
 
 	private Map<String, String> createPostgresProperties(ComponentProperties properties) {

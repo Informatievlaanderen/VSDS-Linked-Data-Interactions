@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdioKafkaOutAutoConfigTest {
@@ -21,7 +21,7 @@ class LdioKafkaOutAutoConfigTest {
 
 		Map<String, String> config = getBasicConfig();
 		config.put(KafkaOutConfigKeys.SECURITY_PROTOCOL, "Fantasy protocol");
-		ComponentProperties componentProperties = new ComponentProperties(config);
+		ComponentProperties componentProperties = new ComponentProperties("pipelineName", NAME, config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
 				() -> configurator.configure(componentProperties));
@@ -36,7 +36,7 @@ class LdioKafkaOutAutoConfigTest {
 
 		Map<String, String> config = getBasicConfig();
 
-		assertDoesNotThrow(() -> configurator.configure(new ComponentProperties(config)));
+		assertDoesNotThrow(() -> configurator.configure(new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 	private Map<String, String> getBasicConfig() {
@@ -44,7 +44,6 @@ class LdioKafkaOutAutoConfigTest {
 		config.put(KafkaOutConfigKeys.BOOTSTRAP_SERVERS, "servers");
 		config.put(KafkaOutConfigKeys.TOPIC, "topic1");
 		config.put(ORCHESTRATOR_NAME, "orchestrator.name");
-		config.put(PIPELINE_NAME, "pipeline.name");
 		return config;
 	}
 
@@ -57,7 +56,7 @@ class LdioKafkaOutAutoConfigTest {
 		config.put(KafkaOutConfigKeys.SASL_JAAS_USER, "user");
 		config.put(KafkaOutConfigKeys.SASL_JAAS_PASSWORD, "secret");
 
-		assertDoesNotThrow(() -> configurator.configure(new ComponentProperties(config)));
+		assertDoesNotThrow(() -> configurator.configure(new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 }

@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.exception;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 
-public class LdiAdapterMissingException extends RuntimeException {
+public class LdiAdapterMissingException extends PipelineException {
 	private final String pipelineName;
 
 	public LdiAdapterMissingException(String pipelineName) {
@@ -11,7 +11,7 @@ public class LdiAdapterMissingException extends RuntimeException {
 
 	@Override
 	public String getMessage() {
-		return "Missing LDI Adapter for pipeline " + pipelineName;
+		return "Pipeline \"%s\": Missing LDI Adapter".formatted(pipelineName);
 	}
 
 	/**

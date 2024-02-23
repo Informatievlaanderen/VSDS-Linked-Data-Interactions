@@ -18,8 +18,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
-
 @SuppressWarnings("java:S6830")
 @Configuration
 public class LdioLdesClientConnectorAutoConfig {
@@ -49,7 +47,7 @@ public class LdioLdesClientConnectorAutoConfig {
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
-			final String pipelineName = properties.getProperty(PIPELINE_NAME);
+			final String pipelineName = properties.getPipelineName();
 			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
 			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);
 			final var tokenService = new MemoryTokenService(transferService);

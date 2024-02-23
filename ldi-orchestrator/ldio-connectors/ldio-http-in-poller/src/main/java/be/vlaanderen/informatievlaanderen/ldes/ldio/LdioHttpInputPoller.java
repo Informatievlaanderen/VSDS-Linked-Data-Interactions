@@ -65,7 +65,7 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	}
 
 	public void shutdown() {
-		this.scheduler.shutdown();
+		this.scheduler.destroy();
 	}
 
 	private void executeRequest(Request request) {

@@ -13,8 +13,6 @@ import ldes.client.treenodesupplier.MemberSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
-
 @Configuration
 public class LdioLdesClientAutoConfig {
 	@SuppressWarnings("java:S6830")
@@ -34,7 +32,7 @@ public class LdioLdesClientAutoConfig {
 		@Override
 		public LdiComponent configure(LdiAdapter adapter, ComponentExecutor componentExecutor,
 		                              ComponentProperties properties) {
-			String pipelineName = properties.getProperty(PIPELINE_NAME);
+			String pipelineName = properties.getPipelineName();
 			RequestExecutor requestExecutor = new LdioRequestExecutorSupplier().getRequestExecutor(properties);
 			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor).getMemberSupplier();
 			var ldesClient = new LdioLdesClient(pipelineName, componentExecutor, observationRegistry, memberSupplier);

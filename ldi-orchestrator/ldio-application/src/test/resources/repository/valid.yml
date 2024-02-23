@@ -1,0 +1,11 @@
+---
+name: "valid-pipeline"
+description: null
+input:
+  name: "Ldio:TestIn"
+  adapter: null
+  config: { }
+transformers: [ ]
+outputs:
+  - name: "Ldio:TestOut"
+    config: { }

@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.HttpInPipelineCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -36,6 +37,11 @@ public class LdioHttpInController {
 	@EventListener
 	void handleNewPipelines(HttpInPipelineCreatedEvent pipelineCreatedEvent) {
 		httpInProcesses.put(pipelineCreatedEvent.pipelineName(), pipelineCreatedEvent.ldioHttpInProcess());
+	}
+
+	@EventListener
+	void handleDelete(PipelineDeletedEvent event) {
+		httpInProcesses.remove(event.pipelineId());
 	}
 
 	private void logIncomingRequest(String contentType, String contentLength, String pipelineName) {

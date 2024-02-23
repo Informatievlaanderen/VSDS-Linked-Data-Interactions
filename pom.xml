@@ -59,6 +59,7 @@
         <jena.version>4.10.0</jena.version>
         <sis-embedded-db.version>1.4</sis-embedded-db.version>
         <xml-bind.version>4.0.1</xml-bind.version>
+        <jackson.version>2.15.3</jackson.version>
 
         <!-- LOGGING -->
         <micrometer-prometheus.version>1.12.0</micrometer-prometheus.version>

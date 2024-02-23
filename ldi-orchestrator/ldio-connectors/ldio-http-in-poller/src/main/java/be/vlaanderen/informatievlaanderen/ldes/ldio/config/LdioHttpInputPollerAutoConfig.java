@@ -15,7 +15,6 @@ import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInputPoller.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @Configuration
 public class LdioHttpInputPollerAutoConfig {
@@ -37,7 +36,7 @@ public class LdioHttpInputPollerAutoConfig {
 		@Override
 		public LdioHttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
 		                                     ComponentProperties properties) {
-			String pipelineName = properties.getProperty(PIPELINE_NAME);
+			String pipelineName = properties.getPipelineName();
 			List<String> endpoints = properties.getPropertyList(URL);
 
 			boolean continueOnFail = properties.getOptionalBoolean(CONTINUE_ON_FAIL).orElse(true);

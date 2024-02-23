@@ -13,10 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInProcess.NAME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,7 +40,7 @@ class LdioHttpInputTest {
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
 		new LdioHttpInAutoConfig.LdioHttpInConfigurator(eventPublisher, null)
-				.configure(adapter, executor, new ComponentProperties(Map.of(PIPELINE_NAME, endpoint)));
+				.configure(adapter, executor, new ComponentProperties(endpoint, NAME));
 	}
 
 	@Test

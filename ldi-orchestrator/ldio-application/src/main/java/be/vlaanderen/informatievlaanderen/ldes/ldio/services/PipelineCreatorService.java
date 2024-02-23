@@ -1,62 +1,89 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.components.ComponentExecutorImpl;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.components.LdioSender;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.components.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.SenderCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidComponentException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidPipelineNameException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.SingletonBeanRegistry;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.DEBUG;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.NAME_PATTERN;
 
-@Configuration
-@ComponentScan("be.vlaanderen.informatievlaanderen")
-@Component
-public class FlowAutoConfiguration {
-	private static final Logger LOGGER = LoggerFactory.getLogger(FlowAutoConfiguration.class);
-	private final OrchestratorConfig orchestratorConfig;
+@Service
+public class PipelineCreatorService {
+
+	private final Pattern validPipelineNamePattern = Pattern.compile(NAME_PATTERN);
+	private final String orchestratorName;
 	private final ConfigurableApplicationContext configContext;
 	private final ApplicationEventPublisher eventPublisher;
 	private final ObservationRegistry observationRegistry;
+	private final DefaultListableBeanFactory beanFactory;
 
-	public FlowAutoConfiguration(OrchestratorConfig orchestratorConfig,
-	                             ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher,
-	                             ObservationRegistry observationRegistry) {
-		this.orchestratorConfig = orchestratorConfig;
+	public PipelineCreatorService(OrchestratorConfig orchestratorConfig, ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {
+		this.orchestratorName = orchestratorConfig.getName();
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
 		this.observationRegistry = observationRegistry;
+		this.beanFactory = (DefaultListableBeanFactory) configContext.getBeanFactory();
 	}
 
-	@EventListener
-	public void registerInputBeans(ContextRefreshedEvent event) {
-		orchestratorConfig.getPipelines().forEach(this::initialiseLdiInput);
+	public void initialisePipeline(PipelineConfig config) throws InvalidComponentException, InvalidPipelineNameException, LdiAdapterMissingException {
+		try {
+			String pipeLineName = config.getName();
+			validateName(pipeLineName);
+
+			String inputName = config.getInput().getName();
+			LdioInputConfigurator configurator = (LdioInputConfigurator) configContext.getBean(inputName);
+
+			LdiAdapter adapter = Optional.ofNullable(config.getInput().getAdapter())
+					.map(this::getLdioAdapter)
+					.orElse(null);
+
+			ComponentExecutor executor = componentExecutor(config);
+
+			Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
+			inputConfig.put(ORCHESTRATOR_NAME, orchestratorName);
+
+			Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(pipeLineName, inputName, inputConfig));
+
+			registerBean(pipeLineName, ldiInput);
+		} catch (NoSuchBeanDefinitionException e) {
+			throw new InvalidComponentException(config.getName(), e.getBeanName());
+		}
 	}
 
-	public ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
+	public void removePipeline(String pipeline) {
+		DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) configContext.getBeanFactory();
+		LdioInput ldioInput = (LdioInput) beanRegistry.getBean(pipeline);
+		ldioInput.shutdown();
+		beanFactory.destroyBean(pipeline);
+	}
+
+	private ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
 		List<LdioTransformer> ldioTransformers = pipelineConfig.getTransformers()
 				.stream()
 				.map(this::getLdioTransformer)
@@ -84,31 +111,6 @@ public class FlowAutoConfiguration {
 		eventPublisher.publishEvent(new SenderCreatedEvent(pipelineConfig.getName(), ldioSender));
 
 		return new ComponentExecutorImpl(ldioTransformerPipeline);
-	}
-
-	public void initialiseLdiInput(PipelineConfig config) {
-		LdioInputConfigurator configurator = (LdioInputConfigurator) configContext.getBean(
-				config.getInput().getName());
-
-		LdiAdapter adapter = Optional.ofNullable(config.getInput().getAdapter())
-				.map(this::getLdioAdapter)
-				.orElseGet(() -> {
-					LOGGER.warn("No adapter configured for pipeline {}. Please verify this is a desired scenario.", config.getName());
-					return null;
-				});
-
-		ComponentExecutor executor = componentExecutor(config);
-
-		String pipeLineName = config.getName();
-
-		Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
-		inputConfig.put(ORCHESTRATOR_NAME, orchestratorConfig.getName());
-		inputConfig.put(PIPELINE_NAME, pipeLineName);
-
-		Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(inputConfig));
-
-		registerBean(pipeLineName, ldiInput);
-		eventPublisher.publishEvent(new PipelineCreatedEvent(this, config));
 	}
 
 	private LdiAdapter getLdioAdapter(ComponentDefinition componentDefinition) {
@@ -147,10 +149,16 @@ public class FlowAutoConfiguration {
 	}
 
 	private void registerBean(String pipelineName, Object bean) {
-		SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
-		if (!beanRegistry.containsSingleton(pipelineName)) {
-			beanRegistry.registerSingleton(pipelineName, bean);
+		if (!beanFactory.containsSingleton(pipelineName)) {
+			beanFactory.registerSingleton(pipelineName, bean);
 		}
 	}
 
+	private void validateName(String name) {
+		Matcher matcher = validPipelineNamePattern.matcher(name);
+
+		if (!matcher.matches()) {
+			throw new InvalidPipelineNameException(name);
+		}
+	}
 }

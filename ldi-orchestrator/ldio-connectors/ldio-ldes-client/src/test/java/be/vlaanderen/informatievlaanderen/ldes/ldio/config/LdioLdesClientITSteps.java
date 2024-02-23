@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.URLS;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.awaitility.Awaitility.await;
 
@@ -53,9 +53,7 @@ public class LdioLdesClientITSteps {
 		members = new ArrayList<>();
 		ComponentExecutor componentExecutor = linkedDataModel -> members.add(linkedDataModel);
 
-		componentPropsMap.put(PIPELINE_NAME, "pipeline");
-
-		var props = new ComponentProperties(componentPropsMap);
+		var props = new ComponentProperties("pipelineName", NAME, componentPropsMap);
 		var ldioInputConfigurator = new LdioLdesClientAutoConfig().ldioConfigurator(null);
 		ldioInputConfigurator.configure(null, componentExecutor, props);
 	}
