@@ -10,7 +10,7 @@ public class PipelineConfig {
 	public static final String NAME_PATTERN = "^[0-9a-zA-Z_\\-. ]+$";
 	public static final String PIPELINE_NAME = "pipeline.name";
 	private String name;
-	private String description;
+	private String description = "";
 	private InputComponentDefinition input;
 	private List<ComponentDefinition> transformers = new LinkedList<>();
 	private List<ComponentDefinition> outputs;

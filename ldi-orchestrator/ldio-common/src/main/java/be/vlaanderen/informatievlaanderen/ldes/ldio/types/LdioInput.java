@@ -80,4 +80,6 @@ public abstract class LdioInput implements LdiComponent {
 					}
 				});
 	}
+
+	public abstract void shutdown();
 }

@@ -47,8 +47,8 @@ public class LdioLdesClient extends LdioInput {
 		}
 	}
 
-	public void stopThread() {
+	@Override
+	public void shutdown() {
 		threadRunning = false;
 	}
-
 }

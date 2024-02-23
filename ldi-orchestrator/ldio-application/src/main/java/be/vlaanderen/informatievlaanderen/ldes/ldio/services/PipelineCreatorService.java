@@ -14,12 +14,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.events.SenderCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidComponentException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidPipelineNameException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.config.SingletonBeanRegistry;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
@@ -40,12 +41,14 @@ public class PipelineCreatorService {
 	private final ConfigurableApplicationContext configContext;
 	private final ApplicationEventPublisher eventPublisher;
 	private final ObservationRegistry observationRegistry;
+	private final DefaultListableBeanFactory beanFactory;
 
 	public PipelineCreatorService(OrchestratorConfig orchestratorConfig, ConfigurableApplicationContext configContext, ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {
 		this.orchestratorName = orchestratorConfig.getName();
 		this.configContext = configContext;
 		this.eventPublisher = eventPublisher;
 		this.observationRegistry = observationRegistry;
+		this.beanFactory = (DefaultListableBeanFactory) configContext.getBeanFactory();
 	}
 
 	public void initialisePipeline(PipelineConfig config) throws InvalidComponentException, InvalidPipelineNameException, LdiAdapterMissingException {
@@ -71,6 +74,13 @@ public class PipelineCreatorService {
 		} catch (NoSuchBeanDefinitionException e) {
 			throw new InvalidComponentException(config.getName(), e.getBeanName());
 		}
+	}
+
+	public void removePipeline(String pipeline) {
+		DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) configContext.getBeanFactory();
+		LdioInput ldioInput = (LdioInput) beanRegistry.getBean(pipeline);
+		ldioInput.shutdown();
+		beanFactory.destroyBean(pipeline);
 	}
 
 	private ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
@@ -139,9 +149,8 @@ public class PipelineCreatorService {
 	}
 
 	private void registerBean(String pipelineName, Object bean) {
-		SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
-		if (!beanRegistry.containsSingleton(pipelineName)) {
-			beanRegistry.registerSingleton(pipelineName, bean);
+		if (!beanFactory.containsSingleton(pipelineName)) {
+			beanFactory.registerSingleton(pipelineName, bean);
 		}
 	}
 

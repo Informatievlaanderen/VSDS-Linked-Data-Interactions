@@ -61,4 +61,9 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 		endpoint.setMessageListener(this);
 		return endpoint;
 	}
+
+	@Override
+	public void shutdown() {
+		// Implemented in other story
+	}
 }
