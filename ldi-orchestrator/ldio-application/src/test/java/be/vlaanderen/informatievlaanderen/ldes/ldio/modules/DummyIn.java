@@ -16,4 +16,9 @@ public class DummyIn extends LdioInput {
 		              + "\"^^<http://www.w3.org/2001/XMLSchema#integer> .";
 		processInput(quad, "application/n-quads");
 	}
+
+	@Override
+	public void shutdown() {
+
+	}
 }

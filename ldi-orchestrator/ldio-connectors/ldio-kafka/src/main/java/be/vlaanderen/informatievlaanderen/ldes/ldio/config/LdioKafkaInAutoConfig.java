@@ -25,7 +25,6 @@ import java.util.Map;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
@@ -46,7 +45,7 @@ public class LdioKafkaInAutoConfig {
 
 		@Override
 		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties config) {
-			String pipelineName = config.getProperty(PIPELINE_NAME);
+			String pipelineName = config.getPipelineName();
 			verifyAdapterPresent(pipelineName, adapter);
 
 			LdioKafkaIn ldioKafkaIn = new LdioKafkaIn(NAME, pipelineName, executor, adapter, observationRegistry, getContentType(config));
@@ -88,8 +87,7 @@ public class LdioKafkaInAutoConfig {
 		}
 
 		private String defineUniqueGroupName(ComponentProperties config) {
-			return String.format("ldio-%s-%s", config.getProperty(ORCHESTRATOR_NAME),
-					config.getProperty(PIPELINE_NAME));
+			return String.format("ldio-%s-%s", config.getProperty(ORCHESTRATOR_NAME), config.getPipelineName());
 		}
 	}
 }

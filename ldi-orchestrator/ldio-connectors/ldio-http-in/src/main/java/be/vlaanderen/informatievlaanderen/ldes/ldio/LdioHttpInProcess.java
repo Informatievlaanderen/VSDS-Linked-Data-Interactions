@@ -11,4 +11,9 @@ public class LdioHttpInProcess extends LdioInput {
 	public LdioHttpInProcess(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry) {
 		super(NAME, pipelineName, executor, adapter, observationRegistry);
 	}
+
+	@Override
+	public void shutdown() {
+		// Not implementable for push based
+	}
 }

@@ -44,4 +44,8 @@ public class LdioKafkaIn extends LdioInput implements MessageListener<String, St
 		return contentTypeOnHeader == null ? defaultContentType : new String(contentTypeOnHeader.value());
 	}
 
+	@Override
+	public void shutdown() {
+		// implemented in status story
+	}
 }

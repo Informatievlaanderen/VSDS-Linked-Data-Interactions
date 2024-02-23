@@ -5,12 +5,12 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.InputComponentD
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class PipelineConfig {
+	public static final String NAME_PATTERN = "^[0-9a-zA-Z_\\-. ]+$";
 	public static final String PIPELINE_NAME = "pipeline.name";
 	private String name;
-	private String description;
+	private String description = "";
 	private InputComponentDefinition input;
 	private List<ComponentDefinition> transformers = new LinkedList<>();
 	private List<ComponentDefinition> outputs;
@@ -48,25 +48,10 @@ public class PipelineConfig {
 	}
 
 	public List<ComponentDefinition> getOutputs() {
-		return outputs.stream().map(componentDefinition -> {
-			Map<String, String> properties = componentDefinition.getConfig().getConfig();
-			properties.put(PIPELINE_NAME, name);
-			return new ComponentDefinition(componentDefinition.getName(), properties);
-		}).toList();
+		return outputs;
 	}
 
 	public void setOutputs(List<ComponentDefinition> outputs) {
 		this.outputs = outputs;
-	}
-
-	@Override
-	public String toString() {
-		return "{" +
-		       "name='" + name + '\'' +
-		       ", description='" + description + '\'' +
-		       ", input=" + input +
-		       ", transformers=" + transformers +
-		       ", outputs=" + outputs +
-		       '}';
 	}
 }

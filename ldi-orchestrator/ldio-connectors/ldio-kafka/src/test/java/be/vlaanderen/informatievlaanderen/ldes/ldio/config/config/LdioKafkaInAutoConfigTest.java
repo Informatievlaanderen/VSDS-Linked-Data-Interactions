@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdioKafkaInAutoConfigTest {
@@ -23,7 +23,7 @@ class LdioKafkaInAutoConfigTest {
 
 		Map<String, String> config = getBasicConfig();
 		config.put(KafkaInConfigKeys.SECURITY_PROTOCOL, "Fantasy protocol");
-		ComponentProperties componentProperties = new ComponentProperties(config);
+		ComponentProperties componentProperties = new ComponentProperties("pipelineName", NAME, config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
 				() -> configurator.configure((content) -> Stream.of(), null, componentProperties));
@@ -39,7 +39,7 @@ class LdioKafkaInAutoConfigTest {
 		Map<String, String> config = getBasicConfig();
 
 		assertDoesNotThrow(
-				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties(config)));
+				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 	@Test
@@ -52,7 +52,7 @@ class LdioKafkaInAutoConfigTest {
 		config.put(KafkaInConfigKeys.SASL_JAAS_PASSWORD, "secret");
 
 		assertDoesNotThrow(
-				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties(config)));
+				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 	private Map<String, String> getBasicConfig() {
@@ -60,7 +60,6 @@ class LdioKafkaInAutoConfigTest {
 		config.put(KafkaInConfigKeys.BOOTSTRAP_SERVERS, "servers");
 		config.put(KafkaInConfigKeys.TOPICS, "topic1");
 		config.put(ORCHESTRATOR_NAME, "orchestrator.name");
-		config.put(PIPELINE_NAME, "pipeline.name");
 		return config;
 	}
 

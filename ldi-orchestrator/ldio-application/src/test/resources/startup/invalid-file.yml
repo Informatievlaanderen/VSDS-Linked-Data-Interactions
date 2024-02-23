@@ -1,0 +1,2 @@
+orchestrator:
+  directory: ./src/test/resources/startup/invalid-file

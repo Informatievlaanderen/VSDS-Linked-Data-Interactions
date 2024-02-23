@@ -31,4 +31,8 @@ public class LdioArchiveFileIn extends LdioInput {
 		});
 	}
 
+	@Override
+	public void shutdown() {
+		// Implemented in other story
+	}
 }

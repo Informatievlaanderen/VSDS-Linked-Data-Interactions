@@ -4,14 +4,10 @@ import java.util.Map;
 
 public class InputComponentDefinition extends ComponentDefinition {
 
-	public InputComponentDefinition(String name, Map<String, String> config, ComponentDefinition adapter) {
-		super(name, config);
+	public InputComponentDefinition(String pipelineName, String name, Map<String, String> config, ComponentDefinition adapter) {
+		super(pipelineName, name, config == null ? Map.of() : config);
 		this.adapter = adapter;
 	}
-
-	public InputComponentDefinition() {
-	}
-
 	private ComponentDefinition adapter;
 
 	public ComponentDefinition getAdapter() {

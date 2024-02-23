@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,25 +11,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PipelineTOTest {
 
-	private static PipelineConfig getPipelineConfig() {
-		PipelineConfig createdPipeline = new PipelineConfig();
-
-		createdPipeline.setName("pipeline");
-		createdPipeline.setInput(new InputComponentDefinition("in", Map.of("type", "in"),
-				new ComponentDefinition("adapter", Map.of("type", "adapter"))));
-		createdPipeline.setTransformers(List.of(
-				new ComponentDefinition("t1", Map.of("type", "transform")),
-				new ComponentDefinition("t2", Map.of("type", "transform")))
-		);
-		createdPipeline.setOutputs(List.of(new ComponentDefinition("output", Map.of("type", "output"))));
-		return createdPipeline;
+	private static PipelineConfigTO getPipelineConfig() {
+		String name = "pipeline";
+		var input = new InputComponentDefinitionTO("in",
+				new ComponentDefinitionTO("adapter", Map.of("type", "adapter")), Map.of("type", "in"));
+		var transformers = List.of(
+				new ComponentDefinitionTO("t1", Map.of("type", "transform")),
+				new ComponentDefinitionTO("t2", Map.of("type", "transform")));
+		var outputs = List.of(new ComponentDefinitionTO("output", Map.of("type", "output")));
+		return new PipelineConfigTO(name, "", input, transformers, outputs);
 	}
 
 	@Test
 	void fromPipelineConfig() {
-		PipelineConfig createdPipeline = getPipelineConfig();
+		PipelineConfigTO createdPipeline = getPipelineConfig();
 
-		PipelineTO pipelineTO = PipelineTO.fromPipelineConfig(createdPipeline, RUNNING);
+		PipelineTO pipelineTO = PipelineTO.build(createdPipeline, RUNNING);
 
 		assertEquals("pipeline", pipelineTO.name());
 		assertEquals(RUNNING, pipelineTO.status());
