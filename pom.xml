@@ -75,6 +75,7 @@
         <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
         <mockito-core.version>5.5.0</mockito-core.version>
         <mockito-junit.version>5.5.0</mockito-junit.version>
+        <testcontainers.version>1.19.6</testcontainers.version>
         <testcontainers-postgresql.version>1.19.0</testcontainers-postgresql.version>
         <slf4j.version>2.0.7</slf4j.version>
         <byte-buddy-dep.version>1.14.7</byte-buddy-dep.version>

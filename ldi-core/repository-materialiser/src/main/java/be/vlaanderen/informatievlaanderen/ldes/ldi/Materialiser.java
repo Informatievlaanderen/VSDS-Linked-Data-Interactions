@@ -42,7 +42,7 @@ public class Materialiser {
 		return materialiserConnection;
 	}
 
-	public synchronized void process(org.apache.jena.rdf.model.Model jenaModel) {
+	public void process(org.apache.jena.rdf.model.Model jenaModel) {
 		synchronized (materialiserConnection) {
 			try {
 				Model updateModel = JenaToRDF4JConverter.convert(jenaModel);

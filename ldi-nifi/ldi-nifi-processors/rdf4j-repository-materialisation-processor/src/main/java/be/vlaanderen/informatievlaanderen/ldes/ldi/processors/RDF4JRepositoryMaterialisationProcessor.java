@@ -9,6 +9,7 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
+import org.apache.nifi.annotation.lifecycle.OnRemoved;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.flowfile.FlowFile;
@@ -51,13 +52,14 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		properties.add(SPARQL_HOST);
 		properties.add(REPOSITORY_ID);
 		properties.add(NAMED_GRAPH);
+		properties.add(BATCH_SIZE);
+		properties.add(BATCH_TIMEOUT);
 		properties.add(SIMULTANEOUS_FLOWFILES_TO_PROCESS);
 		return properties;
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-
 		if (materialiser == null) {
 			materialiser = new Materialiser(context.getProperty(SPARQL_HOST).getValue(),
 					context.getProperty(REPOSITORY_ID).getValue(),
@@ -95,5 +97,10 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 				session.transfer(flowFile, FAILURE);
 			}
 		}
+	}
+
+	@OnRemoved
+	public void onRemoved() {
+		materialiser.shutdown();
 	}
 }
