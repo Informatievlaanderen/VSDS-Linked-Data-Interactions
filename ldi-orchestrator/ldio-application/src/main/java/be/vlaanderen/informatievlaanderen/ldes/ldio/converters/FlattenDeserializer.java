@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * A custom deserializer that flattens a JSON object into a Map<String, String>.
+ * A custom deserializer that flattens a JSON object into a Map of Strings.
  * The keys in the map are the JSON paths of the values in the input JSON.
  * This deserializer extends the JsonDeserializer class from the Jackson library.
  */
