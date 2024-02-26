@@ -33,15 +33,19 @@ public class PipelineFileRepository implements PipelineRepository {
 	public static final String EXTENSION_YAML = ".yaml";
 	private final Logger log = LoggerFactory.getLogger(PipelineFileRepository.class);
 	private final Map<String, SavedPipeline> activePipelines;
-	private final File directory;
+	private boolean persistenceEnabled;
+	private File directory;
 	private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 	private final ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
 	private final ObjectReader reader = mapper.readerFor(PipelineConfig.class);
 
 	public PipelineFileRepository(OrchestratorConfig config) {
 		activePipelines = new HashMap<>();
-		directory = new File(config.getDirectory());
-		directory.mkdirs();
+		if (config.getDirectory() != null) {
+			persistenceEnabled = true;
+			directory = new File(config.getDirectory());
+			directory.mkdirs();
+		}
 	}
 
 	@Override
@@ -56,54 +60,45 @@ public class PipelineFileRepository implements PipelineRepository {
 	 * and the values are PipelineConfigTO objects representing the pipeline configurations.
 	 */
 	public Map<File, PipelineConfigTO> getInactivePipelines() {
-		try (Stream<Path> files = Files.list(directory.toPath())) {
-			return files
-					.filter(path -> !Files.isDirectory(path))
-					.filter(path -> path.toFile().getName().endsWith(EXTENSION_YML)
-							|| path.toFile().getName().endsWith(EXTENSION_YAML))
-					.map(path -> {
-						try {
-							return Map.of(path.toFile(), readConfigFile(path));
-						} catch (PipelineParsingException e) {
-							log.error(e.getMessage());
-							return null;
-						}
-					})
-					.filter(Objects::nonNull)
-					.map(Map::entrySet)
-					.flatMap(Collection::stream)
-					.filter(pipelineConfigTOEntry -> !exists(pipelineConfigTOEntry.getValue().name()))
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
+		if (persistenceEnabled) {
+			try (Stream<Path> files = Files.list(directory.toPath())) {
+				return files
+						.filter(path -> !Files.isDirectory(path))
+						.filter(path -> path.toFile().getName().endsWith(EXTENSION_YML)
+						                || path.toFile().getName().endsWith(EXTENSION_YAML))
+						.map(path -> {
+							try {
+								return Map.of(path.toFile(), readConfigFile(path));
+							} catch (PipelineParsingException e) {
+								log.error(e.getMessage());
+								return null;
+							}
+						})
+						.filter(Objects::nonNull)
+						.map(Map::entrySet)
+						.flatMap(Collection::stream)
+						.filter(pipelineConfigTOEntry -> !exists(pipelineConfigTOEntry.getValue().name()))
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+			} catch (IOException e) {
+				throw new UncheckedIOException(e);
+			}
+		} else {
+			return Map.of();
 		}
+
 	}
 
 	@Override
 	public void activateNewPipeline(PipelineConfig pipeline) {
-		if (exists(pipeline.getName())) {
-			throw new PipelineAlreadyExistsException(pipeline.getName());
-		}
-		var pipelineConfig = fromPipelineConfig(pipeline);
-		var savedFile = pipelineFile(pipeline.getName());
-
-		if (savedFile.exists()) {
-			AtomicInteger count = new AtomicInteger();
-			boolean success = false;
-			do {
-				savedFile = new File(directory, savedFile.getName().replace(EXTENSION_YML, ("(%d)%s").formatted(count.incrementAndGet(), EXTENSION_YML)));
-				if (!savedFile.exists()) {
-					success = true;
-				}
-			} while (!success);
+		if (persistenceEnabled) {
+			persistPipelineToFile(pipeline);
+		} else {
+			if (exists(pipeline.getName())) {
+				throw new PipelineAlreadyExistsException(pipeline.getName());
+			}
+			activePipelines.put(pipeline.getName(), new SavedPipeline(fromPipelineConfig(pipeline), null));
 		}
 
-		try {
-			writer.writeValue(savedFile, pipelineConfig);
-			activePipelines.put(pipeline.getName(), new SavedPipeline(pipelineConfig, savedFile));
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
 	}
 
 	@Override
@@ -128,12 +123,15 @@ public class PipelineFileRepository implements PipelineRepository {
 		return ofNullable(activePipelines.get(pipelineName))
 				.map(savedPipeline -> {
 					activePipelines.remove(pipelineName);
-					try {
-						Files.delete(savedPipeline.file.toPath());
-						return true;
-					} catch (IOException e) {
-						return false;
+					if (persistenceEnabled) {
+						try {
+							Files.delete(savedPipeline.file.toPath());
+							return true;
+						} catch (IOException e) {
+							return false;
+						}
 					}
+					return true;
 				}).orElse(false);
 	}
 
@@ -147,6 +145,32 @@ public class PipelineFileRepository implements PipelineRepository {
 			return reader.readValue(path.toFile(), PipelineConfigTO.class);
 		} catch (IOException e) {
 			throw new PipelineParsingException(path.getFileName().toString());
+		}
+	}
+
+	private void persistPipelineToFile(PipelineConfig pipeline) {
+		if (exists(pipeline.getName())) {
+			throw new PipelineAlreadyExistsException(pipeline.getName());
+		}
+		var pipelineConfig = fromPipelineConfig(pipeline);
+		var savedFile = pipelineFile(pipeline.getName());
+
+		if (savedFile.exists()) {
+			AtomicInteger count = new AtomicInteger();
+			boolean success = false;
+			do {
+				savedFile = new File(directory, savedFile.getName().replace(EXTENSION_YML, ("(%d)%s").formatted(count.incrementAndGet(), EXTENSION_YML)));
+				if (!savedFile.exists()) {
+					success = true;
+				}
+			} while (!success);
+		}
+
+		try {
+			writer.writeValue(savedFile, pipelineConfig);
+			activePipelines.put(pipeline.getName(), new SavedPipeline(pipelineConfig, savedFile));
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
 		}
 	}
 
