@@ -31,7 +31,7 @@ class PipelineTOTest {
 
 		assertEquals("pipeline", pipelineTO.name());
 		assertEquals(RUNNING, pipelineTO.status());
-		assertEquals(AUTO, pipelineTO.sourceOfLastStausChange());
+		assertEquals(AUTO, pipelineTO.updateSource());
 		assertEquals("in", pipelineTO.input().name());
 		assertTrue(pipelineTO.input().config().containsKey("type"));
 		assertEquals("adapter", pipelineTO.input().adapter().name());

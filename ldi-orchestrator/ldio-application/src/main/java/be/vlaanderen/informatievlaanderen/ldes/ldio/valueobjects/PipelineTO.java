@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public record PipelineTO(String name, PipelineStatus status, StatusChangeSource sourceOfLastStausChange, String description, InputComponentDefinitionTO input,
+public record PipelineTO(String name, PipelineStatus status, StatusChangeSource updateSource, String description, InputComponentDefinitionTO input,
                          List<ComponentDefinitionTO> transformers, List<ComponentDefinitionTO> outputs) {
 	public static PipelineTO build(PipelineConfigTO config, PipelineStatus status, StatusChangeSource statusChangeSource) {
 		var input = new InputComponentDefinitionTO(config.input().name(),
