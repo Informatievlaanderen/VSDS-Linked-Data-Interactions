@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.HashMap;
@@ -13,10 +12,10 @@ import java.util.stream.Stream;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class LdioAmqpInAutoConfigTest {
-	@Autowired
-	ApplicationEventPublisher applicationEventPublisher;
+	private ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 	@Test
 	void shouldThrowExceptionWhenInvalidUrlConfig() {
 		var configurator = new LdioAmqpInAutoConfig.LdioJmsInConfigurator(

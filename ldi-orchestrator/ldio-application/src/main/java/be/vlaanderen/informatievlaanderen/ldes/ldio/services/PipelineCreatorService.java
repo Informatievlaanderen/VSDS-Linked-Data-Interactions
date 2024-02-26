@@ -10,6 +10,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.SenderCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidComponentException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidPipelineNameException;
@@ -19,6 +20,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -68,9 +71,10 @@ public class PipelineCreatorService {
 			Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
 			inputConfig.put(ORCHESTRATOR_NAME, orchestratorName);
 
-			Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(pipeLineName, inputName, inputConfig));
+			LdioInput ldiInput = configurator.configure(adapter, executor, eventPublisher, new ComponentProperties(pipeLineName, inputName, inputConfig));
 
 			registerBean(pipeLineName, ldiInput);
+			eventPublisher.publishEvent(new InputCreatedEvent(config.getName(), ldiInput));
 		} catch (NoSuchBeanDefinitionException e) {
 			throw new InvalidComponentException(config.getName(), e.getBeanName());
 		}
@@ -111,32 +115,6 @@ public class PipelineCreatorService {
 		eventPublisher.publishEvent(new SenderCreatedEvent(pipelineConfig.getName(), ldioSender));
 
 		return new ComponentExecutorImpl(ldioTransformerPipeline);
-	}
-
-	public void initialiseLdiInput(PipelineConfig config) {
-		LdioInputConfigurator configurator = (LdioInputConfigurator) configContext.getBean(
-				config.getInput().getName());
-
-		LdiAdapter adapter = Optional.ofNullable(config.getInput().getAdapter())
-				.map(this::getLdioAdapter)
-				.orElseGet(() -> {
-					LOGGER.warn("No adapter configured for pipeline {}. Please verify this is a desired scenario.", config.getName());
-					return null;
-				});
-
-		ComponentExecutor executor = componentExecutor(config);
-
-		String pipeLineName = config.getName();
-
-		Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
-		inputConfig.put(ORCHESTRATOR_NAME, orchestratorConfig.getName());
-		inputConfig.put(PIPELINE_NAME, pipeLineName);
-
-		LdioInput ldiInput = configurator.configure(adapter, executor, eventPublisher, new ComponentProperties(inputConfig));
-
-		registerBean(pipeLineName, ldiInput);
-		eventPublisher.publishEvent(new InputCreatedEvent(config.getName(), ldiInput));
-		eventPublisher.publishEvent(new PipelineCreatedEvent(this, config));
 	}
 
 	private LdiAdapter getLdioAdapter(ComponentDefinition componentDefinition) {

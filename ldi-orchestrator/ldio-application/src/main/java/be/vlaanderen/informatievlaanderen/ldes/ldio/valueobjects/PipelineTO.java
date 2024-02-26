@@ -18,6 +18,6 @@ public record PipelineTO(String name, PipelineStatus status, StatusChangeSource 
 		var outputs = config.outputs().stream()
 				.map(componentDefinition -> new ComponentDefinitionTO(componentDefinition.name(), componentDefinition.config()))
 				.toList();
-		return new PipelineTO(config.name(), status, config.description(), input, transformers, outputs);
+		return new PipelineTO(config.name(), status, statusChangeSource, config.description(), input, transformers, outputs);
 	}
 }

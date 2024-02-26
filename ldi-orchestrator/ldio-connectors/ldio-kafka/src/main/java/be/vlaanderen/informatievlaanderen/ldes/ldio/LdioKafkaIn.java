@@ -24,7 +24,6 @@ import java.util.Map;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.SASL_JAAS_PASSWORD;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 public class LdioKafkaIn extends LdioInput {
     public static final String NAME = "Ldio:KafkaIn";
@@ -72,7 +71,7 @@ public class LdioKafkaIn extends LdioInput {
 
 	@Override
 	public void shutdown() {
-		// implemented in status story
+		container.pause();
 	}
     private Map<String, Object> getConsumerConfig(ComponentProperties config) {
         final Map<String, Object> props = new HashMap<>();
@@ -99,6 +98,6 @@ public class LdioKafkaIn extends LdioInput {
 
     private String defineUniqueGroupName(ComponentProperties config) {
         return String.format("ldio-%s-%s", config.getProperty(ORCHESTRATOR_NAME),
-                config.getProperty(PIPELINE_NAME));
+                config.getPipelineName());
     }
 }

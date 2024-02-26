@@ -30,7 +30,7 @@ public class PipelineController {
 	public List<PipelineTO> overview() {
 		return pipelineService.getPipelines()
 				.stream()
-				.map(config -> PipelineTO.build(config, pipelineStatusService.getPipelineStatus(config.name())))
+				.map(config -> PipelineTO.build(config, pipelineStatusService.getPipelineStatus(config.name()), pipelineStatusService.getPipelineStatusChangeSource(config.name())))
 				.toList();
 	}
 
@@ -44,7 +44,7 @@ public class PipelineController {
 	public PipelineTO addPipeline(@RequestBody PipelineConfigTO config) {
 		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineService.addPipeline(config.toPipelineConfig()));
 
-		return PipelineTO.build(pipelineConfig, pipelineStatusService.getPipelineStatus(pipelineConfig.name()));
+		return PipelineTO.build(pipelineConfig, pipelineStatusService.getPipelineStatus(pipelineConfig.name()), pipelineStatusService.getPipelineStatusChangeSource(config.name()));
 	}
 
 	/**

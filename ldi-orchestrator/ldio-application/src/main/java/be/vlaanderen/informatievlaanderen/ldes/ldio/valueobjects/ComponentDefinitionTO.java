@@ -1,9 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.converters.FlattenDeserializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public record ComponentDefinitionTO(String name,
                                     @JsonDeserialize(using = FlattenDeserializer.class) Map<String, String> config) {

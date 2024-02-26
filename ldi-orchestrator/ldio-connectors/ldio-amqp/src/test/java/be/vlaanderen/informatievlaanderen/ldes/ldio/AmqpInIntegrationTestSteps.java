@@ -16,8 +16,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RDFWriter;
-import org.springframework.context.ApplicationEventPublisher;
-import org.testcontainers.activemq.ArtemisContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

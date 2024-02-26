@@ -46,7 +46,7 @@ public class LdioArchiveFileIn extends LdioInput {
 
 	@Override
 	public void shutdown() {
-		// Implemented in other story
+		this.paused = true;
 	}
 	@Override
 	protected synchronized void resume() {

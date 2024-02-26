@@ -5,11 +5,14 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import org.springframework.context.ApplicationEventPublisher;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
+
 public class DummyIn extends LdioInput {
 	private int counter = 0;
 
 	public DummyIn(ComponentExecutor executor, LdiAdapter adapter, ApplicationEventPublisher applicationEventPublisher) {
 		super("DummyIn", "test", executor, adapter, null, applicationEventPublisher);
+		this.updateStatus(STARTING);
 	}
 
 	public void sendData() {
