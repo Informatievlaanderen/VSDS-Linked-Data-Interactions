@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 @Configuration
 public class LdioKafkaInAutoConfig {
@@ -36,9 +35,7 @@ public class LdioKafkaInAutoConfig {
 			String pipelineName = config.getPipelineName();
 			verifyAdapterPresent(pipelineName, adapter);
 
-			LdioKafkaIn ldioIn = new LdioKafkaIn(pipelineName, executor, adapter, observationRegistry, applicationEventPublisher, config);
-			ldioIn.updateStatus(STARTING);
-			return ldioIn;
+			return new LdioKafkaIn(pipelineName, executor, adapter, observationRegistry, applicationEventPublisher, config);
 		}
 	}
 }

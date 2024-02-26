@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.CONTENT_TYPE_HEADER;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 public class LdioAmqpIn extends LdioInput implements MessageListener {
 	public static final String NAME = "Ldio:AmqpIn";
@@ -45,6 +46,7 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 		ldioAmqpInRegistrator = jmsInRegistrator;
 		listenerId = endpoint.getId();
 		jmsInRegistrator.registerListener(jmsConfig, endpoint);
+		this.updateStatus(STARTING);
 	}
 
 	@Override

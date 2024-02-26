@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 @Configuration
 public class LdioAmqpInAutoConfig {
@@ -47,10 +46,8 @@ public class LdioAmqpInAutoConfig {
 			JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),
 					remoteUrl, config.getProperty(QUEUE));
 
-			LdioAmqpIn ldioIn = new LdioAmqpIn(pipelineName, executor, adapter, getContentType(config), jmsConfig, ldioAmqpInRegistrator,
+			return new LdioAmqpIn(pipelineName, executor, adapter, getContentType(config), jmsConfig, ldioAmqpInRegistrator,
 					observationRegistry, applicationEventPublisher);
-			ldioIn.updateStatus(STARTING);
-			return ldioIn;
 		}
 
 		private String getContentType(ComponentProperties config) {
