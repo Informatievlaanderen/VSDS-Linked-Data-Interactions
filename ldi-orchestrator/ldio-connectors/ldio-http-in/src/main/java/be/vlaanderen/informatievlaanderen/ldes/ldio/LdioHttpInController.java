@@ -32,8 +32,8 @@ public class LdioHttpInController {
 
 		LdioHttpInProcess inputProcess = ofNullable(httpInProcesses.get(pipeline))
 				.orElseThrow(() -> new PipelineDoesNotExistException(pipeline));
-		if (inputProcess.isHalted()) {
-			return ResponseEntity.status(503).body("This LDIO pipeline is currently paused.");
+		if (inputProcess.isPaused()) {
+			return ResponseEntity.status(503).body(String.format("The LDIO pipeline named %s is currently paused.", pipeline));
 		} else {
 			inputProcess.processInput(content, contentType);
 		}

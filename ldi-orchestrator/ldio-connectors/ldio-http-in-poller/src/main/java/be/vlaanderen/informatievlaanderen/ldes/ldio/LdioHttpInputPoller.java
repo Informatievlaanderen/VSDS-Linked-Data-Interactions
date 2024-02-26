@@ -20,6 +20,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval.TYPE.CRON;
 
@@ -31,6 +32,8 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	private final boolean continueOnFail;
 	private static final Logger log = LoggerFactory.getLogger(LdioHttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
+	private PollingInterval pollingInterval;
+	private ScheduledFuture scheduledPoll;
 
 	public LdioHttpInputPoller(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry, List<String> endpoints,
 							   boolean continueOnFail, RequestExecutor requestExecutor, ApplicationEventPublisher applicationEventPublisher) {
@@ -44,11 +47,16 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	}
 
 	public void schedulePoller(PollingInterval pollingInterval) {
+		this.pollingInterval = pollingInterval;
 		scheduler.initialize();
+		schedule(pollingInterval);
+	}
+
+	private void schedule(PollingInterval pollingInterval) {
 		if (pollingInterval.getType() == CRON) {
-			scheduler.schedule(this, pollingInterval.getCronTrigger());
+			scheduledPoll = scheduler.schedule(this, pollingInterval.getCronTrigger());
 		} else {
-			scheduler.scheduleAtFixedRate(this, Instant.now(), pollingInterval.getDuration());
+			scheduledPoll = scheduler.scheduleAtFixedRate(this, Instant.now(), pollingInterval.getDuration());
 		}
 	}
 
@@ -56,9 +64,7 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	public void run() {
 		requests.forEach(request -> {
 			try {
-				if (!isHalted()) {
-					executeRequest(request);
-				}
+				executeRequest(request);
 			} catch (Exception e) {
 				if (!continueOnFail) {
 					throw e;
@@ -89,12 +95,14 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	}
 
 	@Override
-	protected void resume() {
-		//Handled by status check
+	protected synchronized void resume() {
+		if (pollingInterval != null) {
+			schedule(pollingInterval);
+		}
 	}
 
 	@Override
-	protected void pause() {
-		//Handled by status check
+	protected synchronized void pause() {
+		scheduledPoll.cancel(false);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 public class LdioHttpInProcess extends LdioInput {
 	public static final String NAME = "Ldio:HttpIn";
+	private boolean isPaused = false;
 
 	public LdioHttpInProcess(String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
 							 ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher) {
@@ -16,12 +17,16 @@ public class LdioHttpInProcess extends LdioInput {
 
 	@Override
 	protected void resume() {
-		//Handled by status check
+		this.isPaused = false;
 	}
 
 	@Override
 	protected void pause() {
-		//Handled by status check
+		this.isPaused = true;
+	}
+
+	public boolean isPaused() {
+		return isPaused;
 	}
 
 	@Override

@@ -21,6 +21,7 @@ public class LdioLdesClient extends LdioInput {
 
 	private final MemberSupplier memberSupplier;
 	private boolean threadRunning = true;
+	private boolean paused = false;
 
 	public LdioLdesClient(String pipelineName,
 						  ComponentExecutor componentExecutor,
@@ -40,20 +41,24 @@ public class LdioLdesClient extends LdioInput {
 	private synchronized void run() {
 		try {
 			while (threadRunning) {
-				while (this.isHalted()) {
-					try {
-						this.wait();
-					}  catch (InterruptedException e) {
-						log.error("Thread interrupted: {}", e.getMessage());
-						Thread.currentThread().interrupt();
-					}
-				}
+				checkPause();
 				processModel(memberSupplier.get().getModel());
 			}
 		} catch (EndOfLdesException e) {
 			log.warn(e.getMessage());
 		} catch (Exception e) {
 			log.error("LdesClientRunner FAILURE", e);
+		}
+	}
+
+	private void checkPause() {
+		while (paused) {
+			try {
+				this.wait();
+			}  catch (InterruptedException e) {
+				log.error("Thread interrupted: {}", e.getMessage());
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 
@@ -64,11 +69,12 @@ public class LdioLdesClient extends LdioInput {
 
 	@Override
 	protected synchronized void resume() {
+		this.paused = false;
 		this.notifyAll();
 	}
 
 	@Override
 	protected void pause() {
-		//Handled by status check
+		this.paused = true;
 	}
 }

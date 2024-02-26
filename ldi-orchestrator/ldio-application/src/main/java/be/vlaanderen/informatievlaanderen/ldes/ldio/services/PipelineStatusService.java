@@ -58,13 +58,13 @@ public class PipelineStatusService {
 		PipelineStatus pipelineStatus = getPipelineStatus(pipelineId);
 
 		return switch (pipelineStatus) {
-			case RUNNING -> RUNNING;
-			case STARTING -> STARTING;
-			case INIT -> INIT;
 			case HALTED -> {
 				savedPipelines.get(pipelineId).getLdioInput().updateStatus(RESUMING);
 				yield RESUMING;
 			}
+			case INIT -> INIT;
+			case STARTING -> STARTING;
+			case RUNNING -> RUNNING;
 			case RESUMING -> RESUMING;
 			case STOPPED -> STOPPED;
 			case STOPPING -> STOPPING;
@@ -81,9 +81,9 @@ public class PipelineStatusService {
 				savedPipelines.get(pipelineId).getLdioInput().updateStatus(HALTED);
 				yield HALTED;
 			}
-			case HALTED -> HALTED;
 			case INIT -> INIT;
 			case STARTING -> STARTING;
+			case HALTED -> HALTED;
 			case STOPPED -> STOPPED;
 			case STOPPING -> STOPPING;
 		};

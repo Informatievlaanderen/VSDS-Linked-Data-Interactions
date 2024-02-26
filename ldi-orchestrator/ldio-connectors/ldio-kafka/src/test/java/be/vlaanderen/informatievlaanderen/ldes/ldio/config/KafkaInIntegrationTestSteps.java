@@ -59,8 +59,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 			return Stream.of(toModel(content));
 		};
 		var ldioKafkaInConfigurator = new LdioKafkaInAutoConfig().ldioConfigurator(null);
-		var ldioKafkaInContainer = ldioKafkaInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
-//		ldioKafkaInContainer.start();
+		ldioKafkaInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
 	}
 
 	private Model toModel(LdiAdapter.Content content) {
