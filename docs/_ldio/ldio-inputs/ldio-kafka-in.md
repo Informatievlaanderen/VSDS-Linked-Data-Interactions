@@ -2,48 +2,49 @@
 layout: default
 parent: LDIO Inputs
 title: Kafka In
+nav_order: 4
 ---
 
 # LDIO Kafka In
 
-***Ldio:KafkaIn***
+<b>LDIO Component Name:</b> <i>`Ldio:LdioKafkaIn`</i>
 
-The LDIO Kafka In listens to messages from a [kafka topic](https://kafka.apache.org).
+<br>
 
-Two security protocols are supported:
-- [NO SECURITY](#no-security)
-- [SASL SSL PLAIN](#sasl-ssl-plain)
+The LDIO Kafka In component is vital to the LD INPUT PIPELINE, specifically designed to interact with Kafka, a distributed event streaming platform. This component is responsible for listening to messages from a specified [kafka topic](https://kafka.apache.org), which is crucial in integrating with an LDES server.
 
-## Config
+```mermaid
+graph LR
+    L[Kafka topic] --> H[Kafka in component]
+    H --> S[LDES server]
 
-| Property           | Description                                                 | Required | Default         | Example             | Supported values          |
-|--------------------|-------------------------------------------------------------|----------|-----------------|---------------------|---------------------------|
-| content-type       | Any content type supported by Apache Jena                   | Yes      | N/A             | application/n-quads | String                    |
-| bootstrap-servers  | Comma separated list of uris of the bootstrap servers       | Yes      | N/A             | localhost:9012      | url                       |
-| topics             | Names of the topics (comma separated)                       | Yes      | N/A             | quickstart-events   | String                    |
-| group-id           | Group identifier the consumer belongs to                    | No       | generated value | group-1             | String                    |
-| security-protocol  | Security protocol to be used to connect to the kafka broker | No       | NO_AUTH         | SASL_SSL_PLAIN      | SASL_SSL_PLAIN or NO_AUTH |
-| sasl-jaas-user     | Username used in the security protocol                      | No       | null            | client              | String                    |
-| sasl-jaas-password | Password used in the security protocol                      | No       | null            | secret              | String                    |
+    subgraph LD Input Pipeline
+    H
+    end
+```
 
 ## Example
 
 ### NO SECURITY
 
 ```yaml
-outputs:
-  - name: Ldio:KafkaIn
-    config:
-      content-type: application/n-quads
-      topics: quickstart-events
-      bootstrap-servers: localhost:9092
+orchestrator:
+  pipelines:
+    - name: example
+      outputs:
+        - name: Ldio:LdioKafkaIn
+          config:
+            content-type: application/n-quads
+            topics: quickstart-events
+            bootstrap-servers: localhost:9092
+            group-id: testing_group
 ```
 
 ### SASL SSL PLAIN
 
 ```yaml
 outputs:
-  - name: Ldio:KafkaIn
+  - name: Ldio:LdioKafkaOut
     config:
       content-type: application/n-quads
       topics: quickstart-events
@@ -53,3 +54,15 @@ outputs:
       sasl-jaas-user: client
       sasl-jaas-password: client-secret
 ```
+
+## Config options
+
+| Property           | Description                                                         | Required | Default | Example                          | Supported values                                                                     |
+| ------------------ | ------------------------------------------------------------------- | -------- | ------- | -------------------------------- | ------------------------------------------------------------------------------------ |
+| content-type       | Any content type supported by Apache Jena                           | Yes      | N/A     | application/n-quads              | String                                                                               |
+| bootstrap-servers  | Comma separated list of uris of the bootstrap servers               | Yes      | N/A     | localhost:9012                   | url                                                                                  |
+| topic              | Name of the topic                                                   | Yes      | N/A     | quickstart-events                | String                                                                               |
+| key-property-path  | Optional property path to extract the kafka key from the data model | No       | null    | <http://purl.org/dc/terms/title> | [ARQ property path](https://jena.apache.org/documentation/query/property_paths.html) |
+| security-protocol  | Security protocol to be used to connect to the kafka broker         | No       | NO_AUTH | SASL_SSL_PLAIN                   | SASL_SSL_PLAIN or NO_AUTH                                                            |
+| sasl-jaas-user     | Username used in the security protocol                              | No       | null    | client                           | String                                                                               |
+| sasl-jaas-password | Password used in the security protocol                              | No       | null    | secret                           | String                                                                               |
