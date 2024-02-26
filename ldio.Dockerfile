@@ -43,6 +43,7 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-enricher/target
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-console-out/target/ldio-console-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-out/target/ldio-http-out-jar-with-dependencies.jar ./lib/
+COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-noop-out/target/ldio-noop-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-azure-blob-out/target/ldio-azure-blob-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-file-out/target/ldio-file-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-repository-materialiser/target/ldio-repository-materialiser-jar-with-dependencies.jar ./lib/

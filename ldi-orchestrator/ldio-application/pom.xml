@@ -326,6 +326,16 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>ldio-noop-out</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-noop-out</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
 </project>
