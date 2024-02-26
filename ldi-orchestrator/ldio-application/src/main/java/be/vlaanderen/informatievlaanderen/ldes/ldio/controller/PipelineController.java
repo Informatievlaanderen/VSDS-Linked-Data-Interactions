@@ -28,10 +28,7 @@ public class PipelineController {
 	 */
 	@GetMapping()
 	public List<PipelineTO> overview() {
-		return pipelineService.getPipelines()
-				.stream()
-				.map(config -> PipelineTO.build(config, pipelineStatusService.getPipelineStatus(config.name()), pipelineStatusService.getPipelineStatusChangeSource(config.name())))
-				.toList();
+		return pipelineService.getPipelines();
 	}
 
 	/**
@@ -57,8 +54,8 @@ public class PipelineController {
 	 */
 	@DeleteMapping("/{pipeline}")
 	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline) {
-		if (pipelineService.deletePipeline(pipeline)) {
-			return ResponseEntity.ok().build();
+		if (pipelineService.requestDeletion(pipeline)) {
+			return ResponseEntity.accepted().build();
 		} else return ResponseEntity.noContent().build();
 	}
 }

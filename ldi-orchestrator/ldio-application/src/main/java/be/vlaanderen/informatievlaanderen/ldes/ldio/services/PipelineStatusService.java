@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
@@ -50,6 +51,11 @@ public class PipelineStatusService {
 	}
 
 	@EventListener
+	public void handlePipelineDeleted(PipelineDeletedEvent deletedEvent) {
+		this.savedPipelines.remove(deletedEvent.pipelineId());
+	}
+
+	@EventListener
 	public void handlePipelineCreated(InputCreatedEvent event) {
 		savedPipelines.put(event.pipelineName(), new SavedPipeline(event.ldioInput(), RUNNING));
 	}
@@ -93,7 +99,6 @@ public class PipelineStatusService {
 
 	public PipelineStatus stopPipeline(String pipelineId) {
 		savedPipelines.get(pipelineId).getLdioInput().updateStatus(STOPPING);
-		//pick in on dynamic pipeline removal
 		return STOPPED;
 	}
 

@@ -36,9 +36,4 @@ public class PipelineStatusController {
 		return pipelineStatusService.resumeHaltedPipeline(pipelineId);
 	}
 
-	@PostMapping(path = "{pipelineId}/stop")
-	public PipelineStatus stopPipeline(@PathVariable("pipelineId") String pipelineId) {
-		return pipelineStatusService.stopPipeline(pipelineId);
-	}
-
 }
