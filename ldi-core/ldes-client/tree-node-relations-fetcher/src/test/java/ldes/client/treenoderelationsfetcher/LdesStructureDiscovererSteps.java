@@ -8,7 +8,6 @@ import ldes.client.treenoderelationsfetcher.domain.valueobjects.LdesStructure;
 import org.apache.jena.riot.Lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 public class LdesStructureDiscovererSteps {
 	private LdesStructureDiscoverer ldesStructureDiscoverer;

@@ -13,7 +13,7 @@ public class OrchestratorConfig {
 	public static final String ORCHESTRATOR_NAME = "orchestrator.name";
 	public static final String DEBUG = "debug";
 	private String name = randomUUID().toString();
-	private String directory = "pipelines";
+	private String directory;
 	private List<PipelineConfig> pipelines;
 
 	public String getName() {
