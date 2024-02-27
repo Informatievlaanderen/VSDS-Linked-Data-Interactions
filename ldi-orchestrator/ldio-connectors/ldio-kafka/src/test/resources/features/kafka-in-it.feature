@@ -20,7 +20,7 @@ Feature: KafkaInIntegrationTest
       | nquads | application/n-quads | <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> 'my-zone-type' .                                                                                                                                                |
       | rdfxml | application/rdf+xml | <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:j.0="https://data.com/ns/mobiliteit#"><rdf:Description rdf:about="https://example.com/hindrances/29797"><j.0:zone>my-zone-type</j.0:zone></rdf:Description></rdf:RDF> |
 
-  Scenario Outline: Receiving a basic message from a kafka topic
+  Scenario Outline: Pausing an ldioKafkaIn topic
     Given I create a topic for my scenario: <topic>
     And I prepare the result lists
     And I create default config for LdioKafkaIn
@@ -32,11 +32,11 @@ Feature: KafkaInIntegrationTest
     Then Wait for a grace period
     And The componentExecutor will have been called 0 times
     When I unpause the pipeline
-    Then Wait for a grace period
+    Then Wait for the message
     And The result header will contain the <content-type>
     And The result value will contain the model
     And The componentExecutor will have been called 1 times
 
     Examples:
       | topic  | content-type        | content                                                                                       |
-      | nquads | application/n-quads | <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> 'my-zone-type' . |
+      | test   | application/n-quads | <https://example.com/hindrances/29797> <https://data.com/ns/mobiliteit#zone> 'my-zone-type' . |

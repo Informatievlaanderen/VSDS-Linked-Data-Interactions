@@ -14,8 +14,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
-
 @Configuration
 public class LdioLdesClientAutoConfig {
 	@SuppressWarnings("java:S6830")
@@ -40,7 +38,6 @@ public class LdioLdesClientAutoConfig {
 			RequestExecutor requestExecutor = new LdioRequestExecutorSupplier().getRequestExecutor(properties);
 			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor).getMemberSupplier();
 			var ldesClient = new LdioLdesClient(pipelineName, componentExecutor, observationRegistry, memberSupplier, applicationEventPublisher);
-			ldesClient.updateStatus(STARTING);
 			ldesClient.start();
 			return ldesClient;
 		}

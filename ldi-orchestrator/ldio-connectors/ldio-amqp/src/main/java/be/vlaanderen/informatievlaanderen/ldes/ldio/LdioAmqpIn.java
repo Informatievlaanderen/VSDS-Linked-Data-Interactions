@@ -72,7 +72,7 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown(boolean keepState) {
 		ldioAmqpInRegistrator.stopListener(listenerId);
 	}
 

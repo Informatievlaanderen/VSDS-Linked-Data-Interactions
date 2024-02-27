@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
@@ -112,7 +111,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	}
 	@Then("Wait for a grace period")
 	public void theListenerWillWaitForPeriod() throws InterruptedException {
-		sleep(500);
+		sleep(1500);
 	}
 
 	@And("^The result header will contain the (.*)$")

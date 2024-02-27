@@ -41,9 +41,9 @@ class VersionMaterialisedMemberSupplierTest {
 
     @Test
     void when_DestroyStateIsCalled_then_TheWrappedMemberSupplierIsCalled() {
-        versionMaterialisedMemberSupplier.destroyState();
+        versionMaterialisedMemberSupplier.destroyState(false);
 
-        verify(memberSupplier).destroyState();
+        verify(memberSupplier).destroyState(false);
     }
 
 }

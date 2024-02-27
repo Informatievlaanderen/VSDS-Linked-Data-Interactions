@@ -61,6 +61,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 	private boolean hasLdesEnded;
+	private boolean keepState;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -89,7 +90,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 		TimestampExtractor timestampExtractor = timestampPath.isBlank() ? new TimestampFromCurrentTimeExtractor() :
 				new TimestampFromPathExtractor(createProperty(timestampPath));
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor);
-		boolean keepState = stateKept(context);
+		keepState = stateKept(context);
 		if (useVersionMaterialisation(context)) {
             final var versionOfProperty = createProperty(getVersionOfProperty(context));
             final var versionMaterialiser = new VersionMaterialiser(versionOfProperty, restrictToMembers(context));
@@ -101,6 +102,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 			memberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
 		}
 
+		memberSupplier.init();
 		determineLdesProperties(ldesMetaData, requestExecutor, context);
 
 		LOGGER.info("LDES Client processor {} configured to follow (sub)streams {} (expected LDES source format: {})",
@@ -180,7 +182,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		memberSupplier.destroyState();
+		memberSupplier.destroyState(keepState);
 	}
 
 	public static String convertModelToString(Model model, Lang dataDestinationFormat) {

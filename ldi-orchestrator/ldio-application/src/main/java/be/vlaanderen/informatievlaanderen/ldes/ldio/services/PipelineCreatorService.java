@@ -20,8 +20,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -80,10 +78,10 @@ public class PipelineCreatorService {
 		}
 	}
 
-	public void removePipeline(String pipeline) {
+	public void removePipeline(String pipeline, boolean keepState) {
 		DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) configContext.getBeanFactory();
 		LdioInput ldioInput = (LdioInput) beanRegistry.getBean(pipeline);
-		ldioInput.shutdown();
+		ldioInput.shutdown(keepState);
 		beanFactory.destroyBean(pipeline);
 	}
 

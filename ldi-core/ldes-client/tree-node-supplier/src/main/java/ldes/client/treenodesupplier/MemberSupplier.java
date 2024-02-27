@@ -8,7 +8,7 @@ public interface MemberSupplier extends Supplier<SuppliedMember> {
 
 	@Override
 	SuppliedMember get();
-
-	void destroyState();
+	void init();
+	void destroyState(boolean keepState);
 
 }

@@ -73,7 +73,7 @@ public class LdioKafkaIn extends LdioInput {
     }
 
 	@Override
-	public void shutdown() {
+	public void shutdown(boolean keepState) {
 		container.pause();
 	}
     private Map<String, Object> getConsumerConfig(ComponentProperties config) {

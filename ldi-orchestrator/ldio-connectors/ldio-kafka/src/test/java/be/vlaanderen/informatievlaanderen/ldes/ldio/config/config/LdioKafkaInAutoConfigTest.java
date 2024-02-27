@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.kafka.test.rule.EmbeddedKafkaRule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,8 @@ import static org.mockito.Mockito.mock;
 class LdioKafkaInAutoConfigTest {
 
 	private ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+	private static final String TOPIC = "TopicName";
+	public static EmbeddedKafkaRule embeddedKafka = new EmbeddedKafkaRule(1, true, TOPIC);
 
 	@Test
 	void shouldThrowExceptionWhenInvalidAuthConfig() {
@@ -61,8 +64,8 @@ class LdioKafkaInAutoConfigTest {
 
 	private Map<String, String> getBasicConfig() {
 		Map<String, String> config = new HashMap<>();
-		config.put(KafkaInConfigKeys.BOOTSTRAP_SERVERS, "servers");
-		config.put(KafkaInConfigKeys.TOPICS, "topic1");
+		config.put(KafkaInConfigKeys.BOOTSTRAP_SERVERS, embeddedKafka.getEmbeddedKafka().getBrokersAsString());
+		config.put(KafkaInConfigKeys.TOPICS, TOPIC);
 		config.put(ORCHESTRATOR_NAME, "orchestrator.name");
 		return config;
 	}

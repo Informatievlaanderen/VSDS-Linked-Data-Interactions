@@ -30,7 +30,7 @@ public class LdioHttpInProcess extends LdioInput {
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown(boolean keepState) {
 		// Not implementable for push based
 	}
 }

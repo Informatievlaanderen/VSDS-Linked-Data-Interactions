@@ -92,7 +92,7 @@ public abstract class LdioInput implements LdiComponent {
 				});
 	}
 
-	public abstract void shutdown();
+	public abstract void shutdown(boolean keepState);
 
 	public void updateStatus(PipelineStatus statusEvent) {
 		switch (statusEvent) {

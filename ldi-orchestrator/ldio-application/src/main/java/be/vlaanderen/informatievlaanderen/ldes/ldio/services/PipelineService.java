@@ -2,14 +2,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +15,12 @@ import java.util.List;
 
 @Service
 public class PipelineService {
-	private final ApplicationEventPublisher applicationEventPublisher;
 	private final PipelineCreatorService pipelineCreatorService;
 	private final PipelineStatusService pipelineStatusService;
 	private final PipelineRepository pipelineRepository;
 
-	public PipelineService(ApplicationEventPublisher applicationEventPublisher, PipelineCreatorService pipelineCreatorService, PipelineStatusService pipelineStatusService,
+	public PipelineService(PipelineCreatorService pipelineCreatorService, PipelineStatusService pipelineStatusService,
 	                       PipelineFileRepository pipelineRepository) {
-		this.applicationEventPublisher = applicationEventPublisher;
 		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineStatusService = pipelineStatusService;
 		this.pipelineRepository = pipelineRepository;
@@ -58,9 +53,9 @@ public class PipelineService {
 				.toList();
 	}
 
-	public boolean requestDeletion(String pipeline) {
+	public boolean requestDeletion(String pipeline, boolean keepState) {
 		if (pipelineRepository.exists(pipeline)) {
-			pipelineStatusService.stopPipeline(pipeline);
+			pipelineStatusService.stopPipeline(pipeline, keepState);
 			return true;
 		} else {
 			return false;
@@ -68,11 +63,8 @@ public class PipelineService {
 	}
 
 	@EventListener
-	public void handleStoppedPipeline(PipelineStatusEvent statusEvent) {
-		if (statusEvent.status() == PipelineStatus.STOPPED) {
-			pipelineRepository.delete(statusEvent.pipelineId());
-			applicationEventPublisher.publishEvent(new PipelineDeletedEvent(statusEvent.pipelineId()));
-			pipelineCreatorService.removePipeline(statusEvent.pipelineId());
-		}
+	public void handleStoppedPipeline(PipelineDeletedEvent deletedEvent) {
+		pipelineRepository.delete(deletedEvent.pipelineId());
+		pipelineCreatorService.removePipeline(deletedEvent.pipelineId(), deletedEvent.keepState());
 	}
 }

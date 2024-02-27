@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +22,12 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusCh
 
 @Component
 public class PipelineStatusService {
+	private final ApplicationEventPublisher eventPublisher;
 	private final Logger logger = LoggerFactory.getLogger(PipelineStatusService.class);
 	private final Map<String, SavedPipeline> savedPipelines;
 
-	public PipelineStatusService() {
+	public PipelineStatusService(ApplicationEventPublisher eventPublisher) {
+		this.eventPublisher = eventPublisher;
 		this.savedPipelines = new HashMap<>();
 	}
 
@@ -97,8 +100,10 @@ public class PipelineStatusService {
 
 	}
 
-	public PipelineStatus stopPipeline(String pipelineId) {
-		savedPipelines.get(pipelineId).getLdioInput().updateStatus(STOPPING);
+	public PipelineStatus stopPipeline(String pipelineId, boolean keepState) {
+		LdioInput input = savedPipelines.get(pipelineId).getLdioInput();
+		input.updateStatus(STOPPING);
+		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineId, keepState));
 		return STOPPED;
 	}
 

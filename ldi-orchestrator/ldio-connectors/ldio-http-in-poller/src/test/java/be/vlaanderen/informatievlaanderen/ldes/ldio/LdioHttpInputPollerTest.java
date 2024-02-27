@@ -70,7 +70,7 @@ class LdioHttpInputPollerTest {
 
 	@AfterEach
 	void tearDown() {
-		ldioHttpInputPoller.shutdown();
+		ldioHttpInputPoller.shutdown(false);
 	}
 
 	@Test

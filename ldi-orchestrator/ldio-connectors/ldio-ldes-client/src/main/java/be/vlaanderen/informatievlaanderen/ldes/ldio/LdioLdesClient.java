@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
@@ -34,6 +35,8 @@ public class LdioLdesClient extends LdioInput {
 
 	@SuppressWarnings("java:S2095")
 	public void start() {
+		memberSupplier.init();
+		this.updateStatus(PipelineStatus.STARTING);
 		final ExecutorService executorService = newSingleThreadExecutor();
 		executorService.submit(this::run);
 	}
@@ -63,8 +66,9 @@ public class LdioLdesClient extends LdioInput {
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown(boolean keepState) {
 		threadRunning = false;
+		memberSupplier.destroyState(keepState);
 	}
 
 	@Override

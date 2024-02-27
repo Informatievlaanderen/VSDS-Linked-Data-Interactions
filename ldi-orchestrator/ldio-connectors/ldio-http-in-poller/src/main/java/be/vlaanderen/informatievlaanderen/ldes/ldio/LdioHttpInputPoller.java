@@ -73,7 +73,7 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 		});
 	}
 
-	public void shutdown() {
+	public void shutdown(boolean keepState) {
 		this.scheduler.destroy();
 	}
 
