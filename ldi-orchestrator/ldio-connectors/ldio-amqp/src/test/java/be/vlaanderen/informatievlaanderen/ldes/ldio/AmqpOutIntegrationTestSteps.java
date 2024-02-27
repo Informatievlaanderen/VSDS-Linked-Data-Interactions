@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterPro
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioAmqpOutAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
@@ -42,7 +41,7 @@ public class AmqpOutIntegrationTestSteps {
 
     @And("I create an LdioAmqpOut component")
     public void iCreateAnLdioAmqpOutComponent() {
-        ComponentProperties properties = new ComponentProperties("pipeline", NAME, config);
+        ComponentProperties properties = new ComponentProperties("pipelineName", NAME, config);
         ldioAmqpOut = (LdiOutput) new LdioAmqpOutAutoConfig().ldioConfigurator().configure(properties);
     }
 
@@ -60,7 +59,6 @@ public class AmqpOutIntegrationTestSteps {
         config.put(AmqpConfig.PASSWORD, testContext.activemq.getPassword());
         config.put(AmqpConfig.QUEUE, testContext.queue.getQueueName());
         config.put("rdf-writer." + LdiRdfWriterProperties.CONTENT_TYPE, contentType.getHeaderString());
-        config.put(PipelineConfig.PIPELINE_NAME, "pipelineName");
     }
 
     @Then("I send the model to the LdioAmqpOut component")
