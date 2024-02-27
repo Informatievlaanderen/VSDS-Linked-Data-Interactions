@@ -2,9 +2,13 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
@@ -27,6 +31,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.bootstrapServer;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.topic;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.CONTENT_TYPE;
+import static java.lang.Thread.sleep;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;
@@ -42,6 +47,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	private List<LdiAdapter.Content> adapterResult;
 	private List<Model> componentExecutorResult;
 	private KafkaTemplate<String, String> kafkaProducer;
+	private LdioInput kafkaIn;
 
 	@And("I prepare the result lists")
 	public void iPrepareTheResultLists() {
@@ -59,7 +65,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 			return Stream.of(toModel(content));
 		};
 		var ldioKafkaInConfigurator = new LdioKafkaInAutoConfig().ldioConfigurator(null);
-		ldioKafkaInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
+		kafkaIn = ldioKafkaInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
 	}
 
 	private Model toModel(LdiAdapter.Content content) {
@@ -104,6 +110,10 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	public void theListenerWillWaitForTheMessage() {
 		await().until(() -> adapterResult.size() == 1);
 	}
+	@Then("Wait for a grace period")
+	public void theListenerWillWaitForPeriod() throws InterruptedException {
+		sleep(500);
+	}
 
 	@And("^The result header will contain the (.*)$")
 	public void theResultHeaderWillContainTheContentType(String expectedContentType) {
@@ -117,8 +127,18 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 		assertTrue(resultModel.isIsomorphicWith(inputModel));
 	}
 
-	@And("The componentExecutor will have been called")
-	public void theComponentExecutorWillHaveBeenCalled() {
-		assertEquals(1, componentExecutorResult.size());
+	@And("The componentExecutor will have been called {int} times")
+	public void theComponentExecutorWillHaveBeenCalled(int i) {
+		assertEquals(i, componentExecutorResult.size());
+	}
+	@When("I pause the pipeline")
+	public void pauseInput() {
+		kafkaIn.updateStatus(PipelineStatus.HALTED);
+	}
+	@When("I unpause the pipeline")
+	public void unPauseInput() {
+		kafkaIn.updateStatus(PipelineStatus.RESUMING);
 	}
 }
+
+

@@ -65,6 +65,12 @@ class LdioHttpInputTest {
 		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().is(503));
 
 		verifyNoInteractions(adapter);
+
+		input.updateStatus(RESUMING);
+
+		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().isAccepted());
+
+		verify(adapter).apply(LdiAdapter.Content.of(content, contentType));
 	}
 
 }

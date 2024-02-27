@@ -64,7 +64,7 @@ public abstract class LdioInput implements LdiComponent {
 		processInput(LdiAdapter.Content.of(content, contentType));
 	}
 
-	protected void processInput(LdiAdapter.Content content) {
+	public void processInput(LdiAdapter.Content content) {
 		Observation.createNotStarted(this.componentName, observationRegistry)
 				.observe(() -> {
 					try {

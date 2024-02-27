@@ -9,7 +9,7 @@ Feature: AMQPInIntegrationTest
     And I create default config for LdioJmsIn with <content-type>
     And I start a listener with an LdioJmsIn component
     And I send a model from <content> and <content-type> to broker using the amqp producer
-    Then Wait for the message
+    Then Wait for 1 messages
     And The result value will contain the model
     And The componentExecutor will have been called 1 times
 
@@ -32,9 +32,8 @@ Feature: AMQPInIntegrationTest
     And The componentExecutor will have been called 0 times
     When I unpause the pipeline
     And I send a model from <content> and <content-type> to broker using the amqp producer
-    Then Wait for the message
-    And The result value will contain the model
-    And The componentExecutor will have been called 1 times
+    Then Wait for 2 messages
+    And The componentExecutor will have been called 2 times
 
     Examples:
       | queue  | content-type        | content                                                                                                                                                                                                                                      |

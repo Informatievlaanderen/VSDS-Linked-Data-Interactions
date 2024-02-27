@@ -97,13 +97,13 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 		config.put(OrchestratorConfig.ORCHESTRATOR_NAME, "orchestratorName");
 	}
 
-	@Then("Wait for the message")
-	public void theListenerWillWaitForTheMessage() {
-		await().until(() -> adapterResult.size() == 1);
+	@Then("Wait for {int} messages")
+	public void theListenerWillWaitForTheMessage(int i) {
+		await().until(() -> adapterResult.size() == i);
 	}
 	@Then("Wait for a grace period")
 	public void waitForGracePeriod() throws InterruptedException {
-		sleep(1500);
+		sleep(500);
 	}
 
 	@And("The result value will contain the model")

@@ -23,6 +23,7 @@ import org.springframework.scheduling.support.CronTrigger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
@@ -30,8 +31,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static com.github.tomakehurst.wiremock.client.CountMatchingStrategy.GREATER_THAN_OR_EQUAL;
+import static com.github.tomakehurst.wiremock.client.CountMatchingStrategy.LESS_THAN_OR_EQUAL;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -97,6 +100,22 @@ class LdioHttpInputPollerTest {
 		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
 
 		ldioHttpInputPoller.schedulePoller(pollingInterval);
+
+		Mockito.verify(adapter, timeout(4000).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
+		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2), getRequestedFor(urlEqualTo(ENDPOINT)));
+	}
+	@ParameterizedTest
+	@ArgumentsSource(PollingIntervalArgumentsProvider.class)
+	void when_PausePeriodicPolling_then_DontPoll(PollingInterval pollingInterval) {
+		stubFor(get(ENDPOINT).willReturn(ok().withHeader("Content-Type", CONTENT_TYPE).withBody(CONTENT)));
+
+		ldioHttpInputPoller.schedulePoller(pollingInterval);
+		ldioHttpInputPoller.pause();
+
+		await().atLeast(2, TimeUnit.SECONDS);
+		WireMock.verify(new CountMatchingStrategy(LESS_THAN_OR_EQUAL, 1), getRequestedFor(urlEqualTo(ENDPOINT)));
+
+		ldioHttpInputPoller.resume();
 
 		Mockito.verify(adapter, timeout(4000).times(2)).apply(LdiAdapter.Content.of(CONTENT, CONTENT_TYPE));
 		WireMock.verify(new CountMatchingStrategy(GREATER_THAN_OR_EQUAL, 2), getRequestedFor(urlEqualTo(ENDPOINT)));
