@@ -13,7 +13,6 @@ import org.springframework.jms.core.JmsTemplate;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.RDF_WRITER;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 
 @Configuration
 public class LdioAmqpOutAutoConfig {
@@ -28,7 +27,7 @@ public class LdioAmqpOutAutoConfig {
 
         @Override
         public LdiComponent configure(ComponentProperties config) {
-			final var pipelineName = config.getProperty(PIPELINE_NAME);
+            final var pipelineName = config.getPipelineName();
             final var remoteUrl = new RemoteUrlExtractor(config).getRemoteUrl();
             final var connectionFactory =
                     new JmsConnectionFactory(config.getProperty(USERNAME), config.getProperty(PASSWORD), remoteUrl);

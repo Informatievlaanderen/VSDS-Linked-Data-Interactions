@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Configuration;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
-
 @Configuration
 public class LdioArchiveFileInAutoConfig {
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
@@ -33,7 +31,7 @@ public class LdioArchiveFileInAutoConfig {
 					ComponentProperties config) {
 				ArchiveFileCrawler archiveFileCrawler = new ArchiveFileCrawler(getArchiveDirectoryPath(config));
 				Lang hintLang = getSourceFormat(config);
-				String pipelineName = config.getProperty(PIPELINE_NAME);
+				String pipelineName = config.getPipelineName();
 
 				return new LdioArchiveFileIn(pipelineName, executor, observationRegistry, archiveFileCrawler, hintLang);
 			}
