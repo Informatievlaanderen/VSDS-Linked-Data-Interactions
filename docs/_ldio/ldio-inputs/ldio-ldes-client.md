@@ -75,3 +75,8 @@ Refer to [LDIO Http Requester](../ldio-core) for the config.
         username: myUsername@test
         password: myPassword
 ```
+
+## Pausing
+
+When paused, this component will stop processing the current fragment and not make any calls to the server.
+When resumed, it will continue with the fragment where it stopped and continue as normal.

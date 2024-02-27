@@ -35,3 +35,7 @@ an [AMQP 1.0 queue](https://www.amqp.org/resources/specifications).
           queue: example
           content-type: application/ld+json
 ```
+
+## Pausing
+
+When paused, this component will not receive any messages from the queue and will start syncing with the queue when unpaused.

@@ -15,3 +15,7 @@ Data can be written to ``http://{hostname}:{port}/{pipeline name}``
 ## Config
 
 This component has no required config
+
+## Pausing
+
+When paused, this component will return an 503 response to any HTTP-call it receives

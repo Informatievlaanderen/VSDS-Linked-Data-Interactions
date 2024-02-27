@@ -17,3 +17,8 @@ Please refer to the [core documentation](../../core/ldi-inputs/file-archiving) f
 |:-----------------|:----------------------------------|:---------|:----------------------------|:-----------------|:--------------------------------|
 | archive-root-dir | The root directory of the archive | Yes      | N/A                         | /parcels/archive | Linux (+ Mac) and Windows paths |
 | source-format    | The source format of the files    | No       | Deduced from file extension | text/turtle      | Any Jena supported format       |
+
+## Pausing
+
+When paused, this component will stop reading from the archive.
+When resumed, it will pick up where it left of, ignoring any changes to the file structure.

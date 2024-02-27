@@ -53,3 +53,9 @@ input:
       proxy-url-replacement: http://consumer-connector:29291/public
       source-format: application/n-quads
 ```
+
+## Pausing
+
+When paused, this component will stop processing the current fragment and not make any calls to the server.
+When resumed, it will continue with the fragment where it stopped and continue as normal.
+This component can not be paused while waiting for the token.
