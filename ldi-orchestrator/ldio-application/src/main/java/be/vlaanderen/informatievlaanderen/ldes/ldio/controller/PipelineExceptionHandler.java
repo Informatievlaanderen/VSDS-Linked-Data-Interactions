@@ -17,4 +17,9 @@ public class PipelineExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
 		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
+
+	@ExceptionHandler(value = {PipelineDoesNotExistException.class})
+	public ResponseEntity<Object> handleNotFound(RuntimeException ex, WebRequest request) {
+		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
 }

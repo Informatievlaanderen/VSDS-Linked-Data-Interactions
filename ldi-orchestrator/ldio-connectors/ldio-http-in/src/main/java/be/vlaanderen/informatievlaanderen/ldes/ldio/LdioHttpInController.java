@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.HttpInPipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -29,7 +30,7 @@ public class LdioHttpInController {
 		logIncomingRequest(contentType, contentLength, pipeline);
 
 		ofNullable(httpInProcesses.get(pipeline))
-				.orElseThrow(() -> new IllegalArgumentException("Not a valid pipeline"))
+				.orElseThrow(() -> new PipelineDoesNotExistException(pipeline))
 				.processInput(content, contentType);
 		return ResponseEntity.accepted().build();
 	}
