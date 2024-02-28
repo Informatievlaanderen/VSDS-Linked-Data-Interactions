@@ -28,6 +28,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.Pipeline
 
 public class LdioKafkaIn extends LdioInput {
     public static final String NAME = "Ldio:KafkaIn";
+    @SuppressWarnings("java:S3740")
     private final KafkaMessageListenerContainer container;
     private final LdioKafkaInListener listener;
     /**

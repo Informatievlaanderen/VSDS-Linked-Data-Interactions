@@ -18,7 +18,10 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RDFWriter;
+import org.awaitility.Awaitility;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -103,7 +106,7 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	}
 	@Then("Wait for a grace period")
 	public void waitForGracePeriod() throws InterruptedException {
-		sleep(500);
+		Awaitility.waitAtMost(Duration.of(500, ChronoUnit.MILLIS));
 	}
 
 	@And("The result value will contain the model")

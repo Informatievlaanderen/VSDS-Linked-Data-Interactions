@@ -91,3 +91,6 @@ A deletion of a pipeline can be achieved by performing a DELETE request to the
 ````bash
 curl --location --request DELETE 'http://localhost:8080/admin/api/v1/pipeline/my-first-pipeline'
 ````
+
+For stateful components like the Ldio ldes-client it is possible to persist the state on the removal of the pipeline.
+Keeping the state is the default option. If you want to specifically delete the state simply send false in the request body of the delete statement.

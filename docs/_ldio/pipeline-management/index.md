@@ -51,3 +51,19 @@ If this directory does not exist, it will be created.
 
 > **_NOTE:_**  An application config can be defined by creating an application YAML file in the LDIO directory
 (in docker, this correlates to `/ldio/application.yml`).
+
+
+## Pausing & Resuming LDIO
+
+Sometimes it might be preferred to pause an LDIO pipeline instead of deleting and recreating it.
+To pause a pipeline, simply call the following endpoint:
+````
+  {base-url}/admin/api/v1/pipeline/{pipeline-name}/halt
+````
+And to resume a paused pipeline:
+````
+  {base-url}/admin/api/v1/pipeline/{pipeline-name}/resume
+````
+
+The exact behaviour of a paused pipeline depends on its input component and can be found in the [documentation of these components](docs/_ldio/ldio-inputs/index.md).
+However, it will always complete its current run through the pipeline and then seize sending any output.

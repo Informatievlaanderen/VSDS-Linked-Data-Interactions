@@ -54,7 +54,7 @@ public class LdioLdesClient extends LdioInput {
 		}
 	}
 
-	private void checkPause() {
+	private synchronized void checkPause() {
 		while (paused) {
 			try {
 				this.wait();
@@ -68,7 +68,9 @@ public class LdioLdesClient extends LdioInput {
 	@Override
 	public void shutdown(boolean keepState) {
 		threadRunning = false;
-		memberSupplier.destroyState(keepState);
+		if (!keepState) {
+			memberSupplier.destroyState();
+		}
 	}
 
 	@Override

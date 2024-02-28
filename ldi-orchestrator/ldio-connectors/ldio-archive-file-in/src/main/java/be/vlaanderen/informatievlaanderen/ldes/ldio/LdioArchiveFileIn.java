@@ -29,6 +29,8 @@ public class LdioArchiveFileIn extends LdioInput {
 		log.info("Finished crawling the archive.");
 	}
 
+
+	@SuppressWarnings("java:S2273")
 	public synchronized void crawlArchive() {
 		archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
 			while (paused) {

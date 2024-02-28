@@ -26,9 +26,10 @@ public class VersionMaterialisedMemberSupplier implements MemberSupplier {
     }
 
     @Override
-    public void destroyState(boolean keepState) {
-        memberSupplier.destroyState(keepState);
+    public void destroyState() {
+        memberSupplier.destroyState();
     }
+
     @Override
     public void init() {
         memberSupplier.init();

@@ -182,7 +182,9 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		memberSupplier.destroyState(keepState);
+		if (!keepState) {
+			memberSupplier.destroyState();
+		}
 	}
 
 	public static String convertModelToString(Model model, Lang dataDestinationFormat) {

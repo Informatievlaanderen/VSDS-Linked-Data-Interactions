@@ -15,17 +15,6 @@ public class KafkaCommonIntegrationSteps extends KafkaIntegrationTest  {
 		embeddedKafkaBroker.afterPropertiesSet();
 	}
 
-//	@After
-//	public void cleanup() {
-//		embeddedKafkaBroker.doWithAdmin(adminClient -> {
-//            try {
-//                adminClient.deleteTopics(List.of("nquads", "rdfxml")).all().wait();
-//            } catch (InterruptedException e) {
-//                Thread.currentThread().interrupt();
-//            }
-//        });
-//	}
-
 	@Given("^I create a topic for my scenario: (.*)$")
 	public void iCreateATopic(String topic) {
 		this.topic = topic;

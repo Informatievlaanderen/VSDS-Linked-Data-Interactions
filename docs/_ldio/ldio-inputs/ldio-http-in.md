@@ -18,4 +18,4 @@ This component has no required config
 
 ## Pausing
 
-When paused, this component will return an 503 response to any HTTP-call it receives
+When paused, this component will return an 503 response to any HTTP-calls it receives

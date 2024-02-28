@@ -9,6 +9,6 @@ public interface MemberSupplier extends Supplier<SuppliedMember> {
 	@Override
 	SuppliedMember get();
 	void init();
-	void destroyState(boolean keepState);
+	void destroyState();
 
 }
