@@ -148,7 +148,7 @@ public class MemberSupplierSteps {
 
 	@Then("MemberSupplier is destroyed")
 	public void membersupplierIsDestroyed() {
-		memberSupplier.destroyState(false);
+		memberSupplier.destroyState();
 	}
 
 	private String toString(final Model model, final Lang lang) {
@@ -209,7 +209,7 @@ public class MemberSupplierSteps {
 
 	@Then("MemberSuppliers are destroyed")
 	public void membersuppliersAreDestroyed() {
-		memberSuppliers[0].destroyState(false);
-		memberSuppliers[1].destroyState(false);
+		memberSuppliers[0].destroyState();
+		memberSuppliers[1].destroyState();
 	}
 }
