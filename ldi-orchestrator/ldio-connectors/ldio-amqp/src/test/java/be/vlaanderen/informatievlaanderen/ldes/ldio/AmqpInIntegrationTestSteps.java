@@ -31,7 +31,6 @@ import java.util.stream.Stream;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RESUMING;
-import static java.lang.Thread.sleep;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;

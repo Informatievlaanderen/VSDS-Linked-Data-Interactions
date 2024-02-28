@@ -16,6 +16,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.awaitility.Awaitility;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -24,13 +25,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.bootstrapServer;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.topic;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.CONTENT_TYPE;
-import static java.lang.Thread.sleep;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;
@@ -111,7 +112,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	}
 	@Then("Wait for a grace period")
 	public void theListenerWillWaitForPeriod() throws InterruptedException {
-		sleep(1500);
+		Awaitility.waitAtMost(1500, TimeUnit.MILLISECONDS);
 	}
 
 	@And("^The result header will contain the (.*)$")
