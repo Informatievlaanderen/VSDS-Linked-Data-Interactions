@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.util.Context;
@@ -29,7 +30,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
-@Tags({ "ldes, rdf4j-repository, vsds" })
+@Tags({"ldes, rdf4j-repository, vsds"})
 @CapabilityDescription("Materialises LDES events into an RDF4J repository")
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
@@ -52,8 +53,6 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		properties.add(SPARQL_HOST);
 		properties.add(REPOSITORY_ID);
 		properties.add(NAMED_GRAPH);
-		properties.add(BATCH_SIZE);
-		properties.add(BATCH_TIMEOUT);
 		properties.add(SIMULTANEOUS_FLOWFILES_TO_PROCESS);
 		return properties;
 	}
@@ -63,9 +62,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 		if (materialiser == null) {
 			materialiser = new Materialiser(context.getProperty(SPARQL_HOST).getValue(),
 					context.getProperty(REPOSITORY_ID).getValue(),
-					context.getProperty(NAMED_GRAPH).getValue(),
-					context.getProperty(BATCH_SIZE).asInteger(),
-					context.getProperty(BATCH_TIMEOUT).asInteger());
+					context.getProperty(NAMED_GRAPH).getValue());
 		}
 
 		jenaContext = JenaContextProvider.create().getContext();
@@ -82,20 +79,18 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 		Lang dataSourceFormat = getDataSourceFormat(context);
 
-		for (FlowFile flowFile : flowFiles) {
-			String content = FlowManager.receiveData(session, flowFile);
+		try {
+			List<Model> models = flowFiles.stream()
+					.map(flowFile -> FlowManager.receiveData(session, flowFile))
+					.map(content -> RDFParser.fromString(content).context(jenaContext).lang(dataSourceFormat).toModel())
+					.toList();
 
-			try {
-				materialiser.process(RDFParser
-						.fromString(content)
-						.context(jenaContext)
-						.lang(dataSourceFormat)
-						.toModel());
-				session.transfer(flowFile, SUCCESS);
-			} catch (Exception e) {
-				getLogger().error("Error sending model to repository", e.getMessage());
-				session.transfer(flowFile, FAILURE);
-			}
+			materialiser.process(models);
+
+			session.transfer(flowFiles, SUCCESS);
+		} catch (Exception e) {
+			getLogger().error("Error sending model to repository", e.getMessage());
+			session.transfer(flowFiles, FAILURE);
 		}
 	}
 

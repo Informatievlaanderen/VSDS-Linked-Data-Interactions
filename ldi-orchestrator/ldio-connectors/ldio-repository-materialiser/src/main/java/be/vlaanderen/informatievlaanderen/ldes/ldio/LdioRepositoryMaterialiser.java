@@ -7,20 +7,23 @@ import org.apache.jena.rdf.model.Model;
 
 public class LdioRepositoryMaterialiser implements LdiOutput {
 	public static final String NAME = "Ldio:RepositoryMaterialiser";
-	private final Materialiser materialiser;
+	private final LdioMaterialiserRepositoryBatchCollector batchCollector;
 
 	public LdioRepositoryMaterialiser(LdioRepositoryMaterialiserProperties properties) {
-		this.materialiser = new Materialiser(
+		final Materialiser materialiser = new Materialiser(
 				properties.getSparqlHost(),
 				properties.getRepositoryId(),
-				properties.getNamedGraph(),
+				properties.getNamedGraph()
+		);
+		this.batchCollector = new LdioMaterialiserRepositoryBatchCollector(
 				properties.getBatchSize(),
-				properties.getBatchTimeout()
+				properties.getBatchTimeout(),
+				materialiser
 		);
 	}
 
 	@Override
 	public void accept(Model model) {
-		materialiser.process(model);
+		batchCollector.addMemberToCommit(model);
 	}
 }

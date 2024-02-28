@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects;
 
 import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
@@ -32,14 +33,16 @@ public class MaterialiserConnection {
 		holder.getConnection().remove(subject, predicate, object);
 	}
 
-	public synchronized void commit() {
-		holder.getConnection().commit();
-		holder.getConnection().close();
+	public void commit() {
+		final RepositoryConnection connection = holder.getConnection();
+		connection.commit();
+		connection.close();
 	}
 
-	public synchronized void rollback() {
-		holder.getConnection().rollback();
-		holder.getConnection().close();
+	public void rollback() {
+		final RepositoryConnection connection = holder.getConnection();
+		connection.rollback();
+		connection.close();
 	}
 
 	public void shutdown() {

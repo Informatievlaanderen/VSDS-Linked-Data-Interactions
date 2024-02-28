@@ -1,0 +1,10 @@
+<http://somewhere/MattJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Matt Jones" .
+<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Sarah Jones" .
+<http://somewhere/DickJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Dick Jones" .
+<http://somewhere/HannahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Hannah Jones" .
+<http://somewhere/JohnDoe/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "John Doe" .
+<http://somewhere/JaneDoe/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Jane Doe" .
+<http://somewhere/SarahParker/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Sarah Parker" .
+<http://somewhere/WendyJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Wendy Jones" .
+<http://somewhere/RikJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Rik Jones" .
+<http://somewhere/HannahCyrus/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Hannah Cyrus" .

@@ -35,22 +35,6 @@ public final class RDF4JRepositoryMaterialisationProcessorProperties {
 			.addValidator(StandardValidators.URI_VALIDATOR)
 			.build();
 
-	public static final PropertyDescriptor BATCH_SIZE = new PropertyDescriptor.Builder()
-			.name("Batch size")
-			.description("The number of models to be added to the transaction before committing to the graph db.")
-			.required(true)
-			.defaultValue("1000")
-			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
-			.build();
-
-	public static final PropertyDescriptor BATCH_TIMEOUT = new PropertyDescriptor.Builder()
-			.name("Batch timeout")
-			.description("Timeout duration in milliseconds to commit the added models to the graph db already before the batch size amount has been reached.")
-			.required(true)
-			.defaultValue("120000")
-			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
-			.build();
-
 	public static final PropertyDescriptor SIMULTANEOUS_FLOWFILES_TO_PROCESS = new PropertyDescriptor.Builder()
 			.name("Flowfiles to process simultaneously")
 			.description(

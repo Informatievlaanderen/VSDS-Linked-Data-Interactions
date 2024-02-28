@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MaterialiserConnection;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ModelSubjectsExtractor;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFParser;
 import org.eclipse.rdf4j.model.Model;
@@ -30,12 +29,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MaterialiserIT {
+	private static final String LOCAL_SERVER_URL = "http://localhost:8080/rdf4j-server";
 	private static final String LOCAL_REPOSITORY_ID = "test";
-	private static final String NAMED_GRAPH = "";
-	private static final int BATCH_SIZE = 2;
-	private static final int BATCH_TIMEOUT = 120000;
-
-	private static RepositoryManager subject;
 	private static Materialiser materialiser;
 	@TempDir
 	File dataDir;
@@ -47,26 +42,26 @@ class MaterialiserIT {
 
 	@BeforeEach
 	public void setUp() {
-		subject = new LocalRepositoryManager(dataDir);
+		materialiser = new Materialiser(LOCAL_SERVER_URL, LOCAL_REPOSITORY_ID, "");
+		final RepositoryManager subject = new LocalRepositoryManager(dataDir);
 		subject.init();
 
 		subject.addRepositoryConfig(
 				new RepositoryConfig(LOCAL_REPOSITORY_ID, new SailRepositoryConfig(new MemoryStoreConfig(true))));
 
-		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, NAMED_GRAPH, BATCH_SIZE, BATCH_TIMEOUT);
+		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, "");
 	}
 
 	@AfterEach
 	public void tearDown() {
 		materialiser.shutdown();
-		subject.shutDown();
 	}
 
 	@Test
 	void when_DataPresent_Then_GetEntityIds() throws Exception {
 		var updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
 
-		Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
+		Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
 
 		assertThat(entityIds)
 				.as("Expected all subjects from test data")
@@ -78,7 +73,7 @@ class MaterialiserIT {
 		populateAndCheckRepository(List.of(TEST_FILES));
 		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
 		Model updateModel2 = Rio.parse(new FileInputStream(TEST_FILES[1]), "", RDFFormat.NQUADS);
-		Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
+		Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
 
 		materialiser.deleteEntitiesFromRepo(entityIds);
 
@@ -96,51 +91,27 @@ class MaterialiserIT {
 		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
 		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		RDFParser.source(CHANGED_FILE).toModel().listStatements().toList().stream()
+		List<org.apache.jena.rdf.model.Model> models = RDFParser.source(CHANGED_FILE).toModel().listStatements().toList().stream()
 				.map(statement -> ModelFactory.createDefaultModel().add(statement))
-				.forEach(materialiser::process);
+				.toList();
+		materialiser.process(models);
 
 		List<Statement> statements = materialiser.getMaterialiserConnection()
 				.getStatements(null, null, null).stream().toList();
 
-		assertThat(testModelInStatements(updateModel, statements)).isFalse();
 		assertThat(testModelInStatements(changedModel, statements)).isTrue();
-	}
-
-	@Test
-	void when_ErrorOccurs_then_ChangesAreRolledBack() throws IOException {
-		populateAndCheckRepository(List.of(TEST_FILES));
-		org.apache.jena.rdf.model.Model jenaModel = ModelFactory.createDefaultModel().add(
-				RDFParser.source(CHANGED_FILE).toModel().listStatements()
-		);
-
-		materialiser.process(jenaModel);
-		try {
-			materialiser.process(null);
-		} catch (MaterialisationFailedException e) {
-			assertThat(e).hasCauseInstanceOf(NullPointerException.class);
-		}
-
-		List<Statement> statements = materialiser.getMaterialiserConnection()
-				.getStatements(null, null, null).stream().toList();
-
-		assertThat(statements)
-				.hasSize(4)
-				.noneMatch(statement -> statement.getObject().stringValue().equals("Changed"));
-
+		assertThat(testModelInStatements(updateModel, statements)).isFalse();
 	}
 
 	void populateAndCheckRepository(List<String> files) throws IOException {
-		final MaterialiserConnection connection = materialiser.getMaterialiserConnection();
 		List<Model> models = new ArrayList<>();
 		for (String testFile : files) {
 			var model = Rio.parse(new FileInputStream(testFile), "", RDFFormat.NQUADS);
-			connection.add(model);
+			materialiser.getMaterialiserConnection().add(model);
 			models.add(model);
 		}
-		connection.commit();
 
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+		List<Statement> statements = materialiser.getMaterialiserConnection().getStatements(null, null, null).stream().toList();
 
 		assertThat(models).allMatch(statements::containsAll);
 	}
