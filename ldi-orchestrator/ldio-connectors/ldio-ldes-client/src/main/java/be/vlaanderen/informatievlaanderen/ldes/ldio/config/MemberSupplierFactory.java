@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.MemberSupplierImpl;
@@ -50,6 +51,10 @@ public class MemberSupplierFactory {
 
     private TreeNodeProcessor getTreeNodeProcessor() {
         List<String> targetUrls = properties.getPropertyList(URLS);
+
+        if(targetUrls.isEmpty()) {
+            throw new ConfigPropertyMissingException(properties.getPipelineName(), properties.getComponentName(), "urls");
+        }
 
         Lang sourceFormat = getSourceFormat();
         LdesMetaData ldesMetaData = new LdesMetaData(targetUrls, sourceFormat);
