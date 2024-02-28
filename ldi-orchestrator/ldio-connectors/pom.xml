@@ -58,6 +58,7 @@
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>ldio-common</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
