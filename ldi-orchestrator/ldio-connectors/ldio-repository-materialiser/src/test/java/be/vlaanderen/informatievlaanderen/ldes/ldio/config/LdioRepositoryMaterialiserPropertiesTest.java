@@ -13,14 +13,18 @@ class LdioRepositoryMaterialiserPropertiesTest {
 
 	@Test
 	void given_EmptyProperties_when_GetNamedGraph_then_ReturnEmptyString() {
-		final LdioRepositoryMaterialiserProperties properties = new LdioRepositoryMaterialiserProperties(new ComponentProperties());
+		final LdioRepositoryMaterialiserProperties properties = new LdioRepositoryMaterialiserProperties(
+				new ComponentProperties("pipelineName", "cName")
+		);
 
 		assertThat(properties.getNamedGraph()).isEmpty();
 	}
 
 	@Test
 	void given_EmptyProperties_when_GetBatchProperties_then_ReturnDefaults() {
-		final LdioRepositoryMaterialiserProperties properties = new LdioRepositoryMaterialiserProperties(new ComponentProperties());
+		final LdioRepositoryMaterialiserProperties properties = new LdioRepositoryMaterialiserProperties(
+				new ComponentProperties("pipelineName", "cName")
+		);
 
 		assertThat(properties.getBatchSize()).isEqualTo(BATCH_SIZE_DEFAULT);
 		assertThat(properties.getBatchTimeout()).isEqualTo(BATCH_TIMEOUT_DEFAULT);
@@ -34,13 +38,16 @@ class LdioRepositoryMaterialiserPropertiesTest {
 		final int batchSize = 10;
 		final int batchTimeout = 1200;
 
-		final ComponentProperties config = new ComponentProperties(Map.of(
-				"sparql-host", sparqlHost,
-				"repository-id", repoId,
-				"namedGraph", namedGraph,
-				"batchSize", String.valueOf(batchSize),
-				"batchTimeout", String.valueOf(batchTimeout)
-		));
+		final ComponentProperties config = new ComponentProperties(
+				"pipelineName",
+				"cName",
+				Map.of(
+						"sparql-host", sparqlHost,
+						"repository-id", repoId,
+						"namedGraph", namedGraph,
+						"batchSize", String.valueOf(batchSize),
+						"batchTimeout", String.valueOf(batchTimeout)
+				));
 		final LdioRepositoryMaterialiserProperties properties = new LdioRepositoryMaterialiserProperties(config);
 
 		assertThat(properties.getSparqlHost()).isEqualTo(sparqlHost);
