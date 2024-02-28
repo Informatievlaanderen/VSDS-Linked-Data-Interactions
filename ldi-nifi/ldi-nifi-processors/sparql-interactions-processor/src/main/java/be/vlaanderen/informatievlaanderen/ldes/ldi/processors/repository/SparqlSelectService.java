@@ -1,7 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.repository;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Literal;
@@ -9,6 +7,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.Iterator;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class SparqlSelectService {
 

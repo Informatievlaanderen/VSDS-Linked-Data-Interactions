@@ -6,17 +6,22 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioAmqpInAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioAmqpInRegistrator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import jakarta.jms.JMSException;
 import jakarta.jms.MessageProducer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RDFWriter;
+import org.awaitility.Awaitility;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +29,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn.NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RESUMING;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;
@@ -33,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 
 	private final LdioAmqpInRegistrator ldioAmqpInRegistrator = jmsInRegistrator();
+	private LdioInput ldioInput;
 	private Model inputModel;
 	private String contentType;
 	private Map<String, String> config;
@@ -62,7 +70,7 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 			return Stream.of(toModel(content));
 		};
 		var ldioJmsInConfigurator = new LdioAmqpInAutoConfig().ldioConfigurator(ldioAmqpInRegistrator, null);
-		ldioJmsInConfigurator.configure(adapter, componentExecutor, properties);
+		ldioInput = ldioJmsInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
 	}
 
 	@And("^I send a model from (.*) and (.*) to broker using the amqp producer")
@@ -91,9 +99,13 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 		config.put(OrchestratorConfig.ORCHESTRATOR_NAME, "orchestratorName");
 	}
 
-	@Then("Wait for the message")
-	public void theListenerWillWaitForTheMessage() {
-		await().until(() -> adapterResult.size() == 1);
+	@Then("Wait for {int} messages")
+	public void theListenerWillWaitForTheMessage(int i) {
+		await().until(() -> adapterResult.size() == i);
+	}
+	@Then("Wait for a grace period")
+	public void waitForGracePeriod() throws InterruptedException {
+		Awaitility.waitAtMost(Duration.of(500, ChronoUnit.MILLIS));
 	}
 
 	@And("The result value will contain the model")
@@ -103,9 +115,22 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 		assertTrue(resultModel.isIsomorphicWith(inputModel));
 	}
 
-	@And("The componentExecutor will have been called")
-	public void theComponentExecutorWillHaveBeenCalled() {
-		assertEquals(1, componentExecutorResult.size());
+	@When("I pause the pipeline")
+	public void pausePipeline() {
+		ldioInput.updateStatus(HALTED);
+	}
+	@When("I unpause the pipeline")
+	public void unPausePipeline() {
+		ldioInput.updateStatus(RESUMING);
+	}
+	@And("The result value will not contain the model")
+	public void theResultValueWillNotContainTheModel() {
+		assertEquals(0, adapterResult.size());
+	}
+
+	@And("The componentExecutor will have been called {int} times")
+	public void theComponentExecutorWillHaveBeenCalled(int interactions) {
+		assertEquals(interactions, componentExecutorResult.size());
 	}
 
 	@ParameterType(value = "true|True|TRUE|false|False|FALSE")

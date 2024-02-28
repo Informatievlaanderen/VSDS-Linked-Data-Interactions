@@ -30,4 +30,9 @@ public class VersionMaterialisedMemberSupplier implements MemberSupplier {
         memberSupplier.destroyState();
     }
 
+    @Override
+    public void init() {
+        memberSupplier.init();
+    }
+
 }

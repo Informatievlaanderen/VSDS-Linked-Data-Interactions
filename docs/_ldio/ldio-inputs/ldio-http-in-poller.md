@@ -39,6 +39,11 @@ config:
 
 When using multiple endpoints, the other config (auth config, interval, etc.) applies to all endpoints.
 
+## Pausing
+
+When paused, this component will stop making any of the scheduled HTTP-calls.
+When resumed, it will restart these calls as if the component had been restarted, meaning any configured periods will start counting from the moment the pipeline was resumed instead of when it was originally created.
+
 ----
 
 [^1]: Either choose the 'cron' option or the 'interval'. However, **the interval property will become deprecated**.

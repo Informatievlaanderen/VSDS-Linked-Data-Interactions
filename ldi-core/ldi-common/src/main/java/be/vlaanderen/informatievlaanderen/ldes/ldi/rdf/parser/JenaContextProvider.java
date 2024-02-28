@@ -1,10 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser;
 
-import com.apicatalog.jsonld.JsonLdOptions;
-import com.apicatalog.jsonld.context.cache.LruCache;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;
+
+import com.apicatalog.jsonld.JsonLdOptions;
+import com.apicatalog.jsonld.context.cache.LruCache;
 
 import static org.apache.jena.riot.lang.LangJSONLD11.JSONLD_OPTIONS;
 

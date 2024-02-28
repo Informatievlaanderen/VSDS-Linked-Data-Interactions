@@ -40,6 +40,9 @@ An LDIO wrapper component for the [LDI LDES Client building block](../../core/ld
 This component uses the "LDIO Http Requester" to make the HTTP request.
 Refer to [LDIO Http Requester](../ldio-core) for the config.
 
+> **_NOTE:_**  Setting the keep-state property to true makes it so that the state can not be deleted through the pipeline-management api
+
+
 ## Examples
 
 ```yaml
@@ -75,3 +78,8 @@ Refer to [LDIO Http Requester](../ldio-core) for the config.
         username: myUsername@test
         password: myPassword
 ```
+
+## Pausing
+
+When paused, this component will stop processing the current fragment and not make any calls to the server.
+When resumed, it will continue with the fragment where it stopped and continue as normal.

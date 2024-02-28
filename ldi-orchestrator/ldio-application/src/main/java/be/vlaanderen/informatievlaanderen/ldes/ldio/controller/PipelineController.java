@@ -28,10 +28,7 @@ public class PipelineController {
 	 */
 	@GetMapping()
 	public List<PipelineTO> overview() {
-		return pipelineService.getPipelines()
-				.stream()
-				.map(config -> PipelineTO.build(config, pipelineStatusService.getPipelineStatus(config.name())))
-				.toList();
+		return pipelineService.getPipelines();
 	}
 
 	/**
@@ -44,7 +41,7 @@ public class PipelineController {
 	public PipelineTO addPipeline(@RequestBody PipelineConfigTO config) {
 		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineService.addPipeline(config.toPipelineConfig()));
 
-		return PipelineTO.build(pipelineConfig, pipelineStatusService.getPipelineStatus(pipelineConfig.name()));
+		return PipelineTO.build(pipelineConfig, pipelineStatusService.getPipelineStatus(pipelineConfig.name()), pipelineStatusService.getPipelineStatusChangeSource(config.name()));
 	}
 
 	/**
@@ -56,9 +53,15 @@ public class PipelineController {
 	 *         ResponseEntity.noContent() if the pipeline was not found or could not be deleted.
 	 */
 	@DeleteMapping("/{pipeline}")
-	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline) {
-		if (pipelineService.deletePipeline(pipeline)) {
-			return ResponseEntity.ok().build();
+	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline, @RequestBody String body) {
+		boolean keepState = extractKeepState(body);
+		if (pipelineService.requestDeletion(pipeline, keepState)) {
+			return ResponseEntity.accepted().build();
 		} else return ResponseEntity.noContent().build();
+	}
+
+	public boolean extractKeepState(String input) {
+		//Default value should be true
+		return !input.equalsIgnoreCase("false");
 	}
 }

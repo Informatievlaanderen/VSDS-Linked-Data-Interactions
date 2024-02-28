@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import io.cucumber.java.en.Given;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 
-public class KafkaCommonIntegrationSteps {
+public class KafkaCommonIntegrationSteps extends KafkaIntegrationTest  {
 	public static String topic;
 	public static final String bootstrapServer = "localhost:9095";
 	private static final EmbeddedKafkaBroker embeddedKafkaBroker;

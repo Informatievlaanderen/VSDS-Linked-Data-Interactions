@@ -12,13 +12,17 @@ import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.CONTENT_TYPE_HEADER;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 public class LdioAmqpIn extends LdioInput implements MessageListener {
 	public static final String NAME = "Ldio:AmqpIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioAmqpIn.class);
+	private final LdioAmqpInRegistrator ldioAmqpInRegistrator;
+	private final String listenerId;
 	private final String defaultContentType;
 
 	/**
@@ -34,10 +38,15 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 	 * @param observationRegistry
 	 */
 	public LdioAmqpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
-                         String defaultContentType, JmsConfig jmsConfig, LdioAmqpInRegistrator jmsInRegistrator, ObservationRegistry observationRegistry) {
-		super(NAME, pipelineName, executor, adapter, observationRegistry);
+						 String defaultContentType, JmsConfig jmsConfig, LdioAmqpInRegistrator jmsInRegistrator,
+						 ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher) {
+		super(NAME, pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);
 		this.defaultContentType = defaultContentType;
-		jmsInRegistrator.registerListener(jmsConfig, listenerEndpoint(jmsConfig.queue()));
+		SimpleJmsListenerEndpoint endpoint = listenerEndpoint(jmsConfig.queue());
+		ldioAmqpInRegistrator = jmsInRegistrator;
+		listenerId = endpoint.getId();
+		jmsInRegistrator.registerListener(jmsConfig, endpoint);
+		this.updateStatus(STARTING);
 	}
 
 	@Override
@@ -63,7 +72,17 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 	}
 
 	@Override
-	public void shutdown() {
-		// Implemented in other story
+	public void shutdown(boolean keepState) {
+		ldioAmqpInRegistrator.stopListener(listenerId);
+	}
+
+	@Override
+	protected void resume() {
+		ldioAmqpInRegistrator.startListener(listenerId);
+	}
+
+	@Override
+	protected void pause() {
+		ldioAmqpInRegistrator.stopListener(listenerId);
 	}
 }

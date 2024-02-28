@@ -4,14 +4,20 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.ObserveConfiguration;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.MANUAL;
 
 /**
  * Base class for the start of a LDIO workflow.
@@ -26,11 +32,13 @@ public abstract class LdioInput implements LdiComponent {
 	protected final String pipelineName;
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
+	private final ApplicationEventPublisher applicationEventPublisher;
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private final ObservationRegistry observationRegistry;
 
 	private static final String LDIO_DATA_IN = "ldio_data_in";
 	private static final String LDIO_COMPONENT_NAME = "ldio_type";
+	private PipelineStatus pipelineStatus;
 
 	/**
 	 * Creates a LdiInput with its Component Executor and LDI Adapter
@@ -40,12 +48,15 @@ public abstract class LdioInput implements LdiComponent {
 	 * @param adapter  Instance of the LDI Adapter. Facilitates transforming the input
 	 *                 data to a linked data model (RDF).
 	 */
-	protected LdioInput(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry) {
+	protected LdioInput(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
+						ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher) {
 		this.componentName = componentName;
 		this.pipelineName = pipelineName;
 		this.executor = executor;
 		this.adapter = adapter;
 		this.observationRegistry = observationRegistry;
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.pipelineStatus = INIT;
 		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 	}
 
@@ -53,7 +64,7 @@ public abstract class LdioInput implements LdiComponent {
 		processInput(LdiAdapter.Content.of(content, contentType));
 	}
 
-	protected void processInput(LdiAdapter.Content content) {
+	public void processInput(LdiAdapter.Content content) {
 		Observation.createNotStarted(this.componentName, observationRegistry)
 				.observe(() -> {
 					try {
@@ -81,5 +92,38 @@ public abstract class LdioInput implements LdiComponent {
 				});
 	}
 
-	public abstract void shutdown();
+	public abstract void shutdown(boolean keepState);
+
+	public void updateStatus(PipelineStatus statusEvent) {
+		switch (statusEvent) {
+			case STARTING -> {
+				this.pipelineStatus = RUNNING;
+				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, RUNNING, AUTO));
+			}
+			case RESUMING -> {
+				this.resume();
+				this.pipelineStatus = RUNNING;
+				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, RUNNING, MANUAL));
+			}
+			case HALTED -> {
+				if (this.pipelineStatus != INIT) {
+					this.pause();
+					this.pipelineStatus = HALTED;
+					applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, HALTED, MANUAL));
+				}
+			}
+			case STOPPING -> {
+				this.pipelineStatus = STOPPED;
+				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, STOPPED, MANUAL));
+			}
+			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", pipelineName, statusEvent);
+		}
+	}
+
+	protected abstract void resume();
+	protected abstract void pause();
+
+	public boolean isHalted() {
+		return pipelineStatus.equals(HALTED) || pipelineStatus.equals(STOPPED);
+	}
 }

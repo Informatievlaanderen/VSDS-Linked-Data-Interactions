@@ -10,6 +10,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.SenderCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidComponentException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidPipelineNameException;
@@ -68,18 +69,19 @@ public class PipelineCreatorService {
 			Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
 			inputConfig.put(ORCHESTRATOR_NAME, orchestratorName);
 
-			Object ldiInput = configurator.configure(adapter, executor, new ComponentProperties(pipeLineName, inputName, inputConfig));
+			LdioInput ldiInput = configurator.configure(adapter, executor, eventPublisher, new ComponentProperties(pipeLineName, inputName, inputConfig));
 
 			registerBean(pipeLineName, ldiInput);
+			eventPublisher.publishEvent(new InputCreatedEvent(config.getName(), ldiInput));
 		} catch (NoSuchBeanDefinitionException e) {
 			throw new InvalidComponentException(config.getName(), e.getBeanName());
 		}
 	}
 
-	public void removePipeline(String pipeline) {
+	public void removePipeline(String pipeline, boolean keepState) {
 		DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) configContext.getBeanFactory();
 		LdioInput ldioInput = (LdioInput) beanRegistry.getBean(pipeline);
-		ldioInput.shutdown();
+		ldioInput.shutdown(keepState);
 		beanFactory.destroyBean(pipeline);
 	}
 
@@ -94,7 +96,7 @@ public class PipelineCreatorService {
 				.map(this::getLdioOutput)
 				.toList();
 
-		LdioSender ldioSender = new LdioSender(pipelineConfig.getName(), eventPublisher, ldiOutputs);
+		LdioSender ldioSender = new LdioSender(pipelineConfig.getName(), ldiOutputs);
 
 		List<LdioTransformer> processorChain = new ArrayList<>(ldioTransformers.subList(0, ldioTransformers.size()));
 

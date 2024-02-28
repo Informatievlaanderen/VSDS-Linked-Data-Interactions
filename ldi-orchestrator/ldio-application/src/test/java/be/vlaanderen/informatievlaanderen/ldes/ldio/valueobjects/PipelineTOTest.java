@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RUNNING;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,10 +27,11 @@ class PipelineTOTest {
 	void fromPipelineConfig() {
 		PipelineConfigTO createdPipeline = getPipelineConfig();
 
-		PipelineTO pipelineTO = PipelineTO.build(createdPipeline, RUNNING);
+		PipelineTO pipelineTO = PipelineTO.build(createdPipeline, RUNNING, AUTO);
 
 		assertEquals("pipeline", pipelineTO.name());
 		assertEquals(RUNNING, pipelineTO.status());
+		assertEquals(AUTO, pipelineTO.updateSource());
 		assertEquals("in", pipelineTO.input().name());
 		assertTrue(pipelineTO.input().config().containsKey("type"));
 		assertEquals("adapter", pipelineTO.input().adapter().name());

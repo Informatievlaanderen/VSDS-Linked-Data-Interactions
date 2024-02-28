@@ -2,7 +2,6 @@ package ldes.client.treenoderelationsfetcher;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import ldes.client.treenoderelationsfetcher.domain.valueobjects.LdesRelation;
 import ldes.client.treenoderelationsfetcher.domain.valueobjects.LdesStructure;
 import org.apache.commons.io.FileUtils;
@@ -16,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;

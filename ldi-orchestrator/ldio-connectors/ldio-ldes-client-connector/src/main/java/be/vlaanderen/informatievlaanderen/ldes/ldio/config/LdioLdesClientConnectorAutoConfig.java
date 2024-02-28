@@ -11,6 +11,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
@@ -46,7 +47,7 @@ public class LdioLdesClientConnectorAutoConfig {
 		}
 
 		@Override
-		public Object configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties properties) {
+		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties properties) {
 			final String pipelineName = properties.getPipelineName();
 			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
 			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);
@@ -56,9 +57,9 @@ public class LdioLdesClientConnectorAutoConfig {
 			final var edcRequestExecutor = requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService,
 					urlProxy);
 			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, edcRequestExecutor).getMemberSupplier();
-			var ldesClient = new LdioLdesClient(pipelineName, executor, observationRegistry, memberSupplier);
+			var ldesClient = new LdioLdesClient(pipelineName, executor, observationRegistry, memberSupplier, applicationEventPublisher);
 			ldesClient.start();
-			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService)));
+			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
 
 			return ldesClient;
 		}

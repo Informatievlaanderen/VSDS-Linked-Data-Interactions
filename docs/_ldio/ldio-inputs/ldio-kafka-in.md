@@ -53,3 +53,8 @@ outputs:
       sasl-jaas-user: client
       sasl-jaas-password: client-secret
 ```
+
+## Pausing
+
+When paused, this component will stop listening to the kafka topics.
+When resumed, it will try to resync with all topics.
