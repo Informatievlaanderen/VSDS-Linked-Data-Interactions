@@ -93,6 +93,7 @@ public class PipelineCreatorService {
 
 		List<LdiOutput> ldiOutputs = pipelineConfig.getOutputs()
 				.stream()
+				.map(componentDefinition -> addPipelineNameIfMissingToComponentDefinition(componentDefinition, pipelineConfig.getName()))
 				.map(this::getLdioOutput)
 				.toList();
 
@@ -162,5 +163,16 @@ public class PipelineCreatorService {
 		if (!matcher.matches()) {
 			throw new InvalidPipelineNameException(name);
 		}
+	}
+
+	/**
+	 * When a pipeline is loaded from the spring properties, the pipeline name is missing, which will be added here.
+	 * This method should be deleted if loading pipelines from the properties is not supported anymore
+	 */
+	private ComponentDefinition addPipelineNameIfMissingToComponentDefinition(ComponentDefinition componentDefinition, String pipelineName) {
+		if (componentDefinition.getConfig().getPipelineName() == null) {
+			componentDefinition.getConfig().setPipelineName(pipelineName);
+		}
+		return componentDefinition;
 	}
 }

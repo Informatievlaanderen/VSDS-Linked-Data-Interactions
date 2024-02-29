@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -17,19 +18,19 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class LdioMaterialiserRepositoryBatchCollectorTest {
-
+class LdioRepositoryMaterialiserTest {
 	private static final int BATCH_TIMEOUT = 2000;
 	@Mock
 	private Materialiser materialiser;
-	private LdioMaterialiserRepositoryBatchCollector ldioMaterialiserRepositoryBatchCollector;
+	private LdioRepositoryMaterialiser ldioRepositoryMaterialiser;
 
 	@AfterEach
 	void tearDown() {
-		ldioMaterialiserRepositoryBatchCollector.shutdown();
+		ldioRepositoryMaterialiser.shutdown();
 	}
 
 
@@ -39,17 +40,13 @@ class LdioMaterialiserRepositoryBatchCollectorTest {
 
 		@BeforeEach
 		void setUp() {
-			ldioMaterialiserRepositoryBatchCollector = new LdioMaterialiserRepositoryBatchCollector(
-					BATCH_SIZE,
-					BATCH_TIMEOUT,
-					materialiser
-			);
+			ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, BATCH_SIZE, BATCH_TIMEOUT);
 		}
 
 		@Test
 		void given_ValidListOfMembers_when_ProcessList_then_CommitToRepository() {
 			readTenModelsFromFile()
-					.forEach(ldioMaterialiserRepositoryBatchCollector::addMemberToCommit);
+					.forEach(ldioRepositoryMaterialiser::accept);
 
 			verify(materialiser).process(anyList());
 		}
@@ -58,10 +55,10 @@ class LdioMaterialiserRepositoryBatchCollectorTest {
 		void given_ValidList_when_ProcessList_And_CommitFails_then_RollbackConnection() {
 			doThrow(MaterialisationFailedException.class).when(materialiser).process(anyList());
 
-			final List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
+			final List<Model> models = readTenModelsFromFile().toList();
 			for (int i = 0; i < models.size(); i++) {
 				try {
-					ldioMaterialiserRepositoryBatchCollector.addMemberToCommit(models.get(i));
+					ldioRepositoryMaterialiser.accept(models.get(i));
 				} catch (Exception e) {
 					assertThat(e).isInstanceOf(MaterialisationFailedException.class);
 					assertThat(i + 1)
@@ -80,19 +77,15 @@ class LdioMaterialiserRepositoryBatchCollectorTest {
 
 		@BeforeEach
 		void setUp() {
-			ldioMaterialiserRepositoryBatchCollector = new LdioMaterialiserRepositoryBatchCollector(BATCH_SIZE, BATCH_TIMEOUT, materialiser);
+			ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, BATCH_SIZE, BATCH_TIMEOUT);
 		}
 
 		@Test
 		void when_BatchSizeReachedTwice_then_ProcessListTwice() {
-			readTenModelsFromFile().forEach(ldioMaterialiserRepositoryBatchCollector::addMemberToCommit);
+			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
 
 			verify(materialiser, times(2)).process(anyList());
 		}
-
-
-
-
 	}
 
 	@Nested
@@ -101,18 +94,18 @@ class LdioMaterialiserRepositoryBatchCollectorTest {
 
 		@BeforeEach
 		void setUp() {
-			ldioMaterialiserRepositoryBatchCollector = new LdioMaterialiserRepositoryBatchCollector(BATCH_SIZE, BATCH_TIMEOUT, materialiser);
+			ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, BATCH_SIZE, BATCH_TIMEOUT);
 		}
 
 		@Test
 		void when_BatchSizeIsNotReached_then_CommitAfterBatchTimeout() {
-			readTenModelsFromFile().forEach(ldioMaterialiserRepositoryBatchCollector::addMemberToCommit);
+			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
 
 			verify(materialiser, timeout(BATCH_TIMEOUT)).process(anyList());
 		}
 	}
 
-	private Stream<org.apache.jena.rdf.model.Model> readTenModelsFromFile() {
+	private Stream<Model> readTenModelsFromFile() {
 		return RDFParser.source("10_people_data.nq").lang(Lang.NQ).toModel()
 				.listStatements()
 				.toList()
