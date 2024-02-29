@@ -10,7 +10,6 @@ public class MemberSupplierImpl implements MemberSupplier {
     public MemberSupplierImpl(TreeNodeProcessor treeNodeProcessor, boolean keepState) {
         this.treeNodeProcessor = treeNodeProcessor;
         this.keepState = keepState;
-        Runtime.getRuntime().addShutdownHook(new Thread(this::destroyState));
     }
 
     @Override
@@ -25,4 +24,8 @@ public class MemberSupplierImpl implements MemberSupplier {
         }
     }
 
+    @Override
+    public void init() {
+        treeNodeProcessor.init();
+    }
 }

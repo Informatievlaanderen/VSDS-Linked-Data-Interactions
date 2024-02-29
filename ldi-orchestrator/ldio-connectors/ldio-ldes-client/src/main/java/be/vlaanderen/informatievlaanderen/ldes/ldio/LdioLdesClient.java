@@ -2,11 +2,13 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.concurrent.ExecutorService;
 
@@ -20,24 +22,29 @@ public class LdioLdesClient extends LdioInput {
 
 	private final MemberSupplier memberSupplier;
 	private boolean threadRunning = true;
+	private boolean paused = false;
 
 	public LdioLdesClient(String pipelineName,
 						  ComponentExecutor componentExecutor,
 						  ObservationRegistry observationRegistry,
-						  MemberSupplier memberSupplier) {
-		super(NAME, pipelineName, componentExecutor, null, observationRegistry);
+						  MemberSupplier memberSupplier,
+						  ApplicationEventPublisher applicationEventPublisher) {
+		super(NAME, pipelineName, componentExecutor, null, observationRegistry, applicationEventPublisher);
 		this.memberSupplier = memberSupplier;
 	}
 
 	@SuppressWarnings("java:S2095")
 	public void start() {
+		memberSupplier.init();
+		this.updateStatus(PipelineStatus.STARTING);
 		final ExecutorService executorService = newSingleThreadExecutor();
 		executorService.submit(this::run);
 	}
 
-	private void run() {
+	private synchronized void run() {
 		try {
 			while (threadRunning) {
+				checkPause();
 				processModel(memberSupplier.get().getModel());
 			}
 		} catch (EndOfLdesException e) {
@@ -47,8 +54,33 @@ public class LdioLdesClient extends LdioInput {
 		}
 	}
 
-	public void stopThread() {
-		threadRunning = false;
+	private synchronized void checkPause() {
+		while (paused) {
+			try {
+				this.wait();
+			}  catch (InterruptedException e) {
+				log.error("Thread interrupted: {}", e.getMessage());
+				Thread.currentThread().interrupt();
+			}
+		}
 	}
 
+	@Override
+	public void shutdown(boolean keepState) {
+		threadRunning = false;
+		if (!keepState) {
+			memberSupplier.destroyState();
+		}
+	}
+
+	@Override
+	protected synchronized void resume() {
+		this.paused = false;
+		this.notifyAll();
+	}
+
+	@Override
+	protected void pause() {
+		this.paused = true;
+	}
 }

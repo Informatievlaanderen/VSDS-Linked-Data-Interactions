@@ -13,6 +13,7 @@ public class OrchestratorConfig {
 	public static final String ORCHESTRATOR_NAME = "orchestrator.name";
 	public static final String DEBUG = "debug";
 	private String name = randomUUID().toString();
+	private String directory;
 	private List<PipelineConfig> pipelines;
 
 	public String getName() {
@@ -21,6 +22,14 @@ public class OrchestratorConfig {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDirectory() {
+		return directory;
+	}
+
+	public void setDirectory(String directory) {
+		this.directory = directory;
 	}
 
 	public List<PipelineConfig> getPipelines() {

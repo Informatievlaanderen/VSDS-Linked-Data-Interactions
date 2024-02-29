@@ -1,9 +1,5 @@
 import be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import com.apicatalog.jsonld.JsonLdOptions;
-import com.apicatalog.jsonld.context.cache.LruCache;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
@@ -11,6 +7,11 @@ import org.apache.jena.riot.RIOT;
 import org.apache.jena.sparql.util.ContextAccumulator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.apicatalog.jsonld.JsonLdOptions;
+import com.apicatalog.jsonld.context.cache.LruCache;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;

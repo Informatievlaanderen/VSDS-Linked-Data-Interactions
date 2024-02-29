@@ -14,11 +14,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import io.micrometer.observation.ObservationRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval.TYPE.CRON;
 
@@ -30,10 +32,14 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	private final boolean continueOnFail;
 	private static final Logger log = LoggerFactory.getLogger(LdioHttpInputPoller.class);
 	private static final String CONTENT_TYPE = "Content-Type";
+	private PollingInterval pollingInterval;
+
+	@SuppressWarnings("java:S3740")
+	private ScheduledFuture scheduledPoll;
 
 	public LdioHttpInputPoller(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry, List<String> endpoints,
-	                           boolean continueOnFail, RequestExecutor requestExecutor) {
-		super(NAME, pipelineName, executor, adapter, observationRegistry);
+							   boolean continueOnFail, RequestExecutor requestExecutor, ApplicationEventPublisher applicationEventPublisher) {
+		super(NAME, pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);
 		this.requestExecutor = requestExecutor;
 		this.requests = endpoints.stream().map(endpoint -> new GetRequest(endpoint, RequestHeaders.empty())).toList();
 		this.continueOnFail = continueOnFail;
@@ -43,11 +49,16 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	}
 
 	public void schedulePoller(PollingInterval pollingInterval) {
+		this.pollingInterval = pollingInterval;
 		scheduler.initialize();
+		schedule(pollingInterval);
+	}
+
+	private void schedule(PollingInterval pollingInterval) {
 		if (pollingInterval.getType() == CRON) {
-			scheduler.schedule(this, pollingInterval.getCronTrigger());
+			scheduledPoll = scheduler.schedule(this, pollingInterval.getCronTrigger());
 		} else {
-			scheduler.scheduleAtFixedRate(this, Instant.now(), pollingInterval.getDuration());
+			scheduledPoll = scheduler.scheduleAtFixedRate(this, Instant.now(), pollingInterval.getDuration());
 		}
 	}
 
@@ -64,8 +75,8 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 		});
 	}
 
-	public void shutdown() {
-		this.scheduler.shutdown();
+	public void shutdown(boolean keepState) {
+		this.scheduler.destroy();
 	}
 
 	private void executeRequest(Request request) {
@@ -84,4 +95,16 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 			throw new UnsuccesfulPollingException(response.getHttpStatus(), request.getUrl());
 		}
 	}
+
+	@Override
+	protected synchronized void resume() {
+		if (pollingInterval != null) {
+			schedule(pollingInterval);
+		}
+	}
+
+	@Override
+	protected synchronized void pause() {
+		scheduledPoll.cancel(false);
+    }
 }

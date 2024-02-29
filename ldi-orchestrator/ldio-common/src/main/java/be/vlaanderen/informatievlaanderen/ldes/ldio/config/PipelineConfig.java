@@ -7,9 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PipelineConfig {
+	public static final String NAME_PATTERN = "^[0-9a-zA-Z_\\-. ]+$";
 	public static final String PIPELINE_NAME = "pipeline.name";
 	private String name;
-	private String description;
+	private String description = "";
 	private InputComponentDefinition input;
 	private List<ComponentDefinition> transformers = new LinkedList<>();
 	private List<ComponentDefinition> outputs;
@@ -52,16 +53,5 @@ public class PipelineConfig {
 
 	public void setOutputs(List<ComponentDefinition> outputs) {
 		this.outputs = outputs;
-	}
-
-	@Override
-	public String toString() {
-		return "{" +
-		       "name='" + name + '\'' +
-		       ", description='" + description + '\'' +
-		       ", input=" + input +
-		       ", transformers=" + transformers +
-		       ", outputs=" + outputs +
-		       '}';
 	}
 }

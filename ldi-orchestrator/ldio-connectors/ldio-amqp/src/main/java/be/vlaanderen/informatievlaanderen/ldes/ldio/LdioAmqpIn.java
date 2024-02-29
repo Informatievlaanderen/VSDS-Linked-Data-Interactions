@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.JmsConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioAmqpInRegistrator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.InvalidAmqpMessageException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import io.micrometer.observation.ObservationRegistry;
@@ -11,11 +12,17 @@ import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.CONTENT_TYPE_HEADER;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 public class LdioAmqpIn extends LdioInput implements MessageListener {
 	public static final String NAME = "Ldio:AmqpIn";
 	private static final Logger log = LoggerFactory.getLogger(LdioAmqpIn.class);
+	private final LdioAmqpInRegistrator ldioAmqpInRegistrator;
+	private final String listenerId;
 	private final String defaultContentType;
 
 	/**
@@ -30,18 +37,25 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 	 * @param jmsInRegistrator    Global service to maintain JMS listeners.
 	 * @param observationRegistry
 	 */
-	protected LdioAmqpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
-	                     String defaultContentType, JmsConfig jmsConfig, LdioAmqpInRegistrator jmsInRegistrator, ObservationRegistry observationRegistry) {
-		super(NAME, pipelineName, executor, adapter, observationRegistry);
+	public LdioAmqpIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
+						 String defaultContentType, JmsConfig jmsConfig, LdioAmqpInRegistrator jmsInRegistrator,
+						 ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher) {
+		super(NAME, pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);
 		this.defaultContentType = defaultContentType;
-		jmsInRegistrator.registerListener(jmsConfig, listenerEndpoint(jmsConfig.queue()));
+		SimpleJmsListenerEndpoint endpoint = listenerEndpoint(jmsConfig.queue());
+		ldioAmqpInRegistrator = jmsInRegistrator;
+		listenerId = endpoint.getId();
+		jmsInRegistrator.registerListener(jmsConfig, endpoint);
+		this.updateStatus(STARTING);
 	}
 
 	@Override
 	public void onMessage(Message message) {
 		final LdiAdapter.Content content;
 		try {
-			content = LdiAdapter.Content.of(message.getBody(String.class), defaultContentType);
+			String contentTypeProperty = message.getStringProperty(CONTENT_TYPE_HEADER);
+			String contentType = contentTypeProperty != null ? contentTypeProperty : defaultContentType;
+			content = LdiAdapter.Content.of(message.getBody(String.class), contentType);
 		} catch (JMSException e) {
 			throw new InvalidAmqpMessageException(e);
 		}
@@ -55,5 +69,20 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 		endpoint.setDestination(queue);
 		endpoint.setMessageListener(this);
 		return endpoint;
+	}
+
+	@Override
+	public void shutdown(boolean keepState) {
+		ldioAmqpInRegistrator.stopListener(listenerId);
+	}
+
+	@Override
+	protected void resume() {
+		ldioAmqpInRegistrator.startListener(listenerId);
+	}
+
+	@Override
+	protected void pause() {
+		ldioAmqpInRegistrator.stopListener(listenerId);
 	}
 }

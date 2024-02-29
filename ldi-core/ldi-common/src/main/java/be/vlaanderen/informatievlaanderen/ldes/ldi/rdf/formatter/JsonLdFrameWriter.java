@@ -3,10 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.JsonLDWriteContext;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.RDFWriter;
-import org.apache.jena.riot.RDFWriterBuilder;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.writer.JsonLD10Writer;
 import org.apache.jena.sparql.util.Context;
 
@@ -24,7 +21,12 @@ public class JsonLdFrameWriter implements LdiRdfWriter {
 		this.rdfWriter = RDFWriter.create().context(getFramedContext(frame)).format(RDFFormat.JSONLD10_FRAME_PRETTY);
 	}
 
-	@Override
+    @Override
+    public String getContentType() {
+        return Lang.JSONLD.getHeaderString();
+    }
+
+    @Override
 	public String write(Model model) {
 		return rdfWriter.source(addPrefixesToModel(model)).asString();
 	}

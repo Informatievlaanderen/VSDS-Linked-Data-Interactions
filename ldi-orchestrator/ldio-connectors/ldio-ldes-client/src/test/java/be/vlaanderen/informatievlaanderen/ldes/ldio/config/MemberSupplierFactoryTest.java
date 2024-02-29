@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.URLS;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.USE_VERSION_MATERIALISATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,14 +21,13 @@ class MemberSupplierFactoryTest {
     @BeforeEach
     void setUp() {
         defaultInputConfig = new HashMap<>();
-        defaultInputConfig.put("url", "http://example.org");
-        defaultInputConfig.put("pipeline.name", "demo-pipeline");
+        defaultInputConfig.put(URLS, "http://example.org");
     }
 
     @Test
     void when_VersionMaterialisationIsEnabled_then_VersionMaterialisedMemberSupplierIsReturned() {
         defaultInputConfig.put(USE_VERSION_MATERIALISATION, "true");
-        final var componentProperties = new ComponentProperties(defaultInputConfig);
+        final var componentProperties = new ComponentProperties("pipelineName", "cName", defaultInputConfig);
 
         MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null).getMemberSupplier();
 
@@ -36,7 +36,7 @@ class MemberSupplierFactoryTest {
 
     @Test
     void when_VersionMaterialisationIsNotEnabled_then_MemberSupplierImplIsReturned() {
-        final var componentProperties = new ComponentProperties(defaultInputConfig);
+        final var componentProperties = new ComponentProperties("pipelineName", "cName", defaultInputConfig);
 
         MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null).getMemberSupplier();
 

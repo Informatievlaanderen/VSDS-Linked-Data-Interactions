@@ -34,11 +34,15 @@ public class TreeNodeProcessor {
 		this.ldesMetaData = ldesMetaData;
 	}
 
-	public SuppliedMember getMember() {
-		savePreviousState();
+	public void init() {
 		if (!treeNodeRecordRepository.containsTreeNodeRecords()) {
 			initializeTreeNodeRecordRepository();
 		}
+	}
+
+	public SuppliedMember getMember() {
+		savePreviousState();
+
 		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
 		while (unprocessedTreeMember.isEmpty()) {
 			processTreeNode();

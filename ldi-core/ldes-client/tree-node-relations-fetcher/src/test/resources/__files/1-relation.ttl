@@ -6,8 +6,6 @@
 <http://localhost:10101/200-first-relation>
         rdf:type        tree:Node ;
         terms:isPartOf  <https://brugge-ldes.geomobility.eu/observations> ;
-        tree:relation   [ rdf:type    tree:InBetweenRelation ;
-                          tree:node   <http://localhost:10101/200-no-relations> ;
-                          tree:path   prov:generatedAtTime ;
-                          tree:value  "2023-05"^^<http://www.w3.org/2001/XMLSchema#gYearMonth>
+        tree:relation   [ rdf:type    tree:Relation ;
+                          tree:node   <http://localhost:10101/200-no-relations>
                         ] .

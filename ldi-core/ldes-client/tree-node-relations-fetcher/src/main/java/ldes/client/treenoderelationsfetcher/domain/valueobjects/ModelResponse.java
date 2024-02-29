@@ -13,16 +13,15 @@ public class ModelResponse {
 	private static final Resource ANY_RESOURCE = null;
 	private static final String W3C_TREE = "https://w3id.org/tree#";
 	private static final Property W3ID_TREE_RELATION = createProperty(W3C_TREE, "relation");
-	public static final Property W3ID_TREE_NODE = createProperty(W3C_TREE, "node");
 	private final Model model;
 
 	public ModelResponse(Model model) {
 		this.model = model;
 	}
 
-	public List<TreeNodeRelation> getTreeNodeRelations() {
+	public List<TreeRelation> getTreeRelations() {
 		return extractRelations()
-				.map(this::mapToTreeNodeRelation)
+				.map(this::mapToTreeRelation)
 				.toList();
 	}
 
@@ -31,14 +30,13 @@ public class ModelResponse {
 				Iterator::hasNext, UnaryOperator.identity()).map(Iterator::next);
 	}
 
-	private TreeNodeRelation mapToTreeNodeRelation(Statement statement) {
+	private TreeRelation mapToTreeRelation(Statement statement) {
 		final Resource relationResource = statement.getResource();
 		final StmtIterator relationsStatements = relationResource.listProperties();
-		final String relationUri = relationResource.getProperty(W3ID_TREE_NODE).getResource().toString();
 		final Model treeNodeRelation = ModelFactory.createDefaultModel()
 				.add(statement)
 				.add(relationsStatements);
 
-		return new TreeNodeRelation(relationUri, treeNodeRelation);
+		return TreeRelation.fromModel(treeNodeRelation);
 	}
 }

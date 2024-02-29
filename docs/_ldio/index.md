@@ -8,37 +8,6 @@ nav_order: 0
 
 A lightweight application maintained by the LDI team. Its creation came when a more lightweight alternative for [Apache NiFi] was needed.
 
-## Setup Basic Configuration
-
-To set up a basic LDIO configuration, all that is needed is passing a YAML configuration.
-
-This can look as follows:
-
-````yaml
-orchestrator:
-  pipelines:
-    - name: my-first-pipeline
-      input:
-        name: fully-qualified name of LDI Input
-        config:
-          foo: bar
-        adapter:
-          name: fully-qualified name of LDI Adapter
-          config:
-            foo: bar
-      transformers:
-        - name: fully-qualified name of LDI Transformer
-          config:
-            foo: bar
-      outputs:
-        - name: fully-qualified name of LDI Transformer
-          config:
-            foo: bar
-````
-
-- Note that one orchestrator can have multiple pipelines 
-- Note that one pipeline can have multiple LDI Transformers and LDI Outputs 
-
 ## LDIO DEBUG Logging
 
 To enable logging the input model for a 

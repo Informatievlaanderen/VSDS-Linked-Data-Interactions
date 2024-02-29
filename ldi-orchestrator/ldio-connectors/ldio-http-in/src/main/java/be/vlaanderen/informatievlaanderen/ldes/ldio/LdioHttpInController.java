@@ -1,6 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.HttpInPipelineCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -27,15 +29,26 @@ public class LdioHttpInController {
 		var contentType = contentTypeHeader.split(";")[0];
 		logIncomingRequest(contentType, contentLength, pipeline);
 
-		ofNullable(httpInProcesses.get(pipeline))
-				.orElseThrow(() -> new IllegalArgumentException("Not a valid pipeline"))
-				.processInput(content, contentType);
+
+		LdioHttpInProcess inputProcess = ofNullable(httpInProcesses.get(pipeline))
+				.orElseThrow(() -> new PipelineDoesNotExistException(pipeline));
+		if (inputProcess.isPaused()) {
+			return ResponseEntity.status(503).body(String.format("The LDIO pipeline named %s is currently paused.", pipeline));
+		} else {
+			inputProcess.processInput(content, contentType);
+		}
+
 		return ResponseEntity.accepted().build();
 	}
 
 	@EventListener
 	void handleNewPipelines(HttpInPipelineCreatedEvent pipelineCreatedEvent) {
 		httpInProcesses.put(pipelineCreatedEvent.pipelineName(), pipelineCreatedEvent.ldioHttpInProcess());
+	}
+
+	@EventListener
+	void handleDelete(PipelineDeletedEvent event) {
+		httpInProcesses.remove(event.pipelineId());
 	}
 
 	private void logIncomingRequest(String contentType, String contentLength, String pipelineName) {

@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut.NAME;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LdioAzureBlobOutAutoConfigTest {
 	public static final String PROPERTY_LANG = "lang";
@@ -24,7 +25,7 @@ class LdioAzureBlobOutAutoConfigTest {
 				PROPERTY_CONNECTION_STRING, "connectionString",
 				PROPERTY_BLOB_CONTAINER, "blobContainer",
 				PROPERTY_JSON_CONTEXT_URI, "jsonContextUri");
-		ComponentProperties componentProperties = new ComponentProperties(properties);
+		ComponentProperties componentProperties = new ComponentProperties("pipeline", NAME, properties);
 		LdiComponent ldiComponent = new LdioAzureBlobOutAutoConfig.LdioAzureBlobOutConfigurator()
 				.configure(componentProperties);
 

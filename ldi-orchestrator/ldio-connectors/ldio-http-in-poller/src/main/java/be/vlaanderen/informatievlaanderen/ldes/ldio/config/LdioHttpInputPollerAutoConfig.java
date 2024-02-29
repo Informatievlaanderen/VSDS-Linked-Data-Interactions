@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfig
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInputPoller.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 @Configuration
 public class LdioHttpInputPollerAutoConfig {
@@ -36,18 +37,19 @@ public class LdioHttpInputPollerAutoConfig {
 
 		@Override
 		public LdioHttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
-		                                     ComponentProperties properties) {
-			String pipelineName = properties.getProperty(PIPELINE_NAME);
+											 ApplicationEventPublisher applicationEventPublisher, ComponentProperties properties) {
+			String pipelineName = properties.getPipelineName();
 			List<String> endpoints = properties.getPropertyList(URL);
 
 			boolean continueOnFail = properties.getOptionalBoolean(CONTINUE_ON_FAIL).orElse(true);
 
 			var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
 
-			var httpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, observationRegistry, endpoints, continueOnFail, requestExecutor);
+			var httpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, observationRegistry, endpoints, continueOnFail, requestExecutor, applicationEventPublisher);
 
 			httpInputPoller.schedulePoller(getPollingInterval(properties));
 
+			httpInputPoller.updateStatus(STARTING);
 			return httpInputPoller;
 		}
 

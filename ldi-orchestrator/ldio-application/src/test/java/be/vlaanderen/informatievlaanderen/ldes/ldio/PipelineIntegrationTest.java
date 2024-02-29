@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.MockVault;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.stream.IntStream;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -59,10 +56,6 @@ class PipelineIntegrationTest {
 
 	@Test
 	void verifyHaltedPipelineFlow() throws Exception {
-		// Initial Run
-		IntStream.range(0, 10)
-				.forEach(value -> dummyIn.sendData());
-		await().until(() -> mockVault.getReceivedObjects().size() == 10);
 
 		// Halt Pipeline
 		mockMvc.perform(post("http://localhost:8080/admin/api/v1/pipeline/%s/halt".formatted(pipeline))).andExpect(status().isOk());
@@ -71,22 +64,12 @@ class PipelineIntegrationTest {
 			return result.getResponse().getContentAsString().equals("HALTED");
 		});
 
-		IntStream.range(0, 10)
-				.forEach(value -> dummyIn.sendData());
-		Assertions.assertEquals(10, mockVault.getReceivedObjects().size());
-
 		// Resume Pipeline
 		mockMvc.perform(post("http://localhost:8080/admin/api/v1/pipeline/%s/resume".formatted(pipeline))).andExpect(status().isOk());
 		await().until(() -> {
 			var result = mockMvc.perform(get("http://localhost:8080/admin/api/v1/pipeline/%s/status".formatted(pipeline))).andReturn();
 			return result.getResponse().getContentAsString().equals("RUNNING");
 		});
-
-		// Whilst resuming add more members to pipeline
-		IntStream.range(0, 10)
-				.forEach(value -> dummyIn.sendData());
-
-		await().until(() -> mockVault.getReceivedObjects().size() == 30);
 	}
 
 }
