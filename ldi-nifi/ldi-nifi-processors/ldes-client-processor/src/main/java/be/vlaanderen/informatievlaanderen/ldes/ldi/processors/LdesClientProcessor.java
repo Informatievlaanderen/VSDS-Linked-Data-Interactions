@@ -182,7 +182,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		if (!keepState) {
+		if (!keepState && memberSupplier != null) {
 			memberSupplier.destroyState();
 		}
 	}

@@ -12,6 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.opentest4j.AssertionFailedError;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
@@ -25,6 +26,8 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Ldes
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WireMockTest(httpPort = 10101)
@@ -34,11 +37,11 @@ class LdesClientProcessorTest {
 
 	private TestRunner testRunner;
 
-	private static PostgreSQLContainer postgreSQLContainer;
+	private static PostgreSQLContainer<?> postgreSQLContainer;
 
 	@BeforeAll
 	static void beforeAll() {
-		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
+		postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
 				.withDatabaseName("integration-test-client-persistence")
 				.withUsername("sa")
 				.withPassword("sa");
@@ -214,6 +217,24 @@ class LdesClientProcessorTest {
 		assertEquals("http://purl.org/dc/terms/isVersionOf",
 				flowFile.getAttribute("ldes.isversionofpath"));
 
+	}
+
+	@Test
+	void when_DataSourceUrlsIsAbsent_then_ThrowException() {
+		testRunner.setProperty("DATA_SOURCE_ENDPOINTS", "http://some-server.com/ldes");
+
+		assertThatThrownBy(() -> testRunner.run())
+				.isInstanceOf(AssertionFailedError.class)
+				.hasMessageStartingWith("Processor has 2 validation failures:");
+	}
+
+	@Test
+	void when_DataSourceUrlsIsEmpty_then_ThrowException() {
+		testRunner.setProperty("DATA_SOURCE_URLS", "");
+
+		assertThatThrownBy(() -> testRunner.run())
+				.isInstanceOf(AssertionFailedError.class)
+				.hasMessageStartingWith("Processor has 1 validation failures:");
 	}
 
 	static class MatchNumberOfFlowFilesArgumentsProvider implements ArgumentsProvider {
