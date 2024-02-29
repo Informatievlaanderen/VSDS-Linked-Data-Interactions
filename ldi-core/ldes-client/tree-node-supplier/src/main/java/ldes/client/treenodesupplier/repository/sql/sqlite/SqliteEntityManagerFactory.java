@@ -1,18 +1,16 @@
 package ldes.client.treenodesupplier.repository.sql.sqlite;
 
-import ldes.client.treenodesupplier.repository.filebased.exception.CreateDirectoryFailedException;
 import ldes.client.treenodesupplier.repository.sql.EntityManagerFactory;
 import org.apache.commons.io.FileUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 
 @SuppressWarnings("java:S2696")
 public class SqliteEntityManagerFactory implements EntityManagerFactory {
