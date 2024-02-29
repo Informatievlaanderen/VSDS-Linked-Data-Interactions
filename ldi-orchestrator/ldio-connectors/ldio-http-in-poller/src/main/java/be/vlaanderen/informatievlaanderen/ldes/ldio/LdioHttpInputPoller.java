@@ -34,8 +34,7 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	private static final String CONTENT_TYPE = "Content-Type";
 	private PollingInterval pollingInterval;
 
-	@SuppressWarnings("java:S3740")
-	private ScheduledFuture scheduledPoll;
+	private ScheduledFuture<?> scheduledPoll;
 
 	public LdioHttpInputPoller(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry, List<String> endpoints,
 							   boolean continueOnFail, RequestExecutor requestExecutor, ApplicationEventPublisher applicationEventPublisher) {
