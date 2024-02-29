@@ -41,6 +41,7 @@ class LdioRepositoryMaterialiserTest {
 		@BeforeEach
 		void setUp() {
 			ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, BATCH_SIZE, BATCH_TIMEOUT);
+			ldioRepositoryMaterialiser.start();
 		}
 
 		@Test
@@ -78,6 +79,7 @@ class LdioRepositoryMaterialiserTest {
 		@BeforeEach
 		void setUp() {
 			ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, BATCH_SIZE, BATCH_TIMEOUT);
+			ldioRepositoryMaterialiser.start();
 		}
 
 		@Test
@@ -95,6 +97,7 @@ class LdioRepositoryMaterialiserTest {
 		@BeforeEach
 		void setUp() {
 			ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, BATCH_SIZE, BATCH_TIMEOUT);
+			ldioRepositoryMaterialiser.start();
 		}
 
 		@Test

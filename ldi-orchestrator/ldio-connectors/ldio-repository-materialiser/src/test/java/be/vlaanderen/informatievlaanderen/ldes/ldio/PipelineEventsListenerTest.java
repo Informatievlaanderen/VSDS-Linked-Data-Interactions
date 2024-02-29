@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
-
 @SpringBootTest(classes = PipelineEventsListener.class)
 @ExtendWith(value = {MockitoExtension.class})
 class PipelineEventsListenerTest {
