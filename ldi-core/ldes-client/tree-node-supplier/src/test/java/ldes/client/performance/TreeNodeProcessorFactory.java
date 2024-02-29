@@ -28,7 +28,6 @@ class TreeNodeProcessorFactory {
 		final StatePersistence statePersistence = switch (statePersistenceStrategy) {
 			case MEMORY -> createInMemoryStatePersistence();
 			case SQLITE -> createSqliteStatePersistence();
-			case FILE -> createFileStatePersistence();
 			case POSTGRES -> createPostgresPersistence();
 		};
 		final RequestExecutor requestExecutor = requestExecutorFactory.createNoAuthExecutor();
@@ -43,14 +42,6 @@ class TreeNodeProcessorFactory {
 				.withPassword("sa");
 		postgreSQLContainer.start();
 		return postgreSQLContainer;
-	}
-
-	private StatePersistence createFileStatePersistence() {
-		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.FILE,
-				Map.of(), "instanceName");
-		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, treeNodeRecordRepository);
 	}
 
 	private StatePersistence createSqliteStatePersistence() {

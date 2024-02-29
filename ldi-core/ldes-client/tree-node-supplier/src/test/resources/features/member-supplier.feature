@@ -26,7 +26,6 @@ Feature: MemberSupplier
       | statePersistenceStrategy |
       | MEMORY                   |
       | SQLITE                   |
-      | FILE                     |
       | POSTGRES                 |
 
 
@@ -48,7 +47,6 @@ Feature: MemberSupplier
       | statePersistenceStrategy |
       | MEMORY                   |
       | SQLITE                   |
-      | FILE                     |
       | POSTGRES                 |
 
   Scenario Outline: Obtaining the members from multiple endpoints
@@ -91,5 +89,4 @@ Feature: MemberSupplier
       | statePersistenceStrategy |
       | MEMORY                   |
       | SQLITE                   |
-      | FILE                     |
       | POSTGRES                 |
