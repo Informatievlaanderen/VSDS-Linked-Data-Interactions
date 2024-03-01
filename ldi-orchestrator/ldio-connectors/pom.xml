@@ -34,6 +34,7 @@
         <module>ldio-console-out</module>
         <module>ldio-http-out</module>
         <module>ldio-kafka</module>
+        <module>ldio-noop-out</module>
         <module>ldio-rml-adapter</module>
         <module>ldio-azure-blob-out</module>
         <module>ldio-file-out</module>
