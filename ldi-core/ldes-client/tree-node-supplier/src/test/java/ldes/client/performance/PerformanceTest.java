@@ -106,6 +106,7 @@ class PerformanceTest {
 	private void runTest(TestScenario test, CsvFile csvFile, int testSize) {
 		final TreeNodeProcessor treeNodeProcessor = treeNodeProcessorFactory
 				.createTreeNodeProcessor(test.getPersistenceStrategy(), List.of(test.getStartingEndpoint()));
+		treeNodeProcessor.init();
 
 		LocalDateTime lastInterval = LocalDateTime.now();
 		for (int i = 1; i <= testSize; i++) {
