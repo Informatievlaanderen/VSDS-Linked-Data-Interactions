@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInputPoller;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
@@ -40,6 +41,10 @@ public class LdioHttpInputPollerAutoConfig {
 											 ApplicationEventPublisher applicationEventPublisher, ComponentProperties properties) {
 			String pipelineName = properties.getPipelineName();
 			List<String> endpoints = properties.getPropertyList(URL);
+
+			if(endpoints.isEmpty()) {
+				throw new ConfigPropertyMissingException(pipelineName, properties.getComponentName(), URL);
+			}
 
 			boolean continueOnFail = properties.getOptionalBoolean(CONTINUE_ON_FAIL).orElse(true);
 

@@ -7,10 +7,14 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidI
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.MockedConstruction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +23,11 @@ import org.springframework.scheduling.support.CronTrigger;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 class LdioLdioHttpInputPollerAutoConfigTest {
@@ -76,21 +82,54 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 	@ParameterizedTest
 	@ArgumentsSource(InvalidIntervalArgumentsProvider.class)
 	void whenInvalidIntervalConfigured_thenCatchException(String interval) {
-		Executable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
+		ThrowableAssert.ThrowingCallable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
 				.httpInputPollerConfigurator(null)
 				.configure(adapter, executor, applicationEventPublisher, createConfigWithInterval(BASE_URL + ENDPOINT, interval, "false"));
 
-		assertThrows(IllegalArgumentException.class, configurePoller);
+		assertThatThrownBy(configurePoller).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@ParameterizedTest
 	@ArgumentsSource(InvalidCronArgumentsProvider.class)
 	void whenInvalidCronConfigured_thenCatchException(String cron) {
-		Executable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
+		ThrowableAssert.ThrowingCallable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
 				.httpInputPollerConfigurator(null)
 				.configure(adapter, executor, applicationEventPublisher, createConfigWithCron(BASE_URL + ENDPOINT, cron, "false"));
 
-		assertThrows(IllegalArgumentException.class, configurePoller);
+		assertThatThrownBy(configurePoller).isInstanceOf(IllegalArgumentException.class);
 	}
 
+	@ParameterizedTest
+	@ArgumentsSource(InvalidUrlArgumentsProvider.class)
+	void when_MissingUrlConfigProvided_then_ThrowException(String urlKey) {
+		final String expectedErrorMessage = "Pipeline \"pipelineName\": \"\" : Missing value for property \"url\" .";
+
+		final Map<String, String> properties = new HashMap<>(Map.of(
+				LdioHttpInputPollerProperties.INTERVAL, "PT1S",
+				LdioHttpInputPollerProperties.CONTINUE_ON_FAIL, "false"));
+
+		if(urlKey != null) {
+			properties.put(urlKey, "http://some-server.com/ldes");
+		}
+
+		ComponentProperties componentProperties = new ComponentProperties("pipelineName", "", properties);
+
+		ThrowableAssert.ThrowingCallable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
+				.httpInputPollerConfigurator(null).configure(adapter, executor, applicationEventPublisher, componentProperties);
+
+		assertThatThrownBy(configurePoller)
+				.isInstanceOf(ConfigPropertyMissingException.class)
+				.hasMessage(expectedErrorMessage);
+	}
+
+	static class InvalidUrlArgumentsProvider implements ArgumentsProvider {
+		@Override
+		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+			return Stream.of(
+					Arguments.of("endpoint"),
+					Arguments.of((Object) null),
+					Arguments.of("urls")
+			);
+		}
+	}
 }
