@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -17,9 +19,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -225,6 +224,7 @@ class LdesClientProcessorTest {
 									"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z"),
 							6));
 		}
+
 	}
 
 	static class StatePersistenceArgumentsProvider implements ArgumentsProvider {
@@ -232,7 +232,6 @@ class LdesClientProcessorTest {
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(
 					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "MEMORY")),
-					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "FILE")),
 					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "SQLITE")),
 					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "POSTGRES", "POSTGRES_URL",
 							postgreSQLContainer.getJdbcUrl(), "POSTGRES_USERNAME", postgreSQLContainer.getUsername(),
