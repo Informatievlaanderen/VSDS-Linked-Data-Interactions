@@ -35,10 +35,12 @@ public class LdioLdesClient extends LdioInput {
 
 	@SuppressWarnings("java:S2095")
 	public void start() {
-		memberSupplier.init();
-		this.updateStatus(PipelineStatus.STARTING);
 		final ExecutorService executorService = newSingleThreadExecutor();
-		executorService.submit(this::run);
+		executorService.submit(() -> {
+			memberSupplier.init();
+			this.updateStatus(PipelineStatus.STARTING);
+			this.run();
+		});
 	}
 
 	private synchronized void run() {
