@@ -117,6 +117,8 @@ class PerformanceTest {
 				System.out.println(i + ": " + msIntervals);
 			}
 		}
+
+		treeNodeProcessor.destroyState();
 	}
 
 }
