@@ -1,27 +1,30 @@
 package ldes.client.performance;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import ldes.client.performance.csvwriter.CsvFile;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import org.junit.jupiter.api.*;
+import org.apache.jena.riot.Lang;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
 /**
  * This class is used to generate performance test reports on the LDES CLient.
- *
  */
 class PerformanceTest {
+	private static final Lang SOURCE_FORMAT = Lang.TURTLE;
+	private static final TreeNodeProcessorFactory treeNodeProcessorFactory = new TreeNodeProcessorFactory();
 
 	private static WireMockServer wireMockServer;
-	private static final TreeNodeProcessorFactory treeNodeProcessorFactory = new TreeNodeProcessorFactory();
 
 	@BeforeAll
 	static void setUp() {
@@ -36,7 +39,7 @@ class PerformanceTest {
 		wireMockServer.stop();
 	}
 
-//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f10_s1000() {
@@ -46,7 +49,7 @@ class PerformanceTest {
 				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
 
-//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f250_s1000() {
@@ -57,7 +60,7 @@ class PerformanceTest {
 						TestScenario.POSTGRES250));
 	}
 
-//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f10_s100_000() {
@@ -67,7 +70,7 @@ class PerformanceTest {
 				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
 
-//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void memory_real_test() {
@@ -77,7 +80,7 @@ class PerformanceTest {
 				List.of(TestScenario.MEMORY_EXTERNAL));
 	}
 
-//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void test_memory_f250_s100_000() {
@@ -106,7 +109,7 @@ class PerformanceTest {
 
 	private void runTest(TestScenario test, CsvFile csvFile, int testSize) {
 		final TreeNodeProcessor treeNodeProcessor = treeNodeProcessorFactory
-				.createTreeNodeProcessor(test.getPersistenceStrategy(), List.of(test.getStartingEndpoint()));
+				.createTreeNodeProcessor(test.getPersistenceStrategy(), List.of(test.getStartingEndpoint()), SOURCE_FORMAT);
 		treeNodeProcessor.init();
 
 		LocalDateTime lastInterval = LocalDateTime.now();

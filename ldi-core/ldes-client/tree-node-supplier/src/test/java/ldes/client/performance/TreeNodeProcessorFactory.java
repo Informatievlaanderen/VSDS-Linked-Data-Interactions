@@ -23,8 +23,8 @@ class TreeNodeProcessorFactory {
 
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
 
-	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, List<String> url) {
-		final LdesMetaData ldesMetaData = new LdesMetaData(url, Lang.TURTLE);
+	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, List<String> url, Lang sourceFormat) {
+		final LdesMetaData ldesMetaData = new LdesMetaData(url, sourceFormat);
 		final StatePersistence statePersistence = switch (statePersistenceStrategy) {
 			case MEMORY -> createInMemoryStatePersistence();
 			case SQLITE -> createSqliteStatePersistence();
