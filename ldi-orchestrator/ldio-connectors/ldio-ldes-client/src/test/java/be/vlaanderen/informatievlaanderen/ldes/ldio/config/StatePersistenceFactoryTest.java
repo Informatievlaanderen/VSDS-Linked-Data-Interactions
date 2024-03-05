@@ -5,8 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.filebased.FileBasedMemberRepository;
-import ldes.client.treenodesupplier.repository.filebased.FileBasedTreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlMemberRepository;
@@ -80,9 +78,6 @@ class StatePersistenceFactoryTest {
 					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "sqlite")),
 							SqlMemberRepository.class,
 							SqlTreeNodeRepository.class),
-					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "file")),
-							FileBasedMemberRepository.class,
-							FileBasedTreeNodeRecordRepository.class),
 					Arguments.of(
 							new ComponentProperties("pipelineName", ""
 									, Map.of(STATE, "postgres",

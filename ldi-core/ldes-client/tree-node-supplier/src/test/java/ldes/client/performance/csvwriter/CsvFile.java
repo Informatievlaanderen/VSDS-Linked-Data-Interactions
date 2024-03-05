@@ -1,7 +1,6 @@
 package ldes.client.performance.csvwriter;
 
 import ldes.client.performance.TestScenario;
-import ldes.client.treenodesupplier.repository.filebased.exception.StateOperationFailedException;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -49,7 +48,7 @@ public class CsvFile {
 			bufferedWriter.write(recordToWrite);
 			bufferedWriter.newLine();
 		} catch (IOException e) {
-			throw new StateOperationFailedException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
