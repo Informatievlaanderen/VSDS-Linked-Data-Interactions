@@ -2,7 +2,6 @@ package ldes.client.treenodesupplier.domain.services;
 
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.filebased.FileBasedTreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlTreeNodeRepository;
 import ldes.client.treenodesupplier.repository.sql.postgres.PostgresEntityManagerFactory;
@@ -20,7 +19,6 @@ public class TreeNodeRecordRepositoryFactory {
 			case SQLITE -> new SqlTreeNodeRepository(instanceName,
 					SqliteEntityManagerFactory.getInstance(instanceName));
 			case MEMORY -> new InMemoryTreeNodeRecordRepository();
-			case FILE -> new FileBasedTreeNodeRecordRepository(instanceName);
 			case POSTGRES -> new SqlTreeNodeRepository(instanceName,
 					PostgresEntityManagerFactory.getInstance(instanceName, properties));
 		};
