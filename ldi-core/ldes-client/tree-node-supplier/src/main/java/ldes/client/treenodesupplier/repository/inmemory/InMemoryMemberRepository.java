@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 public class InMemoryMemberRepository implements MemberRepository {
 
 	private Queue<MemberRecord> unprocessed = new PriorityQueue<>();
-	private List<MemberRecord> processed = new ArrayList<>();
+	private Set<MemberRecord> processed = new HashSet<>();
 
 	@Override
 	public Optional<MemberRecord> getUnprocessedTreeMember() {
@@ -41,7 +41,7 @@ public class InMemoryMemberRepository implements MemberRepository {
 
 	@Override
 	public void destroyState() {
-		processed = new ArrayList<>();
+		processed = new HashSet<>();
 		unprocessed = new PriorityQueue<>();
 	}
 
