@@ -62,9 +62,8 @@ class PerformanceTest {
 	void compare_persistence_strategies_f10_s100_000() {
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f10_s100_000.csv"),
-				100_0000,
-				List.of(TestScenario.MEMORY10));
-//				List.of(TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
+				100_000,
+				List.of(TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
 
 	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
