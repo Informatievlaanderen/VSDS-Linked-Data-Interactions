@@ -5,11 +5,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import ldes.client.performance.csvwriter.CsvFile;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import org.apache.jena.riot.Lang;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -21,10 +17,9 @@ import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
  * This class is used to generate performance test reports on the LDES CLient.
  */
 class PerformanceTest {
-	private static final Lang SOURCE_FORMAT = Lang.TURTLE;
-	private static final TreeNodeProcessorFactory treeNodeProcessorFactory = new TreeNodeProcessorFactory();
 
 	private static WireMockServer wireMockServer;
+	private static final TreeNodeProcessorFactory treeNodeProcessorFactory = new TreeNodeProcessorFactory();
 
 	@BeforeAll
 	static void setUp() {
@@ -39,38 +34,38 @@ class PerformanceTest {
 		wireMockServer.stop();
 	}
 
-	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f10_s1000() {
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f10_s1000.csv"),
 				1000,
-				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
+				List.of(TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
 
-	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f250_s1000() {
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f250_s1000.csv"),
 				1000,
-				List.of(TestScenario.FILE250, TestScenario.MEMORY250, TestScenario.SQLITE250,
+				List.of(TestScenario.MEMORY250, TestScenario.SQLITE250,
 						TestScenario.POSTGRES250));
 	}
 
-	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f10_s100_000() {
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f10_s100_000.csv"),
 				100_000,
-				List.of(TestScenario.FILE10, TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
+				List.of(TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
 	}
 
-	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void memory_real_test() {
@@ -80,7 +75,7 @@ class PerformanceTest {
 				List.of(TestScenario.MEMORY_EXTERNAL));
 	}
 
-	//  @Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void compare_rdf_formats() {
@@ -96,7 +91,7 @@ class PerformanceTest {
 		);
 	}
 
-	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void test_memory_f250_s100_000() {
@@ -107,7 +102,7 @@ class PerformanceTest {
 	}
 
 	// Runs 1h14m
-//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
 	void test_postgres_f250_s100_000() {
@@ -131,7 +126,7 @@ class PerformanceTest {
 		LocalDateTime lastInterval = LocalDateTime.now();
 		for (int i = 1; i <= testSize; i++) {
 			treeNodeProcessor.getMember();
-			if (i % (testSize / 10) == 0) {
+			if (i % (testSize / 20) == 0) {
 				int msIntervals = (int) ChronoUnit.MILLIS.between(lastInterval, lastInterval = LocalDateTime.now());
 				csvFile.addLine(i, msIntervals, test);
 				System.out.println(i + ": " + msIntervals);

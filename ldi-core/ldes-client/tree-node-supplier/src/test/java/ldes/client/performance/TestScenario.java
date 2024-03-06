@@ -9,7 +9,6 @@ public enum TestScenario {
 	MEMORY10(StatePersistenceStrategy.MEMORY, FragmentSize.TEN),
 	POSTGRES10(StatePersistenceStrategy.POSTGRES, FragmentSize.TEN),
 	SQLITE10(StatePersistenceStrategy.SQLITE, FragmentSize.TEN),
-	FILE10(StatePersistenceStrategy.FILE, FragmentSize.TEN),
 	MEMORY250(StatePersistenceStrategy.MEMORY, FragmentSize.TWOFIFTY),
 	POSTGRES250(StatePersistenceStrategy.POSTGRES, FragmentSize.TWOFIFTY),
 	SQLITE250(StatePersistenceStrategy.SQLITE, FragmentSize.TWOFIFTY),

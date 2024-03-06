@@ -136,16 +136,6 @@ public class MemberSupplierSteps {
 		return new StatePersistence(memberRepository, treeNodeRecordRepository);
 	}
 
-	@And("a StatePersistenceStrategy FILE")
-	public StatePersistence aFileStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.FILE, Map.of(),
-				"instanceName");
-		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.FILE, Map.of(), "instanceName");
-
-		return new StatePersistence(memberRepository, treeNodeRecordRepository);
-	}
-
 	@Then("MemberSupplier is destroyed")
 	public void membersupplierIsDestroyed() {
 		memberSupplier.destroyState();
@@ -169,7 +159,6 @@ public class MemberSupplierSteps {
 
 	private StatePersistence defineStatePersistence(String persistenceStrategy) {
 		return switch (persistenceStrategy) {
-			case "FILE" -> aFileStatePersistenceStrategy();
 			case "POSTGRES" -> aPostgresStatePersistenceStrategy();
 			case "SQLITE" -> aSqliteStatePersistenceStrategy();
 			case "MEMORY" -> aMemoryStatePersistenceStrategy();
