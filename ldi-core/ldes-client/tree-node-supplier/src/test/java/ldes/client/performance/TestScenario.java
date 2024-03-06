@@ -12,7 +12,6 @@ public enum TestScenario {
 	MEMORY250(StatePersistenceStrategy.MEMORY, FragmentSize.TWOFIFTY),
 	POSTGRES250(StatePersistenceStrategy.POSTGRES, FragmentSize.TWOFIFTY),
 	SQLITE250(StatePersistenceStrategy.SQLITE, FragmentSize.TWOFIFTY),
-	FILE250(StatePersistenceStrategy.FILE, FragmentSize.TWOFIFTY),
 	MEMORY_EXTERNAL(StatePersistenceStrategy.MEMORY, FragmentSize.EXT),
 	MEMORY_EXTERNAL_250_TURTLE(StatePersistenceStrategy.MEMORY, FragmentSize.EXT_TWOFIFTY, Lang.TURTLE),
 	MEMORY_EXTERNAL_1000_TURTLE(StatePersistenceStrategy.MEMORY, FragmentSize.EXT_THOUSAND, Lang.TURTLE),
