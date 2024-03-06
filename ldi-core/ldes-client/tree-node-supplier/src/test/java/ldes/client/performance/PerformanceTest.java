@@ -80,6 +80,22 @@ class PerformanceTest {
 				List.of(TestScenario.MEMORY_EXTERNAL));
 	}
 
+	//  @Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Tag("performance")
+	@Test
+	void compare_rdf_formats() {
+		testRunner(
+				separatorsToSystem("target/compare_rdf_formats.csv"),
+				10_000,
+				List.of(TestScenario.MEMORY_EXTERNAL_250_TURTLE,
+						TestScenario.MEMORY_EXTERNAL_250_PROTOBUF,
+						TestScenario.MEMORY_EXTERNAL_500_TURTLE,
+						TestScenario.MEMORY_EXTERNAL_500_PROTOBUF,
+						TestScenario.MEMORY_EXTERNAL_1000_TURTLE,
+						TestScenario.MEMORY_EXTERNAL_1000_PROTOBUF)
+		);
+	}
+
 	//	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
@@ -109,18 +125,19 @@ class PerformanceTest {
 
 	private void runTest(TestScenario test, CsvFile csvFile, int testSize) {
 		final TreeNodeProcessor treeNodeProcessor = treeNodeProcessorFactory
-				.createTreeNodeProcessor(test.getPersistenceStrategy(), List.of(test.getStartingEndpoint()), SOURCE_FORMAT);
+				.createTreeNodeProcessor(test.getPersistenceStrategy(), List.of(test.getStartingEndpoint()), test.getSourceFormat());
 		treeNodeProcessor.init();
 
 		LocalDateTime lastInterval = LocalDateTime.now();
 		for (int i = 1; i <= testSize; i++) {
 			treeNodeProcessor.getMember();
-			if (i % (testSize / 20) == 0) {
+			if (i % (testSize / 10) == 0) {
 				int msIntervals = (int) ChronoUnit.MILLIS.between(lastInterval, lastInterval = LocalDateTime.now());
 				csvFile.addLine(i, msIntervals, test);
 				System.out.println(i + ": " + msIntervals);
 			}
 		}
+
 		treeNodeProcessor.destroyState();
 	}
 
