@@ -1,0 +1,790 @@
+≥∞
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/37791670
+.
+,https://gipod.vlaanderen.be/ns/gipod#gipodId53
+3779167(http://www.w3.org/2001/XMLSchema#integer„‡
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/3779167?
+=
+;https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolgV
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3≤Ø
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/37791673
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type1
+/
+-https://data.vlaanderen.be/ns/mobiliteit#Werk¿Ω
+q
+o
+mhttps://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d2501
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+
+HinderZonenl-BEÊ„
+$"
+ 92d1b151844823a44d9af991e99daccc.
+,
+*http://www.opengis.net/ont/geosparql#asWKTäá
+”<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((56794.7575678495 218424.405874199, 56796.8694836728 218423.811431605, 56796.9961398273 218423.703008093, 56797.084721603 218424.305874375, 56800.5891343601 218438.770897245, 56801.7821259369 218443.393739605, 56799.5960057615 218443.811788725, 56794.7575678495 218424.405874199))/http://www.opengis.net/ont/geosparql#wktLiteralÜÉ
+$"
+ 92d1b151844823a44d9af991e99daccc3
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type&
+$
+"http://www.w3.org/ns/locn#Geometry|z
+$"
+ 0f4883a7e455098dd5db3f79ec5a7619*
+(
+&http://www.w3.org/ns/adms#schemaAgency&$
+https://gipod.vlaanderen.benl-BEóî
+$"
+ 0f4883a7e455098dd5db3f79ec5a76190
+.
+,http://www.w3.org/2004/02/skos/core#notation:8
+10228531,https://gipod.vlaanderen.be/ns/gipod#gipodIdàÖ
+$"
+ 0f4883a7e455098dd5db3f79ec5a76193
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type(
+&
+$http://www.w3.org/ns/adms#IdentifierÔÏ
+P
+N
+Lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances
+
+https://w3id.org/tree#viewx
+v
+thttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72ZŒÀ
+P
+N
+Lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances
+
+https://w3id.org/tree#shapeV
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances/shape–Õ
+P
+N
+Lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances 
+
+https://w3id.org/tree#memberW
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13œÃ
+P
+N
+Lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances 
+
+https://w3id.org/tree#memberV
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8œÃ
+P
+N
+Lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances 
+
+https://w3id.org/tree#memberV
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3®•
+P
+N
+Lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances'
+%
+#https://w3id.org/ldes#versionOfPath(
+&
+$http://purl.org/dc/terms/isVersionOf≠™
+P
+N
+Lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances'
+%
+#https://w3id.org/ldes#timestampPath-
++
+)http://www.w3.org/ns/prov#generatedAtTime±Æ
+P
+N
+Lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances3
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type%
+#
+!https://w3id.org/ldes#EventStream|z
+$"
+ 18cead16a2656ab502750496553f0f3f*
+(
+&http://www.w3.org/ns/adms#schemaAgency&$
+https://gipod.vlaanderen.benl-BEóî
+$"
+ 18cead16a2656ab502750496553f0f3f0
+.
+,http://www.w3.org/2004/02/skos/core#notation:8
+10228530,https://gipod.vlaanderen.be/ns/gipod#gipodIdàÖ
+$"
+ 18cead16a2656ab502750496553f0f3f3
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type(
+&
+$http://www.w3.org/ns/adms#Identifiertr
+$"
+ 9b0f3268a579597b495f576c405f18061
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ 9b0f3268a579597b495f576c405f1806(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ 9b0f3268a579597b495f576c405f18063
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#Organization≥∞
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/37789890
+.
+,https://gipod.vlaanderen.be/ns/gipod#gipodId53
+3778989(http://www.w3.org/2001/XMLSchema#integer‰·
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/3778989?
+=
+;https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolgW
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13≤Ø
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/37789893
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type1
+/
+-https://data.vlaanderen.be/ns/mobiliteit#Werk«ƒ
+x
+v
+thttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z"
+ 
+https://w3id.org/tree#relation$"
+ 4834ab80fd060de6c22d58a82e6af867“œ
+x
+v
+thttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z3
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+
+https://w3id.org/tree#NodeØ¨
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/zones/499daebe-1764-4f96-b683-c6e91d5430026
+4
+2https://data.vlaanderen.be/ns/mobiliteit#Zone.typeq
+o
+mhttps://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250“œ
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/zones/499daebe-1764-4f96-b683-c6e91d543002&
+$
+"http://www.w3.org/ns/locn#geometry$"
+ 85554236c1928c741c6f8cd9607a74f5ÏÈ
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/zones/499daebe-1764-4f96-b683-c6e91d5430023
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type1
+/
+-https://data.vlaanderen.be/ns/mobiliteit#Zoneóî
+$"
+ 044b188e56bc708e87bf59a5fc82d5e9'
+%
+#http://data.europa.eu/m8g/startTimeCA
+2021-01-14T05:00:00Z)http://www.w3.org/2001/XMLSchema#dateTimeïí
+$"
+ 044b188e56bc708e87bf59a5fc82d5e9%
+#
+!http://data.europa.eu/m8g/endTimeCA
+2021-01-27T19:00:00Z)http://www.w3.org/2001/XMLSchema#dateTimeäá
+$"
+ 044b188e56bc708e87bf59a5fc82d5e93
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type*
+(
+&http://data.europa.eu/m8g/PeriodOfTimetr
+$"
+ c1d5d09281c6a8bfcc2524b1fe26ee371
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ c1d5d09281c6a8bfcc2524b1fe26ee37(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ c1d5d09281c6a8bfcc2524b1fe26ee373
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#Organizationìê
+$"
+ 4834ab80fd060de6c22d58a82e6af867
+
+https://w3id.org/tree#valueGE
+2020-12-28T09:37:18.577Z)http://www.w3.org/2001/XMLSchema#dateTimewu
+$"
+ 4834ab80fd060de6c22d58a82e6af867
+
+https://w3id.org/tree#path-
++
+)http://www.w3.org/ns/prov#generatedAtTimeƒ¡
+$"
+ 4834ab80fd060de6c22d58a82e6af867
+
+https://w3id.org/tree#nodey
+w
+uhttps://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:37:18.577Zçä
+$"
+ 4834ab80fd060de6c22d58a82e6af8673
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type-
++
+)https://w3id.org/tree#GreaterThanRelationtr
+$"
+ faa1c988a6184ab47c57858116ba2c171
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ faa1c988a6184ab47c57858116ba2c17(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ faa1c988a6184ab47c57858116ba2c173
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#Organization|z
+$"
+ 2d8f0f01686bcb2745ba6037c8f61f81*
+(
+&http://www.w3.org/ns/adms#schemaAgency&$
+https://gipod.vlaanderen.benl-BEóî
+$"
+ 2d8f0f01686bcb2745ba6037c8f61f810
+.
+,http://www.w3.org/2004/02/skos/core#notation:8
+10228532,https://gipod.vlaanderen.be/ns/gipod#gipodIdàÖ
+$"
+ 2d8f0f01686bcb2745ba6037c8f61f813
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type(
+&
+$http://www.w3.org/ns/adms#IdentifierØ¨
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/zones/991fa7c1-a530-44f7-a185-98ba45b69ce06
+4
+2https://data.vlaanderen.be/ns/mobiliteit#Zone.typeq
+o
+mhttps://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250“œ
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/zones/991fa7c1-a530-44f7-a185-98ba45b69ce0&
+$
+"http://www.w3.org/ns/locn#geometry$"
+ 1e0f04931f2090624f6e00fe71e7c726ÏÈ
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/zones/991fa7c1-a530-44f7-a185-98ba45b69ce03
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type1
+/
+-https://data.vlaanderen.be/ns/mobiliteit#Zone˛˚
+$"
+ 1e0f04931f2090624f6e00fe71e7c726.
+,
+*http://www.opengis.net/ont/geosparql#asWKT¢ü
+Î<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((57626.8718169853 218733.768758968, 57626.8718169853 218731.768758968, 57639.8718169853 218731.768758968, 57639.8718169853 218733.768758968, 57626.8718169853 218733.768758968))/http://www.opengis.net/ont/geosparql#wktLiteralÜÉ
+$"
+ 1e0f04931f2090624f6e00fe71e7c7263
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type&
+$
+"http://www.w3.org/ns/locn#Geometrytr
+$"
+ 2e1620e3133bac7a9c78e447884785901
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ 2e1620e3133bac7a9c78e44788478590(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ 2e1620e3133bac7a9c78e447884785903
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#Organizationtr
+$"
+ 24fc9af1f76a54ab0864a1317cdb3b291
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ 24fc9af1f76a54ab0864a1317cdb3b29(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ 24fc9af1f76a54ab0864a1317cdb3b293
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#Organizationtr
+$"
+ d8e2010d3401aa4b799a0a053aa4bedd1
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ d8e2010d3401aa4b799a0a053aa4bedd(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ d8e2010d3401aa4b799a0a053aa4bedd3
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#Organizationóî
+$"
+ 2dc728869ad59c40e6633e50ae5974ae'
+%
+#http://data.europa.eu/m8g/startTimeCA
+2021-01-04T09:00:00Z)http://www.w3.org/2001/XMLSchema#dateTimeïí
+$"
+ 2dc728869ad59c40e6633e50ae5974ae%
+#
+!http://data.europa.eu/m8g/endTimeCA
+2021-01-04T17:00:00Z)http://www.w3.org/2001/XMLSchema#dateTimeäá
+$"
+ 2dc728869ad59c40e6633e50ae5974ae3
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type*
+(
+&http://data.europa.eu/m8g/PeriodOfTimeäá
+$"
+ 85554236c1928c741c6f8cd9607a74f5.
+,
+*http://www.opengis.net/ont/geosparql#asWKTÆ´
+˜<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> MULTIPOLYGON (((134898.945796628 206393.394430039, 134899.209518647 206393.950467226, 134899.041238631 206393.799595487, 134898.945796628 206393.394430039)), ((134894.884924181 206390.073244601, 134899.041238631 206393.799595487, 134899.221463236 206394.564675644, 134903.493770169 206398.717056217, 134903.929208709 206398.738485224, 134910.917226284 206407.106845976, 134914.238934501 206409.202662746, 134912.776227098 206410.566659466, 134904.388842202 206401.572290345, 134898.185002673 206394.919486952, 134896.408266456 206393.014170627, 134894.884924181 206390.073244601)))/http://www.opengis.net/ont/geosparql#wktLiteralÜÉ
+$"
+ 85554236c1928c741c6f8cd9607a74f53
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type&
+$
+"http://www.w3.org/ns/locn#GeometryÀ»
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13$
+"
+ http://purl.org/dc/terms/createdGE
+2020-12-23T14:38:04.573Z)http://www.w3.org/2001/XMLSchema#dateTime∏µ
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/134
+2
+0https://data.vlaanderen.be/ns/mobiliteit#periode$"
+ b2c744aadd25ec66f59d03ac9974e46a‘—
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13-
++
+)http://www.w3.org/ns/prov#generatedAtTimeGE
+2020-12-28T09:36:10.383Z)http://www.w3.org/2001/XMLSchema#dateTimeêç
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/131
+/
+-https://data.vlaanderen.be/ns/mobiliteit#zone
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/zones/499daebe-1764-4f96-b683-c6e91d543002∫∑
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/136
+4
+2https://data.vlaanderen.be/ns/mobiliteit#beheerder$"
+ faa1c988a6184ab47c57858116ba2c17—Œ
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/133
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+<
+:https://data.vlaanderen.be/ns/mobiliteit#MobiliteitshinderØ¨
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13+
+)
+'http://purl.org/dc/elements/1.1/creator$"
+ a54c73a5e1b98ca0cfe3a8835898ce08¨©
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13(
+&
+$http://www.w3.org/ns/adms#identifier$"
+ 2d8f0f01686bcb2745ba6037c8f61f81äá
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13:
+8
+6https://data.vlaanderen.be/ns/mobiliteit#Inname.statusp
+n
+lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/statuses/a411c53e-db33-436a-9bb9-d62d535b661d‹Ÿ
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13(
+&
+$http://purl.org/dc/terms/isVersionOfT
+R
+Phttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532ª∏
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13*
+(
+&http://www.w3.org/ns/adms#versionNotes1/
+&MobilityHindranceWasImportedFromLegacynl-BEÃ…
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13%
+#
+!http://purl.org/dc/terms/modifiedGE
+2020-12-23T14:38:04.573Z)http://www.w3.org/2001/XMLSchema#dateTime—Œ
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13(
+&
+$http://purl.org/dc/terms/descriptionIG
+C9100 Sint-Niklaas, Antwerpse Steenweg 21: Verhuis/levering met liftH≥∞
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/13/
+-
++http://purl.org/dc/elements/1.1/contributor$"
+ 2e1620e3133bac7a9c78e44788478590∆√
+W
+U
+Shttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228532/130
+.
+,https://gipod.vlaanderen.be/ns/gipod#gipodId64
+10228532(http://www.w3.org/2001/XMLSchema#integer≥∞
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/37791660
+.
+,https://gipod.vlaanderen.be/ns/gipod#gipodId53
+3779166(http://www.w3.org/2001/XMLSchema#integer„‡
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/3779166?
+=
+;https://data.vlaanderen.be/ns/mobiliteit#Inname.heeftGevolgV
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8≤Ø
+E
+C
+Ahttps://private-api.gipod.beta-vlaanderen.be/api/v1/works/37791663
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type1
+/
+-https://data.vlaanderen.be/ns/mobiliteit#Werk´®
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8(
+&
+$http://www.w3.org/ns/adms#identifier$"
+ 0f4883a7e455098dd5db3f79ec5a7619èå
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/81
+/
+-https://data.vlaanderen.be/ns/mobiliteit#zone
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/zones/370f63e2-46ae-4306-a253-f62115fca14aÀ»
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8%
+#
+!http://purl.org/dc/terms/modifiedGE
+2020-12-24T09:05:32.707Z)http://www.w3.org/2001/XMLSchema#dateTime≤Ø
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8/
+-
++http://purl.org/dc/elements/1.1/contributor$"
+ c1d5d09281c6a8bfcc2524b1fe26ee37Æ´
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8+
+)
+'http://purl.org/dc/elements/1.1/creator$"
+ 224e633839151256c164ae0648a4b852≈¬
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/80
+.
+,https://gipod.vlaanderen.be/ns/gipod#gipodId64
+10228531(http://www.w3.org/2001/XMLSchema#integerπ∂
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/86
+4
+2https://data.vlaanderen.be/ns/mobiliteit#beheerder$"
+ 24fc9af1f76a54ab0864a1317cdb3b29»≈
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8$
+"
+ http://purl.org/dc/terms/createdEC
+2020-12-24T08:56:33.1Z)http://www.w3.org/2001/XMLSchema#dateTime€ÿ
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8(
+&
+$http://purl.org/dc/terms/isVersionOfT
+R
+Phttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531≥∞
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8(
+&
+$http://purl.org/dc/terms/description,*
+&8420 De Haan, Nieuwe Steenweg: VerhuisH∫∑
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8*
+(
+&http://www.w3.org/ns/adms#versionNotes1/
+&MobilityHindranceWasImportedFromLegacynl-BE–Õ
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/83
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+<
+:https://data.vlaanderen.be/ns/mobiliteit#MobiliteitshinderâÜ
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8:
+8
+6https://data.vlaanderen.be/ns/mobiliteit#Inname.statusp
+n
+lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/statuses/a411c53e-db33-436a-9bb9-d62d535b661d“œ
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/8-
++
+)http://www.w3.org/ns/prov#generatedAtTimeFD
+2020-12-28T09:36:10.17Z)http://www.w3.org/2001/XMLSchema#dateTime∑¥
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/84
+2
+0https://data.vlaanderen.be/ns/mobiliteit#periode$"
+ 2dc728869ad59c40e6633e50ae5974aetr
+$"
+ a54c73a5e1b98ca0cfe3a8835898ce081
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ a54c73a5e1b98ca0cfe3a8835898ce08(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ a54c73a5e1b98ca0cfe3a8835898ce083
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#OrganizationØ¨
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/zones/370f63e2-46ae-4306-a253-f62115fca14a6
+4
+2https://data.vlaanderen.be/ns/mobiliteit#Zone.typeq
+o
+mhttps://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250“œ
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/zones/370f63e2-46ae-4306-a253-f62115fca14a&
+$
+"http://www.w3.org/ns/locn#geometry$"
+ 92d1b151844823a44d9af991e99dacccÏÈ
+
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228531/zones/370f63e2-46ae-4306-a253-f62115fca14a3
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type1
+/
+-https://data.vlaanderen.be/ns/mobiliteit#Zone´®
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3(
+&
+$http://www.w3.org/ns/adms#identifier$"
+ 18cead16a2656ab502750496553f0f3fÆ´
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3+
+)
+'http://purl.org/dc/elements/1.1/creator$"
+ f4bba5cb8eb9f4b818077e5335b900a0 «
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3%
+#
+!http://purl.org/dc/terms/modifiedFD
+2020-12-24T09:44:05.58Z)http://www.w3.org/2001/XMLSchema#dateTimeπ∂
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/36
+4
+2https://data.vlaanderen.be/ns/mobiliteit#beheerder$"
+ 9b0f3268a579597b495f576c405f1806∫∑
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3*
+(
+&http://www.w3.org/ns/adms#versionNotes1/
+&MobilityHindranceWasImportedFromLegacynl-BEèå
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/31
+/
+-https://data.vlaanderen.be/ns/mobiliteit#zone
+}
+{https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/zones/991fa7c1-a530-44f7-a185-98ba45b69ce0¥±
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3(
+&
+$http://purl.org/dc/terms/description-+
+'8420 De Haan, Grotestraat 159: StellingH€ÿ
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3(
+&
+$http://purl.org/dc/terms/isVersionOfT
+R
+Phttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530≈¬
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/30
+.
+,https://gipod.vlaanderen.be/ns/gipod#gipodId64
+10228530(http://www.w3.org/2001/XMLSchema#integer–Õ
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/33
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+<
+:https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder“œ
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3-
++
+)http://www.w3.org/ns/prov#generatedAtTimeFD
+2020-12-28T09:36:09.72Z)http://www.w3.org/2001/XMLSchema#dateTime∑¥
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/34
+2
+0https://data.vlaanderen.be/ns/mobiliteit#periode$"
+ 044b188e56bc708e87bf59a5fc82d5e9…∆
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3$
+"
+ http://purl.org/dc/terms/createdFD
+2020-12-24T09:44:05.58Z)http://www.w3.org/2001/XMLSchema#dateTime≤Ø
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3/
+-
++http://purl.org/dc/elements/1.1/contributor$"
+ d8e2010d3401aa4b799a0a053aa4beddâÜ
+V
+T
+Rhttps://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/10228530/3:
+8
+6https://data.vlaanderen.be/ns/mobiliteit#Inname.statusp
+n
+lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/statuses/a411c53e-db33-436a-9bb9-d62d535b661dóî
+$"
+ b2c744aadd25ec66f59d03ac9974e46a'
+%
+#http://data.europa.eu/m8g/startTimeCA
+2021-01-06T08:00:00Z)http://www.w3.org/2001/XMLSchema#dateTimeïí
+$"
+ b2c744aadd25ec66f59d03ac9974e46a%
+#
+!http://data.europa.eu/m8g/endTimeCA
+2021-01-06T14:00:00Z)http://www.w3.org/2001/XMLSchema#dateTimeäá
+$"
+ b2c744aadd25ec66f59d03ac9974e46a3
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type*
+(
+&http://data.europa.eu/m8g/PeriodOfTimetr
+$"
+ f4bba5cb8eb9f4b818077e5335b900a01
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ f4bba5cb8eb9f4b818077e5335b900a0(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ f4bba5cb8eb9f4b818077e5335b900a03
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#Organizationtr
+$"
+ 224e633839151256c164ae0648a4b8521
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+EagleBe SmartcityHøº
+$"
+ 224e633839151256c164ae0648a4b852(
+&
+$http://purl.org/dc/terms/isVersionOfj
+h
+fhttps://private-api.gipod.beta-vlaanderen.be/api/v1/organisations/fedab33f-792a-029c-9b34-9d9cfe7d6245âÜ
+$"
+ 224e633839151256c164ae0648a4b8523
+1
+/http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+'
+%http://www.w3.org/ns/org#OrganizationΩ∫
+p
+n
+lhttps://private-api.gipod.beta-vlaanderen.be/api/v1/taxonomies/statuses/a411c53e-db33-436a-9bb9-d62d535b661d1
+/
+-http://www.w3.org/2004/02/skos/core#prefLabel
+Onbekendnl-BE

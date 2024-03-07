@@ -2,11 +2,17 @@ Feature: TreeNodeFetcher
   As a user
   I want to use the TreeNodeFetcher to retrieve a Tree Node
 
-  Scenario: Fetching an available TreeNode
+  Scenario Outline: Fetching an available TreeNode
     Given I have a TreeNodeFetcher
-    When I create a TreeNodeRequest with Lang "jsonld" and url "http://localhost:10101/200-1-relation-3-members" and etag ""
+    When I create a TreeNodeRequest with Lang "<rdfFormat>" and url "http://localhost:10101/200-1-relation-3-members" and etag ""
     And I fetch the TreeNode
     Then the obtained TreeNode has 3 members and 1 relations
+    Examples:
+      | rdfFormat                |
+      | jsonld                   |
+      | turtle                   |
+      | nq                       |
+      | application/rdf+protobuf |
 
   Scenario: Fetching a redirect
     Given I have a TreeNodeFetcher
