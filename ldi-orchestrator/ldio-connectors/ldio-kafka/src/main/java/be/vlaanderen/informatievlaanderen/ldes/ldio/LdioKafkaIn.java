@@ -24,7 +24,6 @@ import java.util.Map;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.SASL_JAAS_PASSWORD;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 public class LdioKafkaIn extends LdioInput {
     public static final String NAME = "Ldio:KafkaIn";
@@ -52,7 +51,7 @@ public class LdioKafkaIn extends LdioInput {
         containerProps.setMessageListener(listener);
         this.container = new KafkaMessageListenerContainer<>(consumerFactory, containerProps);
         container.start();
-        this.updateStatus(STARTING);
+        this.starting();
     }
 
     @Override

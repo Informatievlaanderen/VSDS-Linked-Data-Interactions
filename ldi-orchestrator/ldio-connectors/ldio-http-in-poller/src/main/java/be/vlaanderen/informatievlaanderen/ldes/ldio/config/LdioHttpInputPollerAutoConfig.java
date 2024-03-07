@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInputPoller.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
 
 @Configuration
 public class LdioHttpInputPollerAutoConfig {
@@ -54,7 +53,7 @@ public class LdioHttpInputPollerAutoConfig {
 
 			httpInputPoller.schedulePoller(getPollingInterval(properties));
 
-			httpInputPoller.updateStatus(STARTING);
+			httpInputPoller.starting();
 			return httpInputPoller;
 		}
 

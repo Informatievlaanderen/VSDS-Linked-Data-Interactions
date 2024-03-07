@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
@@ -38,7 +37,7 @@ public class LdioLdesClient extends LdioInput {
 		final ExecutorService executorService = newSingleThreadExecutor();
 		executorService.submit(() -> {
 			memberSupplier.init();
-			this.updateStatus(PipelineStatus.STARTING);
+			this.starting();
 			this.run();
 		});
 	}

@@ -123,6 +123,10 @@ public abstract class LdioInput implements LdiComponent {
 	protected abstract void resume();
 	protected abstract void pause();
 
+	public void starting() {
+		this.pipelineStatus = STARTING;
+	}
+
 	public boolean isHalted() {
 		return pipelineStatus.equals(HALTED) || pipelineStatus.equals(STOPPED);
 	}
