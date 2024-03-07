@@ -70,7 +70,7 @@ class LdioHttpInputPollerTest {
 
 	@AfterEach
 	void tearDown() {
-		ldioHttpInputPoller.shutdown(false);
+		ldioHttpInputPoller.shutdown();
 	}
 
 	@Nested
