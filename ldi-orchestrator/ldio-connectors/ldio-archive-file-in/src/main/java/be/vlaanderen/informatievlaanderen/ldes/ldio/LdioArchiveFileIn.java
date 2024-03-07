@@ -47,7 +47,7 @@ public class LdioArchiveFileIn extends LdioInput {
 	}
 
 	@Override
-	public void shutdown(boolean keepState) {
+	public void shutdown() {
 		this.paused = true;
 	}
 	@Override

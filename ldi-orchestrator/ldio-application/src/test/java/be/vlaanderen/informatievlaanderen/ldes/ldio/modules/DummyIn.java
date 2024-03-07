@@ -22,8 +22,7 @@ public class DummyIn extends LdioInput {
 	}
 
 	@Override
-	public void shutdown(boolean keepState) {
-
+	public void shutdown() {
 	}
 
 	@Override

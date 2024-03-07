@@ -78,10 +78,10 @@ public class PipelineCreatorService {
 		}
 	}
 
-	public void removePipeline(String pipeline, boolean keepState) {
+	public void removePipeline(String pipeline) {
 		DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) configContext.getBeanFactory();
 		LdioInput ldioInput = (LdioInput) beanRegistry.getBean(pipeline);
-		ldioInput.shutdown(keepState);
+		ldioInput.shutdown();
 		beanFactory.destroyBean(pipeline);
 	}
 

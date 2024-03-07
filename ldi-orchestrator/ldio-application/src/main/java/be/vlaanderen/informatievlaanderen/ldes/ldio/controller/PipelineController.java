@@ -53,15 +53,10 @@ public class PipelineController {
 	 *         ResponseEntity.noContent() if the pipeline was not found or could not be deleted.
 	 */
 	@DeleteMapping("/{pipeline}")
-	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline, @RequestBody String body) {
-		boolean keepState = extractKeepState(body);
-		if (pipelineService.requestDeletion(pipeline, keepState)) {
+	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline) {
+		if (pipelineService.requestDeletion(pipeline)) {
 			return ResponseEntity.accepted().build();
 		} else return ResponseEntity.noContent().build();
 	}
 
-	public boolean extractKeepState(String input) {
-		//Default value should be true
-		return !input.equalsIgnoreCase("false");
-	}
 }

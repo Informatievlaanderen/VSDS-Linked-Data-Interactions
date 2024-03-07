@@ -53,9 +53,9 @@ public class PipelineService {
 				.toList();
 	}
 
-	public boolean requestDeletion(String pipeline, boolean keepState) {
+	public boolean requestDeletion(String pipeline) {
 		if (pipelineRepository.exists(pipeline)) {
-			pipelineStatusService.stopPipeline(pipeline, keepState);
+			pipelineStatusService.stopPipeline(pipeline);
 			return true;
 		} else {
 			return false;
@@ -65,6 +65,6 @@ public class PipelineService {
 	@EventListener
 	public void handleStoppedPipeline(PipelineDeletedEvent deletedEvent) {
 		pipelineRepository.delete(deletedEvent.pipelineId());
-		pipelineCreatorService.removePipeline(deletedEvent.pipelineId(), deletedEvent.keepState());
+		pipelineCreatorService.removePipeline(deletedEvent.pipelineId());
 	}
 }

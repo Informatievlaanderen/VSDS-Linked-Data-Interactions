@@ -100,10 +100,10 @@ public class PipelineStatusService {
 
 	}
 
-	public PipelineStatus stopPipeline(String pipelineId, boolean keepState) {
+	public PipelineStatus stopPipeline(String pipelineId) {
 		LdioInput input = savedPipelines.get(pipelineId).getLdioInput();
 		input.updateStatus(STOPPING);
-		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineId, keepState));
+		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineId));
 		return STOPPED;
 	}
 
