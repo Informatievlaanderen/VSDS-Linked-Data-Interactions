@@ -48,9 +48,9 @@ class PipelineEventsListenerTest {
 
 	@Test
 	void when_PipelineDeletedEventIsPublished_then_ShutdownMaterialiser() {
-		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineName, false));
+		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineName));
 
-		verify(pipelineEventsListener).handlePipelineDeletedEvent(new PipelineDeletedEvent(pipelineName, false));
+		verify(pipelineEventsListener).handlePipelineDeletedEvent(new PipelineDeletedEvent(pipelineName));
 		verify(materialiser).shutdown();
 	}
 

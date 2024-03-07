@@ -24,7 +24,7 @@ class PipelineStatusServiceTest {
 
     @Test
     void when_StoppingPipeline_Then_MethodsAreCalled() {
-        PipelineStatus result = pipelineStatusService.stopPipeline(pipelineName, false);
+        PipelineStatus result = pipelineStatusService.stopPipeline(pipelineName);
 
         assertEquals(PipelineStatus.STOPPED, result);
         verify(input).updateStatus(PipelineStatus.STOPPING);
