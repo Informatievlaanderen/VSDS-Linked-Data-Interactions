@@ -23,16 +23,16 @@ class PipelineServiceTest {
     void when_StoppingPipeline_Then_MethodsAreCalled() {
         when(pipelineRepository.exists(pipelineName)).thenReturn(true);
 
-        boolean result = pipelineService.requestDeletion(pipelineName, false);
+        boolean result = pipelineService.requestDeletion(pipelineName);
 
         assertEquals(true, result);
-        verify(pipelineStatusService).stopPipeline(pipelineName, false);
+        verify(pipelineStatusService).stopPipeline(pipelineName);
     }
     @Test
     void when_StoppingNonExistingPipeline_Then_NoMethodsAreCalled() {
         when(pipelineRepository.exists(pipelineName)).thenReturn(false);
 
-        boolean result = pipelineService.requestDeletion(pipelineName, false);
+        boolean result = pipelineService.requestDeletion(pipelineName);
 
         assertEquals(false, result);
         verifyNoInteractions(pipelineStatusService);
