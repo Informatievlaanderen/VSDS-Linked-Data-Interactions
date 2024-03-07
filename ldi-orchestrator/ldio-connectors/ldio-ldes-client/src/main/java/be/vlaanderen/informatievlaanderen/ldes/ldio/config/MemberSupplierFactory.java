@@ -7,12 +7,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampF
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import ldes.client.treenodesupplier.MemberSupplier;
-import ldes.client.treenodesupplier.MemberSupplierImpl;
-import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.VersionMaterialisedMemberSupplier;
+import ldes.client.treenodesupplier.*;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
@@ -40,13 +38,17 @@ public class MemberSupplierFactory {
     public MemberSupplier getMemberSupplier() {
         log.info("Starting LdesClientRunner run setup");
         log.info("LdesClientRunner setup finished");
-        final MemberSupplier baseMemberSupplier =
+        MemberSupplier baseMemberSupplier =
                 new MemberSupplierImpl(getTreeNodeProcessor(), getKeepState());
         if (useVersionMaterialisation()) {
             return new VersionMaterialisedMemberSupplier(baseMemberSupplier, createVersionMaterialiser());
         } else {
             return baseMemberSupplier;
         }
+    }
+
+    private ExacltyOnceFilter getFilter() {
+        return new ExacltyOnceFilter(getStatePersistence().getMemberIdRepository(), useExactlyOnceFilter());
     }
 
     private TreeNodeProcessor getTreeNodeProcessor() {
@@ -62,7 +64,7 @@ public class MemberSupplierFactory {
 			    .map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
 			    .orElseGet(TimestampFromCurrentTimeExtractor::new);
 
-	    return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor);
+	    return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor, getFilter());
     }
 
     private StatePersistence getStatePersistence() {
@@ -82,6 +84,11 @@ public class MemberSupplierFactory {
                             "and having version-objects as output will have to be configured explicitly.");
                     return false;
                 });
+    }
+    private boolean useExactlyOnceFilter() {
+        return properties
+                .getOptionalBoolean(USE_EXACTLY_ONCE_FILTER)
+                .orElse(true);
     }
 
     private Lang getSourceFormat() {

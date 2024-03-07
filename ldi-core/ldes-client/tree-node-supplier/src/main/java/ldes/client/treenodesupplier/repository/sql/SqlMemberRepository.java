@@ -21,7 +21,7 @@ public class SqlMemberRepository implements MemberRepository {
 	}
 
 	@Override
-	public Optional<MemberRecord> getUnprocessedTreeMember() {
+	public Optional<MemberRecord> getTreeMember() {
 
 		return entityManager
 				.createNamedQuery("Member.getFirstByMemberStatus", MemberRecordEntity.class)
@@ -33,12 +33,10 @@ public class SqlMemberRepository implements MemberRepository {
 	}
 
 	@Override
-	public boolean isProcessed(MemberRecord member) {
-		return entityManager
-				.createNamedQuery("Member.countByMemberStatusAndId", Long.class)
-				.setParameter("memberStatus", MemberStatus.PROCESSED)
-				.setParameter("id", member.getMemberId())
-				.getSingleResult() > 0;
+	public void deleteMember(MemberRecord member) {
+		entityManager
+				.createNamedQuery("Member.deleteByMemberId", MemberRecordEntity.class)
+				.executeUpdate();
 	}
 
 	@Override
@@ -46,14 +44,6 @@ public class SqlMemberRepository implements MemberRepository {
 		entityManager.getTransaction().begin();
 		treeMemberStream.map(MemberRecordEntity::fromMemberRecord)
 				.forEach(entityManager::merge);
-		entityManager.getTransaction().commit();
-	}
-
-	@Override
-	public void saveTreeMember(MemberRecord treeMember) {
-		MemberRecordEntity memberRecordEntity = MemberRecordEntity.fromMemberRecord(treeMember);
-		entityManager.getTransaction().begin();
-		entityManager.merge(memberRecordEntity);
 		entityManager.getTransaction().commit();
 	}
 

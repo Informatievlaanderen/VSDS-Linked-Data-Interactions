@@ -3,6 +3,7 @@ package ldes.client.treenodesupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
+import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
@@ -12,6 +13,7 @@ import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Thread.sleep;
@@ -23,15 +25,17 @@ public class TreeNodeProcessor {
 	private final TreeNodeFetcher treeNodeFetcher;
 	private final LdesMetaData ldesMetaData;
 	private final RequestExecutor requestExecutor;
+	private final ExacltyOnceFilter filter;
 	private MemberRecord memberRecord;
 
 	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
-	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor) {
+	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor, ExacltyOnceFilter filter) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
 		this.requestExecutor = requestExecutor;
 		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor, timestampExtractor);
 		this.ldesMetaData = ldesMetaData;
+		this.filter = filter;
 	}
 
 	public void init() {
@@ -40,19 +44,25 @@ public class TreeNodeProcessor {
 		}
 	}
 
-	public SuppliedMember getMember() {
-		savePreviousState();
+	private SuppliedMember getMemberCandidate() {
+		removeLastMember();
 
-		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
+		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getTreeMember();
 		while (unprocessedTreeMember.isEmpty()) {
 			processTreeNode();
-			unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
+			unprocessedTreeMember = memberRepository.getTreeMember();
 		}
 		MemberRecord treeMember = unprocessedTreeMember.get();
 		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
-		treeMember.processedMemberRecord();
 		memberRecord = treeMember;
 		return suppliedMember;
+	}
+	public SuppliedMember getMember() {
+		SuppliedMember member = getMemberCandidate();
+		while(!filter.checkFilter(memberRecord.getMemberId())) {
+			member = getMemberCandidate();
+		}
+		return member;
 	}
 
 	public LdesMetaData getLdesMetaData() {
@@ -75,11 +85,11 @@ public class TreeNodeProcessor {
 				.filter(treeNodeId -> !treeNodeRecordRepository.existsById(treeNodeId))
 				.map(TreeNodeRecord::new)
 				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
-		memberRepository.saveTreeMembers(treeNodeResponse.getMembers()
+		List<TreeMember> newMembers = treeNodeResponse.getMembers().stream().filter(member -> !treeNodeRecord.hasRecieved(member.getMemberId())).toList();
+		memberRepository.saveTreeMembers(newMembers
 				.stream()
-				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt()))
-				.filter(member -> !memberRepository.isProcessed(member)));
-
+				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt())));
+		treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
 	}
 
 	private void waitUntilNextVisit(TreeNodeRecord treeNodeRecord) {
@@ -103,9 +113,10 @@ public class TreeNodeProcessor {
 				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
 	}
 
-	private void savePreviousState() {
+	private void removeLastMember() {
 		if (memberRecord != null) {
-			memberRepository.saveTreeMember(memberRecord);
+			memberRepository.deleteMember(memberRecord);
+			filter.addId(memberRecord.getMemberId());
 		}
 	}
 

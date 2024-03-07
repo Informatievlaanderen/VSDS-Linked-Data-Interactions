@@ -9,40 +9,29 @@ import java.util.stream.Stream;
 
 public class InMemoryMemberRepository implements MemberRepository {
 
-	private Queue<MemberRecord> unprocessed = new PriorityQueue<>();
-	private List<MemberRecord> processed = new ArrayList<>();
+	private Queue<MemberRecord> members = new PriorityQueue<>();
 
 	@Override
-	public Optional<MemberRecord> getUnprocessedTreeMember() {
-		if (unprocessed.isEmpty()) {
+	public Optional<MemberRecord> getTreeMember() {
+		if (members.isEmpty()) {
 			return Optional.empty();
 		}
-		return Optional.of(unprocessed.poll());
+		return Optional.of(members.peek());
 	}
 
 	@Override
-	public boolean isProcessed(MemberRecord member) {
-		return processed.contains(member);
+	public void deleteMember(MemberRecord member) {
+		members.remove();
 	}
 
 	@Override
 	public void saveTreeMembers(Stream<MemberRecord> treeMemberStream) {
-		treeMemberStream.forEach(this::saveTreeMember);
-	}
-
-	@Override
-	public void saveTreeMember(MemberRecord treeMember) {
-		if (treeMember.getMemberStatus() == MemberStatus.PROCESSED) {
-			processed.add(treeMember);
-		} else if (treeMember.getMemberStatus() == MemberStatus.UNPROCESSED) {
-			unprocessed.offer(treeMember);
-		}
+		treeMemberStream.forEach(member -> members.offer(member));
 	}
 
 	@Override
 	public void destroyState() {
-		processed = new ArrayList<>();
-		unprocessed = new PriorityQueue<>();
+		members = new PriorityQueue<>();
 	}
 
 }

@@ -7,13 +7,10 @@ import java.util.stream.Stream;
 
 public interface MemberRepository {
 
-	Optional<MemberRecord> getUnprocessedTreeMember();
-
-	boolean isProcessed(MemberRecord member);
+	Optional<MemberRecord> getTreeMember();
+	void deleteMember(MemberRecord member);
 
 	void saveTreeMembers(Stream<MemberRecord> treeMemberStream);
-
-	void saveTreeMember(MemberRecord treeMember);
 
 	void destroyState();
 }
