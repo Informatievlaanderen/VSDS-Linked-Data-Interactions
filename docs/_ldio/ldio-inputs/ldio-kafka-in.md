@@ -11,20 +11,21 @@ title: Kafka In
 The LDIO Kafka In listens to messages from a [kafka topic](https://kafka.apache.org).
 
 Two security protocols are supported:
+
 - [NO SECURITY](#no-security)
 - [SASL SSL PLAIN](#sasl-ssl-plain)
 
 ## Config
 
-| Property           | Description                                                 | Required | Default         | Example             | Supported values          |
-|--------------------|-------------------------------------------------------------|----------|-----------------|---------------------|---------------------------|
-| content-type       | Any content type supported by Apache Jena                   | Yes      | N/A             | application/n-quads | String                    |
-| bootstrap-servers  | Comma separated list of uris of the bootstrap servers       | Yes      | N/A             | localhost:9012      | url                       |
-| topics             | Names of the topics (comma separated)                       | Yes      | N/A             | quickstart-events   | String                    |
-| group-id           | Group identifier the consumer belongs to                    | No       | generated value | group-1             | String                    |
-| security-protocol  | Security protocol to be used to connect to the kafka broker | No       | NO_AUTH         | SASL_SSL_PLAIN      | SASL_SSL_PLAIN or NO_AUTH |
-| sasl-jaas-user     | Username used in the security protocol                      | No       | null            | client              | String                    |
-| sasl-jaas-password | Password used in the security protocol                      | No       | null            | secret              | String                    |
+| Property           | Description                                                 | Required | Default         | Example             | Supported values                                                                                                        |
+|--------------------|-------------------------------------------------------------|----------|-----------------|---------------------|-------------------------------------------------------------------------------------------------------------------------|
+| content-type       | Any content type supported by Apache Jena                   | Yes      | N/A             | application/n-quads | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
+| bootstrap-servers  | Comma separated list of uris of the bootstrap servers       | Yes      | N/A             | localhost:9012      | url                                                                                                                     |
+| topics             | Names of the topics (comma separated)                       | Yes      | N/A             | quickstart-events   | String                                                                                                                  |
+| group-id           | Group identifier the consumer belongs to                    | No       | generated value | group-1             | String                                                                                                                  |
+| security-protocol  | Security protocol to be used to connect to the kafka broker | No       | NO_AUTH         | SASL_SSL_PLAIN      | SASL_SSL_PLAIN or NO_AUTH                                                                                               |
+| sasl-jaas-user     | Username used in the security protocol                      | No       | null            | client              | String                                                                                                                  |
+| sasl-jaas-password | Password used in the security protocol                      | No       | null            | secret              | String                                                                                                                  |
 
 ## Example
 

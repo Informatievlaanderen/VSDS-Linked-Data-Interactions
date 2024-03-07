@@ -19,7 +19,7 @@ an [AMQP 1.0 queue](https://www.amqp.org/resources/specifications).
 | queue        | Name of the queue                                       | Yes      | N/A                 | quickstart-events   | String                                                                                                                                           |
 | username     | Username used in authentication                         | Yes      | N/A                 | client              | String                                                                                                                                           |
 | password     | Password used in the authentication                     | Yes      | N/A                 | secret              | String                                                                                                                                           |
-| content-type | Content-type suggestion* for received messages of queue | No       | application/n-quads | application/n-quads | Any content type supported by Apache Jena                                                                                                        |
+| content-type | Content-type suggestion* for received messages of queue | No       | application/n-quads | application/n-quads | Any content type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax)                  |
 
 * When the header of the message contains a "contentType" property, the listener will use the content type provided by the header.
 
