@@ -44,8 +44,8 @@ public class LdioHttpInAutoConfig {
 
 			LdioHttpInProcess ldioHttpIn = new LdioHttpInProcess(pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);
 
-			ldioHttpIn.updateStatus(STARTING);
 			eventPublisher.publishEvent(new HttpInPipelineCreatedEvent(pipelineName, ldioHttpIn));
+			ldioHttpIn.starting();
 			return ldioHttpIn;
 		}
 
