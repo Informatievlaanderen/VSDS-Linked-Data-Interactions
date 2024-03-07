@@ -68,6 +68,11 @@ public class LdioLdesClientConnectorAutoConfig {
 			return ldesClient;
 		}
 
+		@Override
+		public boolean isAdapterRequired() {
+			return false;
+		}
+
 		private static EdcUrlProxy getEdcUrlProxy(ComponentProperties properties) {
 			final var proxyUrlToReplace = properties.getOptionalProperty(PROXY_URL_TO_REPLACE).orElse("");
 			final var proxyUrlReplacement = properties.getOptionalProperty(PROXY_URL_REPLACEMENT).orElse("");

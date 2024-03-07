@@ -51,6 +51,11 @@ public class MockFlowConfiguration {
 		                           ComponentProperties config) {
 			return new DummyIn(executor, adapter, applicationEventPublisher);
 		}
+
+		@Override
+		public boolean isAdapterRequired() {
+			return true;
+		}
 	}
 
 	static class DummyAdaptConfigurator implements LdioConfigurator {

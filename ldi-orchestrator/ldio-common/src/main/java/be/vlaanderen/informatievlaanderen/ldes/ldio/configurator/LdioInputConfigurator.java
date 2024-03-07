@@ -8,4 +8,6 @@ import org.springframework.context.ApplicationEventPublisher;
 
 public interface LdioInputConfigurator {
 	LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher eventPublisher, ComponentProperties properties);
+
+	boolean isAdapterRequired();
 }

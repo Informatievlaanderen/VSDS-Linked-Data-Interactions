@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException.verifyAdapterPresent;
 
 @Configuration
 public class LdioAmqpInAutoConfig {
@@ -40,7 +39,6 @@ public class LdioAmqpInAutoConfig {
 		@Override
 		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
 			String pipelineName = config.getPipelineName();
-			verifyAdapterPresent(pipelineName, adapter);
 
 			String remoteUrl = new RemoteUrlExtractor(config).getRemoteUrl();
 			JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),
@@ -48,6 +46,11 @@ public class LdioAmqpInAutoConfig {
 
 			return new LdioAmqpIn(pipelineName, executor, adapter, getContentType(config), jmsConfig, ldioAmqpInRegistrator,
 					observationRegistry, applicationEventPublisher);
+		}
+
+		@Override
+		public boolean isAdapterRequired() {
+			return true;
 		}
 
 		private String getContentType(ComponentProperties config) {

@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRep
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class PipelineServiceTest {
@@ -25,7 +25,7 @@ class PipelineServiceTest {
 
         boolean result = pipelineService.requestDeletion(pipelineName);
 
-        assertEquals(true, result);
+		assertTrue(result);
         verify(pipelineStatusService).stopPipeline(pipelineName);
     }
     @Test
@@ -34,7 +34,7 @@ class PipelineServiceTest {
 
         boolean result = pipelineService.requestDeletion(pipelineName);
 
-        assertEquals(false, result);
+		assertFalse(result);
         verifyNoInteractions(pipelineStatusService);
     }
 
