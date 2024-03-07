@@ -26,9 +26,7 @@ public enum TestScenario {
 	private final Lang sourceFormat;
 
 	TestScenario(StatePersistenceStrategy persistenceStrategy, FragmentSize fragmentSize) {
-		this.persistenceStrategy = persistenceStrategy;
-		this.fragmentSize = fragmentSize;
-		this.sourceFormat = Lang.TURTLE;
+		this(persistenceStrategy, fragmentSize, Lang.TURTLE);
 	}
 
 	TestScenario(StatePersistenceStrategy persistenceStrategy, FragmentSize fragmentSize, Lang sourceFormat) {
