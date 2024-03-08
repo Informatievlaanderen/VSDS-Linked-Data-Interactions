@@ -32,10 +32,11 @@ class PipelineTOTest {
 		assertEquals("pipeline", pipelineTO.name());
 		assertEquals(RUNNING, pipelineTO.status());
 		assertEquals(AUTO, pipelineTO.updateSource());
-		assertEquals("in", pipelineTO.input().name());
-		assertTrue(pipelineTO.input().config().containsKey("type"));
-		assertEquals("adapter", pipelineTO.input().adapter().name());
-		assertTrue(pipelineTO.input().adapter().config().containsKey("type"));
+		assertEquals("in", pipelineTO.input().getName());
+		assertTrue(pipelineTO.input().getConfig().containsKey("type"));
+		assertTrue(pipelineTO.input().getAdapter().isPresent());
+		assertEquals("adapter", pipelineTO.input().getAdapter().get().name());
+		assertTrue(pipelineTO.input().getAdapter().get().config().containsKey("type"));
 		assertEquals(2, pipelineTO.transformers().size());
 		assertEquals("t1", pipelineTO.transformers().get(0).name());
 		assertEquals("t2", pipelineTO.transformers().get(1).name());

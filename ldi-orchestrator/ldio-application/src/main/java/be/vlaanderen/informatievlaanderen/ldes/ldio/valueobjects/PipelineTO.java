@@ -7,9 +7,9 @@ import java.util.Optional;
 public record PipelineTO(String name, PipelineStatus status, StatusChangeSource updateSource, String description, InputComponentDefinitionTO input,
                          List<ComponentDefinitionTO> transformers, List<ComponentDefinitionTO> outputs) {
 	public static PipelineTO build(PipelineConfigTO config, PipelineStatus status, StatusChangeSource statusChangeSource) {
-		var input = new InputComponentDefinitionTO(config.input().name(),
-				new ComponentDefinitionTO(config.input().adapter().name(), config.input().adapter().config()),
-				config.input().config());
+		var input = new InputComponentDefinitionTO(config.input().getName(),
+				config.input().getAdapter().map(adapter -> new ComponentDefinitionTO(adapter.name(), adapter.config())).orElse(null),
+				config.input().getConfig());
 		List<ComponentDefinitionTO> transformers = Optional.ofNullable(config.transformers())
 				.orElse(Collections.emptyList())
 				.stream()

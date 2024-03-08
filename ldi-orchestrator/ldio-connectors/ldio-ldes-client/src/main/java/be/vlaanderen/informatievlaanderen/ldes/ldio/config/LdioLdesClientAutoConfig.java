@@ -46,5 +46,9 @@ public class LdioLdesClientAutoConfig {
 			return ldesClient;
 		}
 
+		@Override
+		public boolean isAdapterRequired() {
+			return false;
+		}
 	}
 }

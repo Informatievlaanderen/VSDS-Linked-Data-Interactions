@@ -8,11 +8,12 @@ Feature: Management of pipelines in LDIO
     And I post a <file> <type> pipeline with a <statusCode> response
     And I expect <pipelineCount> pipelines
     Examples:
-      | file      | type   | statusCode | pipelineCount |
-      | "valid"   | "json" | 200        | 1             |
-      | "valid"   | "yml"  | 200        | 1             |
-      | "invalid" | "json" | 400        | 0             |
-      | "invalid" | "yml"  | 400        | 0             |
+      | file              | type   | statusCode | pipelineCount |
+      | "valid"           | "json" | 200        | 1             |
+      | "valid"           | "yml"  | 200        | 1             |
+      | "invalid"         | "json" | 400        | 0             |
+      | "invalid"         | "yml"  | 400        | 0             |
+      | "missing-adapter" | "yml"  | 400        | 0             |
 
   @creation @multiple
   Scenario Outline: Creation of pipelines
@@ -35,7 +36,7 @@ Feature: Management of pipelines in LDIO
   Scenario: Deleting a pipeline
     When I start LDIO
     And I post a "valid" "yml" pipeline with a 200 response
-    And I delete the "valid-pipeline" pipeline with a 200 response
+    And I delete the "valid-pipeline" pipeline with a 202 response
     And I expect 0 pipelines
 
   @deletion
