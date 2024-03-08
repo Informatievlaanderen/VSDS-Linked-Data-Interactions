@@ -1,19 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineCreatorService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.ResourceUtils;
 
@@ -27,12 +20,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {PipelineController.class, PipelineService.class, PipelineStatusService.class,
-		PipelineCreatorService.class, OrchestratorConfig.class, PipelineFileRepository.class})
+@SpringBootTest(classes = {PipelineController.class})
 @AutoConfigureMockMvc
 @ComponentScan({
 		"be.vlaanderen.informatievlaanderen.ldes.ldio",
-		"be.vlaanderen.informatievlaanderen.ldes.ldio.config"
+		"be.vlaanderen.informatievlaanderen.ldes.ldio.config",
+		"be.vlaanderen.informatievlaanderen.ldes.ldio.repositories",
+		"be.vlaanderen.informatievlaanderen.ldes.ldio.services"
 })
 @ActiveProfiles("rest")
 class PipelineControllerTest {
