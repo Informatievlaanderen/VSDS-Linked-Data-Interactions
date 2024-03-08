@@ -8,7 +8,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusServi
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,14 +27,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@SpringBootTest(classes = {PipelineController.class, PipelineService.class, PipelineStatusService.class,
+		PipelineCreatorService.class, OrchestratorConfig.class, PipelineFileRepository.class})
+@AutoConfigureMockMvc
 @ComponentScan({
 		"be.vlaanderen.informatievlaanderen.ldes.ldio",
 		"be.vlaanderen.informatievlaanderen.ldes.ldio.config"
 })
 @ActiveProfiles("rest")
-@ContextConfiguration(classes = {PipelineController.class, PipelineService.class, PipelineStatusService.class,
-		PipelineCreatorService.class, OrchestratorConfig.class, PipelineFileRepository.class})
 class PipelineControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
