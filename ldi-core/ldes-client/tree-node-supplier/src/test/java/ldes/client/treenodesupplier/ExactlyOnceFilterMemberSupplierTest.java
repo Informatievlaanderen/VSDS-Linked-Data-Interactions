@@ -28,7 +28,7 @@ class ExactlyOnceFilterMemberSupplierTest {
     }
 
     @Test
-    void testFilter() {
+    void when_RepeatedMember_Then_MemberIsSkipped() {
         when(memberSupplier.get()).thenReturn(member, member, member2);
 
         SuppliedMember actual1 = filterMemberSupplier.get();
