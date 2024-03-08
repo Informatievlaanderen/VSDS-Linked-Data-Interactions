@@ -1,7 +1,6 @@
 package ldes.client.treenodesupplier.repository.inmemory;
 
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
-import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
 import java.util.*;
