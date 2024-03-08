@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,7 +38,8 @@ class PipelineControllerTest {
 	void given_PredefinedPipeline_when_GetOverview_And_JSON_then_ReturnJson() throws Exception {
 		mockMvc.perform(get("/admin/api/v1/pipeline").accept("application/json"))
 				.andExpect(status().isOk())
-				.andExpect(content().json(readAllPipelinesInJson("pipelines/pre-defined-pipeline.json")));
+				.andDo(print())
+				.andExpect(content().json(readAllPipelinesInJson("management/json/valid.json")));
 	}
 
 	@Test
