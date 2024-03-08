@@ -9,6 +9,8 @@ public class MemberIdRecordEntity {
     @Id
     private String id;
 
+    public MemberIdRecordEntity() {
+    }
     public MemberIdRecordEntity(String id) {
         this.id = id;
     }

@@ -25,7 +25,7 @@ public class SqlMemberIdRepository implements MemberIdRepository {
 
     @Override
     public boolean contains(String memberId) {
-        return entityManager.createNamedQuery("MemberId.get", String.class)
+        return entityManager.createNamedQuery("MemberId.get", MemberIdRecordEntity.class)
                 .setParameter("id", memberId)
                 .getResultStream()
                 .findAny().isPresent();
