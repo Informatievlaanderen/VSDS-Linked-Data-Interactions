@@ -6,12 +6,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ModelSubjectsExtract
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MaterialiserConnection;
 import org.apache.jena.rdf.model.Model;
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 public class Materialiser {
 	private final MaterialiserConnection materialiserConnection;
@@ -30,13 +29,11 @@ public class Materialiser {
 
 	public void process(List<Model> jenaModels) {
 		try {
-			jenaModels.stream()
-					.map(JenaToRDF4JConverter::convert)
-					.forEach(updateModel -> {
-						Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
-						deleteEntitiesFromRepo(entityIds);
-						materialiserConnection.add(updateModel);
-					});
+			jenaModels.stream().map(JenaToRDF4JConverter::convert).forEach(updateModel -> {
+				Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
+				deleteEntities(entityIds);
+				materialiserConnection.add(updateModel);
+			});
 			materialiserConnection.commit();
 		} catch (Exception e) {
 			materialiserConnection.rollback();
@@ -48,33 +45,37 @@ public class Materialiser {
 		materialiserConnection.shutdown();
 	}
 
+	protected void deleteEntities(Set<Resource> subjects) {
+		subjects.forEach(this::deleteEntity);
+	}
 
-	/**
-	 * Delete an entity, including its blank nodes, from a repository.
-	 *
-	 * @param entityIds The subjects of the entities to delete.
-	 */
-	protected void deleteEntitiesFromRepo(Set<Resource> entityIds) {
-		Deque<Resource> subjectStack = new ArrayDeque<>();
-		entityIds.forEach(subjectStack::push);
+	protected void deleteEntity(Resource subject) {
+		final String query = """
+				DELETE {
+				      ?s ?p ?o .
+				      ?blankNode ?blankNodePredicate ?blankNodeObject .
+				    }
+				    WHERE {
+				      ?s ?p ?o .
+				      FILTER(?s = <%s>)
 
-		/*
-		 * Entities can contain blank node references. All statements with those blank
-		 * node identifiers need to be removed as well. As blank nodes can be nested
-		 * inside blank nodes, we need to keep track of them as they are encountered by
-		 * adding them to the stack.
-		 */
-		while (!subjectStack.isEmpty()) {
-			Resource subject = subjectStack.pop();
+				      OPTIONAL {
+				        {
+				          ?o ?blankNodePredicate ?blankNodeObject .
+				          FILTER(isBlank(?o))
+				          BIND(?o AS ?blankNode)
+				        }
+				        UNION
+				        {
+				          ?o ?nestedPredicate ?nestedObject .
+				          FILTER(isBlank(?nestedObject))
+				          ?nestedObject ?blankNodePredicate ?blankNodeObject .
+				          BIND(?nestedObject AS ?blankNode)
+				        }
+				      }
+				    }
+				    """.formatted(subject.stringValue());
 
-			materialiserConnection.getStatements(subject, null, null).forEach((Statement statement) -> {
-				Value object = statement.getObject();
-				if (object.isBNode()) {
-					subjectStack.push((Resource) object);
-				}
-			});
-
-			materialiserConnection.remove(subject, null, null);
-		}
+		materialiserConnection.executeUpdate(query);
 	}
 }

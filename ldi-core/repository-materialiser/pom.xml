@@ -57,10 +57,6 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.eclipse.rdf4j</groupId>
-                    <artifactId>rdf4j-rio-trig</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.rdf4j</groupId>
                     <artifactId>rdf4j-rio-trix</artifactId>
                 </exclusion>
                 <exclusion>
