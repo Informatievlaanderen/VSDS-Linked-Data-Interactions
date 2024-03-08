@@ -8,11 +8,12 @@ Feature: Management of pipelines in LDIO
     And I post a <file> <type> pipeline with a <statusCode> response
     And I expect <pipelineCount> pipelines
     Examples:
-      | file      | type   | statusCode | pipelineCount |
-      | "valid"   | "json" | 200        | 1             |
-      | "valid"   | "yml"  | 200        | 1             |
-      | "invalid" | "json" | 400        | 0             |
-      | "invalid" | "yml"  | 400        | 0             |
+      | file              | type   | statusCode | pipelineCount |
+      | "valid"           | "json" | 200        | 1             |
+      | "valid"           | "yml"  | 200        | 1             |
+      | "invalid"         | "json" | 400        | 0             |
+      | "invalid"         | "yml"  | 400        | 0             |
+      | "missing-adapter" | "yml"  | 400        | 0             |
 
   @creation @multiple
   Scenario Outline: Creation of pipelines

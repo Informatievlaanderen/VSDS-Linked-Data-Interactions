@@ -1,0 +1,10 @@
+name: "invalid-pipeline"
+description: "Pipeline that uses the Ldio Ldes Client"
+input:
+  name: Ldio:HttpIn
+outputs:
+  - name: Ldio:HttpOut
+    config:
+      endpoint: http://some-other-endpoint/new-ldes
+      rdf-writer:
+        content-type: text/turtle
