@@ -35,7 +35,7 @@ Feature: Management of pipelines in LDIO
   Scenario: Deleting a pipeline
     When I start LDIO
     And I post a "valid" "yml" pipeline with a 200 response
-    And I delete the "valid-pipeline" pipeline with a 200 response
+    And I delete the "valid-pipeline" pipeline with a 202 response
     And I expect 0 pipelines
 
   @deletion
