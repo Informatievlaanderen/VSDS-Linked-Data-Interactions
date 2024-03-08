@@ -1,0 +1,21 @@
+{
+  "name": "pre-defined-pipeline",
+  "description": "Pipeline that is already defined",
+  "input": {
+    "name": "Ldio:HttpIn",
+    "config": {},
+    "adapter": {
+      "name": "Ldio:RdfAdapter",
+      "config": {}
+    }
+  },
+  "transformers": [],
+  "outputs": [
+    {
+      "name": "Ldio:ConsoleOut",
+      "config": {
+        "rdfwriter.contenttype": "text/turtle"
+      }
+    }
+  ]
+}

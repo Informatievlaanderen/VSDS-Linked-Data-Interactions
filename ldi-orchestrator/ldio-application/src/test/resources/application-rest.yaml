@@ -1,0 +1,13 @@
+orchestrator:
+  pipelines:
+    - name: "pre-defined-pipeline"
+      description: "Pipeline that is already defined"
+      input:
+        name: Ldio:HttpIn
+        adapter:
+          name: Ldio:RdfAdapter
+      outputs:
+        - name: Ldio:ConsoleOut
+          config:
+            rdf-writer:
+              content-type: text/turtle
