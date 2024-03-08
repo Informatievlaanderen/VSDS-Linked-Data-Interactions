@@ -1,10 +1,7 @@
-name: "invalid-pipeline"
-description: "Pipeline that uses the Ldio Ldes Client"
+name: invalid-pipeline
 input:
-  name: Ldio:HttpIn
+  name: dummyIn
+transformers:
+  - name: dummyTransform
 outputs:
-  - name: Ldio:HttpOut
-    config:
-      endpoint: http://some-other-endpoint/new-ldes
-      rdf-writer:
-        content-type: text/turtle
+  - name: dummyOut

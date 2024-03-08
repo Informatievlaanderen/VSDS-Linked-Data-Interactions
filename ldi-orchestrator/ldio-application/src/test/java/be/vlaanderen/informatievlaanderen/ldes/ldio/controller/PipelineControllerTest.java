@@ -47,10 +47,10 @@ class PipelineControllerTest {
 		mockMvc.perform(
 						post("/admin/api/v1/pipeline")
 								.contentType("application/yaml")
-								.content(readPipeline("pipelines/client-pipeline.yaml"))
+								.content(readPipeline("management/yml/valid-2.yml"))
 								.accept("application/json"))
 				.andExpect(status().isOk())
-				.andExpect(content().json(readPipeline("pipelines/client-pipeline.json")));
+				.andExpect(content().json(readPipeline("management/json/valid-2.json")));
 	}
 
 	@Test
@@ -58,10 +58,10 @@ class PipelineControllerTest {
 		mockMvc.perform(
 						post("/admin/api/v1/pipeline")
 								.contentType("application/yaml")
-								.content(readPipeline("pipelines/invalid-pipeline.yaml"))
+								.content(readPipeline("management/yml/missing-adapter.yml"))
 								.accept("application/yaml"))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("Pipeline \"invalid-pipeline\": Input: \"Ldio:HttpIn\": Missing LDI Adapter"));
+				.andExpect(content().string("Pipeline \"invalid-pipeline\": Input: \"dummyIn\": Missing LDI Adapter"));
 	}
 
 	private String readAllPipelinesInJson(String... filenames) {
