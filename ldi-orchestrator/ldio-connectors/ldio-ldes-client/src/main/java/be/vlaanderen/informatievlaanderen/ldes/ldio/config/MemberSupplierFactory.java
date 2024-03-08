@@ -10,7 +10,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import ldes.client.treenodesupplier.*;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
@@ -37,18 +36,27 @@ public class MemberSupplierFactory {
 
     public MemberSupplier getMemberSupplier() {
         log.info("Starting LdesClientRunner run setup");
+        logConfigConflictWarnings();
         log.info("LdesClientRunner setup finished");
         MemberSupplier baseMemberSupplier =
                 new MemberSupplierImpl(getTreeNodeProcessor(), getKeepState());
         if (useVersionMaterialisation()) {
             return new VersionMaterialisedMemberSupplier(baseMemberSupplier, createVersionMaterialiser());
+        } else if (useExactlyOnceFilter()) {
+            return new ExactlyOnceFilterMemberSupplier(baseMemberSupplier, getFilter(), getKeepState());
         } else {
             return baseMemberSupplier;
         }
     }
 
+    private void logConfigConflictWarnings() {
+        if (useExactlyOnceFilter() && useVersionMaterialisation()) {
+            log.warn("The exactly once filter can not be used while version materialisation is active");
+        }
+    }
+
     private ExacltyOnceFilter getFilter() {
-        return new ExacltyOnceFilter(getStatePersistence().getMemberIdRepository(), useExactlyOnceFilter());
+        return new ExacltyOnceFilter(getStatePersistence().getMemberIdRepository());
     }
 
     private TreeNodeProcessor getTreeNodeProcessor() {
@@ -64,7 +72,7 @@ public class MemberSupplierFactory {
 			    .map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
 			    .orElseGet(TimestampFromCurrentTimeExtractor::new);
 
-	    return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor, getFilter());
+	    return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor);
     }
 
     private StatePersistence getStatePersistence() {

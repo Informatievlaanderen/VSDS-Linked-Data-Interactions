@@ -31,7 +31,7 @@ class VersionMaterialisedMemberSupplierTest {
         Model versionMember = RDFParser.source("__files/ldes-member-versioned.ttl").toModel();
         Model stateMember = RDFParser.source("__files/ldes-member-unversioned.ttl").toModel();
 
-        when(memberSupplier.get()).thenReturn(new SuppliedMember(versionMember));
+        when(memberSupplier.get()).thenReturn(new SuppliedMember("id", versionMember));
         when(versionMaterialiser.transform(versionMember)).thenReturn(stateMember);
 
         SuppliedMember suppliedMember = versionMaterialisedMemberSupplier.get();

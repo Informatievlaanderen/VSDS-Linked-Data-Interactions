@@ -6,10 +6,7 @@ import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
+import javax.persistence.*;
 
 @Entity
 @NamedQuery(name = "TreeNode.count", query = "SELECT COUNT(t) FROM TreeNodeRecordEntity t")
@@ -23,6 +20,8 @@ public class TreeNodeRecordEntity {
 	private String treeNodeUrl;
 	private TreeNodeStatus treeNodeStatus;
 	private LocalDateTime earliestNextVisit;
+	@Column
+	@ElementCollection(targetClass=String.class)
 	private List<String> members;
 
 	public TreeNodeRecordEntity() {
@@ -32,6 +31,7 @@ public class TreeNodeRecordEntity {
 		this.treeNodeUrl = treeNodeUrl;
 		this.treeNodeStatus = treeNodeStatus;
 		this.earliestNextVisit = earliestNextVisit;
+		this.members = members;
 	}
 
 	public static TreeNodeRecordEntity fromTreeNodeRecord(TreeNodeRecord treeMember) {

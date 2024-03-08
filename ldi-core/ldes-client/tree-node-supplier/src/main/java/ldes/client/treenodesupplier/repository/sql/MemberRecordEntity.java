@@ -17,7 +17,7 @@ import javax.persistence.*;
 })
 @NamedQuery(name = "Member.getFirstByMemberStatus", query = "SELECT m FROM MemberRecordEntity m WHERE m.memberStatus = :memberStatus ORDER BY m.createdAt")
 @NamedQuery(name = "Member.countByMemberStatusAndId", query = "SELECT COUNT(m) FROM MemberRecordEntity m WHERE m.memberStatus = :memberStatus and m.id = :id")
-@NamedQuery(name = "Member.deleteByMemberId", query = "DELETE m FROM MemberRecordEntity m WHERE m.id = :id")
+@NamedQuery(name = "Member.deleteByMemberId", query = "DELETE FROM MemberRecordEntity WHERE id = :id")
 public class MemberRecordEntity {
 
 	@Id

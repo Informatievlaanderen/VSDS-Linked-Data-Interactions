@@ -99,6 +99,13 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(FALSE.toString())
 			.build();
+	public static final PropertyDescriptor USE_EXACTLY_ONCE_FILTER = new PropertyDescriptor.Builder()
+			.name("USE_EXACTLY_ONCE_FILTER")
+			.displayName("Use filter so members are outputted exactly once")
+			.required(false)
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.defaultValue(TRUE.toString())
+			.build();
 
 	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
 			.name("TIMESTAMP_PATH")
@@ -343,6 +350,9 @@ public final class LdesProcessorProperties {
 
 	public static boolean useVersionMaterialisation(final ProcessContext context) {
 		return TRUE.equals(context.getProperty(USE_VERSION_MATERIALISATION).asBoolean());
+	}
+	public static boolean useExactlyOnceFilter(final ProcessContext context) {
+		return TRUE.equals(context.getProperty(USE_EXACTLY_ONCE_FILTER).asBoolean()) && !useVersionMaterialisation(context);
 	}
 
 	public static boolean restrictToMembers(final ProcessContext context) {

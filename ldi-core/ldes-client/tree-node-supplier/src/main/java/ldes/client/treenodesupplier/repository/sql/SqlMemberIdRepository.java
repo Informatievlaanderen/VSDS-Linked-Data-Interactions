@@ -1,6 +1,5 @@
 package ldes.client.treenodesupplier.repository.sql;
 
-import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 
 import javax.persistence.EntityManager;
@@ -18,18 +17,21 @@ public class SqlMemberIdRepository implements MemberIdRepository {
 
     @Override
     public void addMemberId(String memberId) {
-        entityManager
-                .createNamedQuery("Member.addId", String.class)
-                .setParameter("id", memberId)
-                .executeUpdate();
+        MemberIdRecordEntity memberRecordEntity = MemberIdRecordEntity.fromId(memberId);
+        entityManager.getTransaction().begin();
+        entityManager.merge(memberRecordEntity);
+        entityManager.getTransaction().commit();
     }
 
     @Override
     public boolean contains(String memberId) {
-        return entityManager
-                .createNamedQuery("Member.get", String.class)
-                .setParameter("Id", memberId)
+        return entityManager.createNamedQuery("MemberId.get", String.class)
+                .setParameter("id", memberId)
                 .getResultStream()
                 .findAny().isPresent();
+    }
+    @Override
+    public void destroyState() {
+        entityManagerFactory.destroyState(instanceName);
     }
 }

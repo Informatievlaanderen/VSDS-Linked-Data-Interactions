@@ -34,9 +34,12 @@ public class SqlMemberRepository implements MemberRepository {
 
 	@Override
 	public void deleteMember(MemberRecord member) {
+		entityManager.getTransaction().begin();
 		entityManager
-				.createNamedQuery("Member.deleteByMemberId", MemberRecordEntity.class)
+				.createNamedQuery("Member.deleteByMemberId")
+				.setParameter("id", member.getMemberId())
 				.executeUpdate();
+		entityManager.getTransaction().commit();
 	}
 
 	@Override

@@ -25,17 +25,15 @@ public class TreeNodeProcessor {
 	private final TreeNodeFetcher treeNodeFetcher;
 	private final LdesMetaData ldesMetaData;
 	private final RequestExecutor requestExecutor;
-	private final ExacltyOnceFilter filter;
 	private MemberRecord memberRecord;
 
 	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
-	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor, ExacltyOnceFilter filter) {
+	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
 		this.requestExecutor = requestExecutor;
 		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor, timestampExtractor);
 		this.ldesMetaData = ldesMetaData;
-		this.filter = filter;
 	}
 
 	public void init() {
@@ -44,7 +42,7 @@ public class TreeNodeProcessor {
 		}
 	}
 
-	private SuppliedMember getMemberCandidate() {
+	public SuppliedMember getMember() {
 		removeLastMember();
 
 		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getTreeMember();
@@ -56,13 +54,6 @@ public class TreeNodeProcessor {
 		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
 		memberRecord = treeMember;
 		return suppliedMember;
-	}
-	public SuppliedMember getMember() {
-		SuppliedMember member = getMemberCandidate();
-		while(!filter.checkFilter(memberRecord.getMemberId())) {
-			member = getMemberCandidate();
-		}
-		return member;
 	}
 
 	public LdesMetaData getLdesMetaData() {
@@ -116,7 +107,6 @@ public class TreeNodeProcessor {
 	private void removeLastMember() {
 		if (memberRecord != null) {
 			memberRepository.deleteMember(memberRecord);
-			filter.addId(memberRecord.getMemberId());
 		}
 	}
 

@@ -25,7 +25,7 @@ public class StatePersistence {
 			Map<String, String> properties, String instanceName) {
 		return new StatePersistence(
 				MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties, instanceName),
-				MemberIdRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties, instanceName),
+				MemberIdRepositoryFactory.getMemberIdRepository(statePersistenceStrategy, properties, instanceName),
 				TreeNodeRecordRepositoryFactory
 						.getTreeNodeRecordRepository(statePersistenceStrategy, properties, instanceName));
 	}

@@ -41,7 +41,7 @@ public class MemberRecord implements Comparable<MemberRecord>{
 	}
 
 	public SuppliedMember createSuppliedMember() {
-		return new SuppliedMember(model);
+		return new SuppliedMember(memberId, model);
 	}
 
 	public Model getModel() {
