@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
 import org.springframework.context.event.EventListener;
@@ -20,7 +19,7 @@ public class PipelineService {
 	private final PipelineRepository pipelineRepository;
 
 	public PipelineService(PipelineCreatorService pipelineCreatorService, PipelineStatusService pipelineStatusService,
-	                       PipelineFileRepository pipelineRepository) {
+	                       PipelineRepository pipelineRepository) {
 		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineStatusService = pipelineStatusService;
 		this.pipelineRepository = pipelineRepository;

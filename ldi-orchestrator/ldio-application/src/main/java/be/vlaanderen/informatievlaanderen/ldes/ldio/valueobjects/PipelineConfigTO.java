@@ -5,9 +5,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import java.util.List;
 
 public record PipelineConfigTO(String name, String description, InputComponentDefinitionTO input,
-                               List<ComponentDefinitionTO> transformers, List<ComponentDefinitionTO> outputs) {
+							   List<ComponentDefinitionTO> transformers, List<ComponentDefinitionTO> outputs) {
 	public PipelineConfigTO(String name, String description, InputComponentDefinitionTO input,
-	                        List<ComponentDefinitionTO> transformers, List<ComponentDefinitionTO> outputs) {
+							List<ComponentDefinitionTO> transformers, List<ComponentDefinitionTO> outputs) {
 		this.name = name;
 		this.description = description;
 		this.input = input;
@@ -29,8 +29,8 @@ public record PipelineConfigTO(String name, String description, InputComponentDe
 		var config = new PipelineConfig();
 		config.setName(name);
 		config.setDescription(description);
-		var adapter = input().adapter() == null ? null : new ComponentDefinition(name, input.adapter().name(), input.adapter().config());
-		config.setInput(new InputComponentDefinition(name, input.name(), input.config(), adapter));
+		var adapter = input.getAdapter().map(adapterTO -> new ComponentDefinition(name, adapterTO.name(), adapterTO.config())).orElse(null);
+		config.setInput(new InputComponentDefinition(name, input.getName(), input.getConfig(), adapter));
 		config.setTransformers(transformers.stream().map(componentDefinitionTO -> componentDefinitionTO.toComponentDefinition(name)).toList());
 		config.setOutputs(outputs.stream().map(componentDefinitionTO -> componentDefinitionTO.toComponentDefinition(name)).toList());
 		return config;

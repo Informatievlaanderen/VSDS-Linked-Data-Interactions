@@ -20,6 +20,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -36,7 +38,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig
 
 @Service
 public class PipelineCreatorService {
-
+	private static final Logger log = LoggerFactory.getLogger(PipelineCreatorService.class);
 	private final Pattern validPipelineNamePattern = Pattern.compile(NAME_PATTERN);
 	private final String orchestratorName;
 	private final ConfigurableApplicationContext configContext;
@@ -69,12 +71,24 @@ public class PipelineCreatorService {
 			Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
 			inputConfig.put(ORCHESTRATOR_NAME, orchestratorName);
 
+			verifyAdapter(config, configurator);
+
 			LdioInput ldiInput = configurator.configure(adapter, executor, eventPublisher, new ComponentProperties(pipeLineName, inputName, inputConfig));
 
 			registerBean(pipeLineName, ldiInput);
 			eventPublisher.publishEvent(new InputCreatedEvent(config.getName(), ldiInput));
 		} catch (NoSuchBeanDefinitionException e) {
 			throw new InvalidComponentException(config.getName(), e.getBeanName());
+		}
+	}
+
+	private static void verifyAdapter(PipelineConfig config, LdioInputConfigurator configurator) {
+		final ComponentDefinition adapter = config.getInput().getAdapter();
+		if(configurator.isAdapterRequired() && adapter == null) {
+			throw new LdiAdapterMissingException(config.getName(), config.getInput().getName());
+		}
+		if(!configurator.isAdapterRequired() && adapter != null) {
+			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", config.getName(), config.getInput().getName(), adapter.getName());
 		}
 	}
 

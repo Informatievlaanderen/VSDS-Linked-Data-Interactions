@@ -38,6 +38,11 @@ public class LdioArchiveFileInAutoConfig {
 				return new LdioArchiveFileIn(pipelineName, executor, observationRegistry, applicationEventPublisher, archiveFileCrawler, hintLang);
 			}
 
+			@Override
+			public boolean isAdapterRequired() {
+				return false;
+			}
+
 			private Path getArchiveDirectoryPath(ComponentProperties config) {
 				String directory = config.getProperty(ARCHIVE_ROOT_DIR_PROP);
 				return Paths.get(directory);

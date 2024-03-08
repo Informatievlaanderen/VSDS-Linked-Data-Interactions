@@ -58,6 +58,11 @@ public class LdioHttpInputPollerAutoConfig {
 			return httpInputPoller;
 		}
 
+		@Override
+		public boolean isAdapterRequired() {
+			return true;
+		}
+
 		private PollingInterval getPollingInterval(ComponentProperties properties) {
 			Optional<String> expression = properties.getOptionalProperty(CRON);
 
