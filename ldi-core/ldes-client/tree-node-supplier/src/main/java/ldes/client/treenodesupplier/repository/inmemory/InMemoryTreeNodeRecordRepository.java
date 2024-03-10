@@ -12,7 +12,7 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 
 	private List<TreeNodeRecord> notVisited = new ArrayList<>();
 	private PriorityQueue<TreeNodeRecord> mutableAndActive = new PriorityQueue<>(new TreeNodeRecordComparator());
-	private List<TreeNodeRecord> immutable = new ArrayList<>();
+	private Set<TreeNodeRecord> immutable = new HashSet<>();
 
 	public void saveTreeNodeRecord(TreeNodeRecord treeNodeRecord) {
 		switch (treeNodeRecord.getTreeNodeStatus()) {
@@ -33,6 +33,12 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 				.anyMatch(treeNodeRecords -> treeNodeRecords.contains(new TreeNodeRecord(treeNodeId)));
 	}
 
+	@Override
+	public boolean containsTreeNodeRecords() {
+		return Stream.of(notVisited, mutableAndActive, immutable)
+				.anyMatch(treeNodeRecords -> !treeNodeRecords.isEmpty());
+	}
+
 	public boolean existsByIdAndStatus(String treeNodeId, TreeNodeStatus treeNodeStatus) {
 		return switch (treeNodeStatus) {
 			case NOT_VISITED -> notVisited.contains(new TreeNodeRecord(treeNodeId));
@@ -45,13 +51,7 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 	public void destroyState() {
 		notVisited = new ArrayList<>();
 		mutableAndActive = new PriorityQueue<>(new TreeNodeRecordComparator());
-		immutable = new ArrayList<>();
-	}
-
-	@Override
-	public boolean containsTreeNodeRecords() {
-		return Stream.of(notVisited, mutableAndActive, immutable)
-				.anyMatch(treeNodeRecords -> !treeNodeRecords.isEmpty());
+		immutable = new HashSet<>();
 	}
 
 	public Optional<TreeNodeRecord> getOneTreeNodeRecordWithStatus(TreeNodeStatus treeNodeStatus) {
@@ -59,7 +59,7 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 			case NOT_VISITED -> notVisited.isEmpty() ? Optional.empty() : Optional.of(notVisited.get(0));
 			case MUTABLE_AND_ACTIVE ->
 				mutableAndActive.isEmpty() ? Optional.empty() : Optional.of(mutableAndActive.poll());
-			case IMMUTABLE -> immutable.isEmpty() ? Optional.empty() : Optional.of(immutable.get(0));
+			case IMMUTABLE -> immutable.isEmpty() ? Optional.empty() : immutable.stream().findFirst();
 		};
 	}
 }
