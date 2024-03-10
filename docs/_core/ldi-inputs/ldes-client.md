@@ -6,7 +6,7 @@ title: LDES Client
 
 # Ldes Client
 
-The LDES Client contains the functionality to replicate and synchornise an LDES, and to persist its state for that process. More information on the functionalites can be found [here][VSDS Tech Docs].
+The LDES Client contains the functionality to replicate and synchronise an LDES, and to persist its state for that process. More information on the functionalities can be found [here][VSDS Tech Docs].
 
 This is achieved by configuring the processor with an initial fragment URL. When the processor is triggered, the fragment will be processed, and all relations will be added to the (non-persisted) queue.
 
@@ -19,3 +19,32 @@ Processed members of mutable fragments are also kept in state. They are ignored 
 Within a fragment, members can be ordered based on a timestamp. The path to this timestamp has to be configured. If this path is missing, the members are ordered randomly.
 
 [VSDS Tech Docs]: https://informatievlaanderen.github.io/VSDS-Tech-Docs/introduction/LDES_client
+
+The client has different state persistence strategies:
+
+## MEMORY
+In this case we persist the state in memory.
+
+| Advantages         | Disadvantages                                                |
+|--------------------|--------------------------------------------------------------|
+| Fastest processing | Not suitable for large datasets (500k +), heap will overflow |
+| Easiest setup      | State is lost when the client stops/restarts                 |
+
+## SQLITE
+In this case an in memory SQLITE database is used to store the state.
+
+| Advantages                     | Disadvantages       |
+|--------------------------------|---------------------|
+| Easy setup                     | Slowest processing* |
+| State is not lost between runs |                     |
+
+* We use a transaction for every processed record. [SQLITE is limited by the cpu](https://www.sqlite.org/faq.html#q19)
+
+## PostgreSQL
+In this case a PostreSQL database is used
+
+| Advantages                             | Disadvantages      |
+|----------------------------------------|--------------------|
+| State is not lost between runs         | Database is needed |
+| Fastest processing for larger datasets |                    |
+
