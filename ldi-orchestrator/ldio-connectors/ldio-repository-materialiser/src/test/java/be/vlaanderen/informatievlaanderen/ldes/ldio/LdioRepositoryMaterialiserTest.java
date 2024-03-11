@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +27,7 @@ class LdioRepositoryMaterialiserTest {
 	private static final int BATCH_TIMEOUT = 2000;
 	@Mock
 	private Materialiser materialiser;
+
 	private LdioRepositoryMaterialiser ldioRepositoryMaterialiser;
 
 	@AfterEach
@@ -46,15 +48,17 @@ class LdioRepositoryMaterialiserTest {
 
 		@Test
 		void given_ValidListOfMembers_when_ProcessList_then_CommitToRepository() {
+			when(materialiser.processAsync(anyList())).thenReturn(new CompletableFuture<>());
+
 			readTenModelsFromFile()
 					.forEach(ldioRepositoryMaterialiser::accept);
 
-			verify(materialiser).process(anyList());
+			verify(materialiser).processAsync(anyList());
 		}
 
 		@Test
 		void given_ValidList_when_ProcessList_And_CommitFails_then_RollbackConnection() {
-			doThrow(MaterialisationFailedException.class).when(materialiser).process(anyList());
+			doThrow(MaterialisationFailedException.class).when(materialiser).processAsync(anyList());
 
 			final List<Model> models = readTenModelsFromFile().toList();
 			for (int i = 0; i < models.size(); i++) {
@@ -68,7 +72,7 @@ class LdioRepositoryMaterialiserTest {
 				}
 			}
 
-			verify(materialiser).process(anyList());
+			verify(materialiser).processAsync(anyList());
 		}
 	}
 
@@ -84,9 +88,11 @@ class LdioRepositoryMaterialiserTest {
 
 		@Test
 		void when_BatchSizeReachedTwice_then_ProcessListTwice() {
+			when(materialiser.processAsync(anyList())).thenReturn(new CompletableFuture<>());
+
 			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
 
-			verify(materialiser, times(2)).process(anyList());
+			verify(materialiser, times(2)).processAsync(anyList());
 		}
 	}
 
@@ -104,7 +110,7 @@ class LdioRepositoryMaterialiserTest {
 		void when_BatchSizeIsNotReached_then_CommitAfterBatchTimeout() {
 			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
 
-			verify(materialiser, timeout(BATCH_TIMEOUT)).process(anyList());
+			verify(materialiser, timeout(BATCH_TIMEOUT)).processAsync(anyList());
 		}
 	}
 

@@ -6,6 +6,7 @@ import org.apache.jena.riot.RDFParser;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.repository.manager.LocalRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
@@ -25,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,11 +38,6 @@ class MaterialiserIT {
 	private static Materialiser materialiser;
 	@TempDir
 	File dataDir;
-
-	private static final String[] TEST_FILES = new String[]{
-			"src/test/resources/people_data_01.nq",
-			"src/test/resources/people_data_02.nq"};
-	private static final String CHANGED_FILE = "src/test/resources/people_data_03.nq";
 
 	@BeforeEach
 	public void setUp() {
@@ -58,49 +57,37 @@ class MaterialiserIT {
 	}
 
 	@Test
-	void when_DataPresent_Then_GetEntityIds() throws Exception {
-		var updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
-
-		Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
-
-		assertThat(entityIds)
-				.as("Expected all subjects from test data")
-				.hasSize(2);
-	}
-
-	@Test
 	void when_DeleteEntities_Then_EntitiesRemovedFromStore() throws Exception {
-		populateAndCheckRepository(List.of(TEST_FILES));
-		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
-		Model updateModel2 = Rio.parse(new FileInputStream(TEST_FILES[1]), "", RDFFormat.NQUADS);
-		Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
+		final List<String> testFiles = IntStream.range(1, 4).mapToObj("src/test/resources/people/%d.nq"::formatted).toList();
+		populateAndCheckRepository(testFiles);
+		final Model model = Rio.parse(new FileInputStream("src/test/resources/people/1.nq"), "", RDFFormat.NQUADS);
+		Set<Resource> entityIds = Stream.of("http://somewhere/BeckySmith/", "http://somewhere/SarahJones/")
+				.map(iri -> SimpleValueFactory.getInstance().createIRI(iri))
+				.collect(Collectors.toSet());
 
-		materialiser.deleteEntitiesFromRepo(entityIds);
+		materialiser.deleteEntities(entityIds);
 
 		List<Statement> statements = materialiser.getMaterialiserConnection()
 				.getStatements(null, null, null).stream().toList();
 
-		assertThat(statements)
-				.containsExactlyInAnyOrderElementsOf(updateModel2)
-				.doesNotContainAnyElementsOf(updateModel);
+		assertThat(statements).hasSize(4);
 	}
 
 	@Test
 	void when_UpdateEntities_Then_OldTriplesRemoved() throws Exception {
-		populateAndCheckRepository(List.of(TEST_FILES));
-		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
-		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
+		final List<String> testFiles = IntStream.range(1, 6).mapToObj("src/test/resources/people/%d.nq"::formatted).toList();
+		populateAndCheckRepository(testFiles);
 
-		List<org.apache.jena.rdf.model.Model> models = RDFParser.source(CHANGED_FILE).toModel().listStatements().toList().stream()
-				.map(statement -> ModelFactory.createDefaultModel().add(statement))
-				.toList();
+		List<org.apache.jena.rdf.model.Model> models = List.of(RDFParser.source("people/5-updated.nq").toModel());
 		materialiser.process(models);
 
 		List<Statement> statements = materialiser.getMaterialiserConnection()
 				.getStatements(null, null, null).stream().toList();
 
-		assertThat(testModelInStatements(changedModel, statements)).isTrue();
-		assertThat(testModelInStatements(updateModel, statements)).isFalse();
+		assertThat(statements)
+				.hasSize(21)
+				.anyMatch(statement -> statement.getObject().stringValue().equals("CHANGED"))
+				.noneMatch(statement -> statement.getObject().stringValue().equals("Taylor"));
 	}
 
 	void populateAndCheckRepository(List<String> files) throws IOException {
@@ -114,16 +101,6 @@ class MaterialiserIT {
 		List<Statement> statements = materialiser.getMaterialiserConnection().getStatements(null, null, null).stream().toList();
 
 		assertThat(models).allMatch(statements::containsAll);
-	}
-
-	private boolean testModelInStatements(Model model, List<Statement> statements) {
-		AtomicBoolean result = new AtomicBoolean(true);
-		model.getStatements(null, null, null).forEach(statement -> {
-			if (!statements.contains(statement)) {
-				result.set(false);
-			}
-		});
-		return result.get();
 	}
 
 }

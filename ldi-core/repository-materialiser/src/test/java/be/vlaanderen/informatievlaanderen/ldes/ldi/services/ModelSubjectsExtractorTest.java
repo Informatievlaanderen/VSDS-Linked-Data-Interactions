@@ -15,16 +15,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ModelSubjectsExtractorTest {
 	@Test
 	void when_ExtractSubjectsFromModel_Then_ReturnEntityIds() throws Exception {
-		var updateModel = Rio.parse(new FileInputStream("src/test/resources/people_data_01.nq"), "", RDFFormat.NQUADS);
+		var updateModel = Rio.parse(new FileInputStream("src/test/resources/people/all.nq"), "", RDFFormat.NQUADS);
 
 		Set<Resource> entityIds = extractSubjects(updateModel);
 
 		assertThat(entityIds)
 				.as("Expected all subjects from test data")
-				.hasSize(2)
 				.containsExactlyInAnyOrder(
 						SimpleValueFactory.getInstance().createIRI("http://somewhere/SarahJones/"),
-						SimpleValueFactory.getInstance().createIRI("http://somewhere/MattJones/")
+						SimpleValueFactory.getInstance().createIRI("http://somewhere/MattJones/"),
+						SimpleValueFactory.getInstance().createIRI("http://somewhere/BeckySmith/"),
+						SimpleValueFactory.getInstance().createIRI("http://somewhere/JohnSmith/"),
+						SimpleValueFactory.getInstance().createIRI("http://somewhere/TaylorKennedy/")
 				);
 	}
 

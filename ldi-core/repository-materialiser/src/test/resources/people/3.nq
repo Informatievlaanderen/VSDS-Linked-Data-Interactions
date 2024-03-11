@@ -1,0 +1,5 @@
+<http://somewhere/BeckySmith/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Becky Smith" .
+<http://somewhere/BeckySmith/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid3 .
+_:genid3 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Smith" .
+_:genid3 <http://www.w3.org/2001/vcard-rdf/3.0#Given> _:genid31 .
+_:genid31 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Rebecca" .
