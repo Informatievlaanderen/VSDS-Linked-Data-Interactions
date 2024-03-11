@@ -99,13 +99,6 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(FALSE.toString())
 			.build();
-	public static final PropertyDescriptor USE_EXACTLY_ONCE_FILTER = new PropertyDescriptor.Builder()
-			.name("USE_EXACTLY_ONCE_FILTER")
-			.displayName("Use filter so members are outputted exactly once")
-			.required(false)
-			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
-			.defaultValue(TRUE.toString())
-			.build();
 
 	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
 			.name("TIMESTAMP_PATH")
@@ -242,6 +235,13 @@ public final class LdesProcessorProperties {
 			.defaultValue("http://purl.org/dc/terms/isVersionOf")
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.addValidator(StandardValidators.URI_VALIDATOR)
+			.build();
+	public static final PropertyDescriptor USE_EXACTLY_ONCE_FILTER = new PropertyDescriptor.Builder()
+			.name("USE_EXACTLY_ONCE_FILTER")
+			.displayName("Use filter so members are outputted exactly once")
+			.required(false)
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.defaultValue(TRUE.toString())
 			.build();
 
 	public static List<String> getDataSourceUrl(final ProcessContext context) {

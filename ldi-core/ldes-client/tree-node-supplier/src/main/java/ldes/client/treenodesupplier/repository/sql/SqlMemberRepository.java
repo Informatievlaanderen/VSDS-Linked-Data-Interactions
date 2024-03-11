@@ -1,7 +1,6 @@
 package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
-import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
 import java.util.Optional;
@@ -24,8 +23,7 @@ public class SqlMemberRepository implements MemberRepository {
 	public Optional<MemberRecord> getTreeMember() {
 
 		return entityManager
-				.createNamedQuery("Member.getFirstByMemberStatus", MemberRecordEntity.class)
-				.setParameter("memberStatus", MemberStatus.UNPROCESSED)
+				.createNamedQuery("Member.getFirst", MemberRecordEntity.class)
 				.getResultStream()
 				.map(MemberRecordEntity::toMemberRecord)
 				.findFirst();

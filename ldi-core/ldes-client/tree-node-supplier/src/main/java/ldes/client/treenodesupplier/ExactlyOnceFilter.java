@@ -2,14 +2,14 @@ package ldes.client.treenodesupplier;
 
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 
-public class ExacltyOnceFilter {
+public class ExactlyOnceFilter {
     private final MemberIdRepository memberIdRepository;
 
-    public ExacltyOnceFilter(MemberIdRepository memberIdRepository) {
+    public ExactlyOnceFilter(MemberIdRepository memberIdRepository) {
         this.memberIdRepository = memberIdRepository;
     }
 
-    public boolean checkFilter(String memberId) {
+    public boolean allowed(String memberId) {
         return !memberIdRepository.contains(memberId);
     }
     public void addId(String memberId) {

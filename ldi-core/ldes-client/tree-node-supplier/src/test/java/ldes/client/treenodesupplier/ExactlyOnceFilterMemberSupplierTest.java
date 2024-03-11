@@ -5,7 +5,6 @@ import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberIdReposito
 import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -23,7 +22,7 @@ class ExactlyOnceFilterMemberSupplierTest {
         member = new SuppliedMember("id1", ModelFactory.createDefaultModel());
         member2 = new SuppliedMember("id2", ModelFactory.createDefaultModel());
 
-        ExacltyOnceFilter filter = new ExacltyOnceFilter(new InMemoryMemberIdRepository());
+        ExactlyOnceFilter filter = new ExactlyOnceFilter(new InMemoryMemberIdRepository());
         filterMemberSupplier = new ExactlyOnceFilterMemberSupplier(memberSupplier, filter,false);
     }
 

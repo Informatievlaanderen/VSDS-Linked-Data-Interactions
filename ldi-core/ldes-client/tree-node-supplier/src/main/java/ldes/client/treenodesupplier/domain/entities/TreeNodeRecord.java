@@ -52,7 +52,7 @@ public class TreeNodeRecord {
 		earliestNextVisit = mutabilityStatus.getEarliestNextVisit();
 	}
 
-	public boolean hasRecieved(String id) {
+	public boolean hasReceived(String id) {
 		return memberIds.contains(id);
 	}
 

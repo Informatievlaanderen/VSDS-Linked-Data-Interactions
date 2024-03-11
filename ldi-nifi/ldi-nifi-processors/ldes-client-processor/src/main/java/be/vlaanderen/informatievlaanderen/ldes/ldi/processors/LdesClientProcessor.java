@@ -98,7 +98,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 		} else if (useExactlyOnceFilter(context)) {
 			memberSupplier = new ExactlyOnceFilterMemberSupplier(
 					new MemberSupplierImpl(treeNodeProcessor, keepState),
-					new ExacltyOnceFilter(statePersistence.getMemberIdRepository()),
+					new ExactlyOnceFilter(statePersistence.getMemberIdRepository()),
 					keepState
 			);
 		} else {

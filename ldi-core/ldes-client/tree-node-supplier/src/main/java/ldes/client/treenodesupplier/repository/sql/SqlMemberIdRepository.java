@@ -19,7 +19,7 @@ public class SqlMemberIdRepository implements MemberIdRepository {
     public void addMemberId(String memberId) {
         MemberIdRecordEntity memberRecordEntity = MemberIdRecordEntity.fromId(memberId);
         entityManager.getTransaction().begin();
-        entityManager.merge(memberRecordEntity);
+        entityManager.persist(memberRecordEntity);
         entityManager.getTransaction().commit();
     }
 

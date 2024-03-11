@@ -76,7 +76,7 @@ public class TreeNodeProcessor {
 				.filter(treeNodeId -> !treeNodeRecordRepository.existsById(treeNodeId))
 				.map(TreeNodeRecord::new)
 				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
-		List<TreeMember> newMembers = treeNodeResponse.getMembers().stream().filter(member -> !treeNodeRecord.hasRecieved(member.getMemberId())).toList();
+		List<TreeMember> newMembers = treeNodeResponse.getMembers().stream().filter(member -> !treeNodeRecord.hasReceived(member.getMemberId())).toList();
 		memberRepository.saveTreeMembers(newMembers
 				.stream()
 				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt())));

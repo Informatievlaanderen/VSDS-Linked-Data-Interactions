@@ -235,6 +235,55 @@ class LdesClientProcessorTest {
 				.isInstanceOf(AssertionFailedError.class)
 				.hasMessageStartingWith("Processor has 1 validation failures:");
 	}
+	@Test
+	void shouldSupportOnlyOnceFilter() {
+		testRunner.setProperty("DATA_SOURCE_URLS",
+				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
+		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
+		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
+		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
+
+		testRunner.run(2);
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(2, dataFlowfiles.size());
+
+		List<RDFNode> result = RDFParser
+				.fromString(dataFlowfiles.get(0).getContent())
+				.lang(Lang.NQUADS)
+				.toModel()
+				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))
+				.toList();
+		assertEquals(1, result.size());
+	}
+	@Test
+	void shouldNotSupportOnlyOnceFilterWhenVersionMaterialiserIsActive() {
+		testRunner.setProperty("DATA_SOURCE_URLS",
+				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
+		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
+		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
+		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
+		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
+
+		testRunner.run();
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(1, dataFlowfiles.size());
+
+		List<RDFNode> result = RDFParser
+				.fromString(dataFlowfiles.get(0).getContent())
+				.lang(Lang.NQUADS)
+				.toModel()
+				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))
+				.toList();
+		assertEquals(0, result.size());
+	}
 
 	static class MatchNumberOfFlowFilesArgumentsProvider implements ArgumentsProvider {
 		@Override

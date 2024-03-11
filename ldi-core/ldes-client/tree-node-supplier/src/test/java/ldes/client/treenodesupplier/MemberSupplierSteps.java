@@ -168,6 +168,13 @@ public class MemberSupplierSteps {
 		memberSupplier.init();
 	}
 
+	@When("I create a MemberSupplier with filter")
+	public void iCreateAMemberSupplierWithFilter() {
+		memberSupplier = new ExactlyOnceFilterMemberSupplier(new MemberSupplierImpl(treeNodeProcessor, false),
+				new ExactlyOnceFilter(memberIdRepository), false);
+		memberSupplier.init();
+	}
+
 	private StatePersistence defineStatePersistence(String persistenceStrategy) {
 		return switch (persistenceStrategy) {
 			case "POSTGRES" -> aPostgresStatePersistenceStrategy();
