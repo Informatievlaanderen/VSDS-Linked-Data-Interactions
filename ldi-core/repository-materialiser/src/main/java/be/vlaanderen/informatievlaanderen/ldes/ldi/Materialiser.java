@@ -11,6 +11,7 @@ import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class Materialiser {
 	private final MaterialiserConnection materialiserConnection;
@@ -28,17 +29,23 @@ public class Materialiser {
 	}
 
 	public void process(List<Model> jenaModels) {
-		try {
-			jenaModels.stream().map(JenaToRDF4JConverter::convert).forEach(updateModel -> {
-				Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
-				deleteEntities(entityIds);
-				materialiserConnection.add(updateModel);
-			});
-			materialiserConnection.commit();
-		} catch (Exception e) {
-			materialiserConnection.rollback();
-			throw new MaterialisationFailedException(e, jenaModels);
+		synchronized (materialiserConnection) {
+			try {
+				jenaModels.stream().map(JenaToRDF4JConverter::convert).forEach(updateModel -> {
+					Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
+					deleteEntities(entityIds);
+					materialiserConnection.add(updateModel);
+				});
+				materialiserConnection.commit();
+			} catch (Exception e) {
+				materialiserConnection.rollback();
+				throw new MaterialisationFailedException(e);
+			}
 		}
+	}
+
+	public CompletableFuture<Void> processAsync(List<Model> jenaModels) {
+		return CompletableFuture.runAsync(() -> process(jenaModels));
 	}
 
 	public void shutdown() {
