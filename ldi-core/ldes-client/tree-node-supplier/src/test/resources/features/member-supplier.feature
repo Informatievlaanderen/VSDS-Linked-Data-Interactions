@@ -107,6 +107,6 @@ Feature: MemberSupplier
 
     Examples:
       | statePersistenceStrategy |
-#      | MEMORY                   |
+      | MEMORY                   |
       | SQLITE                   |
       | POSTGRES                 |

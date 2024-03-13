@@ -70,7 +70,6 @@ public class TreeNodeProcessor {
 		TreeNodeResponse treeNodeResponse = treeNodeFetcher
 				.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
 		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
-		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		treeNodeResponse.getRelations()
 				.stream()
 				.filter(treeNodeId -> !treeNodeRecordRepository.existsById(treeNodeId))
@@ -81,6 +80,7 @@ public class TreeNodeProcessor {
 				.stream()
 				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt())));
 		treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
+		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 	}
 
 	private void waitUntilNextVisit(TreeNodeRecord treeNodeRecord) {
