@@ -45,6 +45,10 @@ public class MaterialiserConnection {
 		connection.close();
 	}
 
+	public void executeUpdate(String query) {
+		holder.getConnection().prepareUpdate(query).execute();
+	}
+
 	public void shutdown() {
 		holder.shutdown();
 	}

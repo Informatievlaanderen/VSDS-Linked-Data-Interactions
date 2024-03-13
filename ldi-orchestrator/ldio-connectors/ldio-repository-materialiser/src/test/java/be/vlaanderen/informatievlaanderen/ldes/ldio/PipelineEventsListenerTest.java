@@ -5,6 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -48,9 +51,9 @@ class PipelineEventsListenerTest {
 
 	@Test
 	void when_PipelineDeletedEventIsPublished_then_ShutdownMaterialiser() {
-		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineName, false));
+		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineName));
 
-		verify(pipelineEventsListener).handlePipelineDeletedEvent(new PipelineDeletedEvent(pipelineName, false));
+		verify(pipelineEventsListener).handlePipelineDeletedEvent(new PipelineDeletedEvent(pipelineName));
 		verify(materialiser).shutdown();
 	}
 
@@ -67,13 +70,14 @@ class PipelineEventsListenerTest {
 
 	@Test
 	void given_NonEmptyListOfMembersToCommit_when_PublishPipelineHaltedEvent_then_CommitMembers_and_ShutdownMaterialiser() {
-		ldioRepositoryMaterialiser.accept(any());
+		when(materialiser.processAsync(anyList())).thenReturn(new CompletableFuture<>());
+		ldioRepositoryMaterialiser.accept(ModelFactory.createDefaultModel());
 		final PipelineStatusEvent event = new PipelineStatusEvent(pipelineName, PipelineStatus.HALTED, StatusChangeSource.MANUAL);
 
 		eventPublisher.publishEvent(event);
 
 		verify(pipelineEventsListener).handlePipelineHaltedEvent(event);
-		verify(materialiser).process(anyList());
+		verify(materialiser).processAsync(anyList());
 		verify(materialiser).shutdown();
 		verifyNoMoreInteractions(materialiser);
 	}

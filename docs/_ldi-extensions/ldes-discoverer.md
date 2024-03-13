@@ -14,10 +14,10 @@ follow, the structure can be discovered first.
 
 ## Config
 
-| Property      | Description                                                | Required | Default             | Example                   | Supported values                                              |
-|:--------------|:-----------------------------------------------------------|:---------|:--------------------|:--------------------------|:--------------------------------------------------------------|
-| url           | Url where from the discoverer needs to start               | Yes      | N/A                 | http://example.com/my-api | HTTP and HTTPS url                                            |
-| source-format | The 'Content-Type' that should be requested to the server. | No       | application/n-quads | text/turtle               | Any type supported by [Apache Jena](https://jena.apache.org/) |
+| Property      | Description                                                | Required | Default             | Example                   | Supported values                                                                                                        |
+|:--------------|:-----------------------------------------------------------|:---------|:--------------------|:--------------------------|:------------------------------------------------------------------------------------------------------------------------|
+| url           | Url where from the discoverer needs to start               | Yes      | N/A                 | http://example.com/my-api | HTTP and HTTPS url                                                                                                      |
+| source-format | The 'Content-Type' that should be requested to the server. | No       | application/n-quads | text/turtle               | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
 
 ## How to run
 

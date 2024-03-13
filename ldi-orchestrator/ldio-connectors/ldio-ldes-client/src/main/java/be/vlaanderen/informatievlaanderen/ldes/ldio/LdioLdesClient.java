@@ -23,15 +23,18 @@ public class LdioLdesClient extends LdioInput {
 	private final MemberSupplier memberSupplier;
 	private boolean threadRunning = true;
 	private boolean paused = false;
+	private final boolean keepState;
 
 	public LdioLdesClient(String pipelineName,
-						  ComponentExecutor componentExecutor,
-						  ObservationRegistry observationRegistry,
-						  MemberSupplier memberSupplier,
-						  ApplicationEventPublisher applicationEventPublisher) {
+                          ComponentExecutor componentExecutor,
+                          ObservationRegistry observationRegistry,
+                          MemberSupplier memberSupplier,
+                          ApplicationEventPublisher applicationEventPublisher,
+						  boolean keepState) {
 		super(NAME, pipelineName, componentExecutor, null, observationRegistry, applicationEventPublisher);
 		this.memberSupplier = memberSupplier;
-	}
+        this.keepState = keepState;
+    }
 
 	@SuppressWarnings("java:S2095")
 	public void start() {
@@ -68,7 +71,7 @@ public class LdioLdesClient extends LdioInput {
 	}
 
 	@Override
-	public void shutdown(boolean keepState) {
+	public void shutdown() {
 		threadRunning = false;
 		if (!keepState) {
 			memberSupplier.destroyState();

@@ -110,7 +110,7 @@ public class MemberSupplierFactory {
     private Lang getSourceFormat() {
 	    return properties.getOptionalProperty(SOURCE_FORMAT)
                 .map(RDFLanguages::nameToLang)
-                .orElse(Lang.JSONLD);
+                .orElse(Lang.TURTLE);
     }
 
     private VersionMaterialiser createVersionMaterialiser() {

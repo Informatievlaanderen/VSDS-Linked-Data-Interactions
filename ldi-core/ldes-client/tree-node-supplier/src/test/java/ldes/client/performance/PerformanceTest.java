@@ -16,7 +16,6 @@ import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
 /**
  * This class is used to generate performance test reports on the LDES CLient.
- *
  */
 class PerformanceTest {
 
@@ -80,6 +79,22 @@ class PerformanceTest {
 	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
 	@Tag("performance")
 	@Test
+	void compare_rdf_formats() {
+		testRunner(
+				separatorsToSystem("target/compare_rdf_formats.csv"),
+				10_000,
+				List.of(TestScenario.MEMORY_EXTERNAL_250_TURTLE,
+						TestScenario.MEMORY_EXTERNAL_250_PROTOBUF,
+						TestScenario.MEMORY_EXTERNAL_500_TURTLE,
+						TestScenario.MEMORY_EXTERNAL_500_PROTOBUF,
+						TestScenario.MEMORY_EXTERNAL_1000_TURTLE,
+						TestScenario.MEMORY_EXTERNAL_1000_PROTOBUF)
+		);
+	}
+
+	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
+	@Tag("performance")
+	@Test
 	void test_memory_f250_s100_000() {
 		testRunner(
 				separatorsToSystem("target/test_memory_f250_s100_000.csv"),
@@ -106,7 +121,7 @@ class PerformanceTest {
 
 	private void runTest(TestScenario test, CsvFile csvFile, int testSize) {
 		final TreeNodeProcessor treeNodeProcessor = treeNodeProcessorFactory
-				.createTreeNodeProcessor(test.getPersistenceStrategy(), List.of(test.getStartingEndpoint()));
+				.createTreeNodeProcessor(test.getPersistenceStrategy(), List.of(test.getStartingEndpoint()), test.getSourceFormat());
 		treeNodeProcessor.init();
 
 		LocalDateTime lastInterval = LocalDateTime.now();

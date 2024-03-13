@@ -1,0 +1,11 @@
+orchestrator:
+  pipelines:
+    - name: valid-pipeline
+      input:
+        name: "dummyIn"
+        adapter:
+          name: "dummyAdapt"
+      transformers:
+        - name: "dummyTransform"
+      outputs:
+        - name: "dummyOut"
