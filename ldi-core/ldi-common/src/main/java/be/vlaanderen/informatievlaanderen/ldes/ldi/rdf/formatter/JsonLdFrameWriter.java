@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.JsonLDFrameException;
 import com.apicatalog.jsonld.JsonLd;
 import com.apicatalog.jsonld.JsonLdError;
 import com.apicatalog.jsonld.document.JsonDocument;
@@ -19,9 +20,13 @@ public class JsonLdFrameWriter implements LdiRdfWriter {
 	private final RDFWriterBuilder rdfWriter;
 	private final JsonDocument frame;
 
-	public JsonLdFrameWriter(LdiRdfWriterProperties properties) throws JsonLdError {
-		frame = JsonDocument.of(new StringReader(properties.getJsonLdFrame()));
+	public JsonLdFrameWriter(JsonDocument frame) {
+		this.frame = frame;
 		this.rdfWriter = RDFWriter.create().format(RDFFormat.JSONLD);
+	}
+
+	public static JsonLdFrameWriter fromProperties(LdiRdfWriterProperties properties) throws JsonLdError {
+		return new JsonLdFrameWriter(JsonDocument.of(new StringReader(properties.getJsonLdFrame())));
 	}
 
     @Override
@@ -36,7 +41,7 @@ public class JsonLdFrameWriter implements LdiRdfWriter {
 		    JsonDocument input = JsonDocument.of(new StringReader(rdfWriter.source(addPrefixesToModel(model)).asString()));
 		    jsonObject = JsonLd.frame(input, frame).get();
 	    } catch (JsonLdError e) {
-		    throw new RuntimeException(e);
+		    throw new JsonLDFrameException(e);
 	    }
 
 	    return jsonObject.toString();
