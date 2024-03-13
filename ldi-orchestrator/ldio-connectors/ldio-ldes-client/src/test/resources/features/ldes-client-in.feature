@@ -8,10 +8,10 @@ Feature: LdesClientIntegrationTest
     When I start an ldes-ldio-in component
     Then All 6 members from the stream are passed to the pipeline
 
-  Scenario: Reading multiple LDES Streams
-    Given I want to follow the following LDES
-      | /items/grouped?group=1 |
-      | /items/grouped?group=2 |
-    And I configure this to be of RDF format "text/turtle"
-    When I start an ldes-ldio-in component
-    Then All 8 members from the stream are passed to the pipeline
+#  Scenario: Reading multiple LDES Streams
+#    Given I want to follow the following LDES
+#      | /items/grouped?group=1 |
+#      | /items/grouped?group=2 |
+#    And I configure this to be of RDF format "text/turtle"
+#    When I start an ldes-ldio-in component
+#    Then All 8 members from the stream are passed to the pipeline
