@@ -87,6 +87,7 @@ public class MemberSupplierFactory {
                     return false;
                 });
     }
+    @SuppressWarnings("java:S3655")
     private boolean useExactlyOnceFilter() {
         if (properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER).isPresent()) {
             // use filter is explicitly set
