@@ -1,7 +1,6 @@
 package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
-import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
 import java.util.Optional;
@@ -21,11 +20,10 @@ public class SqlMemberRepository implements MemberRepository {
 	}
 
 	@Override
-	public Optional<MemberRecord> getUnprocessedTreeMember() {
+	public Optional<MemberRecord> getTreeMember() {
 
 		return entityManager
-				.createNamedQuery("Member.getFirstByMemberStatus", MemberRecordEntity.class)
-				.setParameter("memberStatus", MemberStatus.UNPROCESSED)
+				.createNamedQuery("Member.getFirst", MemberRecordEntity.class)
 				.getResultStream()
 				.map(MemberRecordEntity::toMemberRecord)
 				.findFirst();
@@ -33,12 +31,13 @@ public class SqlMemberRepository implements MemberRepository {
 	}
 
 	@Override
-	public boolean isProcessed(MemberRecord member) {
-		return entityManager
-				.createNamedQuery("Member.countByMemberStatusAndId", Long.class)
-				.setParameter("memberStatus", MemberStatus.PROCESSED)
+	public void deleteMember(MemberRecord member) {
+		entityManager.getTransaction().begin();
+		entityManager
+				.createNamedQuery("Member.deleteByMemberId")
 				.setParameter("id", member.getMemberId())
-				.getSingleResult() > 0;
+				.executeUpdate();
+		entityManager.getTransaction().commit();
 	}
 
 	@Override
@@ -46,14 +45,6 @@ public class SqlMemberRepository implements MemberRepository {
 		entityManager.getTransaction().begin();
 		treeMemberStream.map(MemberRecordEntity::fromMemberRecord)
 				.forEach(entityManager::merge);
-		entityManager.getTransaction().commit();
-	}
-
-	@Override
-	public void saveTreeMember(MemberRecord treeMember) {
-		MemberRecordEntity memberRecordEntity = MemberRecordEntity.fromMemberRecord(treeMember);
-		entityManager.getTransaction().begin();
-		entityManager.merge(memberRecordEntity);
 		entityManager.getTransaction().commit();
 	}
 

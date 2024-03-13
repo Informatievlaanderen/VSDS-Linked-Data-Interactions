@@ -90,3 +90,23 @@ Feature: MemberSupplier
       | MEMORY                   |
       | SQLITE                   |
       | POSTGRES                 |
+
+
+#  Scenario Outline: Obtaining the members with the exactly once filter
+#    Given A starting url "http://localhost:10101/200-first-tree-node-to-duplicate"
+#    And a StatePersistenceStrategy <statePersistenceStrategy>
+#    And The TreeNode is not processed: "http://localhost:10101/200-first-tree-node-to-duplicate"
+#    And I set a timestamp path "http://www.w3.org/ns/prov#generatedAtTime"
+#    When I create a Processor
+#    When I create a MemberSupplier with filter
+#    When I request one member from the MemberSupplier
+#    Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/1" is processed
+#    When I request one member from the MemberSupplier
+#    Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/2" is processed
+#    Then MemberSupplier is destroyed
+#
+#    Examples:
+#      | statePersistenceStrategy |
+#      | MEMORY                   |
+#      | SQLITE                   |
+#      | POSTGRES                 |

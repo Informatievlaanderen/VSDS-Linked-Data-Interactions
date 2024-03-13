@@ -15,6 +15,7 @@ public class LdioLdesClientProperties {
 	public static final String POSTGRES_PASSWORD = "postgres.password";
 	public static final String POSTGRES_URL = "postgres.url";
 	public static final String TIMESTAMP_PATH_PROP = "timestamp-path";
+	public static final String USE_EXACTLY_ONCE_FILTER = "enable-exactly-once";
 
 	// version materialisation properties
 	public static final String USE_VERSION_MATERIALISATION = "materialisation.enabled";

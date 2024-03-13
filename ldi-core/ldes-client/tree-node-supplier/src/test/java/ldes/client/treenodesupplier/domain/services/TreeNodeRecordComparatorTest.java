@@ -5,6 +5,7 @@ import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -25,7 +26,7 @@ class TreeNodeRecordComparatorTest {
 
 	private TreeNodeRecord getTreeNodeRecord(int second, String treeNodeUrl) {
 		LocalDateTime firstLocalDateTime = LocalDateTime.of(1, 1, 1, 1, 1, second);
-		return new TreeNodeRecord(treeNodeUrl, TreeNodeStatus.MUTABLE_AND_ACTIVE, firstLocalDateTime);
+		return new TreeNodeRecord(treeNodeUrl, TreeNodeStatus.MUTABLE_AND_ACTIVE, firstLocalDateTime, new ArrayList<>());
 	}
 
 }

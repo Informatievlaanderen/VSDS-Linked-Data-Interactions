@@ -5,11 +5,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
+import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
+import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
@@ -49,7 +51,9 @@ class TreeNodeProcessorFactory {
 				Map.of(), "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, treeNodeRecordRepository);
+		MemberIdRepository memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.SQLITE,
+				Map.of(), "instanceName");
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
 	}
 
 	private StatePersistence createPostgresPersistence() {
@@ -63,8 +67,11 @@ class TreeNodeProcessorFactory {
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
 						"instanceName");
+		MemberIdRepository memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(
+				StatePersistenceStrategy.POSTGRES,
+				postgresProperties.getProperties(), "instanceName");
 
-		return new StatePersistence(memberRepository, treeNodeRecordRepository);
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
 	}
 
 	private StatePersistence createInMemoryStatePersistence() {
@@ -72,7 +79,9 @@ class TreeNodeProcessorFactory {
 				Map.of(), "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, treeNodeRecordRepository);
+		MemberIdRepository memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.MEMORY,
+				Map.of(), "instanceName");
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
 	}
 
 }

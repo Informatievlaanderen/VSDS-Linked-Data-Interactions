@@ -11,7 +11,7 @@ class SuppliedMemberTest {
 	@Test
 	void when_SuppliedMemberIsCreated_ModelIsDeepCopied() {
 		Model model = ModelFactory.createDefaultModel();
-		SuppliedMember suppliedMember = new SuppliedMember(model);
+		SuppliedMember suppliedMember = new SuppliedMember("id", model);
 
 		model = null;
 		assertNotNull(suppliedMember.getModel());

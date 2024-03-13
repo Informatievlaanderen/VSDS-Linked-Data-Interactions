@@ -13,10 +13,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampE
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import io.github.resilience4j.retry.Retry;
-import ldes.client.treenodesupplier.MemberSupplier;
-import ldes.client.treenodesupplier.MemberSupplierImpl;
-import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.VersionMaterialisedMemberSupplier;
+import ldes.client.treenodesupplier.*;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
@@ -76,7 +73,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 				API_KEY_HEADER_PROPERTY, OAUTH_SCOPE,
 				API_KEY_PROPERTY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY,
 				RETRIES_ENABLED, MAX_RETRIES, STATUSES_TO_RETRY, POSTGRES_URL, POSTGRES_USERNAME, POSTGRES_PASSWORD,
-				USE_VERSION_MATERIALISATION, RESTRICT_TO_MEMBERS, VERSION_OF_PROPERTY);
+				USE_VERSION_MATERIALISATION, RESTRICT_TO_MEMBERS, VERSION_OF_PROPERTY, USE_EXACTLY_ONCE_FILTER);
 	}
 
 	@OnScheduled
@@ -97,6 +94,12 @@ public class LdesClientProcessor extends AbstractProcessor {
             memberSupplier = new VersionMaterialisedMemberSupplier(
                     new MemberSupplierImpl(treeNodeProcessor, keepState),
                     versionMaterialiser
+			);
+		} else if (useExactlyOnceFilter(context)) {
+			memberSupplier = new ExactlyOnceFilterMemberSupplier(
+					new MemberSupplierImpl(treeNodeProcessor, keepState),
+					new ExactlyOnceFilter(statePersistence.getMemberIdRepository()),
+					keepState
 			);
 		} else {
 			memberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
