@@ -32,7 +32,7 @@
         <awaitility.version>4.2.0</awaitility.version>
         <byte-buddy.version>1.12.23</byte-buddy.version>
         <cucumber.version>7.13.0</cucumber.version>
-        <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
+        <junit-platform-suite.version>1.10.2</junit-platform-suite.version>
     </properties>
 
     <dependencies>
