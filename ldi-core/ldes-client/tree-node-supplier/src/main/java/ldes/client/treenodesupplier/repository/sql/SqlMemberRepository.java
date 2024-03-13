@@ -20,7 +20,7 @@ public class SqlMemberRepository implements MemberRepository {
 	}
 
 	@Override
-	public Optional<MemberRecord> getTreeMember() {
+	public Optional<MemberRecord> getNextMember() {
 
 		return entityManager
 				.createNamedQuery("Member.getFirst", MemberRecordEntity.class)

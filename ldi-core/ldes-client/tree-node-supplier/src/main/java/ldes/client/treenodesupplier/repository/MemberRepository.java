@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 public interface MemberRepository {
 
-	Optional<MemberRecord> getTreeMember();
+	Optional<MemberRecord> getNextMember();
 	void deleteMember(MemberRecord member);
 
 	void saveTreeMembers(Stream<MemberRecord> treeMemberStream);

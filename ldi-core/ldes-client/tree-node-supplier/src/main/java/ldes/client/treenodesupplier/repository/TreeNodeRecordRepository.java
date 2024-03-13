@@ -10,7 +10,7 @@ public interface TreeNodeRecordRepository {
 
 	boolean existsById(String treeNodeId);
 
-	Optional<TreeNodeRecord> getOneTreeNodeRecordWithStatus(TreeNodeStatus treeNodeStatus);
+	Optional<TreeNodeRecord> getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus treeNodeStatus);
 
 	boolean existsByIdAndStatus(String treeNodeId, TreeNodeStatus treeNodeStatus);
 

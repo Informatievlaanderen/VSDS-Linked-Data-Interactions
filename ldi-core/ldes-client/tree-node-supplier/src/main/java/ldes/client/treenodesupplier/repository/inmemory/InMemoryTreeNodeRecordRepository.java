@@ -54,7 +54,7 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 		immutable = new HashSet<>();
 	}
 
-	public Optional<TreeNodeRecord> getOneTreeNodeRecordWithStatus(TreeNodeStatus treeNodeStatus) {
+	public Optional<TreeNodeRecord> getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus treeNodeStatus) {
 		return switch (treeNodeStatus) {
 			case NOT_VISITED -> notVisited.isEmpty() ? Optional.empty() : Optional.of(notVisited.get(0));
 			case MUTABLE_AND_ACTIVE ->

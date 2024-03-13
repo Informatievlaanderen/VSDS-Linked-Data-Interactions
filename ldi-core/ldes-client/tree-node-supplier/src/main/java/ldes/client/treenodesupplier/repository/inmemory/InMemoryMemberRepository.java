@@ -11,7 +11,7 @@ public class InMemoryMemberRepository implements MemberRepository {
 	private Queue<MemberRecord> members = new PriorityQueue<>();
 
 	@Override
-	public Optional<MemberRecord> getTreeMember() {
+	public Optional<MemberRecord> getNextMember() {
 		if (members.isEmpty()) {
 			return Optional.empty();
 		}

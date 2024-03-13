@@ -45,10 +45,10 @@ public class TreeNodeProcessor {
 	public SuppliedMember getMember() {
 		removeLastMember();
 
-		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getTreeMember();
+		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getNextMember();
 		while (unprocessedTreeMember.isEmpty()) {
 			processTreeNode();
-			unprocessedTreeMember = memberRepository.getTreeMember();
+			unprocessedTreeMember = memberRepository.getNextMember();
 		}
 		MemberRecord treeMember = unprocessedTreeMember.get();
 		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
@@ -62,8 +62,8 @@ public class TreeNodeProcessor {
 
 	private void processTreeNode() {
 		TreeNodeRecord treeNodeRecord = treeNodeRecordRepository
-				.getOneTreeNodeRecordWithStatus(TreeNodeStatus.NOT_VISITED).orElseGet(
-						() -> treeNodeRecordRepository.getOneTreeNodeRecordWithStatus(TreeNodeStatus.MUTABLE_AND_ACTIVE)
+				.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.NOT_VISITED).orElseGet(
+						() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
 								.orElseThrow(() -> new EndOfLdesException(
 										"No fragments to mutable or new fragments to process -> LDES ends.")));
 		waitUntilNextVisit(treeNodeRecord);
