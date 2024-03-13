@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
@@ -12,15 +13,14 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWr
 public class LdiConsoleOut implements LdiOutput {
 	public static final String NAME = "Ldio:ConsoleOut";
 	private final Logger log = LoggerFactory.getLogger(LdiConsoleOut.class);
-
-	private final LdiRdfWriterProperties properties;
+	private final LdiRdfWriter ldiRdfWriter;
 
 	public LdiConsoleOut(LdiRdfWriterProperties properties) {
-		this.properties = properties;
+		ldiRdfWriter = getRdfWriter(properties);
 	}
 
 	@Override
 	public void accept(Model model) {
-		log.info(getRdfWriter(properties).write(model));
+		log.info(ldiRdfWriter.write(model));
 	}
 }
