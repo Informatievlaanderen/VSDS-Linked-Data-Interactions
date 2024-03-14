@@ -26,7 +26,7 @@ public class PipelineStatusController {
 		return pipelineStatusService.getPipelineStatus(pipelineId);
 	}
 
-	@PostMapping(path = {"{pipelineId}/halt", "{pipelineId}/siesta"})
+	@PostMapping(path = "{pipelineId}/halt")
 	public PipelineStatus haltPipeline(@PathVariable("pipelineId") String pipelineId) {
 		return pipelineStatusService.haltRunningPipeline(pipelineId);
 	}

@@ -1,11 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioMediaType;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
-import org.apache.http.entity.ContentType;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class PipelineController implements OpenApiPipelineController {
 	 * @return A list of pipeline objects that containing the configuration and its current state.
 	 */
 	@Override
-	@GetMapping(produces = {"application/json", "application/yaml"})
+	@GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, LdioMediaType.APPLICATION_YAML_VALUE})
 	public List<PipelineTO> overview() {
 		return pipelineService.getPipelines();
 	}
@@ -42,7 +43,7 @@ public class PipelineController implements OpenApiPipelineController {
 	 */
 	@Override
 	@ResponseStatus(code = HttpStatus.CREATED)
-	@PostMapping(consumes = {"application/json", "application/yaml"}, produces = {"application/json", "application/yaml"})
+	@PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, LdioMediaType.APPLICATION_YAML_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE, LdioMediaType.APPLICATION_YAML_VALUE})
 	public PipelineTO addPipeline(@RequestBody PipelineConfigTO config) {
 		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineService.addPipeline(config.toPipelineConfig()));
 

@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfig
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,14 +14,15 @@ import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/admin/api/v1/catalog")
-public class CatalogController {
+public class CatalogController implements OpenApiCatalogController {
 	private final ConfigurableApplicationContext context;
 
 	public CatalogController(ConfigurableApplicationContext context) {
 		this.context = context;
 	}
 
-	@GetMapping
+	@Override
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public LdioCatalog catalog() {
 		return new LdioCatalog(inputs(), adapters(), transformers(), outputs());
 	}
