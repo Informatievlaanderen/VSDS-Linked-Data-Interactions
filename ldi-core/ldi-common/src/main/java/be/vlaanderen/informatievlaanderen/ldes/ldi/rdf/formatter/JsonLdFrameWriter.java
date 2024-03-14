@@ -1,9 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.JsonLDFrameException;
-import com.apicatalog.jsonld.JsonLd;
-import com.apicatalog.jsonld.JsonLdError;
-import com.apicatalog.jsonld.document.JsonDocument;
 import jakarta.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -13,6 +10,10 @@ import org.apache.jena.riot.RDFWriterBuilder;
 
 import java.io.OutputStream;
 import java.io.StringReader;
+
+import com.apicatalog.jsonld.JsonLd;
+import com.apicatalog.jsonld.JsonLdError;
+import com.apicatalog.jsonld.document.JsonDocument;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.addPrefixesToModel;
 

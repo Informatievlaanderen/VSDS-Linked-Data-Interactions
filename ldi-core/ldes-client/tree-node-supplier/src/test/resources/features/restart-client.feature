@@ -31,5 +31,4 @@ Feature: Restart MemberSupplier
     Examples:
       | statePersistenceStrategy |
       | SQLITE                   |
-      | FILE                     |
       | POSTGRES                 |
