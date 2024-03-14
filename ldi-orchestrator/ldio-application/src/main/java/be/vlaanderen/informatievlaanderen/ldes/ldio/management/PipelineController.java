@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admin/api/v1/pipeline")
-public class PipelineController {
+public class PipelineController implements OpenApiPipelineController {
 
 	private final PipelineService pipelineService;
 	private final PipelineStatusService pipelineStatusService;
@@ -26,6 +26,7 @@ public class PipelineController {
 	 *
 	 * @return A list of pipeline objects that containing the configuration and its current state.
 	 */
+	@Override
 	@GetMapping()
 	public List<PipelineTO> overview() {
 		return pipelineService.getPipelines();
@@ -37,6 +38,7 @@ public class PipelineController {
 	 * @param config The configuration to create a pipeline.
 	 * @return A pipeline object that containing the configuration and its current state.
 	 */
+	@Override
 	@PostMapping()
 	public PipelineTO addPipeline(@RequestBody PipelineConfigTO config) {
 		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineService.addPipeline(config.toPipelineConfig()));
@@ -52,6 +54,7 @@ public class PipelineController {
 	 *         Returns ResponseEntity.ok() if the pipeline was found and successfully deleted,
 	 *         ResponseEntity.noContent() if the pipeline was not found or could not be deleted.
 	 */
+	@Override
 	@DeleteMapping("/{pipeline}")
 	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline) {
 		if (pipelineService.requestDeletion(pipeline)) {

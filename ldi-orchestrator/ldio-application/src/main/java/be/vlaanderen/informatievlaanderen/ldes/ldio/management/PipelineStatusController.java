@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;

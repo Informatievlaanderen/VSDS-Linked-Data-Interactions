@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
