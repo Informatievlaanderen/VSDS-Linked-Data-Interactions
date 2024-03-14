@@ -35,7 +35,7 @@ public class SqlMemberRepository implements MemberRepository {
 		entityManager.getTransaction().begin();
 		entityManager
 				.createNamedQuery("Member.deleteByMemberId")
-				.setParameter("id", member.getMemberId())
+				.setParameter("memberId", member.getMemberId())
 				.executeUpdate();
 		entityManager.getTransaction().commit();
 	}

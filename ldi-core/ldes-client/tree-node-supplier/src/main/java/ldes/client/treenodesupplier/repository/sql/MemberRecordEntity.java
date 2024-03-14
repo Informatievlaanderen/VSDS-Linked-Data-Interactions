@@ -15,12 +15,14 @@ import javax.persistence.*;
 		@Index(name = "fn_index", columnList = "createdAt")
 })
 @NamedQuery(name = "Member.getFirst", query = "SELECT m FROM MemberRecordEntity m ORDER BY m.createdAt")
-@NamedQuery(name = "Member.deleteByMemberId", query = "DELETE FROM MemberRecordEntity WHERE id = :id")
+@NamedQuery(name = "Member.deleteByMemberId", query = "DELETE FROM MemberRecordEntity WHERE memberId = :memberId")
 public class MemberRecordEntity {
 
 	@Id
+	@GeneratedValue
+	private int id;
 	@Column(columnDefinition = "text", length = 10485760)
-	private String id;
+	private String memberId;
 	private LocalDateTime createdAt;
 
 	@Column(name = "model", columnDefinition = "text", length = 10485760)
@@ -29,8 +31,8 @@ public class MemberRecordEntity {
 	public MemberRecordEntity() {
 	}
 
-	public MemberRecordEntity(String id, LocalDateTime dateCreated, String modelAsString) {
-		this.id = id;
+	public MemberRecordEntity(String memberId, LocalDateTime dateCreated, String modelAsString) {
+		this.memberId = memberId;
 		this.createdAt = dateCreated;
 		this.modelAsString = modelAsString;
 	}
@@ -43,7 +45,7 @@ public class MemberRecordEntity {
 
 	public MemberRecord toMemberRecord() {
 		final Model model = RDFParserBuilder.create().fromString(modelAsString).lang(Lang.NQUADS).toModel();
-		return new MemberRecord(id, model, createdAt);
+		return new MemberRecord(memberId, model, createdAt);
 	}
 
 }
