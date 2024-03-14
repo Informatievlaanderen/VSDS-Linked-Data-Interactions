@@ -4,6 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
+import org.apache.http.entity.ContentType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +29,7 @@ public class PipelineController implements OpenApiPipelineController {
 	 * @return A list of pipeline objects that containing the configuration and its current state.
 	 */
 	@Override
-	@GetMapping()
+	@GetMapping(produces = {"application/json", "application/yaml"})
 	public List<PipelineTO> overview() {
 		return pipelineService.getPipelines();
 	}
@@ -39,7 +41,8 @@ public class PipelineController implements OpenApiPipelineController {
 	 * @return A pipeline object that containing the configuration and its current state.
 	 */
 	@Override
-	@PostMapping()
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@PostMapping(consumes = {"application/json", "application/yaml"}, produces = {"application/json", "application/yaml"})
 	public PipelineTO addPipeline(@RequestBody PipelineConfigTO config) {
 		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineService.addPipeline(config.toPipelineConfig()));
 
