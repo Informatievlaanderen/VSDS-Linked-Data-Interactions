@@ -11,7 +11,7 @@ has_toc: true
 ## Used Components
 
 - [Http In Poller](../ldio-inputs/ldio-http-in-poller)
-- [RML Adapter](../ldio-adapters/ldio-rml-adapter.md)
+- [RML Adapter](../ldio-adapters/ldio-rml-adapter)
 - [Version Object Creator](../ldio-transformers/ldio-version-object-creator)
 - [Console Out](../ldio-outputs/ldio-console-out)
 
