@@ -1,9 +1,12 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioMediaType;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admin/api/v1/pipeline")
-public class PipelineController {
+public class PipelineController implements OpenApiPipelineController {
 
 	private final PipelineService pipelineService;
 	private final PipelineStatusService pipelineStatusService;
@@ -26,7 +29,8 @@ public class PipelineController {
 	 *
 	 * @return A list of pipeline objects that containing the configuration and its current state.
 	 */
-	@GetMapping()
+	@Override
+	@GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, LdioMediaType.APPLICATION_YAML_VALUE})
 	public List<PipelineTO> overview() {
 		return pipelineService.getPipelines();
 	}
@@ -37,7 +41,9 @@ public class PipelineController {
 	 * @param config The configuration to create a pipeline.
 	 * @return A pipeline object that containing the configuration and its current state.
 	 */
-	@PostMapping()
+	@Override
+	@ResponseStatus(code = HttpStatus.CREATED)
+	@PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, LdioMediaType.APPLICATION_YAML_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE, LdioMediaType.APPLICATION_YAML_VALUE})
 	public PipelineTO addPipeline(@RequestBody PipelineConfigTO config) {
 		var pipelineConfig = PipelineConfigTO.fromPipelineConfig(pipelineService.addPipeline(config.toPipelineConfig()));
 
@@ -52,6 +58,7 @@ public class PipelineController {
 	 *         Returns ResponseEntity.ok() if the pipeline was found and successfully deleted,
 	 *         ResponseEntity.noContent() if the pipeline was not found or could not be deleted.
 	 */
+	@Override
 	@DeleteMapping("/{pipeline}")
 	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline) {
 		if (pipelineService.requestDeletion(pipeline)) {
