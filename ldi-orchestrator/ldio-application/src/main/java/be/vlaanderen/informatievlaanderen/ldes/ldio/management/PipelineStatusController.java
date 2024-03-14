@@ -24,19 +24,19 @@ public class PipelineStatusController implements OpenApiPipelineStatusController
 	}
 
 	@Override
-	@GetMapping(path = "{pipelineId}/status",  produces = MediaType.TEXT_PLAIN_VALUE)
+	@GetMapping(path = "{pipelineId}/status",  produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
 	public PipelineStatus getPipelineStatus(@PathVariable("pipelineId") String pipelineId) {
 		return pipelineStatusService.getPipelineStatus(pipelineId);
 	}
 
 	@Override
-	@PostMapping(path = "{pipelineId}/halt", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "{pipelineId}/halt", produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
 	public PipelineStatus haltPipeline(@PathVariable("pipelineId") String pipelineId) {
 		return pipelineStatusService.haltRunningPipeline(pipelineId);
 	}
 
 	@Override
-	@PostMapping(path = "{pipelineId}/resume",  produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "{pipelineId}/resume",  produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
 	public PipelineStatus resumePipeline(@PathVariable("pipelineId") String pipelineId) {
 		return pipelineStatusService.resumeHaltedPipeline(pipelineId);
 	}

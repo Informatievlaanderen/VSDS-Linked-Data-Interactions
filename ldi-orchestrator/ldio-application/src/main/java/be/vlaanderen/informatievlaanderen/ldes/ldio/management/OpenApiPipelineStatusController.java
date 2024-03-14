@@ -33,8 +33,16 @@ public interface OpenApiPipelineStatusController {
     @Operation(summary = "Get the current status of a given pipeline.")
     PipelineStatus getPipelineStatus(@PathVariable("pipelineId") String pipelineId);
 
+    @ApiResponse(responseCode = "200", description = "Halts the current pipeline",
+            content = {@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, examples = {@ExampleObject(value = "HALTED")})
+            })
+    @Operation(summary = "Pause a pipeline.")
     PipelineStatus haltPipeline(@PathVariable("pipelineId") String pipelineId);
 
+    @ApiResponse(responseCode = "200", description = "Resumes the current pipeline",
+            content = {@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, examples = {@ExampleObject(value = "RUNNING")})
+            })
+    @Operation(summary = "Resume a pipeline.")
     PipelineStatus resumePipeline(@PathVariable("pipelineId") String pipelineId);
 
 }
