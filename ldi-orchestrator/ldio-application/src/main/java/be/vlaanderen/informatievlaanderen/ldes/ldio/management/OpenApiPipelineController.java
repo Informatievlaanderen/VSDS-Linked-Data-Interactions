@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigT
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,163 +21,22 @@ import java.util.List;
 public interface OpenApiPipelineController {
 
     @ApiResponse(responseCode = "200", description = "A list of all active pipelines is shown.", content = {
-            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineTO.class), examples = {
-                    @ExampleObject(value = """
-                                 [
-                                   {
-                                     "name": "demo",
-                                     "status": "RUNNING",
-                                     "description": "",
-                                     "input": {
-                                       "name": "Ldio:HttpIn",
-                                       "adapter": {
-                                         "name": "Ldio:RdfAdapter",
-                                         "config": { }
-                                       },
-                                       "config": { }
-                                     },
-                                     "transformers": [ ],
-                                     "outputs": [
-                                       {
-                                         "name": "Ldio:ConsoleOut",
-                                         "config": { }
-                                       }
-                                     ]
-                                   }
-                                 ]
-                                 """)
-            }), @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class), examples = {
-                    @ExampleObject(value = """
-                                 [
-                                   {
-                                     "name": "demo",
-                                     "status": "RUNNING",
-                                     "description": "",
-                                     "input": {
-                                       "name": "Ldio:HttpIn",
-                                       "adapter": {
-                                         "name": "Ldio:RdfAdapter",
-                                         "config": { }
-                                       },
-                                       "config": { }
-                                     },
-                                     "transformers": [ ],
-                                     "outputs": [
-                                       {
-                                         "name": "Ldio:ConsoleOut",
-                                         "config": { }
-                                       }
-                                     ]
-                                   }
-                                 ]
-                                 """)
-            })
+            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineTO.class)),
+            @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class))
     })
     @Operation(summary = "Get a list of all active pipelines.")
     @GetMapping
     List<PipelineTO> overview();
 
     @ApiResponse(responseCode = "201", description = "The new pipeline is returned.", content = {
-            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineTO.class), examples = {
-                    @ExampleObject(value = """
-                            {
-                              "name": "demo",
-                              "status": "RUNNING",
-                              "updateSource": "AUTO",
-                              "description": "",
-                              "input": {
-                                "name": "Ldio:HttpIn",
-                                "adapter": {
-                                  "name": "Ldio:RdfAdapter",
-                                  "config": {}
-                                },
-                                "config": {}
-                              },
-                              "transformers": [],
-                              "outputs": [
-                                {
-                                  "name": "Ldio:ConsoleOut",
-                                  "config": {}
-                                }
-                              ]
-                            }
-                                 """)
-            }),
-            @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class), examples = {
-                    @ExampleObject(value = """
-                            {
-                              "name": "demo",
-                              "status": "RUNNING",
-                              "updateSource": "AUTO",
-                              "description": "",
-                              "input": {
-                                "name": "Ldio:HttpIn",
-                                "adapter": {
-                                  "name": "Ldio:RdfAdapter",
-                                  "config": {}
-                                },
-                                "config": {}
-                              },
-                              "transformers": [],
-                              "outputs": [
-                                {
-                                  "name": "Ldio:ConsoleOut",
-                                  "config": {}
-                                }
-                              ]
-                            }
-                                 """)
-            })
+            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineTO.class)),
+            @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class))
     })
     @Operation(summary = "Create a new pipeline.")
     @PostMapping
     PipelineTO addPipeline(@RequestBody(description = "The pipeline configuration", content = {
-            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineTO.class), examples = {
-                    @ExampleObject(value = """
-                            {
-                              "name": "demo",
-                              "description": "",
-                              "input": {
-                                "name": "Ldio:HttpIn",
-                                "adapter": {
-                                  "name": "Ldio:RdfAdapter",
-                                  "config": {}
-                                },
-                                "config": {}
-                              },
-                              "transformers": [],
-                              "outputs": [
-                                {
-                                  "name": "Ldio:ConsoleOut",
-                                  "config": {}
-                                }
-                              ]
-                            }
-                            """)
-            }),
-            @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class), examples = {
-                    @ExampleObject(value = """
-                            {
-                              "name": "demo",
-                              "description": "",
-                              "input": {
-                                "name": "Ldio:HttpIn",
-                                "adapter": {
-                                  "name": "Ldio:RdfAdapter",
-                                  "config": {}
-                                },
-                                "config": {}
-                              },
-                              "transformers": [],
-                              "outputs": [
-                                {
-                                  "name": "Ldio:ConsoleOut",
-                                  "config": {}
-                                }
-                              ]
-                            }
-                            """)
-            }),
+            @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineConfigTO.class)),
+            @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineConfigTO.class))
     }) PipelineConfigTO config);
 
     @ApiResponse(responseCode = "202")
