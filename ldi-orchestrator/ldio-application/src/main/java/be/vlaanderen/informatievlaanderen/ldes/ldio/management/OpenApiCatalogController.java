@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Tag(name = "Catalog controller")
 public interface OpenApiCatalogController {
@@ -52,7 +51,6 @@ public interface OpenApiCatalogController {
             })
     })
     @Operation(summary = "Get a list of all available components.")
-    @GetMapping
     CatalogController.LdioCatalog catalog();
 
 }
