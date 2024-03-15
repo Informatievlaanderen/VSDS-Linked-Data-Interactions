@@ -2,12 +2,14 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ParseToJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.sparql.util.Context;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,13 +31,13 @@ class JsonToLdAdapterTest {
 
 	private static final String CONTEXT = "http://localhost:10101/core-context.json";
 	private static final String MIMETYPE = "application/json";
-	private static final int MAX_CACHE_CAPACITY = 100;
+	private static final Context JENA_CONTEXT = JenaContextProvider.create().getContext();
 
 	private JsonToLdAdapter translator;
 
 	@BeforeEach
 	void setUp() {
-		translator = new JsonToLdAdapter(CONTEXT, false, MAX_CACHE_CAPACITY);
+		translator = new JsonToLdAdapter(CONTEXT, false, JENA_CONTEXT);
 	}
 
 	@Test
@@ -75,7 +77,7 @@ class JsonToLdAdapterTest {
 						"http://localhost:10101/core-context.json"
 					]
 				}
-				""", true, MAX_CACHE_CAPACITY);
+				""", true, JENA_CONTEXT);
 		Model actual = translator.apply(new LdiAdapter.Content(data, MIMETYPE)).toList().get(0);
 
 		assertTrue(expected.isIsomorphicWith(actual));
@@ -86,7 +88,7 @@ class JsonToLdAdapterTest {
 		String data = Files.readString(Path.of("src/test/resources/example.json"));
 		Model expected = readModelFromFile("src/test/resources/expected-ld.json");
 
-		translator = new JsonToLdAdapter(CONTEXT, true, MAX_CACHE_CAPACITY);
+		translator = new JsonToLdAdapter(CONTEXT, true, JENA_CONTEXT);
 		Model actual = translator.apply(new LdiAdapter.Content(data, "application/tom")).toList().get(0);
 
 		assertTrue(expected.isIsomorphicWith(actual));
@@ -130,7 +132,7 @@ class JsonToLdAdapterTest {
 
 	@Test
 	void when_NoLocalContext_Then_AddOnlyCoreContext() throws IOException {
-		translator = new JsonToLdAdapter(CONTEXT, false, MAX_CACHE_CAPACITY);
+		translator = new JsonToLdAdapter(CONTEXT, false, JENA_CONTEXT);
 		String data = Files.readString(Path.of("src/test/resources/example.json"));
 		Model expected = readModelFromFile("src/test/resources/expected-ld-single-context.json");
 
@@ -157,7 +159,7 @@ class JsonToLdAdapterTest {
 
 	@Test
 	void when_CoreContextNull_Then_ThrowException() {
-		Exception e = assertThrows(IllegalArgumentException.class, () -> new JsonToLdAdapter(null, false, MAX_CACHE_CAPACITY));
+		Exception e = assertThrows(IllegalArgumentException.class, () -> new JsonToLdAdapter(null, false, JENA_CONTEXT));
 		assertEquals("Core context can't be null", e.getMessage());
 	}
 
