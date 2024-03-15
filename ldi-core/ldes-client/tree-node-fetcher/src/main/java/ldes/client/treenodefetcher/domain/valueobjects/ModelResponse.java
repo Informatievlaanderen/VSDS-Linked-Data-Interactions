@@ -14,11 +14,13 @@ import java.util.stream.Stream;
 import static ldes.client.treenodefetcher.domain.valueobjects.Constants.*;
 
 public class ModelResponse {
+	private final String treeNodeUrl;
 	private TimestampExtractor timestampExtractor;
 	private final ModelExtract modelExtract = new ModelExtract(new StatementTripleBoundary(TripleBoundary.stopNowhere));
 	private final Model model;
 
-	public ModelResponse(Model model, TimestampExtractor timestampExtractor) {
+	public ModelResponse(String treeNodeUrl, Model model, TimestampExtractor timestampExtractor) {
+		this.treeNodeUrl = treeNodeUrl;
 		this.model = model;
 		this.timestampExtractor = timestampExtractor;
 	}
@@ -47,7 +49,7 @@ public class ModelResponse {
 		final Model memberModel = modelExtract.extract(memberStatement.getObject().asResource(), treeNodeModel);
 		LocalDateTime createdAt = timestampExtractor.extractTimestamp(memberModel);
 		final String id = memberStatement.getObject().toString();
-		return new TreeMember(id, createdAt, memberModel);
+		return new TreeMember(id, createdAt, memberModel, treeNodeUrl);
 	}
 
 	private Stream<Statement> extractRelations() {

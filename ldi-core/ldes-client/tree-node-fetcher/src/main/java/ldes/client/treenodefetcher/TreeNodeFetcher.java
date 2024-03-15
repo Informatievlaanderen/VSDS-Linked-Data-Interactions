@@ -48,13 +48,14 @@ public class TreeNodeFetcher {
 	private TreeNodeResponse createOkResponse(TreeNodeRequest treeNodeRequest, Response response) {
 		final InputStream responseBody = response.getBody().map(ByteArrayInputStream::new).orElseThrow();
 		final Model model = RDFParser.source(responseBody).forceLang(treeNodeRequest.getLang()).base(treeNodeRequest.getTreeNodeUrl()).toModel();
-		final ModelResponse modelResponse = new ModelResponse(model, timestampExtractor);
+		final ModelResponse modelResponse = new ModelResponse(treeNodeRequest.getTreeNodeUrl(), model, timestampExtractor);
 		final MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
-		return new TreeNodeResponse(modelResponse.getRelations(), modelResponse.getMembers(), mutabilityStatus);
+		return new TreeNodeResponse(treeNodeRequest.getTreeNodeUrl(), modelResponse.getRelations(), modelResponse.getMembers(), mutabilityStatus);
 	}
 
 	private static TreeNodeResponse createRedirectResponse(Response response) {
 		return new TreeNodeResponse(
+				response.getRequestedUrl(),
 				List.of(response.getRedirectLocation()
 						.orElseThrow(() -> new IllegalStateException("No Location Header in redirect."))),
 				List.of(),
@@ -62,7 +63,7 @@ public class TreeNodeFetcher {
 	}
 
 	private static TreeNodeResponse createNotModifiedResponse(Response response) {
-		return new TreeNodeResponse(List.of(), List.of(), getMutabilityStatus(response));
+		return new TreeNodeResponse(response.getRequestedUrl(), List.of(), List.of(), getMutabilityStatus(response));
 	}
 
 	private static MutabilityStatus getMutabilityStatus(Response response) {

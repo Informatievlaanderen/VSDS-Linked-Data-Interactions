@@ -3,14 +3,20 @@ package ldes.client.treenodesupplier.repository;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.Set;
 
 public interface MemberRepository {
 
-	Optional<MemberRecord> getNextMember();
-	void deleteMember(MemberRecord member);
+	Optional<MemberRecord> getNextUnprocessedMember();
 
-	void saveTreeMembers(Stream<MemberRecord> treeMemberStream);
+	void markAsProcessed(MemberRecord member);
+
+	void insertTreeMembers(Set<MemberRecord> treeMemberStream);
 
 	void destroyState();
+
+	void deleteProcessedMembersByTreeNode(String treeNodeUrl);
+
+	Set<String> findMemberIdsByTreeNode(String treeNodeUrl);
+
 }

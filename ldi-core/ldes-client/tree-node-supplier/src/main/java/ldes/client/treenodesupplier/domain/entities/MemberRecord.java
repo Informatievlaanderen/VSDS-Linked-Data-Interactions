@@ -12,11 +12,15 @@ public class MemberRecord implements Comparable<MemberRecord>{
 	private final String memberId;
 	private LocalDateTime createdAt;
 	private Model model;
+	private final String treeNodeUrl;
+	private final boolean processed;
 
-	public MemberRecord(String memberId, Model model, LocalDateTime createdAt) {
+	public MemberRecord(String memberId, Model model, LocalDateTime createdAt, String treeNodeUrl, boolean processed) {
 		this.memberId = memberId;
 		this.model = model;
 		this.createdAt = createdAt;
+		this.treeNodeUrl = treeNodeUrl;
+		this.processed = processed;
 	}
 
 	public String getMemberId() {
@@ -29,6 +33,14 @@ public class MemberRecord implements Comparable<MemberRecord>{
 
 	public Model getModel() {
 		return model;
+	}
+
+	public String getTreeNodeUrl() {
+		return treeNodeUrl;
+	}
+
+	public boolean isProcessed() {
+		return processed;
 	}
 
 	@Override

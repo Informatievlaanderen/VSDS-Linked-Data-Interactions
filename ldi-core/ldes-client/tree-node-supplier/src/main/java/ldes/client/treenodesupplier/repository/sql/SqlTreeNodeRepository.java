@@ -1,13 +1,11 @@
 package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
-import ldes.client.treenodesupplier.domain.services.TreeNodeRecordComparator;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
-import java.util.Optional;
-
 import javax.persistence.EntityManager;
+import java.util.Optional;
 
 public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
@@ -32,7 +30,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 	@Override
 	public boolean existsById(String treeNodeId) {
 		return entityManager
-				.createNamedQuery("TreeNode.countById", Long.class)
+				.createQuery("SELECT COUNT(t) FROM TreeNodeRecordEntity t WHERE t.id = :id", Long.class)
 				.setParameter("id", treeNodeId)
 				.getSingleResult() > 0;
 	}
@@ -53,7 +51,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 	@Override
 	public boolean existsByIdAndStatus(String treeNodeId, TreeNodeStatus treeNodeStatus) {
 		return ((Number) entityManager
-				.createNamedQuery("TreeNode.countByIdAndStatus")
+				.createQuery("SELECT COUNT(t) FROM TreeNodeRecordEntity t WHERE t.id = :id and t.treeNodeStatus = :treeNodeStatus")
 				.setParameter("id", treeNodeId)
 				.setParameter("treeNodeStatus", treeNodeStatus)
 				.getSingleResult()).longValue() > 0;
@@ -67,7 +65,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 	@Override
 	public boolean containsTreeNodeRecords() {
 		return entityManager
-				.createNamedQuery("TreeNode.count", Long.class)
+				.createQuery("SELECT COUNT(t) FROM TreeNodeRecordEntity t", Long.class)
 				.getSingleResult() > 0;
 	}
 

@@ -3,7 +3,6 @@ package ldes.client.treenodesupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
-import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
@@ -13,8 +12,9 @@ import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.lang.Thread.sleep;
 
@@ -43,12 +43,12 @@ public class TreeNodeProcessor {
 	}
 
 	public SuppliedMember getMember() {
-		removeLastMember();
+		markLastMemberAsProcessed();
 
-		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getNextMember();
+		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getNextUnprocessedMember();
 		while (unprocessedTreeMember.isEmpty()) {
 			processTreeNode();
-			unprocessedTreeMember = memberRepository.getNextMember();
+			unprocessedTreeMember = memberRepository.getNextUnprocessedMember();
 		}
 		MemberRecord treeMember = unprocessedTreeMember.get();
 		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
@@ -60,27 +60,52 @@ public class TreeNodeProcessor {
 		return ldesMetaData;
 	}
 
+    // TODO TVB: cleanup
 	private void processTreeNode() {
-		TreeNodeRecord treeNodeRecord = treeNodeRecordRepository
-				.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.NOT_VISITED).orElseGet(
-						() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
-								.orElseThrow(() -> new EndOfLdesException(
-										"No fragments to mutable or new fragments to process -> LDES ends.")));
-		waitUntilNextVisit(treeNodeRecord);
-		TreeNodeResponse treeNodeResponse = treeNodeFetcher
-				.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
-		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
+		TreeNodeRecord treeNodeRecord = getNextTreeNode();
+
+        if (TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS.equals(treeNodeRecord.getTreeNodeStatus())) {
+            // If we ever want to horizontally scale the client, we will need a check here to verify all members are processed
+            memberRepository.deleteProcessedMembersByTreeNode(treeNodeRecord.getTreeNodeUrl());
+            treeNodeRecord.markImmutableWithoutUnprocessedMembers();
+            treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+        } else {
+            waitUntilNextVisit(treeNodeRecord);
+            TreeNodeResponse treeNodeResponse = treeNodeFetcher
+                    .fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
+
+            treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
+            treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+
+            saveNewRelations(treeNodeResponse);
+
+            Set<String> knownMemberIdsForNode = memberRepository.findMemberIdsByTreeNode(treeNodeRecord.getTreeNodeUrl());
+            Set<MemberRecord> newMembers =
+                    treeNodeResponse
+                            .getMembers()
+                            .stream()
+                            .filter(member -> !knownMemberIdsForNode.contains(member.getMemberId()))
+                            .map(member -> new MemberRecord(member.getMemberId(), member.getModel(), member.getCreatedAt(), member.getTreeNodeUrl(), false))
+                            .collect(Collectors.toSet());
+
+            memberRepository.insertTreeMembers(newMembers);
+        }
+	}
+
+	private TreeNodeRecord getNextTreeNode() {
+		return treeNodeRecordRepository
+				.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.NOT_VISITED)
+				.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS)
+						.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
+								.orElseThrow(() -> new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends."))));
+	}
+
+	private void saveNewRelations(TreeNodeResponse treeNodeResponse) {
 		treeNodeResponse.getRelations()
 				.stream()
 				.filter(treeNodeId -> !treeNodeRecordRepository.existsById(treeNodeId))
 				.map(TreeNodeRecord::new)
 				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
-		List<TreeMember> newMembers = treeNodeResponse.getMembers().stream().filter(member -> !treeNodeRecord.hasReceived(member.getMemberId())).toList();
-		memberRepository.saveTreeMembers(newMembers
-				.stream()
-				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt())));
-		treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
-		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 	}
 
 	private void waitUntilNextVisit(TreeNodeRecord treeNodeRecord) {
@@ -104,9 +129,9 @@ public class TreeNodeProcessor {
 				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
 	}
 
-	private void removeLastMember() {
+	private void markLastMemberAsProcessed() {
 		if (memberRecord != null) {
-			memberRepository.deleteMember(memberRecord);
+			memberRepository.markAsProcessed(memberRecord);
 		}
 	}
 

@@ -39,9 +39,10 @@ class PerformanceTest {
 	@Tag("performance")
 	@Test
 	void compare_persistence_strategies_f10_s1000() {
+
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f10_s1000.csv"),
-				1000,
+				1,
 				List.of(TestScenario.POSTGRES10));
 	}
 
