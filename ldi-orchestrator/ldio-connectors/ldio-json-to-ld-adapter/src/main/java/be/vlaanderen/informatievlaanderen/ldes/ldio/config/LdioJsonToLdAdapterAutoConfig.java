@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioAdapterConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -24,7 +25,8 @@ public class LdioJsonToLdAdapterAutoConfig {
 			boolean forceContentType = config.getOptionalBoolean("force-content-type").orElse(false);
 
 			final int maxCacheCapacity = config.getOptionalInteger("max-jsonld-cache-capacity").orElse(100);
-			return new JsonToLdAdapter(coreContext, forceContentType, maxCacheCapacity);
+			final var context = JenaContextProvider.create().withMaxJsonLdCacheCapacity(maxCacheCapacity).getContext();
+			return new JsonToLdAdapter(coreContext, forceContentType, context);
 		}
 	}
 }
