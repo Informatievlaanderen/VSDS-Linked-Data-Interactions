@@ -42,7 +42,7 @@ class PerformanceTest {
 
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f10_s1000.csv"),
-				1,
+				100000,
 				List.of(TestScenario.POSTGRES10));
 	}
 
