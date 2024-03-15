@@ -27,10 +27,10 @@ public class JsonToLdIntegrationSteps {
 	private LdiComponent adapter;
 	private Model output;
 
-	@Given("I set a core context in the configuration")
+	@Given("I set a context in the configuration")
 	public void setConfig() {
 		config = new HashMap<>();
-		config.put("core-context", "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld");
+		config.put("context", "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld");
 	}
 
 	@And("I create the adapter")

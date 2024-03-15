@@ -20,15 +20,16 @@ public class JsonToLdAdapter implements LdiAdapter {
 	private final Logger log = LoggerFactory.getLogger(JsonToLdAdapter.class);
 
 	private static final String MIMETYPE = "application/json";
-	private final String coreContext;
+	private static final String LD_CONTEXT = "@context";
+	private final String context;
 	private final boolean forceContentType;
 	private final Context jenaContext;
 
-	public JsonToLdAdapter(String coreContext, boolean forceContentType, Context jenaContext) {
-		if (coreContext == null) {
+	public JsonToLdAdapter(String context, boolean forceContentType, Context jenaContext) {
+		if (context == null) {
 			throw new IllegalArgumentException("Core context can't be null");
 		}
-		this.coreContext = coreContext;
+		this.context = context;
 		this.forceContentType = forceContentType;
 		this.jenaContext = jenaContext;
 	}
@@ -85,9 +86,17 @@ public class JsonToLdAdapter implements LdiAdapter {
 	}
 
 	private void addContexts(JsonObject json) {
-		JsonArray contexts = new JsonArray();
-		contexts.add(coreContext);
-		json.put("@context", contexts);
+		try {
+			var contextObject = JSON.parse(context);
+			if (contextObject.isObject()) {
+				if (!contextObject.hasKey(LD_CONTEXT)) {
+					throw new IllegalArgumentException("Received JSON-LD context object without @context entry");
+				}
+				json.put(LD_CONTEXT, contextObject.get(LD_CONTEXT));
+			}
+		} catch (JsonParseException e) {
+			json.put(LD_CONTEXT, context);
+		}
 	}
 
 }

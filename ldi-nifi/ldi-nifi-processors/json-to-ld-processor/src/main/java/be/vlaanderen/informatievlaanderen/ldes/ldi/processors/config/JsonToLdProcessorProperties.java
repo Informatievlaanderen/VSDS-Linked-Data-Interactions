@@ -11,10 +11,10 @@ public class JsonToLdProcessorProperties {
 	private JsonToLdProcessorProperties() {
 	}
 
-	public static final PropertyDescriptor CORE_CONTEXT = new PropertyDescriptor.Builder()
-			.name("CORE_CONTEXT")
-			.displayName("JSON-LD core context")
-			.description("URL of the JSON-LD context")
+	public static final PropertyDescriptor CONTEXT = new PropertyDescriptor.Builder()
+			.name("CONTEXT")
+			.displayName("JSON-LD context")
+			.description("URL of the JSON-LD context or JSON Object containing @context entry")
 			.required(true)
 			.addValidator(StandardValidators.URL_VALIDATOR)
 			.build();
@@ -28,7 +28,7 @@ public class JsonToLdProcessorProperties {
 			.build();
 
 	public static String getCoreContext(final ProcessContext context) {
-		return context.getProperty(CORE_CONTEXT).getValue();
+		return context.getProperty(CONTEXT).getValue();
 	}
 
 	public static boolean getForceContentType(final ProcessContext context) {
