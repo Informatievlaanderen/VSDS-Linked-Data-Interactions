@@ -30,7 +30,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 	@Override
 	public boolean existsById(String treeNodeId) {
 		return entityManager
-				.createQuery("SELECT COUNT(t) FROM TreeNodeRecordEntity t WHERE t.id = :id", Long.class)
+				.createQuery("select count(1) from TreeNodeRecordEntity t where t.id = :id", Long.class)
 				.setParameter("id", treeNodeId)
 				.getSingleResult() > 0;
 	}
@@ -65,7 +65,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 	@Override
 	public boolean containsTreeNodeRecords() {
 		return entityManager
-				.createQuery("SELECT COUNT(t) FROM TreeNodeRecordEntity t", Long.class)
+				.createQuery("select count(1) from TreeNodeRecordEntity t", Long.class)
 				.getSingleResult() > 0;
 	}
 

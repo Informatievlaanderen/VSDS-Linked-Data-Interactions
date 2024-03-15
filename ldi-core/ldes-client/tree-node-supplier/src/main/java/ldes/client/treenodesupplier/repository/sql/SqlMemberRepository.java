@@ -44,7 +44,7 @@ public class SqlMemberRepository implements MemberRepository {
 	@Override
 	public void insertTreeMembers(Set<MemberRecord> treeMembers) {
 		entityManager.getTransaction().begin();
-		treeMembers.forEach(entityManager::persist);
+		treeMembers.stream().map(MemberRecordEntity::fromMemberRecord).forEach(entityManager::persist);
 		entityManager.getTransaction().commit();
 	}
 
@@ -69,7 +69,7 @@ public class SqlMemberRepository implements MemberRepository {
 	@Override
 	public Set<String> findMemberIdsByTreeNode(String treeNodeUrl) {
 		return entityManager
-				.createQuery("select m from MemberRecordEntity m where m.treeNodeUrl = :url", String.class)
+				.createQuery("select m.id from MemberRecordEntity m where m.treeNodeUrl = :url", String.class)
 				.setParameter("url", treeNodeUrl)
 				.getResultStream()
 				.collect(Collectors.toSet());
