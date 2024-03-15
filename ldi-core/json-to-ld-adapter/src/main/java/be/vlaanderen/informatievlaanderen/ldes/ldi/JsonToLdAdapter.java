@@ -20,7 +20,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 	private final Logger log = LoggerFactory.getLogger(JsonToLdAdapter.class);
 
 	private static final String MIMETYPE = "application/json";
-	private static final String CONTEXT = "@context";
+	private static final String LD_CONTEXT = "@context";
 	private final String context;
 	private final boolean forceContentType;
 	private final int maxCacheCapacity;
@@ -91,13 +91,13 @@ public class JsonToLdAdapter implements LdiAdapter {
 		try {
 			var contextObject = JSON.parse(context);
 			if (contextObject.isObject()) {
-				if (!contextObject.hasKey(CONTEXT)) {
+				if (!contextObject.hasKey(LD_CONTEXT)) {
 					throw new IllegalArgumentException("Received JSON-LD context object without @context entry");
 				}
-				json.put(CONTEXT, contextObject.get(CONTEXT));
+				json.put(LD_CONTEXT, contextObject.get(LD_CONTEXT));
 			}
 		} catch (JsonParseException e) {
-			json.put(CONTEXT, context);
+			json.put(LD_CONTEXT, context);
 		}
 	}
 
