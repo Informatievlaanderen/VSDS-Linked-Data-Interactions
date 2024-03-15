@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.JsonToLdProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import org.apache.jena.riot.Lang;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
@@ -39,7 +38,7 @@ public class JsonToLdProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(CORE_CONTEXT, FORCE_CONTENT_TYPE);
+		return List.of(CONTEXT, FORCE_CONTENT_TYPE);
 	}
 
 	@OnScheduled
@@ -47,7 +46,7 @@ public class JsonToLdProcessor extends AbstractProcessor {
 		coreContext = JsonToLdProcessorProperties.getCoreContext(context);
 		boolean forceContentType = getForceContentType(context);
 
-		adapter = new JsonToLdAdapter(coreContext, forceContentType, JenaContextProvider.create().getContext());
+		adapter = new JsonToLdAdapter(coreContext, forceContentType, 100);
 	}
 
 	@Override
