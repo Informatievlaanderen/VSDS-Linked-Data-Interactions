@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ParseToJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import org.apache.http.entity.ContentType;
 import org.apache.jena.atlas.json.*;
@@ -9,7 +10,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
-import org.apache.jena.sparql.util.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,17 +20,17 @@ public class JsonToLdAdapter implements LdiAdapter {
 	private final Logger log = LoggerFactory.getLogger(JsonToLdAdapter.class);
 
 	private static final String MIMETYPE = "application/json";
-	private final String coreContext;
+	private final String context;
 	private final boolean forceContentType;
-	private final Context jenaContext;
+	private final int maxCacheCapacity;
 
-	public JsonToLdAdapter(String coreContext, boolean forceContentType, Context jenaContext) {
-		if (coreContext == null) {
+	public JsonToLdAdapter(String context, boolean forceContentType, int maxCacheCapacity) {
+		if (context == null) {
 			throw new IllegalArgumentException("Core context can't be null");
 		}
-		this.coreContext = coreContext;
+		this.context = context;
 		this.forceContentType = forceContentType;
-		this.jenaContext = jenaContext;
+		this.maxCacheCapacity = maxCacheCapacity;
 	}
 
 	@Override
@@ -75,7 +75,9 @@ public class JsonToLdAdapter implements LdiAdapter {
 			Model model = ModelFactory.createDefaultModel();
 			RDFParser.fromString(jsonObject.toString())
 					.lang(Lang.JSONLD)
-					.context(jenaContext)
+					.context(JenaContextProvider.create()
+							.withMaxJsonLdCacheCapacity(maxCacheCapacity)
+							.getContext())
 					.parse(model);
 			return model;
 		} else {
@@ -85,9 +87,17 @@ public class JsonToLdAdapter implements LdiAdapter {
 	}
 
 	private void addContexts(JsonObject json) {
-		JsonArray contexts = new JsonArray();
-		contexts.add(coreContext);
-		json.put("@context", contexts);
+		try {
+			var contextObject = JSON.parse(context);
+			if (contextObject.isObject()) {
+				if (!contextObject.hasKey("@context")) {
+					throw new IllegalArgumentException("Received JSON-LD context object without @context entry");
+				}
+				json.put("@context", contextObject.get("@context"));
+			}
+		} catch (JsonParseException e) {
+			json.put("@context", context);
+		}
 	}
 
 }
