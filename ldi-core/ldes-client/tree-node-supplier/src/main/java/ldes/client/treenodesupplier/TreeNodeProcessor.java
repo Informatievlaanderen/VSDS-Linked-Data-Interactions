@@ -56,11 +56,6 @@ public class TreeNodeProcessor {
 		return suppliedMember;
 	}
 
-	public LdesMetaData getLdesMetaData() {
-		return ldesMetaData;
-	}
-
-	// TODO TVB: cleanup
 	private void processTreeNode() {
 		TreeNodeRecord treeNodeRecord = getNextTreeNode();
 
@@ -73,24 +68,37 @@ public class TreeNodeProcessor {
 			TreeNodeResponse treeNodeResponse = treeNodeFetcher
 					.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
 			treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
-			treeNodeResponse.getRelations()
-					.stream()
-					.filter(treeNodeId -> !treeNodeRecordRepository.existsById(treeNodeId))
-					.map(TreeNodeRecord::new)
-					.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
-			List<TreeMember> newMembers = treeNodeResponse.getMembers().stream().filter(member -> !treeNodeRecord.hasReceived(member.getMemberId())).toList();
-			memberRepository.saveTreeMembers(newMembers
-					.stream()
-					.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt())));
+			saveNewRelations(treeNodeResponse);
+			List<TreeMember> newMembers = getNewMembersFromResponse(treeNodeResponse, treeNodeRecord);
+			saveNewMembers(newMembers);
 			treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
 			treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+			treeNodeRecordRepository.resetContext();
 		}
-
-		// TODO TVB: think about location
-		treeNodeRecordRepository.resetContext();
 	}
 
-	// TODO TVB: add test for order
+	private void saveNewMembers(List<TreeMember> newMembers) {
+		memberRepository.saveTreeMembers(newMembers
+				.stream()
+				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt())));
+	}
+
+	private static List<TreeMember> getNewMembersFromResponse(TreeNodeResponse treeNodeResponse, TreeNodeRecord treeNodeRecord) {
+		return treeNodeResponse
+				.getMembers()
+				.stream()
+				.filter(member -> !treeNodeRecord.hasReceived(member.getMemberId()))
+				.toList();
+	}
+
+	private void saveNewRelations(TreeNodeResponse treeNodeResponse) {
+		treeNodeResponse.getRelations()
+				.stream()
+				.filter(treeNodeId -> !treeNodeRecordRepository.existsById(treeNodeId))
+				.map(TreeNodeRecord::new)
+				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
+	}
+
 	private TreeNodeRecord getNextTreeNode() {
 		return treeNodeRecordRepository
 				.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS)
