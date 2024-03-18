@@ -21,7 +21,7 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 				mutableAndActive.add(treeNodeRecord);
 				notVisited.remove(treeNodeRecord);
 			}
-			case IMMUTABLE -> {
+			case IMMUTABLE_WITH_UNPROCESSED_MEMBERS -> {
 				immutable.add(treeNodeRecord);
 				notVisited.remove(treeNodeRecord);
 			}
@@ -39,11 +39,17 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 				.anyMatch(treeNodeRecords -> !treeNodeRecords.isEmpty());
 	}
 
+	@Override
+	public void resetContext() {
+		// no context to reset
+	}
+
 	public boolean existsByIdAndStatus(String treeNodeId, TreeNodeStatus treeNodeStatus) {
 		return switch (treeNodeStatus) {
 			case NOT_VISITED -> notVisited.contains(new TreeNodeRecord(treeNodeId));
 			case MUTABLE_AND_ACTIVE -> mutableAndActive.contains(new TreeNodeRecord(treeNodeId));
-			case IMMUTABLE -> immutable.contains(new TreeNodeRecord(treeNodeId));
+			case IMMUTABLE_WITH_UNPROCESSED_MEMBERS, IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS
+					-> immutable.contains(new TreeNodeRecord(treeNodeId));
 		};
 	}
 
@@ -54,12 +60,13 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 		immutable = new HashSet<>();
 	}
 
-	public Optional<TreeNodeRecord> getOneTreeNodeRecordWithStatus(TreeNodeStatus treeNodeStatus) {
+	public Optional<TreeNodeRecord> getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus treeNodeStatus) {
 		return switch (treeNodeStatus) {
 			case NOT_VISITED -> notVisited.isEmpty() ? Optional.empty() : Optional.of(notVisited.get(0));
 			case MUTABLE_AND_ACTIVE ->
 				mutableAndActive.isEmpty() ? Optional.empty() : Optional.of(mutableAndActive.poll());
-			case IMMUTABLE -> immutable.isEmpty() ? Optional.empty() : immutable.stream().findFirst();
+			case IMMUTABLE_WITH_UNPROCESSED_MEMBERS, IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS
+					-> immutable.isEmpty() ? Optional.empty() : immutable.stream().findFirst();
 		};
 	}
 }

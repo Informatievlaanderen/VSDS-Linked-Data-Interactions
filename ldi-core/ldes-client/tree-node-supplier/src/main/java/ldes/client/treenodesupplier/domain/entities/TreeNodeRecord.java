@@ -47,7 +47,7 @@ public class TreeNodeRecord {
 		if (mutabilityStatus.isMutable()) {
 			treeNodeStatus = TreeNodeStatus.MUTABLE_AND_ACTIVE;
 		} else {
-			treeNodeStatus = TreeNodeStatus.IMMUTABLE;
+			treeNodeStatus = TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS;
 		}
 		earliestNextVisit = mutabilityStatus.getEarliestNextVisit();
 	}
@@ -58,6 +58,11 @@ public class TreeNodeRecord {
 
 	public void addToReceived(List<String> receivedMemberIds) {
 		memberIds.addAll(receivedMemberIds);
+	}
+
+	public void markImmutableWithoutUnprocessedMembers() {
+		memberIds.clear();
+		treeNodeStatus = TreeNodeStatus.IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS;
 	}
 
 	@Override
