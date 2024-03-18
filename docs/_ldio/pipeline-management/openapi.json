@@ -2,7 +2,8 @@
   "openapi": "3.0.1",
   "info": {
     "title": "LDIO Management API",
-    "description": "This API makes it possible manage the LDIO application."
+    "description": "This API makes it possible manage the LDIO application.",
+    "version": "2.3.0-SNAPSHOT"
   },
   "externalDocs": {
     "description": "LDIO documentation",
