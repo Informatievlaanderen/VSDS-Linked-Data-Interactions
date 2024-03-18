@@ -11,9 +11,6 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 
 @Entity
-@Table(indexes = {
-		@Index(name = "fn_index", columnList = "createdAt")
-})
 @NamedQuery(name = "Member.getFirst", query = "SELECT m FROM MemberRecordEntity m ORDER BY m.createdAt")
 @NamedQuery(name = "Member.deleteByMemberId", query = "DELETE FROM MemberRecordEntity WHERE memberId = :memberId")
 public class MemberRecordEntity {
