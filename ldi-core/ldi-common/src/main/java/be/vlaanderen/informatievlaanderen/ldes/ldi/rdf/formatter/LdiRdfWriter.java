@@ -1,11 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.JsonLDFrameException;
-import com.apicatalog.jsonld.JsonLdError;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 
 import java.io.OutputStream;
+
+import com.apicatalog.jsonld.JsonLdError;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

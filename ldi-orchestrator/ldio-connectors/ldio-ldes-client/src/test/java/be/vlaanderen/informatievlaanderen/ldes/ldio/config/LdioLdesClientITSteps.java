@@ -25,11 +25,11 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientPropert
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.awaitility.Awaitility.await;
 
-public class LdioLdesClientITSteps extends LdesClientInIT{
+public class LdioLdesClientITSteps extends LdesClientInIT {
+	private ApplicationEventPublisher applicationEventPublisher = applicationEventPublisher();
 	private List<Model> members;
 	static WireMockServer wireMockServer = new WireMockServer(options().port(10101));
 	private final Map<String, String> componentPropsMap = new HashMap<>();
-	private final ApplicationEventPublisher applicationEventPublisher = applicationEventPublisher();
 
 	@BeforeAll
 	public static void before_all() {

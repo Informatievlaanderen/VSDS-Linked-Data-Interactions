@@ -14,9 +14,7 @@ import static org.mockito.Mockito.mock;
 @SpringBootTest
 @SelectClasspathResource("features")
 public class KafkaIntegrationTest {
-
-    ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
     public ApplicationEventPublisher applicationEventPublisher() {
-        return applicationEventPublisher;
+        return mock(ApplicationEventPublisher.class);
     }
 }

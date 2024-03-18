@@ -11,6 +11,7 @@ public class ExactlyOnceFilterMemberSupplier implements MemberSupplier {
         this.memberSupplier = memberSupplier;
         this.filter = filter;
         this.keepState = keepState;
+        Runtime.getRuntime().addShutdownHook(new Thread(this::destroyState));
     }
 
     @Override

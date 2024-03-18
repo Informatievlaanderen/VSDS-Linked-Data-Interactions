@@ -1,15 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.converters.FlattenDeserializer;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 public final class InputComponentDefinitionTO {
 	private final String name;

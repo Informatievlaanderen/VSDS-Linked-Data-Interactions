@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
-
 public class LdioArchiveFileIn extends LdioInput {
 	public static final String NAME = "Ldio:ArchiveFileIn";
 	private final Logger log = LoggerFactory.getLogger(LdioArchiveFileIn.class);
@@ -23,7 +21,7 @@ public class LdioArchiveFileIn extends LdioInput {
 		super(NAME, pipelineName, executor, null, observationRegistry, applicationEventPublisher);
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
-		updateStatus(STARTING);
+		starting();
 		log.info("Starting with crawling the archive.");
 		crawlArchive();
 		log.info("Finished crawling the archive.");
