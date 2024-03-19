@@ -4,6 +4,19 @@ parent: Pipeline Management
 title: Pipeline Management API
 ---
 
+# Pipeline Management API config
+
+To use the swagger UI on your own LDIO deployment you can add the below config, 
+and go to `<base-url>/v1/swagger`.
+
+```yaml
+springdoc:
+  swagger-ui:
+    path: /v1/swagger
+```
+
+# Pipeline Management API
+
 <html>
 <head>
     <title>Swagger UI</title>
