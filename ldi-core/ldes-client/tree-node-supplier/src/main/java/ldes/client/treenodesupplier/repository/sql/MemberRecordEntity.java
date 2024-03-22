@@ -39,12 +39,12 @@ public class MemberRecordEntity {
 
 	public static MemberRecordEntity fromMemberRecord(MemberRecord treeMember) {
 		final Model model = treeMember.getModel();
-		final String localModalString = model != null ? RDFWriter.source(model).lang(Lang.NQUADS).asString() : null;
+		final String localModalString = model != null ? RDFWriter.source(model).lang(Lang.TURTLE).asString() : null;
 		return new MemberRecordEntity(treeMember.getMemberId(), treeMember.getCreatedAt(), localModalString);
 	}
 
 	public MemberRecord toMemberRecord() {
-		final Model model = RDFParserBuilder.create().fromString(modelAsString).lang(Lang.NQUADS).toModel();
+		final Model model = RDFParserBuilder.create().fromString(modelAsString).lang(Lang.TURTLE).toModel();
 		return new MemberRecord(memberId, model, createdAt);
 	}
 
