@@ -13,7 +13,7 @@ public class InMemoryTreeNodeRecordRepository implements TreeNodeRecordRepositor
 	private List<TreeNodeRecord> notVisited = new ArrayList<>();
 	private PriorityQueue<TreeNodeRecord> mutableAndActive = new PriorityQueue<>(new TreeNodeRecordComparator());
 	private Set<TreeNodeRecord> immutable = new HashSet<>();
-	private Set<TreeNodeRecord> almostImmutable = new HashSet<>();
+	private final Set<TreeNodeRecord> almostImmutable = new HashSet<>();
 
 	public void saveTreeNodeRecord(TreeNodeRecord treeNodeRecord) {
 		switch (treeNodeRecord.getTreeNodeStatus()) {

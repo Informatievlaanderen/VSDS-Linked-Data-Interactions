@@ -60,7 +60,6 @@ public class TreeNodeProcessor {
 		TreeNodeRecord treeNodeRecord = getNextTreeNode();
 
 		if (TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS.equals(treeNodeRecord.getTreeNodeStatus())) {
-			// If we ever want to horizontally scale the client, we will need a check here to verify all members are processed
 			treeNodeRecord.markImmutableWithoutUnprocessedMembers();
 			treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		} else {
