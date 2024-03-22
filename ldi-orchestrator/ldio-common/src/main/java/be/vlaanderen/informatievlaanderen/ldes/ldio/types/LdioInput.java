@@ -121,6 +121,7 @@ public abstract class LdioInput implements LdiComponent {
 	}
 
 	protected abstract void resume();
+
 	protected abstract void pause();
 
 	public void starting() {

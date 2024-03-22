@@ -79,8 +79,6 @@ public class PipelineStatusService {
 			case STOPPED -> STOPPED;
 			case STOPPING -> STOPPING;
 		};
-
-
 	}
 
 	public PipelineStatus haltRunningPipeline(String pipelineId) {
@@ -97,8 +95,6 @@ public class PipelineStatusService {
 			case STOPPED -> STOPPED;
 			case STOPPING -> STOPPING;
 		};
-
-
 	}
 
 	public PipelineStatus stopPipeline(String pipelineId) {
