@@ -49,6 +49,10 @@ public class FlattenDeserializer extends JsonDeserializer<Map<String, String>> {
 			}
 		} else if (node.isValueNode()) {
 			result.put(prefix, node.asText());
+		} else if (node.isArray()) {
+			for (int i = 0; i < node.size(); i++) {
+				flatten(prefix + "." + i, node.get(i), result);
+			}
 		}
 	}
 }
