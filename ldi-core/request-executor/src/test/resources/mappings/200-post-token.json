@@ -1,7 +1,12 @@
 {
   "request": {
     "method": "POST",
-    "url": "/token"
+    "url": "/token",
+    "bodyPatterns": [
+      {
+        "contains": "client_id=clientId&client_secret=clientSecret&scope=default&grant_type=client_credentials"
+      }
+    ]
   },
   "response": {
     "status": 200,
