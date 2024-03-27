@@ -8,5 +8,5 @@ import org.junit.platform.suite.api.Suite;
 @SuppressWarnings("java:S2187")
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
-public class RequestExecutorIntegrationTest {
+public class RequestExecutorIT {
 }
