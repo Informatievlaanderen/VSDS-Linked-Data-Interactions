@@ -45,7 +45,7 @@ public class JenaToRDF4JConverter {
 			if(literal.getLanguage() != null && !literal.getLanguage().isEmpty()) {
 				return SimpleValueFactory.getInstance().createLiteral(literal.getValue().toString(), literal.getLanguage());
 			}
-			return SimpleValueFactory.getInstance().createLiteral(literal.getValue().toString());
+			return SimpleValueFactory.getInstance().createLiteral(literal.getValue().toString(), SimpleValueFactory.getInstance().createIRI(literal.getDatatypeURI()));
 		}
 	}
 }
