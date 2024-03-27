@@ -56,14 +56,7 @@ If this directory does not exist, it will be created.
 ## Pausing & Resuming LDIO
 
 Sometimes it might be preferred to pause an LDIO pipeline instead of deleting and recreating it.
-To pause a pipeline, simply call the following endpoint:
-````
-  {base-url}/admin/api/v1/pipeline/{pipeline-name}/halt
-````
-And to resume a paused pipeline:
-````
-  {base-url}/admin/api/v1/pipeline/{pipeline-name}/resume
-````
+The endpoints to manage pipelines can be found [here](pipeline-api.md)
 
 The exact behaviour of a paused pipeline depends on its input component and can be found in the [documentation of these components](docs/_ldio/ldio-inputs/index.md).
 However, it will always complete its current run through the pipeline and then seize sending any output.

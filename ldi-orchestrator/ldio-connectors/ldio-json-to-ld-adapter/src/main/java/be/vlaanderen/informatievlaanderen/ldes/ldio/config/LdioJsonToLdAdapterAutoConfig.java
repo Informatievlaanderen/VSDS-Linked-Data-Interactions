@@ -21,7 +21,7 @@ public class LdioJsonToLdAdapterAutoConfig {
 	public static class LdioJsonToLdConfigurator implements LdioAdapterConfigurator {
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
-			String coreContext = config.getProperty("core-context");
+			String coreContext = config.getProperty("context");
 			boolean forceContentType = config.getOptionalBoolean("force-content-type").orElse(false);
 
 			final int maxCacheCapacity = config.getOptionalInteger("max-jsonld-cache-capacity").orElse(100);

@@ -9,15 +9,15 @@ Feature: MemberSupplier
     When I create a Processor
     When I create a MemberSupplier without state
     When I request one member from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "IMMUTABLE_WITH_UNPROCESSED_MEMBERS" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
     Then Status "NOT_VISITED" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/1" is processed
     When I request one member from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
     Then Status "MUTABLE_AND_ACTIVE" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/2" is processed
     When I request one member from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
     Then Status "MUTABLE_AND_ACTIVE" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/3" is processed
     Then MemberSupplier is destroyed
@@ -83,6 +83,26 @@ Feature: MemberSupplier
     Then Member "http://localhost:10101/items/11" is processed
     When I request one member from the MemberSupplier
     Then Member "http://localhost:10101/items/12" is processed
+    Then MemberSupplier is destroyed
+
+    Examples:
+      | statePersistenceStrategy |
+      | MEMORY                   |
+      | SQLITE                   |
+      | POSTGRES                 |
+
+
+  Scenario Outline: Obtaining the members with the exactly once filter
+    Given A starting url "http://localhost:10101/200-first-tree-node-to-duplicate"
+    And a StatePersistenceStrategy <statePersistenceStrategy>
+    And The TreeNode is not processed: "http://localhost:10101/200-first-tree-node-to-duplicate"
+    And I set a timestamp path "http://www.w3.org/ns/prov#generatedAtTime"
+    When I create a Processor
+    When I create a MemberSupplier with filter
+    When I request one member from the MemberSupplier
+    Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/1" is processed
+    When I request one member from the MemberSupplier
+    Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/2" is processed
     Then MemberSupplier is destroyed
 
     Examples:

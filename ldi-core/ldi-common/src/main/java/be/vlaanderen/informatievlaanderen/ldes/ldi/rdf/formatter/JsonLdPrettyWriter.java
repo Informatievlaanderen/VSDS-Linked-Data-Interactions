@@ -14,7 +14,7 @@ public class JsonLdPrettyWriter implements LdiRdfWriter {
 	private final RDFWriterBuilder rdfWriter;
 
 	public JsonLdPrettyWriter() {
-		this.rdfWriter = RDFWriter.create().format(RDFFormat.JSONLD10_PRETTY);
+		this.rdfWriter = RDFWriter.create().format(RDFFormat.JSONLD_PRETTY);
 	}
 
 	@Override

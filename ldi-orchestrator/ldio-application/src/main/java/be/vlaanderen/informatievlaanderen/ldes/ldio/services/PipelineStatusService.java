@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
@@ -34,13 +35,13 @@ public class PipelineStatusService {
 	public PipelineStatus getPipelineStatus(String pipelineName) {
 		return Optional.ofNullable(savedPipelines.get(pipelineName))
 				.map(SavedPipeline::getStatus)
-				.orElseThrow(() -> new IllegalArgumentException("No pipeline defined for name " + pipelineName));
+				.orElseThrow(() -> new PipelineDoesNotExistException(pipelineName));
 	}
 
 	public StatusChangeSource getPipelineStatusChangeSource(String pipelineName) {
 		return Optional.ofNullable(savedPipelines.get(pipelineName))
 				.map(SavedPipeline::getLastStatusChangeSource)
-				.orElseThrow(() -> new IllegalArgumentException("No pipeline defined for name " + pipelineName));
+				.orElseThrow(() -> new PipelineDoesNotExistException(pipelineName));
 	}
 
 	@EventListener
@@ -78,8 +79,6 @@ public class PipelineStatusService {
 			case STOPPED -> STOPPED;
 			case STOPPING -> STOPPING;
 		};
-
-
 	}
 
 	public PipelineStatus haltRunningPipeline(String pipelineId) {
@@ -96,8 +95,6 @@ public class PipelineStatusService {
 			case STOPPED -> STOPPED;
 			case STOPPING -> STOPPING;
 		};
-
-
 	}
 
 	public PipelineStatus stopPipeline(String pipelineId) {

@@ -18,6 +18,5 @@ Feature: MemberSupplier
       | statePersistenceStrategy1 | statePersistenceStrategy2 |
       | MEMORY                    | MEMORY                    |
       | SQLITE                    | SQLITE                    |
-      | FILE                      | FILE                      |
       | POSTGRES                  | POSTGRES                  |
       | SQLITE                    | POSTGRES                  |

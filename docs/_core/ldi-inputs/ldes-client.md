@@ -18,6 +18,12 @@ Processed members of mutable fragments are also kept in state. They are ignored 
 
 Within a fragment, members can be ordered based on a timestamp. The path to this timestamp has to be configured. If this path is missing, the members are ordered randomly.
 
+To allow the possibility to filter out already received members, the exactly-once-filter can be enabled.
+
+This causes the ids of all processed members to be kept in state. They are ignored if presented more than once.
+
+Enabling this filter may have a significant impact on performance.
+
 [VSDS Tech Docs]: https://informatievlaanderen.github.io/VSDS-Tech-Docs/introduction/LDES_client
 
 The client has different state persistence strategies:

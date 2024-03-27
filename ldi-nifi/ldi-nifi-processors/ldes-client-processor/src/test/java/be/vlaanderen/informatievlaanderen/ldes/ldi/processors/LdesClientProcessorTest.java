@@ -1,7 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -21,11 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -234,6 +234,55 @@ class LdesClientProcessorTest {
 		assertThatThrownBy(() -> testRunner.run())
 				.isInstanceOf(AssertionFailedError.class)
 				.hasMessageStartingWith("Processor has 1 validation failures:");
+	}
+	@Test
+	void shouldSupportOnlyOnceFilter() {
+		testRunner.setProperty("DATA_SOURCE_URLS",
+				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
+		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
+		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
+		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
+
+		testRunner.run(2);
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(2, dataFlowfiles.size());
+
+		List<RDFNode> result = RDFParser
+				.fromString(dataFlowfiles.get(0).getContent())
+				.lang(Lang.NQUADS)
+				.toModel()
+				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))
+				.toList();
+		assertEquals(1, result.size());
+	}
+	@Test
+	void shouldNotSupportOnlyOnceFilterWhenVersionMaterialiserIsActive() {
+		testRunner.setProperty("DATA_SOURCE_URLS",
+				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
+		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
+		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
+		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
+		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
+
+		testRunner.run();
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(1, dataFlowfiles.size());
+
+		List<RDFNode> result = RDFParser
+				.fromString(dataFlowfiles.get(0).getContent())
+				.lang(Lang.NQUADS)
+				.toModel()
+				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))
+				.toList();
+		assertEquals(0, result.size());
 	}
 
 	static class MatchNumberOfFlowFilesArgumentsProvider implements ArgumentsProvider {

@@ -39,7 +39,7 @@ public class JsonToLdProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(CORE_CONTEXT, FORCE_CONTENT_TYPE);
+		return List.of(CONTEXT, FORCE_CONTENT_TYPE);
 	}
 
 	@OnScheduled

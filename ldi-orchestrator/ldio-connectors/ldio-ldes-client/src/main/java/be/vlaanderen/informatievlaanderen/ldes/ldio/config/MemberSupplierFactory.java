@@ -6,11 +6,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampE
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidConfigException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import ldes.client.treenodesupplier.MemberSupplier;
-import ldes.client.treenodesupplier.MemberSupplierImpl;
-import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.VersionMaterialisedMemberSupplier;
+import ldes.client.treenodesupplier.*;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import org.apache.jena.rdf.model.Property;
@@ -40,13 +38,19 @@ public class MemberSupplierFactory {
     public MemberSupplier getMemberSupplier() {
         log.info("Starting LdesClientRunner run setup");
         log.info("LdesClientRunner setup finished");
-        final MemberSupplier baseMemberSupplier =
+        MemberSupplier baseMemberSupplier =
                 new MemberSupplierImpl(getTreeNodeProcessor(), getKeepState());
-        if (useVersionMaterialisation()) {
+        if (useExactlyOnceFilter()) {
+            return new ExactlyOnceFilterMemberSupplier(baseMemberSupplier, getFilter(), getKeepState());
+        } else if (useVersionMaterialisation()) {
             return new VersionMaterialisedMemberSupplier(baseMemberSupplier, createVersionMaterialiser());
         } else {
             return baseMemberSupplier;
         }
+    }
+
+    private ExactlyOnceFilter getFilter() {
+        return new ExactlyOnceFilter(getStatePersistence().getMemberIdRepository());
     }
 
     private TreeNodeProcessor getTreeNodeProcessor() {
@@ -82,6 +86,26 @@ public class MemberSupplierFactory {
                             "and having version-objects as output will have to be configured explicitly.");
                     return false;
                 });
+    }
+    @SuppressWarnings("java:S3655")
+    private boolean useExactlyOnceFilter() {
+        if (properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER).isPresent()) {
+            // use filter is explicitly set
+            boolean useFilter = properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER).get();
+            if (useVersionMaterialisation() && useFilter) {
+                throw new InvalidConfigException("The exactly once filter can not be enabled with version materialisation.");
+            } else {
+                return useFilter;
+            }
+        } else {
+            // use filter is not explicitly set
+            if (useVersionMaterialisation()) {
+                log.warn("The exactly once filter can not be used while version materialisation is active, disabling filter");
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     private Lang getSourceFormat() {

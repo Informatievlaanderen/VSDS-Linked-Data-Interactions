@@ -8,6 +8,17 @@ nav_order: 0
 
 A lightweight application maintained by the LDI team. Its creation came when a more lightweight alternative for [Apache NiFi] was needed.
 
+## Enable swagger UI
+
+To use the swagger UI on your own LDIO deployment you can add the below config,
+and go to `<base-url>/v1/swagger`.
+
+```yaml
+springdoc:
+  swagger-ui:
+    path: /v1/swagger
+```
+
 ## LDIO DEBUG Logging
 
 To enable logging the input model for a 

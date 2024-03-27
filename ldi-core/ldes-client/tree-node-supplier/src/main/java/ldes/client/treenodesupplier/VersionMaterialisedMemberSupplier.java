@@ -22,7 +22,7 @@ public class VersionMaterialisedMemberSupplier implements MemberSupplier {
     public SuppliedMember get() {
         final SuppliedMember suppliedMember = memberSupplier.get();
         final Model stateObject = versionMaterialiser.transform(suppliedMember.getModel());
-        return new SuppliedMember(stateObject);
+        return new SuppliedMember(suppliedMember.getId(), stateObject);
     }
 
     @Override

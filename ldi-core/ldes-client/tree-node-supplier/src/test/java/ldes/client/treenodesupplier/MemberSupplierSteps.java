@@ -8,9 +8,11 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.*;
+import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
@@ -32,6 +34,7 @@ public class MemberSupplierSteps {
 	private TreeNodeProcessor treeNodeProcessor;
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
+	private MemberIdRepository memberIdRepository;
 	private MemberSupplier memberSupplier;
 	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
@@ -89,7 +92,7 @@ public class MemberSupplierSteps {
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
-				new StatePersistence(memberRepository, treeNodeRecordRepository),
+				new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository),
 				requestExecutorFactory.createNoAuthExecutor(),
 				timestampPath.isEmpty() ? new TimestampFromCurrentTimeExtractor() : new TimestampFromPathExtractor(createProperty(timestampPath)));
 	}
@@ -103,18 +106,22 @@ public class MemberSupplierSteps {
 	public StatePersistence aMemoryStatePersistenceStrategy() {
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY, Map.of(),
 				"instanceName");
+		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.MEMORY, Map.of(),
+				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, treeNodeRecordRepository);
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
 	public StatePersistence aSqliteStatePersistenceStrategy() {
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE, Map.of(),
 				"instanceName");
+		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.SQLITE, Map.of(),
+				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, treeNodeRecordRepository);
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
 	}
 
 	@And("a StatePersistenceStrategy POSTGRES")
@@ -129,11 +136,13 @@ public class MemberSupplierSteps {
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.POSTGRES,
 				postgresProperties.getProperties(), "instanceName");
+		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.POSTGRES,
+				postgresProperties.getProperties(), "instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
 						"instanceName");
 
-		return new StatePersistence(memberRepository, treeNodeRecordRepository);
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
 	}
 
 	@Then("MemberSupplier is destroyed")
@@ -150,11 +159,20 @@ public class MemberSupplierSteps {
 	@When("I create a MemberSupplier with state")
 	public void iCreateAMemberSupplierWithState() {
 		memberSupplier = new MemberSupplierImpl(treeNodeProcessor, true);
+		memberSupplier.init();
 	}
 
 	@When("I create a MemberSupplier without state")
 	public void iCreateAMemberSupplierWithoutState() {
 		memberSupplier = new MemberSupplierImpl(treeNodeProcessor, false);
+		memberSupplier.init();
+	}
+
+	@When("I create a MemberSupplier with filter")
+	public void iCreateAMemberSupplierWithFilter() {
+		memberSupplier = new ExactlyOnceFilterMemberSupplier(new MemberSupplierImpl(treeNodeProcessor, false),
+				new ExactlyOnceFilter(memberIdRepository), false);
+		memberSupplier.init();
 	}
 
 	private StatePersistence defineStatePersistence(String persistenceStrategy) {
@@ -182,6 +200,9 @@ public class MemberSupplierSteps {
 
 	@When("I request one member from the MemberSuppliers")
 	public void iRequestOneMemberFromTheMemberSuppliers() {
+		for(MemberSupplier supplier : memberSuppliers) {
+			supplier.init();
+		}
 		suppliedMembers[0] = memberSuppliers[0].get();
 		suppliedMembers[1] = memberSuppliers[1].get();
 	}

@@ -3,10 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.JsonLDWriteContext;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.writer.JsonLD10Writer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,18 +22,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.github.jsonldjava.core.JsonLdOptions;
-
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties.FRAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class LdiRdfWriterTest {
 
 	@Test
-	void formatModel_jsonLD() throws IOException, URISyntaxException {
+	void formatModel_jsonLD10() throws IOException, URISyntaxException {
 		Model model = RDFParser.source("rdf/formatter/product.jsonld").lang(Lang.JSONLD).toModel();
 		String frame = getFileContentString("rdf/formatter/product.frame.jsonld");
-		Model expected = RDFParser.source("rdf/formatter/expected/product.jsonld").lang(Lang.JSONLD).toModel();
+		Model expected = RDFParser.source("rdf/formatter/expected/product.json").lang(Lang.JSONLD).toModel();
 		LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(Map.of(FRAME, frame));
 
 		String output = LdiRdfWriter.getRdfWriter(writerProperties.withLang(Lang.JSONLD)).write(model);
@@ -45,6 +41,24 @@ class LdiRdfWriterTest {
 		assertThat(outputJson.hasKey("@graph")).isFalse();
 		assertThat(outputModel).matches(expected::isIsomorphicWith);
 	}
+
+	@Test
+	void formatModel_jsonLD11() {
+		Model model = RDFParser.source("rdf/formatter/logisticslocation.json").lang(Lang.JSONLD).toModel();
+		String frame = """
+				{ "@context": "https://geojson.org/geojson-ld/geojson-context.jsonld", "@type": "https://vocabulary.uncefact.org/LogisticsLocation" }
+				""";
+		Model expected = RDFParser.source("rdf/formatter/expected/logisticslocation.json").lang(Lang.JSONLD).toModel();
+		LdiRdfWriterProperties writerProperties = new LdiRdfWriterProperties(Map.of(FRAME, frame));
+
+		String output = LdiRdfWriter.getRdfWriter(writerProperties.withLang(Lang.JSONLD)).write(model);
+		JsonObject outputJson = JSON.parse(output);
+		Model outputModel = RDFParser.fromString(output).lang(Lang.JSONLD).toModel();
+
+		assertThat(outputJson.hasKey("@graph")).isFalse();
+		assertThat(outputModel).matches(expected::isIsomorphicWith);
+	}
+
 
 	@Test
 	void formatModel_jsonLD_withoutFrame() {
@@ -77,25 +91,6 @@ class LdiRdfWriterTest {
 		Model outputModel = RDFParser.fromString(output).lang(Lang.NQUADS).toModel();
 
 		assertThat(outputModel).matches(expectedModel::isIsomorphicWith);
-	}
-
-	@Test
-	void getFramedContext() {
-		String frame = """
-				{
-				  "@context": "http://schema.org/",
-				  "@type": "Person"
-				}
-				""";
-
-		JsonLDWriteContext context = (JsonLDWriteContext) JsonLdFrameWriter.getFramedContext(frame);
-		JsonObject frameObject = JSON.parse((String) context.get(JsonLD10Writer.JSONLD_FRAME));
-
-		assertThat(frameObject)
-				.matches(json -> json.hasKey("@type"))
-				.matches(json -> json.hasKey("@context"));
-		assertThat(((JsonLdOptions) context.get(JsonLD10Writer.JSONLD_OPTIONS)).getOmitGraph())
-				.isTrue();
 	}
 
 	@ParameterizedTest

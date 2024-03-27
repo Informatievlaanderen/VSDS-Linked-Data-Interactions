@@ -28,7 +28,7 @@ class FlattenDeserializerTest {
 	}
 
 	@Test
-	public void floating_point_string_deserialises_to_Double_value() throws IOException {
+	void floating_point_string_deserialises_to_Double_value() throws IOException {
 		String json = """
 				{
 				   "config": {
@@ -37,7 +37,11 @@ class FlattenDeserializerTest {
 				       "level2": {
 				         "key": "val",
 				         "level3": {
-				           "key": "val"
+				           "key": "val",
+				           "list": [
+				           	 "list1-val",
+				           	 "list2-val"
+				           ]
 				         }
 				       }
 				     }
@@ -45,13 +49,15 @@ class FlattenDeserializerTest {
 				 }
 				""";
 		Map<String, String> flattenendMap = flattenMap(json);
-		assertEquals(3, flattenendMap.size());
+		assertEquals(5, flattenendMap.size());
 		assertTrue(flattenendMap.containsKey("key"));
 		assertEquals("val", flattenendMap.get("key"));
 		assertTrue(flattenendMap.containsKey("level1.level2.key"));
 		assertEquals("val", flattenendMap.get("level1.level2.key"));
 		assertTrue(flattenendMap.containsKey("level1.level2.level3.key"));
 		assertEquals("val", flattenendMap.get("level1.level2.level3.key"));
+		assertEquals("list1-val", flattenendMap.get("level1.level2.level3.list.0"));
+		assertEquals("list2-val", flattenendMap.get("level1.level2.level3.list.1"));
 	}
 
 	private Map<String, String> flattenMap(String json) throws IOException {

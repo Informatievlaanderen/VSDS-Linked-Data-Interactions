@@ -9,21 +9,21 @@ Feature: Restart MemberSupplier
     When I create a Processor
     When I create a MemberSupplier with state
     When I request one member from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "IMMUTABLE_WITH_UNPROCESSED_MEMBERS" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
     Then Status "NOT_VISITED" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/1" is processed
     Then MemberSupplier is destroyed
 # Restart
     When I create a MemberSupplier with state
     When I request one member from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
     Then Status "MUTABLE_AND_ACTIVE" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/2" is processed
     Then MemberSupplier is destroyed
 # Restart
     When I create a MemberSupplier without state
     When I request one member from the MemberSupplier
-    Then Status "IMMUTABLE" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
+    Then Status "IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS" for TreeNodeRecord with identifier: "http://localhost:10101/200-first-tree-node"
     Then Status "MUTABLE_AND_ACTIVE" for TreeNodeRecord with identifier: "http://localhost:10101/200-second-tree-node"
     Then Member "https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/3" is processed
     Then MemberSupplier is destroyed
@@ -31,5 +31,4 @@ Feature: Restart MemberSupplier
     Examples:
       | statePersistenceStrategy |
       | SQLITE                   |
-      | FILE                     |
       | POSTGRES                 |

@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.controller;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
@@ -43,13 +43,13 @@ class PipelineControllerTest {
 	}
 
 	@Test
-	void given_ValidPipelineConfig_when_PostPipeline_then_ReturnPipelineWithHttpStatus200() throws Exception {
+	void given_ValidPipelineConfig_when_PostPipeline_then_ReturnPipelineWithHttpStatus201() throws Exception {
 		mockMvc.perform(
 						post("/admin/api/v1/pipeline")
 								.contentType("application/yaml")
 								.content(readPipeline("management/yml/valid-2.yml"))
 								.accept("application/json"))
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
 				.andExpect(content().json(readPipeline("management/json/valid-2.json")));
 	}
 

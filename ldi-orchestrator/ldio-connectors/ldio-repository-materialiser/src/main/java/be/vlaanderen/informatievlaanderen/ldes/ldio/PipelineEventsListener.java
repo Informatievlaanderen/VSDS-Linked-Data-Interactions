@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import org.springframework.context.event.EventListener;
@@ -37,8 +38,17 @@ public class PipelineEventsListener {
 
 	@EventListener(condition = "#event.status().name() == 'RUNNING'")
 	public void handlePipelineRunningEvent(PipelineStatusEvent event) {
-		final LdioRepositoryMaterialiser materialiser = materialisers.get(event.pipelineId());
-		if(materialiser != null) {
+		startMaterialiser(event.pipelineId());
+	}
+
+	@EventListener
+	public void handlePipelineRunningEvent(InputCreatedEvent event) {
+		startMaterialiser(event.pipelineName());
+	}
+
+	private void startMaterialiser(String pipelineName) {
+		final LdioRepositoryMaterialiser materialiser = materialisers.get(pipelineName);
+		if (materialiser != null) {
 			materialiser.start();
 		}
 	}

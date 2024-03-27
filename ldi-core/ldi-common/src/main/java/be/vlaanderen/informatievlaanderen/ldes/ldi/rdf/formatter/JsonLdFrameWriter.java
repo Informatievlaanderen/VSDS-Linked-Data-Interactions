@@ -1,24 +1,33 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
-import org.apache.jena.atlas.json.JSON;
-import org.apache.jena.atlas.json.JsonObject;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.JsonLDFrameException;
+import jakarta.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.*;
-import org.apache.jena.riot.writer.JsonLD10Writer;
-import org.apache.jena.sparql.util.Context;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFWriter;
+import org.apache.jena.riot.RDFWriterBuilder;
 
 import java.io.OutputStream;
+import java.io.StringReader;
 
-import com.github.jsonldjava.core.JsonLdOptions;
+import com.apicatalog.jsonld.JsonLd;
+import com.apicatalog.jsonld.JsonLdError;
+import com.apicatalog.jsonld.document.JsonDocument;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.addPrefixesToModel;
 
 public class JsonLdFrameWriter implements LdiRdfWriter {
 	private final RDFWriterBuilder rdfWriter;
+	private final JsonDocument frame;
 
-	public JsonLdFrameWriter(LdiRdfWriterProperties properties) {
-		String frame = properties.getJsonLdFrame();
-		this.rdfWriter = RDFWriter.create().context(getFramedContext(frame)).format(RDFFormat.JSONLD10_FRAME_PRETTY);
+	public JsonLdFrameWriter(JsonDocument frame) {
+		this.frame = frame;
+		this.rdfWriter = RDFWriter.create().format(RDFFormat.JSONLD);
+	}
+
+	public static JsonLdFrameWriter fromProperties(LdiRdfWriterProperties properties) throws JsonLdError {
+		return new JsonLdFrameWriter(JsonDocument.of(new StringReader(properties.getJsonLdFrame())));
 	}
 
     @Override
@@ -28,24 +37,19 @@ public class JsonLdFrameWriter implements LdiRdfWriter {
 
     @Override
 	public String write(Model model) {
-		return rdfWriter.source(addPrefixesToModel(model)).asString();
+	    JsonObject jsonObject;
+	    try {
+		    JsonDocument input = JsonDocument.of(new StringReader(rdfWriter.source(addPrefixesToModel(model)).asString()));
+		    jsonObject = JsonLd.frame(input, frame).get();
+	    } catch (JsonLdError e) {
+		    throw new JsonLDFrameException(e);
+	    }
+
+	    return jsonObject.toString();
 	}
 
 	@Override
 	public void writeToOutputStream(Model model, OutputStream outputStream) {
 		rdfWriter.source(addPrefixesToModel(model)).output(outputStream);
-	}
-
-	protected static Context getFramedContext(String context) {
-		JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
-
-		JsonObject frame = JSON.parse(context);
-		jenaCtx.set(JsonLD10Writer.JSONLD_FRAME, frame.toString());
-
-		JsonLdOptions jsonLdOptions = new JsonLdOptions();
-		jsonLdOptions.setOmitGraph(true);
-		jenaCtx.setOptions(jsonLdOptions);
-
-		return jenaCtx;
 	}
 }
