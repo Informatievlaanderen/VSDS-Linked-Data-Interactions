@@ -9,7 +9,9 @@ import org.apache.jena.riot.RDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
@@ -55,24 +57,28 @@ public class LdioRepositoryMaterialiser implements LdiOutput {
 
 	public synchronized void sendToMaterialiser() {
 		if (!membersToCommit.isEmpty()) {
-			materialiser.processAsync(List.copyOf(membersToCommit))
+			final List<Model> members = List.copyOf(membersToCommit);
+			materialiser.processAsync(members)
 					.exceptionally(throwable -> {
-						handleException(throwable);
+						handleException(throwable, members);
 						return null;
 					});
 			membersToCommit.clear();
 		}
 	}
 
-	private void handleException(Throwable throwable) {
+	private void handleException(Throwable throwable, List<Model> failedMembers) {
 		log.atError().log(ERROR_TEMPLATE, "sendToMaterialiser", throwable.getMessage());
-		final String fileName = "/tmp/materialisation/uncommitted-members-%s.ttl".formatted(LocalDateTime.now());
 		final Model uncommitedMembersModel = ModelFactory.createDefaultModel();
-		membersToCommit.forEach(uncommitedMembersModel::add);
-		RDFWriter.source(uncommitedMembersModel)
-				.lang(Lang.TURTLE)
-				.output(fileName);
-		log.atError().log("Uncommitted members can be found in file: {}", fileName);
+		failedMembers.forEach(uncommitedMembersModel::add);
+		try {
+			final File tmpFile = Files.createTempFile("uncommitted-members-", ".ttl").toFile();
+			RDFWriter.source(uncommitedMembersModel).lang(Lang.TURTLE).output(new FileOutputStream(tmpFile));
+			log.atError().log("Uncommitted members can be found in file: {}", tmpFile.getPath());
+		} catch (Exception e) {
+			final String uncommittedMembers = RDFWriter.source(uncommitedMembersModel).lang(Lang.TURTLE).asString();
+			log.atError().log("Unable to commit the following members: \n {}", uncommittedMembers);
+		}
 	}
 
 	private void resetExecutor() {

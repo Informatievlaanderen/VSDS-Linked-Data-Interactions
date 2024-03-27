@@ -20,7 +20,7 @@ public class InMemoryMemberRepository implements MemberRepository {
 
 	@Override
 	public void deleteMember(MemberRecord member) {
-		members.remove();
+		members.poll();
 	}
 
 	@Override
