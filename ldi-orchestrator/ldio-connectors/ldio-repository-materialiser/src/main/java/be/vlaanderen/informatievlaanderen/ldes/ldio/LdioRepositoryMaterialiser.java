@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
@@ -71,11 +70,13 @@ public class LdioRepositoryMaterialiser implements LdiOutput {
 		log.atError().log(ERROR_TEMPLATE, "sendToMaterialiser", throwable.getMessage());
 		final Model uncommitedMembersModel = ModelFactory.createDefaultModel();
 		failedMembers.forEach(uncommitedMembersModel::add);
-		try {
-			final File tmpFile = Files.createTempFile("uncommitted-members-", ".ttl").toFile();
-			RDFWriter.source(uncommitedMembersModel).lang(Lang.TURTLE).output(new FileOutputStream(tmpFile));
-			log.atError().log("Uncommitted members can be found in file: {}", tmpFile.getPath());
-		} catch (Exception e) {
+		final File materialisationFolder = new File("materialisation");
+		if (materialisationFolder.exists() || materialisationFolder.mkdir()) {
+			final String fileName = "uncommitted-members-%s.ttl".formatted(ZonedDateTime.now().toEpochSecond());
+			final File uncommittedMembersFile = new File(materialisationFolder, fileName);
+			RDFWriter.source(uncommitedMembersModel).lang(Lang.TURTLE).output(uncommittedMembersFile.getPath());
+			log.atError().log("Uncommitted members can be found in file: {}", uncommittedMembersFile.getAbsolutePath());
+		} else {
 			final String uncommittedMembers = RDFWriter.source(uncommitedMembersModel).lang(Lang.TURTLE).asString();
 			log.atError().log("Unable to commit the following members: \n {}", uncommittedMembers);
 		}
