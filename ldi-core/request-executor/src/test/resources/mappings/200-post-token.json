@@ -1,12 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "url": "/token",
-    "headers": {
-      "Authorization": {
-        "contains": "Basic Y2xpZW50SWQ6Y2xpZW50U2VjcmV0"
-      }
-    }
+    "url": "/token"
   },
   "response": {
     "status": 200,
