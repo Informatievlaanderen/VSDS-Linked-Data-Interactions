@@ -1,10 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.services;
 
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
-import org.eclipse.rdf4j.model.IRI;
-import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Value;
+import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 
@@ -43,7 +41,11 @@ public class JenaToRDF4JConverter {
 			org.apache.jena.rdf.model.Resource resource = (org.apache.jena.rdf.model.Resource) node;
 			return convertResource(resource);
 		} else {
-			return SimpleValueFactory.getInstance().createLiteral(node.toString());
+			Literal literal = node.asLiteral();
+			if(literal.getLanguage() != null && !literal.getLanguage().isEmpty()) {
+				return SimpleValueFactory.getInstance().createLiteral(literal.getValue().toString(), literal.getLanguage());
+			}
+			return SimpleValueFactory.getInstance().createLiteral(literal.getValue().toString());
 		}
 	}
 }

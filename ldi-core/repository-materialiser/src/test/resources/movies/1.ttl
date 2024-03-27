@@ -4,7 +4,7 @@
 
 <http://example.com/movies/dune> a schema:Movie ;
     schema:name "Dune" ;
-    schema:description "An epic adaptation of Frank Herbert's sci-fi novel." ;
+    schema:description "An epic adaptation of Frank Herbert's sci-fi novel."@en, "Een epische verfilming van de sci-fi novel van Frank Herbert."@nl ;
     schema:datePublished "2021-09-15" ;
     schema:director [
         a schema:Person ;
