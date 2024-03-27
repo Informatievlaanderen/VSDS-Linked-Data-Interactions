@@ -1,0 +1,34 @@
+@prefix schema: <http://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://example.com/movies/dune> a schema:Movie ;
+    schema:name "Dune: Part Two" ;
+    schema:description "An epic adaptation of Frank Herbert's sci-fi novel." ;
+    schema:datePublished "2024-02-28" ;
+    schema:director [
+        a schema:Person ;
+        schema:name "Denis Villeneuve" ;
+        schema:role [
+            a skos:Concept ;
+            skos:prefLabel "Director"
+        ]
+    ] ;
+    schema:actor [
+        a schema:Person ;
+        schema:name "Timothée Chalamet" ;
+        schema:role [
+            a skos:Concept ;
+            skos:prefLabel "Actor"
+        ]
+    ], [
+        a schema:Person ;
+        schema:name "Rebecca Ferguson" ;
+        schema:role [
+            a skos:Concept ;
+            skos:prefLabel "Actor"
+        ]
+    ] ;
+    schema:genre "Science Fiction", "Adventure" ;
+    schema:duration "PT167M" ;
+    schema:language "English" .

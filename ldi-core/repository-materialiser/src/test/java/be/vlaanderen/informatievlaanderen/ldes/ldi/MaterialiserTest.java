@@ -11,7 +11,9 @@ import org.eclipse.rdf4j.query.Update;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryException;
+import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
+import org.eclipse.rdf4j.repository.sparql.federation.CollectionIteration;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 import org.junit.jupiter.api.AfterEach;
@@ -41,8 +43,6 @@ class MaterialiserTest {
 	private RepositoryManager repositoryManager;
 	@Mock
 	private Repository repository;
-	@Mock
-	private Update update;
 	private Materialiser materialiser;
 
 	@BeforeEach
@@ -50,7 +50,6 @@ class MaterialiserTest {
 		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
 		when(repository.getConnection()).thenReturn(connection);
 		materialiser = new Materialiser(repositoryManager, REPOSITORY_ID, "");
-		when(connection.prepareUpdate(anyString())).thenReturn(update);
 	}
 
 	@AfterEach
@@ -63,24 +62,33 @@ class MaterialiserTest {
 		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
 		when(repository.getConnection()).thenReturn(connection);
 		Set<Resource> entityIds = Stream
-				.of("http://somewhere/SarahJones/", "http://somewhere/MattJones/")
+				.of("http://somewhere/DickJones/", "http://somewhere/SarahJones/")
 				.map(stringUri -> SimpleValueFactory.getInstance().createIRI(stringUri))
 				.collect(Collectors.toSet());
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 
-		materialiser.deleteEntities(entityIds);
+		Model modelToDelete = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		verify(update, times(2)).execute();
+		materialiser.deleteEntity(modelToDelete);
+		entityIds.forEach(subjectIri -> {
+			verify(connection).getStatements(subjectIri, null, null);
+			verify(connection).remove(subjectIri, null, null);
+		});
 	}
 
 	@Test
 	void given_RepositoryContainingData_when_UpdateSingleModel_Then_OldTriplesRemoved() throws Exception {
 		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
 		when(repository.getConnection()).thenReturn(connection);
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
 		materialiser.process(List.of(RDFParser.source(CHANGED_FILE).toModel()));
 
-		verify(update, times(2)).execute();
+		verify(connection).remove(SimpleValueFactory.getInstance().createIRI("http://somewhere/DickJones/"), null, null);
+		verify(connection).remove(SimpleValueFactory.getInstance().createIRI("http://somewhere/SarahJones/"), null, null);
 		verify(connection).add(changedModel);
 		verify(connection).commit();
 	}
@@ -89,12 +97,14 @@ class MaterialiserTest {
 	void given_ValidListOfMembers_when_ProcessList_then_CommitToRepository() {
 		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
 		when(repository.getConnection()).thenReturn(connection);
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 
 		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
 
 		materialiser.process(models);
 
-		verify(update, times(10)).execute();
+		verify(connection, times(10)).remove(any(Resource.class), isNull(), isNull());
 		verify(connection, times(10)).add(any(Model.class));
 		verify(connection).commit();
 	}
@@ -103,6 +113,8 @@ class MaterialiserTest {
 	void given_ValidList_when_ProcessList_and_CommitFails_then_RollbackConnection() {
 		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
 		when(repository.getConnection()).thenReturn(connection);
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 		doThrow(RepositoryException.class).when(connection).commit();
 
 		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
@@ -111,7 +123,6 @@ class MaterialiserTest {
 				.isInstanceOf(MaterialisationFailedException.class)
 				.hasCauseInstanceOf(RepositoryException.class);
 
-		verify(update, times(10)).execute();
 		verify(connection, times(10)).add(any(Model.class));
 		verify(connection).commit();
 		verify(connection).rollback();
@@ -121,6 +132,8 @@ class MaterialiserTest {
 	void given_ListOfMembers_when_ProcessList_and_AddModelToConnectionFails_then_StopAdditionAndRollback() {
 		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
 		when(repository.getConnection()).thenReturn(connection);
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 		doNothing().doNothing().doThrow(RepositoryException.class).when(connection).add(any(Model.class));
 
 		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
@@ -136,11 +149,11 @@ class MaterialiserTest {
 
 	@Test
 	void given_ListOfMembers_when_ProcessList_and_GetStatementsFails_then_StopAdditionAndRollback() {
-		doNothing()
-				.doNothing()
-				.doNothing()
-				.doThrow(RepositoryException.class)
-				.when(update).execute();
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+				.thenThrow(RepositoryException.class);
 
 		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
 
@@ -148,11 +161,10 @@ class MaterialiserTest {
 				.isInstanceOf(MaterialisationFailedException.class)
 				.hasCauseInstanceOf(RepositoryException.class);
 
-		verify(update, times(4)).execute();
-		verify(connection, times(3)).add(any(Model.class));
+		verify(connection, times(4)).getStatements(any(), isNull(), isNull());
+		verify(connection, times(3)).remove(any(Resource.class), isNull(), isNull());		verify(connection, times(3)).add(any(Model.class));
 		verify(connection, never()).commit();
 		verify(connection).rollback();
-
 	}
 
 	private Stream<org.apache.jena.rdf.model.Model> readTenModelsFromFile() {

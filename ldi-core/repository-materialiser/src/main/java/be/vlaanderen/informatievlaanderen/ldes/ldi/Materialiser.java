@@ -6,9 +6,12 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ModelSubjectsExtract
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MaterialiserConnection;
 import org.apache.jena.rdf.model.Model;
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -32,8 +35,7 @@ public class Materialiser {
 		synchronized (materialiserConnection) {
 			try {
 				jenaModels.stream().map(JenaToRDF4JConverter::convert).forEach(updateModel -> {
-					Set<Resource> entityIds = ModelSubjectsExtractor.extractSubjects(updateModel);
-					deleteEntities(entityIds);
+					deleteEntity(updateModel);
 					materialiserConnection.add(updateModel);
 				});
 				materialiserConnection.commit();
@@ -52,37 +54,28 @@ public class Materialiser {
 		materialiserConnection.shutdown();
 	}
 
-	protected void deleteEntities(Set<Resource> subjects) {
-		subjects.forEach(this::deleteEntity);
+	protected void deleteEntity(org.eclipse.rdf4j.model.Model model) {
+		getAllSubjectsFromModel(model)
+				.forEach(subject -> materialiserConnection.remove(subject, null, null));
 	}
 
-	protected void deleteEntity(Resource subject) {
-		final String query = """
-				DELETE {
-				      ?s ?p ?o .
-				      ?blankNode ?blankNodePredicate ?blankNodeObject .
-				    }
-				    WHERE {
-				      ?s ?p ?o .
-				      FILTER(?s = <%s>)
+	private Set<Resource> getAllSubjectsFromModel(org.eclipse.rdf4j.model.Model model) {
+		final Set<Resource> subjects = ModelSubjectsExtractor.extractSubjects(model);
+		final Deque<Resource> subjectStack = new ArrayDeque<>(subjects);
 
-				      OPTIONAL {
-				        {
-				          ?o ?blankNodePredicate ?blankNodeObject .
-				          FILTER(isBlank(?o))
-				          BIND(?o AS ?blankNode)
-				        }
-				        UNION
-				        {
-				          ?o ?nestedPredicate ?nestedObject .
-				          FILTER(isBlank(?nestedObject))
-				          ?nestedObject ?blankNodePredicate ?blankNodeObject .
-				          BIND(?nestedObject AS ?blankNode)
-				        }
-				      }
-				    }
-				    """.formatted(subject.stringValue());
+		while (!subjectStack.isEmpty()) {
+			Resource subject = subjectStack.pop();
 
-		materialiserConnection.executeUpdate(query);
+			materialiserConnection.getStatements(subject, null, null).forEach(statement -> {
+				Value object = statement.getObject();
+				if (object.isBNode()) {
+					Resource bnode = (Resource) object;
+					subjectStack.push(bnode);
+					subjects.add(bnode);
+				}
+			});
+
+		}
+		return subjects;
 	}
 }

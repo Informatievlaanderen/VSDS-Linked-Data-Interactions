@@ -2,9 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import org.apache.jena.riot.RDFParser;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
-import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.model.impl.LinkedHashModel;
+import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.repository.manager.LocalRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
@@ -22,10 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,19 +52,17 @@ class MaterialiserIT {
 
 	@Test
 	void when_DeleteEntities_Then_EntitiesRemovedFromStore() throws Exception {
+		final int statementOfModel2And3Count = 9;
 		final List<String> testFiles = IntStream.range(1, 4).mapToObj("src/test/resources/people/%d.nq"::formatted).toList();
 		populateAndCheckRepository(testFiles);
-		final Model model = Rio.parse(new FileInputStream("src/test/resources/people/1.nq"), "", RDFFormat.NQUADS);
-		Set<Resource> entityIds = Stream.of("http://somewhere/BeckySmith/", "http://somewhere/SarahJones/")
-				.map(iri -> SimpleValueFactory.getInstance().createIRI(iri))
-				.collect(Collectors.toSet());
+		final Model modelToDelete = Rio.parse(new FileInputStream("src/test/resources/people/1.nq"), "", RDFFormat.NQUADS);
 
-		materialiser.deleteEntities(entityIds);
+		materialiser.deleteEntity(modelToDelete);
 
 		List<Statement> statements = materialiser.getMaterialiserConnection()
 				.getStatements(null, null, null).stream().toList();
 
-		assertThat(statements).hasSize(4);
+		assertThat(statements).hasSize(statementOfModel2And3Count);
 	}
 
 	@Test
@@ -85,6 +80,25 @@ class MaterialiserIT {
 				.hasSize(21)
 				.anyMatch(statement -> statement.getObject().stringValue().equals("CHANGED"))
 				.noneMatch(statement -> statement.getObject().stringValue().equals("Taylor"));
+	}
+
+
+	@Test
+	void given_ComplexModelToUpdate_test_Process() throws IOException {
+		final org.apache.jena.rdf.model.Model originalModel = RDFParser.source("movies/1.ttl").toModel();
+		materialiser.process(List.of(originalModel));
+
+		final org.apache.jena.rdf.model.Model updatedJenaModel = RDFParser.source("movies/2.ttl").toModel();
+		final Model updatedRdfModel = Rio.parse(new FileInputStream("src/test/resources/movies/2.ttl"), "", RDFFormat.TURTLE);
+		materialiser.process(List.of(updatedJenaModel));
+
+
+		Model updatedDbModel = new LinkedHashModel();
+		materialiser.getMaterialiserConnection()
+				.getStatements(null, null, null)
+				.forEach(updatedDbModel::add);
+
+		assertThat(Models.isomorphic(updatedDbModel, updatedRdfModel)).isTrue();
 	}
 
 	void populateAndCheckRepository(List<String> files) throws IOException {
