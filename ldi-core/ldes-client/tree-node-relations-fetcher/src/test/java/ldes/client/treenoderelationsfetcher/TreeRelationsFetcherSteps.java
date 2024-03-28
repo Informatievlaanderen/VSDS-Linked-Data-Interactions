@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TreeRelationsFetcherSteps {
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 	private TreeNodeRequest treeNodeRequest;
 	private TreeRelationsFetcher treeRelationsFetcher;
 	private List<TreeRelation> treeNodeRelations;
