@@ -10,14 +10,20 @@ import java.util.Collection;
 public class DefaultConfig implements RequestExecutorSupplier {
 
 	private final Collection<Header> headers;
+	private final boolean enableRedirectHandling;
 
-	public DefaultConfig(Collection<Header> headers) {
+	public DefaultConfig(Collection<Header> headers, boolean enableRedirectHandling) {
 		this.headers = headers;
-	}
+        this.enableRedirectHandling = enableRedirectHandling;
+    }
 
 	public RequestExecutor createRequestExecutor() {
-		return new DefaultRequestExecutor(
-				HttpClientBuilder.create().setDefaultHeaders(headers).disableRedirectHandling().build());
+		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+		if (!enableRedirectHandling) {
+			httpClientBuilder.disableRedirectHandling();
+		}
+
+		return new DefaultRequestExecutor(httpClientBuilder.setDefaultHeaders(headers).build());
 	}
 
 }

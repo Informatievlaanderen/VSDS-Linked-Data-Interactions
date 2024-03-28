@@ -13,8 +13,18 @@ import java.util.Collection;
 
 public class RequestExecutorFactory {
 
+    private final boolean enableRedirectHandling;
+
+    public RequestExecutorFactory() {
+        this(true);
+    }
+
+    public RequestExecutorFactory(boolean enableRedirectHandling) {
+        this.enableRedirectHandling = enableRedirectHandling;
+    }
+
     public RequestExecutor createNoAuthExecutor(Collection<Header> headers) {
-        return new DefaultConfig(headers).createRequestExecutor();
+        return new DefaultConfig(headers, enableRedirectHandling).createRequestExecutor();
     }
 
     public RequestExecutor createNoAuthExecutor() {
@@ -26,7 +36,8 @@ public class RequestExecutorFactory {
                                                            String secret,
                                                            String tokenEndpoint,
                                                            String scope) {
-        return new ClientCredentialsConfig(headers, clientId, secret, tokenEndpoint, scope).createRequestExecutor();
+        var config = new ClientCredentialsConfig(headers, clientId, secret, tokenEndpoint, scope, enableRedirectHandling);
+        return config.createRequestExecutor();
     }
 
     public RequestExecutor createClientCredentialsExecutor(String clientId,

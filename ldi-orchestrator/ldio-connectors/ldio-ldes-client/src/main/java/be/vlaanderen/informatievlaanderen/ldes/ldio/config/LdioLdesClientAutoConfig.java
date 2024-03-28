@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
@@ -37,7 +38,8 @@ public class LdioLdesClientAutoConfig {
 								   ApplicationEventPublisher applicationEventPublisher,
 								   ComponentProperties properties) {
 			String pipelineName = properties.getPipelineName();
-			RequestExecutor requestExecutor = new LdioRequestExecutorSupplier().getRequestExecutor(properties);
+			final var requestExecutorFactory = new RequestExecutorFactory(false);
+			final var requestExecutor = new LdioRequestExecutorSupplier(requestExecutorFactory).getRequestExecutor(properties);
 			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor).getMemberSupplier();
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			var ldesClient = new LdioLdesClient(pipelineName, componentExecutor, observationRegistry, memberSupplier,

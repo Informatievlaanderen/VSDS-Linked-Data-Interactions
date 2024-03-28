@@ -39,6 +39,7 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LdesClientProcessor.class);
 	private MemberSupplier memberSupplier;
 	private LdesProperties ldesProperties;
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 	private boolean hasLdesEnded;
 	private boolean keepState;
@@ -126,7 +127,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	private RequestExecutor getRequestExecutor(final ProcessContext context) {
 		return switch (getAuthorizationStrategy(context)) {
-			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
+			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor(new ArrayList<>());
 			case API_KEY -> {
 				List<Header> headers = List.of(
 						new BasicHeader(getApiKeyHeader(context), getApiKey(context))
