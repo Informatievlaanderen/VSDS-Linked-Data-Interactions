@@ -1,11 +1,13 @@
 @prefix schema: <http://schema.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://example.com/movies/dune> a schema:Movie ;
     schema:name "Dune: Part Two" ;
-    schema:description "An epic adaptation of Frank Herbert's sci-fi novel." ;
-    schema:datePublished "2024-02-28" ;
+    schema:description "An epic adaptation of Frank Herbert's sci-fi novel."@en, "Een epische verfilming van de sci-fi novel van Frank Herbert."@nl ;
+    schema:datePublished "2024-02-28"^^xsd:date ;
+    schema:nominated false ;
     schema:director [
         a schema:Person ;
         schema:name "Denis Villeneuve" ;
@@ -30,5 +32,5 @@
         ]
     ] ;
     schema:genre "Science Fiction", "Adventure" ;
-    schema:duration "PT167M" ;
+    schema:duration "PT167M"^^xsd:duration ;
     schema:language "English" .
