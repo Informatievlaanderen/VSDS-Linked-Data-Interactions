@@ -41,7 +41,7 @@ mappings:
       - [a, cs:GameDeal]
       - [cs:title, $(title)]
       - [cs:metacriticLink, $(metacriticLink)]
-      - [cs:thumb, $(thumb)~iri]
+      - [cs:thumb, $(thumb)]
       - p: cs:releaseDate
         o:
             function: ldi:epochToIso8601
