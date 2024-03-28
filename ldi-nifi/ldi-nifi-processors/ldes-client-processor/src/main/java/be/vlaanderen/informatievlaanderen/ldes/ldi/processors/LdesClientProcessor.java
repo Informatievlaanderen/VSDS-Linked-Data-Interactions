@@ -127,7 +127,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	private RequestExecutor getRequestExecutor(final ProcessContext context) {
 		return switch (getAuthorizationStrategy(context)) {
-			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor(new ArrayList<>());
+			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
 			case API_KEY -> {
 				List<Header> headers = List.of(
 						new BasicHeader(getApiKeyHeader(context), getApiKey(context))

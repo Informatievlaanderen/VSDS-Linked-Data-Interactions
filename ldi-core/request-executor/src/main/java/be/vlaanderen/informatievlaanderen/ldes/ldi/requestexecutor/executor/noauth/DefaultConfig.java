@@ -18,7 +18,7 @@ public class DefaultConfig implements RequestExecutorSupplier {
     }
 
 	public RequestExecutor createRequestExecutor() {
-		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+		final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 		if (!enableRedirectHandling) {
 			httpClientBuilder.disableRedirectHandling();
 		}

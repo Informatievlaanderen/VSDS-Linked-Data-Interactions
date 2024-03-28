@@ -43,7 +43,7 @@ public class LdioLdesClientConnectorAutoConfig {
 		private final ApplicationEventPublisher eventPublisher;
 		private final ObservationRegistry observationRegistry;
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
-		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor(new ArrayList<>());
+		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
 
 		public LdioClientConnectorConfigurator(ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {
 			this.eventPublisher = eventPublisher;
