@@ -6,7 +6,7 @@ has_toc: true
 nav_order: 4
 ---
 
-# Linked Data Adapters
+# Linked Data Orchestrator Adapters
 
 The LDI Core module contains the components maintained by the VSDS team in order to accommodate the onboarding of LDES onboarders.
 
