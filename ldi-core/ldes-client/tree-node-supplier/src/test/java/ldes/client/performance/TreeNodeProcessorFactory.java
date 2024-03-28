@@ -23,7 +23,7 @@ import java.util.Map;
 
 class TreeNodeProcessorFactory {
 
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 
 	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, List<String> url, Lang sourceFormat) {
 		final LdesMetaData ldesMetaData = new LdesMetaData(url, sourceFormat);

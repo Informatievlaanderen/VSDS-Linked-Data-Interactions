@@ -30,7 +30,7 @@ class LdesStructureDiscovererTest {
 
 	@BeforeEach
 	void setUp() {
-		final RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+		final RequestExecutor requestExecutor = new RequestExecutorFactory(false).createNoAuthExecutor();
 		discoverer = new LdesStructureDiscoverer("http://localhost:%d%s".formatted(WIREMOCK_PORT, STARTING_ENDPOINT), Lang.TURTLE, requestExecutor);
 	}
 

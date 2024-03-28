@@ -19,6 +19,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.KEEP_STATE;
 
 @SuppressWarnings("java:S6830")
@@ -40,7 +42,7 @@ public class LdioLdesClientConnectorAutoConfig {
 		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
 		private final ApplicationEventPublisher eventPublisher;
 		private final ObservationRegistry observationRegistry;
-		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
 
 		public LdioClientConnectorConfigurator(ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {

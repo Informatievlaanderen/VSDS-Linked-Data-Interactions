@@ -18,7 +18,7 @@ public class LdesDiscovererExecutor implements CommandLineRunner {
 
 	public LdesDiscovererExecutor(LdesDiscovererConfig config) {
 		this.config = config;
-		final RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+		final RequestExecutor requestExecutor = new RequestExecutorFactory(false).createNoAuthExecutor();
 		ldesStructureDiscoverer = new LdesStructureDiscoverer(config.getUrl(), config.getSourceFormatAsLang(), requestExecutor);
 	}
 

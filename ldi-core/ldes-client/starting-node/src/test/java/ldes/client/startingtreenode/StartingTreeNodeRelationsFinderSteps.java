@@ -22,7 +22,7 @@ public class StartingTreeNodeRelationsFinderSteps {
 
 	@Given("I have a StartingTreeNodeRelationsFinder")
 	public void iHaveAStartingTreeNodeRelationsFinder() {
-		final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+		final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 		final RequestExecutor requestExecutor = requestExecutorFactory.createNoAuthExecutor();
 		startingTreeNodeRelationsFinder = new StartingTreeNodeRelationsFinder(requestExecutor);
 	}

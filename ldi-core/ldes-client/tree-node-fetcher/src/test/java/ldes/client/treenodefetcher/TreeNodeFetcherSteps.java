@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TreeNodeFetcherSteps {
 
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 	private TreeNodeFetcher treeNodeFetcher;
 	private TreeNodeRequest treeNodeRequest;
 	private TreeNodeResponse treeNodeResponse;

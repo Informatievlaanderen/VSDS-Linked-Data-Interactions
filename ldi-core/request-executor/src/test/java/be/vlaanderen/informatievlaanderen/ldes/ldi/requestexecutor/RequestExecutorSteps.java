@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RequestExecutorSteps {
 
 	private LocalDateTime start;
-	private final RequestExecutorFactory factory = new RequestExecutorFactory();
+	private final RequestExecutorFactory factory = new RequestExecutorFactory(false);
 	private RequestExecutor requestExecutor;
 	private Response response;
 	private Request request;
