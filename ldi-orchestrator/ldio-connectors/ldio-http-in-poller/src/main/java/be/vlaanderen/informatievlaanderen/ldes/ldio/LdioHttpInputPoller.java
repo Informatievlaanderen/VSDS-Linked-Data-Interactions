@@ -91,6 +91,8 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 			String content = response.getBodyAsString().orElseThrow();
 			processInput(content, contentType);
 		} else {
+			log.error("Failed to execute request {} {} {}", request.getMethod(), request.getUrl(), response.getHttpStatus());
+			response.getBodyAsString().ifPresent(log::error);
 			throw new UnsuccesfulPollingException(response.getHttpStatus(), request.getUrl());
 		}
 	}
