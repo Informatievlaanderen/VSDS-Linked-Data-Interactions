@@ -124,4 +124,7 @@ public abstract class LdioInput implements LdiComponent {
 		updateStatus(START);
 	}
 
+	public PipelineStatus getStatus() {
+		return this.pipelineStatus;
+	}
 }

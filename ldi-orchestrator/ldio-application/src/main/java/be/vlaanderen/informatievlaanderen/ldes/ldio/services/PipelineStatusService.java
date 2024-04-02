@@ -57,7 +57,7 @@ public class PipelineStatusService {
 
 	@EventListener
 	public void handlePipelineCreated(InputCreatedEvent event) {
-		savedPipelines.put(event.pipelineName(), new SavedPipeline(event.ldioInput(), RUNNING));
+		savedPipelines.put(event.pipelineName(), new SavedPipeline(event.ldioInput(), event.ldioInput().getStatus()));
 	}
 
 	public PipelineStatus resumeHaltedPipeline(String pipelineId) {
