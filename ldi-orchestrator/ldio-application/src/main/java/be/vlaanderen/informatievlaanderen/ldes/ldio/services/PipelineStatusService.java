@@ -61,7 +61,7 @@ public class PipelineStatusService {
 	}
 
 	public PipelineStatus resumeHaltedPipeline(String pipelineId) {
-		PipelineStatus pipelineStatus = getPipelineStatus(pipelineId);
+		var pipelineStatus = getPipelineStatus(pipelineId);
 
 		return switch (pipelineStatus) {
 			case HALTED -> savedPipelines.get(pipelineId).getLdioInput().updateStatus(RESUME);
