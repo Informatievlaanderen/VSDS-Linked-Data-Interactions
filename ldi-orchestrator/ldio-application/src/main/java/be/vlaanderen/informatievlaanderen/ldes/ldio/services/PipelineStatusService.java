@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
 
 @Component
@@ -55,11 +56,6 @@ public class PipelineStatusService {
 	}
 
 	@EventListener
-	public void handlePipelineDeleted(PipelineDeletedEvent deletedEvent) {
-		this.savedPipelines.remove(deletedEvent.pipelineId());
-	}
-
-	@EventListener
 	public void handlePipelineCreated(InputCreatedEvent event) {
 		savedPipelines.put(event.pipelineName(), new SavedPipeline(event.ldioInput(), RUNNING));
 	}
@@ -68,16 +64,10 @@ public class PipelineStatusService {
 		PipelineStatus pipelineStatus = getPipelineStatus(pipelineId);
 
 		return switch (pipelineStatus) {
-			case HALTED -> {
-				savedPipelines.get(pipelineId).getLdioInput().updateStatus(RESUMING);
-				yield RESUMING;
-			}
+			case HALTED -> savedPipelines.get(pipelineId).getLdioInput().updateStatus(RESUME);
 			case INIT -> INIT;
-			case STARTING -> STARTING;
 			case RUNNING -> RUNNING;
-			case RESUMING -> RESUMING;
 			case STOPPED -> STOPPED;
-			case STOPPING -> STOPPING;
 		};
 	}
 
@@ -85,23 +75,18 @@ public class PipelineStatusService {
 		PipelineStatus pipelineStatus = getPipelineStatus(pipelineId);
 
 		return switch (pipelineStatus) {
-			case RUNNING, RESUMING -> {
-				savedPipelines.get(pipelineId).getLdioInput().updateStatus(HALTED);
-				yield HALTED;
-			}
+			case RUNNING -> savedPipelines.get(pipelineId).getLdioInput().updateStatus(HALT);
 			case INIT -> INIT;
-			case STARTING -> STARTING;
 			case HALTED -> HALTED;
 			case STOPPED -> STOPPED;
-			case STOPPING -> STOPPING;
 		};
 	}
 
 	public PipelineStatus stopPipeline(String pipelineId) {
-		LdioInput input = savedPipelines.get(pipelineId).getLdioInput();
-		input.updateStatus(STOPPING);
+		PipelineStatus newPipelineStatus = savedPipelines.get(pipelineId).getLdioInput().updateStatus(STOP);
+		this.savedPipelines.remove(pipelineId);
 		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineId));
-		return STOPPED;
+		return newPipelineStatus;
 	}
 
 	public Map<String, PipelineStatus> getPipelineStatusOverview() {

@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -133,11 +133,11 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	}
 	@When("I pause the pipeline")
 	public void pauseInput() {
-		kafkaIn.updateStatus(PipelineStatus.HALTED);
+		kafkaIn.updateStatus(PipelineStatusTrigger.HALT);
 	}
 	@When("I unpause the pipeline")
 	public void unPauseInput() {
-		kafkaIn.updateStatus(PipelineStatus.RESUMING);
+		kafkaIn.updateStatus(PipelineStatusTrigger.RESUME);
 	}
 }
 

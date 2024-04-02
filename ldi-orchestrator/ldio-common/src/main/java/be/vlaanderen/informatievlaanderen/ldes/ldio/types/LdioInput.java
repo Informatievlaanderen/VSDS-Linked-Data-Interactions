@@ -6,6 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.ObserveConfiguration;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
@@ -16,7 +17,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.MANUAL;
 
 /**
@@ -94,30 +95,25 @@ public abstract class LdioInput implements LdiComponent {
 
 	public abstract void shutdown();
 
-	public void updateStatus(PipelineStatus statusEvent) {
-		switch (statusEvent) {
-			case STARTING -> {
-				this.pipelineStatus = RUNNING;
-				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, RUNNING, AUTO));
-			}
-			case RESUMING -> {
+	public PipelineStatus updateStatus(PipelineStatusTrigger trigger) {
+		switch (trigger) {
+			case START -> this.pipelineStatus = RUNNING;
+			case RESUME -> {
 				this.resume();
 				this.pipelineStatus = RUNNING;
-				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, RUNNING, MANUAL));
 			}
-			case HALTED -> {
+			case HALT -> {
 				if (this.pipelineStatus != INIT) {
 					this.pause();
 					this.pipelineStatus = HALTED;
-					applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, HALTED, MANUAL));
 				}
 			}
-			case STOPPING -> {
-				this.pipelineStatus = STOPPED;
-				applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, STOPPED, MANUAL));
-			}
-			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", pipelineName, statusEvent);
+			case STOP -> this.pipelineStatus = STOPPED;
+			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", pipelineName, pipelineStatus);
 		}
+
+		applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, this.pipelineStatus, MANUAL));
+		return this.pipelineStatus;
 	}
 
 	protected abstract void resume();
@@ -125,10 +121,7 @@ public abstract class LdioInput implements LdiComponent {
 	protected abstract void pause();
 
 	public void starting() {
-		this.pipelineStatus = STARTING;
+		updateStatus(START);
 	}
 
-	public boolean isHalted() {
-		return pipelineStatus.equals(HALTED) || pipelineStatus.equals(STOPPED);
-	}
 }
