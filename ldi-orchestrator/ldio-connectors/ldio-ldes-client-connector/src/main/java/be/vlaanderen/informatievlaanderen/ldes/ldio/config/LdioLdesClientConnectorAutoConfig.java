@@ -19,8 +19,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.KEEP_STATE;
 
 @SuppressWarnings("java:S6830")
@@ -64,9 +62,9 @@ public class LdioLdesClientConnectorAutoConfig {
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			var ldesClient = new LdioLdesClient(pipelineName, executor, observationRegistry, memberSupplier,
 					applicationEventPublisher, keepState);
-			ldesClient.start();
 			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
 
+			ldesClient.start();
 			return ldesClient;
 		}
 

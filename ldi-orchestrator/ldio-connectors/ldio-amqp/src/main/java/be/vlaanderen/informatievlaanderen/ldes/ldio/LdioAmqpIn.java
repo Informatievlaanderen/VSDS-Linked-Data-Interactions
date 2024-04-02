@@ -45,7 +45,7 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 		ldioAmqpInRegistrator = jmsInRegistrator;
 		listenerId = endpoint.getId();
 		jmsInRegistrator.registerListener(jmsConfig, endpoint);
-		this.starting();
+		this.start();
 	}
 
 	@Override

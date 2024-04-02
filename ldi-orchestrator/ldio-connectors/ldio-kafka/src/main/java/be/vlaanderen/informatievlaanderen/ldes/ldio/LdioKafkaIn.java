@@ -51,7 +51,7 @@ public class LdioKafkaIn extends LdioInput {
         containerProps.setMessageListener(listener);
         this.container = new KafkaMessageListenerContainer<>(consumerFactory, containerProps);
         container.start();
-        this.starting();
+        this.start();
     }
 
     @Override

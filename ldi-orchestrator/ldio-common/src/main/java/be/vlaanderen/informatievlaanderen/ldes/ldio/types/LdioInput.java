@@ -120,7 +120,7 @@ public abstract class LdioInput implements LdiComponent {
 
 	protected abstract void pause();
 
-	public void starting() {
+	public void start() {
 		updateStatus(START);
 	}
 

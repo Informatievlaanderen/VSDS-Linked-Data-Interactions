@@ -27,4 +27,17 @@ public class LdioLdesClientConnectorApi {
 		ldesClient.updateStatus(START);
 		return transer;
 	}
+
+	public void shutdown() {
+		tokenService.shutdown();
+	}
+
+	public void resume() {
+		tokenService.resume();
+	}
+
+	public void pause() {
+		tokenService.pause();
+	}
+
 }

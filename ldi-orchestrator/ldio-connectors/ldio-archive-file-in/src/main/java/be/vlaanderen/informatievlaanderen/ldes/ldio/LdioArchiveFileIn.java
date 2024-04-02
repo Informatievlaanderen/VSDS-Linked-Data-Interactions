@@ -21,7 +21,7 @@ public class LdioArchiveFileIn extends LdioInput {
 		super(NAME, pipelineName, executor, null, observationRegistry, applicationEventPublisher);
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
-		starting();
+		start();
 		log.info("Starting with crawling the archive.");
 		crawlArchive();
 		log.info("Finished crawling the archive.");

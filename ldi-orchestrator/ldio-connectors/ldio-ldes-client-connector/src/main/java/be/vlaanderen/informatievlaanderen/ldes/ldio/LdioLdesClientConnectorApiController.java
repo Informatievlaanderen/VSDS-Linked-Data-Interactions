@@ -1,6 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +38,24 @@ public class LdioLdesClientConnectorApiController {
 	@EventListener
 	void handleNewPipelines(LdesClientConnectorApiCreatedEvent connectorApiCreatedEvent) {
 		clientConnectorApis.put(connectorApiCreatedEvent.pipelineName(), connectorApiCreatedEvent.ldesClientConnectorApi());
+	}
+
+	@EventListener
+	void deletePipeline(PipelineDeletedEvent deletedEvent) {
+		LdioLdesClientConnectorApi api = clientConnectorApis.remove(deletedEvent.pipelineId());
+		api.shutdown();
+	}
+
+	@EventListener
+	public void handlePipelineStatusEvent(PipelineStatusEvent event) {
+		LdioLdesClientConnectorApi connectorApi = clientConnectorApis.get(event.pipelineId());
+		switch (event.status()) {
+            case RUNNING -> connectorApi.resume();
+			case HALTED -> connectorApi.pause();
+			default -> {
+				// do nothing with the other status events
+			}
+		}
 	}
 
 }
