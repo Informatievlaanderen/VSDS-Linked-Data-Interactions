@@ -28,7 +28,7 @@ public class MemoryTokenServiceLifecycle {
 
     private void checkTerminated() {
         if (terminated) {
-            throw new MemoryTokenServiceTerminatedException();
+            throw new TerminatedException();
         }
     }
 
@@ -45,7 +45,7 @@ public class MemoryTokenServiceLifecycle {
         this.terminated = true;
     }
 
-    static class MemoryTokenServiceTerminatedException extends RuntimeException {
+    public static class TerminatedException extends RuntimeException {
     }
 
 }
