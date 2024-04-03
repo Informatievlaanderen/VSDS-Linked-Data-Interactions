@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.collection.LdioLdesClientConnectorApiCollection;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
@@ -10,18 +11,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.util.Optional.ofNullable;
-
 @RestController
 public class LdioLdesClientConnectorApiController {
-	private final Map<String, LdioLdesClientConnectorApi> clientConnectorApis = new HashMap<>();
+	private final LdioLdesClientConnectorApiCollection clientConnectorApis;
+
+	public LdioLdesClientConnectorApiController(LdioLdesClientConnectorApiCollection clientConnectorApis) {
+		this.clientConnectorApis = clientConnectorApis;
+	}
 
 	@PostMapping(path = "/{pipeline}/token")
 	public ResponseEntity<String> handleToken(@PathVariable("pipeline") String pipeline, @RequestBody String token) {
-		ofNullable(clientConnectorApis.get(pipeline))
+		clientConnectorApis.get(pipeline)
 				.orElseThrow(() -> new IllegalArgumentException("Not a valid pipeline"))
 				.handleToken(token);
 		return ResponseEntity.accepted().build();
@@ -30,14 +30,14 @@ public class LdioLdesClientConnectorApiController {
 	@PostMapping(path = "/{pipeline}/transfer")
 	public ResponseEntity<String> handleTransfer(@PathVariable("pipeline") String pipeline, @RequestBody String transfer) {
 		return ResponseEntity.accepted()
-				.body(ofNullable(clientConnectorApis.get(pipeline))
+				.body(clientConnectorApis.get(pipeline)
 						.orElseThrow(() -> new IllegalArgumentException("Not a valid pipeline"))
 						.handleTransfer(transfer));
 	}
 
 	@EventListener
 	void handleNewPipelines(LdesClientConnectorApiCreatedEvent connectorApiCreatedEvent) {
-		clientConnectorApis.put(connectorApiCreatedEvent.pipelineName(), connectorApiCreatedEvent.ldesClientConnectorApi());
+		clientConnectorApis.add(connectorApiCreatedEvent.pipelineName(), connectorApiCreatedEvent.ldesClientConnectorApi());
 	}
 
 	@EventListener
@@ -47,14 +47,15 @@ public class LdioLdesClientConnectorApiController {
 
 	@EventListener
 	public void handlePipelineStatusEvent(PipelineStatusEvent event) {
-		LdioLdesClientConnectorApi connectorApi = clientConnectorApis.get(event.pipelineId());
-		switch (event.status()) {
-            case RUNNING -> connectorApi.resume();
-			case HALTED -> connectorApi.pause();
-			default -> {
-				// do nothing with the other status events
+		clientConnectorApis.get(event.pipelineId()).ifPresent(connectorApi -> {
+			switch (event.status()) {
+				case RUNNING -> connectorApi.resume();
+				case HALTED -> connectorApi.pause();
+				default -> {
+					// do nothing with the other status events
+				}
 			}
-		}
+		});
 	}
 
 }
