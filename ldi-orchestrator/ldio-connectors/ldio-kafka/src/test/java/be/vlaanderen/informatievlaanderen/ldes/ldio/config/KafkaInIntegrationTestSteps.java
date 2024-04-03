@@ -144,5 +144,3 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	}
 
 }
-
-
