@@ -32,16 +32,16 @@ public class MemoryTokenServiceLifecycle {
         }
     }
 
-    public void pause() {
+    void pause() {
         this.paused = true;
     }
 
-    public synchronized void resume() {
+    synchronized void resume() {
         this.paused = false;
         this.notifyAll();
     }
 
-    public void shutdown() {
+    void shutdown() {
         this.terminated = true;
     }
 

@@ -42,8 +42,7 @@ public class LdioLdesClientConnectorApiController {
 
 	@EventListener
 	void deletePipeline(PipelineDeletedEvent deletedEvent) {
-		LdioLdesClientConnectorApi api = clientConnectorApis.remove(deletedEvent.pipelineId());
-		api.shutdown();
+		clientConnectorApis.remove(deletedEvent.pipelineId()).shutdown();
 	}
 
 	@EventListener

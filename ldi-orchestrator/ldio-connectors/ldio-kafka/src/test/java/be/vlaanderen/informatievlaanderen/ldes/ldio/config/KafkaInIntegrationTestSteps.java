@@ -110,6 +110,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	public void theListenerWillWaitForTheMessage() {
 		await().until(() -> adapterResult.size() == 1);
 	}
+
 	@Then("Wait for a grace period")
 	public void theListenerWillWaitForPeriod() throws InterruptedException {
 		Awaitility.waitAtMost(1500, TimeUnit.MILLISECONDS);
@@ -131,14 +132,17 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	public void theComponentExecutorWillHaveBeenCalled(int i) {
 		assertEquals(i, componentExecutorResult.size());
 	}
+
 	@When("I pause the pipeline")
 	public void pauseInput() {
 		kafkaIn.updateStatus(PipelineStatusTrigger.HALT);
 	}
+
 	@When("I unpause the pipeline")
 	public void unPauseInput() {
 		kafkaIn.updateStatus(PipelineStatusTrigger.RESUME);
 	}
+
 }
 
 

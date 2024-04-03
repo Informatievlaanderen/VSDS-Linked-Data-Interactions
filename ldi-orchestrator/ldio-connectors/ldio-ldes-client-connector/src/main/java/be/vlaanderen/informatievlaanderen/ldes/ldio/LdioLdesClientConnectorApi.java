@@ -22,10 +22,10 @@ public class LdioLdesClientConnectorApi {
 	}
 
 	public String handleTransfer(String transfer) {
-		String transer = transferService.startTransfer(transfer).getBodyAsString()
+		String response = transferService.startTransfer(transfer).getBodyAsString()
 				.orElse("");
 		ldesClient.updateStatus(START);
-		return transer;
+		return response;
 	}
 
 	public void shutdown() {

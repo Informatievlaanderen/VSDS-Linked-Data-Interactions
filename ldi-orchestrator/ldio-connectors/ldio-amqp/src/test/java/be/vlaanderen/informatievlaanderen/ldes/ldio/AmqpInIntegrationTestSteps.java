@@ -103,6 +103,7 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	public void theListenerWillWaitForTheMessage(int i) {
 		await().until(() -> adapterResult.size() == i);
 	}
+
 	@Then("Wait for a grace period")
 	public void waitForGracePeriod() throws InterruptedException {
 		Awaitility.waitAtMost(Duration.of(500, ChronoUnit.MILLIS));
@@ -119,10 +120,12 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	public void pausePipeline() {
 		ldioInput.updateStatus(HALT);
 	}
+
 	@When("I unpause the pipeline")
 	public void unPausePipeline() {
 		ldioInput.updateStatus(RESUME);
 	}
+
 	@And("The result value will not contain the model")
 	public void theResultValueWillNotContainTheModel() {
 		assertEquals(0, adapterResult.size());
@@ -137,4 +140,5 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	public Boolean booleanValue(String value) {
 		return Boolean.valueOf(value);
 	}
+
 }
