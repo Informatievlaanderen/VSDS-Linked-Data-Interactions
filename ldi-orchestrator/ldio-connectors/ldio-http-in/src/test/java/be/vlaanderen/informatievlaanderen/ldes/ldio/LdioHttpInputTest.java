@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInProcess.NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RESUMING;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.HALT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.RESUME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -50,7 +50,7 @@ class LdioHttpInputTest {
 	void testHttpEndpoint() throws Exception {
 		String content = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 		String contentType = "application/n-quads";
-		input.updateStatus(RESUMING);
+		input.updateStatus(RESUME);
 
 		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().isAccepted());
 
@@ -60,13 +60,13 @@ class LdioHttpInputTest {
 	void when_PipelineIsHalted_Then_MessageIsNotProcessed() throws Exception {
 		String content = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 		String contentType = "application/n-quads";
-		input.updateStatus(HALTED);
+		input.updateStatus(HALT);
 
 		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().is(503));
 
 		verifyNoInteractions(adapter);
 
-		input.updateStatus(RESUMING);
+		input.updateStatus(RESUME);
 
 		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().isAccepted());
 

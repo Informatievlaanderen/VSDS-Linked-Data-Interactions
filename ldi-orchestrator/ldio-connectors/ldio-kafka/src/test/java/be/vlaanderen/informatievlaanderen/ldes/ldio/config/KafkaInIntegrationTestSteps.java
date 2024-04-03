@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -110,6 +110,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	public void theListenerWillWaitForTheMessage() {
 		await().until(() -> adapterResult.size() == 1);
 	}
+
 	@Then("Wait for a grace period")
 	public void theListenerWillWaitForPeriod() throws InterruptedException {
 		Awaitility.waitAtMost(1500, TimeUnit.MILLISECONDS);
@@ -131,14 +132,15 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	public void theComponentExecutorWillHaveBeenCalled(int i) {
 		assertEquals(i, componentExecutorResult.size());
 	}
+
 	@When("I pause the pipeline")
 	public void pauseInput() {
-		kafkaIn.updateStatus(PipelineStatus.HALTED);
+		kafkaIn.updateStatus(PipelineStatusTrigger.HALT);
 	}
+
 	@When("I unpause the pipeline")
 	public void unPauseInput() {
-		kafkaIn.updateStatus(PipelineStatus.RESUMING);
+		kafkaIn.updateStatus(PipelineStatusTrigger.RESUME);
 	}
+
 }
-
-

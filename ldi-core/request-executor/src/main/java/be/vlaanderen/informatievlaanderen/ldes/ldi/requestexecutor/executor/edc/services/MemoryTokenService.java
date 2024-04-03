@@ -16,11 +16,17 @@ public class MemoryTokenService implements TokenService {
 
 	private EdcToken token;
 
-	public MemoryTokenService(TransferService transferService) {
-		this.transferService = transferService;
-	}
+	private final MemoryTokenServiceLifecycle lifecycle;
 
+	public MemoryTokenService(TransferService transferService, MemoryTokenServiceLifecycle lifecycle) {
+		this.transferService = transferService;
+        this.lifecycle = lifecycle;
+    }
+
+	@Override
 	public RequestHeader waitForTokenHeader() {
+		lifecycle.checkPipelineState();
+
 		if (token != null) {
 			return token.getTokenHeader();
 		}
@@ -43,6 +49,21 @@ public class MemoryTokenService implements TokenService {
 	@Override
 	public void updateToken(String token) {
 		this.token = EdcToken.fromJsonString(token);
+	}
+
+	@Override
+	public void pause() {
+		lifecycle.pause();
+	}
+
+	@Override
+	public void resume() {
+		lifecycle.resume();
+	}
+
+	@Override
+	public void shutdown() {
+		lifecycle.shutdown();
 	}
 
 }

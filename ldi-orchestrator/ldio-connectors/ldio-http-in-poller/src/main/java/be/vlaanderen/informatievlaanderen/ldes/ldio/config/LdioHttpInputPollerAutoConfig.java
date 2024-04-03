@@ -53,7 +53,7 @@ public class LdioHttpInputPollerAutoConfig {
 
 			httpInputPoller.schedulePoller(getPollingInterval(properties));
 
-			httpInputPoller.starting();
+			httpInputPoller.start();
 			return httpInputPoller;
 		}
 

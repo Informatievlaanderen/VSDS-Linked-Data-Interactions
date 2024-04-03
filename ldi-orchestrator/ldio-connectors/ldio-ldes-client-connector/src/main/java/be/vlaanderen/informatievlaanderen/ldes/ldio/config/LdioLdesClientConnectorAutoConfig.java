@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTokenService;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTokenServiceLifecycle;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.MemoryTransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.valueobjects.EdcUrlProxy;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
@@ -18,8 +19,6 @@ import ldes.client.treenodesupplier.MemberSupplier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.ArrayList;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.KEEP_STATE;
 
@@ -55,7 +54,8 @@ public class LdioLdesClientConnectorAutoConfig {
 			final String pipelineName = properties.getPipelineName();
 			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
 			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);
-			final var tokenService = new MemoryTokenService(transferService);
+			final var memoryTokenServiceLifecycle = new MemoryTokenServiceLifecycle();
+			final var tokenService = new MemoryTokenService(transferService, memoryTokenServiceLifecycle);
 
 			final var urlProxy = getEdcUrlProxy(properties);
 			final var edcRequestExecutor = requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService,
@@ -64,9 +64,9 @@ public class LdioLdesClientConnectorAutoConfig {
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			var ldesClient = new LdioLdesClient(pipelineName, executor, observationRegistry, memberSupplier,
 					applicationEventPublisher, keepState);
-			ldesClient.start();
 			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
 
+			ldesClient.start();
 			return ldesClient;
 		}
 

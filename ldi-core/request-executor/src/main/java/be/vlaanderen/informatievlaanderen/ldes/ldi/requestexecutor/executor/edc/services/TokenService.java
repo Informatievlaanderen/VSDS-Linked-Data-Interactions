@@ -10,4 +10,9 @@ public interface TokenService {
 
 	void updateToken(String token);
 
+	void pause();
+
+	void resume();
+
+	void shutdown();
 }
