@@ -24,7 +24,9 @@ public class MaterialiserConnection {
 	}
 
 	public RepositoryResult<Statement> getStatements(Resource subject, IRI predicate, Value object) {
-		return holder.getConnection().getStatements(subject, predicate, object);
+		return getNamedGraphIri()
+				.map(namedGraphIri -> holder.getConnection().getStatements(subject, predicate, object, namedGraphIri))
+				.orElseGet(() -> holder.getConnection().getStatements(subject, predicate, object));
 	}
 
 	public void remove(Resource subject, IRI predicate, Value object) {
@@ -44,6 +46,10 @@ public class MaterialiserConnection {
 		final RepositoryConnection connection = holder.getConnection();
 		connection.rollback();
 		connection.close();
+	}
+
+	public void close() {
+		holder.getConnection().close();
 	}
 
 	public void shutdown() {

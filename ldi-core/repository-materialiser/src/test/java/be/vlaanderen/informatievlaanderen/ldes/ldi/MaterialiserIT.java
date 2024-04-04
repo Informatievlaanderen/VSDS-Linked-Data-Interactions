@@ -15,6 +15,7 @@ import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.sail.memory.config.MemoryStoreConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -91,6 +92,41 @@ class MaterialiserIT {
 				.noneMatch(statement -> statement.getObject().stringValue().equals("Taylor"));
 	}
 
+	@Test
+	void given_TwoDifferentNamedGraphs_when_processModelsWithSameSubjects_then_ExpectNoChangesInOtherNamedGraph() {
+		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, "http://example.org/named-graph-1");
+		final Materialiser secondMaterialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, "http://example.org/named-graph-2");
+
+		final org.apache.jena.rdf.model.Model firstJenaModel = RDFParser.source("movies/1.ttl").toModel();
+		final org.apache.jena.rdf.model.Model secondJenaModel = RDFParser.source("movies/2.ttl").toModel();
+		materialiser.process(List.of(firstJenaModel));
+		secondMaterialiser.process(List.of(secondJenaModel));
+
+		Model firstModel = new LinkedHashModel();
+		Model secondModel = new LinkedHashModel();
+
+		materialiser.getMaterialiserConnection()
+				.getStatements(null, null, null)
+				.stream()
+				.map(MaterialiserIT::deleteContextFromStatement)
+				.forEach(firstModel::add);
+
+
+		secondMaterialiser.getMaterialiserConnection()
+				.getStatements(null, null, null)
+				.stream()
+				.map(MaterialiserIT::deleteContextFromStatement)
+				.forEach(secondModel::add);
+
+		assertThat(firstModel)
+				.hasSize((int) firstJenaModel.size());
+
+		assertThat(secondModel)
+				.hasSize((int) secondJenaModel.size());
+
+		materialiser.closeConnection();
+		secondMaterialiser.closeConnection();
+	}
 
 	@ParameterizedTest
 	@ArgumentsSource(NamedGraphProvider.class)

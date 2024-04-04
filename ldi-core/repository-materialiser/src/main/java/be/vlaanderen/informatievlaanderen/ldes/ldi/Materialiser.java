@@ -50,6 +50,10 @@ public class Materialiser {
 		return CompletableFuture.runAsync(() -> process(jenaModels));
 	}
 
+	public void closeConnection() {
+		materialiserConnection.close();
+	}
+
 	public void shutdown() {
 		materialiserConnection.shutdown();
 	}
