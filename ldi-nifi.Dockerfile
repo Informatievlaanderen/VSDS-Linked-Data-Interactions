@@ -3,7 +3,7 @@ ARG NIFI_DOCKER_IMAGE_VERSION
 #
 # INSTALL MAVEN DEPENDENCIES
 #
-FROM maven:3.8.5-amazoncorretto-17 AS builder
+FROM maven:3.9.6-amazoncorretto-21 AS builder
 
 # MAVEN: application
 FROM builder AS app-stage
