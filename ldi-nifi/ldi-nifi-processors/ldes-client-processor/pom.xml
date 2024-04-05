@@ -34,7 +34,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy-dep</artifactId>
-            <version>${byte-buddy-dep.version}</version>
+            <version>${byte-buddy.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
