@@ -12,7 +12,6 @@ import java.util.List;
 
 public class LdesStructureDiscoverer {
 	private static final Logger log = LoggerFactory.getLogger(LdesStructureDiscoverer.class);
-	private final TreeRelationsFetcher treeNodeFetcher;
 	private final String startingUrl;
 	private final Lang sourceFormat;
 	private final RequestExecutor requestExecutor;
@@ -21,7 +20,6 @@ public class LdesStructureDiscoverer {
 		this.startingUrl = startingUrl;
 		this.sourceFormat = sourceFormat;
 		this.requestExecutor = requestExecutor;
-		this.treeNodeFetcher = new TreeRelationsFetcher(requestExecutor);
 	}
 
 	public LdesStructure discoverLdesStructure() {
@@ -47,7 +45,7 @@ public class LdesStructureDiscoverer {
 	private void fetchRelations(TreeRelation relation, boolean isChildOfRoot) {
 		final TreeNodeRequest treeNodeRequest = new TreeNodeRequest(relation.getUri(), sourceFormat);
 		try {
-			treeNodeFetcher.fetchTreeRelations(treeNodeRequest)
+			new TreeRelationsFetcher(requestExecutor).fetchTreeRelations(treeNodeRequest)
 					.parallelStream()
 					.forEach(fetchedRelation -> {
 						if (fetchedRelation.isRequired() || isChildOfRoot) {
