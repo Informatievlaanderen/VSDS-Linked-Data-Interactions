@@ -54,7 +54,6 @@
         <unittestskip>false</unittestskip>
         <integrationtestskip>false</integrationtestskip>
 
-        <impsort-maven-plugin.version>1.9.0</impsort-maven-plugin.version>
 
         <jena.version>4.10.0</jena.version>
         <sis-embedded-db.version>1.4</sis-embedded-db.version>
@@ -120,25 +119,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>net.revelc.code</groupId>
-                <artifactId>impsort-maven-plugin</artifactId>
-                <version>${impsort-maven-plugin.version}</version>
-                <configuration>
-                    <removeUnused>true</removeUnused>
-                    <groups>*, java.,javax.,com.</groups>
-                    <staticGroups>*</staticGroups>
-                    <staticAfter>true</staticAfter>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>sort-imports</id>
-                        <goals>
-                            <goal>sort</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
