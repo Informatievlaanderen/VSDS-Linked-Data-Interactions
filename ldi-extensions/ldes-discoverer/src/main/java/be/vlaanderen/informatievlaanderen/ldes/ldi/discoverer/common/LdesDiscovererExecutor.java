@@ -26,9 +26,13 @@ public class LdesDiscovererExecutor implements CommandLineRunner {
 	public void run(String... args) {
 		log.info("Running LDESDiscoverer for url {}", config.getUrl());
 
-		final LdesStructure ldesStructure = ldesStructureDiscoverer.discoverLdesStructure();
+		try {
+			final LdesStructure ldesStructure = ldesStructureDiscoverer.discoverLdesStructure();
 
-		log.atInfo().log(ldesStructure.toString());
+			log.atInfo().log(ldesStructure.toString());
+		} catch (Exception e) {
+			log.atError().log(e.getMessage());
+		}
 	}
 
 }
