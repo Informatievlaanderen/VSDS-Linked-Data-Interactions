@@ -89,7 +89,8 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 			session.transfer(flowFiles, SUCCESS);
 		} catch (Exception e) {
-			getLogger().error("Error sending model to repository", e.getMessage());
+			getLogger().error(e.getMessage());
+			getLogger().error("Error sending model to repository: {}", e.getMessage());
 			session.transfer(flowFiles, FAILURE);
 		}
 	}
