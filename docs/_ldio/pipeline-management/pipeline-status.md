@@ -10,20 +10,17 @@ These different statuses and their behaviour are dependent on the input componen
 
 # Overview Of The Status Flow
 
-````mermaid
-flowchart LR
-    INIT
-    RUNNING
-    HALTED
-    STOPPED
 
-INIT --> RUNNING
-INIT --> STOPPED
-RUNNING --> STOPPED
-RUNNING --> HALTED
-HALTED --> RUNNING
-HALTED --> STOPPED
-````
+<div class="mermaid" style="width: 400px; height: 130px;">
+graph LR;
+    INIT --> RUNNING;
+    INIT --> STOPPED;
+    RUNNING --> STOPPED;
+    RUNNING --> HALTED;
+    HALTED --> RUNNING;
+    HALTED --> STOPPED;
+</div>
+
 The above diagram shows the flow between the different statuses of the pipeline.
 
 ## INIT
