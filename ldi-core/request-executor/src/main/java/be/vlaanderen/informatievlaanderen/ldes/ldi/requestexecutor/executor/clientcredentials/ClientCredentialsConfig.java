@@ -25,17 +25,20 @@ public class ClientCredentialsConfig implements RequestExecutorSupplier {
 	private final String secret;
 	private final String tokenEndpoint;
 	private final String scope;
+	private final boolean enableRedirectHandling;
 
 	public ClientCredentialsConfig(Collection<Header> headers,
 								   String clientId,
 								   String secret,
 								   String tokenEndpoint,
-								   String scope) {
+								   String scope,
+								   boolean enableRedirectHandling) {
 		this.headers = headers;
 		this.clientId = notNull(clientId);
 		this.secret = notNull(secret);
 		this.tokenEndpoint = notNull(tokenEndpoint);
 		this.scope = scope;
+		this.enableRedirectHandling = enableRedirectHandling;
 	}
 
 	public RequestExecutor createRequestExecutor() {
@@ -43,7 +46,8 @@ public class ClientCredentialsConfig implements RequestExecutorSupplier {
 	}
 
 	private OAuth20Service createService() {
-		final RequestConfig clientConfig = RequestConfig.custom().setRedirectsEnabled(false).build();
+		final RequestConfig.Builder configBuilder = RequestConfig.custom();
+		final RequestConfig clientConfig = configBuilder.setRedirectsEnabled(enableRedirectHandling).build();
 		final ApacheHttpClient apacheHttpClient = new ApacheHttpClient(
 				HttpAsyncClientBuilder.create().setDefaultRequestConfig(clientConfig).setDefaultHeaders(headers).build());
 		final DefaultApi20 authorizationApi = createAuthorizationApi(tokenEndpoint);

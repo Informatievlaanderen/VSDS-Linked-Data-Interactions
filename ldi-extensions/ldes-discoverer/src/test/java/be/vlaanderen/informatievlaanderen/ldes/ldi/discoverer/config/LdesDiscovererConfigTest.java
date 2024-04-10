@@ -18,7 +18,7 @@ class LdesDiscovererConfigTest {
 
 	@Test
 	void given_EmptyConfig_when_GetSourceFormatAsLang_then_ReturnNQuads() {
-		final Lang defaultSourceLang = Lang.NQUADS;
+		final Lang defaultSourceLang = Lang.TURTLE;
 
 		final Lang actualSourceLang = config.getSourceFormatAsLang();
 

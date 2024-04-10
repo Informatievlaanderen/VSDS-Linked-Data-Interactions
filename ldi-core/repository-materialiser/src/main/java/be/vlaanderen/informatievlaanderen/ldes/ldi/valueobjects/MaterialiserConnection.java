@@ -6,6 +6,8 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
+import java.util.Optional;
+
 public class MaterialiserConnection {
 	private final String namedGraph;
 	private final RepositoryConnectionHolder holder;
@@ -15,22 +17,23 @@ public class MaterialiserConnection {
 		this.holder = new RepositoryConnectionHolder(repositoryManager, repositoryId);
 	}
 
-
 	public void add(Model model) {
-		if (namedGraph != null && !namedGraph.isEmpty()) {
-			var namedGraphIRI = SimpleValueFactory.getInstance().createIRI(namedGraph);
-			holder.getConnection().add(model, namedGraphIRI);
-		} else {
-			holder.getConnection().add(model);
-		}
+		getNamedGraphIri().ifPresentOrElse(
+				namedGraphIri -> holder.getConnection().add(model, namedGraphIri),
+				() -> holder.getConnection().add(model));
 	}
 
 	public RepositoryResult<Statement> getStatements(Resource subject, IRI predicate, Value object) {
-		return holder.getConnection().getStatements(subject, predicate, object);
+		return getNamedGraphIri()
+				.map(namedGraphIri -> holder.getConnection().getStatements(subject, predicate, object, namedGraphIri))
+				.orElseGet(() -> holder.getConnection().getStatements(subject, predicate, object));
 	}
 
 	public void remove(Resource subject, IRI predicate, Value object) {
-		holder.getConnection().remove(subject, predicate, object);
+		getNamedGraphIri().ifPresentOrElse(
+				namedGraphIri -> holder.getConnection().remove(subject, predicate, object, namedGraphIri),
+				() -> holder.getConnection().remove(subject, predicate, object)
+		);
 	}
 
 	public void commit() {
@@ -45,11 +48,18 @@ public class MaterialiserConnection {
 		connection.close();
 	}
 
-	public void executeUpdate(String query) {
-		holder.getConnection().prepareUpdate(query).execute();
+	public void close() {
+		holder.getConnection().close();
 	}
 
 	public void shutdown() {
 		holder.shutdown();
+	}
+
+	private Optional<Resource> getNamedGraphIri() {
+		return Optional
+				.ofNullable(namedGraph)
+				.filter(graph -> !graph.isEmpty())
+				.map(SimpleValueFactory.getInstance()::createIRI);
 	}
 }

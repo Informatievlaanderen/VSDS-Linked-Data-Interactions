@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class StartingTreeNodeFinderSteps {
 
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory();
+	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 	private StartingTreeNodeFinder startingTreeNodeFinder;
 	private StartingNodeRequest startingNodeRequest;
 

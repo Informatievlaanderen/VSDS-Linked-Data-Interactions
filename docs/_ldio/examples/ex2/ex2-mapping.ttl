@@ -39,7 +39,7 @@ map:om_002 rml:reference "metacriticLink" ;
 
 map:om_003 rml:reference "thumb" ;
 	rdf:type rr:ObjectMap ;
-	rr:termType rr:IRI .
+	rr:termType rr:Literal .
 
 map:om_004 <http://semweb.mmlab.be/ns/fnml#functionValue> map:fn_000 ;
 	rdf:type <http://semweb.mmlab.be/ns/fnml#FunctionTermMap> ;

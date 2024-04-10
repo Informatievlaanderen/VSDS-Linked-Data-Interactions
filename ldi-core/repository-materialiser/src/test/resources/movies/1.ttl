@@ -1,0 +1,40 @@
+@prefix schema: <http://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/movies/dune> a schema:Movie ;
+    schema:name "Dune" ;
+    schema:description "An epic adaptation of Frank Herbert's sci-fi novel."@en, "Een epische verfilming van de sci-fi novel van Frank Herbert."@nl ;
+    schema:datePublished "2021-09-15"^^xsd:date ;
+    schema:nominated true ;
+    schema:director [
+        a schema:Person ;
+        schema:name "Denis Villeneuve" ;
+        schema:role [
+            a skos:Concept ;
+            skos:prefLabel "Director" ;
+            skos:broader [
+                a skos:Concept ;
+                skos:prefLabel "Person"
+            ]
+        ]
+    ] ;
+    schema:actor [
+        a schema:Person ;
+        schema:name "Timothée Chalamet" ;
+        schema:role [
+            a skos:Concept ;
+            skos:prefLabel "Actor"
+        ]
+    ], [
+        a schema:Person ;
+        schema:name "Rebecca Ferguson" ;
+        schema:role [
+            a skos:Concept ;
+            skos:prefLabel "Actor"
+        ]
+    ] ;
+    schema:genre "Science Fiction", "Adventure" ;
+    schema:duration "PT155M"^^xsd:duration ;
+    schema:language "English" .

@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TransferService;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.STARTING;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
 
 public class LdioLdesClientConnectorApi {
 	private final TransferService transferService;
@@ -22,9 +22,22 @@ public class LdioLdesClientConnectorApi {
 	}
 
 	public String handleTransfer(String transfer) {
-		String transer = transferService.startTransfer(transfer).getBodyAsString()
+		String response = transferService.startTransfer(transfer).getBodyAsString()
 				.orElse("");
-		ldesClient.updateStatus(STARTING);
-		return transer;
+		ldesClient.updateStatus(START);
+		return response;
 	}
+
+	public void shutdown() {
+		tokenService.shutdown();
+	}
+
+	public void resume() {
+		tokenService.resume();
+	}
+
+	public void pause() {
+		tokenService.pause();
+	}
+
 }

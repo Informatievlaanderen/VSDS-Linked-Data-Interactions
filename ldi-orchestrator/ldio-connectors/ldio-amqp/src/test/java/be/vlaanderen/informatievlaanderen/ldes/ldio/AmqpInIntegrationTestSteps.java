@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn.NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RESUMING;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.HALT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.RESUME;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;
@@ -103,6 +103,7 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	public void theListenerWillWaitForTheMessage(int i) {
 		await().until(() -> adapterResult.size() == i);
 	}
+
 	@Then("Wait for a grace period")
 	public void waitForGracePeriod() throws InterruptedException {
 		Awaitility.waitAtMost(Duration.of(500, ChronoUnit.MILLIS));
@@ -117,12 +118,14 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 
 	@When("I pause the pipeline")
 	public void pausePipeline() {
-		ldioInput.updateStatus(HALTED);
+		ldioInput.updateStatus(HALT);
 	}
+
 	@When("I unpause the pipeline")
 	public void unPausePipeline() {
-		ldioInput.updateStatus(RESUMING);
+		ldioInput.updateStatus(RESUME);
 	}
+
 	@And("The result value will not contain the model")
 	public void theResultValueWillNotContainTheModel() {
 		assertEquals(0, adapterResult.size());
@@ -137,4 +140,5 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	public Boolean booleanValue(String value) {
 		return Boolean.valueOf(value);
 	}
+
 }

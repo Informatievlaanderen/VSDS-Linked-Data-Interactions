@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties
 public class LdesDiscovererConfig {
-	public static final String DEFAULT_SOURCE_FORMAT = "application/n-quads";
-	public static final String DEFAULT_OUTPUT_FORMAT = "text/turtle";
+	public static final String DEFAULT_RDF_FORMAT = "text/turtle";
 	private String url;
 	private String sourceFormat;
 	private String outputFormat;
@@ -26,7 +25,7 @@ public class LdesDiscovererConfig {
 	}
 
 	public String getSourceFormat() {
-		return sourceFormat == null ? DEFAULT_SOURCE_FORMAT : sourceFormat;
+		return sourceFormat == null ? DEFAULT_RDF_FORMAT : sourceFormat;
 	}
 
 	public Lang getSourceFormatAsLang() {
@@ -38,7 +37,7 @@ public class LdesDiscovererConfig {
 	}
 
 	public String getOutputFormat() {
-		return outputFormat == null ? DEFAULT_OUTPUT_FORMAT : outputFormat;
+		return outputFormat == null ? DEFAULT_RDF_FORMAT : outputFormat;
 	}
 
 	public Lang getOutputFormatAsLang() {

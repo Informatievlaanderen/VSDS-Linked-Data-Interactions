@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
@@ -24,10 +25,11 @@ class PipelineStatusServiceTest {
 
     @Test
     void when_StoppingPipeline_Then_MethodsAreCalled() {
+        when(input.updateStatus(any())).thenReturn(PipelineStatus.STOPPED);
         PipelineStatus result = pipelineStatusService.stopPipeline(pipelineName);
 
         assertEquals(PipelineStatus.STOPPED, result);
-        verify(input).updateStatus(PipelineStatus.STOPPING);
+        verify(input).updateStatus(PipelineStatusTrigger.STOP);
     }
 
 }

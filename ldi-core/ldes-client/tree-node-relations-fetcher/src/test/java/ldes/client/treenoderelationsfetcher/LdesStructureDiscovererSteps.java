@@ -17,7 +17,7 @@ public class LdesStructureDiscovererSteps {
 	public void iHaveATreeDiscoverer() {
 		final String startingUrl = "http://localhost:10101/200-first-4-relations";
 		final Lang sourceFormat = Lang.TURTLE;
-		ldesStructureDiscoverer = new LdesStructureDiscoverer(startingUrl, sourceFormat, new RequestExecutorFactory().createNoAuthExecutor());
+		ldesStructureDiscoverer = new LdesStructureDiscoverer(startingUrl, sourceFormat, new RequestExecutorFactory(false).createNoAuthExecutor());
 	}
 
 	@When("I start discovering the tree node relations")

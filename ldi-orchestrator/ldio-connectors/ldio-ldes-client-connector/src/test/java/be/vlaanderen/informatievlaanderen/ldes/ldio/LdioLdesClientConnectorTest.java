@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = LdioLdesClientConnectorApiController.class)
+@ComponentScan(basePackages = "be.vlaanderen.informatievlaanderen.ldes.ldio.collection")
 @AutoConfigureMockMvc
 class LdioLdesClientConnectorTest {
 
@@ -32,13 +34,12 @@ class LdioLdesClientConnectorTest {
 	private final String endpoint = "endpoint";
 	private TransferService transferService;
 	private TokenService tokenService;
-	private LdioLdesClient ldesClient;
 
 	@BeforeEach
 	void setup() {
 		transferService = mock(TransferService.class);
 		tokenService = mock(TokenService.class);
-		ldesClient = mock(LdioLdesClient.class);
+		final LdioLdesClient ldesClient = mock(LdioLdesClient.class);
 
 		eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(endpoint, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
 	}

@@ -17,6 +17,9 @@ import static org.mockito.Mockito.verify;
 class MemoryTokenServiceTest {
 
 	@Mock
+	private MemoryTokenServiceLifecycle memoryTokenServiceLifecycle;
+
+	@Mock
 	private TransferService transferService;
 
 	@InjectMocks

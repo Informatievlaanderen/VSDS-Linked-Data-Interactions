@@ -24,7 +24,7 @@ This component exposes two endpoints:
    transfer
    with the connector and also keep the transfer alive while consuming the LDES (e.g. request a new token when it
    expires).
-3. http://<host>:<port>/<pipelines.name>/token
+2. http://<host>:<port>/<pipelines.name>/token
    This endpoint should never be called directly. This is the callback to be provided in the transfer request.
    The EDC connector will use this callback endpoint to provide the LDES Client with a token.
 
@@ -53,6 +53,12 @@ input:
       proxy-url-replacement: http://consumer-connector:29291/public
       source-format: application/n-quads
 ```
+
+## INIT phase
+
+Contrary to the other ldio-input components, the connector waits in the INIT status for the edc-token and will only progress to the RUNNING status once it has received this token.
+More on the statuses in ldio can be found [here.](../pipeline-management/pipeline-status)
+
 
 ## Pausing
 

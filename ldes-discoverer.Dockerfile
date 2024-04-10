@@ -3,7 +3,7 @@
 #
 # INSTALL MAVEN DEPENDENCIES
 #
-FROM maven:3.8.5-amazoncorretto-17 AS builder
+FROM maven:3.9.6-amazoncorretto-21 AS builder
 
 # MAVEN: application
 FROM builder AS app-stage
@@ -13,7 +13,7 @@ RUN mvn clean install -DskipTests
 #
 # RUN THE APPLICATION
 #
-FROM amazoncorretto:17-alpine-jdk
+FROM amazoncorretto:21-alpine-jdk
 
 RUN adduser -D -u 2000 ldes-discoverer
 USER ldes-discoverer

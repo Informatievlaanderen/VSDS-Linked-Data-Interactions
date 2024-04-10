@@ -6,6 +6,6 @@ has_toc: true
 nav_order: 2
 ---
 
-# LDIO Core
+# Linked Data Orchestrator Core
 
 Contains common components used by multiple other LDIO components
