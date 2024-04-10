@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator.SYNTAX_TYPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VersionObjectCreatorTest {
@@ -58,7 +59,7 @@ class VersionObjectCreatorTest {
 		Model actualOutput = versionObjectCreator.constructVersionObject(model, memberInfo);
 
 		assertFalse(actualOutput.listStatements(null, PROV_GENERATED_AT_TIME,
-				model.createTypedLiteral(memberInfo.getObservedAt(), "http://www.w3.org/2001/XMLSchema#dateTime"))
+						model.createTypedLiteral(memberInfo.getObservedAt(), "http://www.w3.org/2001/XMLSchema#dateTime"))
 				.toList().isEmpty());
 		assertFalse(actualOutput.listStatements(null, SYNTAX_TYPE,
 				model.createResource(WATER_QUALITY_OBSERVED)).toList().isEmpty());
@@ -172,6 +173,27 @@ class VersionObjectCreatorTest {
 		assertTrue(
 				logsList.get(0).getMessage().contains(VersionObjectCreator.DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND));
 		assertEquals(Level.WARN, logsList.get(0).getLevel());
+	}
+
+	@Test
+	void when_modelIsEmpty_warningMessagesAreLogged() {
+		Logger vocLogger = (Logger) LoggerFactory.getLogger(VersionObjectCreator.class);
+		ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+		listAppender.start();
+		vocLogger.addAppender(listAppender);
+
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(), null,
+				DEFAULT_DELIMITER,
+				null, null);
+		versionObjectCreator.transform(ModelFactory.createDefaultModel());
+
+		List<ILoggingEvent> logsList = listAppender.list;
+		assertThat(logsList)
+				.extracting(ILoggingEvent::getMessage)
+				.containsExactlyInAnyOrder(LINKED_DATA_MODEL_IS_EMPTY, DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND);
+		assertThat(logsList)
+				.extracting(ILoggingEvent::getLevel)
+				.containsOnly(Level.WARN);
 	}
 
 	private String getPartOfLocalDateTime(LocalDateTime time) {

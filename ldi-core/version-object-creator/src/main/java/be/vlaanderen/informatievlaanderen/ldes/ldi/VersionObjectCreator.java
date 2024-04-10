@@ -26,6 +26,8 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	public static final Property SYNTAX_TYPE = initModel
 			.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 	public static final String DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND = "Date observed property could not be found: {}";
+	public static final String MEMBER_INFO_COULD_NOT_BE_FOUND = "Member info could not be found";
+	public static final String LINKED_DATA_MODEL_IS_EMPTY = "Received an empty data model";
 
 	private final PropertyExtractor dateObservedPropertyExtractor;
 	private final Resource memberTypeResource;
@@ -46,17 +48,20 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	@Override
 	public Model transform(Model linkedDataModel) {
 		final String dateObserved = getDateObserved(linkedDataModel);
-		Optional<String> memberInfo = extractMemberInfo(linkedDataModel);
+		return extractMemberInfo(linkedDataModel)
+				.map(memberInfo -> constructVersionObject(linkedDataModel, new MemberInfo(memberInfo, dateObserved)))
+				.orElseGet(() -> {
+					if (linkedDataModel.isEmpty()) {
+						LOGGER.warn(LINKED_DATA_MODEL_IS_EMPTY);
+					} else {
+						LOGGER.warn(MEMBER_INFO_COULD_NOT_BE_FOUND);
+					}
 
-		if (memberInfo.isPresent())
-			return constructVersionObject(linkedDataModel, new MemberInfo(memberInfo.get(), dateObserved));
-
-		LOGGER.warn(DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND, dateObserved);
-		return linkedDataModel;
+					return linkedDataModel;
+				});
 	}
 
 	private Optional<String> extractMemberInfo(Model linkedDataModel) {
-
 		return linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
 				.nextOptional()
 				.map(Statement::getSubject)
@@ -73,7 +78,11 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 				.filter(literal -> literal.getDatatype().getURI().toLowerCase().contains("datetime"))
 				.map(Literal::getString)
 				.findFirst()
-				.orElse(LocalDateTime.now().format(formatter));
+				.orElseGet(() -> {
+					String currentDate = LocalDateTime.now().format(formatter);
+					LOGGER.warn(DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND, currentDate);
+					return currentDate;
+				});
 	}
 
 	protected Model constructVersionObject(Model inputModel, MemberInfo memberInfo) {
