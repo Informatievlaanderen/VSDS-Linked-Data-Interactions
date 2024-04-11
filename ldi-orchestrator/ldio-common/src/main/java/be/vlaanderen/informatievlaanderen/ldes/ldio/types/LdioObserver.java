@@ -16,6 +16,8 @@ public class LdioObserver {
 	private static final String LDIO_DATA_IN = "ldio_data_in";
 	private static final String LDIO_COMPONENT_NAME = "ldio_type";
 	private static final Logger log = LoggerFactory.getLogger(LdioObserver.class);
+
+
 	private final String componentName;
 	private final String pipelineName;
 	private final ObservationRegistry observationRegistry;
