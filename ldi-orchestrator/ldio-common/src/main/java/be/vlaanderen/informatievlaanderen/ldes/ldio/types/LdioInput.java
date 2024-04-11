@@ -41,8 +41,7 @@ public abstract class LdioInput implements LdiComponent {
 	 * @param adapter  Instance of the LDI Adapter. Facilitates transforming the input
 	 *                 data to a linked data model (RDF).
 	 */
-	protected LdioInput(ComponentExecutor executor, LdiAdapter adapter,
-						LdioObserver ldioObserver, ApplicationEventPublisher applicationEventPublisher) {
+	protected LdioInput(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver, ApplicationEventPublisher applicationEventPublisher) {
 		this.executor = executor;
 		this.adapter = adapter;
 		this.ldioObserver = ldioObserver;
