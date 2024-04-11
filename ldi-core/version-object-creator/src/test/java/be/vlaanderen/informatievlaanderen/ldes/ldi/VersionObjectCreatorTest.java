@@ -217,6 +217,27 @@ class VersionObjectCreatorTest {
 				.containsExactlyInAnyOrder(expectedMessages);
 	}
 
+	@Test
+	void when_modelIsEmpty_warningMessagesAreLogged() {
+		Logger vocLogger = (Logger) LoggerFactory.getLogger(VersionObjectCreator.class);
+		ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+		listAppender.start();
+		vocLogger.addAppender(listAppender);
+
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(), null,
+				DEFAULT_DELIMITER,
+				null, null);
+		versionObjectCreator.transform(ModelFactory.createDefaultModel());
+
+		List<ILoggingEvent> logsList = listAppender.list;
+		assertThat(logsList)
+				.extracting(ILoggingEvent::getMessage)
+				.containsExactlyInAnyOrder(LINKED_DATA_MODEL_IS_EMPTY, DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND);
+		assertThat(logsList)
+				.extracting(ILoggingEvent::getLevel)
+				.containsOnly(Level.WARN);
+	}
+
 	private String getPartOfLocalDateTime(LocalDateTime time) {
 		return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:"));
 	}
