@@ -27,12 +27,12 @@ public class DummyIn extends LdioInput {
 	}
 
 	@Override
-	protected void resume() {
+	public void resume() {
 
 	}
 
 	@Override
-	protected void pause() {
+	public void pause() {
 
 	}
 }

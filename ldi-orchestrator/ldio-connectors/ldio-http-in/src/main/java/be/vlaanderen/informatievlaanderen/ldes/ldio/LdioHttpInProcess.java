@@ -16,12 +16,12 @@ public class LdioHttpInProcess extends LdioInput {
 	}
 
 	@Override
-	protected void resume() {
+	public void resume() {
 		this.isPaused = false;
 	}
 
 	@Override
-	protected void pause() {
+	public void pause() {
 		this.isPaused = true;
 	}
 

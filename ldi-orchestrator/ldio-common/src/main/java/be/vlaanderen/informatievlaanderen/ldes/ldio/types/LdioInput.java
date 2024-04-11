@@ -24,7 +24,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusCh
  * either generated or received data
  * onto the LDIO pipeline
  */
-public abstract class LdioInput implements LdiComponent {
+public abstract class LdioInput implements LdioStatusComponent {
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
 	private final LdioObserver ldioObserver;
@@ -63,8 +63,6 @@ public abstract class LdioInput implements LdiComponent {
 		ldioObserver.observe(() -> executor.transformLinkedData(model), "processModel");
 	}
 
-	public abstract void shutdown();
-
 	public PipelineStatus updateStatus(PipelineStatusTrigger trigger) {
 		switch (trigger) {
 			case START -> this.pipelineStatus = RUNNING;
@@ -86,10 +84,6 @@ public abstract class LdioInput implements LdiComponent {
 		applicationEventPublisher.publishEvent(new PipelineStatusEvent(ldioObserver.getPipelineName(), this.pipelineStatus, MANUAL));
 		return this.pipelineStatus;
 	}
-
-	protected abstract void resume();
-
-	protected abstract void pause();
 
 	public void start() {
 		updateStatus(START);

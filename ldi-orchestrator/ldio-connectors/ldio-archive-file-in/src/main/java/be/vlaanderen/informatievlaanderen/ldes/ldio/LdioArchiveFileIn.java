@@ -33,13 +33,13 @@ public class LdioArchiveFileIn extends LdioInput {
 	public synchronized void crawlArchive() {
 		archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
 			while (paused) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
 					log.error("Thread interrupted: {}", e.getMessage());
-                    Thread.currentThread().interrupt();
-                }
-            }
+					Thread.currentThread().interrupt();
+				}
+			}
 			Model model = RDFParser.source(file).lang(sourceFormat).toModel();
 			processModel(model);
 		});
@@ -49,14 +49,15 @@ public class LdioArchiveFileIn extends LdioInput {
 	public void shutdown() {
 		this.paused = true;
 	}
+
 	@Override
-	protected synchronized void resume() {
+	public synchronized void resume() {
 		this.paused = false;
 		this.notifyAll();
 	}
 
 	@Override
-	protected void pause() {
+	public void pause() {
 		this.paused = true;
 	}
 }

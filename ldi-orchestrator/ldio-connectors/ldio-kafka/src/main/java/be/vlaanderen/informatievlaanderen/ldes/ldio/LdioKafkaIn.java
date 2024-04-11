@@ -51,12 +51,12 @@ public class LdioKafkaIn extends LdioInput {
     }
 
     @Override
-    protected void resume() {
+    public void resume() {
         container.resume();
     }
 
     @Override
-    protected void pause() {
+    public void pause() {
         container.pause();
     }
 
