@@ -3,19 +3,16 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.types;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.ObserveConfiguration;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.observation.Observation;
-import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import java.util.function.Supplier;
+
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.MANUAL;
@@ -44,8 +41,7 @@ public abstract class LdioInput implements LdiComponent {
 	 * @param adapter  Instance of the LDI Adapter. Facilitates transforming the input
 	 *                 data to a linked data model (RDF).
 	 */
-	protected LdioInput(ComponentExecutor executor, LdiAdapter adapter,
-						LdioObserver ldioObserver, ApplicationEventPublisher applicationEventPublisher) {
+	protected LdioInput(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver, ApplicationEventPublisher applicationEventPublisher) {
 		this.executor = executor;
 		this.adapter = adapter;
 		this.ldioObserver = ldioObserver;
@@ -58,7 +54,8 @@ public abstract class LdioInput implements LdiComponent {
 	}
 
 	public void processInput(LdiAdapter.Content content) {
-		ldioObserver.observe(() -> adapter.apply(content).forEach(this::processModel), "processInput", () -> "Processing below message.%n%n###mime###%n%s%n###content###%n%s".formatted(content.mimeType(), content.content()));
+		final Supplier<String> failedContentLogSupplier = () -> "Processing below message.%n%n###mime###%n%s%n###content###%n%s".formatted(content.mimeType(), content.content());
+		ldioObserver.observe(() -> adapter.apply(content).forEach(this::processModel), "processInput", failedContentLogSupplier);
 	}
 
 	protected void processModel(Model model) {
@@ -82,11 +79,10 @@ public abstract class LdioInput implements LdiComponent {
 				}
 			}
 			case STOP -> this.pipelineStatus = STOPPED;
-			// TODO: fix pipelineName
-			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", "pipelineName", pipelineStatus);
+			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", ldioObserver.getPipelineName(), pipelineStatus);
 		}
 
-		applicationEventPublisher.publishEvent(new PipelineStatusEvent("pipelineName", this.pipelineStatus, MANUAL));
+		applicationEventPublisher.publishEvent(new PipelineStatusEvent(ldioObserver.getPipelineName(), this.pipelineStatus, MANUAL));
 		return this.pipelineStatus;
 	}
 

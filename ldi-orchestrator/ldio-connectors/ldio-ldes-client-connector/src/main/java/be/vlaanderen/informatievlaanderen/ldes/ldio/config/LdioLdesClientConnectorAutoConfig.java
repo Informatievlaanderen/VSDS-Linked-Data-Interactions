@@ -13,6 +13,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
@@ -62,7 +63,8 @@ public class LdioLdesClientConnectorAutoConfig {
 					urlProxy);
 			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, edcRequestExecutor).getMemberSupplier();
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
-			var ldesClient = new LdioLdesClient(pipelineName, executor, observationRegistry, memberSupplier,
+			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
+			final var ldesClient = new LdioLdesClient(executor, ldioObserver, memberSupplier,
 					applicationEventPublisher, keepState);
 			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
 

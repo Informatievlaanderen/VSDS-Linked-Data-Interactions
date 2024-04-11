@@ -17,7 +17,6 @@ public class LdioObserver {
 	private static final String LDIO_COMPONENT_NAME = "ldio_type";
 	private static final Logger log = LoggerFactory.getLogger(LdioObserver.class);
 
-
 	private final String componentName;
 	private final String pipelineName;
 	private final ObservationRegistry observationRegistry;
@@ -28,7 +27,8 @@ public class LdioObserver {
 		this.observationRegistry = observationRegistry;
 	}
 
-	public void observe(Runnable observable, String location, Supplier<String>... additionalLoggingContent) {
+	@SafeVarargs
+	public final void observe(Runnable observable, String location, Supplier<String>... additionalLoggingContent) {
 		final String errorLocation = pipelineName + ":" + location;
 		Observation.createNotStarted(this.componentName, observationRegistry)
 				.observe(() -> {
@@ -52,6 +52,14 @@ public class LdioObserver {
 	public static LdioObserver register(String componentName, String pipelineName, ObservationRegistry observationRegistry) {
 		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 		return new LdioObserver(componentName, pipelineName, observationRegistry);
+	}
+
+	/**
+	 * @deprecated will be removed once the pipeline status management is removed from LdioInput
+	 */
+	@Deprecated(forRemoval = true)
+	public String getPipelineName() {
+		return pipelineName;
 	}
 
 

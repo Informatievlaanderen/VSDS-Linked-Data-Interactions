@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.SaslSslPlainConfigProvi
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.listener.LdioKafkaInListener;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
@@ -27,27 +28,23 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorCo
 
 public class LdioKafkaIn extends LdioInput {
     public static final String NAME = "Ldio:KafkaIn";
-    @SuppressWarnings("java:S3740")
-    private final KafkaMessageListenerContainer container;
-    private final LdioKafkaInListener listener;
-    /**
+    private final KafkaMessageListenerContainer<?, ?> container;
+
+	/**
      * Creates a LdiInput with its Component Executor and LDI Adapter
      *
-     * @param pipelineName
      * @param executor                  Instance of the Component Executor. Allows the LDI Input to pass
      *                                  data on the pipeline
      * @param adapter                   Instance of the LDI Adapter. Facilitates transforming the input
      *                                  data to a linked data model (RDF).
-     * @param observationRegistry
-     * @param applicationEventPublisher
-     * @param config
+     * @param ldioObserver              Instance of the LDIO Observer, for observing and monitoring reasons
      */
-    public LdioKafkaIn(String pipelineName, ComponentExecutor executor, LdiAdapter adapter, ObservationRegistry observationRegistry,
+    public LdioKafkaIn(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver,
                        ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
-        super(NAME, pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);
-        this.listener = new LdioKafkaInListener(getContentType(config), this::processInput);
-        var consumerFactory = new DefaultKafkaConsumerFactory<>(getConsumerConfig(config));
-        ContainerProperties containerProps = new ContainerProperties(config.getProperty(TOPICS).split(","));
+        super(executor, adapter, ldioObserver, applicationEventPublisher);
+		final LdioKafkaInListener listener = new LdioKafkaInListener(getContentType(config), this::processInput);
+        final var consumerFactory = new DefaultKafkaConsumerFactory<>(getConsumerConfig(config));
+        final ContainerProperties containerProps = new ContainerProperties(config.getProperty(TOPICS).split(","));
         containerProps.setMessageListener(listener);
         this.container = new KafkaMessageListenerContainer<>(consumerFactory, containerProps);
         container.start();

@@ -5,7 +5,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.LdioAmpqInProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
@@ -38,14 +40,13 @@ public class LdioAmqpInAutoConfig {
 
 		@Override
 		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
-			String pipelineName = config.getPipelineName();
-
-			String remoteUrl = new RemoteUrlExtractor(config).getRemoteUrl();
-			JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),
+			final String pipelineName = config.getPipelineName();
+			final String remoteUrl = new RemoteUrlExtractor(config).getRemoteUrl();
+			final JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),
 					remoteUrl, config.getProperty(QUEUE));
-
-			return new LdioAmqpIn(pipelineName, executor, adapter, getContentType(config), jmsConfig, ldioAmqpInRegistrator,
-					observationRegistry, applicationEventPublisher);
+			final LdioAmpqInProperties properties = new LdioAmpqInProperties(pipelineName, getContentType(config), jmsConfig);
+			final LdioObserver ldioObserver = LdioObserver.register(LdioAmqpIn.NAME, pipelineName, observationRegistry);
+			return new LdioAmqpIn(executor, adapter, ldioObserver, ldioAmqpInRegistrator, properties, applicationEventPublisher);
 		}
 
 		@Override

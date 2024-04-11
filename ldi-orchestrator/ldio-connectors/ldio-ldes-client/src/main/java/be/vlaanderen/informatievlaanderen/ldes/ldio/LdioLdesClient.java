@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
@@ -24,13 +25,12 @@ public class LdioLdesClient extends LdioInput {
 	private boolean paused = false;
 	private final boolean keepState;
 
-	public LdioLdesClient(String pipelineName,
-                          ComponentExecutor componentExecutor,
-                          ObservationRegistry observationRegistry,
+	public LdioLdesClient(ComponentExecutor componentExecutor,
+                          LdioObserver ldioObserver,
                           MemberSupplier memberSupplier,
                           ApplicationEventPublisher applicationEventPublisher,
 						  boolean keepState) {
-		super(NAME, pipelineName, componentExecutor, null, observationRegistry, applicationEventPublisher);
+		super(componentExecutor, null, ldioObserver, applicationEventPublisher);
 		this.memberSupplier = memberSupplier;
         this.keepState = keepState;
     }
