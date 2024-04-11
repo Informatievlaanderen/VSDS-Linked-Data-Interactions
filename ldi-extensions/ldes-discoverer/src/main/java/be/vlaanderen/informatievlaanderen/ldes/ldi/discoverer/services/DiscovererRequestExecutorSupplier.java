@@ -21,8 +21,12 @@ public class DiscovererRequestExecutorSupplier {
 	private final RequestExecutorFactory requestExecutorFactory;
 
 	public DiscovererRequestExecutorSupplier(RequestExecutorProperties properties) {
+		this(properties, new RequestExecutorFactory(false));
+	}
+
+	public DiscovererRequestExecutorSupplier(RequestExecutorProperties properties, RequestExecutorFactory requestExecutorFactory) {
 		this.properties = properties;
-		this.requestExecutorFactory = new RequestExecutorFactory(false);
+		this.requestExecutorFactory = requestExecutorFactory;
 	}
 
 	public RequestExecutor createRequestExecutor() {

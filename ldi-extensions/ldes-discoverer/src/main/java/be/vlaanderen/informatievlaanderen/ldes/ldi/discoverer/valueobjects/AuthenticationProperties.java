@@ -22,14 +22,14 @@ public class AuthenticationProperties {
 
 
 	public AuthStrategy getAuthStrategy() {
-		return arguments.getArgumentValues(AUTH_TYPE).stream().findFirst()
+		return arguments.getValue(AUTH_TYPE)
 				.map(AuthStrategy::from)
 				.map(authStrategy -> authStrategy.orElseThrow(() -> new UnsupportedOperationException("Requested authentication not available.")))
 				.orElse(AuthStrategy.NO_AUTH);
 	}
 
 	public String getApiKeyHeader() {
-		return arguments.getArgumentValues(API_KEY_HEADER).stream().findFirst().orElse(DEFAULT_API_KEY_HEADER);
+		return arguments.getValue(API_KEY_HEADER).orElse(DEFAULT_API_KEY_HEADER);
 	}
 
 	public String getApiKey() {
@@ -49,7 +49,7 @@ public class AuthenticationProperties {
 	}
 
 	public Optional<String> getAuthScope() {
-		return arguments.getArgumentValues(SCOPE).stream().findFirst();
+		return arguments.getValue(SCOPE);
 	}
 
 }

@@ -12,7 +12,7 @@ public class Arguments {
 		this.applicationArguments = applicationArguments;
 	}
 
-	public boolean containsKey(String key) {
+	public boolean containsFlag(String key) {
 		return applicationArguments.containsOption(key);
 	}
 
@@ -21,15 +21,21 @@ public class Arguments {
 		return values == null ? List.of() : values;
 	}
 
+	public Optional<String> getValue(String key) {
+		return getArgumentValues(key).stream().findFirst();
+	}
+
 	public String getRequiredValue(String key) {
-		return getArgumentValues(key).stream()
-				.findFirst()
-				.orElseThrow(() -> new IllegalArgumentException("Missing configuration for %s".formatted(key)));
+		return getValue(key).orElseThrow(() -> new IllegalArgumentException("Missing configuration for %s".formatted(key)));
 	}
 
 	public Optional<Integer> getInteger(String key) {
-		return getArgumentValues(key).stream()
-				.findFirst()
-				.map(Integer::parseInt);
+		try {
+			return getArgumentValues(key).stream()
+					.findFirst()
+					.map(Integer::parseInt);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid configuration for %s: unable to parse number %s".formatted(key, e.getMessage()), e);
+		}
 	}
 }

@@ -18,8 +18,9 @@ public class Headers {
 
 	public List<Header> getHeaders() {
 		return arguments.getArgumentValues(HEADER).stream()
-				.map(headerString -> headerString.split(": "))
-				.map(headerArray -> new BasicHeader(headerArray[0], headerArray[1]) )
+				.filter(str -> !str.isBlank() && str.contains(":"))
+				.map(headerString -> headerString.split(":"))
+				.map(headerArray -> new BasicHeader(headerArray[0].trim(), headerArray[1].trim()) )
 				.collect(Collectors.toUnmodifiableList());
 	}
 }

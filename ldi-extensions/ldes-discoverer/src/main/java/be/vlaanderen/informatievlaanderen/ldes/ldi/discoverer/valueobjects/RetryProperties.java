@@ -1,8 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.valueobjects;
 
+import org.apache.commons.lang3.stream.Streams;
 import org.springframework.boot.ApplicationArguments;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class RetryProperties {
 	private static final String DISABLE_RETRY = "disable-retry";
@@ -17,7 +19,7 @@ public class RetryProperties {
 	}
 
 	public boolean isRetryingDisabled() {
-		return arguments.containsKey(DISABLE_RETRY);
+		return arguments.containsFlag(DISABLE_RETRY);
 	}
 
 	public int getRetryLimit() {
@@ -25,6 +27,12 @@ public class RetryProperties {
 	}
 
 	public List<Integer> getRetryStatuses() {
-		return arguments.getArgumentValues(RETRY_STATUSES).stream().map(String::trim).map(Integer::parseInt).toList();
+		return arguments.getValue(RETRY_STATUSES)
+				.map(string -> string.split(","))
+				.map(Streams::of)
+				.orElseGet(Stream::of)
+				.map(String::trim)
+				.map(Integer::parseInt)
+				.toList();
 	}
 }

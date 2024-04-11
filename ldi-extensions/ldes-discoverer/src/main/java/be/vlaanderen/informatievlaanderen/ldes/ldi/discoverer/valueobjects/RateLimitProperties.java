@@ -18,7 +18,7 @@ public class RateLimitProperties {
 	}
 
 	public boolean isRateLimitEnabled() {
-		return arguments.containsKey(ENABLE_RATE_LIMIT);
+		return arguments.containsFlag(ENABLE_RATE_LIMIT);
 	}
 
 	public int getRateLimit() {
@@ -26,9 +26,7 @@ public class RateLimitProperties {
 	}
 
 	public Duration getRateLimitPeriod() {
-		final String periodStringValue = arguments.getArgumentValues(RATE_LIMIT_PERIOD).stream()
-				.findFirst()
-				.orElse(DEFAULT_PERIOD);
+		final String periodStringValue = arguments.getValue(RATE_LIMIT_PERIOD).orElse(DEFAULT_PERIOD);
 		try {
 			return Duration.parse(periodStringValue);
 		} catch (DateTimeParseException e) {
