@@ -159,13 +159,14 @@ class VersionObjectCreatorTest {
 				@prefix time: <http://www.w3.org/2006/time#> .
 				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 				
-				ex:John ex:hasAge "30" .
-				ex:John ex:hasName "John Smith" .
-				ex:John ex:hasFriend ex:Jane .
-				ex:John ex:created [
-				    a time:Instant ;
-				    time:inXSDDateTimeStamp "2023-08-18T13:08:00+01:00"^^xsd:DateTime
-				  ]
+				ex:John
+					ex:hasAge "30" ;
+					ex:hasName "John Smith" ;
+					ex:hasFriend ex:Jane ;
+					ex:created [
+				    	    a time:Instant ;
+				    	    time:inXSDDateTimeStamp "2023-08-18T13:08:00+01:00"^^xsd:DateTime
+				  	] .
 				""").lang(Lang.TTL).toModel();
 
 		VersionObjectCreator versionObjectCreator = createVersionObjectCreator(
@@ -211,7 +212,7 @@ class VersionObjectCreatorTest {
 		assertExpectedLogs(listAppender.list, LINKED_DATA_MODEL_IS_EMPTY, DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND);
 	}
 
-	private void assertExpectedLogs(List<ILoggingEvent> logsList, String... expectedMessages) {
+	private static void assertExpectedLogs(List<ILoggingEvent> logsList, String... expectedMessages) {
 		assertThat(logsList)
 				.extracting(ILoggingEvent::getMessage)
 				.containsExactlyInAnyOrder(expectedMessages);
