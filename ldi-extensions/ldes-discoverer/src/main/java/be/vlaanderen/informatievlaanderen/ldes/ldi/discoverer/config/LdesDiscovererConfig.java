@@ -5,8 +5,6 @@ import org.apache.jena.riot.RDFLanguages;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Map;
-
 @Configuration
 @ConfigurationProperties
 public class LdesDiscovererConfig {
@@ -14,7 +12,6 @@ public class LdesDiscovererConfig {
 	private String url;
 	private String sourceFormat;
 	private String outputFormat;
-	private Map<String, String> requester;
 	public String getUrl() {
 		if (url == null) {
 			throw new IllegalArgumentException("Missing value for 'url'");
@@ -48,13 +45,5 @@ public class LdesDiscovererConfig {
 
 	public void setOutputFormat(String outputFormat) {
 		this.outputFormat = outputFormat;
-	}
-
-	public Map<String, String> getRequester() {
-		return requester;
-	}
-
-	public void setRequester(Map<String, String> requester) {
-		this.requester = requester;
 	}
 }
