@@ -67,11 +67,7 @@ public class RequestExecutorProperties {
 		return retryProperties.getRetryStatuses();
 	}
 
-	public boolean isRateLimitEnabled() {
-		return rateLimitProperties.isRateLimitEnabled();
-	}
-
-	public int getRateLimit() {
+	public Optional<Integer> getRateLimit() {
 		return rateLimitProperties.getRateLimit();
 	}
 

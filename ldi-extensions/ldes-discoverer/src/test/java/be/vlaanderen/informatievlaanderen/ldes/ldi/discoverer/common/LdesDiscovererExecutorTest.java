@@ -67,7 +67,7 @@ class LdesDiscovererExecutorTest {
 
 	@Nested
 	@WireMockTest(httpPort = WIREMOCK_PORT)
-	@SpringBootTest(args = {"--url=http://localhost:10101/observations", "--retry-limit=3", "--enable-rate-limit", "--rate-limit=1", "--rate-limit-period=PT5S"})
+	@SpringBootTest(args = {"--url=http://localhost:10101/observations", "--retry-limit=3", "--rate-limit=1", "--rate-limit-period=PT5S"})
 	class RateLimit {
 		@Autowired
 		private LdesDiscovererExecutor executor;

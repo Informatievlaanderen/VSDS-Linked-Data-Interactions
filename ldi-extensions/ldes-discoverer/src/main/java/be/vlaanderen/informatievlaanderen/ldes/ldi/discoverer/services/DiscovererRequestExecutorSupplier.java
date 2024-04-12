@@ -37,10 +37,9 @@ public class DiscovererRequestExecutorSupplier {
 	}
 
 	private Optional<RateLimiter> getRateLimiter() {
-		if (!properties.isRateLimitEnabled()) {
-			return Optional.empty();
-		}
-		return Optional.of(RateLimiterConfig.limitForPeriod(properties.getRateLimit(), properties.getRateLimitPeriod()).getRateLimiter());
+		return properties.getRateLimit()
+				.map(rateLimit -> RateLimiterConfig.limitForPeriod(rateLimit, properties.getRateLimitPeriod()))
+				.map(RateLimiterConfig::getRateLimiter);
 	}
 
 	private Optional<Retry> getRetry() {

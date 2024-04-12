@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.config.RequestExecutorProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.valueobjects.Headers;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials.ClientCredentialsRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.clientcredentials.ClientCredentialsRequestExecutor;
@@ -71,7 +70,6 @@ class DiscovererRequestExecutorSupplierTest {
 	@Test
 	void given_NoDecorationConfigIsProvided_when_CreateExecutor_then_ReturnBaseExecutor() {
 		when(arguments.containsOption("disable-retry")).thenReturn(true);
-		when(arguments.containsOption("enable-rate-limit")).thenReturn(false);
 
 		final RequestExecutor actual = requestExecutorSupplier.createRequestExecutor();
 
@@ -82,7 +80,6 @@ class DiscovererRequestExecutorSupplierTest {
 	@Test
 	void given_ClientCredentialsAuthConfig_when_CreateExecutor_then_ReturnDefaultExecutorWithAdditionalHeaders() {
 		when(arguments.containsOption("disable-retry")).thenReturn(true);
-		when(arguments.containsOption("enable-rate-limit")).thenReturn(false);
 		when(arguments.getOptionValues("header")).thenReturn(null);
 		when(arguments.getOptionValues("auth-type")).thenReturn(List.of(AuthStrategy.OAUTH2_CLIENT_CREDENTIALS.name()));
 		when(arguments.getOptionValues("client-id")).thenReturn(List.of("my-client-id"));
@@ -97,13 +94,14 @@ class DiscovererRequestExecutorSupplierTest {
 
 	@Test
 	void given_RateLimitConfig_when_CreateExecutor_then_ReturnLambda() {
-		when(arguments.containsOption("enable-rate-limit")).thenReturn(true);
+		when(arguments.getOptionValues(anyString())).thenReturn(null);
+		when(arguments.getOptionValues("rate-limit")).thenReturn(List.of("500"));
 
 		final RequestExecutor actual = requestExecutorSupplier.createRequestExecutor();
 
 		assertThat(actual)
 				.isInstanceOf(RequestExecutor.class)
 				.isNotInstanceOfAny(DefaultRequestExecutor.class, ClientCredentialsRequest.class) ;
-		verify(arguments).containsOption("enable-rate-limit");
+		verify(arguments).getOptionValues("rate-limit");
 	}
 }
