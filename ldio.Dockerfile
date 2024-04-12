@@ -27,7 +27,6 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ldes-client/target/l
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ldes-client-connector/target/ldio-ldes-client-connector-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-kafka/target/ldio-kafka-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-amqp/target/ldio-amqp-jar-with-dependencies.jar ./lib/
-COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-archive-file-in/target/ldio-archive-file-in-jar-with-dependencies.jar ./lib/
 
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-rdf-adapter/target/ldio-rdf-adapter-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-ngsiv2-to-ld-adapter/target/ldio-ngsiv2-to-ld-adapter-jar-with-dependencies.jar ./lib/
@@ -44,8 +43,6 @@ COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-enricher/target
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-console-out/target/ldio-console-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-http-out/target/ldio-http-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-noop-out/target/ldio-noop-out-jar-with-dependencies.jar ./lib/
-COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-azure-blob-out/target/ldio-azure-blob-out-jar-with-dependencies.jar ./lib/
-COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-file-out/target/ldio-file-out-jar-with-dependencies.jar ./lib/
 COPY --from=app-stage ldi-orchestrator/ldio-connectors/ldio-repository-materialiser/target/ldio-repository-materialiser-jar-with-dependencies.jar ./lib/
 
 
