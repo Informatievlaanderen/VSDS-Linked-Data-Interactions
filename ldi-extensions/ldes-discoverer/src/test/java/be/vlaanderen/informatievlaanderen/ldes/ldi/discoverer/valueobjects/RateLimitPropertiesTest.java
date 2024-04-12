@@ -8,9 +8,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.ApplicationArguments;
 
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +38,16 @@ class RateLimitPropertiesTest {
 		assertThat(properties.isRateLimitEnabled()).isTrue();
 		assertThat(properties.getRateLimit()).isEqualTo(250);
 		assertThat(properties.getRateLimitPeriod()).isEqualTo(Duration.ofSeconds(1));
+	}
+
+	@Test
+	void test_InvalidPeriod() {
+		when(arguments.getOptionValues("rate-limit-period")).thenReturn(List.of("P1S"));
+
+		assertThatThrownBy(() -> properties.getRateLimitPeriod())
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasCauseInstanceOf(DateTimeParseException.class)
+				.hasMessage("Illegal value for rate-limit-period:P1S");
 
 	}
 }

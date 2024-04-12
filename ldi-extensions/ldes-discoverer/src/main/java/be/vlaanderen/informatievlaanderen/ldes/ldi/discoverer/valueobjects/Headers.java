@@ -5,10 +5,13 @@ import org.apache.http.message.BasicHeader;
 import org.springframework.boot.ApplicationArguments;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Headers {
 	private static final String HEADER = "header";
+	private static final Pattern headerPattern = Pattern.compile("([^:]+):\\s*(\\S.*?)");
 
 	private final Arguments arguments;
 
@@ -18,9 +21,9 @@ public class Headers {
 
 	public List<Header> getHeaders() {
 		return arguments.getArgumentValues(HEADER).stream()
-				.filter(str -> !str.isBlank() && str.contains(":"))
-				.map(headerString -> headerString.split(":"))
-				.map(headerArray -> new BasicHeader(headerArray[0].trim(), headerArray[1].trim()) )
+				.map(headerPattern::matcher)
+				.filter(Matcher::matches)
+				.map(matcher -> new BasicHeader(matcher.group(1), matcher.group(2)))
 				.collect(Collectors.toUnmodifiableList());
 	}
 }
