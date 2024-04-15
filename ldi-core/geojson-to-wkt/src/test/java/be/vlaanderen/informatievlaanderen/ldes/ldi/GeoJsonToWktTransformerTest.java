@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GeoJsonToWktTransformerTest {
 
-	private final GeoJsonToWktTransformer transformer = new GeoJsonToWktTransformer();
+	private final GeoJsonToWktTransformer transformer = new GeoJsonToWktTransformer(true);
 
 	@Test
 	void testApply() {

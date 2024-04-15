@@ -42,7 +42,7 @@ public class GeoJsonToWktProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		geoJsonToWktTransformer = new GeoJsonToWktTransformer();
+		geoJsonToWktTransformer = new GeoJsonToWktTransformer(true);
 	}
 
 	@Override
