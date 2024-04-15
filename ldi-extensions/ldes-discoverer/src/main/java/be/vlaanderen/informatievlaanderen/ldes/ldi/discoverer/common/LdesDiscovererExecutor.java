@@ -1,8 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.common;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.config.LdesDiscovererConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.config.RequestExecutorProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.services.DiscovererRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import ldes.client.treenoderelationsfetcher.LdesStructureDiscoverer;
 import ldes.client.treenoderelationsfetcher.domain.valueobjects.LdesStructure;
 import org.slf4j.Logger;
@@ -16,9 +17,9 @@ public class LdesDiscovererExecutor implements CommandLineRunner {
 	private final LdesDiscovererConfig config;
 	private final LdesStructureDiscoverer ldesStructureDiscoverer;
 
-	public LdesDiscovererExecutor(LdesDiscovererConfig config) {
+	public LdesDiscovererExecutor(LdesDiscovererConfig config, RequestExecutorProperties requestExecutorProperties) {
 		this.config = config;
-		final RequestExecutor requestExecutor = new RequestExecutorFactory(false).createNoAuthExecutor();
+		final RequestExecutor requestExecutor = new DiscovererRequestExecutorSupplier(requestExecutorProperties).createRequestExecutor();
 		ldesStructureDiscoverer = new LdesStructureDiscoverer(config.getUrl(), config.getSourceFormatAsLang(), requestExecutor);
 	}
 
