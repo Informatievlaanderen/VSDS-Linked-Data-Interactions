@@ -23,7 +23,7 @@ follow, the structure can be discovered first.
 
 ### Optional config
 
-### Authentication
+#### Authentication
 
 | Property       | Description                                                            | Default   | Example                     | Supported values                              |
 |:---------------|:-----------------------------------------------------------------------|:----------|:----------------------------|:----------------------------------------------|
