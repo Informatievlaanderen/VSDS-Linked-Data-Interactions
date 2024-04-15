@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
 import org.junit.jupiter.api.AfterEach;
@@ -77,7 +78,7 @@ class LdioHttpInputPollerTest {
 	class DefaultConfig {
 		@BeforeEach
 		void setUp() {
-			ldioHttpInputPoller = new LdioHttpInputPoller(pipelineName, executor, adapter, null, List.of(BASE_URL + ENDPOINT), true, noAuthExecutor, applicationEventPublisher);
+			ldioHttpInputPoller = new LdioHttpInputPoller(executor, adapter, null, noAuthExecutor, new LdioHttpInputPollerProperties(List.of(BASE_URL + ENDPOINT)), applicationEventPublisher);
 		}
 
 		@Test

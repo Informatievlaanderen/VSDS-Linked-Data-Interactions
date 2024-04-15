@@ -5,6 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.ArchiveFileCrawler;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StartedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
@@ -41,6 +43,11 @@ public class LdioArchiveFileInAutoConfig {
 			@Override
 			public boolean isAdapterRequired() {
 				return false;
+			}
+
+			@Override
+			public PipelineStatus getInitialPipelineStatus() {
+				return new StartedPipelineStatus();
 			}
 
 			private Path getArchiveDirectoryPath(ComponentProperties config) {
