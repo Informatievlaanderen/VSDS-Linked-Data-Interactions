@@ -14,26 +14,26 @@ follow, the structure can be discovered first.
 
 ## Config
 
-### Required config
+### Base configuration
 
-| Property | Description                                  | Default | Example                   | Supported values   |
-|:---------|:---------------------------------------------|:--------|:--------------------------|:-------------------|
-| url      | Url where from the discoverer needs to start | N/A     | http://example.com/my-api | HTTP and HTTPS url |
+| Property      | Description                                                | Required | Default     | Example                   | Supported values                                                                                                        |
+|:--------------|:-----------------------------------------------------------|:---------|:------------|:--------------------------|:------------------------------------------------------------------------------------------------------------------------|
+| url           | Url where from the discoverer needs to start               | true     | N/A         | http://example.com/my-api | HTTP and HTTPS url                                                                                                      |
+| source-format | The 'Content-Type' that should be requested to the server. | false    | text/turtle | application/n-quads       | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
 
 ### Optional config
 
-#### Authentication
+### Authentication
 
-| Property       | Description                                                            | Default     | Example                     | Supported values                                                                                                        |
-|:---------------|:-----------------------------------------------------------------------|:------------|:----------------------------|:------------------------------------------------------------------------------------------------------------------------|
-| source-format  | The 'Content-Type' that should be requested to the server.             | text/turtle | application/n-quads         | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
-| auth-type      | The type of authentication required by the LDES server                 | NO_AUTH     | OAUTH2_CLIENT_CREDENTIALS   | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS                                                                           |
-| api-key        | The api key when using auth-type 'API_KEY'                             | N/A         | myKey                       | String                                                                                                                  |
-| api-key-header | The header for the api key when using auth-type 'API_KEY'              | X-API-KEY   | X-API-KEY                   | String                                                                                                                  |
-| client-id      | The client identifier when using auth-type 'OAUTH2_CLIENT_CREDENTIALS' | N/A         | myId                        | String                                                                                                                  |
-| client-secret  | The client secret when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'     | N/A         | mySecret                    | String                                                                                                                  |
-| token-endpoint | The token endpoint when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'    | N/A         | http://localhost:8000/token | HTTP and HTTPS urls                                                                                                     |
-| scope          | The Oauth2 scope when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'      | N/A         | http://localhost:8000/token | HTTP and HTTPS urls                                                                                                     |
+| Property       | Description                                                            | Default   | Example                     | Supported values                              |
+|:---------------|:-----------------------------------------------------------------------|:----------|:----------------------------|:----------------------------------------------|
+| auth-type      | The type of authentication required by the LDES server                 | NO_AUTH   | OAUTH2_CLIENT_CREDENTIALS   | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS |
+| api-key        | The api key when using auth-type 'API_KEY'                             | N/A       | myKey                       | String                                        |
+| api-key-header | The header for the api key when using auth-type 'API_KEY'              | X-API-KEY | X-API-KEY                   | String                                        |
+| client-id      | The client identifier when using auth-type 'OAUTH2_CLIENT_CREDENTIALS' | N/A       | myId                        | String                                        |
+| client-secret  | The client secret when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'     | N/A       | mySecret                    | String                                        |
+| token-endpoint | The token endpoint when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'    | N/A       | http://localhost:8000/token | HTTP and HTTPS urls                           |
+| scope          | The Oauth2 scope when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'      | N/A       | http://localhost:8000/token | HTTP and HTTPS urls                           |
 
 #### Further customization
 
@@ -54,11 +54,13 @@ In this example, we will try to discover the structure of an event stream called
 For simplicity, we recommend passing the config as arguments.
 
 **Run the ldes-discoverer with minimal config**
+
 ```shell
 docker run ldes/ldes-discoverer --url="http://ldes-server/observations"
 ```
 
 **Run the ldes-discoverer with rate-limit, authentication and two additional headers**
+
 ```shell
 docker run ldes/ldes-discoverer --url="http://ldes-server/observations" --retry-limit=3 --rate-limit=400 \
  --header="Connection: keep alive" --header="X-Source-App: ldes-discoverer" \
