@@ -75,12 +75,12 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 	}
 
 	@Override
-	protected void resume() {
+	public void resume() {
 		ldioAmqpInRegistrator.startListener(listenerId);
 	}
 
 	@Override
-	protected void pause() {
+	public void pause() {
 		ldioAmqpInRegistrator.stopListener(listenerId);
 	}
 }

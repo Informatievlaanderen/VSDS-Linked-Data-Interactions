@@ -78,13 +78,13 @@ public class LdioLdesClient extends LdioInput {
 	}
 
 	@Override
-	protected synchronized void resume() {
+	public synchronized void resume() {
 		this.paused = false;
 		this.notifyAll();
 	}
 
 	@Override
-	protected void pause() {
+	public void pause() {
 		this.paused = true;
 	}
 }

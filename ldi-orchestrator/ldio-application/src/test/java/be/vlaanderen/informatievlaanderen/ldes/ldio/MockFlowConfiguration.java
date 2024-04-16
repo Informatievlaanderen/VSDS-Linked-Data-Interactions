@@ -7,6 +7,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurato
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StartedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -55,6 +57,11 @@ public class MockFlowConfiguration {
 		@Override
 		public boolean isAdapterRequired() {
 			return true;
+		}
+
+		@Override
+		public PipelineStatus getInitialPipelineStatus() {
+			return new StartedPipelineStatus();
 		}
 	}
 
