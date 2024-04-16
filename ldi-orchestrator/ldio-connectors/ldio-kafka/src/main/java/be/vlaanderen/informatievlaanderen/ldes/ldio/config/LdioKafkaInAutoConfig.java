@@ -36,7 +36,7 @@ public class LdioKafkaInAutoConfig {
 		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
 			final String pipelineName = config.getPipelineName();
 			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
-			return new LdioKafkaIn(executor, adapter, ldioObserver, applicationEventPublisher, config);
+			return new LdioKafkaIn(executor, adapter, ldioObserver, config);
 		}
 
 		@Override

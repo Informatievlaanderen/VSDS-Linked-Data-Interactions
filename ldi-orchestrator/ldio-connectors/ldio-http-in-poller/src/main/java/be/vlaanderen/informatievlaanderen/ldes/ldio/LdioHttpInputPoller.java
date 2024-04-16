@@ -32,9 +32,8 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	private ScheduledFuture<?> scheduledPoll;
 
 	public LdioHttpInputPoller(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver,
-							   RequestExecutor requestExecutor, LdioHttpInputPollerProperties properties,
-							   ApplicationEventPublisher applicationEventPublisher) {
-		super(executor, adapter, ldioObserver, applicationEventPublisher);
+							   RequestExecutor requestExecutor, LdioHttpInputPollerProperties properties) {
+		super(executor, adapter, ldioObserver);
 		this.requestExecutor = requestExecutor;
 		this.properties = properties;
 		this.scheduler = new ThreadPoolTaskScheduler();

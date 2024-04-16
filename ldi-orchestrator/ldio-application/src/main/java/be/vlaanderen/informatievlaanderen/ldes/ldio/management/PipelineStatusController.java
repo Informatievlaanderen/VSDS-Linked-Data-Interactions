@@ -1,9 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.HaltedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.ResumedPipelineStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,13 +32,13 @@ public class PipelineStatusController implements OpenApiPipelineStatusController
 	@Override
 	@PostMapping(path = "{pipelineId}/halt", produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
 	public PipelineStatus.Value haltPipeline(@PathVariable("pipelineId") String pipelineId) {
-		return pipelineStatusService.updatePipelineStatus(pipelineId, new HaltedPipelineStatus());
+		return pipelineStatusService.haltPipeline(pipelineId);
 	}
 
 	@Override
 	@PostMapping(path = "{pipelineId}/resume",  produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
 	public PipelineStatus.Value resumePipeline(@PathVariable("pipelineId") String pipelineId) {
-		return pipelineStatusService.updatePipelineStatus(pipelineId, new ResumedPipelineStatus());
+		return pipelineStatusService.resumePipeline(pipelineId);
 	}
 
 }

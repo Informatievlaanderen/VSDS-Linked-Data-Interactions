@@ -102,13 +102,6 @@ public class PipelineCreatorService {
 		}
 	}
 
-	public void removePipeline(String pipeline) {
-		DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) configContext.getBeanFactory();
-		LdioInput ldioInput = (LdioInput) beanRegistry.getBean(pipeline);
-		ldioInput.shutdown();
-		beanFactory.destroyBean(pipeline);
-	}
-
 	private ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
 		List<LdioTransformer> ldioTransformers = pipelineConfig.getTransformers()
 				.stream()

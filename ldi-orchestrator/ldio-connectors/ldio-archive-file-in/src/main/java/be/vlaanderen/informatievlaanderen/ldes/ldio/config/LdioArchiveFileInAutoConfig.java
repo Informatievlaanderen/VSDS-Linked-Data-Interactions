@@ -37,7 +37,7 @@ public class LdioArchiveFileInAutoConfig {
 				Lang hintLang = getSourceFormat(config);
 				String pipelineName = config.getPipelineName();
 
-				return new LdioArchiveFileIn(pipelineName, executor, observationRegistry, applicationEventPublisher, archiveFileCrawler, hintLang);
+				return new LdioArchiveFileIn(pipelineName, executor, observationRegistry, archiveFileCrawler, hintLang);
 			}
 
 			@Override

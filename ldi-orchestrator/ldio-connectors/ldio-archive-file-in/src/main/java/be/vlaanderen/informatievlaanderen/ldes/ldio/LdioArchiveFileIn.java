@@ -18,8 +18,8 @@ public class LdioArchiveFileIn extends LdioInput {
 	private final Lang sourceFormat;
 	private boolean paused = false;
 
-	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher, ArchiveFileCrawler crawler, Lang source) {
-		super(executor, null, LdioObserver.register(NAME, pipelineName, observationRegistry), applicationEventPublisher);
+	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ArchiveFileCrawler crawler, Lang source) {
+		super(executor, null, LdioObserver.register(NAME, pipelineName, observationRegistry));
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
 		start();

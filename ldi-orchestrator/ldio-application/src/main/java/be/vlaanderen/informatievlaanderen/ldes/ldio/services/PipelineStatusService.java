@@ -2,16 +2,13 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.PipelineStatusManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.HaltedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.ResumedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StoppedPipelineStatus;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -20,18 +17,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
-
 @Component
 public class PipelineStatusService {
-	private final ApplicationEventPublisher eventPublisher;
-	private final Logger logger = LoggerFactory.getLogger(PipelineStatusService.class);
-	private final Map<String, SavedPipeline> savedPipelines;
 	private final Map<String, PipelineStatusManager> pipelineStatusManagers;
 
-	public PipelineStatusService(ApplicationEventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-		this.savedPipelines = new HashMap<>();
+	public PipelineStatusService() {
 		this.pipelineStatusManagers = new HashMap<>();
 	}
 
@@ -47,31 +37,23 @@ public class PipelineStatusService {
 				.orElseThrow(() -> new PipelineDoesNotExistException(pipelineName));
 	}
 
-	public PipelineStatus.Value updatePipelineStatus(String pipelineName, PipelineStatus pipelineStatus) {
+	public PipelineStatus updatePipelineStatus(String pipelineName, PipelineStatus pipelineStatus) {
 		return Optional.of(pipelineStatusManagers.get(pipelineName))
 				.map(pipelineStatusManager -> pipelineStatusManager.updatePipelineStatus(pipelineStatus))
 				.orElseThrow(() -> new PipelineDoesNotExistException(pipelineName));
 	}
 
-	@EventListener
-	public void handlePipelineStatusResponse(PipelineStatusEvent statusEvent) {
-		SavedPipeline currentSavedPipeline = savedPipelines.get(statusEvent.pipelineId());
-		if (currentSavedPipeline == null) {
-			logger.warn("Non initialized pipeline received status update: {}", statusEvent.pipelineId());
-			return;
-		}
-//		currentSavedPipeline.updateStatus(statusEvent.status(), statusEvent.statusChangeSource());
+	public PipelineStatus.Value haltPipeline(String pipelineName) {
+		return updatePipelineStatus(pipelineName, new HaltedPipelineStatus()).getStatusValue();
 	}
 
-	@EventListener
-	public void handlePipelineCreated(PipelineCreatedEvent event) {
-		pipelineStatusManagers.put(event.pipelineName(), event.pipelineStatusManager());
+	public PipelineStatus.Value resumePipeline(String pipelineName) {
+		return updatePipelineStatus(pipelineName, new ResumedPipelineStatus()).getStatusValue();
 	}
 
 	public PipelineStatus.Value stopPipeline(String pipelineId) {
-		PipelineStatus.Value newPipelineStatus = pipelineStatusManagers.get(pipelineId).updatePipelineStatus(new StoppedPipelineStatus());
-		this.savedPipelines.remove(pipelineId);
-		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineId));
+		PipelineStatus.Value newPipelineStatus = updatePipelineStatus(pipelineId, new StoppedPipelineStatus()).getStatusValue();
+		this.pipelineStatusManagers.remove(pipelineId);
 		return newPipelineStatus;
 	}
 
@@ -81,21 +63,13 @@ public class PipelineStatusService {
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getPipelineStatusValue()));
 	}
 
-	static class SavedPipeline {
-		private final LdioInput ldioInput;
-		private PipelineStatus status;
-		private StatusChangeSource lastStatusChangeSource;
+	@EventListener
+	public void handlePipelineCreated(PipelineCreatedEvent event) {
+		pipelineStatusManagers.put(event.pipelineName(), event.pipelineStatusManager());
+	}
 
-		public SavedPipeline(LdioInput ldioInput, PipelineStatus status) {
-			this.ldioInput = ldioInput;
-			this.status = status;
-			lastStatusChangeSource = AUTO;
-		}
-
-		public void updateStatus(PipelineStatus status, StatusChangeSource statusChangeSource) {
-			this.status = status;
-			this.lastStatusChangeSource = statusChangeSource;
-		}
-
+	@EventListener
+	public void handlePipelineDeletedEvent(PipelineDeletedEvent event) {
+		stopPipeline(event.pipelineId());
 	}
 }

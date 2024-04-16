@@ -6,7 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExi
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
-import org.springframework.context.event.EventListener;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -17,12 +17,14 @@ public class PipelineService {
 	private final PipelineCreatorService pipelineCreatorService;
 	private final PipelineStatusService pipelineStatusService;
 	private final PipelineRepository pipelineRepository;
+	private final ApplicationEventPublisher eventPublisher;
 
 	public PipelineService(PipelineCreatorService pipelineCreatorService, PipelineStatusService pipelineStatusService,
-	                       PipelineRepository pipelineRepository) {
+						   PipelineRepository pipelineRepository, ApplicationEventPublisher eventPublisher) {
 		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineStatusService = pipelineStatusService;
 		this.pipelineRepository = pipelineRepository;
+		this.eventPublisher = eventPublisher;
 	}
 
 	public PipelineConfig addPipeline(PipelineConfig pipeline) throws PipelineException {
@@ -55,15 +57,11 @@ public class PipelineService {
 	public boolean requestDeletion(String pipeline) {
 		if (pipelineRepository.exists(pipeline)) {
 			pipelineStatusService.stopPipeline(pipeline);
+			eventPublisher.publishEvent(new PipelineDeletedEvent(pipeline));
+			pipelineRepository.delete(pipeline);
 			return true;
 		} else {
 			return false;
 		}
-	}
-
-	@EventListener
-	public void handleStoppedPipeline(PipelineDeletedEvent deletedEvent) {
-		pipelineRepository.delete(deletedEvent.pipelineId());
-		pipelineCreatorService.removePipeline(deletedEvent.pipelineId());
 	}
 }
