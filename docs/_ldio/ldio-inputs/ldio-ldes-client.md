@@ -6,15 +6,15 @@ title: LDES Client
 
 # LDIO LDES Client
 
-The LDES Client is a component which can be used by data consumers to replicate and synchronize a LDES.  
-When replication or synchronization is halted, the LDES Client is able to resume where it has stopped. More information on how consumption of a LDES works can be found [here](https://informatievlaanderen.github.io/VSDS-Tech-Docs/introduction/LDES_client). 
+The LDES Client is a component which can be used by data consumers to replicate and synchronize an LDES.  
+When replication or synchronization is halted, the LDES Client is able to resume where it has stopped. More information on how consumption of an LDES works can be found [here](https://informatievlaanderen.github.io/VSDS-Tech-Docs/introduction/LDES_client). 
 
 ## Processing fragments
 
-One or more URLs need to be configured in the processor. If more URLs are configured, they need to be part of the same LDES.  
-When the processor is triggered, the configured fragments (URLs) will be processed and all relations will be added to the (non-persisted) queue.  
-As long as the processor runs, new fragments that need to be processed can be added to the queue. 
-The processor will keep track of the mutable and immutable fragments it did already process. When an immutable fragment that already has been processed is added to the queue, it will be ignored.
+One or more URLs need to be configured in the LDES Client. If more URLs are configured, they need to be part of the same LDES.  
+The configured fragments (URLs) will be processed and all relations will be added to the (non-persisted) queue.  
+As long as the LDES Client runs, new fragments that need to be processed can be added to the queue. 
+The LDES Client will keep track of the mutable and immutable fragments it did already process. When an immutable fragment that already has been processed is added to the queue, it will be ignored.
 
 Mutable fragments usually have a `max-age` set in the Cache-control header. If this isn't the case, a default expiration interval will be used to set an expiration date on the fragment.
 When the `max-age` or default expiration interval of a fragment expires, the fragment will be put into the queue again so that the LDES Client fetches it again.  
@@ -30,16 +30,16 @@ If the patch is missing, members will be processed in random order.
 ### Filtering
 
 To have the possibility to filter out already received members, the "exactly-once-filter" can be enabled in configuration. The filter will check whether a member was already processed in other fragments.  
-The IDs of all processed members will be remembered by the filter and when a duplicate member is processed, it will be filtered out before sending it to the output of the LDES Client.  
+The IDs of all processed members will be remembered by the filter and when a duplicate member is processed, it will be filtered out before sending it to the output of the  Client.  
 Other filters can be added in the future.
 
 ### Persistence strategies
 
-The LDES Client offers different ways to persist state of the processed members:
+The  Client offers different ways to persist state of the processed members:
 
 | Strategy    | Description                                                 | Advantages                             | Disadvantages                                               |
 |:------------|:------------------------------------------------------------|:---------------------------------------|:------------------------------------------------------------|
-| _Memory_    | Store the state of members in the memory of the LDES Client | Fastest processing                     | Not suitable for large datasets (>500k), heap will overflow |
+| _Memory_    | Store the state of members in the memory of the  Client | Fastest processing                     | Not suitable for large datasets (>500k), heap will overflow |
 |             |                                                             | Easiest setup                          | State is lost when the client stops/restarts                | 
 |             |                                                             |                                        |                                                             |
 | _SQLite_    | A SQLite database is used to store state of members         | Easy setup                             | Slowest processing**                                        |
@@ -56,7 +56,7 @@ The LDES Client offers different ways to persist state of the processed members:
 
 | Property                    | Description                                                                             | Required | Default      | Example                                   | Supported values                                                                                                        |
 |:----------------------------|:----------------------------------------------------------------------------------------|:---------|:-------------|:------------------------------------------|:------------------------------------------------------------------------------------------------------------------------|
-| _urls_                      | List of URLs of the LDES data sources                                                   | Yes      | N/A          | http://localhost:8080/my-ldes             | HTTP and HTTPS URLs                                                                                                     |
+| _urls_                      | List of URLs of the  data sources                                                   | Yes      | N/A          | http://localhost:8080/my-             | HTTP and HTTPS URLs                                                                                                     |
 | _source-format_             | The 'Content-Type' that should be requested to the server                               | No       | text/turtle  | application/n-quads                       | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
 | _state_                     | 'memory', 'sqlite' or 'postgres' to indicate how the state should be persisted          | No       | memory       | sqlite                                    | 'memory', 'sqlite' or 'postgres'                                                                                        |
 | _keep-state_                | Indicates if the state should be persisted on shutdown (n/a for in memory states)       | No       | false        | false                                     | true or false                                                                                                           |
@@ -97,10 +97,10 @@ Refer to [LDIO Http Requester](../ldio-core/ldio-http-requester) for the configu
 
 ```yaml
   input:
-    name: Ldio:LdesClient
+    name: Ldio:Client
     config:
       urls:
-        - http://localhost:8080/my-ldes
+        - http://localhost:8080/my-
       sourceFormat: text/turtle
       materialisation:
         enabled: true
@@ -115,10 +115,10 @@ Refer to [LDIO Http Requester](../ldio-core/ldio-http-requester) for the configu
 
 ```yaml
   input:
-    name: Ldio:LdesClient
+    name: Ldio:Client
     config:
       urls:
-        - http://localhost:8080/my-ldes
+        - http://localhost:8080/my-
       sourceFormat: text/turtle
       retries:
         enabled: true
@@ -129,7 +129,7 @@ Refer to [LDIO Http Requester](../ldio-core/ldio-http-requester) for the configu
         password: myPassword
 ```
 
-## Pausing the LDES Client
+## Pausing the  Client
 
 - When paused, the LDES Client will stop processing the current fragment and will not request new fragments from the server.
 - When resumed, the LDES Client will continue processing the fragment where it has stopped and it will request new fragments form the server.
