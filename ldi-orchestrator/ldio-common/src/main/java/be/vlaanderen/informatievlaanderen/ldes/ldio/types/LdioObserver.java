@@ -16,7 +16,6 @@ public class LdioObserver {
 	private static final String LDIO_DATA_IN = "ldio_data_in";
 	private static final String LDIO_COMPONENT_NAME = "ldio_type";
 	private static final Logger log = LoggerFactory.getLogger(LdioObserver.class);
-
 	private final String componentName;
 	private final String pipelineName;
 	private final ObservationRegistry observationRegistry;
@@ -54,10 +53,6 @@ public class LdioObserver {
 		return new LdioObserver(componentName, pipelineName, observationRegistry);
 	}
 
-	/**
-	 * @deprecated will be removed once the pipeline status management is removed from LdioInput
-	 */
-	@Deprecated(forRemoval = true)
 	public String getPipelineName() {
 		return pipelineName;
 	}

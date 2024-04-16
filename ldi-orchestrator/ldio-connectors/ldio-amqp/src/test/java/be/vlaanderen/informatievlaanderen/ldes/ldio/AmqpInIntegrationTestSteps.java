@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioAmqpInRegistrator
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import io.cucumber.java.After;
 import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
@@ -49,6 +50,11 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 
 	private final TestContext testContext = TestContextContainer.getTestContext();
 	private MessageProducer producer;
+
+	@After
+	public void tearDown() {
+		ldioInput.shutdown();
+	}
 
 	@And("I create a message producer")
 	public void iCreateAMessageProducer() throws JMSException {
