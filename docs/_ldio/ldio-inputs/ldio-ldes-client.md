@@ -39,7 +39,7 @@ The  Client offers different ways to persist state of the processed members:
 
 | Strategy    | Description                                                 | Advantages                             | Disadvantages                                               |
 |:------------|:------------------------------------------------------------|:---------------------------------------|:------------------------------------------------------------|
-| _Memory_    | Store the state of members in the memory of the  Client | Fastest processing                     | Not suitable for large datasets (>500k), heap will overflow |
+| _Memory_    | Store the state of members in the memory of the LDES Client | Fastest processing                     | Not suitable for large datasets (>500k), heap will overflow |
 |             |                                                             | Easiest setup                          | State is lost when the client stops/restarts                | 
 |             |                                                             |                                        |                                                             |
 | _SQLite_    | A SQLite database is used to store state of members         | Easy setup                             | Slowest processing**                                        |
@@ -56,7 +56,7 @@ The  Client offers different ways to persist state of the processed members:
 
 | Property                    | Description                                                                             | Required | Default      | Example                                   | Supported values                                                                                                        |
 |:----------------------------|:----------------------------------------------------------------------------------------|:---------|:-------------|:------------------------------------------|:------------------------------------------------------------------------------------------------------------------------|
-| _urls_                      | List of URLs of the  data sources                                                   | Yes      | N/A          | http://localhost:8080/my-             | HTTP and HTTPS URLs                                                                                                     |
+| _urls_                      | List of URLs of the LDES data sources                                                   | Yes      | N/A          | http://localhost:8080/my-ldes             | HTTP and HTTPS URLs                                                                                                     |
 | _source-format_             | The 'Content-Type' that should be requested to the server                               | No       | text/turtle  | application/n-quads                       | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
 | _state_                     | 'memory', 'sqlite' or 'postgres' to indicate how the state should be persisted          | No       | memory       | sqlite                                    | 'memory', 'sqlite' or 'postgres'                                                                                        |
 | _keep-state_                | Indicates if the state should be persisted on shutdown (n/a for in memory states)       | No       | false        | false                                     | true or false                                                                                                           |
@@ -97,10 +97,10 @@ Refer to [LDIO Http Requester](../ldio-core/ldio-http-requester) for the configu
 
 ```yaml
   input:
-    name: Ldio:Client
+    name: Ldio:LdesClient
     config:
       urls:
-        - http://localhost:8080/my-
+        - http://localhost:8080/my-ldes
       sourceFormat: text/turtle
       materialisation:
         enabled: true
@@ -115,10 +115,10 @@ Refer to [LDIO Http Requester](../ldio-core/ldio-http-requester) for the configu
 
 ```yaml
   input:
-    name: Ldio:Client
+    name: Ldio:LdesClient
     config:
       urls:
-        - http://localhost:8080/my-
+        - http://localhost:8080/my-ldes
       sourceFormat: text/turtle
       retries:
         enabled: true
@@ -129,7 +129,7 @@ Refer to [LDIO Http Requester](../ldio-core/ldio-http-requester) for the configu
         password: myPassword
 ```
 
-## Pausing the  Client
+## Pausing the LDES Client
 
 - When paused, the LDES Client will stop processing the current fragment and will not request new fragments from the server.
 - When resumed, the LDES Client will continue processing the fragment where it has stopped and it will request new fragments form the server.
