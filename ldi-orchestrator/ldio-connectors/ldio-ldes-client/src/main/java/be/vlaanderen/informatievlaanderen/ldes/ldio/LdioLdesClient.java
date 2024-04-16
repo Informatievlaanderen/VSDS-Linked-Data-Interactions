@@ -30,7 +30,7 @@ public class LdioLdesClient extends LdioInput {
                           MemberSupplier memberSupplier,
                           ApplicationEventPublisher applicationEventPublisher,
 						  boolean keepState) {
-		super(componentExecutor, null, ldioObserver, applicationEventPublisher);
+		super(componentExecutor, null, ldioObserver);
 		this.memberSupplier = memberSupplier;
         this.keepState = keepState;
     }

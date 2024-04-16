@@ -12,7 +12,7 @@ public class DummyIn extends LdioInput {
 	private int counter = 0;
 
 	public DummyIn(ComponentExecutor executor, LdiAdapter adapter, ApplicationEventPublisher applicationEventPublisher) {
-		super(executor, adapter, LdioObserver.register("DummyIn", "test", null), applicationEventPublisher);
+		super(executor, adapter, LdioObserver.register("DummyIn", "test", null));
 		this.updateStatus(START);
 	}
 

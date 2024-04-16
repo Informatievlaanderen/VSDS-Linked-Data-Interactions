@@ -213,7 +213,7 @@ class LdioHttpInputPollerTest {
 
 	private void initPoller(List<String> endpoints, PollingInterval pollingInterval, boolean continueOnFail) {
 		final LdioHttpInputPollerProperties properties = new LdioHttpInputPollerProperties(endpoints, pollingInterval, continueOnFail);
-		ldioHttpInputPoller = new LdioHttpInputPoller(executor, adapter, LdioObserver.register("Ldio:HttpInPoller", pipelineName, null), noAuthExecutor, properties, applicationEventPublisher);
+		ldioHttpInputPoller = new LdioHttpInputPoller(executor, adapter, LdioObserver.register("Ldio:HttpInPoller", pipelineName, null), noAuthExecutor, properties);
 	}
 
 }

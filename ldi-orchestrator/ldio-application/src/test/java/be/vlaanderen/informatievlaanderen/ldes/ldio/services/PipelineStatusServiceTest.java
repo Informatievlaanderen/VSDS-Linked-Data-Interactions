@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.PipelineStatusManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,12 +17,11 @@ class PipelineStatusServiceTest {
     private final String pipelineName = "pipeline";
     private final LdioInput input = mock(LdioInput.class);
     private final PipelineStatusManager pipelineStatusManager = new PipelineStatusManager(pipelineName, input, List.of());
-    private final ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
     private PipelineStatusService pipelineStatusService;
 
     @BeforeEach
     void setup() {
-        pipelineStatusService = new PipelineStatusService(eventPublisher);
+        pipelineStatusService = new PipelineStatusService();
         pipelineStatusService.handlePipelineCreated(new PipelineCreatedEvent(pipelineStatusManager));
     }
 

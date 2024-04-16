@@ -48,7 +48,7 @@ public class LdioAmqpInAutoConfig {
 					remoteUrl, config.getProperty(QUEUE));
 			final LdioAmpqInProperties properties = new LdioAmpqInProperties(pipelineName, getContentType(config), jmsConfig);
 			final LdioObserver ldioObserver = LdioObserver.register(LdioAmqpIn.NAME, pipelineName, observationRegistry);
-			return new LdioAmqpIn(executor, adapter, ldioObserver, ldioAmqpInRegistrator, properties, applicationEventPublisher);
+			return new LdioAmqpIn(executor, adapter, ldioObserver, ldioAmqpInRegistrator, properties);
 		}
 
 		@Override

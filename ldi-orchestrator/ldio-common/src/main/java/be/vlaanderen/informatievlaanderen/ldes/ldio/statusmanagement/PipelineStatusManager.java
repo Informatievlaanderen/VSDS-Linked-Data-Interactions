@@ -55,16 +55,16 @@ public class PipelineStatusManager {
 		return List.copyOf(outputs);
 	}
 
-	public Value updatePipelineStatus(PipelineStatus pipelineStatus, StatusChangeSource statusChangeSource) {
+	public PipelineStatus updatePipelineStatus(PipelineStatus pipelineStatus, StatusChangeSource statusChangeSource) {
 		final boolean isStatusUpdated = setPipelineStatus(pipelineStatus);
 		if (isStatusUpdated) {
 			this.lastStatusChangeSource = statusChangeSource;
 			updateComponentsStatus();
 		}
-		return this.pipelineStatus.getStatusValue();
+		return this.pipelineStatus;
 	}
 
-	public Value updatePipelineStatus(PipelineStatus pipelineStatus) {
+	public PipelineStatus updatePipelineStatus(PipelineStatus pipelineStatus) {
 		return this.updatePipelineStatus(pipelineStatus, StatusChangeSource.MANUAL);
 	}
 

@@ -39,7 +39,7 @@ public class LdioHttpInputPollerAutoConfig {
 			final var ldioObserver = LdioObserver.register(NAME, properties.getPipelineName(), observationRegistry);
 			final var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
 			final var ldioHttpInPollerProperties = LdioHttpInputPollerProperties.fromComponentProperties(properties);
-			final var httpInputPoller = new LdioHttpInputPoller(executor, adapter, ldioObserver, requestExecutor, ldioHttpInPollerProperties, applicationEventPublisher);
+			final var httpInputPoller = new LdioHttpInputPoller(executor, adapter, ldioObserver, requestExecutor, ldioHttpInPollerProperties);
 			httpInputPoller.start();
 			return httpInputPoller;
 		}

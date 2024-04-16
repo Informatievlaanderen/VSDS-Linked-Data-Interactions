@@ -1,12 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -18,12 +20,14 @@ public class PipelineService {
 	private final PipelineCreatorService pipelineCreatorService;
 	private final PipelineStatusService pipelineStatusService;
 	private final PipelineRepository pipelineRepository;
+	private final ApplicationEventPublisher eventPublisher;
 
 	public PipelineService(PipelineCreatorService pipelineCreatorService, PipelineStatusService pipelineStatusService,
-						   PipelineRepository pipelineRepository) {
+						   PipelineRepository pipelineRepository, ApplicationEventPublisher eventPublisher) {
 		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineStatusService = pipelineStatusService;
 		this.pipelineRepository = pipelineRepository;
+		this.eventPublisher = eventPublisher;
 	}
 
 	public PipelineConfig addPipeline(PipelineConfig pipeline) throws PipelineException {
@@ -57,16 +61,12 @@ public class PipelineService {
 	public boolean requestDeletion(String pipeline) {
 		if (pipelineRepository.exists(pipeline)) {
 			pipelineStatusService.stopPipeline(pipeline);
-			deletePipelineFromServices(pipeline);
+			eventPublisher.publishEvent(new PipelineDeletedEvent(pipeline));
+			pipelineRepository.delete(pipeline);
 			log.atInfo().log("DELETION of pipeline '{}' successfully finished", pipeline.replaceAll("[\n\r]", "_"));
 			return true;
 		} else {
 			return false;
 		}
-	}
-
-	private void deletePipelineFromServices(String pipeline) {
-		pipelineRepository.delete(pipeline);
-		pipelineCreatorService.removePipeline(pipeline);
 	}
 }

@@ -36,9 +36,8 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 	 * @param properties		  Configuration properties
 	 */
 	public LdioAmqpIn(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver,
-					  LdioAmqpInRegistrator jmsInRegistrator, LdioAmpqInProperties properties,
-					  ApplicationEventPublisher applicationEventPublisher) {
-		super(executor, adapter, ldioObserver, applicationEventPublisher);
+					  LdioAmqpInRegistrator jmsInRegistrator, LdioAmpqInProperties properties) {
+		super(executor, adapter, ldioObserver);
 		this.properties = properties;
 		SimpleJmsListenerEndpoint endpoint = listenerEndpoint(properties.jmsConfig().queue());
 		ldioAmqpInRegistrator = jmsInRegistrator;
