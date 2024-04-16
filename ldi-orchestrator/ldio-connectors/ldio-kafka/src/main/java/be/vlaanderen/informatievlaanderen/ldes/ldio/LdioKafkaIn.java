@@ -9,7 +9,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.listener.LdioKafkaInListener
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
