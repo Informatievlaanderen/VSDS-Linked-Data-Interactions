@@ -53,7 +53,9 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 
 	@After
 	public void tearDown() {
-		ldioInput.shutdown();
+		if(ldioInput != null) {
+			ldioInput.shutdown();
+		}
 	}
 
 	@And("I create a message producer")
@@ -111,13 +113,13 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 	}
 
 	@Then("Wait for a grace period")
-	public void waitForGracePeriod() throws InterruptedException {
+	public void waitForGracePeriod() {
 		Awaitility.waitAtMost(Duration.of(500, ChronoUnit.MILLIS));
 	}
 
 	@And("The result value will contain the model")
 	public void theResultValueWillContainTheModel() {
-		Model resultModel = RDFParser.fromString(adapterResult.get(0).content()).lang(contentTypeToLang(contentType))
+		Model resultModel = RDFParser.fromString(adapterResult.getFirst().content()).lang(contentTypeToLang(contentType))
 				.build().toModel();
 		assertTrue(resultModel.isIsomorphicWith(inputModel));
 	}
