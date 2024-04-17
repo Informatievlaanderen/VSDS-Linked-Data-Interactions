@@ -9,8 +9,6 @@ title: Json To JsonLd Transformer
 
 The json-to-ld-adapter receives json messages and adds a linked data context to transform the messages to json-ld.
 
-An LDIO wrapper component for the [LDI Json To JsonLd building block](../../core/ldi-adapters/json-to-json-ld)
-
 ## Config
 
 | Property                  | Description                                                                                                  | Required | Default | Example                   | Supported values                                 |
