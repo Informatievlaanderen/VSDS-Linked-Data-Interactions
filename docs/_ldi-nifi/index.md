@@ -15,6 +15,7 @@ As a deliverable, we provide a list of processors that can be imported in NiFi:
 - [Create Version Processor](../core/ldi-transformers/version-object-creator)
 - [GeoJson to WKT Processor](../core/ldi-transformers/geojson-to-wkt)
 - [Json to Json LD Processor](../core/ldi-adapters/json-to-json-ld)
+- [Ldes Client Processor](../core/ldi-inputs/ldes-client)
 - [Ngsi V2 to LD Processor](../core/ldi-adapters/ngsiv2-to-ld)
 - [RDF4j Repository Materialization Processor](../core/ldi-outputs/repository-materialiser)
 - [SPARQL Interactions Processor](./processors/sparql-interactions)
