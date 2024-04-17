@@ -8,7 +8,12 @@ title: RDF Adapter
 
 ***Ldio:RdfAdapter***
 
-An LDIO wrapper component for the [LDI RDF Adapter building block](../../core/ldi-adapters/rdf-adapter)
+As the most basic adapter, the RDF Adapter will take in an RDF string and convert it
+into an internal Linked Data model based on the given content type.
+
+## Notes
+
+This Adapter only supports valid RDF mime types
 
 ## Config
 
