@@ -39,9 +39,8 @@ The processors can be imported into a NiFi docker instance via volume binding:
           - ./nifi-ext:/opt/nifi/nifi-current/nar_extensions:rw
     ````
 2. Create a directory `nifi-ext` in your current directory.
-3. Download the required processors (.nar extension)
-   from [the nexus repository](https://s01.oss.sonatype.org/#nexus-search;quick~be.vlaanderen.informatievlaanderen.ldes.ldi.nifi)
-   and place these in the `nifi-ext` directory.
+3. Download either the `...-nar-bundle.jar` and unpack this or download the individual required processors (.nar extension) from the [nexus repository].
+   Next, place the required processors in the `nifi-ext` directory.
 4. Finally, start your instance.
     ````shell
     docker compose up
@@ -53,3 +52,4 @@ The processors can be imported into a NiFi docker instance via volume binding:
 All documentation and notes about configuration are available in the NiFi component itself.
 
 [Apache NiFi]: https://nifi.apache.org/
+[nexus repository]: https://s01.oss.sonatype.org/#nexus-search;quick~be.vlaanderen.informatievlaanderen.ldes.ldi.nifi
