@@ -34,8 +34,6 @@ collections:
 
 just_the_docs:
   collections:
-    core:
-      name: Linked Data Interactions Core Building Blocks
     ldio:
       name: Linked Data Interactions Orchestrator
     ldi-nifi:

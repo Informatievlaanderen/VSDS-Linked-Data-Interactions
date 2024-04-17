@@ -13,15 +13,16 @@ The response is converted to linked data and added to the incoming model.
 
 ## Config
 
-| Property                            | Description                                                                                                 | Required | Default | Example                                             | Supported values                                               |
-|:------------------------------------|:------------------------------------------------------------------------------------------------------------|:---------|:--------|:----------------------------------------------------|:---------------------------------------------------------------|
-| adapter.name                        | This transformer requires an [ldio-adapter](../ldio-adapters) to convert the responses to linked data.      | Yes      | N/A     | Ldio:RdfAdapter                                     | Paths of supported LDIO Adapters                               |
-| adapter.config.xxx                  | Optional config that may be required by the adapter                                                         | No       | N/A     | Ldio:RdfAdapter                                     | Paths of supported LDIO Adapters                               |
-| url-property-path                   | Path defining the url that needs to be selected on the model for the http request.                          | Yes      | N/A     | <http://example.org/url>                            | Valid property paths                                           |
-| header-property-path                | Path defining the headers that needs to be selected on the model for the http request.                      | No       | N/A     | <http://example.org/header>                         | Valid property paths                                           |
-| body-property-path                  | Path defining the body that needs to be selected on the model to be added when a POST http request is used. | No       | N/A     | <http://example.org/meta>/<http://example.org/body> | Valid property paths                                           |
-| http-method-property-path           | Path defining the http method that needs to be selected on the model for the http request.                  | No       | GET     | GET                                                 | GET or POST                                                    |
-| auth.xxx retries.xxx rate-limit.xxx | LDIO Http Requester Config                                                                                  | No       | N/A     | N/A                                                 | [LDIO Http Requester Config](../ldio-core/ldio-http-requester) |
+| Property                  | Description                                                                                                 | Required | Default | Supported values                 | Example                                             |
+|:--------------------------|:------------------------------------------------------------------------------------------------------------|:---------|:--------|:---------------------------------|:----------------------------------------------------|
+| adapter.name              | This transformer requires an [ldio-adapter](../ldio-adapters) to convert the responses to linked data.      | Yes      | N/A     | Paths of supported LDIO Adapters | Ldio:RdfAdapter                                     |
+| adapter.config.xxx        | Optional config that may be required by the adapter                                                         | No       | N/A     | Paths of supported LDIO Adapters | Ldio:RdfAdapter                                     |
+| url-property-path         | Path defining the url that needs to be selected on the model for the http request.                          | Yes      | N/A     | Valid property paths             | <http://example.org/url>                            |
+| header-property-path      | Path defining the headers that needs to be selected on the model for the http request.                      | No       | N/A     | Valid property paths             | <http://example.org/header>                         |
+| body-property-path        | Path defining the body that needs to be selected on the model to be added when a POST http request is used. | No       | N/A     | Valid property paths             | <http://example.org/meta>/<http://example.org/body> |
+| http-method-property-path | Path defining the http method that needs to be selected on the model for the http request.                  | No       | GET     | GET or POST                      | GET                                                 |
+
+{% include ldio-core/http-requester.md %}
 
 Note that all adapters are supported. When the adapter requires additional config, this can be added as seen below in the example.
 

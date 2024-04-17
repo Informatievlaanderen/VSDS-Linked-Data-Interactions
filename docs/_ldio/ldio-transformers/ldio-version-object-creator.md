@@ -8,7 +8,7 @@ title: Version Object Creator
 
 ***Ldio:VersionObjectCreator***
 
-An LDIO wrapper component for the [LDI Version Object Creator building block](../../core/ldi-transformers/version-object-creator)
+The Version Object Creator will transform a State Object to a Version Object.
 
 ## Config
 

@@ -8,7 +8,7 @@ title: Version Materializer
 
 ***Ldio:VersionMaterialiser***
 
-An LDIO wrapper component for the [LDI Version Materializer building block](../../core/ldi-transformers/version-materializer)
+The Version Materializer will transform a Version Object to a State Object.
 
 ## Config
 
