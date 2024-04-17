@@ -6,6 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInProcess;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.HttpInPipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.context.ApplicationEventPublisher;
@@ -41,7 +42,8 @@ public class LdioHttpInAutoConfig {
 								   ComponentProperties config) {
 			String pipelineName = config.getPipelineName();
 
-			LdioHttpInProcess ldioHttpIn = new LdioHttpInProcess(pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);
+			LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
+			LdioHttpInProcess ldioHttpIn = new LdioHttpInProcess(executor, adapter, ldioObserver, applicationEventPublisher);
 
 			eventPublisher.publishEvent(new HttpInPipelineCreatedEvent(pipelineName, ldioHttpIn));
 			ldioHttpIn.start();

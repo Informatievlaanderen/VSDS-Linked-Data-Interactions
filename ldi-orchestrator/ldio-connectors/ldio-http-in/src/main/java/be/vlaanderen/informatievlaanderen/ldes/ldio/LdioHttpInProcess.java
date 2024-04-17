@@ -3,16 +3,16 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import io.micrometer.observation.ObservationRegistry;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class LdioHttpInProcess extends LdioInput {
 	public static final String NAME = "Ldio:HttpIn";
 	private boolean isPaused = false;
 
-	public LdioHttpInProcess(String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
-							 ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher) {
-		super(NAME, pipelineName, executor, adapter, observationRegistry, applicationEventPublisher);
+	public LdioHttpInProcess(ComponentExecutor executor, LdiAdapter adapter,
+							 LdioObserver ldioObserver, ApplicationEventPublisher applicationEventPublisher) {
+		super(executor, adapter, ldioObserver, applicationEventPublisher);
 	}
 
 	@Override
