@@ -43,11 +43,11 @@ public class LdioVersionObjectCreatorAutoConfig {
 
 			Property generatedAtProperty = properties.getOptionalProperty("generatedAt-property")
 					.map(initModel::createProperty)
-					.orElse(null);
+					.orElseGet(() -> initModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime"));
 
 			Property versionOfProperty = properties.getOptionalProperty("versionOf-property")
 					.map(initModel::createProperty)
-					.orElse(null);
+					.orElseGet(() -> initModel.createProperty("http://purl.org/dc/terms/isVersionOf"));
 
 			return new LdioVersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter,
 					generatedAtProperty,
