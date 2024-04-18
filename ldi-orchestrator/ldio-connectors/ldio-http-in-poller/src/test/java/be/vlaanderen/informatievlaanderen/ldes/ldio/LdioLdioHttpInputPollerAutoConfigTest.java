@@ -6,7 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidC
 import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidIntervalArgumentsProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.assertj.core.api.ThrowableAssert;
@@ -17,12 +16,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.MockedConstruction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.support.CronTrigger;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -31,9 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 class LdioLdioHttpInputPollerAutoConfigTest {
-
-	@Autowired
-	ApplicationEventPublisher applicationEventPublisher;
+	private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 	private final LdiAdapter adapter = mock(LdiAdapter.class);
 	private final ComponentExecutor executor = mock(ComponentExecutor.class);
 	private static final String BASE_URL = "http://localhost:10101";
@@ -65,7 +58,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 			LdioHttpInputPoller poller = new LdioHttpInputPollerAutoConfig()
 					.httpInputPollerConfigurator(null)
 					.configure(adapter, executor, applicationEventPublisher, createDefaultISOTestConfig());
-			verify(poller, times(1)).schedulePoller(new PollingInterval(Duration.of(1, ChronoUnit.SECONDS)));
+			verify(poller, times(1)).start();
 		}
 	}
 
@@ -75,7 +68,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 			LdioHttpInputPoller poller = new LdioHttpInputPollerAutoConfig()
 					.httpInputPollerConfigurator(null)
 					.configure(adapter, executor, applicationEventPublisher, createDefaultCronTestConfig());
-			verify(poller, times(1)).schedulePoller(new PollingInterval(new CronTrigger("* * * * * *")));
+			verify(poller, times(1)).start();
 		}
 	}
 
@@ -108,7 +101,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 				LdioHttpInputPollerProperties.INTERVAL, "PT1S",
 				LdioHttpInputPollerProperties.CONTINUE_ON_FAIL, "false"));
 
-		if(urlKey != null) {
+		if (urlKey != null) {
 			properties.put(urlKey, "http://some-server.com/ldes");
 		}
 
@@ -124,7 +117,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 
 	static class InvalidUrlArgumentsProvider implements ArgumentsProvider {
 		@Override
-		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(
 					Arguments.of("endpoint"),
 					Arguments.of((Object) null),

@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,8 +32,9 @@ public class LdioKafkaInAutoConfig {
 
 		@Override
 		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
-			String pipelineName = config.getPipelineName();
-			return new LdioKafkaIn(pipelineName, executor, adapter, observationRegistry, applicationEventPublisher, config);
+			final String pipelineName = config.getPipelineName();
+			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
+			return new LdioKafkaIn(executor, adapter, ldioObserver, applicationEventPublisher, config);
 		}
 
 		@Override

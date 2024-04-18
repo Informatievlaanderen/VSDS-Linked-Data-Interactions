@@ -8,24 +8,35 @@ nav_order: 0
 
 [Apache Nifi] is an easy to use, powerful, and reliable system to process and distribute data.
 
-## Usage
+## Set up NiFi instance with LDI processors
 
-All the following processors can be found in the processor list when using the ldes/ldi-workbench-nifi docker image.
+The processors can be imported into a NiFi docker instance via volume binding:
 
-These processors can be [added][Adding a processor in NiFi] by filtering on the ***be.vlaanderen.informatievlaanderen.ldes.ldi.nifi*** group or by filtering on the ***vsds*** tag
-
-- [Create Version Processor](../core/ldi-transformers/version-object-creator)
-- [GeoJson to WKT Processor](../core/ldi-transformers/geojson-to-wkt)
-- [Json to Json LD Processor](../core/ldi-adapters/json-to-json-ld)
-- [Ngsi V2 to LD Processor](../core/ldi-adapters/ngsiv2-to-ld) 
-- [RDF4j Repository Materialization Processor](../core/ldi-outputs/repository-materialiser)
-- [SPARQL Interactions Processor](./processors/sparql-interactions)
-- [Version Materialization Processor](../core/ldi-transformers/version-materializer)
-- [Archive File Out Processor](../core/ldi-outputs/file-archiving)
-- [Archive File In Processor](../core/ldi-outputs/file-archiving)
+1. Create a `docker-compose.yml` file with the following content in a new directory
+    ````yaml
+    services:
+      nifi:
+        image: apache/nifi:2.0.0-M2
+        environment:
+          SINGLE_USER_CREDENTIALS_USERNAME: admin
+          SINGLE_USER_CREDENTIALS_PASSWORD: ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
+        ports:
+          - 8443:8443
+        volumes:
+          - ./nifi-ext:/opt/nifi/nifi-current/nar_extensions:rw
+    ````
+2. Create a directory `nifi-ext` in your current directory.
+3. Download either the `...-nar-bundle.jar` and unpack this or download the individual required processors (.nar extension) from the [nexus repository].
+   Next, place the required processors in the `nifi-ext` directory.
+4. Finally, start your instance.
+    ````shell
+    docker compose up
+    ````
+5. Log in at `https://localhost:8443/nifi` with the credentials mentioned in step 1
+6. All downloaded extensions are available under the ``be.vlaanderen.informatievlaanderen.ldes.ldi.nifi`` group.
 
 {: .note }
 All documentation and notes about configuration are available in the NiFi component itself.
 
 [Apache NiFi]: https://nifi.apache.org/
-[Adding a processor in NiFi]: https://nifi.apache.org/docs/nifi-docs/html/getting-started.html#adding-a-processor
+[nexus repository]: https://s01.oss.sonatype.org/#nexus-search;quick~be.vlaanderen.informatievlaanderen.ldes.ldi.nifi

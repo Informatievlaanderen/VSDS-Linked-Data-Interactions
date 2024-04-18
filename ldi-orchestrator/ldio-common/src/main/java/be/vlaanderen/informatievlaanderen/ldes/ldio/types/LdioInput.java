@@ -3,19 +3,16 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.types;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.ObserveConfiguration;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.observation.Observation;
-import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
+import java.util.function.Supplier;
+
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.MANUAL;
@@ -28,17 +25,12 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusCh
  * onto the LDIO pipeline
  */
 public abstract class LdioInput implements LdiComponent {
-
-	protected final String componentName;
-	protected final String pipelineName;
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
+	private final LdioObserver ldioObserver;
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final ObservationRegistry observationRegistry;
 
-	private static final String LDIO_DATA_IN = "ldio_data_in";
-	private static final String LDIO_COMPONENT_NAME = "ldio_type";
 	private PipelineStatus pipelineStatus;
 
 	/**
@@ -49,16 +41,12 @@ public abstract class LdioInput implements LdiComponent {
 	 * @param adapter  Instance of the LDI Adapter. Facilitates transforming the input
 	 *                 data to a linked data model (RDF).
 	 */
-	protected LdioInput(String componentName, String pipelineName, ComponentExecutor executor, LdiAdapter adapter,
-						ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher) {
-		this.componentName = componentName;
-		this.pipelineName = pipelineName;
+	protected LdioInput(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver, ApplicationEventPublisher applicationEventPublisher) {
 		this.executor = executor;
 		this.adapter = adapter;
-		this.observationRegistry = observationRegistry;
+		this.ldioObserver = ldioObserver;
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.pipelineStatus = INIT;
-		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment(0);
 	}
 
 	public void processInput(String content, String contentType) {
@@ -66,31 +54,13 @@ public abstract class LdioInput implements LdiComponent {
 	}
 
 	public void processInput(LdiAdapter.Content content) {
-		Observation.createNotStarted(this.componentName, observationRegistry)
-				.observe(() -> {
-					try {
-						adapter.apply(content).forEach(this::processModel);
-					} catch (Exception e) {
-						final var errorLocation = this.pipelineName + ":processInput";
-						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, errorLocation, e.getMessage());
-						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, errorLocation,
-								"Processing below message.%n%n###mime###%n%s%n###content###%n%s".formatted(content.mimeType(), content.content()));
-						throw e;
-					}
-				});
+		final Supplier<String> failedContentLogSupplier = () -> "Processing below message.%n%n###mime###%n%s%n###content###%n%s".formatted(content.mimeType(), content.content());
+		ldioObserver.observe(() -> adapter.apply(content).forEach(this::processModel), "processInput", failedContentLogSupplier);
 	}
 
 	protected void processModel(Model model) {
-		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment();
-		Observation.createNotStarted(this.componentName, observationRegistry)
-				.observe(() -> {
-					try {
-						executor.transformLinkedData(model);
-					} catch (Exception e) {
-						log.atError().log(ObserveConfiguration.ERROR_TEMPLATE, this.pipelineName + ":processModel", e.getMessage());
-						throw e;
-					}
-				});
+		ldioObserver.increment();
+		ldioObserver.observe(() -> executor.transformLinkedData(model), "processModel");
 	}
 
 	public abstract void shutdown();
@@ -109,10 +79,10 @@ public abstract class LdioInput implements LdiComponent {
 				}
 			}
 			case STOP -> this.pipelineStatus = STOPPED;
-			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", pipelineName, pipelineStatus);
+			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", ldioObserver.getPipelineName(), pipelineStatus);
 		}
 
-		applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, this.pipelineStatus, MANUAL));
+		applicationEventPublisher.publishEvent(new PipelineStatusEvent(ldioObserver.getPipelineName(), this.pipelineStatus, MANUAL));
 		return this.pipelineStatus;
 	}
 
