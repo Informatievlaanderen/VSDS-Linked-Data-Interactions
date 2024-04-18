@@ -19,7 +19,7 @@ public class VersionMaterialisationProcessorProperties {
 	public static final PropertyDescriptor RESTRICT_OUTPUT_TO_MEMBER = new PropertyDescriptor.Builder()
 			.name("MembersOnly")
 			.displayName("Restrict output to members")
-			.description("When enabled, only the member and the blank nodes references are included.")
+			.description("When enabled, only returns the statements of the node containing the versionOf property, including potential nested blank nodes.")
 			.required(false)
 			.defaultValue("false")
 			.allowableValues("true", "false")
