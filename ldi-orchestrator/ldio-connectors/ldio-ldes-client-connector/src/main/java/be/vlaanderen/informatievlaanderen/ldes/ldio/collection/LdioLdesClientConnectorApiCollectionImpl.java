@@ -22,7 +22,7 @@ public class LdioLdesClientConnectorApiCollectionImpl implements LdioLdesClientC
 	}
 
 	@Override
-	public LdioLdesClientConnectorApi remove(String pipeline) {
-		return clientConnectorApis.remove(pipeline);
+	public Optional<LdioLdesClientConnectorApi> remove(String pipeline) {
+		return Optional.ofNullable(clientConnectorApis.remove(pipeline));
 	}
 }

@@ -9,5 +9,5 @@ public interface LdioLdesClientConnectorApiCollection {
 
 	void add(String pipeline, LdioLdesClientConnectorApi ldioLdesClientConnectorApi);
 
-	LdioLdesClientConnectorApi remove(String pipeline);
+	Optional<LdioLdesClientConnectorApi> remove(String pipeline);
 }

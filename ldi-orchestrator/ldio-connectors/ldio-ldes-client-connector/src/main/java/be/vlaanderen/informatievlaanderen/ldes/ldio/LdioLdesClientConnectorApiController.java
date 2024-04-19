@@ -42,7 +42,7 @@ public class LdioLdesClientConnectorApiController {
 
 	@EventListener
 	void deletePipeline(PipelineDeletedEvent deletedEvent) {
-		clientConnectorApis.remove(deletedEvent.pipelineId()).shutdown();
+		clientConnectorApis.remove(deletedEvent.pipelineId()).ifPresent(LdioLdesClientConnectorApi::shutdown);
 	}
 
 	@EventListener
