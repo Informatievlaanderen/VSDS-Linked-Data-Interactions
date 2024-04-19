@@ -17,7 +17,6 @@ This Adapter only supports valid RDF mime types
 
 ## Config
 
-
-| Property                  | Description                                                                                                           | Required | Default | Example | Supported values |
-|:--------------------------|:----------------------------------------------------------------------------------------------------------------------|:---------|:--------|:--------|:-----------------|
-| max-jsonld-cache-capacity | A cache is used when fetching json-ld contexts. The number of cached contexts can be configured with this property.   | No       | 100     | 100     | Integer          |
+| Property                  | Description                                                                                                                                               | Required | Default | Example | Supported values |
+|:--------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------|:---------|:--------|:--------|:-----------------|
+| max-jsonld-cache-capacity | After retrieving an external JSON-LD context, it is cached for reuse. This property allows to specify the size of this cache (number of stored contexts). | No       | 100     | 100     | Integer          |
