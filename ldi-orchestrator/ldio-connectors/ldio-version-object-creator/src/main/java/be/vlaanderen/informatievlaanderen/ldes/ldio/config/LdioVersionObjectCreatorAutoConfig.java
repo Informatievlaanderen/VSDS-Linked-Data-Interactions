@@ -27,6 +27,9 @@ public class LdioVersionObjectCreatorAutoConfig {
 
 	public static class LdioVersionObjectCreatorTransformerConfigurator implements LdioTransformerConfigurator {
 
+		public static final String DEFAULT_PROV_GENERATED_AT_TIME = "http://www.w3.org/ns/prov#generatedAtTime";
+		public static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
+
 		@Override
 		public LdioTransformer configure(ComponentProperties properties) {
 			Model initModel = ModelFactory.createDefaultModel();
@@ -43,11 +46,11 @@ public class LdioVersionObjectCreatorAutoConfig {
 
 			Property generatedAtProperty = properties.getOptionalProperty("generatedAt-property")
 					.map(initModel::createProperty)
-					.orElseGet(() -> initModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime"));
+					.orElseGet(() -> initModel.createProperty(DEFAULT_PROV_GENERATED_AT_TIME));
 
 			Property versionOfProperty = properties.getOptionalProperty("versionOf-property")
 					.map(initModel::createProperty)
-					.orElseGet(() -> initModel.createProperty("http://purl.org/dc/terms/isVersionOf"));
+					.orElseGet(() -> initModel.createProperty(DEFAULT_VERSION_OF_KEY));
 
 			return new LdioVersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter,
 					generatedAtProperty,

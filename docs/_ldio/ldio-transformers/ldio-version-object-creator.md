@@ -10,7 +10,19 @@ title: Version Object Creator
 
 The Version Object Creator will transform a State Object to a Version Object.
 
-## State Object
+## Config
+
+| Property               | Description                                                                                                                    | Required | Default                                   | Example                                   | Supported values |
+|:-----------------------|:-------------------------------------------------------------------------------------------------------------------------------|:---------|:------------------------------------------|:------------------------------------------|:-----------------|
+| date-observed-property | Property path (IRI format '<>') that points to a literal which should be used as timestampPath. Defaults to current timestamp. | No       | Current Timestamp                         | \<https://example.org/ObservedAt\>        | String           |
+| member-type            | Defines the RDF type of the version object                                                                                     | No       | N/A                                       | https://example.org/Person                | String           |
+| delimiter              | Defines how the version object id will be constructed. (versionOf + delimiter + dateObserved)                                  | No       | /                                         | /                                         | String           |
+| generatedAt-property   | A statement will be added to the model with the observedAt value and the given property.                                       | No       | http://www.w3.org/ns/prov#generatedAtTime | http://www.w3.org/ns/prov#generatedAtTime | String           |
+| versionOf-property     | A statement will be added to the model with the versionOf value and the given property.                                        | No       | http://purl.org/dc/terms/isVersionOf      | http://purl.org/dc/terms/isVersionOf      | String           |
+
+## Example
+
+### State Object
 
 A state object is an entity that represents the most recent state of an object, and in this context, the subject is not unique. Below is an example presented in RDF format: Below is an example presented in RDF format:
 
@@ -31,7 +43,7 @@ A property path can be provided for the date-observed-property. You can provide 
 date-observed-property: `<http://example.org/created>/<http://www.w3.org/2006/time#inXSDDateTimeStamp>`
 to select `time:inXSDDateTimeStamp` within `ex:created`.
 
-## Version Object
+### Version Object
 
 A version object is an entity that represents the state of an object at a specific point in time and associates it with
 a unique identifier (member ID). This identifier serves as the subject within the context of the RDF data model.
@@ -61,7 +73,7 @@ An example of the created version object by the previous state object would be:
   dc:isVersionOf <http://example.org/Something> ;
 ```
 
-## LDIO Configuration
+### Configuration
 
 The YAML configuration of this example would be as follows:
 
@@ -75,13 +87,3 @@ transformers:
       generatedAt-property: http://www.w3.org/ns/prov#generatedAtTime
       versionOf-property: http://purl.org/dc/terms/isVersionOf
 ```
-
-## Config
-
-| Property               | Description                                                                                                                    | Required | Default                                   | Example                                   | Supported values |
-|:-----------------------|:-------------------------------------------------------------------------------------------------------------------------------|:---------|:------------------------------------------|:------------------------------------------|:-----------------|
-| date-observed-property | Property path (IRI format '<>') that points to a literal which should be used as timestampPath. Defaults to current timestamp. | No       | Current Timestamp                         | \<https://example.org/ObservedAt\>        | String           |
-| member-type            | Defines the RDF type of the version object                                                                                     | No       | N/A                                       | https://example.org/Person                | String           |
-| delimiter              | Defines how the version object id will be constructed. (versionOf + delimiter + dateObserved)                                  | No       | /                                         | /                                         | String           |
-| generatedAt-property   | A statement will be added to the model with the observedAt value and the given property.                                       | No       | http://www.w3.org/ns/prov#generatedAtTime | http://www.w3.org/ns/prov#generatedAtTime | String           |
-| versionOf-property     | A statement will be added to the model with the versionOf value and the given property.                                        | No       | http://purl.org/dc/terms/isVersionOf      | http://purl.org/dc/terms/isVersionOf      | String           |

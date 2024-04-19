@@ -10,7 +10,16 @@ title: Version Materializer
 
 The Version Materializer will transform a Version Object to a State Object.
 
-## Version Object
+## Config
+
+| Property            | Description                                                                                                                                                             | Required | Default | Example                                | Supported values |
+|:--------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------|:--------|:---------------------------------------|:-----------------|
+| versionOf-property  | Property that points to the versionOfPath.                                                                                                                              | Yes      | N/A     | "http://purl.org/dc/terms/isVersionOf" | String           |
+| restrict-to-members | Builds a model limited to statements about the ldes:member, including potential nested blank nodes.  Excludes statements about referenced entities, provided as context | No       | false   | false                                  | true or false    |
+
+## Example
+
+### Version Object
 
 A version object is an entity that represents the state of an object at a specific point in time and associates it with
 a unique identifier (member ID). This identifier serves as the subject within the context of the RDF data model.
@@ -34,7 +43,7 @@ An example would be:
   dc:isVersionOf <http://example.org/Something> ;
 ```
 
-## State Object
+### State Object
 
 For each version object, the transformer will generate a corresponding state object and remove all statements that include the versionOf predicate.
 
@@ -55,7 +64,7 @@ An example of the created state object by the previous version object would be:
   prov:generatedAtTime "2024-01-01T13:00:00+01:00"^^xsd:DateTime ;
 ```
 
-## LDIO Configuration
+### Configuration
 The YAML configuration of this example would be as follows:
 
 ```yaml
@@ -64,10 +73,3 @@ transformers:
     config:
       versionOf-property: http://purl.org/dc/terms/isVersionOf
 ```
-
-## Config
-
-| Property            | Description                                                                                                                                                             | Required | Default | Example                                | Supported values |
-|:--------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------|:--------|:---------------------------------------|:-----------------|
-| versionOf-property  | Property that points to the versionOfPath.                                                                                                                              | Yes      | N/A     | "http://purl.org/dc/terms/isVersionOf" | String           |
-| restrict-to-members | Builds a model limited to statements about the ldes:member, including potential nested blank nodes.  Excludes statements about referenced entities, provided as context | No       | false   | false                                  | true or false    |
