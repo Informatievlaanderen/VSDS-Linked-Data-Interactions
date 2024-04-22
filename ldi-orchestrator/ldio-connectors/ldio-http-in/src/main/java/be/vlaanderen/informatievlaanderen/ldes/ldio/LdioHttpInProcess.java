@@ -12,7 +12,7 @@ public class LdioHttpInProcess extends LdioInput {
 
 	public LdioHttpInProcess(ComponentExecutor executor, LdiAdapter adapter,
 							 LdioObserver ldioObserver, ApplicationEventPublisher applicationEventPublisher) {
-		super(executor, adapter, ldioObserver);
+		super(executor, adapter, ldioObserver, applicationEventPublisher);
 	}
 
 	@Override

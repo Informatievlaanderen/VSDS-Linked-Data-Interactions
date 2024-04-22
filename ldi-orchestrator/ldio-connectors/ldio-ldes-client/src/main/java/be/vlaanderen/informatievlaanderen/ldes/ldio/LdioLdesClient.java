@@ -27,8 +27,9 @@ public class LdioLdesClient extends LdioInput {
 	public LdioLdesClient(ComponentExecutor componentExecutor,
                           LdioObserver ldioObserver,
                           MemberSupplier memberSupplier,
+                          ApplicationEventPublisher applicationEventPublisher,
 						  boolean keepState) {
-		super(componentExecutor, null, ldioObserver);
+		super(componentExecutor, null, ldioObserver, applicationEventPublisher);
 		this.memberSupplier = memberSupplier;
         this.keepState = keepState;
     }

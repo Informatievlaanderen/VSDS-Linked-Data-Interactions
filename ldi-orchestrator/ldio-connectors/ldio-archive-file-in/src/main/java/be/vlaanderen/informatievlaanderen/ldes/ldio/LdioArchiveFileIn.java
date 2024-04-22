@@ -18,8 +18,8 @@ public class LdioArchiveFileIn extends LdioInput {
 	private final Lang sourceFormat;
 	private boolean paused = false;
 
-	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ArchiveFileCrawler crawler, Lang source) {
-		super(executor, null, LdioObserver.register(NAME, pipelineName, observationRegistry));
+	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher, ArchiveFileCrawler crawler, Lang source) {
+		super(executor, null, LdioObserver.register(NAME, pipelineName, observationRegistry), applicationEventPublisher);
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
 		start();
@@ -33,13 +33,13 @@ public class LdioArchiveFileIn extends LdioInput {
 	public synchronized void crawlArchive() {
 		archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
 			while (paused) {
-				try {
-					this.wait();
-				} catch (InterruptedException e) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
 					log.error("Thread interrupted: {}", e.getMessage());
-					Thread.currentThread().interrupt();
-				}
-			}
+                    Thread.currentThread().interrupt();
+                }
+            }
 			Model model = RDFParser.source(file).lang(sourceFormat).toModel();
 			processModel(model);
 		});

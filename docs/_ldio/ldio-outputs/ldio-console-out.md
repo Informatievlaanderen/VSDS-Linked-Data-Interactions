@@ -12,6 +12,4 @@ The LDIO Console Out will output its given model to the console.
 
 ## Config
 
-| Property   | Description            | Required | Default      | Example | Supported values                                      |
-|:-----------|:-----------------------|:---------|:-------------|:--------|:------------------------------------------------------|
-| rdf-writer | LDI RDF Writer Config  | No       | Empty Config | N/A     | [LDI RDF Writer Config](../ldio-core/ldio-rdf-writer) |
+{% include ldio-core/rdf-writer.md %}

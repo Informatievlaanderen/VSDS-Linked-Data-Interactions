@@ -38,8 +38,9 @@ public class LdioKafkaIn extends LdioInput {
      *                                  data to a linked data model (RDF).
      * @param ldioObserver              Instance of the LDIO Observer, for observing and monitoring reasons
      */
-    public LdioKafkaIn(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver, ComponentProperties config) {
-        super(executor, adapter, ldioObserver);
+    public LdioKafkaIn(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver,
+                       ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
+        super(executor, adapter, ldioObserver, applicationEventPublisher);
 		final LdioKafkaInListener listener = new LdioKafkaInListener(getContentType(config), this::processInput);
         final var consumerFactory = new DefaultKafkaConsumerFactory<>(getConsumerConfig(config));
         final ContainerProperties containerProps = new ContainerProperties(config.getProperty(TOPICS).split(","));

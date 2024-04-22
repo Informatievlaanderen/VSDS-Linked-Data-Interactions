@@ -36,6 +36,48 @@ A default pipeline looks as follows:
 - Note that one orchestrator can have multiple pipelines
 - Note that one pipeline can have multiple LDI Transformers and LDI Outputs
 
+## Anatomy of a pipeline
+
+Each pipeline is built up of the following components:
+
+* [LDIO Input](ldi-inputs): A component that will receive data (not necessarily LD) to then feed the LDIO pipeline.
+* [LDIO Adapter](ldi-adapters): To be used in conjunction with the LDIO Input, the LDIO Adapter will transform the
+  provided content into and internal Linked Data model and sends it down the pipeline.
+* [LDIO Transformer](ldi-transformers): A component that takes in a Linked Data model, transforms/modifies it and then
+  puts it back on the pipeline.
+* [LDIO Output](ldi-outputs): A component that will take in Linked Data and will export it to external sources.
+
+````mermaid
+stateDiagram-v2
+    direction LR
+
+    LDI_Input --> LDI_Transformer : LD
+    LDI_Transformer --> LDI_Output : LD
+
+    state LDI_Input {
+        direction LR
+        [*] --> LDI_Adapter : Non LD
+
+        state LDI_Adapter {
+            direction LR
+            [*] --> adapt
+            adapt --> [*]
+        }
+
+        LDI_Adapter --> [*] : LD
+    }
+    
+    state LDI_Transformer {
+        direction LR
+        [*] --> transform
+        transform --> [*]
+    }
+    state LDI_Output {
+        direction LR
+        [*] --> [*]
+    }
+````
+
 ## Persistence of Pipelines
 
 By default, all pipelines defined after startup (via management API) will be lost on restart.

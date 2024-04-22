@@ -25,7 +25,11 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	private static final String XMLSCHEMA_DATE_TIME = "http://www.w3.org/2001/XMLSchema#dateTime";
 	public static final Property SYNTAX_TYPE = initModel
 			.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-	public static final String DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND = "Date observed property could not be found: {}";
+
+	public static final String DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND = "Date observed property could not be found, taking current datetime: {}";
+	public static final String STATEMENT_NOT_FOUND = "Statement could not be found: {}";
+	public static final String LINKED_DATA_MODEL_IS_EMPTY = "Received an empty data model";
+	public static final String CREATED_VERSION = "Created version: {}";
 
 	private final PropertyExtractor dateObservedPropertyExtractor;
 	private final Resource memberTypeResource;
@@ -51,12 +55,16 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 		if (memberInfo.isPresent())
 			return constructVersionObject(linkedDataModel, new MemberInfo(memberInfo.get(), dateObserved));
 
-		LOGGER.warn(DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND, dateObserved);
+		if (linkedDataModel.isEmpty()) {
+			LOGGER.warn(LINKED_DATA_MODEL_IS_EMPTY);
+		} else {
+			LOGGER.warn(STATEMENT_NOT_FOUND, SYNTAX_TYPE.getNameSpace());
+		}
+
 		return linkedDataModel;
 	}
 
 	private Optional<String> extractMemberInfo(Model linkedDataModel) {
-
 		return linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
 				.nextOptional()
 				.map(Statement::getSubject)
@@ -73,7 +81,11 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 				.filter(literal -> literal.getDatatype().getURI().toLowerCase().contains("datetime"))
 				.map(Literal::getString)
 				.findFirst()
-				.orElse(LocalDateTime.now().format(formatter));
+				.orElseGet(() -> {
+					String currentDate = LocalDateTime.now().format(formatter);
+					LOGGER.warn(DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND, currentDate);
+					return currentDate;
+				});
 	}
 
 	protected Model constructVersionObject(Model inputModel, MemberInfo memberInfo) {
@@ -81,7 +93,7 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 		String versionObjectId = memberInfo.generateVersionObjectId(delimiter);
 		Resource subject = versionObjectModel.createResource(versionObjectId);
 
-		LOGGER.info("Created version: {}", versionObjectId);
+		LOGGER.info(CREATED_VERSION, versionObjectId);
 
 		List<Statement> statementList = inputModel.listStatements().toList();
 		statementList.stream()

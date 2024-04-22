@@ -24,7 +24,8 @@ Two security protocols are supported:
 | sasl-jaas-user     | Username used in the security protocol                                | No       | null         | client                                    | String                                                                               |
 | sasl-jaas-password | Password used in the security protocol                                | No       | null         | secret                                    | String                                                                               |
 | frame-type         | RDF type of the objects that need to be included for JSON-LD framing. | No       | N/A          | http://purl.org/goodrelations/v1#Offering | Any RDF type                                                                         |
-| rdf-writer         | LDI RDF Writer Config                                                 | No       | Empty Config | N/A                                       | [LDI RDF Writer Config](../ldio-core/ldio-rdf-writer)                                |
+
+{% include ldio-core/rdf-writer.md %}
 
 ## Example
 
