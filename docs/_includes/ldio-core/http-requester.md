@@ -45,26 +45,30 @@ When retries are enabled, the following statuses are always retried, regardless 
 <details>
     <summary>Example requester config</summary>
 
-    ```yaml
-          config:
-            http:
-              headers:
-                - key: role
-                  value: developer
-                - key: alt-role
-                  value: programmer
-            auth:
-              type: API_KEY
-              api-key: my-secret
-              api-key-header: x-api-key
-            retries:
-              enabled: true
-              max: 10
-              statuses-to-retry: 410,451
-            rate-limit:
-              enabled: true
-              period: P1D
-              limit: 1000
-    ```
+<div markdown="1">
+```yaml
+      config:
+        http:
+          headers:
+            - key: role
+              value: developer
+            - key: alt-role
+              value: programmer
+        auth:
+          type: API_KEY
+          api-key: my-secret
+          api-key-header: x-api-key
+        retries:
+          enabled: true
+          max: 10
+          statuses-to-retry: 410,451
+        rate-limit:
+          enabled: true
+          period: P1D
+          limit: 1000
+```
+</div>
+
+
 </details>
 
