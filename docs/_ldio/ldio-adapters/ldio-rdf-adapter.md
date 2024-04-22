@@ -5,10 +5,18 @@ title: RDF Adapter
 ---
 
 # LDIO RDF Adapter
-***be.vlaanderen.informatievlaanderen.ldes.ldi.RdfAdapter***
 
-An LDIO wrapper component for the [LDI RDF Adapter building block](../../core/ldi-adapters/rdf-adapter)
+***Ldio:RdfAdapter***
+
+As the most basic adapter, the RDF Adapter will take in an RDF string and convert it into an internal Linked Data model based on the given content type. 
+This internal Linked Data model is then available for utilization in various other components, such as transformers and outputs.
+
+## Notes
+
+This Adapter only supports valid RDF mime types
 
 ## Config
 
-This component has no required config
+| Property                  | Description                                                                                                                                               | Required | Default | Example | Supported values |
+|:--------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------|:---------|:--------|:--------|:-----------------|
+| max-jsonld-cache-capacity | After retrieving an external JSON-LD context, it is cached for reuse. This property allows to specify the size of this cache (number of stored contexts). | No       | 100     | 100     | Integer          |

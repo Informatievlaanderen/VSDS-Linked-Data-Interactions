@@ -2,8 +2,6 @@ title: Linked Data Interactions
 description: Linked Data Interactions
 remote_theme: just-the-docs/just-the-docs@v0.5.3
 
-url: https://just-the-docs.github.io
-
 favicon_ico: "/assets/images/favicon.ico"
 
 callouts:
@@ -13,6 +11,11 @@ callouts:
 
 aux_links:
   LDI Repository: https://github.com/Informatievlaanderen/VSDS-Linked-Data-Interactions
+
+# Google Analytics Tracking (optional)
+# Supports a CSV of tracking ID strings (eg. "UA-1234567-89,G-1AB234CDE5")
+ga_tracking: G-9F4LJXRX6T
+ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true/nil by default)
 
 # Define Jekyll collections
 collections:
@@ -25,15 +28,18 @@ collections:
   ldi-nifi:
     permalink: "/:collection/:path"
     output: true
+  ldi-standalones:
+    permalink: "/:collection/:path"
+    output: true
 
 just_the_docs:
   collections:
-    core:
-      name: Linked Data Interactions Core Building Blocks
     ldio:
       name: Linked Data Interactions Orchestrator
     ldi-nifi:
       name: Linked Data Interactions for Apache NiFi
+    ldi-standalones:
+      name: Linked Data Interactions Standalones
 
 nav_external_links:
   - title: VSDS Technical Docs

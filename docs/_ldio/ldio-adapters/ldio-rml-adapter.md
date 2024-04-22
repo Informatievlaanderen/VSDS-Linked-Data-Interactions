@@ -5,9 +5,13 @@ title: RML Adapter
 ---
 
 # LDIO RML Adapter
-***be.vlaanderen.informatievlaanderen.ldes.ldi.RmlAdapter***
 
-An LDIO wrapper component for the [LDI RML Adapter building block](../../core/ldi-adapters/rml-adapter)
+***Ldio:RmlAdapter***
+
+The RML Adapter allows a user to transform a non-LD object (json/CSV/XML) to an RDF object.
+
+This is done by providing a RML mapping file. For more details on how to form a correct RML mapping, visit
+the [RML documentation].
 
 ## Config
 
@@ -15,3 +19,5 @@ An LDIO wrapper component for the [LDI RML Adapter building block](../../core/ld
 | Property | Description                                    | Required | Default | Example                     | Supported values    |
 |:---------|:-----------------------------------------------|:---------|:--------|:----------------------------|:--------------------|
 | mapping  | Path to content of RML/content of RML mapping. | Yes      | N/A     | mapping.ttl                 | Path/String         |
+
+[RML documentation]: https://rml.io/specs/rml/

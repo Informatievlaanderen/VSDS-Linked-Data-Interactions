@@ -2,7 +2,6 @@ package ldes.client.treenodesupplier.domain.services;
 
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.repository.MemberRepository;
-import ldes.client.treenodesupplier.repository.filebased.FileBasedMemberRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlMemberRepository;
 import ldes.client.treenodesupplier.repository.sql.postgres.PostgresEntityManagerFactory;
@@ -21,7 +20,6 @@ public class MemberRepositoryFactory {
 			case SQLITE -> new SqlMemberRepository(instanceName,
 					SqliteEntityManagerFactory.getInstance(instanceName));
 			case MEMORY -> new InMemoryMemberRepository();
-			case FILE -> new FileBasedMemberRepository(instanceName);
 			case POSTGRES -> new SqlMemberRepository(instanceName,
 					PostgresEntityManagerFactory.getInstance(instanceName, properties));
 		};

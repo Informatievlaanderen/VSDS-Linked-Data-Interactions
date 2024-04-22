@@ -1,41 +1,41 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.DummyIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.MockVault;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.stream.IntStream;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.HALTED;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RESUMING;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class PipelineIntegrationTest {
-	@Autowired
-	private ApplicationEventPublisher publisher;
+	private final String pipeline = "test";
 	private DummyIn dummyIn;
 	@Autowired
 	private MockVault mockVault;
+	@Autowired
+	private MockMvc mockMvc;
 
 	@BeforeEach
 	void setup(ConfigurableApplicationContext configContext) {
-		dummyIn = (DummyIn) configContext.getBean("test");
+		dummyIn = (DummyIn) configContext.getBean(pipeline);
 	}
 
 	@Test
@@ -55,27 +55,21 @@ class PipelineIntegrationTest {
 	}
 
 	@Test
-	void verifyHaltedPipelineFlow() {
-		// Initial Run
-		IntStream.range(0, 10)
-				.forEach(value -> dummyIn.sendData());
-		await().until(() -> mockVault.getReceivedObjects().size() == 10);
+	void verifyHaltedPipelineFlow() throws Exception {
 
 		// Halt Pipeline
-		publisher.publishEvent(new PipelineStatusEvent(HALTED));
-
-		IntStream.range(0, 10)
-				.forEach(value -> dummyIn.sendData());
-		Assertions.assertEquals(10, mockVault.getReceivedObjects().size());
+		mockMvc.perform(post("http://localhost:8080/admin/api/v1/pipeline/%s/halt".formatted(pipeline))).andExpect(status().isOk());
+		await().until(() -> {
+			var result = mockMvc.perform(get("http://localhost:8080/admin/api/v1/pipeline/%s/status".formatted(pipeline))).andReturn();
+			return result.getResponse().getContentAsString().equals("HALTED");
+		});
 
 		// Resume Pipeline
-		publisher.publishEvent(new PipelineStatusEvent(RESUMING));
-
-		// Whilst resuming add more members to pipeline
-		IntStream.range(0, 10)
-				.forEach(value -> dummyIn.sendData());
-
-		await().until(() -> mockVault.getReceivedObjects().size() == 30);
+		mockMvc.perform(post("http://localhost:8080/admin/api/v1/pipeline/%s/resume".formatted(pipeline))).andExpect(status().isOk());
+		await().until(() -> {
+			var result = mockMvc.perform(get("http://localhost:8080/admin/api/v1/pipeline/%s/status".formatted(pipeline))).andReturn();
+			return result.getResponse().getContentAsString().equals("RUNNING");
+		});
 	}
 
 }

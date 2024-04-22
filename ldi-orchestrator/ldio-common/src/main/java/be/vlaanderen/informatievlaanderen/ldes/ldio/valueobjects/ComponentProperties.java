@@ -1,31 +1,57 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
+
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class ComponentProperties {
+	private String pipelineName;
+	private String componentName;
 	private final Map<String, String> config;
 
-	public ComponentProperties() {
-		this(Map.of());
+	public ComponentProperties(String pipelineName, String componentName) {
+		this(pipelineName, componentName, Map.of());
 	}
 
-	public ComponentProperties(Map<String, String> inputConfig) {
+	public ComponentProperties(String pipelineName, String componentName, Map<String, String> inputConfig) {
+		this.pipelineName = pipelineName;
+		this.componentName = componentName;
 		this.config = new HashMap<>();
 		inputConfig.forEach((key, value) -> this.config.put(removeCasing(key), value));
+	}
+
+	public String getPipelineName() {
+		return pipelineName;
+	}
+
+	public void setPipelineName(String pipelineName) {
+		this.pipelineName = pipelineName;
 	}
 
 	public Map<String, String> getConfig() {
 		return config;
 	}
 
+	public String getComponentName() {
+		return componentName;
+	}
+
+	public void setComponentName(String componentName) {
+		this.componentName = componentName;
+	}
+
 	public String getProperty(String key) {
 		String caseInsensitiveKey = removeCasing(key);
 		String value = config.get(caseInsensitiveKey);
 		if (value == null) {
-			throw new IllegalArgumentException("Missing value for key " + key);
+			throw new ConfigPropertyMissingException(pipelineName, componentName, key);
 		}
 		return value;
 	}
@@ -105,7 +131,13 @@ public class ComponentProperties {
 	 */
 	public Optional<String> getOptionalPropertyFromFile(String key) {
 		String file = getProperty(key);
-		Path path = Path.of(file);
+
+		Path path;
+		try {
+			path = Path.of(file);
+		} catch (InvalidPathException e) {
+			return Optional.empty();
+		}
 
 		if (!Files.exists(path)) {
 			return Optional.empty();
@@ -120,6 +152,53 @@ public class ComponentProperties {
 		} catch (IOException ioe) {
 			throw new IllegalArgumentException("Unreadable file: " + file);
 		}
+	}
+
+	/**
+	 * Returns a new map with the nested properties for a provided key.
+	 * For example the following config:
+	 *
+	 * <pre>
+	 * adapter:
+	 *    name: my-adapter
+	 * 	  config:
+	 * 	      core-context: context.ttl
+	 * 	      alt-context: alt-context.ttl
+	 * </pre>
+	 *
+	 * <br>
+	 * <br>
+	 * Will result in the following component properties:
+	 *
+	 * <pre>
+	 *     adapter.name: my-adapter
+	 *     adapter.config.core-context: context.ttl
+	 *     adapter.config.alt-context: alt-context.ttl
+	 * </pre>
+	 *
+	 * When providing the key "adapter.config" to this method, new component
+	 * properties are returned:
+	 *
+	 * <pre>
+	 *     core-context: context.ttl
+	 *     alt-context: alt-context.ttl
+	 * </pre>
+	 */
+	public ComponentProperties extractNestedProperties(String key) {
+		if (isBlank(key)) {
+			return new ComponentProperties("%s.%s".formatted(componentName, key), pipelineName);
+		}
+
+		var mappedProperties = config
+				.entrySet()
+				.stream()
+				.filter(entry -> entry.getKey().startsWith(key))
+				.filter(entry -> !key.equals(entry.getKey()))
+				.collect(Collectors.toMap(
+						entry -> entry.getKey().substring(key.length() + 1),
+						Map.Entry::getValue));
+
+		return new ComponentProperties(pipelineName, "%s.%s".formatted(componentName, key), mappedProperties);
 	}
 
 	private String removeCasing(String key) {

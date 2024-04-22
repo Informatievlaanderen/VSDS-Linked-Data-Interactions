@@ -3,12 +3,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.strategy.GeoJsonConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.strategy.GeoJsonToRdfPlusWktConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.strategy.GeoJsonToWktConverter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
 import org.apache.jena.rdf.model.Model;
 
-import java.util.List;
-
-public class GeoJsonToWktTransformer implements LdiTransformer {
+public class GeoJsonToWktTransformer implements LdiOneToOneTransformer {
 
 	private final GeoJsonConverter geoJsonConverter;
 
@@ -23,8 +21,7 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 	 * containing geosparql#wktLiteral
 	 */
 	@Override
-	public List<Model> apply(Model model) {
-		return List.of(geoJsonConverter.convert(model));
+	public Model transform(Model model) {
+		return geoJsonConverter.convert(model);
 	}
-
 }

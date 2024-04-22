@@ -10,13 +10,14 @@
     <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
     <artifactId>linked-data-interactions</artifactId>
     <packaging>pom</packaging>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>2.6.0-SNAPSHOT</version>
 
     <modules>
         <module>ldi-api</module>
         <module>ldi-core</module>
         <module>ldi-orchestrator</module>
         <module>ldi-nifi</module>
+        <module>ldi-extensions</module>
     </modules>
 
     <developers>
@@ -36,9 +37,10 @@
     </licenses>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <maven.compiler.release>17</maven.compiler.release>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
 
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -53,26 +55,30 @@
         <unittestskip>false</unittestskip>
         <integrationtestskip>false</integrationtestskip>
 
-        <!-- CODE FORMATTER -->
-        <formatter-maven-plugin.version>2.23.0</formatter-maven-plugin.version>
-        <skipFormatCode>false</skipFormatCode>
-        <!--suppress UnresolvedMavenProperty -->
-        <relative-formatter-path>${maven.multiModuleProjectDirectory}</relative-formatter-path>
-        <impsort-maven-plugin.version>1.9.0</impsort-maven-plugin.version>
 
-        <jena.version>4.8.0</jena.version>
+        <jena.version>4.10.0</jena.version>
+        <sis-embedded-db.version>1.4</sis-embedded-db.version>
+        <xml-bind.version>4.0.1</xml-bind.version>
+        <jackson.version>2.15.3</jackson.version>
+
+        <!-- LOGGING -->
+        <micrometer-prometheus.version>1.12.0</micrometer-prometheus.version>
+        <micrometer-tracing.version>1.2.0</micrometer-tracing.version>
+        <zipkin-reporter.version>2.16.4</zipkin-reporter.version>
+        <loki.version>1.4.2</loki.version>
 
         <!-- Testing -->
+        <assertj.version>3.24.2</assertj.version>
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <byte-buddy.version>1.14.6</byte-buddy.version>
-        <wiremock-jre8.version>2.35.0</wiremock-jre8.version>
+        <byte-buddy.version>1.14.12</byte-buddy.version>
+        <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
         <mockito-core.version>5.5.0</mockito-core.version>
         <mockito-junit.version>5.5.0</mockito-junit.version>
+        <testcontainers.version>1.19.6</testcontainers.version>
         <testcontainers-postgresql.version>1.19.0</testcontainers-postgresql.version>
         <slf4j.version>2.0.7</slf4j.version>
-        <byte-buddy-dep.version>1.14.7</byte-buddy-dep.version>
-
+        <logback-classic.version>1.4.11</logback-classic.version>
         <!-- Jacoco -->
         <jacoco.version>0.8.10</jacoco.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -89,24 +95,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- CODE FORMATTER -->
-                <plugin>
-                    <groupId>net.revelc.code.formatter</groupId>
-                    <artifactId>formatter-maven-plugin</artifactId>
-                    <version>${formatter-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>validate</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <skip>${skipFormatCode}</skip>
-                        <encoding>UTF-8</encoding>
-                        <configFile>${relative-formatter-path}/settings.xml</configFile>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -131,30 +119,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!-- CODE FORMATTER -->
-            <plugin>
-                <groupId>net.revelc.code.formatter</groupId>
-                <artifactId>formatter-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>net.revelc.code</groupId>
-                <artifactId>impsort-maven-plugin</artifactId>
-                <version>${impsort-maven-plugin.version}</version>
-                <configuration>
-                    <removeUnused>true</removeUnused>
-                    <groups>*, java.,javax.,com.</groups>
-                    <staticGroups>*</staticGroups>
-                    <staticAfter>true</staticAfter>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>sort-imports</id>
-                        <goals>
-                            <goal>sort</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -181,6 +145,7 @@
                     <execution>
                         <goals>
                             <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -201,6 +166,44 @@
                 <configuration>
                     <scmCommentPrefix>[ci skip]</scmCommentPrefix>
                     <tagNameFormat>@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${nexus-staging-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
             <plugin>
@@ -233,6 +236,11 @@
                 <artifactId>ldi-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+                <artifactId>ldi-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.jena</groupId>
@@ -246,8 +254,33 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer-prometheus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-tracing-bridge-otel</artifactId>
+                <version>${micrometer-tracing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.zipkin.reporter2</groupId>
+                <artifactId>zipkin-reporter-brave</artifactId>
+                <version>${zipkin-reporter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.loki4j</groupId>
+                <artifactId>loki-logback-appender</artifactId>
+                <version>${loki.version}</version>
+            </dependency>
 
             <!-- Testing -->
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
@@ -271,7 +304,6 @@
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
                 <version>${byte-buddy.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.awaitility</groupId>
@@ -338,53 +370,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <!-- RELEASE PREP -->
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${maven-javadoc-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadoc</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>${maven-source-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>attach-source</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus-staging-maven-plugin.version}</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <scm>
@@ -401,7 +386,7 @@
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 </project>

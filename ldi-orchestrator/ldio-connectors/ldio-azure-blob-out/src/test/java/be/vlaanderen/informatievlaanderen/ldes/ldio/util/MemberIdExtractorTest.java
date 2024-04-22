@@ -14,7 +14,8 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MemberIdExtractorTest {
 	private final MemberIdExtractor memberIdExtractor = new MemberIdExtractor();
@@ -32,18 +33,8 @@ class MemberIdExtractorTest {
 	void when_ModelNotContainsMember_then_MemberIdNotFoundExceptionIsThrown() throws IOException, URISyntaxException {
 		Model model = RDFParser.fromString(readFile("original-without-member.jsonld")).lang(Lang.JSONLD11).toModel();
 
-		MemberIdNotFoundException memberIdNotFoundException = assertThrows(MemberIdNotFoundException.class,
+		assertThrows(MemberIdNotFoundException.class,
 				() -> memberIdExtractor.extractMemberId(model));
-
-		assertEquals(
-				"Could not extract https://w3id.org/tree#member statement from [ a       <http://data.europa.eu/m8g/PeriodOfTime> ;\n"
-						+
-						"  <http://data.europa.eu/m8g/endTime>\n" +
-						"          \"2020-12-10T19:00:00Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;\n" +
-						"  <http://data.europa.eu/m8g/startTime>\n" +
-						"          \"2020-12-05T05:00:00Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>\n" +
-						"] .\n",
-				memberIdNotFoundException.getMessage());
 	}
 
 	private String readFile(String fileName)

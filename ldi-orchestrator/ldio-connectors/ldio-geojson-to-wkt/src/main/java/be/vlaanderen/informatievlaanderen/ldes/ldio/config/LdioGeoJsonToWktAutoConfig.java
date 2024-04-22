@@ -7,22 +7,24 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioGeoJsonToWkt.NAME;
+
 @Configuration
 public class LdioGeoJsonToWktAutoConfig {
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.GeoJsonToWktTransformer")
-	public LdioConfigurator geoJsonToWktConfigurator() {
-		return new LdioGeoJsonToWktConfigurator();
+	@Bean(NAME)
+	public LdioTransformerConfigurator geoJsonToWktConfigurator() {
+        return new LdioGeoJsonToWktConfigurator();
 	}
 
-	public static class LdioGeoJsonToWktConfigurator implements LdioConfigurator {
-		public static final String RDF_PLUS_WKT_ENABLED = "create-rdf-plus-wkt";
+    public static class LdioGeoJsonToWktConfigurator implements LdioConfigurator {
+        public static final String RDF_PLUS_WKT_ENABLED = "create-rdf-plus-wkt";
 
-		@Override
-		public LdiComponent configure(ComponentProperties config) {
-			boolean rdfPlusWktEnabled = config.getOptionalBoolean(RDF_PLUS_WKT_ENABLED).orElse(false);
-			return new GeoJsonToWktTransformer(rdfPlusWktEnabled);
-		}
-	}
+        @Override
+        public LdiComponent configure(ComponentProperties config) {
+            boolean rdfPlusWktEnabled = config.getOptionalBoolean(RDF_PLUS_WKT_ENABLED).orElse(false);
+            return new GeoJsonToWktTransformer(rdfPlusWktEnabled);
+        }
+    }
 
 }

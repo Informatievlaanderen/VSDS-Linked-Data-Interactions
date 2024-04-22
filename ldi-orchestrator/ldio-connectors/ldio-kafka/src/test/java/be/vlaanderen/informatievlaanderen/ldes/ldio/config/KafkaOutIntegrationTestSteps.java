@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.bootstrapServer;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.topic;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
@@ -29,7 +30,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class KafkaOutIntegrationTestSteps {
+public class KafkaOutIntegrationTestSteps extends KafkaIntegrationTest  {
 
 	private LdiOutput ldioKafkaOut;
 	private Model inputModel;
@@ -39,7 +40,7 @@ public class KafkaOutIntegrationTestSteps {
 
 	@And("I create an LdioKafkaOut component")
 	public void iCreateAnLdioKafkaOutComponent() {
-		ComponentProperties properties = new ComponentProperties(config);
+		ComponentProperties properties = new ComponentProperties("pipelineName", NAME, config);
 		ldioKafkaOut = (LdiOutput) new LdioKafkaOutAutoConfig().ldiKafkaOutConfigurator().configure(properties);
 	}
 

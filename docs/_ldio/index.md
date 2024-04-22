@@ -8,38 +8,59 @@ nav_order: 0
 
 A lightweight application maintained by the LDI team. Its creation came when a more lightweight alternative for [Apache NiFi] was needed.
 
-## Setup Basic Configuration
+## Docker Compose
 
-To set up a basic LDIO configuration, all that is needed is passing a YAML configuration.
+The easiest way to start working with the LDIO is by using Docker. The image is located on the [Docker Hub](https://hub.docker.com/r/ldes/ldi-orchestrator/tags).
 
-This can look as follows:
+To set up your environment, start by creating a new folder dedicated to your LDIO project. Within this folder, create two files: a `docker-compose.yml` and a YAML configuration file.
+The YAML file can be named according to your preference and can be added to the volume bindings pointing to the `ldio/application.yml` file.
 
+To enable Swagger UI, debug logging, or monitoring, please follow the instructions provided below on how to incorporate them into the LDIO YAML configuration file.
+
+***docker-compose.yml***:
 ````yaml
-orchestrator:
-  pipelines:
-    - name: my-first-pipeline
-      input:
-        name: fully-qualified name of LDI Input
-        config:
-          foo: bar
-        adapter:
-          name: fully-qualified name of LDI Adapter
-          config:
-            foo: bar
-      transformers:
-        - name: fully-qualified name of LDI Transformer
-          config:
-            foo: bar
-      outputs:
-        - name: fully-qualified name of LDI Transformer
-          config:
-            foo: bar
+version: '3.3'
+services:
+  ldio-workbench:
+    container_name: ldio-workbench
+    image: ldes/ldi-orchestrator:2.4.0-SNAPSHOT
+    volumes:
+      - ./ldio.config.yml:/ldio/application.yml:ro
+    ports:
+      - "<port>:8080"
 ````
 
-- Note that one orchestrator can have multiple pipelines 
-- Note that one pipeline can have multiple LDI Transformers and LDI Outputs 
+Once configured with the LDIO config, execute the command
+````shell
+docker compose up
+````
 
-## LDIO DEBUG logging
+{: .note }
+> If any extra files are required for a processor (mapping/queries/...), you can add them in your volume binding  pointing to the ``ldio`` folder as follows:
+>
+> Note that the name given for the file can be whatever, as long as it is unique.
+>
+> ``- ./file.extension:/ldio/file.extension:ro``
+
+{: .note }
+> If any custom processors have been created, you can add the jars in your volume binding pointing to the ``ldio/lib`` folder as follows:
+>
+> Note that the name given for the jar file can be whatever, as long as it is unique.
+>
+> ``- <path to custom processor>:/ldio/lib/custom-processor.jar:ro``
+
+## Enable swagger UI
+
+To use the swagger UI on your own LDIO deployment you can add the below config,
+and go to `<base-url>/v1/swagger`.
+
+```yaml
+springdoc:
+  swagger-ui:
+    path: /v1/swagger
+```
+
+## LDIO DEBUG Logging
 
 To enable logging the input model for a 
 * [LDIO Adapter](./ldio-adapters)
@@ -56,26 +77,27 @@ Make sure you
     ````
 * Add the ```debug: true``` property to your transformer or output config.
 
-## LDIO Process Flow 
+## LDIO Logging & Monitoring
 
-````mermaid
-sequenceDiagram
-    LDI Input->>+LDI Adapter: Received Content.
-    loop For every Linked Data Model
-        LDI Adapter->>-LDI Input: Returns Model
-        
-    end
-    LDI Input->>ComponentExecutor: Process Model
-    loop For every LDI Transformer in pipeline
-        ComponentExecutor->>+LDI Transformer: Start Transformation
-        LDI Transformer->>-ComponentExecutor: Return Transformed Model
-    end
+To provide a better insight in the workings in the LDIO, we expose a prometheus endpoint (`/actuator/prometheus`) that
+encloses some metrics (with included tags):
 
-    loop For every LDI Output in pipeline
-        ComponentExecutor->>+LDI Output: Start Output
-        Note right of LDI Output: Model exported!
-    end
+* ldio_data_in_total: Number (Amount of items passed at the start of Transformer Pipeline)
+  * pipeline: String (Refers to the pipeline name)
+  * ldio_type: String (Refers to the LDIO Input Type of pipeline)
+* ldio_data_out_total: Number (Amount of items passed at the end of Transformer Pipeline)
+  * pipeline: String (Refers to the pipeline name)
+
+To consult these metrics, make sure the prometheus endpoint is enabled by setting
+the following setting:
+
+````yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus
 ````
-
 
 [Apache NiFi]: https://nifi.apache.org/

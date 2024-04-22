@@ -1,0 +1,24 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Mutable Fragment",
+      "newScenarioState": "Mutable Fragment was fetched once",
+  "request": {
+    "method": "GET",
+    "url": "/200-second-tree-node-filter",
+    "headers": {
+      "Accept": {
+        "contains": "application/ld+json"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"@context\":[\"https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld\"],\"@id\":\"http://localhost:10101/200-second-tree-node-filter\",\"@type\":\"Node\",\"viewOf\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances\",\"collectionInfo\":{\"@id\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances\",\"@type\":\"EventStream\",\"shape\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances/shape\",\"timestampPath\":\"prov:generatedAtTime\",\"versionOfPath\":\"dct:isVersionOf\"},\"items\":[{\"@id\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/mobility-hindrances/2\",\"@type\":\"MobilityHindrance\",\"gipodId\":10228787,\"identifier\":[{\"@type\":\"Identifier\",\"Identifier.identifier\":{\"value\":\"10228787\",\"type\":\"gipodId\"},\"assignedByName\":\"https://gipod.vlaanderen.be\"}],\"isConsequenceOf\":[{\"@id\":\"/api/v1/events/3773285\",\"@type\":\"Event\",\"gipodId\":3773285}],\"description\":\"Eetwagen\",\"owner\":{\"isVersionOf\":\"/api/v1/organisations/0201f2a2-39e6-0a88-b5a3-c912f52a9a93\",\"@type\":\"Organisation\",\"preferredName\":\"Geosparc\"},\"contactOrganisation\":[],\"zone\":[{\"@id\":\"/api/v1/mobility-hindrances/10228787/zones/6dd8d314-9415-4103-bb06-c7c9fbf3dc19\",\"@type\":\"Zone\",\"consequence\":[{\"@id\":\"/api/v1/taxonomies/mobility-hindrance/consequencetypes/c53813ab-814f-4ff4-8a87-6934c72e175f\",\"prefLabel\":\"Geen doorgang voor gemotoriseerd verkeer\"}],\"geometry\":{\"@type\":\"Geometry\",\"wkt\":\"<http://www.opengis.net/def/crs/EPSG/9.9.1/31370> POLYGON ((109802.90525490482 189774.7184551563, 109801.10560758458 189779.91360264365, 109803.47330090578 189780.72935110983, 109805.27295029224 189775.5342052644, 109807.07260330272 189770.33905491605, 109804.70490584878 189769.52330316138, 109802.90525490482 189774.7184551563))\"},\"zoneType\":{\"@id\":\"/api/v1/taxonomies/zonetypes/0fb72ef7-6ac9-4a70-b295-a30ea215d250\",\"prefLabel\":\"HinderZone\"}}],\"period\":[{\"@type\":\"Period\",\"start\":\"2021-01-31T23:00:00Z\",\"end\":\"2021-02-03T22:30:00Z\"}],\"timeSchedule\":null,\"permittedBy\":[],\"status\":{\"@id\":\"/api/v1/taxonomies/statuses/a411c53e-db33-436a-9bb9-d62d535b661d\",\"prefLabel\":\"Onbekend\"},\"generatedAtTime\":\"2020-12-28T09:37:18.577Z\",\"eventName\":\"MobilityHindranceWasImportedFromLegacy\",\"isVersionOf\":\"/api/v1/mobility-hindrances/10228787\",\"memberOf\":\"https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances\",\"lastModifiedOn\":\"2020-12-07T15:10:22.18Z\",\"lastModifiedBy\":{\"isVersionOf\":\"/api/v1/organisations/0201f2a2-39e6-0a88-b5a3-c912f52a9a93\",\"@type\":\"Organisation\",\"preferredName\":\"Geosparc\"},\"createdOn\":\"2020-12-07T15:10:22.18Z\",\"createdBy\":{\"isVersionOf\":\"/api/v1/organisations/0201f2a2-39e6-0a88-b5a3-c912f52a9a93\",\"@type\":\"Organisation\",\"preferredName\":\"Geosparc\"}}]}",
+    "headers": {
+      "Content-Type": "application/ld+json;charset=UTF-8",
+      "Cache-Control": "public, max-age=1, mutable"
+    }
+  }
+}
+    ]}

@@ -1,51 +1,54 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.PostRequest;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.springframework.http.HttpEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.StringWriter;
-
-import static java.util.Optional.ofNullable;
-import static org.apache.jena.riot.RDFLanguages.nameToLang;
+import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 public class LdioHttpOut implements LdiOutput {
-	private final RestTemplate restTemplate;
-	private final HttpHeaders headers;
-	private final String targetURL;
-	private final Lang outputLanguage;
+	public static final String NAME = "Ldio:HttpOut";
+	private static final Logger log = LoggerFactory.getLogger(LdioHttpOut.class);
 
-	public LdioHttpOut(RestTemplate restTemplate, HttpHeaders headers, Lang outputLanguage, String targetURL) {
-		this.restTemplate = restTemplate;
-		this.headers = headers;
-		this.outputLanguage = outputLanguage;
+	private final RequestExecutor requestExecutor;
+	private final String targetURL;
+	private final LdiRdfWriterProperties rdfWriterProperties;
+	private final LdiRdfWriter ldiRdfWriter;
+
+	public LdioHttpOut(RequestExecutor requestExecutor, String targetURL,
+			LdiRdfWriterProperties rdfWriterProperties) {
+		this.requestExecutor = requestExecutor;
 		this.targetURL = targetURL;
+		this.rdfWriterProperties = rdfWriterProperties;
+		this.ldiRdfWriter = LdiRdfWriter.getRdfWriter(rdfWriterProperties);
 	}
 
 	@Override
 	public void accept(Model linkedDataModel) {
 		if (!linkedDataModel.isEmpty()) {
-			String content = toString(linkedDataModel, outputLanguage);
-
-			HttpEntity<String> request = new HttpEntity<>(content, headers);
-			restTemplate.postForObject(targetURL, request, String.class);
+			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+			ldiRdfWriter.writeToOutputStream(linkedDataModel, output);
+			final String contentType = rdfWriterProperties.getLang().getHeaderString();
+			final RequestHeader requestHeader = new RequestHeader(HttpHeaders.CONTENT_TYPE, contentType);
+			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), output.toByteArray());
+			Response response = requestExecutor.execute(request);
+			if (response.isSuccess()) {
+				log.debug("{} {} {}", request.getMethod(), request.getUrl(), response.getHttpStatus());
+			} else {
+				log.atError().log("Failed to post model. The request url was {}. " +
+						"The http response obtained from the server has code {} and body \"{}\".",
+						response.getRequestedUrl(), response.getHttpStatus(), response.getBodyAsString().orElse(null));
+			}
 		}
-	}
-
-	public static Lang getLang(MediaType contentType) {
-		return ofNullable(nameToLang(contentType.getType() + "/" + contentType.getSubtype()))
-				.orElseGet(() -> ofNullable(nameToLang(contentType.getSubtype()))
-						.orElseThrow());
-	}
-
-	public static String toString(final Model model, final Lang lang) {
-		StringWriter stringWriter = new StringWriter();
-		RDFDataMgr.write(stringWriter, model, lang);
-		return stringWriter.toString();
 	}
 }

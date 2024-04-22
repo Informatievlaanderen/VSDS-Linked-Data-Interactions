@@ -4,23 +4,28 @@ import ldes.client.treenodefetcher.domain.valueobjects.MutabilityStatus;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TreeNodeRecord {
 	private final String treeNodeUrl;
 	private TreeNodeStatus treeNodeStatus;
 	private LocalDateTime earliestNextVisit;
+	private List<String> memberIds;
 
 	public TreeNodeRecord(String treeNodeUrl) {
 		this.treeNodeUrl = treeNodeUrl;
 		this.treeNodeStatus = TreeNodeStatus.NOT_VISITED;
 		this.earliestNextVisit = LocalDateTime.now();
+		this.memberIds = new ArrayList<>();
 	}
 
-	public TreeNodeRecord(String treeNodeUrl, TreeNodeStatus treeNodeStatus, LocalDateTime earliestNextVisit) {
+	public TreeNodeRecord(String treeNodeUrl, TreeNodeStatus treeNodeStatus, LocalDateTime earliestNextVisit, List<String> memberIds) {
 		this.treeNodeUrl = treeNodeUrl;
 		this.treeNodeStatus = treeNodeStatus;
 		this.earliestNextVisit = earliestNextVisit;
+		this.memberIds = memberIds;
 	}
 
 	public String getTreeNodeUrl() {
@@ -34,14 +39,30 @@ public class TreeNodeRecord {
 	public LocalDateTime getEarliestNextVisit() {
 		return earliestNextVisit;
 	}
+	public List<String> getMemberIds() {
+		return memberIds;
+	}
 
 	public void updateStatus(MutabilityStatus mutabilityStatus) {
 		if (mutabilityStatus.isMutable()) {
 			treeNodeStatus = TreeNodeStatus.MUTABLE_AND_ACTIVE;
 		} else {
-			treeNodeStatus = TreeNodeStatus.IMMUTABLE;
+			treeNodeStatus = TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS;
 		}
 		earliestNextVisit = mutabilityStatus.getEarliestNextVisit();
+	}
+
+	public boolean hasReceived(String id) {
+		return memberIds.contains(id);
+	}
+
+	public void addToReceived(List<String> receivedMemberIds) {
+		memberIds.addAll(receivedMemberIds);
+	}
+
+	public void markImmutableWithoutUnprocessedMembers() {
+		memberIds.clear();
+		treeNodeStatus = TreeNodeStatus.IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS;
 	}
 
 	@Override

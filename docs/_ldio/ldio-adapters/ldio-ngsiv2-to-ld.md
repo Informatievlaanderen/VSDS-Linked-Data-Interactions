@@ -5,9 +5,21 @@ title: NGSIv2 To LD Adapter
 ---
 
 # LDIO NGSIv2 To LD Adapter
-***be.vlaanderen.informatievlaanderen.ldes.ldi.NgsiV2ToLdAdapter***
 
-An LDIO wrapper component for the [LDI NGSIv2 To LD building block](../../core/ldi-adapters/ngsiv2-to-ld)
+***Ldio:NgsiV2ToLdAdapter***
+
+This adapter will transform a [NGSI V2] input into [NGSI LD].
+
+[Jackson] is used to first deserialize the input to java objects which can then be serialized to the LD format.
+
+## Notes
+
+The algorithm applies several deviations from the standard formats. These deviations are:
+
+1. The observedAt attribute is added to every property,
+   its value is determined by the dateObserved attribute of the input.
+2. The timestamp attribute of a metadata property normally determines the observedAt property but is ignored in this
+   algorithm.
 
 ## Config
 
@@ -16,3 +28,9 @@ An LDIO wrapper component for the [LDI NGSIv2 To LD building block](../../core/l
 | core-context    | URI of a core json-ld context.                   | Yes      | N/A     | http://example.com/my-api | HTTP and HTTPS urls |
 | ld-context      | URI of a custom json-ld context.                 | No       | N/A     | http://example.com/my-api | HTTP and HTTPS urls |
 | data-identifier | Identifier that points to data in provided json. | Yes      | N/A     | data                      | String              |
+
+[NGSI V2]: https://fiware.github.io/specifications/ngsiv2/stable/
+
+[NGSI LD]: https://ngsi-ld-tutorials.readthedocs.io/en/latest/
+
+[Jackson]: https://github.com/FasterXML/jackson

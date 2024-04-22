@@ -1,0 +1,9 @@
+name: invalid-pipeline
+input:
+  name: invalidDummyIn
+  adapter:
+    name: dummyAdapt
+transformers:
+  - name: dummyTransform
+outputs:
+  - name: dummyOut

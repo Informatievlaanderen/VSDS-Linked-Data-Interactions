@@ -1,15 +1,18 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut.NAME;
 
 @Configuration
 public class LdioKafkaOutAutoConfig {
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaOut")
-	public LdioConfigurator ldiKafkaOutConfigurator() {
-		return new LdioKafkaOutConfigurator();
+	@SuppressWarnings("java:S6830")
+	@Bean(NAME)
+	public LdioOutputConfigurator ldiKafkaOutConfigurator() {
+		return new LdioKafkaOutProcessorConfigurator();
 	}
 
 }

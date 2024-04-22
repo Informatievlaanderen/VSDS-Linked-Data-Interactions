@@ -3,17 +3,26 @@ package ldes.client.treenodesupplier.domain.valueobject;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
 import org.apache.jena.riot.Lang;
 
+import java.util.List;
+
 public class LdesMetaData {
-	private final String startingNodeUrl;
+	private final List<String> startingNodeUrls;
 	private final Lang lang;
 
-	public LdesMetaData(String startingNodeUrl, Lang lang) {
-		this.startingNodeUrl = startingNodeUrl;
+	public LdesMetaData(List<String> startingNodeUrls, Lang lang) {
+		this.startingNodeUrls = startingNodeUrls;
 		this.lang = lang;
 	}
 
+	public List<String> getStartingNodeUrls() {
+		return startingNodeUrls;
+	}
+
 	public String getStartingNodeUrl() {
-		return startingNodeUrl;
+		if (startingNodeUrls.isEmpty()) {
+			throw new IllegalArgumentException("No starting nodes defined for LDES Client.");
+		}
+		return startingNodeUrls.get(0);
 	}
 
 	public TreeNodeRequest createRequest(String treeNodeUrl) {

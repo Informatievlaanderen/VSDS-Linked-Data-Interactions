@@ -1,0 +1,12 @@
+orchestrator:
+  directory: target
+  pipelines:
+    - name: test
+      input:
+        name: "InvalidDummyIn"
+        adapter:
+          name: "dummyAdapt"
+      transformers:
+        - name: "dummyTransform"
+      outputs:
+        - name: "dummyOut"

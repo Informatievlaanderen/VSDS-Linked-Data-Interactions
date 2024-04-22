@@ -2,9 +2,12 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
@@ -13,16 +16,19 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.awaitility.Awaitility;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.bootstrapServer;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaCommonIntegrationSteps.topic;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.CONTENT_TYPE;
@@ -32,7 +38,8 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class KafkaInIntegrationTestSteps {
+public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
+	private final ApplicationEventPublisher applicationEventPublisher = applicationEventPublisher();
 	private Model inputModel;
 
 	private String contentType;
@@ -40,6 +47,7 @@ public class KafkaInIntegrationTestSteps {
 	private List<LdiAdapter.Content> adapterResult;
 	private List<Model> componentExecutorResult;
 	private KafkaTemplate<String, String> kafkaProducer;
+	private LdioInput kafkaIn;
 
 	@And("I prepare the result lists")
 	public void iPrepareTheResultLists() {
@@ -50,16 +58,14 @@ public class KafkaInIntegrationTestSteps {
 	@SuppressWarnings("unchecked")
 	@And("I start a listener with an LdioKafkaIn component")
 	public void iCreateAnLdioKafkaInComponent() {
-		ComponentProperties properties = new ComponentProperties(config);
+		ComponentProperties properties = new ComponentProperties("pipelineName", NAME, config);
 		final ComponentExecutor componentExecutor = linkedDataModel -> componentExecutorResult.add(linkedDataModel);
 		final LdiAdapter adapter = content -> {
 			adapterResult.add(content);
 			return Stream.of(toModel(content));
 		};
-		var ldioKafkaInConfigurator = new LdioKafkaInAutoConfig().ldioConfigurator();
-		var ldioKafkaInContainer = (KafkaMessageListenerContainer<Object, Object>) ldioKafkaInConfigurator
-				.configure(adapter, componentExecutor, properties);
-		ldioKafkaInContainer.start();
+		var ldioKafkaInConfigurator = new LdioKafkaInAutoConfig().ldioConfigurator(null);
+		kafkaIn = ldioKafkaInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
 	}
 
 	private Model toModel(LdiAdapter.Content content) {
@@ -105,6 +111,11 @@ public class KafkaInIntegrationTestSteps {
 		await().until(() -> adapterResult.size() == 1);
 	}
 
+	@Then("Wait for a grace period")
+	public void theListenerWillWaitForPeriod() throws InterruptedException {
+		Awaitility.waitAtMost(1500, TimeUnit.MILLISECONDS);
+	}
+
 	@And("^The result header will contain the (.*)$")
 	public void theResultHeaderWillContainTheContentType(String expectedContentType) {
 		assertEquals(expectedContentType, adapterResult.get(0).mimeType());
@@ -117,8 +128,19 @@ public class KafkaInIntegrationTestSteps {
 		assertTrue(resultModel.isIsomorphicWith(inputModel));
 	}
 
-	@And("The componentExecutor will have been called")
-	public void theComponentExecutorWillHaveBeenCalled() {
-		assertEquals(1, componentExecutorResult.size());
+	@And("The componentExecutor will have been called {int} times")
+	public void theComponentExecutorWillHaveBeenCalled(int i) {
+		assertEquals(i, componentExecutorResult.size());
 	}
+
+	@When("I pause the pipeline")
+	public void pauseInput() {
+		kafkaIn.updateStatus(PipelineStatusTrigger.HALT);
+	}
+
+	@When("I unpause the pipeline")
+	public void unPauseInput() {
+		kafkaIn.updateStatus(PipelineStatusTrigger.RESUME);
+	}
+
 }

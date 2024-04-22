@@ -1,0 +1,33 @@
+{
+  "@context": "https://geojson.org/geojson-ld/geojson-context.jsonld",
+  "id": "https://vocabulary.uncefact.org/identifier/node/1/1",
+  "type": "https://vocabulary.uncefact.org/LogisticsLocation",
+  "http://purl.org/dc/terms/isVersionOf": "unece:identifier/node/1",
+  "http://www.w3.org/ns/prov#generatedAtTime": {
+    "type": "http://www.w3.org/2001/XMLSchema#dateTime",
+    "@value": "2020-05-20T10:00:00Z"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      4.9041,
+      52.3676
+    ]
+  },
+  "https://vocabulary.uncefact.org/name": {
+    "type": "http://www.w3.org/2001/XMLSchema#string",
+    "@value": "k1700"
+  },
+  "https://vocabulary.uncefact.org/servicingSpecifiedParty": {
+    "id": "https://vocabulary.uncefact.org/identifier/servicingSpecifiedParty/1",
+    "type": "https://vocabulary.uncefact.org/LocationParty",
+    "https://vocabulary.uncefact.org/name": {
+      "type": "http://www.w3.org/2001/XMLSchema#string",
+      "@value": "DP-World"
+    }
+  },
+  "https://vocabulary.uncefact.org/statusCode": {
+    "type": "http://www.w3.org/2001/XMLSchema#string",
+    "@value": "0"
+  }
+}

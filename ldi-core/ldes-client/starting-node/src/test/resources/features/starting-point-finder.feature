@@ -4,12 +4,17 @@ Feature: StartingTreeNodeFinder
 
   Scenario: Determining the starting TreeNode Starting from a View
     Given I have a StartingTreeNodeFinder
-    When I create a StartingNodeRequest with a lang "jsonld" and url: "http://localhost:10101/200-treenode-is-also-view"
+    When I create a StartingNodeRequest with a lang "application/n-quads" and url: "http://localhost:10101/200-treenode-is-also-view"
     Then the starting Tree Node of the LDES Stream is the url of the View: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z"
+
+  Scenario: Determining the starting TreeNode Starting from a View with relative urls
+    Given I have a StartingTreeNodeFinder
+    When I create a StartingNodeRequest with a lang "jsonld" and url: "http://localhost:10101/200-treenode-is-also-view-with-relative-url"
+    Then the starting Tree Node of the LDES Stream is the url of the View: "http://localhost:10101/200-treenode-is-also-view-with-relative-url?generatedAtTime=2020-12-28T09:36:09.72Z"
 
   Scenario: Determining the starting TreeNode Starting from an endpoint that redirects to a View
     Given I have a StartingTreeNodeFinder
-    When I create a StartingNodeRequest with a lang "jsonld" and url: "http://localhost:10101/302-redirects-to-view"
+    When I create a StartingNodeRequest with a lang "n-quads" and url: "http://localhost:10101/302-redirects-to-view"
     Then the starting Tree Node of the LDES Stream is the url of the View: "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances?generatedAtTime=2020-12-28T09:36:09.72Z"
 
   Scenario: Determining the starting TreeNode Starting from a Tree Node that is not a view

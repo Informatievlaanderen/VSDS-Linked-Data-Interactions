@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.JsonToLdAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.JsonToLdProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import org.apache.jena.riot.Lang;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
@@ -19,8 +20,7 @@ import org.apache.nifi.processor.exception.ProcessException;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.JsonToLdProcessorProperties.CORE_CONTEXT;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.JsonToLdProcessorProperties.LD_CONTEXT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.JsonToLdProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
 
@@ -31,7 +31,6 @@ public class JsonToLdProcessor extends AbstractProcessor {
 	protected JsonToLdAdapter adapter;
 
 	protected String coreContext;
-	protected String ldContext;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -40,15 +39,15 @@ public class JsonToLdProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(CORE_CONTEXT, LD_CONTEXT);
+		return List.of(CONTEXT, FORCE_CONTENT_TYPE);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		coreContext = JsonToLdProcessorProperties.getCoreContext(context);
-		ldContext = JsonToLdProcessorProperties.getLdContext(context);
+		boolean forceContentType = getForceContentType(context);
 
-		adapter = new JsonToLdAdapter(coreContext, ldContext);
+		adapter = new JsonToLdAdapter(coreContext, forceContentType, JenaContextProvider.create().getContext());
 	}
 
 	@Override

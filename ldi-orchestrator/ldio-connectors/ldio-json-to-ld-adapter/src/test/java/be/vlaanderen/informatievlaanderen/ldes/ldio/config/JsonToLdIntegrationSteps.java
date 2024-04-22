@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioJsonToLdAdapterAutoConfig.NAME;
 import static org.junit.Assert.assertTrue;
 
 public class JsonToLdIntegrationSteps {
@@ -26,16 +27,16 @@ public class JsonToLdIntegrationSteps {
 	private LdiComponent adapter;
 	private Model output;
 
-	@Given("I set a core context in the configuration")
+	@Given("I set a context in the configuration")
 	public void setConfig() {
 		config = new HashMap<>();
-		config.put("core-context", "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld");
+		config.put("context", "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld");
 	}
 
 	@And("I create the adapter")
 	public void iCreateAdapter() {
-		ComponentProperties properties = new ComponentProperties(config);
-		adapter = new LdioJsonToLdAdapterAutoConfig.LdioJsonToLdAdapterConfigurator().configure(properties);
+		ComponentProperties properties = new ComponentProperties("pipeline", NAME, config);
+		adapter = new LdioJsonToLdAdapterAutoConfig.LdioJsonToLdConfigurator().configure(properties);
 	}
 
 	@When("I send a json object")

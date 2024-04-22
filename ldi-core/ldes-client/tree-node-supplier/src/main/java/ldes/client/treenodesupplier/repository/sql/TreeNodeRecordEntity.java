@@ -4,11 +4,9 @@ import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
+import javax.persistence.*;
 
 @Entity
 @NamedQuery(name = "TreeNode.count", query = "SELECT COUNT(t) FROM TreeNodeRecordEntity t")
@@ -22,22 +20,26 @@ public class TreeNodeRecordEntity {
 	private String treeNodeUrl;
 	private TreeNodeStatus treeNodeStatus;
 	private LocalDateTime earliestNextVisit;
+	@Column
+	@ElementCollection(targetClass=String.class)
+	private List<String> members;
 
 	public TreeNodeRecordEntity() {
 	}
 
-	public TreeNodeRecordEntity(String treeNodeUrl, TreeNodeStatus treeNodeStatus, LocalDateTime earliestNextVisit) {
+	public TreeNodeRecordEntity(String treeNodeUrl, TreeNodeStatus treeNodeStatus, LocalDateTime earliestNextVisit, List<String> members) {
 		this.treeNodeUrl = treeNodeUrl;
 		this.treeNodeStatus = treeNodeStatus;
 		this.earliestNextVisit = earliestNextVisit;
+		this.members = members;
 	}
 
 	public static TreeNodeRecordEntity fromTreeNodeRecord(TreeNodeRecord treeMember) {
 		return new TreeNodeRecordEntity(treeMember.getTreeNodeUrl(), treeMember.getTreeNodeStatus(),
-				treeMember.getEarliestNextVisit());
+				treeMember.getEarliestNextVisit(), treeMember.getMemberIds());
 	}
 
 	public TreeNodeRecord toTreeNode() {
-		return new TreeNodeRecord(this.treeNodeUrl, this.treeNodeStatus, this.earliestNextVisit);
+		return new TreeNodeRecord(this.treeNodeUrl, this.treeNodeStatus, this.earliestNextVisit, this.members);
 	}
 }

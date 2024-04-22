@@ -3,7 +3,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-orchestrator</artifactId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>2.6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -12,24 +12,29 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>ldio-request-executor</module>
+        <module>ldio-amqp</module>
+
         <module>ldio-http-in</module>
         <module>ldio-http-in-poller</module>
         <module>ldio-ldes-client</module>
+        <module>ldio-ldes-client-connector</module>
         <module>ldio-archive-file-in</module>
 
         <module>ldio-rdf-adapter</module>
         <module>ldio-ngsiv2-to-ld-adapter</module>
         <module>ldio-json-to-ld-adapter</module>
-        <module>ldio-model-split</module>
 
         <module>ldio-sparql-construct</module>
         <module>ldio-version-object-creator</module>
         <module>ldio-version-materialiser</module>
         <module>ldio-geojson-to-wkt</module>
+        <module>ldio-http-enricher</module>
 
         <module>ldio-console-out</module>
         <module>ldio-http-out</module>
         <module>ldio-kafka</module>
+        <module>ldio-noop-out</module>
         <module>ldio-rml-adapter</module>
         <module>ldio-azure-blob-out</module>
         <module>ldio-file-out</module>
@@ -38,12 +43,11 @@
 
     </modules>
 
-    <properties>
-        <cucumber.version>7.13.0</cucumber.version>
-        <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
-    </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-common</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
@@ -56,6 +60,7 @@
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>ldio-common</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -86,23 +91,24 @@
             <version>${junit-platform-suite.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+        </dependency>
 
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven-jar-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

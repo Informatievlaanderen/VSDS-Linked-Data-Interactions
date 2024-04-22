@@ -5,8 +5,9 @@ import ldes.client.treenodesupplier.domain.services.TreeNodeRecordComparator;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
 
 public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
@@ -37,13 +38,16 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 	}
 
 	@Override
-	public Optional<TreeNodeRecord> getOneTreeNodeRecordWithStatus(TreeNodeStatus treeNodeStatus) {
+	public Optional<TreeNodeRecord> getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus treeNodeStatus) {
 		return entityManager
-				.createNamedQuery("TreeNode.getByTreeNodeStatus", TreeNodeRecordEntity.class)
+				.createQuery("SELECT t FROM TreeNodeRecordEntity t" +
+								" WHERE t.treeNodeStatus = :treeNodeStatus" +
+								" ORDER BY t.earliestNextVisit",
+						TreeNodeRecordEntity.class)
 				.setParameter("treeNodeStatus", treeNodeStatus)
 				.getResultStream()
-				.map(TreeNodeRecordEntity::toTreeNode)
-				.min(new TreeNodeRecordComparator());
+				.findFirst()
+				.map(TreeNodeRecordEntity::toTreeNode);
 	}
 
 	@Override
@@ -65,6 +69,11 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 		return entityManager
 				.createNamedQuery("TreeNode.count", Long.class)
 				.getSingleResult() > 0;
+	}
+
+	@Override
+	public void resetContext() {
+		entityManager.clear();
 	}
 
 }

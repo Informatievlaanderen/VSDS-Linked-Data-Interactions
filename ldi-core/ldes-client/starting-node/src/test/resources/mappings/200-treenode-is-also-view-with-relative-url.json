@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/200-treenode-is-also-view-with-relative-url",
+    "headers": {
+      "Accept": {
+        "contains": "application/ld+json"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "tree-node-is-also-view-with-relative-urls.jsonld",
+    "headers": {
+      "Content-Type": "application/ld+json;charset=UTF-8"
+    }
+  }
+}

@@ -5,11 +5,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtrac
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.sparql.util.Context;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
@@ -22,8 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorPropertyDescriptors.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_RELATIONSHIP;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.DATA_UNPARSEABLE_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
@@ -37,6 +38,7 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 	private Set<Relationship> relationships;
 	private VersionObjectCreator versionObjectCreator;
 	private Lang dataDestinationFormat;
+	private Context jenaContext;
 
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
@@ -53,7 +55,10 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		relationships = new HashSet<>();
 		relationships.add(DATA_RELATIONSHIP);
 		relationships.add(DATA_UNPARSEABLE_RELATIONSHIP);
+		relationships.add(VALUE_NOT_FOUND_RELATIONSHIP);
 		relationships = Collections.unmodifiableSet(relationships);
+
+		jenaContext = JenaContextProvider.create().getContext();
 	}
 
 	@Override
@@ -92,11 +97,21 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 
 		String content = FlowManager.receiveData(session, flowFile);
 		try {
-			Model input = RDFParserBuilder.create().fromString(content).lang(lang).toModel();
-			versionObjectCreator.apply(input)
-					.forEach(versionObject -> FlowManager.sendRDFToRelation(session, flowFile, versionObject,
-							DATA_RELATIONSHIP, dataDestinationFormat));
+			Model input =
+					RDFParser
+							.fromString(content)
+							.context(jenaContext)
+							.lang(lang)
+							.toModel();
+			Model versionObject = versionObjectCreator.transform(input);
 
+			if (versionObject.isIsomorphicWith(input)) {
+				FlowManager.sendRDFToRelation(session, flowFile, versionObject,
+						VALUE_NOT_FOUND_RELATIONSHIP, dataDestinationFormat);
+			} else {
+				FlowManager.sendRDFToRelation(session, flowFile, versionObject,
+						DATA_RELATIONSHIP, dataDestinationFormat);
+			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			FlowManager.sendRDFToRelation(session, flowFile, content, DATA_UNPARSEABLE_RELATIONSHIP, Lang.JSONLD);

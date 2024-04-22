@@ -2,6 +2,7 @@ package ldes.client.treenodefetcher;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import ldes.client.treenodefetcher.domain.valueobjects.ModelResponse;
 import ldes.client.treenodefetcher.domain.valueobjects.MutabilityStatus;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeRequest;
@@ -10,15 +11,19 @@ import org.apache.http.HttpHeaders;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class TreeNodeFetcher {
 
 	private final RequestExecutor requestExecutor;
+	private final TimestampExtractor timestampExtractor;
 
-	public TreeNodeFetcher(RequestExecutor requestExecutor) {
+	public TreeNodeFetcher(RequestExecutor requestExecutor, TimestampExtractor timestampExtractor) {
 		this.requestExecutor = requestExecutor;
+		this.timestampExtractor = timestampExtractor;
 	}
 
 	public TreeNodeResponse fetchTreeNode(TreeNodeRequest treeNodeRequest) {
@@ -41,9 +46,9 @@ public class TreeNodeFetcher {
 	}
 
 	private TreeNodeResponse createOkResponse(TreeNodeRequest treeNodeRequest, Response response) {
-		final String responseBody = response.getBody().orElseThrow();
-		final Model model = RDFParser.fromString(responseBody).forceLang(treeNodeRequest.getLang()).toModel();
-		final ModelResponse modelResponse = new ModelResponse(model);
+		final InputStream responseBody = response.getBody().map(ByteArrayInputStream::new).orElseThrow();
+		final Model model = RDFParser.source(responseBody).forceLang(treeNodeRequest.getLang()).base(treeNodeRequest.getTreeNodeUrl()).toModel();
+		final ModelResponse modelResponse = new ModelResponse(model, timestampExtractor);
 		final MutabilityStatus mutabilityStatus = getMutabilityStatus(response);
 		return new TreeNodeResponse(modelResponse.getRelations(), modelResponse.getMembers(), mutabilityStatus);
 	}
@@ -65,5 +70,4 @@ public class TreeNodeFetcher {
 				.map(MutabilityStatus::ofHeader)
 				.orElseGet(MutabilityStatus::empty);
 	}
-
 }

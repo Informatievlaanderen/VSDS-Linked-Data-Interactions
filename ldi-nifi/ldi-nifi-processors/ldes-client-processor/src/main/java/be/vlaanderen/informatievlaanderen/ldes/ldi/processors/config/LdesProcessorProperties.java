@@ -6,9 +6,12 @@ import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +34,12 @@ public final class LdesProcessorProperties {
 	private LdesProcessorProperties() {
 	}
 
-	public static final PropertyDescriptor DATA_SOURCE_URL = new PropertyDescriptor.Builder()
-			.name("DATA_SOURCE_URL")
-			.displayName("Data source url")
-			.description("Url to data source")
+	public static final PropertyDescriptor DATA_SOURCE_URLS = new PropertyDescriptor.Builder()
+			.name("DATA_SOURCE_URLS")
+			.displayName("Data source urls")
+			.description("Comma separated list of ldes endpoints. Must be part of same view of an LDES.")
 			.required(true)
-			.addValidator(StandardValidators.URL_VALIDATOR)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
@@ -95,6 +98,14 @@ public final class LdesProcessorProperties {
 			.required(false)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(FALSE.toString())
+			.build();
+
+	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
+			.name("TIMESTAMP_PATH")
+			.displayName("Property path determining the timestamp used to order the members within a fragment")
+			.required(false)
+			.addValidator(Validator.VALID)
+			.defaultValue("")
 			.build();
 
 	public static final PropertyDescriptor STREAM_TIMESTAMP_PATH_PROPERTY = new PropertyDescriptor.Builder()
@@ -158,6 +169,13 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.URL_VALIDATOR)
 			.build();
 
+	public static final PropertyDescriptor OAUTH_SCOPE = new PropertyDescriptor.Builder()
+			.name("OAUTH_SCOPE")
+			.displayName("Scope used for Oauth2 client credentials flow.")
+			.required(false)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
 	public static final PropertyDescriptor AUTHORIZATION_STRATEGY = new PropertyDescriptor.Builder()
 			.name("AUTHORIZATION_STRATEGY")
 			.displayName("Authorization strategy for the internal http client.")
@@ -192,8 +210,50 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
-	public static String getDataSourceUrl(final ProcessContext context) {
-		return context.getProperty(DATA_SOURCE_URL).getValue();
+	public static final PropertyDescriptor USE_VERSION_MATERIALISATION = new PropertyDescriptor.Builder()
+			.name("USE_VERSION_MATERIALISATION")
+			.displayName("Indicates of retries are enabled when the http request fails.")
+			.required(false)
+			.defaultValue(FALSE.toString())
+			.allowableValues(FALSE.toString(), TRUE.toString())
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor RESTRICT_TO_MEMBERS = new PropertyDescriptor.Builder()
+			.name("RESTRICT_TO_MEMBERS")
+			.displayName("Restrict output to members")
+			.description("When enabled, only the member and the blank nodes references are included.")
+			.required(false)
+			.defaultValue(FALSE.toString())
+			.allowableValues(FALSE.toString(), TRUE.toString())
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.build();
+
+	public static final PropertyDescriptor VERSION_OF_PROPERTY = new PropertyDescriptor.Builder()
+			.name("VERSION_OF_PROPERTY")
+			.required(true)
+			.defaultValue("http://purl.org/dc/terms/isVersionOf")
+			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+			.addValidator(StandardValidators.URI_VALIDATOR)
+			.build();
+	public static final PropertyDescriptor USE_EXACTLY_ONCE_FILTER = new PropertyDescriptor.Builder()
+			.name("USE_EXACTLY_ONCE_FILTER")
+			.displayName("Use filter so members are outputted exactly once")
+			.required(false)
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.defaultValue(TRUE.toString())
+			.build();
+
+	public static List<String> getDataSourceUrl(final ProcessContext context) {
+		var urls = Arrays.stream(context.getProperty(DATA_SOURCE_URLS).getValue().split(","))
+				.map(String::trim)
+				.toList();
+
+		if (urls.stream().allMatch(LdesProcessorProperties::isValidUrl)) {
+			return urls;
+		} else {
+			throw new IllegalArgumentException("Not a (valid list of) datasource url(s)");
+		}
 	}
 
 	public static Lang getDataSourceFormat(final ProcessContext context) {
@@ -202,6 +262,10 @@ public final class LdesProcessorProperties {
 
 	public static Lang getDataDestinationFormat(final ProcessContext context) {
 		return RDFLanguages.nameToLang(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
+	}
+
+	public static String getTimestampPath(final ProcessContext context) {
+		return context.getProperty(TIMESTAMP_PATH).getValue();
 	}
 
 	public static boolean streamTimestampPathProperty(final ProcessContext context) {
@@ -234,6 +298,10 @@ public final class LdesProcessorProperties {
 
 	public static String getOauthTokenEndpoint(final ProcessContext context) {
 		return context.getProperty(OAUTH_TOKEN_ENDPOINT).getValue();
+	}
+
+	public static String getOauthScope(final ProcessContext context) {
+		return context.getProperty(OAUTH_SCOPE).getValue();
 	}
 
 	public static AuthStrategy getAuthorizationStrategy(final ProcessContext context) {
@@ -278,6 +346,30 @@ public final class LdesProcessorProperties {
 
 	public static String getPostgresPassword(final ProcessContext context) {
 		return context.getProperty(POSTGRES_PASSWORD).getValue();
+	}
+
+	public static boolean useVersionMaterialisation(final ProcessContext context) {
+		return TRUE.equals(context.getProperty(USE_VERSION_MATERIALISATION).asBoolean());
+	}
+	public static boolean useExactlyOnceFilter(final ProcessContext context) {
+		return TRUE.equals(context.getProperty(USE_EXACTLY_ONCE_FILTER).asBoolean()) && !useVersionMaterialisation(context);
+	}
+
+	public static boolean restrictToMembers(final ProcessContext context) {
+		return TRUE.equals(context.getProperty(RESTRICT_TO_MEMBERS).asBoolean());
+	}
+
+	public static String getVersionOfProperty(final ProcessContext context) {
+		return context.getProperty(VERSION_OF_PROPERTY).getValue();
+	}
+
+	private static boolean isValidUrl(String url) {
+		try {
+			new URI(url);
+			return true;
+		} catch (URISyntaxException e) {
+			return false;
+		}
 	}
 
 }

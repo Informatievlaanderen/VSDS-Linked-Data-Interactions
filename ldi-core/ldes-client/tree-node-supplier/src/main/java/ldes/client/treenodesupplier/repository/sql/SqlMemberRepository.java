@@ -1,11 +1,12 @@
 package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
-import ldes.client.treenodesupplier.domain.valueobject.MemberStatus;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import javax.persistence.EntityManager;
 
 public class SqlMemberRepository implements MemberRepository {
 	final EntityManagerFactory entityManagerFactory;
@@ -19,11 +20,10 @@ public class SqlMemberRepository implements MemberRepository {
 	}
 
 	@Override
-	public Optional<MemberRecord> getUnprocessedTreeMember() {
+	public Optional<MemberRecord> getTreeMember() {
 
 		return entityManager
-				.createNamedQuery("Member.getByMemberStatus", MemberRecordEntity.class)
-				.setParameter("memberStatus", MemberStatus.UNPROCESSED)
+				.createNamedQuery("Member.getFirst", MemberRecordEntity.class)
 				.getResultStream()
 				.map(MemberRecordEntity::toMemberRecord)
 				.findFirst();
@@ -31,19 +31,20 @@ public class SqlMemberRepository implements MemberRepository {
 	}
 
 	@Override
-	public boolean isProcessed(MemberRecord member) {
-		return entityManager
-				.createNamedQuery("Member.countByMemberStatusAndId", Long.class)
-				.setParameter("memberStatus", MemberStatus.PROCESSED)
-				.setParameter("id", member.getMemberId())
-				.getSingleResult() > 0;
+	public void deleteMember(MemberRecord member) {
+		entityManager.getTransaction().begin();
+		entityManager
+				.createNamedQuery("Member.deleteByMemberId")
+				.setParameter("memberId", member.getMemberId())
+				.executeUpdate();
+		entityManager.getTransaction().commit();
 	}
 
 	@Override
-	public void saveTreeMember(MemberRecord treeMember) {
-		MemberRecordEntity memberRecordEntity = MemberRecordEntity.fromMemberRecord(treeMember);
+	public void saveTreeMembers(Stream<MemberRecord> treeMemberStream) {
 		entityManager.getTransaction().begin();
-		entityManager.merge(memberRecordEntity);
+		treeMemberStream.map(MemberRecordEntity::fromMemberRecord)
+				.forEach(entityManager::merge);
 		entityManager.getTransaction().commit();
 	}
 

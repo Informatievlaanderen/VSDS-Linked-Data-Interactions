@@ -18,10 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.GeoJsonToWktProcessorProperties.DATA_SOURCE_FORMAT;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.receiveDataAsModel;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.sendRDFToRelation;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
 @Tags({ "ldes, vsds, geojson, wkt" })
@@ -52,8 +49,8 @@ public class GeoJsonToWktProcessor extends AbstractProcessor {
 			try {
 				Lang dataSourceFormat = GeoJsonToWktProcessorProperties.getDataSourceFormat(context);
 				Model inputModel = receiveDataAsModel(session, flowFile, dataSourceFormat);
-				geoJsonToWktTransformer.apply(inputModel)
-						.forEach(result -> sendRDFToRelation(session, flowFile, result, SUCCESS, dataSourceFormat));
+				Model result = geoJsonToWktTransformer.transform(inputModel);
+				sendRDFToRelation(session, flowFile, result, SUCCESS, dataSourceFormat);
 			} catch (Exception e) {
 				getLogger().error("Error transforming geojson to wkt: {}", e.getMessage());
 				sendRDFToRelation(session, flowFile, FAILURE);

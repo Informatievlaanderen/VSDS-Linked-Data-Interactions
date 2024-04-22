@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/items/grouped?group=3"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "items-group-3-fragment.ttl",
+    "transformers": [
+      "response-template"
+    ],
+    "headers": {
+      "Content-Type": "text/turtle;charset=UTF-8",
+      "Cache-Control": "public, max-age=604800, immutable"
+    }
+  }
+}

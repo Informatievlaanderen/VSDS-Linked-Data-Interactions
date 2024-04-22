@@ -14,6 +14,7 @@ import com.azure.storage.blob.specialized.BlockBlobClient;
 
 @SuppressWarnings("java:S2629")
 public class LdiAzureBlobOut implements LdiOutput {
+	public static final String NAME = "Ldio:AzureBlobOut";
 	private final Logger log = LoggerFactory.getLogger(LdiAzureBlobOut.class);
 
 	private final String outputLanguage;

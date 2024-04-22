@@ -1,0 +1,4 @@
+<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Sarah Jones" .
+<http://somewhere/SarahJones/> <http://www.w3.org/2001/vcard-rdf/3.0#N> _:genid2 .
+_:genid2 <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Jones" .
+_:genid2 <http://www.w3.org/2001/vcard-rdf/3.0#Given> "Sarah" .

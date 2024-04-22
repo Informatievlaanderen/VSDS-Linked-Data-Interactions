@@ -3,7 +3,7 @@
     <parent>
         <artifactId>linked-data-interactions</artifactId>
         <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>2.6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,16 +24,14 @@
         <module>json-to-ld-adapter</module>
         <module>file-archiving</module>
         <module>repository-materialiser</module>
-        <module>model-splitter</module>
+        <module>ldi-common</module>
     </modules>
 
     <properties>
         <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
-        <byte-buddy.version>1.12.23</byte-buddy.version>
         <cucumber.version>7.13.0</cucumber.version>
         <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
-        <jackson-xml.version>2.15.2</jackson-xml.version>
     </properties>
 
     <dependencies>
@@ -43,6 +41,10 @@
         </dependency>
 
         <!-- Test -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

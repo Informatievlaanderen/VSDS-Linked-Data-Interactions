@@ -1,11 +1,13 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,13 +16,20 @@ import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.*;
 
-public class VersionObjectCreator implements LdiTransformer {
+public class VersionObjectCreator implements LdiOneToOneTransformer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(VersionObjectCreator.class);
 
 	private static final Model initModel = ModelFactory.createDefaultModel();
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	private static final String XMLSCHEMA_DATE_TIME = "http://www.w3.org/2001/XMLSchema#dateTime";
 	public static final Property SYNTAX_TYPE = initModel
 			.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+
+	public static final String DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND = "Date observed property could not be found, taking current datetime: {}";
+	public static final String STATEMENT_NOT_FOUND = "Statement could not be found: {}";
+	public static final String LINKED_DATA_MODEL_IS_EMPTY = "Received an empty data model";
+	public static final String CREATED_VERSION = "Created version: {}";
 
 	private final PropertyExtractor dateObservedPropertyExtractor;
 	private final Resource memberTypeResource;
@@ -29,8 +38,8 @@ public class VersionObjectCreator implements LdiTransformer {
 	private final Property versionOfProperty;
 
 	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, Resource memberTypeResource,
-			String delimiter,
-			Property generatedAtTimeProperty, Property versionOfProperty) {
+	                            String delimiter,
+	                            Property generatedAtTimeProperty, Property versionOfProperty) {
 		this.dateObservedPropertyExtractor = dateObservedPropertyExtractor;
 		this.memberTypeResource = memberTypeResource;
 		this.delimiter = delimiter;
@@ -39,22 +48,28 @@ public class VersionObjectCreator implements LdiTransformer {
 	}
 
 	@Override
-	public List<Model> apply(Model linkedDataModel) {
-		MemberInfo memberInfo = extractMemberInfo(linkedDataModel);
+	public Model transform(Model linkedDataModel) {
+		final String dateObserved = getDateObserved(linkedDataModel);
+		Optional<String> memberInfo = extractMemberInfo(linkedDataModel);
 
-		return List.of(constructVersionObject(linkedDataModel, memberInfo));
+		if (memberInfo.isPresent())
+			return constructVersionObject(linkedDataModel, new MemberInfo(memberInfo.get(), dateObserved));
+
+		if (linkedDataModel.isEmpty()) {
+			LOGGER.warn(LINKED_DATA_MODEL_IS_EMPTY);
+		} else {
+			LOGGER.warn(STATEMENT_NOT_FOUND, SYNTAX_TYPE.getNameSpace());
+		}
+
+		return linkedDataModel;
 	}
 
-	private MemberInfo extractMemberInfo(Model linkedDataModel) {
-		final String dateObserved = getDateObserved(linkedDataModel);
-
-		String id = linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
+	private Optional<String> extractMemberInfo(Model linkedDataModel) {
+		return linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
 				.nextOptional()
 				.map(Statement::getSubject)
 				.map(Resource::asNode)
-				.map(Node::toString)
-				.orElseThrow();
-		return new MemberInfo(id, dateObserved);
+				.map(Node::toString);
 	}
 
 	private String getDateObserved(Model linkedDataModel) {
@@ -66,13 +81,19 @@ public class VersionObjectCreator implements LdiTransformer {
 				.filter(literal -> literal.getDatatype().getURI().toLowerCase().contains("datetime"))
 				.map(Literal::getString)
 				.findFirst()
-				.orElse(LocalDateTime.now().format(formatter));
+				.orElseGet(() -> {
+					String currentDate = LocalDateTime.now().format(formatter);
+					LOGGER.warn(DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND, currentDate);
+					return currentDate;
+				});
 	}
 
 	protected Model constructVersionObject(Model inputModel, MemberInfo memberInfo) {
 		Model versionObjectModel = ModelFactory.createDefaultModel();
 		String versionObjectId = memberInfo.generateVersionObjectId(delimiter);
 		Resource subject = versionObjectModel.createResource(versionObjectId);
+
+		LOGGER.info(CREATED_VERSION, versionObjectId);
 
 		List<Statement> statementList = inputModel.listStatements().toList();
 		statementList.stream()

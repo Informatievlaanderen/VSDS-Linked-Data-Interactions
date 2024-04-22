@@ -1,11 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromCurrentTimeExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.TimestampFromPathExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.springframework.context.annotation.Bean;
@@ -13,15 +13,18 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut.NAME;
+
 @Configuration
 public class LdioFileOutAutoConfig {
 
 	public static final String ARCHIVE_ROOT_DIR_PROP = "archive-root-dir";
 	public static final String TIMESTAMP_PATH_PROP = "timestamp-path";
 
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut")
-	public LdioConfigurator ldiFileOutConfigurator() {
-		return new LdioConfigurator() {
+	@SuppressWarnings("java:S6830")
+	@Bean(NAME)
+	public LdioOutputConfigurator ldiFileOutConfigurator() {
+		return new LdioOutputConfigurator() {
 			@Override
 			public LdiComponent configure(ComponentProperties properties) {
 				final String archiveDirectory = properties.getProperty(ARCHIVE_ROOT_DIR_PROP);

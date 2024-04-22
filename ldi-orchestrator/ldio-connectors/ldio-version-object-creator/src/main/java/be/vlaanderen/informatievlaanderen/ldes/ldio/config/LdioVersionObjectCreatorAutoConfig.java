@@ -1,11 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioVersionObjectCreator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -16,17 +16,22 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioVersionObjectCreator.NAME;
+
 @Configuration
 public class LdioVersionObjectCreatorAutoConfig {
-	@Bean("be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator")
-	public LdioConfigurator ldioConfigurator() {
-		return new LdioVersionObjectCreatorConfigurator();
+	@Bean(NAME)
+	public LdioTransformerConfigurator ldioConfigurator() {
+		return new LdioVersionObjectCreatorTransformerConfigurator();
 	}
 
-	public static class LdioVersionObjectCreatorConfigurator implements LdioConfigurator {
+	public static class LdioVersionObjectCreatorTransformerConfigurator implements LdioTransformerConfigurator {
+
+		public static final String DEFAULT_PROV_GENERATED_AT_TIME = "http://www.w3.org/ns/prov#generatedAtTime";
+		public static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
 
 		@Override
-		public LdiComponent configure(ComponentProperties properties) {
+		public LdioTransformer configure(ComponentProperties properties) {
 			Model initModel = ModelFactory.createDefaultModel();
 
 			PropertyExtractor dateObservedPropertyExtractor = properties.getOptionalProperty("date-observed-property")
@@ -41,13 +46,14 @@ public class LdioVersionObjectCreatorAutoConfig {
 
 			Property generatedAtProperty = properties.getOptionalProperty("generatedAt-property")
 					.map(initModel::createProperty)
-					.orElse(null);
+					.orElseGet(() -> initModel.createProperty(DEFAULT_PROV_GENERATED_AT_TIME));
 
 			Property versionOfProperty = properties.getOptionalProperty("versionOf-property")
 					.map(initModel::createProperty)
-					.orElse(null);
+					.orElseGet(() -> initModel.createProperty(DEFAULT_VERSION_OF_KEY));
 
-			return new VersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter, generatedAtProperty,
+			return new LdioVersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter,
+					generatedAtProperty,
 					versionOfProperty);
 		}
 	}

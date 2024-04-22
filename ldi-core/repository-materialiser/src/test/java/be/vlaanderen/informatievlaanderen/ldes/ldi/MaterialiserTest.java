@@ -1,126 +1,177 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
-import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
+import org.eclipse.rdf4j.query.Update;
+import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.config.RepositoryConfig;
-import org.eclipse.rdf4j.repository.manager.LocalRepositoryManager;
+import org.eclipse.rdf4j.repository.RepositoryException;
+import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
-import org.eclipse.rdf4j.repository.sail.config.SailRepositoryConfig;
+import org.eclipse.rdf4j.repository.sparql.federation.CollectionIteration;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
-import org.eclipse.rdf4j.sail.memory.config.MemoryStoreConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class MaterialiserTest {
-	private static final String LOCAL_SERVER_URL = "http://localhost:8080/rdf4j-server";
-	private static final String LOCAL_REPOSITORY_ID = "test";
-	private static RepositoryManager subject;
-	private static Materialiser materialiser;
-	private static RepositoryConnection connection;
-
-	@TempDir
-	File dataDir;
-
-	private static final String[] TEST_FILES = new String[] {
-			"src/test/resources/people_data_01.nq",
-			"src/test/resources/people_data_02.nq" };
 	private static final String CHANGED_FILE = "src/test/resources/people_data_03.nq";
 
+	private static final String REPOSITORY_ID = "repo-id";
+	@Mock
+	private RepositoryConnection connection;
+	@Mock
+	private RepositoryManager repositoryManager;
+	@Mock
+	private Repository repository;
+	private Materialiser materialiser;
+
 	@BeforeEach
-	public void setUp() throws Exception {
-		materialiser = new Materialiser(LOCAL_SERVER_URL, LOCAL_REPOSITORY_ID, "");
-		subject = new LocalRepositoryManager(dataDir);
-		subject.init();
-
-		subject.addRepositoryConfig(
-				new RepositoryConfig(LOCAL_REPOSITORY_ID, new SailRepositoryConfig(new MemoryStoreConfig(true))));
-		connection = subject.getRepository(LOCAL_REPOSITORY_ID).getConnection();
-
-		materialiser.initRepositoryManager(subject);
+	void setUp() {
+		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+		when(repository.getConnection()).thenReturn(connection);
+		materialiser = new Materialiser(repositoryManager, REPOSITORY_ID, "");
 	}
 
 	@AfterEach
-	public void tearDown() throws Exception {
-		connection.close();
-		subject.shutDown();
-	}
-
-	@Test
-	void when_DataPresent_Then_GetEntityIds() throws Exception {
-		var updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
-
-		Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
-
-		assertEquals(2, entityIds.size(), "Expected all subjects from test data");
-
+	void tearDown() {
+		materialiser.shutdown();
 	}
 
 	@Test
 	void when_DeleteEntities_Then_EntitiesRemovedFromStore() throws Exception {
-		populateAndCheckRepository(List.of(TEST_FILES));
-		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
-		Model updateModel2 = Rio.parse(new FileInputStream(TEST_FILES[1]), "", RDFFormat.NQUADS);
-		Set<Resource> entityIds = Materialiser.getSubjectsFromModel(updateModel);
+		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+		when(repository.getConnection()).thenReturn(connection);
+		Set<Resource> entityIds = Stream
+				.of("http://somewhere/DickJones/", "http://somewhere/SarahJones/")
+				.map(stringUri -> SimpleValueFactory.getInstance().createIRI(stringUri))
+				.collect(Collectors.toSet());
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 
-		Materialiser.deleteEntitiesFromRepo(entityIds, connection);
+		Model modelToDelete = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
-		statements.forEach(statement -> assertTrue(updateModel2.contains(statement)));
-		statements.forEach(statement -> assertFalse(updateModel.contains(statement)));
+		materialiser.deleteEntity(modelToDelete);
+		entityIds.forEach(subjectIri -> {
+			verify(connection).getStatements(subjectIri, null, null);
+			verify(connection).remove(subjectIri, null, null);
+		});
 	}
 
 	@Test
-	void when_UpdateEntities_Then_OldTriplesRemoved() throws Exception {
-		populateAndCheckRepository(List.of(TEST_FILES));
-		Model updateModel = Rio.parse(new FileInputStream(TEST_FILES[0]), "", RDFFormat.NQUADS);
+	void given_RepositoryContainingData_when_UpdateSingleModel_Then_OldTriplesRemoved() throws Exception {
+		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+		when(repository.getConnection()).thenReturn(connection);
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		materialiser.process(RDFParser.source(CHANGED_FILE).toModel());
+		materialiser.process(List.of(RDFParser.source(CHANGED_FILE).toModel()));
 
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
-		assertTrue(testModelInStatements(changedModel, statements));
-		assertFalse(testModelInStatements(updateModel, statements));
+		verify(connection).remove(SimpleValueFactory.getInstance().createIRI("http://somewhere/DickJones/"), null, null);
+		verify(connection).remove(SimpleValueFactory.getInstance().createIRI("http://somewhere/SarahJones/"), null, null);
+		verify(connection).add(changedModel);
+		verify(connection).commit();
 	}
 
-	void populateAndCheckRepository(List<String> files) throws IOException {
-		List<Model> models = new ArrayList<>();
-		for (String testFile : files) {
-			var model = Rio.parse(new FileInputStream(testFile), "", RDFFormat.NQUADS);
-			connection.add(model);
-			models.add(model);
-		}
+	@Test
+	void given_ValidListOfMembers_when_ProcessList_then_CommitToRepository() {
+		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+		when(repository.getConnection()).thenReturn(connection);
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 
-		List<Statement> statements = connection.getStatements(null, null, null).stream().toList();
+		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
 
-		for (Model testModel : models) {
-			assertTrue(testModelInStatements(testModel, statements));
-		}
+		materialiser.process(models);
+
+		verify(connection, times(10)).remove(any(Resource.class), isNull(), isNull());
+		verify(connection, times(10)).add(any(Model.class));
+		verify(connection).commit();
 	}
 
-	private boolean testModelInStatements(Model model, List<Statement> statements) {
-		AtomicBoolean result = new AtomicBoolean(true);
-		model.getStatements(null, null, null).forEach(statement -> {
-			if (!statements.contains(statement)) {
-				result.set(false);
-			}
-		});
-		return result.get();
+	@Test
+	void given_ValidList_when_ProcessList_and_CommitFails_then_RollbackConnection() {
+		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+		when(repository.getConnection()).thenReturn(connection);
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
+		doThrow(RepositoryException.class).when(connection).commit();
+
+		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
+
+		assertThatThrownBy(() -> materialiser.process(models))
+				.isInstanceOf(MaterialisationFailedException.class)
+				.hasCauseInstanceOf(RepositoryException.class);
+
+		verify(connection, times(10)).add(any(Model.class));
+		verify(connection).commit();
+		verify(connection).rollback();
 	}
 
+	@Test
+	void given_ListOfMembers_when_ProcessList_and_AddModelToConnectionFails_then_StopAdditionAndRollback() {
+		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
+		when(repository.getConnection()).thenReturn(connection);
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
+		doNothing().doNothing().doThrow(RepositoryException.class).when(connection).add(any(Model.class));
+
+		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
+
+		assertThatThrownBy(() -> materialiser.process(models))
+				.isInstanceOf(MaterialisationFailedException.class)
+				.hasCauseInstanceOf(RepositoryException.class);
+
+		verify(connection, times(3)).add(any(Model.class));
+		verify(connection, never()).commit();
+		verify(connection).rollback();
+	}
+
+	@Test
+	void given_ListOfMembers_when_ProcessList_and_GetStatementsFails_then_StopAdditionAndRollback() {
+		when(connection.getStatements(any(), isNull(), isNull()))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())))
+				.thenThrow(RepositoryException.class);
+
+		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
+
+		assertThatThrownBy(() -> materialiser.process(models))
+				.isInstanceOf(MaterialisationFailedException.class)
+				.hasCauseInstanceOf(RepositoryException.class);
+
+		verify(connection, times(4)).getStatements(any(), isNull(), isNull());
+		verify(connection, times(3)).remove(any(Resource.class), isNull(), isNull());		verify(connection, times(3)).add(any(Model.class));
+		verify(connection, never()).commit();
+		verify(connection).rollback();
+	}
+
+	private Stream<org.apache.jena.rdf.model.Model> readTenModelsFromFile() {
+		return RDFParser.source("10_people_data.nq").lang(Lang.NQ).toModel()
+				.listStatements()
+				.toList()
+				.stream()
+				.map(statement -> ModelFactory.createDefaultModel().add(statement));
+	}
 }

@@ -1,7 +1,9 @@
 package ldes.client.treenodesupplier;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
+import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import ldes.client.treenodefetcher.domain.valueobjects.TreeNodeResponse;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
@@ -11,6 +13,7 @@ import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Thread.sleep;
@@ -25,36 +28,82 @@ public class TreeNodeProcessor {
 	private MemberRecord memberRecord;
 
 	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
-			RequestExecutor requestExecutor) {
+	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
 		this.requestExecutor = requestExecutor;
-		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor);
+		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor, timestampExtractor);
 		this.ldesMetaData = ldesMetaData;
 	}
 
+	public void init() {
+		if (!treeNodeRecordRepository.containsTreeNodeRecords()) {
+			initializeTreeNodeRecordRepository();
+		}
+	}
+
+	public SuppliedMember getMember() {
+		removeLastMember();
+
+		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getTreeMember();
+		while (unprocessedTreeMember.isEmpty()) {
+			processTreeNode();
+			unprocessedTreeMember = memberRepository.getTreeMember();
+		}
+		MemberRecord treeMember = unprocessedTreeMember.get();
+		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
+		memberRecord = treeMember;
+		return suppliedMember;
+	}
+
 	private void processTreeNode() {
-		TreeNodeRecord treeNodeRecord = treeNodeRecordRepository
-				.getOneTreeNodeRecordWithStatus(TreeNodeStatus.NOT_VISITED).orElseGet(
-						() -> treeNodeRecordRepository.getOneTreeNodeRecordWithStatus(TreeNodeStatus.MUTABLE_AND_ACTIVE)
-								.orElseThrow(() -> new EndOfLdesException(
-										"No fragments to mutable or new fragments to process -> LDES ends.")));
-		waitUntilNextVisit(treeNodeRecord);
-		TreeNodeResponse treeNodeResponse = treeNodeFetcher
-				.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
-		treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
-		treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+		TreeNodeRecord treeNodeRecord = getNextTreeNode();
+
+		if (TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS.equals(treeNodeRecord.getTreeNodeStatus())) {
+			treeNodeRecord.markImmutableWithoutUnprocessedMembers();
+			treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+		} else {
+			waitUntilNextVisit(treeNodeRecord);
+			TreeNodeResponse treeNodeResponse = treeNodeFetcher
+					.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
+			treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
+			saveNewRelations(treeNodeResponse);
+			List<TreeMember> newMembers = getNewMembersFromResponse(treeNodeResponse, treeNodeRecord);
+			saveNewMembers(newMembers);
+			treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
+			treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+			treeNodeRecordRepository.resetContext();
+		}
+	}
+
+	private void saveNewMembers(List<TreeMember> newMembers) {
+		memberRepository.saveTreeMembers(newMembers
+				.stream()
+				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel(), treeMember.getCreatedAt())));
+	}
+
+	private static List<TreeMember> getNewMembersFromResponse(TreeNodeResponse treeNodeResponse, TreeNodeRecord treeNodeRecord) {
+		return treeNodeResponse
+				.getMembers()
+				.stream()
+				.filter(member -> !treeNodeRecord.hasReceived(member.getMemberId()))
+				.toList();
+	}
+
+	private void saveNewRelations(TreeNodeResponse treeNodeResponse) {
 		treeNodeResponse.getRelations()
 				.stream()
 				.filter(treeNodeId -> !treeNodeRecordRepository.existsById(treeNodeId))
 				.map(TreeNodeRecord::new)
 				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
-		treeNodeResponse.getMembers()
-				.stream()
-				.map(treeMember -> new MemberRecord(treeMember.getMemberId(), treeMember.getModel()))
-				.filter(member -> !memberRepository.isProcessed(member))
-				.forEach(memberRepository::saveTreeMember);
+	}
 
+	private TreeNodeRecord getNextTreeNode() {
+		return treeNodeRecordRepository
+				.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS)
+				.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.NOT_VISITED)
+						.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
+								.orElseThrow(() -> new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends."))));
 	}
 
 	private void waitUntilNextVisit(TreeNodeRecord treeNodeRecord) {
@@ -69,32 +118,18 @@ public class TreeNodeProcessor {
 		}
 	}
 
-	public SuppliedMember getMember() {
-		savePreviousState();
-		if (!treeNodeRecordRepository.containsTreeNodeRecords()) {
-			initializeTreeNodeRecordRepository();
-		}
-		Optional<MemberRecord> unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
-		while (unprocessedTreeMember.isEmpty()) {
-			processTreeNode();
-			unprocessedTreeMember = memberRepository.getUnprocessedTreeMember();
-		}
-		MemberRecord treeMember = unprocessedTreeMember.get();
-		SuppliedMember suppliedMember = treeMember.createSuppliedMember();
-		treeMember.processedMemberRecord();
-		memberRecord = treeMember;
-		return suppliedMember;
-	}
-
 	private void initializeTreeNodeRecordRepository() {
-		StartingTreeNode start = new StartingTreeNodeSupplier(requestExecutor)
-				.getStart(ldesMetaData.getStartingNodeUrl(), ldesMetaData.getLang());
-		treeNodeRecordRepository.saveTreeNodeRecord(new TreeNodeRecord(start.getStartingNodeUrl()));
+		ldesMetaData.getStartingNodeUrls()
+				.stream()
+				.map(startingNode -> new StartingTreeNodeSupplier(requestExecutor)
+						.getStart(startingNode, ldesMetaData.getLang()))
+				.map(start -> new TreeNodeRecord(start.getStartingNodeUrl()))
+				.forEach(treeNodeRecordRepository::saveTreeNodeRecord);
 	}
 
-	private void savePreviousState() {
+	private void removeLastMember() {
 		if (memberRecord != null) {
-			memberRepository.saveTreeMember(memberRecord);
+			memberRepository.deleteMember(memberRecord);
 		}
 	}
 

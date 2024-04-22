@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/200-24-relations",
+    "headers": {
+      "Accept": {
+        "contains": "text/turtle"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "24-relations.ttl",
+    "headers": {
+      "Content-Type": "text/turtle;charset=UTF-8"
+    }
+  }
+}

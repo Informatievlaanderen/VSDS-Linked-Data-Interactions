@@ -1,6 +1,5 @@
 package ldes.client.treenodesupplier.repository.sql.sqlite;
 
-import ldes.client.treenodesupplier.repository.filebased.exception.CreateDirectoryFailedException;
 import ldes.client.treenodesupplier.repository.sql.EntityManagerFactory;
 import org.apache.commons.io.FileUtils;
 

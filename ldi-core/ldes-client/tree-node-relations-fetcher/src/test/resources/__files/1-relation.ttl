@@ -1,0 +1,11 @@
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix terms: <http://purl.org/dc/terms/> .
+@prefix tree:  <https://w3id.org/tree#> .
+
+<http://localhost:10101/200-first-relation>
+        rdf:type        tree:Node ;
+        terms:isPartOf  <https://brugge-ldes.geomobility.eu/observations> ;
+        tree:relation   [ rdf:type    tree:Relation ;
+                          tree:node   <http://localhost:10101/200-no-relations>
+                        ] .

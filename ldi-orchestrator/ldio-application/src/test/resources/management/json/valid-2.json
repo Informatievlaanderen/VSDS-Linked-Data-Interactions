@@ -1,0 +1,19 @@
+{
+  "name": "valid-pipeline-2",
+  "input": {
+    "name": "dummyIn",
+    "adapter": {
+      "name": "dummyAdapt"
+    }
+  },
+  "transformers": [
+    {
+      "name": "dummyTransform"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "dummyOut"
+    }
+  ]
+}

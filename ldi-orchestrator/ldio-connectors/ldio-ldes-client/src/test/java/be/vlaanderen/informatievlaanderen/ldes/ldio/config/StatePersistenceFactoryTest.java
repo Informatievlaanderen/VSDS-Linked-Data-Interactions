@@ -1,11 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.filebased.FileBasedMemberRepository;
-import ldes.client.treenodesupplier.repository.filebased.FileBasedTreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlMemberRepository;
@@ -24,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig.PIPELINE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -50,8 +48,8 @@ class StatePersistenceFactoryTest {
 	@ParameterizedTest
 	@ArgumentsSource(ComponentPropertiesArgumentsProvider.class)
 	void when_stateIsAllowedValue_then_StatePersistenceIsCreated(ComponentProperties componentProperties,
-			Class<MemberRepository> expectedMemberRepositoryClass,
-			Class<TreeNodeRecordRepository> expectedTreeNodeRecordRepositoryClass) {
+	                                                             Class<MemberRepository> expectedMemberRepositoryClass,
+	                                                             Class<TreeNodeRecordRepository> expectedTreeNodeRecordRepositoryClass) {
 		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(componentProperties);
 
 		MemberRepository memberRepository = statePersistence.getMemberRepository();
@@ -65,30 +63,27 @@ class StatePersistenceFactoryTest {
 
 	@Test
 	void when_stateIsPostgres_and_additionalPropertiesAreMissing_then_throwException() {
-		ComponentProperties props = new ComponentProperties(Map.of(STATE, "postgres"));
+		ComponentProperties props = new ComponentProperties("pipelineName", "", Map.of(STATE, "postgres"));
 
-		assertThrows(IllegalArgumentException.class, () -> statePersistenceFactory.getStatePersistence(props));
+		assertThrows(ConfigPropertyMissingException.class, () -> statePersistenceFactory.getStatePersistence(props));
 	}
 
 	private static class ComponentPropertiesArgumentsProvider implements ArgumentsProvider {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(
-					Arguments.of(new ComponentProperties(Map.of(PIPELINE_NAME, "pipelineName", STATE, "memory")),
+					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "memory")),
 							InMemoryMemberRepository.class,
 							InMemoryTreeNodeRecordRepository.class),
-					Arguments.of(new ComponentProperties(Map.of(PIPELINE_NAME, "pipelineName", STATE, "sqlite")),
+					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "sqlite")),
 							SqlMemberRepository.class,
 							SqlTreeNodeRepository.class),
-					Arguments.of(new ComponentProperties(Map.of(PIPELINE_NAME, "pipelineName", STATE, "file")),
-							FileBasedMemberRepository.class,
-							FileBasedTreeNodeRecordRepository.class),
 					Arguments.of(
-							new ComponentProperties(
-									Map.of(PIPELINE_NAME, "pipelineName", STATE, "postgres",
-											POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
-											POSTGRES_USERNAME, postgreSQLContainer.getUsername(), POSTGRES_PASSWORD,
-											postgreSQLContainer.getPassword(), KEEP_STATE, "false")),
+							new ComponentProperties("pipelineName", ""
+									, Map.of(STATE, "postgres",
+									POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
+									POSTGRES_USERNAME, postgreSQLContainer.getUsername(), POSTGRES_PASSWORD,
+									postgreSQLContainer.getPassword(), KEEP_STATE, "false")),
 							SqlMemberRepository.class, SqlTreeNodeRepository.class));
 		}
 	}

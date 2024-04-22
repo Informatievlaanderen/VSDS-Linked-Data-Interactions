@@ -1,0 +1,13 @@
+orchestrator:
+  directory: ./src/test/resources/startup/valid-file
+  pipelines:
+    - name: test
+      input:
+        name: "dummyIn"
+        adapter:
+          name: "dummyAdapt"
+      transformers:
+        - name: "dummyTransform"
+        - name: "dummyTransform"
+      outputs:
+        - name: "dummyOut"

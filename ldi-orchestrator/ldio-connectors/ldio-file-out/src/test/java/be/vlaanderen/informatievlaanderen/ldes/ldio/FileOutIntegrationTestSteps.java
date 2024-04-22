@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioFileOutAutoConfig.ARCHIVE_ROOT_DIR_PROP;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioFileOutAutoConfig.TIMESTAMP_PATH_PROP;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,7 +36,7 @@ public class FileOutIntegrationTestSteps {
 
 	@And("I create a file-out-component with the archive-dir and timestampPath {string}")
 	public void iCreateAFileOutComponentWithArchiveDirAndTimestampPath(String path) {
-		var props = new ComponentProperties(Map.of(ARCHIVE_ROOT_DIR_PROP, archiveRootDir, TIMESTAMP_PATH_PROP, path));
+		var props = new ComponentProperties("pipeline", NAME, Map.of(ARCHIVE_ROOT_DIR_PROP, archiveRootDir, TIMESTAMP_PATH_PROP, path));
 		ldiFileOut = (LdiOutput) new LdioFileOutAutoConfig().ldiFileOutConfigurator().configure(props);
 	}
 
@@ -56,13 +57,13 @@ public class FileOutIntegrationTestSteps {
 
 	@Then("The model is written to {string}")
 	public void theModelIsWrittenTo(String expectedFilePath) {
-		Model actualModel = RDFParser.source(FilenameUtils.separatorsToSystem(expectedFilePath)).toModel();
+		Model actualModel = RDFParser.source(expectedFilePath).toModel();
 		assertTrue(model.isIsomorphicWith(actualModel));
 	}
 
 	@Then("The other model is written to {string}")
 	public void theOtherModelIsWrittenTo(String expectedFilePath) {
-		Model actualModel = RDFParser.source(FilenameUtils.separatorsToSystem(expectedFilePath)).toModel();
+		Model actualModel = RDFParser.source(expectedFilePath).toModel();
 		assertTrue(otherModel.isIsomorphicWith(actualModel));
 	}
 }

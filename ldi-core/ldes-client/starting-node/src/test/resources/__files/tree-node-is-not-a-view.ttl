@@ -1,0 +1,110 @@
+@prefix adresstatus: <https://data.vlaanderen.be/id/conceptscheme/adresstatus/> .
+@prefix generiek:    <https://data.vlaanderen.be/ns/generiek#> .
+@prefix geosparql:   <http://www.opengis.net/ont/geosparql#> .
+@prefix ldes:        <https://w3id.org/ldes#> .
+@prefix locn:        <https://www.w3.org/ns/locn#> .
+@prefix prov:        <http://www.w3.org/ns/prov#> .
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix relation:    <http://www.iana.org/assignments/relation/> .
+@prefix sf:          <http://www.opengis.net/ont/sf#> .
+@prefix terms:       <http://purl.org/dc/terms/> .
+@prefix tree:        <https://w3id.org/tree#> .
+
+<https://data.vlaanderen.be/id/postinfo/8880>
+        relation:self  "https://api.basisregisters.staging-vlaanderen.be/v2/postinfo/8880" .
+
+<https://grar.smartdataspace.dev-vlaanderen.be/addresses/by-name?substring=le>
+        rdf:type        tree:Node ;
+        terms:isPartOf  <https://grar.smartdataspace.dev-vlaanderen.be/addresses> .
+
+<https://data.vlaanderen.be/id/postinfo/3070>
+        terms:isVersionOf     <https://data.vlaanderen.be/id/adres/3059985> ;
+        relation:self         "https://api.basisregisters.staging-vlaanderen.be/v2/postinfo/3070" ;
+        prov:generatedAtTime  "2022-04-28T08:22:28+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<https://data.vlaanderen.be/id/straatnaam/34280>
+        relation:self  "https://api.basisregisters.staging-vlaanderen.be/v2/straatnamen/34280" ;
+        <https://data.vlaanderen.be/ns/adres#Straatnaam>
+                [ rdfs:label  "Leuvensesteenweg"@nl ] .
+
+<https://data.vlaanderen.be/id/adres/3059985/2022-04-28T08:22:28+02:00>
+        rdf:type                      <https://data.vlaanderen.be/ns/adres#Adres> ;
+        <https://data.vlaanderen.be/ns/adres#Adres.status>
+                adresstatus:gehistoreerd ;
+        <https://data.vlaanderen.be/ns/adres#heeftGemeentenaam>
+                <https://data.vlaanderen.be/id/gemeente/24055> ;
+        <https://data.vlaanderen.be/ns/adres#heeftPostinfo>
+                <https://data.vlaanderen.be/id/postinfo/3070> ;
+        <https://data.vlaanderen.be/ns/adres#heeftStraatnaam>
+                <https://data.vlaanderen.be/id/straatnaam/34280> ;
+        <https://data.vlaanderen.be/ns/adres#huisnummer>
+                "395" ;
+        <https://data.vlaanderen.be/ns/adres#isVerrijktMet>
+                [ <https://data.vlaanderen.be/ns/adres#volledigAdres>
+                          "Leuvensesteenweg 395, 3070 Kortenberg"@nl ] ;
+        <https://data.vlaanderen.be/ns/adres#officieelToegekend>
+                true ;
+        <https://data.vlaanderen.be/ns/adres#positie>
+                [ <https://data.vlaanderen.be/id/conceptscheme/geometriemethode>
+                          <https://data.vlaanderen.be/id/conceptscheme/geïnterpoleerd> ;
+                  <https://data.vlaanderen.be/id/conceptscheme/geometriespecificatie>
+                          <https://data.vlaanderen.be/id/conceptscheme/perceel> ;
+                  locn:geometry  [ rdf:type         sf:Point ;
+                                   geosparql:asGML  "<gml:Point srsName=\"http://www.opengis.net/def/crs/EPSG/0/31370\" xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>162188.13 175324.45</gml:pos></gml:Point>"^^geosparql:gmlLiteral
+                                 ]
+                ] ;
+        generiek:lokaleIdentificator  "3059985" ;
+        generiek:naamruimte           "https://data.vlaanderen.be/id/adres" ;
+        generiek:versieIdentificator  "2022-04-28T08:22:28+02:00" .
+
+<https://data.vlaanderen.be/id/gemeente/24055>
+        relation:self  "https://api.basisregisters.staging-vlaanderen.be/v2/gemeenten/24055" ;
+        <https://data.vlaanderen.be/ns/adres#Gemeentenaam>
+                [ rdfs:label  "Kortenberg"@nl ] .
+
+<https://data.vlaanderen.be/id/straatnaam/57412>
+        relation:self  "https://api.basisregisters.staging-vlaanderen.be/v2/straatnamen/57412" ;
+        <https://data.vlaanderen.be/ns/adres#Straatnaam>
+                [ rdfs:label  "Gullegemsestraat"@nl ] .
+
+<http://localhost:10101/200-treenode-is-not-view>
+        rdf:type     ldes:EventStream ;
+        tree:member  <https://data.vlaanderen.be/id/adres/3064074/2022-04-28T08:23:00+02:00> , <https://data.vlaanderen.be/id/adres/3059985/2022-04-28T08:22:28+02:00> .
+
+<https://data.vlaanderen.be/id/gemeente/36010>
+        relation:self  "https://api.basisregisters.staging-vlaanderen.be/v2/gemeenten/36010" ;
+        <https://data.vlaanderen.be/ns/adres#Gemeentenaam>
+                [ rdfs:label  "Ledegem"@nl ] .
+
+<https://data.vlaanderen.be/id/adres/3064074/2022-04-28T08:23:00+02:00>
+        rdf:type                      <https://data.vlaanderen.be/ns/adres#Adres> ;
+        terms:isVersionOf             <https://data.vlaanderen.be/id/adres/3064074> ;
+        prov:generatedAtTime          "2022-04-28T08:23:00+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+        <https://data.vlaanderen.be/ns/adres#Adres.status>
+                adresstatus:inGebruik ;
+        <https://data.vlaanderen.be/ns/adres#heeftGemeentenaam>
+                <https://data.vlaanderen.be/id/gemeente/36010> ;
+        <https://data.vlaanderen.be/ns/adres#heeftPostinfo>
+                <https://data.vlaanderen.be/id/postinfo/8880> ;
+        <https://data.vlaanderen.be/ns/adres#heeftStraatnaam>
+                <https://data.vlaanderen.be/id/straatnaam/57412> ;
+        <https://data.vlaanderen.be/ns/adres#huisnummer>
+                "229" ;
+        <https://data.vlaanderen.be/ns/adres#isVerrijktMet>
+                [ <https://data.vlaanderen.be/ns/adres#volledigAdres>
+                          "Gullegemsestraat 229, 8880 Ledegem"@nl ] ;
+        <https://data.vlaanderen.be/ns/adres#officieelToegekend>
+                true ;
+        <https://data.vlaanderen.be/ns/adres#positie>
+                [ <https://data.vlaanderen.be/id/conceptscheme/geometriemethode>
+                          <https://data.vlaanderen.be/id/conceptscheme/aangeduidDoorBeheerder> ;
+                  <https://data.vlaanderen.be/id/conceptscheme/geometriespecificatie>
+                          <https://data.vlaanderen.be/id/conceptscheme/gebouweenheid> ;
+                  locn:geometry  [ rdf:type         sf:Point ;
+                                   geosparql:asGML  "<gml:Point srsName=\"http://www.opengis.net/def/crs/EPSG/0/31370\" xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>66702.54 172924.98</gml:pos></gml:Point>"^^geosparql:gmlLiteral
+                                 ]
+                ] ;
+        generiek:lokaleIdentificator  "3064074" ;
+        generiek:naamruimte           "https://data.vlaanderen.be/id/adres" ;
+        generiek:versieIdentificator  "2022-04-28T08:23:00+02:00" .

@@ -4,6 +4,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtrac
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MemberInfo;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -15,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +26,12 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator.SYNTAX_TYPE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.VersionObjectCreator.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VersionObjectCreatorTest {
@@ -42,7 +48,7 @@ class VersionObjectCreatorTest {
 			"urn:ngsi-v2:cot-imec-be:WaterQualityObserved:imec-iow-3orY3reQDK5n3TMpPnLVYR", "2022-04-19T11:40:42.000Z");
 
 	@Test
-	void when_constructVersionObject_ExpectLdesProperties() throws URISyntaxException, IOException {
+	void when_constructVersionObject_expectLdesProperties() throws URISyntaxException, IOException {
 		Model model = RDFParserBuilder.create().fromString(getJsonString("outputformat/example-ldes.json"))
 				.lang(Lang.JSONLD).toModel();
 
@@ -52,7 +58,7 @@ class VersionObjectCreatorTest {
 		Model actualOutput = versionObjectCreator.constructVersionObject(model, memberInfo);
 
 		assertFalse(actualOutput.listStatements(null, PROV_GENERATED_AT_TIME,
-				model.createTypedLiteral(memberInfo.getObservedAt(), "http://www.w3.org/2001/XMLSchema#dateTime"))
+						model.createTypedLiteral(memberInfo.getObservedAt(), "http://www.w3.org/2001/XMLSchema#dateTime"))
 				.toList().isEmpty());
 		assertFalse(actualOutput.listStatements(null, SYNTAX_TYPE,
 				model.createResource(WATER_QUALITY_OBSERVED)).toList().isEmpty());
@@ -71,17 +77,14 @@ class VersionObjectCreatorTest {
 				  ex:foo "bar mitswa".
 				""").lang(Lang.TTL).toModel();
 
-		Resource memberType = inputModel.createResource("http://example.org/Something");
-		PropertyExtractor dateObservedPropertyExtractor = PropertyPathExtractor.from("<http://example.org/foo>");
-		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
-		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
-
 		String expectedId = "http://example.org/member/";
 
-		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType,
-				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
+		VersionObjectCreator versionObjectCreator = createVersionObjectCreator(
+				inputModel,
+				"<http://example.org/foo>"
+		);
 
-		Model versionObject = versionObjectCreator.apply(inputModel).get(0);
+		Model versionObject = versionObjectCreator.transform(inputModel);
 
 		final LocalDateTime startTestTime = LocalDateTime.now();
 
@@ -109,17 +112,14 @@ class VersionObjectCreatorTest {
 				    time:inXSDDateTimeStamp "2023-08-18T13:08:00+01:00"^^xsd:DateTime
 				  ] .
 				""").lang(Lang.TTL).toModel();
-		Resource memberType = inputModel.createResource("http://example.org/Something");
-		PropertyExtractor dateObservedPropertyExtractor = PropertyPathExtractor.from(
-				"<http://example.org/created>/<http://www.w3.org/2006/time#inXSDDateTimeStamp>");
-		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
-		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
-		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType,
-				DEFAULT_DELIMITER, generatedAtTimeProperty, versionOfProperty);
+
+		VersionObjectCreator versionObjectCreator = createVersionObjectCreator(
+				inputModel,
+				"<http://example.org/created>/<http://www.w3.org/2006/time#inXSDDateTimeStamp>"
+		);
 
 		String result = versionObjectCreator
-				.apply(inputModel)
-				.get(0)
+				.transform(inputModel)
 				.listSubjectsWithProperty(RDF.type, initModel.createResource("http://example.org/Something"))
 				.mapWith(RDFNode::asResource)
 				.mapWith(Resource::getURI)
@@ -140,7 +140,7 @@ class VersionObjectCreatorTest {
 				model.createResource(memberType),
 				DEFAULT_DELIMITER, null, null);
 
-		Model versionObject = versionObjectCreator.apply(model).get(0);
+		Model versionObject = versionObjectCreator.transform(model);
 
 		final String minuteTheTestStarted = getPartOfLocalDateTime(startTestTime);
 		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(startTestTime.plusMinutes(1));
@@ -151,6 +151,73 @@ class VersionObjectCreatorTest {
 						stmt.getSubject().toString().contains(expectedId + minuteAfterTheTestStarted)));
 	}
 
+	@Test
+	void when_memberInfoExtractionFails_warningMessageIsLogged() {
+		ListAppender<ILoggingEvent> listAppender = createListAppender();
+		Model inputModel = RDFParser.fromString("""
+				@prefix ex: <http://example.org/> .
+				@prefix time: <http://www.w3.org/2006/time#> .
+				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+				
+				ex:John
+					ex:hasAge "30" ;
+					ex:hasName "John Smith" ;
+					ex:hasFriend ex:Jane ;
+					ex:created [
+				    	    a time:Instant ;
+				    	    time:inXSDDateTimeStamp "2023-08-18T13:08:00+01:00"^^xsd:DateTime
+				  	] .
+				""").lang(Lang.TTL).toModel();
+
+		VersionObjectCreator versionObjectCreator = createVersionObjectCreator(
+				inputModel,
+				"<http://example.org/created>/<http://www.w3.org/2006/time#inXSDDateTimeStamp>"
+		);
+
+		versionObjectCreator.transform(inputModel);
+
+		assertExpectedLogs(listAppender.list, STATEMENT_NOT_FOUND);
+	}
+
+	@Test
+	void when_dateObservedExtractionFails_warningMessageIsLogged() {
+		ListAppender<ILoggingEvent> listAppender = createListAppender();
+		Model inputModel = RDFParser.fromString("""
+				@prefix time: <http://www.w3.org/2006/time#> .
+				@prefix ex:   <http://example.org/> .
+				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+				ex:member
+				  a ex:Something .
+				""").lang(Lang.TTL).toModel();
+
+		VersionObjectCreator versionObjectCreator = createVersionObjectCreator(
+				inputModel,
+				"<http://example.org/created>/<http://www.w3.org/2006/time#inXSDDateTimeStamp>"
+		);
+		versionObjectCreator.transform(inputModel);
+
+		assertExpectedLogs(listAppender.list, DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND, CREATED_VERSION);
+	}
+
+	@Test
+	void when_modelIsEmpty_warningMessagesAreLogged() {
+		ListAppender<ILoggingEvent> listAppender = createListAppender();
+
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(), null,
+				DEFAULT_DELIMITER,
+				null, null);
+		versionObjectCreator.transform(ModelFactory.createDefaultModel());
+
+		assertExpectedLogs(listAppender.list, LINKED_DATA_MODEL_IS_EMPTY, DATE_OBSERVED_PROPERTY_COULD_NOT_BE_FOUND);
+	}
+
+	private static void assertExpectedLogs(List<ILoggingEvent> logsList, String... expectedMessages) {
+		assertThat(logsList)
+				.extracting(ILoggingEvent::getMessage)
+				.containsExactlyInAnyOrder(expectedMessages);
+	}
+
 	private String getPartOfLocalDateTime(LocalDateTime time) {
 		return time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:"));
 	}
@@ -159,6 +226,29 @@ class VersionObjectCreatorTest {
 		File file = new File(
 				Objects.requireNonNull(getClass().getClassLoader().getResource(resource)).toURI());
 		return Files.readString(file.toPath());
+	}
+
+	private VersionObjectCreator createVersionObjectCreator(Model inputModel, String dateObservedPath) {
+		Resource memberType = inputModel.createResource("http://example.org/Something");
+		PropertyExtractor dateObservedPropertyExtractor = PropertyPathExtractor.from(dateObservedPath);
+		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
+		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
+
+		return new VersionObjectCreator(
+				dateObservedPropertyExtractor,
+				memberType,
+				DEFAULT_DELIMITER,
+				generatedAtTimeProperty,
+				versionOfProperty
+		);
+	}
+
+	private ListAppender<ILoggingEvent> createListAppender() {
+		Logger vocLogger = (Logger) LoggerFactory.getLogger(VersionObjectCreator.class);
+		ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+		listAppender.start();
+		vocLogger.addAppender(listAppender);
+		return listAppender;
 	}
 
 	static class JsonLDFileArgumentsProvider implements ArgumentsProvider {
