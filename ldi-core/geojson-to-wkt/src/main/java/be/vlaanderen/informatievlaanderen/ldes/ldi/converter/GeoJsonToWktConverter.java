@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.strategy;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.converter;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.WktResult;

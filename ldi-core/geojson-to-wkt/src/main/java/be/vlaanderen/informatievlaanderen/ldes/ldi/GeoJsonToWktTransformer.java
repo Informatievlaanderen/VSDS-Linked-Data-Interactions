@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.strategy.GeoJsonConverter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.strategy.GeoJsonToRdfPlusWktConverter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.strategy.GeoJsonToWktConverter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonConverter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonToRdfPlusWktConverter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonToWktConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
 import org.apache.jena.rdf.model.Model;
 

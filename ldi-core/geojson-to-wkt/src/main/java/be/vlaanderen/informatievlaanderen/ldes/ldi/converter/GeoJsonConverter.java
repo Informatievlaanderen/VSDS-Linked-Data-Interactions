@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldi.strategy;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.converter;
 
 import org.apache.jena.rdf.model.Model;
 
