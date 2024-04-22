@@ -8,8 +8,8 @@ title: RDF Adapter
 
 ***Ldio:RdfAdapter***
 
-As the most basic adapter, the RDF Adapter will take in an RDF string and convert it
-into an internal Linked Data model based on the given content type.
+As the most basic adapter, the RDF Adapter will take in an RDF string and convert it into an internal Linked Data model based on the given content type. 
+This internal Linked Data model is then available for utilization in various other components, such as transformers and outputs.
 
 ## Notes
 
