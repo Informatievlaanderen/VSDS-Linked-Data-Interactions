@@ -43,7 +43,7 @@ When retries are enabled, the following statuses are always retried, regardless 
 
 
 <details>
-    <summary>Example requester config</summary>
+    <summary>Example Http Requester config</summary>
 
 <div markdown="1">
 ```yaml
