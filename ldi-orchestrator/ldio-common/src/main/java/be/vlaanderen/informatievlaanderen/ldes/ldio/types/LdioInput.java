@@ -9,11 +9,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusT
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.function.Supplier;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.MANUAL;
 
 /**
  * Base class for the start of a LDIO workflow.
@@ -22,7 +24,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.Pipeline
  * either generated or received data
  * onto the LDIO pipeline
  */
-public abstract class LdioInput implements LdiComponent {
+public abstract class LdioInput implements LdioStatusComponent {
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
 	private final LdioObserver ldioObserver;

@@ -5,6 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInputPoller;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StartedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;

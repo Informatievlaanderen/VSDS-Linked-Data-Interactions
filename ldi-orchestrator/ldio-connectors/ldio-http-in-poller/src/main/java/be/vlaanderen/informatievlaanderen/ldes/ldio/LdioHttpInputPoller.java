@@ -95,9 +95,9 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 	}
 
 	@Override
-	protected synchronized void resume() {
-		if (pollingInterval != null) {
-			schedule(pollingInterval);
+	public synchronized void resume() {
+		if (properties.getPollingInterval() != null) {
+			startScheduler();
 		}
 	}
 
