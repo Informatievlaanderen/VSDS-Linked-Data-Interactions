@@ -4,8 +4,6 @@ import org.apache.jena.rdf.model.Model;
 
 public interface GeoJsonConverter {
 
-    boolean canHandle();
-
-    Model handle(Model model);
+    Model convert(Model model);
 
 }

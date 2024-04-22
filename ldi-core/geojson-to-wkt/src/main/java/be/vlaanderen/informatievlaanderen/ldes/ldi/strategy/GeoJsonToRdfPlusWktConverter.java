@@ -20,12 +20,7 @@ public class GeoJsonToRdfPlusWktConverter implements GeoJsonConverter {
     private final WktConverter wktConverter = new WktConverter();
 
     @Override
-    public boolean canHandle() {
-        return false;
-    }
-
-    @Override
-    public Model handle(Model model) {
+    public Model convert(Model model) {
         final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)
                 .toList();
         geometryStatements.forEach(oldGeometryStatement -> {

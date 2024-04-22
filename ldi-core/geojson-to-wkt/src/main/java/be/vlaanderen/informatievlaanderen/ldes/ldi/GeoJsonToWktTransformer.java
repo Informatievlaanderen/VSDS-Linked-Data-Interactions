@@ -24,7 +24,7 @@ public class GeoJsonToWktTransformer implements LdiTransformer {
 	 */
 	@Override
 	public List<Model> apply(Model model) {
-		return List.of(geoJsonConverter.handle(model));
+		return List.of(geoJsonConverter.convert(model));
 	}
 
 }
