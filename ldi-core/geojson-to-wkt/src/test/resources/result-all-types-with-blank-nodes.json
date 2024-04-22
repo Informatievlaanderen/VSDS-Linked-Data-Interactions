@@ -2,9 +2,9 @@
   {
     "@id": "_:b0",
     "@type": [
-      "https://purl.org/geojson/vocab#MultiPolygon"
+      "http://www.opengis.net/ont/sf#MultiPolygon"
     ],
-    "http://www.w3.org/ns/locn#asWKT": [
+    "http://www.opengis.net/ont/geosparql#asWKT": [
       {
         "@value": "MULTIPOLYGON (((102 2, 103 2, 103 3, 102 3, 102 2)), ((100 0, 101 0, 101 1, 100 1, 100 0), (100.2 0.2, 100.2 0.8, 100.8 0.8, 100.8 0.2, 100.2 0.2)))",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
@@ -14,9 +14,9 @@
   {
     "@id": "_:b1",
     "@type": [
-      "https://purl.org/geojson/vocab#Point"
+      "http://www.opengis.net/ont/sf#Point"
     ],
-    "http://www.w3.org/ns/locn#asWKT": [
+    "http://www.opengis.net/ont/geosparql#asWKT": [
       {
         "@value": "POINT (100 0)",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
@@ -26,9 +26,9 @@
   {
     "@id": "_:b2",
     "@type": [
-      "https://purl.org/geojson/vocab#Polygon"
+      "http://www.opengis.net/ont/sf#Polygon"
     ],
-    "http://www.w3.org/ns/locn#asWKT": [
+    "http://www.opengis.net/ont/geosparql#asWKT": [
       {
         "@value": "POLYGON ((100 0, 101 0, 101 1, 100 1, 100 0), (100.8 0.8, 100.8 0.2, 100.2 0.2, 100.2 0.8, 100.8 0.8), (100.95 0.9, 100.95 0.5, 100.9 0.2, 100.9 0.5, 100.95 0.9))",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
@@ -38,9 +38,9 @@
   {
     "@id": "_:b3",
     "@type": [
-      "https://purl.org/geojson/vocab#MultiPoint"
+      "http://www.opengis.net/ont/sf#MultiPoint"
     ],
-    "http://www.w3.org/ns/locn#asWKT": [
+    "http://www.opengis.net/ont/geosparql#asWKT": [
       {
         "@value": "MULTIPOINT ((100 0), (101 1), (102 2))",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
@@ -50,9 +50,9 @@
   {
     "@id": "_:b4",
     "@type": [
-      "https://purl.org/geojson/vocab#MultiLineString"
+      "http://www.opengis.net/ont/sf#MultiLineString"
     ],
-    "http://www.w3.org/ns/locn#asWKT": [
+    "http://www.opengis.net/ont/geosparql#asWKT": [
       {
         "@value": "MULTILINESTRING ((100 0, 101 1), (102 2, 103 3, 104 4))",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
@@ -62,9 +62,9 @@
   {
     "@id": "_:b5",
     "@type": [
-      "https://purl.org/geojson/vocab#GeometryCollection"
+      "http://www.opengis.net/ont/sf#GeometryCollection"
     ],
-    "http://www.w3.org/ns/locn#asWKT": [
+    "http://www.opengis.net/ont/geosparql#asWKT": [
       {
         "@value": "GEOMETRYCOLLECTION (POINT (100 0), POINT (100 0))",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
@@ -74,9 +74,9 @@
   {
     "@id": "_:b6",
     "@type": [
-      "https://purl.org/geojson/vocab#LineString"
+      "http://www.opengis.net/ont/sf#LineString"
     ],
-    "http://www.w3.org/ns/locn#asWKT": [
+    "http://www.opengis.net/ont/geosparql#asWKT": [
       {
         "@value": "LINESTRING (100 0, 101 1, 102 2)",
         "@type": "http://www.opengis.net/ont/geosparql#wktLiteral"
@@ -172,27 +172,27 @@
     ]
   },
   {
+    "@id": "http://www.opengis.net/ont/sf#GeometryCollection"
+  },
+  {
+    "@id": "http://www.opengis.net/ont/sf#LineString"
+  },
+  {
+    "@id": "http://www.opengis.net/ont/sf#MultiLineString"
+  },
+  {
+    "@id": "http://www.opengis.net/ont/sf#MultiPoint"
+  },
+  {
+    "@id": "http://www.opengis.net/ont/sf#MultiPolygon"
+  },
+  {
+    "@id": "http://www.opengis.net/ont/sf#Point"
+  },
+  {
+    "@id": "http://www.opengis.net/ont/sf#Polygon"
+  },
+  {
     "@id": "https://purl.org/geojson/vocab#Feature"
-  },
-  {
-    "@id": "https://purl.org/geojson/vocab#GeometryCollection"
-  },
-  {
-    "@id": "https://purl.org/geojson/vocab#LineString"
-  },
-  {
-    "@id": "https://purl.org/geojson/vocab#MultiLineString"
-  },
-  {
-    "@id": "https://purl.org/geojson/vocab#MultiPoint"
-  },
-  {
-    "@id": "https://purl.org/geojson/vocab#MultiPolygon"
-  },
-  {
-    "@id": "https://purl.org/geojson/vocab#Point"
-  },
-  {
-    "@id": "https://purl.org/geojson/vocab#Polygon"
   }
 ]

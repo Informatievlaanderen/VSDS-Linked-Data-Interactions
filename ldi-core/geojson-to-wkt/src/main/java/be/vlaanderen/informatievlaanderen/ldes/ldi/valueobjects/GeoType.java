@@ -5,39 +5,48 @@ import java.util.Optional;
 
 public enum GeoType {
 
-	// TODO TVB: 15/09/23 verify with ranko these uri's are OK as predicate
-	// TODO TVB: 15/09/23 IF NOT, we have to add urls with http://www.opengis.net/ont/sf#
-	//  DO NOT REMOVE CURRENT uri, but add second uri
 	// @formatter:off
-    POINT("https://purl.org/geojson/vocab#Point"),
-    LINESTRING("https://purl.org/geojson/vocab#LineString"),
-    POLYGON("https://purl.org/geojson/vocab#Polygon"),
-    MULTIPOINT("https://purl.org/geojson/vocab#MultiPoint"),
-    MULTIPOLYGON("https://purl.org/geojson/vocab#MultiPolygon"),
-    MULTILINESTRING("https://purl.org/geojson/vocab#MultiLineString"),
-    GEOMETRYCOLLECTION("https://purl.org/geojson/vocab#GeometryCollection");
+    POINT("https://purl.org/geojson/vocab#Point", "http://www.opengis.net/ont/sf#Point"),
+    LINESTRING("https://purl.org/geojson/vocab#LineString", "http://www.opengis.net/ont/sf#LineString"),
+    POLYGON("https://purl.org/geojson/vocab#Polygon", "http://www.opengis.net/ont/sf#Polygon"),
+    MULTIPOINT("https://purl.org/geojson/vocab#MultiPoint", "http://www.opengis.net/ont/sf#MultiPoint"),
+    MULTIPOLYGON("https://purl.org/geojson/vocab#MultiPolygon", "http://www.opengis.net/ont/sf#MultiPolygon"),
+    MULTILINESTRING("https://purl.org/geojson/vocab#MultiLineString", "http://www.opengis.net/ont/sf#MultiLineString"),
+    GEOMETRYCOLLECTION("https://purl.org/geojson/vocab#GeometryCollection", "http://www.opengis.net/ont/sf#GeometryCollection");
 	// @formatter:on
 
-	final String uri;
+	final String geoJsonUri;
+	final String sfUri;
 
-	GeoType(String uri) {
-		this.uri = uri;
+	GeoType(String geoJsonUri, String sfUri) {
+		this.geoJsonUri = geoJsonUri;
+		this.sfUri = sfUri;
 	}
 
 	public static Optional<GeoType> fromUri(String type) {
-		return Arrays.stream(values()).filter(value -> value.uri.equals(type)).findFirst();
-	}
-
-	// TODO TVB: 15/09/23 test
-	public static Optional<GeoType> fromName(String name) {
-		if (name == null) {
-			return Optional.empty();
+		if (type.contains("https://purl.org/geojson/vocab#")) {
+			return Arrays.stream(values())
+					.filter(value -> value.geoJsonUri.equals(type))
+					.findFirst();
 		}
 
-		return Arrays.stream(values()).filter(value -> value.name().equalsIgnoreCase(name)).findFirst();
+		return Arrays.stream(values())
+				.filter(value -> value.sfUri.equals(type))
+				.findFirst();
 	}
 
-	public String getUri() {
-		return uri;
+	public static Optional<GeoType> fromName(String name) {
+		return Arrays.stream(values())
+				.filter(value -> value.name().equalsIgnoreCase(name))
+				.findFirst();
+	}
+
+	// TODO: Check if still needed
+//	public String getGeoJsonUri() {
+//		return geoJsonUri;
+//	}
+
+	public String getSfUri() {
+		return sfUri;
 	}
 }

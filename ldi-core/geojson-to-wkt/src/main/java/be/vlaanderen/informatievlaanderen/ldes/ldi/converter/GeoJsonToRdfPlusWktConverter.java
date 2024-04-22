@@ -35,9 +35,9 @@ public class GeoJsonToRdfPlusWktConverter implements GeoJsonConverter {
         final WktResult wktResult = wktConverter.getWktFromModel(geometryModel);
         final Model geometry = ModelFactory.createDefaultModel();
         final Resource blankNode = createResource();
-        geometry.add(blankNode, RDF.type, createProperty(wktResult.type().getUri()));
+        geometry.add(blankNode, RDF.type, createProperty(wktResult.type().getSfUri()));
         final Literal wktLiteral = ResourceFactory.createTypedLiteral(wktResult.wkt(), getWktLiteralDataType());
-        geometry.add(blankNode, createProperty("http://www.w3.org/ns/locn#asWKT"), wktLiteral);
+        geometry.add(blankNode, createProperty("http://www.opengis.net/ont/geosparql#asWKT"), wktLiteral);
         final Property geometryPredicate = createProperty("http://www.w3.org/ns/locn#geometry");
         geometry.add(oldStatement.getSubject(), geometryPredicate, blankNode);
         return geometry;
