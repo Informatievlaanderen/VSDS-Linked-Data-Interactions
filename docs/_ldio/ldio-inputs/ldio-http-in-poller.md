@@ -11,6 +11,7 @@ title: HTTP In Poller
 The LDIO Http In Poller is a basic Http Poller that will poll a target URL on a specified interval. 
 
 ## Config
+### General properties
 
 | Property       | Description                                                        | Required | Default | Example                   | Supported values                                                                                                                                      |
 |:---------------|:-------------------------------------------------------------------|:---------|:--------|:--------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -19,9 +20,9 @@ The LDIO Http In Poller is a basic Http Poller that will poll a target URL on a 
 | interval       | Polling interval declared in ISO 8601 format.                      | Yes[^1]  | N/A     | PT1S                      | ISO 8601 formatted String                                                                                                                             |
 | continueOnFail | Indicated if continue if polling results in failure                | No       | true    | true                      | true or false                                                                                                                                         |
 
-This component uses the "LDIO Http Requester" to make the HTTP request.
-Refer to [LDIO Http Requester](../ldio-core) for the config.
+{% include ldio-core/http-requester.md %}
 
+### Multiple urls
 The Http In Poller supports polling multiple endpoints. Example configuration:
 
 ```yaml
