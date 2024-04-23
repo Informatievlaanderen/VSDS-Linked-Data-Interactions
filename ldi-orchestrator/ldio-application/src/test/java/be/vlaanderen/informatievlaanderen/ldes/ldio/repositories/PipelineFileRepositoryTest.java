@@ -7,6 +7,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineParsingExc
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.InputComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +23,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository.EXTENSION_YAML;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository.EXTENSION_YML;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PipelineFileRepositoryTest {
@@ -41,7 +42,7 @@ public class PipelineFileRepositoryTest {
 			return files
 					.filter(path -> !Files.isDirectory(path))
 					.filter(path -> path.toFile().getName().endsWith(EXTENSION_YML)
-					                || path.toFile().getName().endsWith(EXTENSION_YAML))
+									|| path.toFile().getName().endsWith(EXTENSION_YAML))
 					.map(path -> {
 						try {
 							return Map.of(path.toFile(), readConfigFile(path));
@@ -72,10 +73,13 @@ public class PipelineFileRepositoryTest {
 		var activePipelines = repository.getActivePipelines();
 		var storedPipelines = repository.getInactivePipelines();
 
-		assertEquals(0, activePipelines.size());
-		assertEquals(1, storedPipelines.size());
-		assertEquals(existingPipelineFile, storedPipelines.keySet().stream().toList().get(0).getName());
-		assertEquals(existingPipeline, storedPipelines.values().stream().toList().get(0).name());
+		assertThat(activePipelines).isEmpty();
+		assertThat(storedPipelines)
+				.hasSize(1);
+		assertThat(storedPipelines.entrySet())
+				.filteredOn(entry -> entry.getKey().getName().equals(existingPipelineFile))
+				.extracting(Map.Entry::getValue)
+				.isEqualTo(existingPipeline);
 	}
 
 	@BeforeEach
@@ -98,7 +102,10 @@ public class PipelineFileRepositoryTest {
 
 		// Init pipeline
 		repository.activateExistingPipeline(storedPipeline.getValue().toPipelineConfig(), storedPipeline.getKey());
-		assertThrows(PipelineAlreadyExistsException.class, () -> repository.activateNewPipeline(storedPipeline.getValue().toPipelineConfig()));
+
+		final PipelineConfig pipelineConfig = storedPipeline.getValue().toPipelineConfig();
+		assertThatThrownBy(() -> repository.activateNewPipeline(pipelineConfig))
+				.isInstanceOf(PipelineAlreadyExistsException.class);
 	}
 
 	@Test
@@ -140,7 +147,7 @@ public class PipelineFileRepositoryTest {
 
 		assertEquals(1, activePipelines.size());
 		assertEquals(0, inactivePipelines.size());
-		assertEquals(existingPipeline, activePipelines.get(0).name());
+		assertEquals(existingPipeline, activePipelines.getFirst().name());
 
 		var config = new PipelineConfig();
 		String pipelineName = "valid";
