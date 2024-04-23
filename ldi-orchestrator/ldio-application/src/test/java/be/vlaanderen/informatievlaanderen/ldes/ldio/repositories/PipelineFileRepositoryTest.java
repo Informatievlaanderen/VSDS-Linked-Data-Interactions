@@ -79,7 +79,8 @@ public class PipelineFileRepositoryTest {
 		assertThat(storedPipelines.entrySet())
 				.filteredOn(entry -> entry.getKey().getName().equals(existingPipelineFile))
 				.extracting(Map.Entry::getValue)
-				.isEqualTo(existingPipeline);
+				.extracting(PipelineConfigTO::name)
+				.containsExactly(existingPipeline);
 	}
 
 	@BeforeEach
