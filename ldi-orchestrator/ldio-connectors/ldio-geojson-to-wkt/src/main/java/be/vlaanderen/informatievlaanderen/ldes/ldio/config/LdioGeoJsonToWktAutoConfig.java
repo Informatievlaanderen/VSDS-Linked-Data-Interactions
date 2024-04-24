@@ -18,12 +18,12 @@ public class LdioGeoJsonToWktAutoConfig {
 	}
 
     public static class LdioGeoJsonToWktConfigurator implements LdioTransformerConfigurator {
-        public static final String RDF_PLUS_WKT_ENABLED = "create-rdf-plus-wkt";
+        public static final String TRANSFORM_TO_RDF_WKT = "transform-to-rdf+wkt";
 
         @Override
         public LdioTransformer configure(ComponentProperties config) {
-            boolean rdfPlusWktEnabled = config.getOptionalBoolean(RDF_PLUS_WKT_ENABLED).orElse(false);
-            return new LdioGeoJsonToWkt(rdfPlusWktEnabled);
+            boolean transformToRdfWkt = config.getOptionalBoolean(TRANSFORM_TO_RDF_WKT).orElse(false);
+            return new LdioGeoJsonToWkt(transformToRdfWkt);
         }
     }
 

@@ -41,11 +41,6 @@ public enum GeoType {
 				.findFirst();
 	}
 
-	// TODO: Check if still needed
-//	public String getGeoJsonUri() {
-//		return geoJsonUri;
-//	}
-
 	public String getSfUri() {
 		return sfUri;
 	}

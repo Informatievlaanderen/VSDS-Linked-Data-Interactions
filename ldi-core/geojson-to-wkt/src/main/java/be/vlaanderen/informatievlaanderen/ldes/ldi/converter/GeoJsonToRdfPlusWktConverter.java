@@ -7,62 +7,55 @@ import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOJSON_GEOMETRY;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 
 public class GeoJsonToRdfPlusWktConverter implements GeoJsonConverter {
 
+    private static final String GEOSPARQL_URI = "http://www.opengis.net/ont/geosparql";
     private final WktConverter wktConverter = new WktConverter();
 
     @Override
-    public Model convert(Model model) {
-        final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)
-                .toList();
-        geometryStatements.forEach(oldGeometryStatement -> {
-            final Model geometryModel = createModelWithChildStatements(model, oldGeometryStatement);
-            model.remove(createModelWithChildStatements(model, oldGeometryStatement));
-            model.add(createNewGeometryStatements(oldGeometryStatement, geometryModel));
-        });
-        return model;
+    public List<Statement> createNewGeometryStatement(Statement oldStatement, Model geometryModel) {
+        final Model geometry = ModelFactory.createDefaultModel();
+        final Property geometryPredicate = createProperty("http://www.w3.org/ns/locn#geometry");
+        final Resource blankNode = createResource();
+
+        final WktResult wktResult = retrieveWkt(geometryModel);
+        final Literal wktLiteral = createTypedLiteralBasedOnWktResult(wktResult);
+
+        addStatementsToModel(oldStatement, geometry, blankNode, wktResult, wktLiteral, geometryPredicate);
+
+        return getStatementsFromModel(geometry);
     }
 
-    private Model createNewGeometryStatements(Statement oldStatement, Model geometryModel) {
-        final WktResult wktResult = wktConverter.getWktFromModel(geometryModel);
-        final Model geometry = ModelFactory.createDefaultModel();
-        final Resource blankNode = createResource();
+    private static List<Statement> getStatementsFromModel(Model geometry) {
+        return geometry.listStatements().toList();
+    }
+
+    private WktResult retrieveWkt(Model geometryModel) {
+        return wktConverter.getWktFromModel(geometryModel);
+    }
+
+    private Literal createTypedLiteralBasedOnWktResult(WktResult wktResult) {
+        return ResourceFactory.createTypedLiteral(wktResult.wkt(), getWktLiteralDataType());
+    }
+
+    private void addStatementsToModel(Statement oldStatement,
+                                      Model geometry,
+                                      Resource blankNode,
+                                      WktResult wktResult,
+                                      Literal wktLiteral,
+                                      Property geometryPredicate) {
         geometry.add(blankNode, RDF.type, createProperty(wktResult.type().getSfUri()));
-        final Literal wktLiteral = ResourceFactory.createTypedLiteral(wktResult.wkt(), getWktLiteralDataType());
-        geometry.add(blankNode, createProperty("http://www.opengis.net/ont/geosparql#asWKT"), wktLiteral);
-        final Property geometryPredicate = createProperty("http://www.w3.org/ns/locn#geometry");
+        geometry.add(blankNode, createProperty(GEOSPARQL_URI + "#asWKT"), wktLiteral);
         geometry.add(oldStatement.getSubject(), geometryPredicate, blankNode);
-        return geometry;
     }
 
     private RDFDatatype getWktLiteralDataType() {
-        return TypeMapper.getInstance().getSafeTypeByName("http://www.opengis.net/ont/geosparql#wktLiteral");
-    }
-
-    private Model createModelWithChildStatements(Model model, Statement statement) {
-        final Set<Statement> statements = new HashSet<>();
-        statements.add(statement);
-        addChildStatements(model, statement.getObject().asResource(), statements);
-        return ModelFactory.createDefaultModel().add(statements.toArray(Statement[]::new));
-    }
-
-    private void addChildStatements(Model model, Resource subject, Set<Statement> statements) {
-        StmtIterator stmtIterator = model.listStatements(subject, null, (RDFNode) null);
-
-        stmtIterator.forEach(statement -> {
-            if (statement.getObject().isAnon()) {
-                addChildStatements(model, statement.getObject().asResource(), statements);
-            }
-            statements.add(statement);
-        });
+        return TypeMapper.getInstance().getSafeTypeByName(GEOSPARQL_URI + "#wktLiteral");
     }
 
 }

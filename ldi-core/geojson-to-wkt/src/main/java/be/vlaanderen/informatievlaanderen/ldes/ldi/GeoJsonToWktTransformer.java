@@ -4,14 +4,20 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonToRdfPlusWktConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonToWktConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
-import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.*;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOJSON_GEOMETRY;
 
 public class GeoJsonToWktTransformer implements LdiOneToOneTransformer {
 
 	private final GeoJsonConverter geoJsonConverter;
 
-	public GeoJsonToWktTransformer(boolean rdfPlusWktEnabled) {
-		this.geoJsonConverter = rdfPlusWktEnabled ?
+	public GeoJsonToWktTransformer(boolean transformToRdfWkt) {
+		this.geoJsonConverter = transformToRdfWkt ?
 				new GeoJsonToRdfPlusWktConverter() :
 				new GeoJsonToWktConverter();
 	}
@@ -22,6 +28,31 @@ public class GeoJsonToWktTransformer implements LdiOneToOneTransformer {
 	 */
 	@Override
 	public Model transform(Model model) {
-		return geoJsonConverter.convert(model);
+		final List<Statement> geometryStatements = model.listStatements(null, GEOJSON_GEOMETRY, (RDFNode) null)
+				.toList();
+		geometryStatements.forEach(oldGeometryStatement -> {
+			final Model geometryModel = createModelWithChildStatements(model, oldGeometryStatement);
+			model.remove(createModelWithChildStatements(model, oldGeometryStatement));
+			model.add(geoJsonConverter.createNewGeometryStatement(oldGeometryStatement, geometryModel));
+		});
+		return model;
+	}
+
+	private Model createModelWithChildStatements(Model model, Statement statement) {
+		final Set<Statement> statements = new HashSet<>();
+		statements.add(statement);
+		addChildStatements(model, statement.getObject().asResource(), statements);
+		return ModelFactory.createDefaultModel().add(statements.toArray(Statement[]::new));
+	}
+
+	private void addChildStatements(Model model, Resource subject, Set<Statement> statements) {
+		StmtIterator stmtIterator = model.listStatements(subject, null, (RDFNode) null);
+
+		stmtIterator.forEach(statement -> {
+			if (statement.getObject().isAnon()) {
+				addChildStatements(model, statement.getObject().asResource(), statements);
+			}
+			statements.add(statement);
+		});
 	}
 }
