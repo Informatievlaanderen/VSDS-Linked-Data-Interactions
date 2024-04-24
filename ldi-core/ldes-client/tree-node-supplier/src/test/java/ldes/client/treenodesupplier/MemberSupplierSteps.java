@@ -13,7 +13,7 @@ import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
-import ldes.client.treenodesupplier.membersuppliers.ExactlyOnceFilterMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
@@ -175,7 +175,7 @@ public class MemberSupplierSteps {
 	@When("I create a MemberSupplier with filter")
 	public void iCreateAMemberSupplierWithFilter() {
 		final boolean keepState = false;
-		memberSupplier = new ExactlyOnceFilterMemberSupplier(new MemberSupplierImpl(treeNodeProcessor, keepState),
+		memberSupplier = new FilteredMemberSupplier(new MemberSupplierImpl(treeNodeProcessor, keepState),
 				new ExactlyOnceFilter(memberIdRepository, keepState));
 		memberSupplier.init();
 	}

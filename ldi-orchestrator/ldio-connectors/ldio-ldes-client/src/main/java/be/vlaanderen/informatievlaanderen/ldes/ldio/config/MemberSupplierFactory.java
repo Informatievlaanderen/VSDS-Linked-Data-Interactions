@@ -12,7 +12,7 @@ import ldes.client.treenodesupplier.*;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
-import ldes.client.treenodesupplier.membersuppliers.ExactlyOnceFilterMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
 import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
@@ -46,7 +46,7 @@ public class MemberSupplierFactory {
         MemberSupplier baseMemberSupplier =
                 new MemberSupplierImpl(getTreeNodeProcessor(), getKeepState());
         if (useExactlyOnceFilter()) {
-            return new ExactlyOnceFilterMemberSupplier(baseMemberSupplier, getFilter());
+            return new FilteredMemberSupplier(baseMemberSupplier, getFilter());
         } else if (useVersionMaterialisation()) {
             return new VersionMaterialisedMemberSupplier(baseMemberSupplier, createVersionMaterialiser());
         } else {

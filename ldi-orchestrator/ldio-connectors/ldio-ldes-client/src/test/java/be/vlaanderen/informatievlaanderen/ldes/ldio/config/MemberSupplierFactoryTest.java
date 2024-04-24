@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import ldes.client.treenodesupplier.membersuppliers.ExactlyOnceFilterMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
 import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
@@ -51,7 +51,7 @@ class MemberSupplierFactoryTest {
 
 		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null).getMemberSupplier();
 
-		assertThat(memberSupplier).isInstanceOf(ExactlyOnceFilterMemberSupplier.class);
+		assertThat(memberSupplier).isInstanceOf(FilteredMemberSupplier.class);
 	}
 
 	@Test

@@ -19,7 +19,7 @@ import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
-import ldes.client.treenodesupplier.membersuppliers.ExactlyOnceFilterMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
 import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
@@ -101,7 +101,7 @@ public class LdesClientProcessor extends AbstractProcessor {
                     versionMaterialiser
 			);
 		} else if (useExactlyOnceFilter(context)) {
-			memberSupplier = new ExactlyOnceFilterMemberSupplier(
+			memberSupplier = new FilteredMemberSupplier(
 					new MemberSupplierImpl(treeNodeProcessor, keepState),
 					new ExactlyOnceFilter(statePersistence.getMemberIdRepository(), keepState)
 			);

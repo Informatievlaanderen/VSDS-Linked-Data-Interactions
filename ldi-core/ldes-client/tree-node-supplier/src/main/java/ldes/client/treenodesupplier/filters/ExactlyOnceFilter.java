@@ -1,8 +1,9 @@
 package ldes.client.treenodesupplier.filters;
 
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 
-public class ExactlyOnceFilter {
+public class ExactlyOnceFilter implements MemberFilter {
 	private final MemberIdRepository memberIdRepository;
 	private final boolean keepState;
 
@@ -11,14 +12,17 @@ public class ExactlyOnceFilter {
 		this.keepState = keepState;
 	}
 
-	public boolean allowed(String memberId) {
-		return !memberIdRepository.contains(memberId);
+	@Override
+	public boolean isAllowed(SuppliedMember member) {
+		return !memberIdRepository.contains(member.getId());
 	}
 
-	public void addId(String memberId) {
-		memberIdRepository.addMemberId(memberId);
+	@Override
+	public void saveAllowedMember(SuppliedMember member) {
+		memberIdRepository.addMemberId(member.getId());
 	}
 
+	@Override
 	public void destroyState() {
 		if(keepState) {
 			memberIdRepository.destroyState();
