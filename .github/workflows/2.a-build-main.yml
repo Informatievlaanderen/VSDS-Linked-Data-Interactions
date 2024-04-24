@@ -58,4 +58,4 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar deploy -Dsonar.projectKey=Informatievlaanderen_VSDS-Linked-Data-Interactions -Pcoverage,release
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar deploy -Dsonar.projectKey=Informatievlaanderen_VSDS-Linked-Data-Interactions -Pcoverage
