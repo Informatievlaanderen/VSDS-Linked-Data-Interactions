@@ -42,7 +42,7 @@ public class MemberSupplierSteps {
 	private MemberSupplier memberSupplier;
 	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
-	private PostgreSQLContainer postgreSQLContainer;
+	private PostgreSQLContainer<?> postgreSQLContainer;
 
 	// Multi MemberSupplier
 	private final MemberSupplier[] memberSuppliers = new MemberSupplier[2];
@@ -130,7 +130,7 @@ public class MemberSupplierSteps {
 
 	@And("a StatePersistenceStrategy POSTGRES")
 	public StatePersistence aPostgresStatePersistenceStrategy() {
-		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
+		postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
 				.withDatabaseName("integration-test-client-persistence")
 				.withUsername("sa")
 				.withPassword("sa");
