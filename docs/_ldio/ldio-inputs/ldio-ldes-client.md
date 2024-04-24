@@ -37,16 +37,11 @@ Other filters can be added in the future.
 
 The  Client offers different ways to persist state of the processed members:
 
-| Strategy    | Description                                                 | Advantages                             | Disadvantages                                               |
-|:------------|:------------------------------------------------------------|:---------------------------------------|:------------------------------------------------------------|
-| _Memory_    | Store the state of members in the memory of the LDES Client | Fastest processing                     | Not suitable for large datasets (>500k), heap will overflow |
-|             |                                                             | Easiest setup                          | State is lost when the client stops/restarts                | 
-|             |                                                             |                                        |                                                             |
-| _SQLite_    | A SQLite database is used to store state of members         | Easy setup                             | Slowest processing**                                        |
-|             |                                                             | State is not lost between runs         |                                                             |
-|             |                                                             |                                        |                                                             |
-| _PostgreSQL_| A PostgreSQL database is used to store state of the members | Fastest processing for larger datasets | Database is needed                                          |
-|             |                                                             | State is not lost between runs         |                                                             |
+| Strategy     | Description                                                 | Advantages                                                                                                        | Disadvantages                                                                                                                                        |
+|:-------------|:------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Memory_     | Store the state of members in the memory of the LDES Client | {::nomarkdown}<ul><li>Fastest processing</li><li>Easiest setup</li></ul>{:/}                                      | {::nomarkdown}<ul><li>Not suitable for large datasets (>500k), heap will overflow</li><li>State is lost when the client stops/restarts</li></ul>{:/} |
+| _SQLite_     | A SQLite database is used to store state of members         | {::nomarkdown}<ul><li>Easy setup</li><li>State is not lost between runs</li></ul>{:/}                             | {::nomarkdown}<ul><li>Slowest processing**</li></ul>{:/}                                                                                             |
+| _PostgreSQL_ | A PostgreSQL database is used to store state of the members | {::nomarkdown}<ul><li>Fastest processing for larger datasets</li><li>State is not lost between runs</li></ul>{:/} | {::nomarkdown}<ul><li>Database is needed</li></ul>{:/}                                                                                               |
 
 ** We use a transaction for every processed record and SQLite is limited by the CPU ([source](https://www.sqlite.org/faq.html#q19)).
 
