@@ -29,11 +29,11 @@ This component exposes two endpoints:
 
 ## Config
 
-| Property               | Description                                                                                                     | Required | Default      | Example                                                         | Supported values    |
-|:-----------------------|:----------------------------------------------------------------------------------------------------------------|:---------|:-------------|:----------------------------------------------------------------|:--------------------|
-| connector-transfer-url | The transfer url of the EDC connector which has to be called to start a transfer                                | Yes      | N/A          | http://consumer-connector:29193/management/v2/transferprocesses | HTTP and HTTPS urls |
-| proxy-url-to-replace   | Makes it possible to proxy a part of the url of the LDES**. Indicates which part of the url should be replaced. | No       | empty string | http://ldes-behind-connectors.dev                               | string              |
-| proxy-url-replacement  | Makes it possible to proxy a part of the url of the LDES**. Indicates the replacement url part.                 | No       | memory       | http://consumer-connector:29193                                 | string              |
+| Property                 | Description                                                                                                     | Required | Default      | Example                                                         | Supported values    |
+|:-------------------------|:----------------------------------------------------------------------------------------------------------------|:---------|:-------------|:----------------------------------------------------------------|:--------------------|
+| _connector-transfer-url_ | The transfer url of the EDC connector which has to be called to start a transfer                                | Yes      | N/A          | http://consumer-connector:29193/management/v2/transferprocesses | HTTP and HTTPS urls |
+| _proxy-url-to-replace_   | Makes it possible to proxy a part of the url of the LDES**. Indicates which part of the url should be replaced. | No       | empty string | http://ldes-behind-connectors.dev                               | string              |
+| _proxy-url-replacement_  | Makes it possible to proxy a part of the url of the LDES**. Indicates the replacement url part.                 | No       | memory       | http://consumer-connector:29193                                 | string              |
 
 ** The url mentioned here are the actual url's used by the LDES Server (hostname). These are included in the results
 bodies to indicate relations, etc. This is a temporary solution until the client and server support relative urls.

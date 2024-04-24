@@ -13,13 +13,13 @@ Any triplestore that supports the RDF4J remote repository API can be used.
 
 ## Config
 
-| Property      | Description                                                                                                      | Required | Default | Example                 | Supported values |
-|:--------------|:-----------------------------------------------------------------------------------------------------------------|:---------|:--------|:------------------------|:-----------------|
-| sparql-host   | The url of the server hosting the repository                                                                     | Yes      | N/A     | http://repositoryServer | URL              |
-| repository-id | The rdf4j repository id                                                                                          | Yes      | N/A     | repoId                  | String           |
-| named-graph   | If set, the triples will be written to this named graph                                                          | No       | N/A     | http://name             | Any valid IRI    |
-| batch-size    | Number of members or models that will be committed at once                                                       | No       | 500     | 500                     | Integer          |
-| batch-timeout | If the batch size has not been reached within this number of milliseconds, the members will be committed anyway. | No       | 120000  | 30000                   | Integer          |
+| Property        | Description                                                                                                      | Required | Default | Example                 | Supported values |
+|:----------------|:-----------------------------------------------------------------------------------------------------------------|:---------|:--------|:------------------------|:-----------------|
+| _sparql-host_   | The url of the server hosting the repository                                                                     | Yes      | N/A     | http://repositoryServer | URL              |
+| _repository-id_ | The rdf4j repository id                                                                                          | Yes      | N/A     | repoId                  | String           |
+| _named-graph_   | If set, the triples will be written to this named graph                                                          | No       | N/A     | http://name             | Any valid IRI    |
+| _batch-size_    | Number of members or models that will be committed at once                                                       | No       | 500     | 500                     | Integer          |
+| _batch-timeout_ | If the batch size has not been reached within this number of milliseconds, the members will be committed anyway. | No       | 120000  | 30000                   | Integer          |
 
 ### Batching
 

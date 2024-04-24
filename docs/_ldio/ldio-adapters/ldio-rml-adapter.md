@@ -16,8 +16,8 @@ the [RML documentation].
 ## Config
 
 
-| Property | Description                                    | Required | Default | Example                     | Supported values    |
-|:---------|:-----------------------------------------------|:---------|:--------|:----------------------------|:--------------------|
-| mapping  | Path to content of RML/content of RML mapping. | Yes      | N/A     | mapping.ttl                 | Path/String         |
+| Property  | Description                                    | Required | Default | Example     | Supported values |
+|:----------|:-----------------------------------------------|:---------|:--------|:------------|:-----------------|
+| _mapping_ | Path to content of RML/content of RML mapping. | Yes      | N/A     | mapping.ttl | Path/String      |
 
 [RML documentation]: https://rml.io/specs/rml/
