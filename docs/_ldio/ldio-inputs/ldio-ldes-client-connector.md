@@ -8,12 +8,9 @@ title: LDES Client with Connector
 
 ***Ldio:LdesClientConnector***
 
-An EDC (Eclipse dataspace Connector) LDIO wrapper component for
-the [LDI LDES Client building block](../../core/ldi-inputs/ldes-client)
-
-This component adds EDC support to [the ldio ldes client](./ldio-ldes-client.md). If you'd like to know how to configure
-the LDES Client,
-we refer to [the ldio ldes client](./ldio-ldes-client.md).
+An EDC (Eclipse dataspace Connector) LDIO wrapper component for [the ldio ldes client](./ldio-ldes-client) to add EDC
+support to this component. If you'd like to know how to configure the LDES Client, we refer
+to [the ldio ldes client](./ldio-ldes-client).
 The additional functionality provided by this component makes it possible to use the Ldes Client to consume an LDES
 through an EDC connector.
 This component exposes two endpoints:
@@ -38,27 +35,27 @@ This component exposes two endpoints:
 | proxy-url-to-replace   | Makes it possible to proxy a part of the url of the LDES**. Indicates which part of the url should be replaced. | No       | empty string | http://ldes-behind-connectors.dev                               | string              |
 | proxy-url-replacement  | Makes it possible to proxy a part of the url of the LDES**. Indicates the replacement url part.                 | No       | memory       | http://consumer-connector:29193                                 | string              |
 
-** The url mentioned here are the actual url's used by the LDES Server (hostname). These are included in the results bodies to indicate relations, etc. This is a temporary solution until the client and server support relative urls.
-
+** The url mentioned here are the actual url's used by the LDES Server (hostname). These are included in the results
+bodies to indicate relations, etc. This is a temporary solution until the client and server support relative urls.
 
 ## Examples
 
 ```yaml
 input:
-   name: Ldio:LdesClientConnector
-   config:
-      url: http://consumer-connector:29291/public
-      connector-transfer-url: http://consumer-connector:29193/management/v2/transferprocesses
-      proxy-url-to-replace: http://localhost:8081/devices
-      proxy-url-replacement: http://consumer-connector:29291/public
-      source-format: application/n-quads
+  name: Ldio:LdesClientConnector
+  config:
+    url: http://consumer-connector:29291/public
+    connector-transfer-url: http://consumer-connector:29193/management/v2/transferprocesses
+    proxy-url-to-replace: http://localhost:8081/devices
+    proxy-url-replacement: http://consumer-connector:29291/public
+    source-format: application/n-quads
 ```
 
 ## INIT phase
 
-Contrary to the other ldio-input components, the connector waits in the INIT status for the edc-token and will only progress to the RUNNING status once it has received this token.
+Contrary to the other ldio-input components, the connector waits in the INIT status for the edc-token and will only
+progress to the RUNNING status once it has received this token.
 More on the statuses in ldio can be found [here.](../pipeline-management/pipeline-status)
-
 
 ## Pausing
 
