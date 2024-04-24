@@ -11,6 +11,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 import ldes.client.treenodesupplier.*;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
+import ldes.client.treenodesupplier.membersuppliers.ExactlyOnceFilterMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
+import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
@@ -41,7 +46,7 @@ public class MemberSupplierFactory {
         MemberSupplier baseMemberSupplier =
                 new MemberSupplierImpl(getTreeNodeProcessor(), getKeepState());
         if (useExactlyOnceFilter()) {
-            return new ExactlyOnceFilterMemberSupplier(baseMemberSupplier, getFilter(), getKeepState());
+            return new ExactlyOnceFilterMemberSupplier(baseMemberSupplier, getFilter());
         } else if (useVersionMaterialisation()) {
             return new VersionMaterialisedMemberSupplier(baseMemberSupplier, createVersionMaterialiser());
         } else {
@@ -50,7 +55,7 @@ public class MemberSupplierFactory {
     }
 
     private ExactlyOnceFilter getFilter() {
-        return new ExactlyOnceFilter(getStatePersistence().getMemberIdRepository());
+        return new ExactlyOnceFilter(getStatePersistence().getMemberIdRepository(), getKeepState());
     }
 
     private TreeNodeProcessor getTreeNodeProcessor() {

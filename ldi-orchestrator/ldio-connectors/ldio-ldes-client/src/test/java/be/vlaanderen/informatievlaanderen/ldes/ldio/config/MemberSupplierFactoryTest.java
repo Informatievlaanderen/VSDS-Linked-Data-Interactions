@@ -2,10 +2,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import ldes.client.treenodesupplier.ExactlyOnceFilterMemberSupplier;
-import ldes.client.treenodesupplier.MemberSupplier;
-import ldes.client.treenodesupplier.MemberSupplierImpl;
-import ldes.client.treenodesupplier.VersionMaterialisedMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.ExactlyOnceFilterMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
+import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

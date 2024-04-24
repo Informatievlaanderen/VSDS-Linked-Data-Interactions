@@ -18,6 +18,11 @@ import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
+import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
+import ldes.client.treenodesupplier.membersuppliers.ExactlyOnceFilterMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
+import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.apache.jena.rdf.model.Model;
@@ -98,8 +103,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 		} else if (useExactlyOnceFilter(context)) {
 			memberSupplier = new ExactlyOnceFilterMemberSupplier(
 					new MemberSupplierImpl(treeNodeProcessor, keepState),
-					new ExactlyOnceFilter(statePersistence.getMemberIdRepository()),
-					keepState
+					new ExactlyOnceFilter(statePersistence.getMemberIdRepository(), keepState)
 			);
 		} else {
 			memberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
