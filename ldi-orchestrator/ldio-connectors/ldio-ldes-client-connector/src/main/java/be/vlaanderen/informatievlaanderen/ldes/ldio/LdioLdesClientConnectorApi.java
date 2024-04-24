@@ -10,7 +10,6 @@ public class LdioLdesClientConnectorApi {
 	private final TokenService tokenService;
 	private final LdioLdesClient ldesClient;
 
-	@SuppressWarnings("java:S107")
 	public LdioLdesClientConnectorApi(TransferService transferService, TokenService tokenService, LdioLdesClient ldesClient) {
 		this.transferService = transferService;
 		this.tokenService = tokenService;
