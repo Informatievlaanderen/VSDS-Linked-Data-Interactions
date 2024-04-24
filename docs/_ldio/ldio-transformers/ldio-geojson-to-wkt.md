@@ -11,6 +11,8 @@ title: GeoJson To WKT Transformer
 The GeoJson to Wkt Transformer will transform any [GeoJson] statements (with
 predicate https://purl.org/geojson/vocab#geometry) to a [wkt string][WKT].
 
+When the `transform-to-rdf+wkt` configuration is enabled, GeoJSON statements will be converted into RDF+WKT format.
+
 For example:
 
 ```json
@@ -33,9 +35,29 @@ becomes:
 }
 ```
 
+With `transform-to-rdf+wkt` set to `true` it becomes:
+
+```turtle
+@prefix geojson: <https://purl.org/geojson/vocab#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix locn: <http://www.w3.org/ns/locn#> .
+
+<http://example.com/features/point>
+        a       geojson:Feature;
+        locn:geometry
+                [ a       sf:Point;
+                  geo:asWKT
+                          "POINT (100 0)"^^geo:wktLiteral
+                ] .
+```
+
 ## Config
 
-This component has no required config
+
+| Property             | Description                                                                            | Required | Default | Example | Supported values |
+|:---------------------|:---------------------------------------------------------------------------------------|:---------|:--------|:--------|:-----------------|
+| transform-to-rdf+wkt | Transform GeoJson to RDF+WKT format, defaults to false and the default format is WKT   | No       | false   | false   | true/false       |
 
 [GeoJson]: https://geojson.org/
 

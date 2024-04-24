@@ -21,7 +21,7 @@ public class GeoJsonToWktProcessorProperties {
 
 	public static final PropertyDescriptor TRANSFORM_TO_RDF_WKT = new PropertyDescriptor.Builder()
 			.name("TRANSFORM_TO_RDF_WKT")
-			.displayName("Transform GeoJson to RDF+WKT format, defaults to false and the format will be WKT")
+			.displayName("Transform GeoJson to RDF+WKT format, defaults to false and the default format is WKT")
 			.required(false)
 			.defaultValue("false")
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
