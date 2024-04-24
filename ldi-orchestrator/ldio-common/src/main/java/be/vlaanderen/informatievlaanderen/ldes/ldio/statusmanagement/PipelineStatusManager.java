@@ -56,7 +56,7 @@ public class PipelineStatusManager {
 	}
 
 	public PipelineStatus updatePipelineStatus(PipelineStatus pipelineStatus, StatusChangeSource statusChangeSource) {
-		final boolean isStatusUpdated = setPipelineStatus(pipelineStatus);
+		final boolean isStatusUpdated = tryUpdatePipelineStatus(pipelineStatus);
 		if (isStatusUpdated) {
 			this.lastStatusChangeSource = statusChangeSource;
 			updateComponentsStatus();
@@ -68,7 +68,7 @@ public class PipelineStatusManager {
 		return this.updatePipelineStatus(pipelineStatus, StatusChangeSource.MANUAL);
 	}
 
-	private boolean setPipelineStatus(PipelineStatus newPipelineStatus) {
+	private boolean tryUpdatePipelineStatus(PipelineStatus newPipelineStatus) {
 		final Value currentSatusValue = pipelineStatus == null ? INIT : pipelineStatus.getStatusValue();
 
 		return switch (newPipelineStatus.getStatusValue()) {

@@ -35,16 +35,7 @@ public class LdioLdesClientConnectorApiController {
 						.handleTransfer(transfer));
 	}
 
-	@EventListener
-	void handleNewPipelines(LdesClientConnectorApiCreatedEvent connectorApiCreatedEvent) {
-		clientConnectorApis.add(connectorApiCreatedEvent.pipelineName(), connectorApiCreatedEvent.ldesClientConnectorApi());
-	}
-
-	@EventListener
-	void deletePipeline(PipelineDeletedEvent deletedEvent) {
-		clientConnectorApis.remove(deletedEvent.pipelineId()).ifPresent(LdioLdesClientConnectorApi::shutdown);
-	}
-
+	// TODO: find a way to include this into the pipelinestatusmanager, eventually by making the api class an
 	@EventListener
 	public void handlePipelineStatusEvent(PipelineStatusEvent event) {
 		clientConnectorApis.get(event.pipelineId()).ifPresent(connectorApi -> {
