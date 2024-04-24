@@ -19,8 +19,20 @@ public class GeoJsonToWktProcessorProperties {
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.build();
 
+	public static final PropertyDescriptor TRANSFORM_TO_RDF_WKT = new PropertyDescriptor.Builder()
+			.name("TRANSFORM_TO_RDF_WKT")
+			.displayName("Transform GeoJson to RDF+WKT format, defaults to false and the format will be WKT")
+			.required(false)
+			.defaultValue("false")
+			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+			.build();
+
 	public static Lang getDataSourceFormat(final ProcessContext context) {
 		return RDFLanguages.nameToLang(context.getProperty(DATA_SOURCE_FORMAT).getValue());
+	}
+
+	public static boolean getTransformToRdfWkt(final ProcessContext context) {
+		return context.getProperty(TRANSFORM_TO_RDF_WKT).asBoolean();
 	}
 
 }

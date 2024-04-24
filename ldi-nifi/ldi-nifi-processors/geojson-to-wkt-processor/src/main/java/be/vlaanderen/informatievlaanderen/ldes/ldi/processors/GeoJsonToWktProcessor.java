@@ -17,7 +17,7 @@ import org.apache.nifi.processor.Relationship;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.GeoJsonToWktProcessorProperties.DATA_SOURCE_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.GeoJsonToWktProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -34,12 +34,15 @@ public class GeoJsonToWktProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(DATA_SOURCE_FORMAT);
+		return List.of(
+				DATA_SOURCE_FORMAT,
+				TRANSFORM_TO_RDF_WKT
+		);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		geoJsonToWktTransformer = new GeoJsonToWktTransformer(true);
+		geoJsonToWktTransformer = new GeoJsonToWktTransformer(getTransformToRdfWkt(context));
 	}
 
 	@Override

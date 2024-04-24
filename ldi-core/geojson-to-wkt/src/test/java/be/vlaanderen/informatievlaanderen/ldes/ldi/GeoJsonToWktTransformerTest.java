@@ -29,8 +29,8 @@ class GeoJsonToWktTransformerTest {
 
 	@ParameterizedTest
 	@MethodSource("testData")
-	void testTransform(boolean rdfWktEnabled, String expectedSourceFile) {
-		transformer = new GeoJsonToWktTransformer(rdfWktEnabled);
+	void testTransform(boolean transformToRdfWkt, String expectedSourceFile) {
+		transformer = new GeoJsonToWktTransformer(transformToRdfWkt);
 
 		Model result = transformer.transform(
 				RDFParser.source("geojson-all-types.json").lang(Lang.JSONLD).build().toModel());
@@ -42,8 +42,8 @@ class GeoJsonToWktTransformerTest {
 
 	@ParameterizedTest
 	@MethodSource("testData")
-	void shouldThrowException_whenGeometryContainsMultipleTypes(boolean rdfWktEnabled) {
-		transformer = new GeoJsonToWktTransformer(rdfWktEnabled);
+	void shouldThrowException_whenGeometryContainsMultipleTypes(boolean transformToRdfWkt) {
+		transformer = new GeoJsonToWktTransformer(transformToRdfWkt);
 		Model model = RDFParser.source("geojson-point.json").lang(Lang.JSONLD).build().toModel();
 		Property pointProperty = createProperty("https://purl.org/geojson/vocab#Point");
 		Resource subject = model.listSubjectsWithProperty(RDF.type, pointProperty).next();
