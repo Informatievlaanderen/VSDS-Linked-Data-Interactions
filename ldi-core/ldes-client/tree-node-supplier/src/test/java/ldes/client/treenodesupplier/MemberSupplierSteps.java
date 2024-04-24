@@ -10,6 +10,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
+import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
@@ -18,6 +19,7 @@ import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
+import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
 import org.apache.jena.rdf.model.Model;
@@ -39,6 +41,7 @@ public class MemberSupplierSteps {
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
 	private MemberIdRepository memberIdRepository;
+	private MemberVersionRepository memberVersionRepository;
 	private MemberSupplier memberSupplier;
 	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
@@ -96,7 +99,7 @@ public class MemberSupplierSteps {
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
-				new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository),
+				new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository),
 				requestExecutorFactory.createNoAuthExecutor(),
 				timestampPath.isEmpty() ? new TimestampFromCurrentTimeExtractor() : new TimestampFromPathExtractor(createProperty(timestampPath)));
 	}
@@ -114,7 +117,9 @@ public class MemberSupplierSteps {
 				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
+		memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.MEMORY, Map.of(),
+				"instanceName");
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
@@ -125,7 +130,9 @@ public class MemberSupplierSteps {
 				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
+		memberVersionRepository = MemberVersionRepositoryFactory
+				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@And("a StatePersistenceStrategy POSTGRES")
@@ -145,8 +152,11 @@ public class MemberSupplierSteps {
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
 						"instanceName");
+		memberVersionRepository = MemberVersionRepositoryFactory
+				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
+				"instanceName");
 
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@Then("MemberSupplier is destroyed")
