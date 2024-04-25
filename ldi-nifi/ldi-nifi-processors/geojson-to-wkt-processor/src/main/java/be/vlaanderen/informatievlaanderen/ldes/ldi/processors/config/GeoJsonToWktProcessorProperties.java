@@ -6,6 +6,8 @@ import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
+import static java.lang.Boolean.FALSE;
+
 public class GeoJsonToWktProcessorProperties {
 
 	private GeoJsonToWktProcessorProperties() {
@@ -23,8 +25,8 @@ public class GeoJsonToWktProcessorProperties {
 			.name("TRANSFORM_TO_RDF_WKT")
 			.displayName("Transform GeoJson to RDF+WKT format, defaults to false and the default format is WKT")
 			.required(false)
-			.defaultValue("false")
-			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+			.defaultValue(FALSE.toString())
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.build();
 
 	public static Lang getDataSourceFormat(final ProcessContext context) {
