@@ -18,11 +18,11 @@ public class LatestStateFilter implements MemberFilter {
 	private final PropertyPathExtractor versionOfExtractor;
 
 
-	public LatestStateFilter(MemberVersionRepository memberVersionRepository, boolean keepState, PropertyPathExtractor timestampExtractor, PropertyPathExtractor versionOfExtractor) {
+	public LatestStateFilter(MemberVersionRepository memberVersionRepository, boolean keepState, String timestampPath, String versionOfPath) {
 		this.memberVersionRepository = memberVersionRepository;
 		this.keepState = keepState;
-		this.timestampExtractor = timestampExtractor;
-		this.versionOfExtractor = versionOfExtractor;
+		this.timestampExtractor = PropertyPathExtractor.from(timestampPath);
+		this.versionOfExtractor = PropertyPathExtractor.from(versionOfPath);
 	}
 
 	@Override

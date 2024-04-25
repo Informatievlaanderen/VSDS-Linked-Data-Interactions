@@ -1,6 +1,5 @@
 package ldes.client.treenodesupplier.filters;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import ldes.client.treenodesupplier.domain.entities.MemberVersionRecord;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
@@ -22,13 +21,13 @@ import static org.mockito.Mockito.*;
 class LatestStateFilterTest {
 	@Mock
 	private MemberVersionRepository memberVersionRepository;
-	private final PropertyPathExtractor timestampExtractor = PropertyPathExtractor.from("http://www.w3.org/ns/prov#generatedAtTime");
-	private final PropertyPathExtractor versionOfExtractor = PropertyPathExtractor.from("http://purl.org/dc/terms/isVersionOf");
+	private final String timestampPath = "http://www.w3.org/ns/prov#generatedAtTime";
+	private final String versionOfPath = "http://purl.org/dc/terms/isVersionOf";
 	private LatestStateFilter latestStateFilter;
 
 	@BeforeEach
 	void setUp() {
-		latestStateFilter = new LatestStateFilter(memberVersionRepository, false, timestampExtractor, versionOfExtractor);
+		latestStateFilter = new LatestStateFilter(memberVersionRepository, false, timestampPath, versionOfPath);
 	}
 
 	@Test
@@ -76,7 +75,7 @@ class LatestStateFilterTest {
 
 	@Test
 	void given_KeepStateIsTrue_when_DestroyState_then_DoeNotDestroyStateFromRepo() {
-		final LatestStateFilter	keepStateFilter = new LatestStateFilter(memberVersionRepository, true, timestampExtractor, versionOfExtractor);
+		final LatestStateFilter	keepStateFilter = new LatestStateFilter(memberVersionRepository, true, timestampPath, versionOfPath);
 
 		keepStateFilter.destroyState();
 
