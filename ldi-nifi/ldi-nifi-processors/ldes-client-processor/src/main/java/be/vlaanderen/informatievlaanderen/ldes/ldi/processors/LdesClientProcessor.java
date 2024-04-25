@@ -53,7 +53,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Ldes
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
-@Tags({ "ldes-client", "vsds" })
+@Tags({"ldes-client", "vsds"})
 @CapabilityDescription("Extract members from an LDES source and send them to the next processor")
 @Stateful(description = "Stores mutable fragments to allow processor restart", scopes = Scope.LOCAL)
 public class LdesClientProcessor extends AbstractProcessor {
@@ -94,24 +94,25 @@ public class LdesClientProcessor extends AbstractProcessor {
 				new TimestampFromPathExtractor(createProperty(timestampPath));
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor);
 		keepState = stateKept(context);
+		final MemberSupplierImpl baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
+
 		if (useVersionMaterialisation(context)) {
-            final var versionOfProperty = createProperty(getVersionOfProperty(context));
-            final var versionMaterialiser = new VersionMaterialiser(versionOfProperty, restrictToMembers(context));
-			MemberSupplierImpl baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
+			final var versionOfProperty = createProperty(getVersionOfProperty(context));
+			final var versionMaterialiser = new VersionMaterialiser(versionOfProperty, restrictToMembers(context));
 			MemberSupplier decoratedMemberSupplier = useLatestStateFilter(context)
 					? new FilteredMemberSupplier(baseMemberSupplier, getLatestStateFilter(context, statePersistence))
 					: baseMemberSupplier;
 			memberSupplier = new VersionMaterialisedMemberSupplier(
 					decoratedMemberSupplier,
-                    versionMaterialiser
+					versionMaterialiser
 			);
 		} else if (useExactlyOnceFilter(context)) {
 			memberSupplier = new FilteredMemberSupplier(
-					new MemberSupplierImpl(treeNodeProcessor, keepState),
+					baseMemberSupplier,
 					new ExactlyOnceFilter(statePersistence.getMemberIdRepository(), keepState)
 			);
 		} else {
-			memberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
+			memberSupplier = baseMemberSupplier;
 		}
 
 		memberSupplier.init();
@@ -147,13 +148,13 @@ public class LdesClientProcessor extends AbstractProcessor {
 				yield requestExecutorFactory.createNoAuthExecutor(headers);
 			}
 			case OAUTH2_CLIENT_CREDENTIALS ->
-				requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
-						getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
+					requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
+							getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
 		};
 	}
 
 	private void determineLdesProperties(LdesMetaData ldesMetaData, RequestExecutor requestExecutor,
-			ProcessContext context) {
+										 ProcessContext context) {
 		boolean timestampPath = streamTimestampPathProperty(context);
 		boolean versionOfPath = streamVersionOfProperty(context);
 		boolean shape = streamShapeProperty(context);

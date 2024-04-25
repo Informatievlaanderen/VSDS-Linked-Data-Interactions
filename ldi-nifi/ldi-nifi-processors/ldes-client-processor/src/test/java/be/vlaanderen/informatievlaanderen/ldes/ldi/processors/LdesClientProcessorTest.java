@@ -178,6 +178,7 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
+		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.FALSE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
 		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
@@ -234,6 +235,7 @@ class LdesClientProcessorTest {
 				.isInstanceOf(AssertionFailedError.class)
 				.hasMessageStartingWith("Processor has 1 validation failures:");
 	}
+
 	@Test
 	void shouldSupportOnlyOnceFilter() {
 		testRunner.setProperty("DATA_SOURCE_URLS",
@@ -274,7 +276,7 @@ class LdesClientProcessorTest {
 
 		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
 
-		assertEquals(1, dataFlowfiles.size());
+		assertEquals(2, dataFlowfiles.size());
 
 		List<RDFNode> result = RDFParser
 				.fromString(dataFlowfiles.getFirst().getContent())
