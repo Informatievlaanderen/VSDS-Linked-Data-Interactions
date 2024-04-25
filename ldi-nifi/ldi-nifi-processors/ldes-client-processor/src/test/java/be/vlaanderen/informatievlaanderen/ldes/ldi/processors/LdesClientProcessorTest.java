@@ -100,11 +100,12 @@ class LdesClientProcessorTest {
 		assertEquals(1, result.size());
 	}
 
-	@Test
-	void shouldSupportRedirectLogic() {
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void shouldSupportRedirectLogic(Map<String, String> statePersistenceProps) {
 		testRunner.setProperty("AUTHORIZATION_STRATEGY", "NO_AUTH");
 		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/200-response-with-indirect-url");
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("STREAM_TIMESTAMP_PATH_PROPERTY", Boolean.FALSE.toString());
 		testRunner.setProperty("STREAM_VERSION_OF_PROPERTY", Boolean.FALSE.toString());
@@ -117,14 +118,15 @@ class LdesClientProcessorTest {
 		assertEquals(1, dataFlowfiles.size());
 	}
 
-	@Test
-	void shouldBeAbleToEndGracefully() {
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void shouldBeAbleToEndGracefully(Map<String, String> statePersistenceProps) {
 		// This is an immutable fragment with 1 member and no relations. We reach the
 		// end of the ldes after 1 run.
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/end-of-ldes?generatedAtTime=2022-05-03T00:00:00.000Z");
 		testRunner.setProperty("AUTHORIZATION_STRATEGY", "NO_AUTH");
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("STREAM_TIMESTAMP_PATH_PROPERTY", Boolean.FALSE.toString());
 		testRunner.setProperty("STREAM_VERSION_OF_PROPERTY", Boolean.FALSE.toString());
@@ -153,10 +155,11 @@ class LdesClientProcessorTest {
 		assertEquals(6, dataFlowfiles.size());
 	}
 
-	@Test
-	void shouldSupportRetry() {
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void shouldSupportRetry(Map<String, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/retry");
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("RETRIES_ENABLED", Boolean.TRUE.toString());
 		testRunner.setProperty("MAX_RETRIES", "3");
@@ -171,11 +174,12 @@ class LdesClientProcessorTest {
 		assertEquals(6, dataFlowfiles.size());
 	}
 
-	@Test
-	void shouldSupportVersionMaterialisation() {
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void shouldSupportVersionMaterialisation(Map<String, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.FALSE.toString());
@@ -236,11 +240,12 @@ class LdesClientProcessorTest {
 				.hasMessageStartingWith("Processor has 1 validation failures:");
 	}
 
-	@Test
-	void shouldSupportOnlyOnceFilter() {
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void shouldSupportOnlyOnceFilter(Map<String, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
@@ -261,10 +266,12 @@ class LdesClientProcessorTest {
 		assertEquals(1, result.size());
 	}
 
-	@Test
-	void shouldSupportVersionMaterialisationWithLatestStateFilter() {
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void shouldSupportVersionMaterialisationWithLatestStateFilter(Map<String, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
+		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
@@ -287,11 +294,12 @@ class LdesClientProcessorTest {
 		assertEquals(0, result.size());
 	}
 
-	@Test
-	void shouldNotSupportOnlyOnceFilterWhenVersionMaterialiserIsActive() {
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void shouldNotSupportOnlyOnceFilterWhenVersionMaterialiserIsActive(Map<String, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
