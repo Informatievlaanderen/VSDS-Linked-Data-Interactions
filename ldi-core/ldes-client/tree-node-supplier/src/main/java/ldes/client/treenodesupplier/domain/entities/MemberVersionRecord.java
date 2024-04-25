@@ -24,11 +24,11 @@ public class MemberVersionRecord {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MemberVersionRecord that)) return false;
-        return Objects.equals(versionOf, that.versionOf) && Objects.equals(timestamp, that.timestamp);
+        return Objects.equals(versionOf, that.versionOf);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(versionOf, timestamp);
+        return Objects.hash(versionOf);
     }
 }

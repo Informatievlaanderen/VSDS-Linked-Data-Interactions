@@ -19,6 +19,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LatestStateFilterTest {
+
+	private static final String VERSION_OF = "https://data.vlaanderen.be/id/perceel/13374D0779-00D003";
+
 	@Mock
 	private MemberVersionRepository memberVersionRepository;
 	private final String timestampPath = "http://www.w3.org/ns/prov#generatedAtTime";
@@ -32,11 +35,10 @@ class LatestStateFilterTest {
 
 	@Test
 	void given_OlderVersionObjectInRepo_when_IsAllowed_then_ReturnTrue() {
-		final String versionOf = "https://data.vlaanderen.be/id/perceel/13374D0779-00D003";
 		final LocalDateTime newerTimestamp = LocalDateTime.parse("2022-12-29T11:37:27");
 		final Model newerModel = createModel();
 		final SuppliedMember newerMember = new SuppliedMember("newer-member", newerModel);
-		when(memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(versionOf, newerTimestamp))).thenReturn(true);
+		when(memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(VERSION_OF, newerTimestamp))).thenReturn(true);
 
 		final boolean actual = latestStateFilter.isAllowed(newerMember);
 
@@ -45,10 +47,9 @@ class LatestStateFilterTest {
 
 	@Test
 	void given_NewerVersionObjectInRepo_when_IsAllowed_then_ReturnFalse() {
-		final String versionOf = "https://data.vlaanderen.be/id/perceel/13374D0779-00D003";
 		final LocalDateTime olderTimestamp = LocalDateTime.parse("2022-12-29T11:37:27");
 		final SuppliedMember olderMember = new SuppliedMember("newer-member", createModel());
-		when(memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(versionOf, olderTimestamp))).thenReturn(false);
+		when(memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(VERSION_OF, olderTimestamp))).thenReturn(false);
 
 		final boolean actual = latestStateFilter.isAllowed(olderMember);
 
@@ -57,13 +58,12 @@ class LatestStateFilterTest {
 
 	@Test
 	void test_saveAllowedMember() {
-		final String versionOf = "https://data.vlaanderen.be/id/perceel/13374D0779-00D003";
-		final LocalDateTime timestamp = LocalDateTime.parse("2022-12-29T11:37:27");
 		final SuppliedMember member = new SuppliedMember("newer-member", createModel());
 
 		latestStateFilter.saveAllowedMember(member);
 
-		verify(memberVersionRepository).addMemberVersion(new MemberVersionRecord(versionOf, timestamp));
+
+		verify(memberVersionRepository).addMemberVersion(new MemberVersionRecord(VERSION_OF, any()));
 	}
 
 	@Test

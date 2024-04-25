@@ -105,7 +105,7 @@ public final class LdesProcessorProperties {
 			.displayName("Property path determining the timestamp used to order the members within a fragment")
 			.required(false)
 			.addValidator(Validator.VALID)
-			.defaultValue("")
+			.defaultValue("http://www.w3.org/ns/prov#generatedAtTime")
 			.build();
 
 	public static final PropertyDescriptor STREAM_TIMESTAMP_PATH_PROPERTY = new PropertyDescriptor.Builder()
@@ -236,9 +236,18 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.addValidator(StandardValidators.URI_VALIDATOR)
 			.build();
+
 	public static final PropertyDescriptor USE_EXACTLY_ONCE_FILTER = new PropertyDescriptor.Builder()
 			.name("USE_EXACTLY_ONCE_FILTER")
 			.displayName("Use filter so members are outputted exactly once")
+			.required(false)
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.defaultValue(TRUE.toString())
+			.build();
+
+	public static final PropertyDescriptor USE_LATEST_STATE_FILTER = new PropertyDescriptor.Builder()
+			.name("USE_LATEST_STATE_FILTER")
+			.displayName("Use filter to only process the latest state and so all older versions are ignored")
 			.required(false)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(TRUE.toString())
@@ -351,8 +360,13 @@ public final class LdesProcessorProperties {
 	public static boolean useVersionMaterialisation(final ProcessContext context) {
 		return TRUE.equals(context.getProperty(USE_VERSION_MATERIALISATION).asBoolean());
 	}
+
 	public static boolean useExactlyOnceFilter(final ProcessContext context) {
 		return TRUE.equals(context.getProperty(USE_EXACTLY_ONCE_FILTER).asBoolean()) && !useVersionMaterialisation(context);
+	}
+
+	public static boolean useLatestStateFilter(final ProcessContext context) {
+		return TRUE.equals(context.getProperty(USE_LATEST_STATE_FILTER).asBoolean());
 	}
 
 	public static boolean restrictToMembers(final ProcessContext context) {

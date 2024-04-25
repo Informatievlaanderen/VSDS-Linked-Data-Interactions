@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table()
-@NamedQuery(name = "MemberVersion.findMemberVersionAfterTimestamp", query = "SELECT m FROM MemberVersionRecordEntity m WHERE versionOf = :versionOf AND timestamp > :timestamp")
+@NamedQuery(name = "MemberVersion.findMemberVersionAfterTimestamp", query = "SELECT m FROM MemberVersionRecordEntity m WHERE versionOf = :versionOf AND timestamp >= :timestamp")
 public class MemberVersionRecordEntity {
     @Id
     private String versionOf;

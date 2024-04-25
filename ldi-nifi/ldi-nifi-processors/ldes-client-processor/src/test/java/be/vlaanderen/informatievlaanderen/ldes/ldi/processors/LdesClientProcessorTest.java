@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -18,9 +20,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -93,7 +92,7 @@ class LdesClientProcessorTest {
 
 		assertEquals(1, dataFlowfiles.size());
 		List<RDFNode> result = RDFParser
-				.fromString(dataFlowfiles.get(0).getContent())
+				.fromString(dataFlowfiles.getFirst().getContent())
 				.lang(Lang.NQUADS)
 				.toModel()
 				.listObjectsOfProperty(createProperty(VERSION_OF))
@@ -189,7 +188,7 @@ class LdesClientProcessorTest {
 		assertEquals(1, dataFlowfiles.size());
 
 		List<RDFNode> result = RDFParser
-				.fromString(dataFlowfiles.get(0).getContent())
+				.fromString(dataFlowfiles.getFirst().getContent())
 				.lang(Lang.NQUADS)
 				.toModel()
 				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))
@@ -208,7 +207,7 @@ class LdesClientProcessorTest {
 		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
 
 		assertEquals(1, dataFlowfiles.size());
-		MockFlowFile flowFile = dataFlowfiles.get(0);
+		MockFlowFile flowFile = dataFlowfiles.getFirst();
 		assertEquals("localhost:10101/exampleData/shape",
 				flowFile.getAttribute("ldes.shacleshapes"));
 		assertEquals("http://www.w3.org/ns/prov#generatedAtTime",
@@ -252,13 +251,40 @@ class LdesClientProcessorTest {
 		assertEquals(2, dataFlowfiles.size());
 
 		List<RDFNode> result = RDFParser
-				.fromString(dataFlowfiles.get(0).getContent())
+				.fromString(dataFlowfiles.getFirst().getContent())
 				.lang(Lang.NQUADS)
 				.toModel()
 				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))
 				.toList();
 		assertEquals(1, result.size());
 	}
+
+	@Test
+	void shouldSupportVersionMaterialisationWithLatestStateFilter() {
+		testRunner.setProperty("DATA_SOURCE_URLS",
+				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
+		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
+		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.TRUE.toString());
+		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
+		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
+
+		testRunner.run(2);
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(1, dataFlowfiles.size());
+
+		List<RDFNode> result = RDFParser
+				.fromString(dataFlowfiles.getFirst().getContent())
+				.lang(Lang.NQUADS)
+				.toModel()
+				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))
+				.toList();
+		assertEquals(0, result.size());
+	}
+
 	@Test
 	void shouldNotSupportOnlyOnceFilterWhenVersionMaterialiserIsActive() {
 		testRunner.setProperty("DATA_SOURCE_URLS",
@@ -277,7 +303,7 @@ class LdesClientProcessorTest {
 		assertEquals(1, dataFlowfiles.size());
 
 		List<RDFNode> result = RDFParser
-				.fromString(dataFlowfiles.get(0).getContent())
+				.fromString(dataFlowfiles.getFirst().getContent())
 				.lang(Lang.NQUADS)
 				.toModel()
 				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))

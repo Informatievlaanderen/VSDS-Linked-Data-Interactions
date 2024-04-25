@@ -1,27 +1,28 @@
 package ldes.client.treenodesupplier.filters;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import ldes.client.treenodesupplier.domain.entities.MemberVersionRecord;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
-import org.apache.jena.rdf.model.Model;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class LatestStateFilter implements MemberFilter {
-	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
 
 	private final MemberVersionRepository memberVersionRepository;
 	private final boolean keepState;
-	private final PropertyPathExtractor timestampExtractor;
+	private final TimestampExtractor timestampExtractor;
 	private final PropertyPathExtractor versionOfExtractor;
 
 
 	public LatestStateFilter(MemberVersionRepository memberVersionRepository, boolean keepState, String timestampPath, String versionOfPath) {
 		this.memberVersionRepository = memberVersionRepository;
 		this.keepState = keepState;
-		this.timestampExtractor = PropertyPathExtractor.from(timestampPath);
+		this.timestampExtractor = new TimestampFromPathExtractor(createProperty(timestampPath));
 		this.versionOfExtractor = PropertyPathExtractor.from(versionOfPath);
 	}
 
@@ -31,7 +32,7 @@ public class LatestStateFilter implements MemberFilter {
 				.findFirst()
 				.map(node -> node.asResource().getURI())
 				.orElseThrow(() -> new IllegalStateException("Could not find versionOf in supplied member"));
-		final LocalDateTime timestamp = extractTimestamp(member.getModel());
+		final LocalDateTime timestamp = timestampExtractor.extractTimestamp(member.getModel());
 		return memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(versionOf, timestamp));
 	}
 
@@ -41,7 +42,7 @@ public class LatestStateFilter implements MemberFilter {
 				.findFirst()
 				.map(node -> node.asResource().getURI())
 				.orElseThrow(() -> new IllegalStateException("Could not find versionOf in supplied member"));
-		final LocalDateTime timestamp = extractTimestamp(member.getModel());
+		final LocalDateTime timestamp = timestampExtractor.extractTimestamp(member.getModel());
 		memberVersionRepository.addMemberVersion(new MemberVersionRecord(versionOf, timestamp));
 	}
 
@@ -50,13 +51,5 @@ public class LatestStateFilter implements MemberFilter {
 		if(!keepState) {
 			memberVersionRepository.destroyState();
 		}
-	}
-
-	private LocalDateTime extractTimestamp(Model model) {
-		return timestampExtractor.getProperties(model).stream()
-				.findFirst()
-				.map(node -> node.asLiteral().getString())
-				.map(timestamp -> LocalDateTime.from(formatter.parse(timestamp)))
-				.orElseThrow(() -> new IllegalStateException("Could not find timestamp in supplied member"));
 	}
 }

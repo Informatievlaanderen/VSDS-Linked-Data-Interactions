@@ -18,8 +18,8 @@ public class InMemoryMemberVersionRepository implements MemberVersionRepository 
     @Override
     public boolean isVersionAfterTimestamp(MemberVersionRecord memberVersion) {
         return Optional.ofNullable(memberVersionRecords.get(memberVersion.getVersionOf()))
-                .filter(presentMember -> presentMember.getTimestamp().isAfter(memberVersion.getTimestamp()))
-                .isEmpty();
+                .filter(presentMember -> !presentMember.getTimestamp().isAfter(memberVersion.getTimestamp()))
+                .isPresent();
     }
 
     @Override

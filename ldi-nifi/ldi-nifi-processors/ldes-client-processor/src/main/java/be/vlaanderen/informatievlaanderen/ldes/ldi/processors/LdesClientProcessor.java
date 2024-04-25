@@ -13,12 +13,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampE
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import io.github.resilience4j.retry.Retry;
-import ldes.client.treenodesupplier.*;
+import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
+import ldes.client.treenodesupplier.filters.LatestStateFilter;
 import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
@@ -78,7 +79,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 				API_KEY_HEADER_PROPERTY, OAUTH_SCOPE,
 				API_KEY_PROPERTY, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_TOKEN_ENDPOINT, AUTHORIZATION_STRATEGY,
 				RETRIES_ENABLED, MAX_RETRIES, STATUSES_TO_RETRY, POSTGRES_URL, POSTGRES_USERNAME, POSTGRES_PASSWORD,
-				USE_VERSION_MATERIALISATION, RESTRICT_TO_MEMBERS, VERSION_OF_PROPERTY, USE_EXACTLY_ONCE_FILTER);
+				USE_VERSION_MATERIALISATION, RESTRICT_TO_MEMBERS, VERSION_OF_PROPERTY, USE_EXACTLY_ONCE_FILTER, USE_LATEST_STATE_FILTER);
 	}
 
 	@OnScheduled
@@ -96,8 +97,12 @@ public class LdesClientProcessor extends AbstractProcessor {
 		if (useVersionMaterialisation(context)) {
             final var versionOfProperty = createProperty(getVersionOfProperty(context));
             final var versionMaterialiser = new VersionMaterialiser(versionOfProperty, restrictToMembers(context));
-            memberSupplier = new VersionMaterialisedMemberSupplier(
-                    new MemberSupplierImpl(treeNodeProcessor, keepState),
+			MemberSupplierImpl baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
+			MemberSupplier decoratedMemberSupplier = useLatestStateFilter(context)
+					? new FilteredMemberSupplier(baseMemberSupplier, getLatestStateFilter(context, statePersistence))
+					: baseMemberSupplier;
+			memberSupplier = new VersionMaterialisedMemberSupplier(
+					decoratedMemberSupplier,
                     versionMaterialiser
 			);
 		} else if (useExactlyOnceFilter(context)) {
@@ -114,6 +119,10 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 		LOGGER.info("LDES Client processor {} configured to follow (sub)streams {} (expected LDES source format: {})",
 				context.getName(), dataSourceUrls, dataSourceFormat);
+	}
+
+	private LatestStateFilter getLatestStateFilter(ProcessContext context, StatePersistence statePersistence) {
+		return new LatestStateFilter(statePersistence.getMemberVersionRepository(), keepState, getTimestampPath(context), getVersionOfProperty(context));
 	}
 
 	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {
