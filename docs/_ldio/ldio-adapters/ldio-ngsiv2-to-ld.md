@@ -23,11 +23,11 @@ The algorithm applies several deviations from the standard formats. These deviat
 
 ## Config
 
-| Property        | Description                                      | Required | Default | Example                   | Supported values    |
-|:----------------|:-------------------------------------------------|:---------|:--------|:--------------------------|:--------------------|
-| core-context    | URI of a core json-ld context.                   | Yes      | N/A     | http://example.com/my-api | HTTP and HTTPS urls |
-| ld-context      | URI of a custom json-ld context.                 | No       | N/A     | http://example.com/my-api | HTTP and HTTPS urls |
-| data-identifier | Identifier that points to data in provided json. | Yes      | N/A     | data                      | String              |
+| Property          | Description                                      | Required | Default | Example                   | Supported values    |
+|:------------------|:-------------------------------------------------|:---------|:--------|:--------------------------|:--------------------|
+| _core-context_    | URI of a core json-ld context.                   | Yes      | N/A     | http://example.com/my-api | HTTP and HTTPS urls |
+| _ld-context_      | URI of a custom json-ld context.                 | No       | N/A     | http://example.com/my-api | HTTP and HTTPS urls |
+| _data-identifier_ | Identifier that points to data in provided json. | Yes      | N/A     | data                      | String              |
 
 [NGSI V2]: https://fiware.github.io/specifications/ngsiv2/stable/
 

@@ -12,9 +12,9 @@ The LDIO HTTP Out is a basic Http Client that will send the given Linked Data mo
 
 ## Config
 
-| Property   | Description           | Required | Default      | Example                     | Supported values                                      |
-|:-----------|:----------------------|:---------|:-------------|:----------------------------|:------------------------------------------------------|
-| endpoint   | Target url.           | Yes      | N/A          | http://example.com/endpoint | HTTP and HTTPS urls                                   |
+| Property   | Description | Required | Default | Example                     | Supported values    |
+|:-----------|:------------|:---------|:--------|:----------------------------|:--------------------|
+| _endpoint_ | Target url. | Yes      | N/A     | http://example.com/endpoint | HTTP and HTTPS urls |
 
 {% include ldio-core/rdf-writer.md %}
 
