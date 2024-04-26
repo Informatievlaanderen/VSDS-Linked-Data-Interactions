@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.URLS;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 public class LdioLdesClientITSteps extends LdesClientInIT {
@@ -65,11 +64,9 @@ public class LdioLdesClientITSteps extends LdesClientInIT {
 
 	@Then("All {int} members from the stream are passed to the pipeline")
 	public void allMembersFromTheStreamArePassedToThePipeline(int memberCount) {
-		await().atMost(Duration.ofMinutes(2)).untilAsserted(() -> {
-			synchronized (members) {
-				System.out.println(members.size());
-				assertThat(members).hasSize(memberCount);
-			}
+		await().atMost(Duration.ofMinutes(2)).until(() -> {
+			System.out.println(members.size());
+			return members.size() == memberCount;
 		});
 	}
 
