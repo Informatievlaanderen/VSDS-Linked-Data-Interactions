@@ -6,9 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampF
 import ldes.client.treenodesupplier.domain.entities.MemberVersionRecord;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResourceF;
 import org.apache.jena.rdf.model.ResourceFactory;
 
 import java.time.LocalDateTime;
@@ -35,7 +33,9 @@ public class LatestStateFilter implements MemberFilter {
 	@Override
 	public boolean isAllowed(SuppliedMember member) {
 		final String versionOf = extractVersionOf(member);
-		final LocalDateTime timestamp = timestampExtractor.extractTimestamp(member.getModel());
+		final LocalDateTime timestamp = timestampExtractor.extractTimestampWithSubject(
+				ResourceFactory.createProperty(member.getId()),
+				member.getModel());
 		return memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(versionOf, timestamp));
 	}
 
@@ -45,7 +45,9 @@ public class LatestStateFilter implements MemberFilter {
 				.findFirst()
 				.map(node -> node.asResource().getURI())
 				.orElseThrow(() -> new IllegalStateException("Could not find versionOf in supplied member"));
-		final LocalDateTime timestamp = timestampExtractor.extractTimestamp(member.getModel());
+		final LocalDateTime timestamp = timestampExtractor.extractTimestampWithSubject(
+				ResourceFactory.createProperty(member.getId()),
+				member.getModel());
 		memberVersionRepository.addMemberVersion(new MemberVersionRecord(versionOf, timestamp));
 	}
 

@@ -18,7 +18,7 @@
           "@context": [
             "https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld"
           ],
-          "@id": "http://localhost:10101/200-second-tree-node",
+          "@id": "http://localhost:10101/200-tree-node-without-relations",
           "@type": "Node",
           "viewOf": "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances",
           "collectionInfo": {
@@ -134,7 +134,7 @@
           "@context": [
             "https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld"
           ],
-          "@id": "http://localhost:10101/200-second-tree-node",
+          "@id": "http://localhost:10101/200-tree-node-without-relations",
           "@type": "Node",
           "viewOf": "https://private-api.gipod.beta-vlaanderen.be/api/v1/ldes/mobility-hindrances",
           "collectionInfo": {

@@ -114,7 +114,7 @@ Feature: MemberSupplier
   Scenario Outline: Obtaining the members with the latest state filter
     Given A starting url "http://localhost:10101/200-tree-node-without-relations"
     And a StatePersistenceStrategy <statePersistenceStrategy>
-    And The TreeNode is not processed: "http://localhost:10101/200-first-tree-node-to-duplicate"
+    And The TreeNode is not processed: "http://localhost:10101/200-tree-node-without-relations"
     And I set a timestamp path "http://www.w3.org/ns/prov#generatedAtTime"
     When I create a Processor
     When I create a MemberSupplier with LatestStateFilter

@@ -19,19 +19,15 @@ import ldes.client.treenodesupplier.filters.MemberFilter;
 import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
-import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.junit.After;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
