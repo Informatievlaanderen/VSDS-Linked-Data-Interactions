@@ -1,0 +1,36 @@
+@prefix tree:   <https://w3id.org/tree#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ldes:   <https://w3id.org/ldes#> .
+@prefix schema: <http://schema.org/> .
+@prefix terms:  <http://purl.org/dc/terms/> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+
+<http://localhost:10101/items/grouped?group=3>
+    rdf:type       tree:Node ;
+    terms:isPartOf <http://localhost:10101/items> .
+
+
+<http://localhost:10101/items>
+    rdf:type    ldes:EventStream ;
+    tree:member <http://localhost:10101/items/1>, <http://localhost:10101/items/2>, <http://localhost:10101/items/3>,
+                <http://localhost:10101/items/4> .
+
+<http://localhost:10101/items/1>
+    a                    schema:Person ;
+    schema:name          "Jane Deer" ;
+    prov:generatedAtTime "2024-02-07T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<http://localhost:10101/items/2>
+    a                    schema:Person ;
+    schema:name          "Jack Deer" ;
+    prov:generatedAtTime "2024-02-07T00:00:00.001Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<http://localhost:10101/items/3>
+    a                    schema:Person ;
+    schema:name          "Joe Deer" ;
+    prov:generatedAtTime "2024-02-07T00:00:00.002Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+
+<http://localhost:10101/items/4>
+    a                    schema:Person ;
+    schema:name          "James Deer" ;
+    prov:generatedAtTime "2024-02-07T00:00:00.003Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
