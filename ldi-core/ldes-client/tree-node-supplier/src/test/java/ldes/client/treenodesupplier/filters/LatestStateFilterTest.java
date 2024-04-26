@@ -26,6 +26,7 @@ class LatestStateFilterTest {
 	private MemberVersionRepository memberVersionRepository;
 	private final String timestampPath = "http://www.w3.org/ns/prov#generatedAtTime";
 	private final String versionOfPath = "http://purl.org/dc/terms/isVersionOf";
+	private final String memberId = "https://data.vlaanderen.be/id/perceel/13374D0779-00D003/2022-11-29T11:37:27+01:00";
 	private LatestStateFilter latestStateFilter;
 
 	@BeforeEach
@@ -37,7 +38,7 @@ class LatestStateFilterTest {
 	void given_OlderVersionObjectInRepo_when_IsAllowed_then_ReturnTrue() {
 		final LocalDateTime newerTimestamp = LocalDateTime.parse("2022-12-29T11:37:27");
 		final Model newerModel = createModel();
-		final SuppliedMember newerMember = new SuppliedMember("newer-member", newerModel);
+		final SuppliedMember newerMember = new SuppliedMember(memberId, newerModel);
 		when(memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(VERSION_OF, newerTimestamp))).thenReturn(true);
 
 		final boolean actual = latestStateFilter.isAllowed(newerMember);
@@ -48,7 +49,7 @@ class LatestStateFilterTest {
 	@Test
 	void given_NewerVersionObjectInRepo_when_IsAllowed_then_ReturnFalse() {
 		final LocalDateTime olderTimestamp = LocalDateTime.parse("2022-12-29T11:37:27");
-		final SuppliedMember olderMember = new SuppliedMember("newer-member", createModel());
+		final SuppliedMember olderMember = new SuppliedMember(memberId, createModel());
 		when(memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(VERSION_OF, olderTimestamp))).thenReturn(false);
 
 		final boolean actual = latestStateFilter.isAllowed(olderMember);
@@ -58,7 +59,7 @@ class LatestStateFilterTest {
 
 	@Test
 	void test_saveAllowedMember() {
-		final SuppliedMember member = new SuppliedMember("newer-member", createModel());
+		final SuppliedMember member = new SuppliedMember(memberId, createModel());
 
 		latestStateFilter.saveAllowedMember(member);
 
