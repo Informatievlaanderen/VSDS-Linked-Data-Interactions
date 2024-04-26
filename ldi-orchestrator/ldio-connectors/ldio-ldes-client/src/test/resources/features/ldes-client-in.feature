@@ -15,3 +15,9 @@ Feature: LdesClientIntegrationTest
       | /items/grouped?group=2 |
     When I start an ldes-ldio-in component
     Then All 8 members from the stream are passed to the pipeline
+
+  # TODO: add Latest state test
+
+  # TODO: add Without Latest state filter
+
+  # TODO: add exactly once

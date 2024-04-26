@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
@@ -106,11 +107,11 @@ public class MemberSupplierFactory {
                 });
     }
 
-    @SuppressWarnings("java:S3655")
     private boolean useExactlyOnceFilter() {
-        if (properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER).isPresent()) {
+        Optional<Boolean> exactlyOneFilterProperty = properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER);
+        if (exactlyOneFilterProperty.isPresent()) {
             // use filter is explicitly set
-            boolean useFilter = properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER).get();
+            boolean useFilter = exactlyOneFilterProperty.get();
             if (useVersionMaterialisation() && useFilter) {
                 throw new InvalidConfigException("The exactly once filter can not be enabled with version materialisation.");
             } else {

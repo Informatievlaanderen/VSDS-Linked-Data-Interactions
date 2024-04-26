@@ -14,9 +14,12 @@ import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFacto
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
+import ldes.client.treenodesupplier.filters.LatestStateFilter;
+import ldes.client.treenodesupplier.filters.MemberFilter;
 import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
+import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MemberSupplierSteps {
@@ -106,7 +110,7 @@ public class MemberSupplierSteps {
 
 	@Then("Member {string} is processed")
 	public void memberIsProcessed(String memberId) {
-		assertTrue(toString(suppliedMember.getModel(), Lang.JSONLD).contains(memberId));
+		assertThat(suppliedMember.getId()).isEqualTo(memberId);
 	}
 
 	@And("a StatePersistenceStrategy MEMORY")
@@ -164,11 +168,6 @@ public class MemberSupplierSteps {
 		memberSupplier.destroyState();
 	}
 
-	private String toString(final Model model, final Lang lang) {
-		StringWriter stringWriter = new StringWriter();
-		RDFDataMgr.write(stringWriter, model, lang);
-		return stringWriter.toString();
-	}
 
 	@When("I create a MemberSupplier with state")
 	public void iCreateAMemberSupplierWithState() {
@@ -182,7 +181,7 @@ public class MemberSupplierSteps {
 		memberSupplier.init();
 	}
 
-	@When("I create a MemberSupplier with filter")
+	@When("I create a MemberSupplier with ExactlyOnceFilter")
 	public void iCreateAMemberSupplierWithFilter() {
 		final boolean keepState = false;
 		memberSupplier = new FilteredMemberSupplier(new MemberSupplierImpl(treeNodeProcessor, keepState),
@@ -236,5 +235,14 @@ public class MemberSupplierSteps {
 	public void membersuppliersAreDestroyed() {
 		memberSuppliers[0].destroyState();
 		memberSuppliers[1].destroyState();
+	}
+
+	@When("I create a MemberSupplier with LatestStateFilter")
+	public void iCreateAMemberSupplierWithLatestStateFilter() {
+		final boolean keepState = false;
+		final MemberSupplierImpl baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
+		final MemberFilter latestStateFilter = new LatestStateFilter(memberVersionRepository, keepState, timestampPath, "http://purl.org/dc/terms/isVersionOf");
+		memberSupplier = new FilteredMemberSupplier(baseMemberSupplier, latestStateFilter);
+		memberSupplier.init();
 	}
 }
