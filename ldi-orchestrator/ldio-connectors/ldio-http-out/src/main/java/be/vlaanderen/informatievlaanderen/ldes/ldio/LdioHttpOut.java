@@ -41,13 +41,15 @@ public class LdioHttpOut implements LdiOutput {
 			final String contentType = rdfWriterProperties.getLang().getHeaderString();
 			final RequestHeader requestHeader = new RequestHeader(HttpHeaders.CONTENT_TYPE, contentType);
 			final PostRequest request = new PostRequest(targetURL, new RequestHeaders(List.of(requestHeader)), output.toByteArray());
-			Response response = requestExecutor.execute(request);
-			if (response.isSuccess()) {
-				log.debug("{} {} {}", request.getMethod(), request.getUrl(), response.getHttpStatus());
-			} else {
-				log.atError().log("Failed to post model. The request url was {}. " +
-						"The http response obtained from the server has code {} and body \"{}\".",
-						response.getRequestedUrl(), response.getHttpStatus(), response.getBodyAsString().orElse(null));
+			synchronized (requestExecutor) {
+				Response response = requestExecutor.execute(request);
+				if (response.isSuccess()) {
+					log.debug("{} {} {}", request.getMethod(), request.getUrl(), response.getHttpStatus());
+				} else {
+					log.atError().log("Failed to post model. The request url was {}. " +
+									  "The http response obtained from the server has code {} and body \"{}\".",
+							response.getRequestedUrl(), response.getHttpStatus(), response.getBodyAsString().orElse(null));
+				}
 			}
 		}
 	}

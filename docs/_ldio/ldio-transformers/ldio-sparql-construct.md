@@ -60,5 +60,5 @@ prefix geoc: <https://opengis.net/def/function/geosparql/custom#>
 
 | Property | Description                                              | Required | Default | Example  | Supported values |
 |:---------|:---------------------------------------------------------|:---------|:--------|:---------|:-----------------|
-| query    | Path to content of SPARQL Query/content of SPARQL query. | Yes      | N/A     | query.rq | Path/String      |
-| infer    | Include original model in end result.                    | No       | false   | false    | true or false    |
+| _query_  | Path to content of SPARQL Query/content of SPARQL query. | Yes      | N/A     | query.rq | Path/String      |
+| _infer_  | Include original model in end result.                    | No       | false   | false    | true or false    |

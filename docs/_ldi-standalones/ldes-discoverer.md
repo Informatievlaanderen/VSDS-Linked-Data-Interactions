@@ -16,35 +16,35 @@ follow, the structure can be discovered first.
 
 ### Base configuration
 
-| Property      | Description                                                | Required | Default     | Example                   | Supported values                                                                                                        |
-|:--------------|:-----------------------------------------------------------|:---------|:------------|:--------------------------|:------------------------------------------------------------------------------------------------------------------------|
-| url           | Url where from the discoverer needs to start               | true     | N/A         | http://example.com/my-api | HTTP and HTTPS url                                                                                                      |
-| source-format | The 'Content-Type' that should be requested to the server. | false    | text/turtle | application/n-quads       | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
+| Property        | Description                                                | Required | Default     | Example                   | Supported values                                                                                                        |
+|:----------------|:-----------------------------------------------------------|:---------|:------------|:--------------------------|:------------------------------------------------------------------------------------------------------------------------|
+| _url_           | Url where from the discoverer needs to start               | true     | N/A         | http://example.com/my-api | HTTP and HTTPS url                                                                                                      |
+| _source_-format | The 'Content-Type' that should be requested to the server. | false    | text/turtle | application/n-quads       | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
 
 ### Optional config
 
 #### Authentication
 
-| Property       | Description                                                            | Default   | Example                     | Supported values                              |
-|:---------------|:-----------------------------------------------------------------------|:----------|:----------------------------|:----------------------------------------------|
-| auth-type      | The type of authentication required by the LDES server                 | NO_AUTH   | OAUTH2_CLIENT_CREDENTIALS   | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS |
-| api-key        | The api key when using auth-type 'API_KEY'                             | N/A       | myKey                       | String                                        |
-| api-key-header | The header for the api key when using auth-type 'API_KEY'              | X-API-KEY | X-API-KEY                   | String                                        |
-| client-id      | The client identifier when using auth-type 'OAUTH2_CLIENT_CREDENTIALS' | N/A       | myId                        | String                                        |
-| client-secret  | The client secret when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'     | N/A       | mySecret                    | String                                        |
-| token-endpoint | The token endpoint when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'    | N/A       | http://localhost:8000/token | HTTP and HTTPS urls                           |
-| scope          | The Oauth2 scope when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'      | N/A       | http://localhost:8000/token | HTTP and HTTPS urls                           |
+| Property         | Description                                                            | Default   | Example                     | Supported values                              |
+|:-----------------|:-----------------------------------------------------------------------|:----------|:----------------------------|:----------------------------------------------|
+| _auth-type_      | The type of authentication required by the LDES server                 | NO_AUTH   | OAUTH2_CLIENT_CREDENTIALS   | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS |
+| _api-key_        | The api key when using auth-type 'API_KEY'                             | N/A       | myKey                       | String                                        |
+| _api-key-header_ | The header for the api key when using auth-type 'API_KEY'              | X-API-KEY | X-API-KEY                   | String                                        |
+| _client-id_      | The client identifier when using auth-type 'OAUTH2_CLIENT_CREDENTIALS' | N/A       | myId                        | String                                        |
+| _client-secret_  | The client secret when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'     | N/A       | mySecret                    | String                                        |
+| _token-endpoint_ | The token endpoint when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'    | N/A       | http://localhost:8000/token | HTTP and HTTPS urls                           |
+| _scope_          | The Oauth2 scope when using auth-type 'OAUTH2_CLIENT_CREDENTIALS'      | N/A       | http://localhost:8000/token | HTTP and HTTPS urls                           |
 
 #### Further customization
 
-| Property          | Description                                                                                                         | Default | Example                | Supported values                 |
-|:------------------|:--------------------------------------------------------------------------------------------------------------------|:--------|:-----------------------|:---------------------------------|
-| disable-retry     | Boolean flag that disables retrying to send http requests when the server cannot be reached. (enabled when omitted) | N/A     | N/A                    | N/A                              |
-| retry-limit       | Max number of retries the http client should do (only on absence of disable-retry)                                  | 5       | 100                    | Integer                          |
-| retry-statuses    | Custom comma seperated list of http status codes that can trigger a retry in the http client.                       | N/A     | 410,451                | Comma seperated list of Integers |
-| rate-limit        | Limit of requests per period, which is defined below, that the http client should do                                | N/A     | 500                    | Integer                          |
-| rate-limit-period | Period in which the limit of requests, which is defined above, can be reached by the http client                    | PT1M    | PT1H                   | ISO 8601 Duration                |
-| header            | Parameter for each individual header that is required                                                               | N/A     | Connection: keep-alive | String                           |
+| Property            | Description                                                                                                         | Default | Example                | Supported values                 |
+|:--------------------|:--------------------------------------------------------------------------------------------------------------------|:--------|:-----------------------|:---------------------------------|
+| _disable-retry_     | Boolean flag that disables retrying to send http requests when the server cannot be reached. (enabled when omitted) | N/A     | N/A                    | N/A                              |
+| _retry-limit_       | Max number of retries the http client should do (only on absence of disable-retry)                                  | 5       | 100                    | Integer                          |
+| _retry-statuses_    | Custom comma seperated list of http status codes that can trigger a retry in the http client.                       | N/A     | 410,451                | Comma seperated list of Integers |
+| _rate-limit_        | Limit of requests per period, which is defined below, that the http client should do                                | N/A     | 500                    | Integer                          |
+| _rate-limit-period_ | Period in which the limit of requests, which is defined above, can be reached by the http client                    | PT1M    | PT1H                   | ISO 8601 Duration                |
+| _header_            | Parameter for each individual header that is required                                                               | N/A     | Connection: keep-alive | String                           |
 
 ## How to run
 
