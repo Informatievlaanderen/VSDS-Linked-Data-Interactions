@@ -8,8 +8,8 @@ public class LdioGeoJsonToWkt extends LdioTransformer {
 	public static final String NAME = "Ldio:GeoJsonToWktTransformer";
 	private final GeoJsonToWktTransformer transformer;
 
-	public LdioGeoJsonToWkt() {
-		this.transformer = new GeoJsonToWktTransformer();
+	public LdioGeoJsonToWkt(boolean transformToRdfWkt) {
+		this.transformer = new GeoJsonToWktTransformer(transformToRdfWkt);
 	}
 
 	@Override
