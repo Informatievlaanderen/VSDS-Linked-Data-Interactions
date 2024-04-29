@@ -18,7 +18,7 @@ public class LdioGeoJsonToWktAutoConfig {
 	}
 
     public static class LdioGeoJsonToWktConfigurator implements LdioTransformerConfigurator {
-        public static final String TRANSFORM_TO_RDF_WKT = "transform-to-rdf+wkt";
+        public static final String TRANSFORM_TO_RDF_WKT = "transform-to-rdf+wkt-enabled";
 
         @Override
         public LdioTransformer configure(ComponentProperties config) {

@@ -16,11 +16,11 @@ public enum GeoType {
 	// @formatter:on
 
 	final String geoJsonUri;
-	final String sfUri;
+	final String simpleFeaturesUri;
 
-	GeoType(String geoJsonUri, String sfUri) {
+	GeoType(String geoJsonUri, String simpleFeaturesUri) {
 		this.geoJsonUri = geoJsonUri;
-		this.sfUri = sfUri;
+		this.simpleFeaturesUri = simpleFeaturesUri;
 	}
 
 	public static Optional<GeoType> fromUri(String type) {
@@ -31,7 +31,7 @@ public enum GeoType {
 		}
 
 		return Arrays.stream(values())
-				.filter(value -> value.sfUri.equals(type))
+				.filter(value -> value.simpleFeaturesUri.equals(type))
 				.findFirst();
 	}
 
@@ -41,7 +41,7 @@ public enum GeoType {
 				.findFirst();
 	}
 
-	public String getSfUri() {
-		return sfUri;
+	public String getSimpleFeaturesUri() {
+		return simpleFeaturesUri;
 	}
 }

@@ -2,8 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.converter;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.WktResult;
-import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 
@@ -18,7 +16,7 @@ public class GeoJsonToRdfPlusWktConverter implements GeoJsonConverter {
     private final WktConverter wktConverter = new WktConverter();
 
     @Override
-    public List<Statement> createNewGeometryStatement(Statement oldStatement, Model geometryModel) {
+    public List<Statement> createNewGeometryStatements(Statement oldStatement, Model geometryModel) {
         final Model geometry = ModelFactory.createDefaultModel();
         final Property geometryPredicate = createProperty("http://www.w3.org/ns/locn#geometry");
         final Resource blankNode = createResource();
@@ -49,13 +47,9 @@ public class GeoJsonToRdfPlusWktConverter implements GeoJsonConverter {
                                       WktResult wktResult,
                                       Literal wktLiteral,
                                       Property geometryPredicate) {
-        geometry.add(blankNode, RDF.type, createProperty(wktResult.type().getSfUri()));
+        geometry.add(blankNode, RDF.type, createProperty(wktResult.type().getSimpleFeaturesUri()));
         geometry.add(blankNode, createProperty(GEOSPARQL_URI + "#asWKT"), wktLiteral);
         geometry.add(oldStatement.getSubject(), geometryPredicate, blankNode);
-    }
-
-    private RDFDatatype getWktLiteralDataType() {
-        return TypeMapper.getInstance().getSafeTypeByName(GEOSPARQL_URI + "#wktLiteral");
     }
 
 }

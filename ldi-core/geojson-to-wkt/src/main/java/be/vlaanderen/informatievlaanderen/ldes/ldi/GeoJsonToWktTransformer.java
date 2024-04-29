@@ -33,7 +33,7 @@ public class GeoJsonToWktTransformer implements LdiOneToOneTransformer {
 		geometryStatements.forEach(oldGeometryStatement -> {
 			final Model geometryModel = createModelWithChildStatements(model, oldGeometryStatement);
 			model.remove(createModelWithChildStatements(model, oldGeometryStatement));
-			model.add(geoJsonConverter.createNewGeometryStatement(oldGeometryStatement, geometryModel));
+			model.add(geoJsonConverter.createNewGeometryStatements(oldGeometryStatement, geometryModel));
 		});
 		return model;
 	}

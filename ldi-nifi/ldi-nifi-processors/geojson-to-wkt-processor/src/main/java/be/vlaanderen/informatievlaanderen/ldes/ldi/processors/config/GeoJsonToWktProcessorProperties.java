@@ -7,6 +7,7 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
 import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 public class GeoJsonToWktProcessorProperties {
 
@@ -34,7 +35,7 @@ public class GeoJsonToWktProcessorProperties {
 	}
 
 	public static boolean getTransformToRdfWkt(final ProcessContext context) {
-		return context.getProperty(TRANSFORM_TO_RDF_WKT).asBoolean();
+		return TRUE.equals(context.getProperty(TRANSFORM_TO_RDF_WKT).asBoolean());
 	}
 
 }

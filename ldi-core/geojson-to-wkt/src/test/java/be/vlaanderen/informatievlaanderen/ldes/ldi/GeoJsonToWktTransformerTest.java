@@ -22,8 +22,8 @@ class GeoJsonToWktTransformerTest {
 
 	private static Stream<Arguments> testData() {
 		return Stream.of(
-				Arguments.of("false", "result-all-types.json"),
-				Arguments.of("true", "result-all-types-with-blank-nodes.json")
+				Arguments.of(false, "result-all-types.json"),
+				Arguments.of(true, "result-all-types-with-blank-nodes.json")
 		);
 	}
 
