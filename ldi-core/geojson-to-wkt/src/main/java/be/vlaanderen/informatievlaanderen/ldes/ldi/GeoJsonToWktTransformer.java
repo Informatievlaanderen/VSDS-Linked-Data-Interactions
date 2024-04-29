@@ -1,8 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonConverter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonToRdfPlusWktConverter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.converter.GeoJsonToWktConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
-import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.rdf.model.*;
 
 import java.util.HashSet;
@@ -13,7 +14,13 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOJSON_G
 
 public class GeoJsonToWktTransformer implements LdiOneToOneTransformer {
 
-	private final WktConverter wktConverter = new WktConverter();
+	private final GeoJsonConverter geoJsonConverter;
+
+	public GeoJsonToWktTransformer(boolean transformToRdfWkt) {
+		this.geoJsonConverter = transformToRdfWkt ?
+				new GeoJsonToRdfPlusWktConverter() :
+				new GeoJsonToWktConverter();
+	}
 
 	/**
 	 * Replaces all geojson:geometry statements with locn:geometry statements
@@ -25,22 +32,10 @@ public class GeoJsonToWktTransformer implements LdiOneToOneTransformer {
 				.toList();
 		geometryStatements.forEach(oldGeometryStatement -> {
 			final Model geometryModel = createModelWithChildStatements(model, oldGeometryStatement);
-			final Statement newGeometryStatement = createNewGeometryStatement(oldGeometryStatement, geometryModel);
 			model.remove(createModelWithChildStatements(model, oldGeometryStatement));
-			model.add(newGeometryStatement);
+			model.add(geoJsonConverter.createNewGeometryStatements(oldGeometryStatement, geometryModel));
 		});
 		return model;
-	}
-
-	private Statement createNewGeometryStatement(Statement oldStatement, Model geometryModel) {
-		final String wktString = wktConverter.getWktFromModel(geometryModel);
-		final Literal wktLiteral = ResourceFactory.createTypedLiteral(wktString, getWktLiteralDataType());
-		final Property geometryPredicate = ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry");
-		return ResourceFactory.createStatement(oldStatement.getSubject(), geometryPredicate, wktLiteral);
-	}
-
-	private RDFDatatype getWktLiteralDataType() {
-		return TypeMapper.getInstance().getSafeTypeByName("http://www.opengis.net/ont/geosparql#wktLiteral");
 	}
 
 	private Model createModelWithChildStatements(Model model, Statement statement) {
