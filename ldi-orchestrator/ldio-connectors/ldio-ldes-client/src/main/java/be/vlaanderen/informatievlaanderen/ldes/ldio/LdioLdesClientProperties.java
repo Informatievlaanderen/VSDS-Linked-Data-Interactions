@@ -20,6 +20,6 @@ public class LdioLdesClientProperties {
 	// version materialisation properties
 	public static final String USE_VERSION_MATERIALISATION = "materialisation.enabled";
 	public static final String VERSION_OF_PROPERTY = "materialisation.version-of-property";
-	public static final String USE_LATEST_STATE_FILTER = "materialisation.enable-latest-state-filter";
+	public static final String USE_LATEST_STATE_FILTER = "materialisation.enable-latest-state";
 
 }
