@@ -3,10 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.GeoType;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 
@@ -33,8 +30,9 @@ public class WktConverter {
 		return new WktResult(geoType, writer.write(geom));
 	}
 
-	public static RDFDatatype getWktLiteralDataType() {
-		return TypeMapper.getInstance().getSafeTypeByName(GEOSPARQL_URI + "#wktLiteral");
+	public Literal getWktLiteral(WktResult wktResult) {
+		RDFDatatype wktDataType = TypeMapper.getInstance().getSafeTypeByName(GEOSPARQL_URI + "#wktLiteral");
+		return ResourceFactory.createTypedLiteral(wktResult.wkt(),wktDataType);
 	}
 
 	private Resource getGeometryId(Model model) {

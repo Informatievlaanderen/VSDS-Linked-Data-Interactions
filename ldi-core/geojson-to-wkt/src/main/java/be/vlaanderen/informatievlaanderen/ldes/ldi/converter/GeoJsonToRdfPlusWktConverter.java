@@ -7,7 +7,6 @@ import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.getWktLiteralDataType;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 
@@ -22,8 +21,8 @@ public class GeoJsonToRdfPlusWktConverter implements GeoJsonConverter {
         final Property geometryPredicate = createProperty("http://www.w3.org/ns/locn#geometry");
         final Resource blankNode = createResource();
 
-        final WktResult wktResult = retrieveWkt(geometryModel);
-        final Literal wktLiteral = createTypedLiteralBasedOnWktResult(wktResult);
+        final WktResult wktResult = wktConverter.getWktFromModel(geometryModel);
+        final Literal wktLiteral = wktConverter.getWktLiteral(wktResult);
 
         addStatementsToModel(oldStatement, geometry, blankNode, wktResult, wktLiteral, geometryPredicate);
 
@@ -32,14 +31,6 @@ public class GeoJsonToRdfPlusWktConverter implements GeoJsonConverter {
 
     private static List<Statement> getStatementsFromModel(Model geometry) {
         return geometry.listStatements().toList();
-    }
-
-    private WktResult retrieveWkt(Model geometryModel) {
-        return wktConverter.getWktFromModel(geometryModel);
-    }
-
-    private Literal createTypedLiteralBasedOnWktResult(WktResult wktResult) {
-        return ResourceFactory.createTypedLiteral(wktResult.wkt(), getWktLiteralDataType());
     }
 
     private void addStatementsToModel(Statement oldStatement,
