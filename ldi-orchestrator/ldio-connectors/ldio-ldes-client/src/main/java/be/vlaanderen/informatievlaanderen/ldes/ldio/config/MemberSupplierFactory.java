@@ -32,8 +32,8 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class MemberSupplierFactory {
 
-    private static final String DEFAULT_VERSION_OF_PATH = "http://purl.org/dc/terms/isVersionOf";
-    private static final String DEFAULT_TIMESTAMP_PATH = "http://www.w3.org/ns/prov#generatedAtTime";
+    private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
+    private static final String DEFAULT_TIMESTAMP_KEY = "http://www.w3.org/ns/prov#generatedAtTime";
 
     private final Logger log = LoggerFactory.getLogger(MemberSupplierFactory.class);
 
@@ -63,8 +63,8 @@ public class MemberSupplierFactory {
     }
 
     private LatestStateFilter getLatestStateFilter() {
-        String timestampPath = properties.getOptionalProperty(TIMESTAMP_PATH_PROP).orElse(DEFAULT_TIMESTAMP_PATH);
-        String versionOfPath = properties.getOptionalProperty(VERSION_OF_PROPERTY).orElse(DEFAULT_VERSION_OF_PATH);
+        String timestampPath = properties.getOptionalProperty(TIMESTAMP_PATH_PROP).orElse(DEFAULT_TIMESTAMP_KEY);
+        String versionOfPath = properties.getOptionalProperty(VERSION_OF_PROPERTY).orElse(DEFAULT_VERSION_OF_KEY);
         return new LatestStateFilter(getStatePersistence().getMemberVersionRepository(), getKeepState(), timestampPath, versionOfPath);
     }
 
@@ -138,7 +138,7 @@ public class MemberSupplierFactory {
         final Property versionOfProperty = properties
                 .getOptionalProperty(VERSION_OF_PROPERTY)
                 .map(ResourceFactory::createProperty)
-                .orElseGet(() -> createProperty(DEFAULT_VERSION_OF_PATH));
+                .orElseGet(() -> createProperty(DEFAULT_VERSION_OF_KEY));
         return new VersionMaterialiser(versionOfProperty, false);
     }
 

@@ -1,0 +1,76 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/duplicate-members?pageNumber=2"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "@context": [
+        "https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld"
+      ],
+      "@id": "http://localhost:10101/duplicate-members?pageNumber=2",
+      "@type": "Node",
+      "viewOf": "http://localhost:10101/duplicate-members",
+      "collectionInfo": {
+        "@id": "localhost:10101/duplicate-members",
+        "@type": "EventStream",
+        "shape": "localhost:10101/duplicate-members/shape",
+        "timestampPath": "prov:generatedAtTime",
+        "versionOfPath": "dct:isVersionOf"
+      },
+      "items": [
+        {
+          "@id": "http://localhost:10101/duplicate-members/10034919/29796",
+          "@type": "MobilityHindrance",
+          "gipodId": 10034919,
+          "identifier": [],
+          "isConsequenceOf": [],
+          "description": "Description of the mobility hindrance",
+          "owner": {},
+          "contactOrganisation": [],
+          "zone": [],
+          "period": [],
+          "timeSchedule": {},
+          "permittedBy": [],
+          "status": {},
+          "generatedAtTime": "2022-05-04T00:00:00.000Z",
+          "eventName": "MobilityHindranceWasRegistered",
+          "isVersionOf": "/api/v1/mobility-hindrances/10034919",
+          "memberOf": "http://localhost:10101/duplicate-members",
+          "lastModifiedOn": "2021-02-17T14:16:59.2053421Z",
+          "lastModifiedBy": {},
+          "createdOn": "2021-02-17T14:16:59.2053421Z",
+          "createdBy": {}
+        },
+        {
+          "@id": "http://localhost:10101/duplicate-members/10034919/29798",
+          "@type": "MobilityHindrance",
+          "gipodId": 10034919,
+          "identifier": [],
+          "isConsequenceOf": [],
+          "description": "Description of the mobility hindrance",
+          "owner": {},
+          "contactOrganisation": [],
+          "zone": [],
+          "period": [],
+          "timeSchedule": {},
+          "permittedBy": [],
+          "status": {},
+          "generatedAtTime": "2022-05-04T00:00:00.000Z",
+          "eventName": "MobilityHindranceWasRegistered",
+          "isVersionOf": "/api/v1/mobility-hindrances/10034919",
+          "memberOf": "http://localhost:10101/duplicate-members",
+          "lastModifiedOn": "2021-02-17T14:16:59.2053421Z",
+          "lastModifiedBy": {},
+          "createdOn": "2021-02-17T14:16:59.2053421Z",
+          "createdBy": {}
+        }
+      ]
+    },
+    "headers": {
+      "Content-Type": "application/ld+json",
+      "Cache-Control": "public, max-age=604800, immutable"
+    }
+  }
+}

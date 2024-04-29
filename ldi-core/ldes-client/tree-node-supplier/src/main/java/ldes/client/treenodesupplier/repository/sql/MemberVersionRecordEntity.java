@@ -2,10 +2,7 @@ package ldes.client.treenodesupplier.repository.sql;
 
 import ldes.client.treenodesupplier.domain.entities.MemberVersionRecord;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,6 +12,7 @@ public class MemberVersionRecordEntity {
     @Id
     private String versionOf;
 
+    @Column
     private LocalDateTime timestamp;
 
     public MemberVersionRecordEntity() {
@@ -27,10 +25,6 @@ public class MemberVersionRecordEntity {
 
     public String getVersionOf() {
         return versionOf;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
     }
 
     public static MemberVersionRecordEntity fromMemberVersionRecord(MemberVersionRecord memberVersionRecord) {

@@ -243,19 +243,43 @@ class LdesClientProcessorTest {
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
 	void shouldSupportOnlyOnceFilter(Map<String, String> statePersistenceProps) {
-		testRunner.setProperty("DATA_SOURCE_URLS",
-				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
+		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/duplicate-members?pageNumber=1");
 		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
 		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
-		testRunner.run(2);
+		testRunner.run(4);
 
 		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
 
-		assertEquals(2, dataFlowfiles.size());
+		assertEquals(3, dataFlowfiles.size());
+
+		List<RDFNode> result = RDFParser
+				.fromString(dataFlowfiles.getFirst().getContent())
+				.lang(Lang.NQUADS)
+				.toModel()
+				.listObjectsOfProperty(createProperty("http://purl.org/dc/terms/isVersionOf"))
+				.toList();
+		assertEquals(1, result.size());
+	}
+
+	@ParameterizedTest
+	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
+	void shouldSupportDisableOfOnlyOnceFilter(Map<String, String> statePersistenceProps) {
+		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/duplicate-members?pageNumber=1");
+		statePersistenceProps.forEach(testRunner::setProperty);
+		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
+		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.FALSE.toString());
+		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
+		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
+
+		testRunner.run(4);
+
+		List<MockFlowFile> dataFlowfiles = testRunner.getFlowFilesForRelationship(DATA_RELATIONSHIP);
+
+		assertEquals(4, dataFlowfiles.size());
 
 		List<RDFNode> result = RDFParser
 				.fromString(dataFlowfiles.getFirst().getContent())

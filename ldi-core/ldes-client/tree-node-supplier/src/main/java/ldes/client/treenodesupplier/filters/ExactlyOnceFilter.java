@@ -24,7 +24,7 @@ public class ExactlyOnceFilter implements MemberFilter {
 
 	@Override
 	public void destroyState() {
-		if(keepState) {
+		if(!keepState) {
 			memberIdRepository.destroyState();
 		}
 	}
