@@ -6,6 +6,8 @@ import org.apache.jena.rdf.model.*;
 
 import java.util.List;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.getWktLiteralDataType;
+
 public class GeoJsonToWktConverter implements GeoJsonConverter {
 
     private final WktConverter wktConverter = new WktConverter();

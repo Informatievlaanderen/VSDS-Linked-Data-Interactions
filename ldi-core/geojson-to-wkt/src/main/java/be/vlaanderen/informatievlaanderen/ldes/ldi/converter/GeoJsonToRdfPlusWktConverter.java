@@ -7,6 +7,7 @@ import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.getWktLiteralDataType;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 

@@ -1,6 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.GeoType;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
@@ -14,6 +16,7 @@ import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class WktConverter {
 
+	public static final String GEOSPARQL_URI = "http://www.opengis.net/ont/geosparql";
 	public static final Property GEOJSON_GEOMETRY = createProperty("https://purl.org/geojson/vocab#geometry");
 
 	private final GeometryExtractor geometryExtractor = new GeometryExtractor();
@@ -28,6 +31,10 @@ public class WktConverter {
 		GeoType geoType = GeoType.fromName(geom.getGeometryType())
 				.orElseThrow(() -> new IllegalArgumentException("Geotype %s not supported".formatted(geom.getGeometryType())));
 		return new WktResult(geoType, writer.write(geom));
+	}
+
+	public static RDFDatatype getWktLiteralDataType() {
+		return TypeMapper.getInstance().getSafeTypeByName(GEOSPARQL_URI + "#wktLiteral");
 	}
 
 	private Resource getGeometryId(Model model) {
