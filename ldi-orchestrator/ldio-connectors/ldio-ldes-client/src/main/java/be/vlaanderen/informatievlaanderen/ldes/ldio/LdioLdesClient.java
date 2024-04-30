@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
-import ldes.client.treenodesupplier.MemberSupplier;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
