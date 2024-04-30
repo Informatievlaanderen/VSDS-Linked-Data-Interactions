@@ -32,7 +32,7 @@ public class PipelineService {
 		} else {
 			pipelineCreatorService.initialisePipeline(pipeline);
 			pipelineRepository.activateNewPipeline(pipeline);
-			log.info("CREATION of pipeline '{}' successfully finished", pipeline.getName());
+			log.atInfo().log("CREATION of pipeline '{}' successfully finished", pipeline.getName().replaceAll("[\n\r]", "_"));
 			return pipeline;
 		}
 	}
@@ -58,7 +58,7 @@ public class PipelineService {
 		if (pipelineRepository.exists(pipeline)) {
 			pipelineStatusService.stopPipeline(pipeline);
 			deletePipelineFromServices(pipeline);
-			log.info("DELETION of pipeline '{}' successfully finished", pipeline);
+			log.atInfo().log("DELETION of pipeline '{}' successfully finished", pipeline.replaceAll("[\n\r]", "_"));
 			return true;
 		} else {
 			return false;
