@@ -79,7 +79,7 @@
             "@id": "/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0",
             "prefLabel": "In opmaak"
           },
-          "generatedAtTime": "2021-02-16T12:40:08.6Z",
+          "generatedAtTime": "2022-05-05T00:00:00.000Z",
           "eventName": "MobilityHindranceWasRegistered",
           "isVersionOf": "/api/v1/mobility-hindrances/10034631",
           "memberOf": "http://localhost:10101/exampleData",
@@ -178,7 +178,7 @@
             "@id": "/api/v1/taxonomies/statuses/0a4ee99b-8b8a-47c8-913f-117220febee0",
             "prefLabel": "In opmaak"
           },
-          "generatedAtTime": "2021-02-16T12:40:08.6Z",
+          "generatedAtTime": "2022-05-05T00:00:00.000Z",
           "eventName": "MobilityHindranceZoneWasAdded",
           "isVersionOf": "/api/v1/mobility-hindrances/10034631",
           "memberOf": "http://localhost:10101/exampleData",

@@ -18,6 +18,7 @@ import java.util.List;
 
 public class TreeNodeFetcher {
 
+	private static final LocalDateTime maxSupportedDateTime = LocalDateTime.of(294276, 12, 31, 23, 59, 59);
 	private final RequestExecutor requestExecutor;
 	private final TimestampExtractor timestampExtractor;
 
@@ -58,7 +59,7 @@ public class TreeNodeFetcher {
 				List.of(response.getRedirectLocation()
 						.orElseThrow(() -> new IllegalStateException("No Location Header in redirect."))),
 				List.of(),
-				new MutabilityStatus(false, LocalDateTime.MAX));
+				new MutabilityStatus(false, maxSupportedDateTime));
 	}
 
 	private static TreeNodeResponse createNotModifiedResponse(Response response) {

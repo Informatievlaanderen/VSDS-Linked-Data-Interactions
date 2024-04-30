@@ -1,14 +1,11 @@
-package ldes.client.treenodesupplier;
+package ldes.client.treenodesupplier.membersuppliers;
 
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 
 import java.util.function.Supplier;
 
 public interface MemberSupplier extends Supplier<SuppliedMember> {
-
-	@Override
-	SuppliedMember get();
 	void init();
-	void destroyState();
 
+	void destroyState();
 }
