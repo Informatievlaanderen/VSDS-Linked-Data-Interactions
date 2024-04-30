@@ -82,7 +82,7 @@ public abstract class LdioInput implements LdiComponent {
 			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", ldioObserver.getPipelineName(), pipelineStatus);
 		}
 
-		log.info("PIPELINE: {} - status updated to {}", ldioObserver.getPipelineName(), pipelineStatus);
+		log.info("UPDATED status for pipeline '{}' to {}", ldioObserver.getPipelineName(), pipelineStatus);
 		applicationEventPublisher.publishEvent(new PipelineStatusEvent(ldioObserver.getPipelineName(), this.pipelineStatus, MANUAL));
 		return this.pipelineStatus;
 	}
