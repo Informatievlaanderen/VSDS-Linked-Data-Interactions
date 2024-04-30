@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +40,15 @@ public class LdioLdesClient extends LdioInput {
 		super.start();
 		final ExecutorService executorService = newSingleThreadExecutor();
 		executorService.submit(() -> {
-			memberSupplier.init();
-			this.run();
+			try {
+				memberSupplier.init();
+				this.run();
+			} catch (RuntimeException e) {
+				log.atWarn().log("HALTING pipeline because of an unhandled error");
+				log.atError().log(e.getMessage());
+				updateStatus(PipelineStatusTrigger.HALT);
+				throw e;
+			}
 		});
 	}
 
@@ -53,7 +61,7 @@ public class LdioLdesClient extends LdioInput {
 		} catch (EndOfLdesException e) {
 			log.warn(e.getMessage());
 		} catch (Exception e) {
-			log.error("LdesClientRunner FAILURE", e);
+			log.error("LdesClientRunner FAILURE: {}", e.getMessage());
 		}
 	}
 
