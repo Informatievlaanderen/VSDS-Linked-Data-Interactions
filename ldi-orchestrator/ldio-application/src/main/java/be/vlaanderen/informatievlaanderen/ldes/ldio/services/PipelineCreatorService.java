@@ -98,7 +98,8 @@ public class PipelineCreatorService {
 			throw new LdiAdapterMissingException(config.getName(), config.getInput().getName());
 		}
 		if (!isAdapterRequired && adapter != null) {
-			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", config.getName(), config.getInput().getName(), adapter.getName());
+			final String pipelineName = config.getName().replaceAll("[\n\r]", "_");
+			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", pipelineName, config.getInput().getName(), adapter.getName());
 		}
 	}
 
