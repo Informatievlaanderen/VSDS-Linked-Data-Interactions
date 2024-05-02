@@ -60,6 +60,7 @@ public class PipelineService {
 
 	public boolean requestDeletion(String pipeline) {
 		if (pipelineRepository.exists(pipeline)) {
+			pipelineStatusService.stopPipeline(pipeline);
 			eventPublisher.publishEvent(new PipelineDeletedEvent(pipeline));
 			pipelineRepository.delete(pipeline);
 			log.atInfo().log("DELETION of pipeline '{}' successfully finished", pipeline.replaceAll("[\n\r]", "_"));
