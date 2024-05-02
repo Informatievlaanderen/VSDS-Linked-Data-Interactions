@@ -8,9 +8,15 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampF
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidConfigException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import ldes.client.treenodesupplier.*;
+import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
+import ldes.client.treenodesupplier.filters.LatestStateFilter;
+import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
+import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
@@ -19,11 +25,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class MemberSupplierFactory {
+
+    private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
+    private static final String DEFAULT_TIMESTAMP_KEY = "http://www.w3.org/ns/prov#generatedAtTime";
 
     private final Logger log = LoggerFactory.getLogger(MemberSupplierFactory.class);
 
@@ -41,32 +51,41 @@ public class MemberSupplierFactory {
         MemberSupplier baseMemberSupplier =
                 new MemberSupplierImpl(getTreeNodeProcessor(), getKeepState());
         if (useExactlyOnceFilter()) {
-            return new ExactlyOnceFilterMemberSupplier(baseMemberSupplier, getFilter(), getKeepState());
+            return new FilteredMemberSupplier(baseMemberSupplier, getExactlyOnceFilter());
         } else if (useVersionMaterialisation()) {
-            return new VersionMaterialisedMemberSupplier(baseMemberSupplier, createVersionMaterialiser());
+            MemberSupplier decoratedMemberSupplier = useLatestStateFilter()
+                    ? new FilteredMemberSupplier(baseMemberSupplier, getLatestStateFilter())
+                    : baseMemberSupplier;
+            return new VersionMaterialisedMemberSupplier(decoratedMemberSupplier, createVersionMaterialiser());
         } else {
             return baseMemberSupplier;
         }
     }
 
-    private ExactlyOnceFilter getFilter() {
-        return new ExactlyOnceFilter(getStatePersistence().getMemberIdRepository());
+    private LatestStateFilter getLatestStateFilter() {
+        String timestampPath = properties.getOptionalProperty(TIMESTAMP_PATH_PROP).orElse(DEFAULT_TIMESTAMP_KEY);
+        String versionOfPath = properties.getOptionalProperty(VERSION_OF_PROPERTY).orElse(DEFAULT_VERSION_OF_KEY);
+        return new LatestStateFilter(getStatePersistence().getMemberVersionRepository(), getKeepState(), timestampPath, versionOfPath);
+    }
+
+    private ExactlyOnceFilter getExactlyOnceFilter() {
+        return new ExactlyOnceFilter(getStatePersistence().getMemberIdRepository(), getKeepState());
     }
 
     private TreeNodeProcessor getTreeNodeProcessor() {
         List<String> targetUrls = properties.getPropertyList(URLS);
 
-        if(targetUrls.isEmpty()) {
+        if (targetUrls.isEmpty()) {
             throw new ConfigPropertyMissingException(properties.getPipelineName(), properties.getComponentName(), "urls");
         }
 
         Lang sourceFormat = getSourceFormat();
         LdesMetaData ldesMetaData = new LdesMetaData(targetUrls, sourceFormat);
-	    TimestampExtractor timestampExtractor = properties.getOptionalProperty(TIMESTAMP_PATH_PROP)
-			    .map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
-			    .orElseGet(TimestampFromCurrentTimeExtractor::new);
+        TimestampExtractor timestampExtractor = properties.getOptionalProperty(TIMESTAMP_PATH_PROP)
+                .map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
+                .orElseGet(TimestampFromCurrentTimeExtractor::new);
 
-	    return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor);
+        return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor);
     }
 
     private StatePersistence getStatePersistence() {
@@ -74,7 +93,7 @@ public class MemberSupplierFactory {
     }
 
     private Boolean getKeepState() {
-	    return properties.getOptionalBoolean(KEEP_STATE).orElse(false);
+        return properties.getOptionalBoolean(KEEP_STATE).orElse(false);
     }
 
     private boolean useVersionMaterialisation() {
@@ -87,11 +106,12 @@ public class MemberSupplierFactory {
                     return false;
                 });
     }
-    @SuppressWarnings("java:S3655")
+
     private boolean useExactlyOnceFilter() {
-        if (properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER).isPresent()) {
+        Optional<Boolean> exactlyOneFilterProperty = properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER);
+        if (exactlyOneFilterProperty.isPresent()) {
             // use filter is explicitly set
-            boolean useFilter = properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER).get();
+            boolean useFilter = exactlyOneFilterProperty.get();
             if (useVersionMaterialisation() && useFilter) {
                 throw new InvalidConfigException("The exactly once filter can not be enabled with version materialisation.");
             } else {
@@ -109,7 +129,7 @@ public class MemberSupplierFactory {
     }
 
     private Lang getSourceFormat() {
-	    return properties.getOptionalProperty(SOURCE_FORMAT)
+        return properties.getOptionalProperty(SOURCE_FORMAT)
                 .map(RDFLanguages::nameToLang)
                 .orElse(Lang.TURTLE);
     }
@@ -118,8 +138,12 @@ public class MemberSupplierFactory {
         final Property versionOfProperty = properties
                 .getOptionalProperty(VERSION_OF_PROPERTY)
                 .map(ResourceFactory::createProperty)
-		        .orElseGet(() -> createProperty("http://purl.org/dc/terms/isVersionOf"));
+                .orElseGet(() -> createProperty(DEFAULT_VERSION_OF_KEY));
         return new VersionMaterialiser(versionOfProperty, false);
+    }
+
+    private boolean useLatestStateFilter() {
+        return properties.getOptionalBoolean(USE_LATEST_STATE_FILTER).orElse(true);
     }
 
 

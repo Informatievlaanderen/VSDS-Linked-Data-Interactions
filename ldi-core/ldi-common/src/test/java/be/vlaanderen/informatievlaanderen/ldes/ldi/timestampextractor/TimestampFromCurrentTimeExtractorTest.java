@@ -6,21 +6,31 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class TimestampFromCurrentTimeExtractorTest {
 
 	@Test
-	void extractTimestamp() {
+	void test_ExtractTimestamp() {
 		Model model = ModelFactory.createDefaultModel();
 
 		LocalDateTime result = new TimestampFromCurrentTimeExtractor().extractTimestamp(model);
 
-		assertNotNull(result);
-		assertTrue(result.isBefore(LocalDateTime.now().plusMinutes(5)));
-		// We give a generous 5 minutes to run the test.
-		assertTrue(result.isAfter(LocalDateTime.now().minusMinutes(5)));
+		assertThat(result)
+				.isNotNull()
+				.as("A generous 5 minutes to run the test is given")
+				.isBetween(LocalDateTime.now().minusMinutes(5), LocalDateTime.now().plusMinutes(5));
 	}
 
+	@Test
+	void test_ExtractTimestampWithSubject() {
+		Model model = ModelFactory.createDefaultModel();
+
+		LocalDateTime result = new TimestampFromCurrentTimeExtractor().extractTimestampWithSubject(null, model);
+
+		assertThat(result)
+				.isNotNull()
+				.as("A generous 5 minutes to run the test is given")
+				.isBetween(LocalDateTime.now().minusMinutes(5), LocalDateTime.now().plusMinutes(5));
+	}
 }

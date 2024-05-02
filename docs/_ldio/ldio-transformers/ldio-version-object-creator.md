@@ -12,19 +12,20 @@ The Version Object Creator will transform a State Object to a Version Object.
 
 ## Config
 
-| Property               | Description                                                                                                                    | Required | Default                                   | Example                                   | Supported values |
-|:-----------------------|:-------------------------------------------------------------------------------------------------------------------------------|:---------|:------------------------------------------|:------------------------------------------|:-----------------|
-| date-observed-property | Property path (IRI format '<>') that points to a literal which should be used as timestampPath. Defaults to current timestamp. | No       | Current Timestamp                         | \<https://example.org/ObservedAt\>        | String           |
-| member-type            | Defines the RDF type of the version object                                                                                     | No       | N/A                                       | https://example.org/Person                | String           |
-| delimiter              | Defines how the version object id will be constructed. (versionOf + delimiter + dateObserved)                                  | No       | /                                         | /                                         | String           |
-| generatedAt-property   | A statement will be added to the model with the observedAt value and the given property.                                       | No       | http://www.w3.org/ns/prov#generatedAtTime | http://www.w3.org/ns/prov#generatedAtTime | String           |
-| versionOf-property     | A statement will be added to the model with the versionOf value and the given property.                                        | No       | http://purl.org/dc/terms/isVersionOf      | http://purl.org/dc/terms/isVersionOf      | String           |
+| Property                 | Description                                                                                                                    | Required | Default                                   | Example                                   | Supported values |
+|:-------------------------|:-------------------------------------------------------------------------------------------------------------------------------|:---------|:------------------------------------------|:------------------------------------------|:-----------------|
+| _date-observed-property_ | Property path (IRI format '<>') that points to a literal which should be used as timestampPath. Defaults to current timestamp. | No       | Current Timestamp                         | \<https://example.org/ObservedAt\>        | String           |
+| _member-type_            | Defines the RDF type of the version object                                                                                     | No       | N/A                                       | https://example.org/Person                | String           |
+| _delimiter_              | Defines how the version object id will be constructed. (versionOf + delimiter + dateObserved)                                  | No       | /                                         | /                                         | String           |
+| _generatedAt-property_   | A statement will be added to the model with the observedAt value and the given property.                                       | No       | http://www.w3.org/ns/prov#generatedAtTime | http://www.w3.org/ns/prov#generatedAtTime | String           |
+| _versionOf-property_     | A statement will be added to the model with the versionOf value and the given property.                                        | No       | http://purl.org/dc/terms/isVersionOf      | http://purl.org/dc/terms/isVersionOf      | String           |
 
 ## Example
 
 ### State Object
 
-A state object is an entity that represents the most recent state of an object, and in this context, the subject is not unique. Below is an example presented in RDF format: Below is an example presented in RDF format:
+A state object is an entity that represents the most recent state of an object, and in this context, the subject is not
+unique. Below is an example presented in RDF format: Below is an example presented in RDF format:
 
 ```turtle
 @prefix time: <http://www.w3.org/2006/time#> .

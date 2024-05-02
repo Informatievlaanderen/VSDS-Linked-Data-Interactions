@@ -45,8 +45,8 @@ public class ModelResponse {
 
 	private TreeMember processMember(Model treeNodeModel, Statement memberStatement) {
 		final Model memberModel = modelExtract.extract(memberStatement.getObject().asResource(), treeNodeModel);
-		LocalDateTime createdAt = timestampExtractor.extractTimestamp(memberModel);
 		final String id = memberStatement.getObject().toString();
+		final LocalDateTime createdAt = timestampExtractor.extractTimestampWithSubject(ResourceFactory.createProperty(id), memberModel);
 		return new TreeMember(id, createdAt, memberModel);
 	}
 

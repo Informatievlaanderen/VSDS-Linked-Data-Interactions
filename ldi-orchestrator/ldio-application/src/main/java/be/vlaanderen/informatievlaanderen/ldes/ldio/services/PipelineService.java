@@ -6,6 +6,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExi
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Service
 public class PipelineService {
+	private static final Logger log = LoggerFactory.getLogger(PipelineService.class);
 	private final PipelineCreatorService pipelineCreatorService;
 	private final PipelineStatusService pipelineStatusService;
 	private final PipelineRepository pipelineRepository;
@@ -33,6 +36,7 @@ public class PipelineService {
 		} else {
 			pipelineCreatorService.initialisePipeline(pipeline);
 			pipelineRepository.activateNewPipeline(pipeline);
+			log.atInfo().log("CREATION of pipeline '{}' successfully finished", pipeline.getName().replaceAll("[\n\r]", "_"));
 			return pipeline;
 		}
 	}
@@ -57,11 +61,18 @@ public class PipelineService {
 	public boolean requestDeletion(String pipeline) {
 		if (pipelineRepository.exists(pipeline)) {
 			pipelineStatusService.stopPipeline(pipeline);
+			deletePipelineFromServices(pipeline);
+			log.atInfo().log("DELETION of pipeline '{}' successfully finished", pipeline.replaceAll("[\n\r]", "_"));
 			eventPublisher.publishEvent(new PipelineDeletedEvent(pipeline));
 			pipelineRepository.delete(pipeline);
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	private void deletePipelineFromServices(String pipeline) {
+		pipelineRepository.delete(pipeline);
+		pipelineCreatorService.removePipeline(pipeline);
 	}
 }

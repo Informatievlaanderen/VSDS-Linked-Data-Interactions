@@ -11,17 +11,18 @@ title: HTTP In Poller
 The LDIO Http In Poller is a basic Http Poller that will poll a target URL on a specified interval. 
 
 ## Config
+### General properties
 
-| Property       | Description                                                        | Required | Default | Example                   | Supported values                                                                                                                                      |
-|:---------------|:-------------------------------------------------------------------|:---------|:--------|:--------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
-| url            | Target URL to poll from.                                           | Yes      | N/A     | http://example.com/my-api | HTTP and HTTPS urls (lists are supported)                                                                                                             |
-| cron           | Cron expression to declare when the polling should take place [^2] | Yes[^1]  | N/A     | */10 * * * * *            | [Spring Cron Expression](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html) |
-| interval       | Polling interval declared in ISO 8601 format.                      | Yes[^1]  | N/A     | PT1S                      | ISO 8601 formatted String                                                                                                                             |
-| continueOnFail | Indicated if continue if polling results in failure                | No       | true    | true                      | true or false                                                                                                                                         |
+| Property         | Description                                                        | Required | Default | Example                   | Supported values                                                                                                                                      |
+|:-----------------|:-------------------------------------------------------------------|:---------|:--------|:--------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _url_            | Target URL to poll from.                                           | Yes      | N/A     | http://example.com/my-api | HTTP and HTTPS urls (lists are supported)                                                                                                             |
+| _cron_           | Cron expression to declare when the polling should take place [^2] | Yes[^1]  | N/A     | */10 * * * * *            | [Spring Cron Expression](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html) |
+| _interval_       | Polling interval declared in ISO 8601 format.                      | Yes[^1]  | N/A     | PT1S                      | ISO 8601 formatted String                                                                                                                             |
+| _continueOnFail_ | Indicated if continue if polling results in failure                | No       | true    | true                      | true or false                                                                                                                                         |
 
-This component uses the "LDIO Http Requester" to make the HTTP request.
-Refer to [LDIO Http Requester](../ldio-core) for the config.
+{% include ldio-core/http-requester.md %}
 
+### Multiple urls
 The Http In Poller supports polling multiple endpoints. Example configuration:
 
 ```yaml

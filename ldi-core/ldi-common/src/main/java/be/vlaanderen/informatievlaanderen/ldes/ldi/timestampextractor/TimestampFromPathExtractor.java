@@ -2,10 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDateTime;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,15 +17,26 @@ public class TimestampFromPathExtractor implements TimestampExtractor {
 		this.timestampPath = timestampPath;
 	}
 
+	@Override
 	public LocalDateTime extractTimestamp(Model model) {
-		var timestamp = model
-				.listObjectsOfProperty(timestampPath)
+		final NodeIterator timestampNodeIterator = model.listObjectsOfProperty(timestampPath);
+		final Literal timestampLiteral = extractTimestampLiteral(timestampNodeIterator);
+		return getLocalDateTime(timestampLiteral);
+	}
+
+	@Override
+	public LocalDateTime extractTimestampWithSubject(Resource subject, Model model) {
+		final NodeIterator timestampNodeIterator = model.listObjectsOfProperty(subject, timestampPath);
+		final Literal timestampLiteral = extractTimestampLiteral(timestampNodeIterator);
+		return getLocalDateTime(timestampLiteral);
+	}
+
+	private Literal extractTimestampLiteral(NodeIterator nodeIterator) {
+		return nodeIterator
 				.filterDrop(node -> !node.isLiteral())
 				.mapWith(RDFNode::asLiteral)
 				.nextOptional()
 				.orElseThrow(() -> new IllegalArgumentException("No timestamp as literal found on member"));
-
-		return getLocalDateTime(timestamp);
 	}
 
 	private LocalDateTime getLocalDateTime(Literal timestamp) {

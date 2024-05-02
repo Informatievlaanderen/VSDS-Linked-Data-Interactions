@@ -10,8 +10,14 @@ class GeoTypeTest {
 
 	@ParameterizedTest
 	@EnumSource(GeoType.class)
-	void from_ShouldReturnAValueForExistingAuthStrategies(GeoType authStrategy) {
-		assertTrue(GeoType.fromUri(authStrategy.uri).isPresent());
+	void from_GeoJsonUri_ShouldReturnAValueForExistingAuthStrategies(GeoType authStrategy) {
+		assertTrue(GeoType.fromUri(authStrategy.geoJsonUri).isPresent());
+	}
+
+	@ParameterizedTest
+	@EnumSource(GeoType.class)
+	void from_SimpleFeaturesUri_ShouldReturnAValueForExistingAuthStrategies(GeoType authStrategy) {
+		assertTrue(GeoType.fromUri(authStrategy.simpleFeaturesUri).isPresent());
 	}
 
 	@Test

@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
-@SuppressWarnings("java:S2696")
 public class PostgresEntityManagerFactory implements EntityManagerFactory {
 
 	public static final String PERSISTENCE_UNIT_NAME = "pu-postgres-jpa";

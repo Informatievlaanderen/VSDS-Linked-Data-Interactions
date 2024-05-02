@@ -10,23 +10,29 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
+import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.*;
+import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
+import ldes.client.treenodesupplier.filters.LatestStateFilter;
+import ldes.client.treenodesupplier.filters.MemberFilter;
+import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
+import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.junit.After;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MemberSupplierSteps {
@@ -35,10 +41,11 @@ public class MemberSupplierSteps {
 	private TreeNodeRecordRepository treeNodeRecordRepository;
 	private MemberRepository memberRepository;
 	private MemberIdRepository memberIdRepository;
+	private MemberVersionRepository memberVersionRepository;
 	private MemberSupplier memberSupplier;
 	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
-	private PostgreSQLContainer postgreSQLContainer;
+	private PostgreSQLContainer<?> postgreSQLContainer;
 
 	// Multi MemberSupplier
 	private final MemberSupplier[] memberSuppliers = new MemberSupplier[2];
@@ -92,14 +99,14 @@ public class MemberSupplierSteps {
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
-				new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository),
+				new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository),
 				requestExecutorFactory.createNoAuthExecutor(),
 				timestampPath.isEmpty() ? new TimestampFromCurrentTimeExtractor() : new TimestampFromPathExtractor(createProperty(timestampPath)));
 	}
 
 	@Then("Member {string} is processed")
 	public void memberIsProcessed(String memberId) {
-		assertTrue(toString(suppliedMember.getModel(), Lang.JSONLD).contains(memberId));
+		assertThat(suppliedMember.getId()).isEqualTo(memberId);
 	}
 
 	@And("a StatePersistenceStrategy MEMORY")
@@ -110,7 +117,9 @@ public class MemberSupplierSteps {
 				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
+		memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.MEMORY, Map.of(),
+				"instanceName");
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
@@ -121,12 +130,14 @@ public class MemberSupplierSteps {
 				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
+		memberVersionRepository = MemberVersionRepositoryFactory
+				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@And("a StatePersistenceStrategy POSTGRES")
 	public StatePersistence aPostgresStatePersistenceStrategy() {
-		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
+		postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
 				.withDatabaseName("integration-test-client-persistence")
 				.withUsername("sa")
 				.withPassword("sa");
@@ -141,8 +152,11 @@ public class MemberSupplierSteps {
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
 						"instanceName");
+		memberVersionRepository = MemberVersionRepositoryFactory
+				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
+				"instanceName");
 
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository);
+		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@Then("MemberSupplier is destroyed")
@@ -150,11 +164,6 @@ public class MemberSupplierSteps {
 		memberSupplier.destroyState();
 	}
 
-	private String toString(final Model model, final Lang lang) {
-		StringWriter stringWriter = new StringWriter();
-		RDFDataMgr.write(stringWriter, model, lang);
-		return stringWriter.toString();
-	}
 
 	@When("I create a MemberSupplier with state")
 	public void iCreateAMemberSupplierWithState() {
@@ -168,10 +177,11 @@ public class MemberSupplierSteps {
 		memberSupplier.init();
 	}
 
-	@When("I create a MemberSupplier with filter")
+	@When("I create a MemberSupplier with ExactlyOnceFilter")
 	public void iCreateAMemberSupplierWithFilter() {
-		memberSupplier = new ExactlyOnceFilterMemberSupplier(new MemberSupplierImpl(treeNodeProcessor, false),
-				new ExactlyOnceFilter(memberIdRepository), false);
+		final boolean keepState = false;
+		memberSupplier = new FilteredMemberSupplier(new MemberSupplierImpl(treeNodeProcessor, keepState),
+				new ExactlyOnceFilter(memberIdRepository, keepState));
 		memberSupplier.init();
 	}
 
@@ -221,5 +231,14 @@ public class MemberSupplierSteps {
 	public void membersuppliersAreDestroyed() {
 		memberSuppliers[0].destroyState();
 		memberSuppliers[1].destroyState();
+	}
+
+	@When("I create a MemberSupplier with LatestStateFilter")
+	public void iCreateAMemberSupplierWithLatestStateFilter() {
+		final boolean keepState = false;
+		final MemberSupplierImpl baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
+		final MemberFilter latestStateFilter = new LatestStateFilter(memberVersionRepository, keepState, timestampPath, "http://purl.org/dc/terms/isVersionOf");
+		memberSupplier = new FilteredMemberSupplier(baseMemberSupplier, latestStateFilter);
+		memberSupplier.init();
 	}
 }

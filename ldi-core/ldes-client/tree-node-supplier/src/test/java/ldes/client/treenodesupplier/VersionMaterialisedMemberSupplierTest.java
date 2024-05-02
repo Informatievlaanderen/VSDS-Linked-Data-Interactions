@@ -2,6 +2,8 @@ package ldes.client.treenodesupplier;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.Test;
