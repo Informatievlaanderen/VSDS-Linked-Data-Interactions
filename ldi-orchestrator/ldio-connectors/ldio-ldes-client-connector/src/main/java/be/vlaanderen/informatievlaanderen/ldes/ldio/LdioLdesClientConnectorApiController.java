@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.collection.LdioLdesClientConnectorApiCollection;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,18 +35,17 @@ public class LdioLdesClientConnectorApiController {
 						.handleTransfer(transfer));
 	}
 
-	// TODO: find a way to include this into the pipelinestatusmanager, eventually by making the api class an
 	@EventListener
-	public void handlePipelineStatusEvent(PipelineStatusEvent event) {
-		clientConnectorApis.get(event.pipelineId()).ifPresent(connectorApi -> {
-			switch (event.status()) {
-				case RUNNING -> connectorApi.resume();
-				case HALTED -> connectorApi.pause();
-				default -> {
-					// do nothing with the other status events
-				}
-			}
-		});
+	void handleNewPipelines(PipelineCreatedEvent event) {
+		LdioInput ldioInput = event.pipelineStatusManager().getInput();
+		if(ldioInput instanceof LdioLdesClientConnectorApi ldioLdesClientConnectorApi) {
+			clientConnectorApis.add(event.pipelineName(), ldioLdesClientConnectorApi);
+		}
+	}
+
+	@EventListener
+	void deletePipeline(PipelineDeletedEvent deletedEvent) {
+		clientConnectorApis.remove(deletedEvent.pipelineId()).ifPresent(LdioLdesClientConnectorApi::shutdown);
 	}
 
 }

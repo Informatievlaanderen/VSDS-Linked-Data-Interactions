@@ -61,7 +61,6 @@ public class PipelineService {
 	public boolean requestDeletion(String pipeline) {
 		if (pipelineRepository.exists(pipeline)) {
 			pipelineStatusService.stopPipeline(pipeline);
-			deletePipelineFromServices(pipeline);
 			log.atInfo().log("DELETION of pipeline '{}' successfully finished", pipeline.replaceAll("[\n\r]", "_"));
 			eventPublisher.publishEvent(new PipelineDeletedEvent(pipeline));
 			pipelineRepository.delete(pipeline);
@@ -69,10 +68,5 @@ public class PipelineService {
 		} else {
 			return false;
 		}
-	}
-
-	private void deletePipelineFromServices(String pipeline) {
-		pipelineRepository.delete(pipeline);
-		pipelineCreatorService.removePipeline(pipeline);
 	}
 }

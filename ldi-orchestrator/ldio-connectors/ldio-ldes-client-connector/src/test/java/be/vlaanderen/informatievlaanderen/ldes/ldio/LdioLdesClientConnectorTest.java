@@ -3,8 +3,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.PipelineStatusManager;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +42,15 @@ class LdioLdesClientConnectorTest {
 	void setup() {
 		transferService = mock(TransferService.class);
 		tokenService = mock(TokenService.class);
-		final LdioLdesClient ldesClient = mock(LdioLdesClient.class);
-
-		eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(endpoint, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
+		final LdioLdesClientConnectorApi ldioLdesClientConnectorApi = new LdioLdesClientConnectorApi(
+				mock(ComponentExecutor.class),
+				endpoint,
+				null,
+				mock(MemberSupplier.class),
+				eventPublisher,
+				transferService,
+				tokenService);
+		eventPublisher.publishEvent(new PipelineCreatedEvent(new PipelineStatusManager(endpoint, ldioLdesClientConnectorApi, List.of())));
 	}
 
 	@Test
@@ -51,7 +60,7 @@ class LdioLdesClientConnectorTest {
 		mockMvc.perform(post("/%s/token".formatted(endpoint)).content(content)).andExpect(status().isAccepted());
 
 		verify(tokenService).updateToken(content);
-		verify(transferService, times(0)).startTransfer(any());
+		verify(transferService, never()).startTransfer(any());
 	}
 
 	@Test
@@ -65,7 +74,7 @@ class LdioLdesClientConnectorTest {
 				.andExpect(content().string(transferResult));
 
 		verify(transferService).startTransfer(content);
-		verify(tokenService, times(0)).updateToken(any());
+		verify(tokenService, never()).updateToken(any());
 	}
 
 	@Test

@@ -58,8 +58,8 @@ public class LdioLdesClientITSteps extends LdesClientInIT {
 		ComponentExecutor componentExecutor = members::add;
 
 		var props = new ComponentProperties("pipelineName", NAME, componentPropsMap);
-		var ldioInputConfigurator = new LdioLdesClientAutoConfig().ldioConfigurator(null);
-		ldioInputConfigurator.configure(null, componentExecutor, applicationEventPublisher, props);
+		var ldioInputConfigurator = new LdioLdesClientAutoConfig().ldioConfigurator(null, applicationEventPublisher);
+		ldioInputConfigurator.configure(null, componentExecutor, props).start();
 	}
 
 	@Then("All {int} members from the stream are passed to the pipeline")

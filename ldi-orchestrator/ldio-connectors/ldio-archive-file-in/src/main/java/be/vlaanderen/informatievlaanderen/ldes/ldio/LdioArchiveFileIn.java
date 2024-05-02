@@ -9,20 +9,18 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 
 public class LdioArchiveFileIn extends LdioInput {
 	public static final String NAME = "Ldio:ArchiveFileIn";
 	private final Logger log = LoggerFactory.getLogger(LdioArchiveFileIn.class);
 	private final ArchiveFileCrawler archiveFileCrawler;
 	private final Lang sourceFormat;
-	private boolean paused = false;
+	private boolean paused;
 
-	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher, ArchiveFileCrawler crawler, Lang source) {
-		super(executor, null, LdioObserver.register(NAME, pipelineName, observationRegistry), applicationEventPublisher);
+	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ArchiveFileCrawler crawler, Lang source) {
+		super(executor, null, LdioObserver.register(NAME, pipelineName, observationRegistry));
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
-		start();
 		log.info("Starting with crawling the archive.");
 		crawlArchive();
 		log.info("Finished crawling the archive.");
@@ -48,6 +46,11 @@ public class LdioArchiveFileIn extends LdioInput {
 	@Override
 	public void shutdown() {
 		this.paused = true;
+	}
+
+	@Override
+	public void start() {
+		this.paused = false;
 	}
 
 	@Override

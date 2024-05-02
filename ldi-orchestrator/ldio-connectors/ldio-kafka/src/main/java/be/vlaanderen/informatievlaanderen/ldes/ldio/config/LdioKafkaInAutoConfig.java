@@ -10,7 +10,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,10 +32,10 @@ public class LdioKafkaInAutoConfig {
 		}
 
 		@Override
-		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
+		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties config) {
 			final String pipelineName = config.getPipelineName();
 			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
-			return new LdioKafkaIn(executor, adapter, ldioObserver, applicationEventPublisher, config);
+			return new LdioKafkaIn(executor, adapter, ldioObserver, config);
 		}
 
 		@Override

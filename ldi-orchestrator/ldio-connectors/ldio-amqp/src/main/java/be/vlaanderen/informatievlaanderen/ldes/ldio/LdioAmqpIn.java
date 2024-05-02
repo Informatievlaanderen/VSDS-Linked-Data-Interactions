@@ -12,7 +12,6 @@ import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig.CONTENT_TYPE_HEADER;
@@ -36,15 +35,13 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 	 * @param properties		  Configuration properties
 	 */
 	public LdioAmqpIn(ComponentExecutor executor, LdiAdapter adapter, LdioObserver ldioObserver,
-					  LdioAmqpInRegistrator jmsInRegistrator, LdioAmpqInProperties properties,
-					  ApplicationEventPublisher applicationEventPublisher) {
-		super(executor, adapter, ldioObserver, applicationEventPublisher);
+					  LdioAmqpInRegistrator jmsInRegistrator, LdioAmpqInProperties properties) {
+		super(executor, adapter, ldioObserver);
 		this.properties = properties;
 		SimpleJmsListenerEndpoint endpoint = listenerEndpoint(properties.jmsConfig().queue());
 		ldioAmqpInRegistrator = jmsInRegistrator;
 		listenerId = endpoint.getId();
 		jmsInRegistrator.registerListener(properties.jmsConfig(), endpoint);
-		this.start();
 	}
 
 	@Override
@@ -67,6 +64,11 @@ public class LdioAmqpIn extends LdioInput implements MessageListener {
 		endpoint.setDestination(queue);
 		endpoint.setMessageListener(this);
 		return endpoint;
+	}
+
+	@Override
+	public void start() {
+		ldioAmqpInRegistrator.startListener(listenerId);
 	}
 
 	@Override
