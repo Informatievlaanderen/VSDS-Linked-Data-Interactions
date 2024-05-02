@@ -10,7 +10,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidComponentException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidPipelineNameException;
@@ -76,6 +75,7 @@ public class PipelineCreatorService {
 			verifyAdapter(config, configurator.isAdapterRequired());
 
 			LdioInput ldioInput = configurator.configure(adapter, executor, new ComponentProperties(pipeLineName, inputName, inputConfig));
+			registerBean(pipeLineName, ldioInput);
 
 			List<LdioStatusComponent> ldioStatusOutputs = getLdioOutputs(config).stream()
 					.filter(LdioStatusComponent.class::isInstance)
@@ -83,7 +83,6 @@ public class PipelineCreatorService {
 					.toList();
 
 			final var pipelineStatusManager = PipelineStatusManager.initializeWithStatus(pipeLineName, ldioInput, ldioStatusOutputs, configurator.getInitialPipelineStatus());
-			eventPublisher.publishEvent(new InputCreatedEvent(config.getName(), ldioInput));
 			eventPublisher.publishEvent(new PipelineCreatedEvent(pipelineStatusManager));
 		} catch (NoSuchBeanDefinitionException e) {
 			throw new InvalidComponentException(config.getName(), e.getBeanName());

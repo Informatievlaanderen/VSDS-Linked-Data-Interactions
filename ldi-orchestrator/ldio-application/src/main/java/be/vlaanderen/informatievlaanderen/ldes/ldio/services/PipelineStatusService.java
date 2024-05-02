@@ -38,7 +38,7 @@ public class PipelineStatusService {
 	}
 
 	public PipelineStatus updatePipelineStatus(String pipelineName, PipelineStatus pipelineStatus) {
-		return Optional.of(pipelineStatusManagers.get(pipelineName))
+		return Optional.ofNullable(pipelineStatusManagers.get(pipelineName))
 				.map(pipelineStatusManager -> pipelineStatusManager.updatePipelineStatus(pipelineStatus))
 				.orElseThrow(() -> new PipelineDoesNotExistException(pipelineName));
 	}
