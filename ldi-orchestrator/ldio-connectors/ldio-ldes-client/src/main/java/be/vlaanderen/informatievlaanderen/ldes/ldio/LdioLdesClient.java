@@ -1,18 +1,19 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.HaltedPipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
-import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
+import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
-
-import java.util.concurrent.ExecutorService;
-
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 public class LdioLdesClient extends LdioInput {
 
@@ -23,32 +24,30 @@ public class LdioLdesClient extends LdioInput {
 	private final MemberSupplier memberSupplier;
 	private boolean threadRunning = true;
 	private boolean paused = false;
-	private final boolean keepState;
+	private final String pipelineName;
+	private final ApplicationEventPublisher applicationEventPublisher;
+	private final ThreadPoolTaskScheduler scheduler;
 
 	public LdioLdesClient(ComponentExecutor componentExecutor,
-                          LdioObserver ldioObserver,
-                          MemberSupplier memberSupplier,
-                          ApplicationEventPublisher applicationEventPublisher,
-						  boolean keepState) {
-		super(componentExecutor, null, ldioObserver);
+						  String pipelineName,
+						  ObservationRegistry observationRegistry,
+						  MemberSupplier memberSupplier,
+						  ApplicationEventPublisher applicationEventPublisher) {
+		super(componentExecutor, null, LdioObserver.register(NAME, pipelineName, observationRegistry));
+		this.pipelineName = pipelineName;
 		this.memberSupplier = memberSupplier;
-        this.keepState = keepState;
-    }
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.scheduler = new ThreadPoolTaskScheduler();
+		this.scheduler.setWaitForTasksToCompleteOnShutdown(false);
+		this.scheduler.setErrorHandler(this::handleError);
+	}
 
 	@Override
 	public void start() {
-		super.start();
-		final ExecutorService executorService = newSingleThreadExecutor();
-		executorService.submit(() -> {
-			try {
-				memberSupplier.init();
-				this.run();
-			} catch (RuntimeException e) {
-				log.atWarn().log("HALTING pipeline because of an unhandled error");
-				log.atError().log(e.getMessage());
-				updateStatus(PipelineStatusTrigger.HALT);
-				throw e;
-			}
+		scheduler.initialize();
+		scheduler.submit(() -> {
+			memberSupplier.init();
+			this.run();
 		});
 	}
 
@@ -69,19 +68,22 @@ public class LdioLdesClient extends LdioInput {
 		while (paused) {
 			try {
 				this.wait();
-			}  catch (InterruptedException e) {
+			} catch (InterruptedException e) {
 				log.error("Thread interrupted: {}", e.getMessage());
 				Thread.currentThread().interrupt();
 			}
 		}
 	}
 
+	protected void updateStatus(PipelineStatus status) {
+		applicationEventPublisher.publishEvent(new PipelineStatusEvent(pipelineName, status, StatusChangeSource.AUTO));
+	}
+
 	@Override
 	public void shutdown() {
 		threadRunning = false;
-		if (!keepState) {
-			memberSupplier.destroyState();
-		}
+		scheduler.destroy();
+		memberSupplier.destroyState();
 	}
 
 	@Override
@@ -93,5 +95,11 @@ public class LdioLdesClient extends LdioInput {
 	@Override
 	public void pause() {
 		this.paused = true;
+	}
+
+	private void handleError(Throwable e) {
+		log.atWarn().log("HALTING pipeline because of an unhandled error");
+		log.atError().log(e.getMessage());
+		updateStatus(new HaltedPipelineStatus());
 	}
 }

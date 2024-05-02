@@ -13,7 +13,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.LdioAmpqInPrope
 import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,7 +40,7 @@ public class LdioAmqpInAutoConfig {
 		}
 
 		@Override
-		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties config) {
+		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ComponentProperties config) {
 			final String pipelineName = config.getPipelineName();
 			final String remoteUrl = new RemoteUrlExtractor(config).getRemoteUrl();
 			final JmsConfig jmsConfig = new JmsConfig(config.getProperty(USERNAME), config.getProperty(PASSWORD),

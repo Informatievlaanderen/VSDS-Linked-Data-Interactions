@@ -12,7 +12,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -43,7 +42,6 @@ public class LdioHttpInputPoller extends LdioInput implements Runnable {
 
 	@Override
 	public void start() {
-		super.start();
 		startScheduler();
 	}
 

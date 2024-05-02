@@ -10,7 +10,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinesta
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,7 +34,7 @@ public class LdioHttpInputPollerAutoConfig {
 
 		@Override
 		public LdioHttpInputPoller configure(LdiAdapter adapter, ComponentExecutor executor,
-											 ApplicationEventPublisher applicationEventPublisher, ComponentProperties properties) {
+											 ComponentProperties properties) {
 			final var ldioObserver = LdioObserver.register(NAME, properties.getPipelineName(), observationRegistry);
 			final var requestExecutor = ldioRequestExecutorSupplier.getRequestExecutor(properties);
 			final var ldioHttpInPollerProperties = LdioHttpInputPollerProperties.fromComponentProperties(properties);

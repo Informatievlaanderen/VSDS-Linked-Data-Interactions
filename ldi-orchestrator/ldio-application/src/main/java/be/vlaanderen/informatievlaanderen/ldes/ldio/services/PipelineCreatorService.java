@@ -75,16 +75,14 @@ public class PipelineCreatorService {
 
 			verifyAdapter(config, configurator.isAdapterRequired());
 
-			LdioInput ldioInput = configurator.configure(adapter, executor, eventPublisher, new ComponentProperties(pipeLineName, inputName, inputConfig));
-
-			registerBean(pipeLineName, ldioInput);
+			LdioInput ldioInput = configurator.configure(adapter, executor, new ComponentProperties(pipeLineName, inputName, inputConfig));
 
 			List<LdioStatusComponent> ldioStatusOutputs = getLdioOutputs(config).stream()
 					.filter(LdioStatusComponent.class::isInstance)
 					.map(LdioStatusComponent.class::cast)
 					.toList();
 
-			final var pipelineStatusManager = PipelineStatusManager.initWithStatus(pipeLineName, ldioInput, ldioStatusOutputs, configurator.getInitialPipelineStatus());
+			final var pipelineStatusManager = PipelineStatusManager.initializeWithStatus(pipeLineName, ldioInput, ldioStatusOutputs, configurator.getInitialPipelineStatus());
 			eventPublisher.publishEvent(new InputCreatedEvent(config.getName(), ldioInput));
 			eventPublisher.publishEvent(new PipelineCreatedEvent(pipelineStatusManager));
 		} catch (NoSuchBeanDefinitionException e) {

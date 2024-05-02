@@ -2,16 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.types;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import org.apache.jena.rdf.model.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.function.Supplier;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
 
 /**
  * Base class for the start of a LDIO workflow.
@@ -24,9 +17,7 @@ public abstract class LdioInput implements LdioStatusComponent {
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
 	private final LdioObserver ldioObserver;
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private PipelineStatus pipelineStatus;
 
 	/**
 	 * Creates a LdiInput with its Component Executor and LDI Adapter
@@ -40,7 +31,6 @@ public abstract class LdioInput implements LdioStatusComponent {
 		this.executor = executor;
 		this.adapter = adapter;
 		this.ldioObserver = ldioObserver;
-		this.pipelineStatus = INIT;
 	}
 
 	public void processInput(String content, String contentType) {
@@ -55,32 +45,5 @@ public abstract class LdioInput implements LdioStatusComponent {
 	protected void processModel(Model model) {
 		ldioObserver.increment();
 		ldioObserver.observe(() -> executor.transformLinkedData(model), "processModel");
-	}
-
-	public PipelineStatus updateStatus(PipelineStatusTrigger trigger) {
-		switch (trigger) {
-			case START -> this.pipelineStatus = RUNNING;
-			case RESUME -> {
-				this.resume();
-				this.pipelineStatus = RUNNING;
-			}
-			case HALT -> {
-				if (this.pipelineStatus != INIT) {
-					this.pause();
-					this.pipelineStatus = HALTED;
-				}
-			}
-			case STOP -> this.pipelineStatus = STOPPED;
-			default -> log.warn("Unhandled status update on pipeline: {} for status: {}", ldioObserver.getPipelineName(), pipelineStatus);
-		}
-		return this.pipelineStatus;
-	}
-
-	public void start() {
-		updateStatus(START);
-	}
-
-	public PipelineStatus getStatus() {
-		return this.pipelineStatus;
 	}
 }

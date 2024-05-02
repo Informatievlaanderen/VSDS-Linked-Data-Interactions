@@ -14,7 +14,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -49,9 +48,8 @@ public class MockFlowConfiguration {
 		@Override
 		public LdioInput configure(LdiAdapter adapter,
 		                           ComponentExecutor executor,
-								   ApplicationEventPublisher applicationEventPublisher,
 		                           ComponentProperties config) {
-			return new DummyIn(executor, adapter, applicationEventPublisher);
+			return new DummyIn(executor, adapter);
 		}
 
 		@Override

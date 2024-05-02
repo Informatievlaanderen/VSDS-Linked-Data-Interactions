@@ -40,12 +40,11 @@ public class LdioHttpInAutoConfig {
 		@Override
 		public LdioInput configure(LdiAdapter adapter,
 								   ComponentExecutor executor,
-								   ApplicationEventPublisher applicationEventPublisher,
 								   ComponentProperties config) {
 			String pipelineName = config.getPipelineName();
 
 			LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
-			LdioHttpInProcess ldioHttpIn = new LdioHttpInProcess(executor, adapter, ldioObserver, applicationEventPublisher);
+			LdioHttpInProcess ldioHttpIn = new LdioHttpInProcess(executor, adapter, ldioObserver);
 
 			eventPublisher.publishEvent(new HttpInPipelineCreatedEvent(pipelineName, ldioHttpIn));
 			ldioHttpIn.start();

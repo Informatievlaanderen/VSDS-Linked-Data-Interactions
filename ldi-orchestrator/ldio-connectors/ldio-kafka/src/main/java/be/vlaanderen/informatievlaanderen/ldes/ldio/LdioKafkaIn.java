@@ -13,7 +13,6 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.SASL_JAAS_PASSWORD;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
 
 public class LdioKafkaIn extends LdioInput {
@@ -45,8 +43,11 @@ public class LdioKafkaIn extends LdioInput {
         final ContainerProperties containerProps = new ContainerProperties(config.getProperty(TOPICS).split(","));
         containerProps.setMessageListener(listener);
         this.container = new KafkaMessageListenerContainer<>(consumerFactory, containerProps);
+    }
+
+    @Override
+    public void start() {
         container.start();
-        this.start();
     }
 
     @Override

@@ -4,7 +4,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -17,7 +16,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.awaitility.Awaitility;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -39,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
-	private final ApplicationEventPublisher applicationEventPublisher = applicationEventPublisher();
 	private Model inputModel;
 
 	private String contentType;
@@ -65,7 +62,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 			return Stream.of(toModel(content));
 		};
 		var ldioKafkaInConfigurator = new LdioKafkaInAutoConfig().ldioConfigurator(null);
-		kafkaIn = ldioKafkaInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
+		kafkaIn = ldioKafkaInConfigurator.configure(adapter, componentExecutor, properties);
 	}
 
 	private Model toModel(LdiAdapter.Content content) {
@@ -135,12 +132,12 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 
 	@When("I pause the pipeline")
 	public void pauseInput() {
-		kafkaIn.updateStatus(PipelineStatusTrigger.HALT);
+		kafkaIn.pause();
 	}
 
 	@When("I unpause the pipeline")
 	public void unPauseInput() {
-		kafkaIn.updateStatus(PipelineStatusTrigger.RESUME);
+		kafkaIn.resume();
 	}
 
 }

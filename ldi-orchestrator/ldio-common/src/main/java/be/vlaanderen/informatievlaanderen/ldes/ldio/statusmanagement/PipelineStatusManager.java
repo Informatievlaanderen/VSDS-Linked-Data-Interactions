@@ -1,17 +1,19 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus.Value;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus.Value.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus.Value.RUNNING;
 
 public class PipelineStatusManager {
+	private static final Logger log = LoggerFactory.getLogger(PipelineStatusManager.class);
 	private PipelineStatus pipelineStatus;
 	private StatusChangeSource lastStatusChangeSource;
 	private final String pipelineName;
@@ -24,7 +26,7 @@ public class PipelineStatusManager {
 		this.outputs = outputs;
 	}
 
-	public static PipelineStatusManager initWithStatus(String name, LdioInput input, List<LdioStatusComponent> outputs, PipelineStatus status) {
+	public static PipelineStatusManager initializeWithStatus(String name, LdioInput input, List<LdioStatusComponent> outputs, PipelineStatus status) {
 		final var pipelineStatusManager = new PipelineStatusManager(name, input, outputs);
 		pipelineStatusManager.updatePipelineStatus(status, StatusChangeSource.AUTO);
 		return pipelineStatusManager;
@@ -58,6 +60,7 @@ public class PipelineStatusManager {
 	public PipelineStatus updatePipelineStatus(PipelineStatus pipelineStatus, StatusChangeSource statusChangeSource) {
 		final boolean isStatusUpdated = setPipelineStatus(pipelineStatus);
 		if (isStatusUpdated) {
+			log.atInfo().log("UPDATED status for pipeline '{}' to {}", pipelineName, pipelineStatus.getStatusValue());
 			this.lastStatusChangeSource = statusChangeSource;
 			updateComponentsStatus();
 		}
