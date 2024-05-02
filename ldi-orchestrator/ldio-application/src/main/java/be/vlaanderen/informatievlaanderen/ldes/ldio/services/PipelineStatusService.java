@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.PipelineStatusManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.HaltedPipelineStatus;
@@ -66,10 +65,5 @@ public class PipelineStatusService {
 	@EventListener
 	public void handlePipelineCreated(PipelineCreatedEvent event) {
 		pipelineStatusManagers.put(event.pipelineName(), event.pipelineStatusManager());
-	}
-
-	@EventListener
-	public void handlePipelineDeletedEvent(PipelineDeletedEvent event) {
-		stopPipeline(event.pipelineId());
 	}
 }
