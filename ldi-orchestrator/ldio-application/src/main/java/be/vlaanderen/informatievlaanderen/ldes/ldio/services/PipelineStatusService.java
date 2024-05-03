@@ -5,7 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExi
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.PipelineStatusManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.HaltedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.ResumedPipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.RunningPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StoppedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
 import org.springframework.context.event.EventListener;
@@ -47,7 +47,7 @@ public class PipelineStatusService {
 	}
 
 	public PipelineStatus.Value resumePipeline(String pipelineName) {
-		return updatePipelineStatus(pipelineName, new ResumedPipelineStatus()).getStatusValue();
+		return updatePipelineStatus(pipelineName, new RunningPipelineStatus()).getStatusValue();
 	}
 
 	public PipelineStatus.Value stopPipeline(String pipelineId) {

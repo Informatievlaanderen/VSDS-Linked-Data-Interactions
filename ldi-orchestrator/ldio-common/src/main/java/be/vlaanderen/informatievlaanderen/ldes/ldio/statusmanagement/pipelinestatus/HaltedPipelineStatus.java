@@ -12,4 +12,9 @@ public class HaltedPipelineStatus implements PipelineStatus {
 	public Value getStatusValue() {
 		return Value.HALTED;
 	}
+
+	@Override
+	public boolean canGoToStatus(PipelineStatus status) {
+		return status instanceof RunningPipelineStatus || status instanceof StoppedPipelineStatus;
+	}
 }

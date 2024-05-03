@@ -18,10 +18,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PipelineStatusManagerTest {
+	public static final String PIPELINE_NAME = "my-pipeline";
 	@Mock
 	private LdioInput ldioInput;
 	@Mock
@@ -30,14 +32,11 @@ class PipelineStatusManagerTest {
 
 	@BeforeEach
 	void setUp() {
-		String pipelineName = "my-pipeline";
-		pipelineStatusManager = PipelineStatusManager.initialize(pipelineName, ldioInput, List.of(ldioOutput));
+		pipelineStatusManager = PipelineStatusManager.initialize(PIPELINE_NAME, ldioInput, List.of(ldioOutput));
 	}
 
 	@Test
 	void test_InitPipeline() {
-		pipelineStatusManager.updatePipelineStatus(new InitPipelineStatus());
-
 		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
 
 		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.INIT);
@@ -47,9 +46,11 @@ class PipelineStatusManagerTest {
 
 	@Test
 	void test_StartPipeline() {
-		pipelineStatusManager.updatePipelineStatus(new StartedPipelineStatus());
+		final var ldioInput = mock(LdioInput.class);
+		final var ldioOutput = mock(LdioStatusOutput.class);
+		final var startedPipelineStatusManager = PipelineStatusManager.initializeWithStatus(PIPELINE_NAME, ldioInput, List.of(ldioOutput), new StartedPipelineStatus());
 
-		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
+		final var currentStatus = startedPipelineStatusManager.getPipelineStatusValue();
 
 		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.RUNNING);
 		verify(ldioInput).start();
@@ -61,7 +62,7 @@ class PipelineStatusManagerTest {
 		pipelineStatusManager.updatePipelineStatus(new StartedPipelineStatus());
 		pipelineStatusManager.updatePipelineStatus(new HaltedPipelineStatus());
 
-		pipelineStatusManager.updatePipelineStatus(new ResumedPipelineStatus());
+		pipelineStatusManager.updatePipelineStatus(new RunningPipelineStatus());
 		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
 
 		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.RUNNING);
@@ -71,7 +72,7 @@ class PipelineStatusManagerTest {
 
 	@Test
 	void test_HaltRunningPipeline() {
-		pipelineStatusManager.updatePipelineStatus(new StartedPipelineStatus());
+		pipelineStatusManager.updatePipelineStatus(new RunningPipelineStatus());
 
 		pipelineStatusManager.updatePipelineStatus(new HaltedPipelineStatus());
 		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
@@ -113,7 +114,7 @@ class PipelineStatusManagerTest {
 			return Stream.of(
 							new InitPipelineStatus(),
 							new StartedPipelineStatus(),
-							new ResumedPipelineStatus(),
+							new RunningPipelineStatus(),
 							new HaltedPipelineStatus())
 					.map(Arguments::of);
 		}
@@ -123,11 +124,11 @@ class PipelineStatusManagerTest {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(
-					Arguments.of(new StartedPipelineStatus(), new InitPipelineStatus()),
-					Arguments.of(new ResumedPipelineStatus(), new InitPipelineStatus()),
+					Arguments.of(new InitPipelineStatus(), new StartedPipelineStatus()),
+					Arguments.of(new RunningPipelineStatus(), new InitPipelineStatus()),
 					Arguments.of(new StoppedPipelineStatus(), new InitPipelineStatus()),
 					Arguments.of(new StoppedPipelineStatus(), new StartedPipelineStatus()),
-					Arguments.of(new StoppedPipelineStatus(), new ResumedPipelineStatus()),
+					Arguments.of(new StoppedPipelineStatus(), new RunningPipelineStatus()),
 					Arguments.of(new StoppedPipelineStatus(), new HaltedPipelineStatus()),
 					Arguments.of(new InitPipelineStatus(), new HaltedPipelineStatus())
 			);

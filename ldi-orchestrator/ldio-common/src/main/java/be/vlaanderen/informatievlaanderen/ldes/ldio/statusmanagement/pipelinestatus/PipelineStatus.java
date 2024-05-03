@@ -7,6 +7,8 @@ public interface PipelineStatus {
 
 	Value getStatusValue();
 
+	boolean canGoToStatus(PipelineStatus status);
+
 	enum Value {
 		INIT, RUNNING, HALTED, STOPPED
 	}
