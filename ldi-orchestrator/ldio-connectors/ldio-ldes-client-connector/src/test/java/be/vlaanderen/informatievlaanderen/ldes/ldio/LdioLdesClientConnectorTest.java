@@ -50,7 +50,7 @@ class LdioLdesClientConnectorTest {
 				eventPublisher,
 				transferService,
 				tokenService);
-		eventPublisher.publishEvent(new PipelineCreatedEvent(new PipelineStatusManager(endpoint, ldioLdesClientConnectorApi, List.of())));
+		eventPublisher.publishEvent(new PipelineCreatedEvent(PipelineStatusManager.initialize(endpoint, ldioLdesClientConnectorApi, List.of())));
 	}
 
 	@Test
