@@ -1,8 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.InitPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +20,16 @@ public class PipelineStatusManager {
 	private StatusChangeSource lastStatusChangeSource;
 	private final String pipelineName;
 	private final LdioInput input;
-	private final List<LdioStatusComponent> outputs;
+	private final List<LdioStatusOutput> outputs;
 
-	public PipelineStatusManager(String pipelineName, LdioInput input, List<LdioStatusComponent> outputs) {
+	public PipelineStatusManager(String pipelineName, LdioInput input, List<LdioStatusOutput> outputs) {
 		this.pipelineName = pipelineName;
 		this.input = input;
 		this.outputs = outputs;
+		this.pipelineStatus = new InitPipelineStatus();
 	}
 
-	public static PipelineStatusManager initializeWithStatus(String name, LdioInput input, List<LdioStatusComponent> outputs, PipelineStatus status) {
+	public static PipelineStatusManager initializeWithStatus(String name, LdioInput input, List<LdioStatusOutput> outputs, PipelineStatus status) {
 		final var pipelineStatusManager = new PipelineStatusManager(name, input, outputs);
 		pipelineStatusManager.updatePipelineStatus(status, StatusChangeSource.AUTO);
 		return pipelineStatusManager;
@@ -43,7 +46,6 @@ public class PipelineStatusManager {
 	public PipelineStatus.Value getPipelineStatusValue() {
 		return pipelineStatus.getStatusValue();
 	}
-
 
 	public String getPipelineName() {
 		return pipelineName;
@@ -72,9 +74,10 @@ public class PipelineStatusManager {
 	}
 
 	private boolean tryUpdatePipelineStatus(PipelineStatus newPipelineStatus) {
-		final Value currentSatusValue = pipelineStatus == null ? INIT : pipelineStatus.getStatusValue();
+		final Value currentSatusValue = pipelineStatus.getStatusValue();
 
 		return switch (newPipelineStatus.getStatusValue()) {
+			case INIT -> currentSatusValue == INIT;
 			case RUNNING -> {
 				if (currentSatusValue == HALTED || currentSatusValue == INIT) {
 					this.pipelineStatus = newPipelineStatus;

@@ -1,8 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
@@ -20,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.ObserveConfiguration.ERROR_TEMPLATE;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
-public class LdioRepositoryMaterialiser implements LdiOutput, LdioStatusComponent {
+public class LdioRepositoryMaterialiser implements LdioStatusOutput {
 	private static final Logger log = LoggerFactory.getLogger(LdioRepositoryMaterialiser.class);
 	public static final String NAME = "Ldio:RepositoryMaterialiser";
 	private ScheduledExecutorService scheduledExecutorService;

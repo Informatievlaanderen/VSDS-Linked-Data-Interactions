@@ -16,7 +16,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidPipelineNam
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.PipelineStatusManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -77,9 +77,9 @@ public class PipelineCreatorService {
 			LdioInput ldioInput = configurator.configure(adapter, executor, new ComponentProperties(pipeLineName, inputName, inputConfig));
 			registerBean(pipeLineName, ldioInput);
 
-			List<LdioStatusComponent> ldioStatusOutputs = getLdioOutputs(config).stream()
-					.filter(LdioStatusComponent.class::isInstance)
-					.map(LdioStatusComponent.class::cast)
+			List<LdioStatusOutput> ldioStatusOutputs = getLdioOutputs(config).stream()
+					.filter(LdioStatusOutput.class::isInstance)
+					.map(LdioStatusOutput.class::cast)
 					.toList();
 
 			final var pipelineStatusManager = PipelineStatusManager.initializeWithStatus(pipeLineName, ldioInput, ldioStatusOutputs, configurator.getInitialPipelineStatus());
@@ -95,8 +95,12 @@ public class PipelineCreatorService {
 			throw new LdiAdapterMissingException(config.getName(), config.getInput().getName());
 		}
 		if (!isAdapterRequired && adapter != null) {
-			final String pipelineName = config.getName().replaceAll("[\n\r]", "_");
-			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", pipelineName, config.getInput().getName(), adapter.getName());
+			final String regex = "[\n\r]";
+			final String replacement = "_";
+			final String pipelineName = config.getName().replaceAll(regex, replacement);
+			final String inputName = config.getInput().getName().replaceAll(regex, replacement);
+			final String adapterName = adapter.getName().replaceAll(regex, replacement);
+			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", pipelineName, inputName, adapterName);
 		}
 	}
 
