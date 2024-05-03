@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinest
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
 
-public class ResumedPipelineStatus implements PipelineStatus {
+public class RunningPipelineStatus implements PipelineStatus {
 	@Override
 	public void updateComponentStatus(LdioStatusComponent ldioComponent) {
 		ldioComponent.resume();
@@ -11,5 +11,10 @@ public class ResumedPipelineStatus implements PipelineStatus {
 	@Override
 	public Value getStatusValue() {
 		return Value.RUNNING;
+	}
+
+	@Override
+	public boolean canGoToStatus(PipelineStatus status) {
+		return status instanceof HaltedPipelineStatus || status instanceof StoppedPipelineStatus;
 	}
 }

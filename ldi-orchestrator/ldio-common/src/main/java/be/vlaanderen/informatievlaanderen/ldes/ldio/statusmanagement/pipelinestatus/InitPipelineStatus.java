@@ -12,4 +12,9 @@ public class InitPipelineStatus implements PipelineStatus {
 	public Value getStatusValue() {
 		return Value.INIT;
 	}
+
+	@Override
+	public boolean canGoToStatus(PipelineStatus status) {
+		return status instanceof RunningPipelineStatus || status instanceof StoppedPipelineStatus;
+	}
 }

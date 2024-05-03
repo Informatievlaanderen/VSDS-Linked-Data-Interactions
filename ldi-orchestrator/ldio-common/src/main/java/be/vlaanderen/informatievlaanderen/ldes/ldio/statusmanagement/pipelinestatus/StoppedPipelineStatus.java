@@ -12,4 +12,9 @@ public class StoppedPipelineStatus implements PipelineStatus {
 	public Value getStatusValue() {
 		return Value.STOPPED;
 	}
+
+	@Override
+	public boolean canGoToStatus(PipelineStatus status) {
+		return false;
+	}
 }

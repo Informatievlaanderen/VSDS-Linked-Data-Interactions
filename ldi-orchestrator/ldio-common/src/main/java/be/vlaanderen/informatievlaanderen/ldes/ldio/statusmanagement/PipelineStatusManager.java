@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.InitPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StartedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusOutput;
@@ -10,9 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus.Value;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus.Value.*;
 
 public class PipelineStatusManager {
 	private static final Logger log = LoggerFactory.getLogger(PipelineStatusManager.class);
@@ -77,29 +75,18 @@ public class PipelineStatusManager {
 	}
 
 	private boolean tryUpdatePipelineStatus(PipelineStatus newPipelineStatus) {
-		final Value currentSatusValue = pipelineStatus.getStatusValue();
-
-		return switch (newPipelineStatus.getStatusValue()) {
-			case INIT -> currentSatusValue == INIT;
-			case RUNNING -> {
-				if (currentSatusValue == HALTED || currentSatusValue == INIT) {
-					this.pipelineStatus = newPipelineStatus;
-					yield true;
-				}
-				yield false;
+		if(pipelineStatus == null) {
+			if(newPipelineStatus instanceof InitPipelineStatus || newPipelineStatus instanceof StartedPipelineStatus) {
+				pipelineStatus = newPipelineStatus;
+				return true;
 			}
-			case HALTED -> {
-				if (currentSatusValue == RUNNING) {
-					this.pipelineStatus = newPipelineStatus;
-					yield true;
-				}
-				yield false;
-			}
-			default -> {
-				this.pipelineStatus = newPipelineStatus;
-				yield true;
-			}
-		};
+			return false;
+		}
+		if(pipelineStatus.canGoToStatus(newPipelineStatus)) {
+			pipelineStatus = newPipelineStatus;
+			return true;
+		}
+		return false;
 	}
 
 	private void updateComponentsStatus() {

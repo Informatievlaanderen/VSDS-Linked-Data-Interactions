@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.ResumedPipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.RunningPipelineStatus;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 
@@ -9,8 +9,6 @@ import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PipelineTOTest {
 
@@ -29,10 +27,10 @@ class PipelineTOTest {
 	void fromPipelineConfig() {
 		PipelineConfigTO createdPipeline = getPipelineConfig();
 
-		PipelineTO pipelineTO = PipelineTO.build(createdPipeline, new ResumedPipelineStatus(), AUTO);
+		PipelineTO pipelineTO = PipelineTO.build(createdPipeline, new RunningPipelineStatus(), AUTO);
 
 		assertThat(pipelineTO.name()).isEqualTo("pipeline");
-		assertThat(pipelineTO.status()).isInstanceOf(ResumedPipelineStatus.class);
+		assertThat(pipelineTO.status()).isInstanceOf(RunningPipelineStatus.class);
 		assertThat(pipelineTO.updateSource()).isEqualTo(AUTO);
 		assertThat(pipelineTO.input())
 				.hasFieldOrPropertyWithValue("name", "in")
