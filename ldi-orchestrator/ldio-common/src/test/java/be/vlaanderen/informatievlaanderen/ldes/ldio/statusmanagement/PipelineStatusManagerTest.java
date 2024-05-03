@@ -31,7 +31,7 @@ class PipelineStatusManagerTest {
 	@BeforeEach
 	void setUp() {
 		String pipelineName = "my-pipeline";
-		pipelineStatusManager = new PipelineStatusManager(pipelineName, ldioInput, List.of(ldioOutput));
+		pipelineStatusManager = PipelineStatusManager.initialize(pipelineName, ldioInput, List.of(ldioOutput));
 	}
 
 	@Test

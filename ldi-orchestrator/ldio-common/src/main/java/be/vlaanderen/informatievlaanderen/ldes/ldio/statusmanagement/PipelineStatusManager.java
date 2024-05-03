@@ -22,11 +22,14 @@ public class PipelineStatusManager {
 	private final LdioInput input;
 	private final List<LdioStatusOutput> outputs;
 
-	public PipelineStatusManager(String pipelineName, LdioInput input, List<LdioStatusOutput> outputs) {
+	private PipelineStatusManager(String pipelineName, LdioInput input, List<LdioStatusOutput> outputs) {
 		this.pipelineName = pipelineName;
 		this.input = input;
 		this.outputs = outputs;
-		this.pipelineStatus = new InitPipelineStatus();
+	}
+
+	public static PipelineStatusManager initialize(String pipelineName, LdioInput input, List<LdioStatusOutput> outputs) {
+		return initializeWithStatus(pipelineName, input, outputs, new InitPipelineStatus());
 	}
 
 	public static PipelineStatusManager initializeWithStatus(String name, LdioInput input, List<LdioStatusOutput> outputs, PipelineStatus status) {

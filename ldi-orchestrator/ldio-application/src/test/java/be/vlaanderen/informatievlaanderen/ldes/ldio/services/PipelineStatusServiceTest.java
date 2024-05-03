@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 class PipelineStatusServiceTest {
     private final String pipelineName = "pipeline";
     private final LdioInput input = mock(LdioInput.class);
-    private final PipelineStatusManager pipelineStatusManager = new PipelineStatusManager(pipelineName, input, List.of());
+    private final PipelineStatusManager pipelineStatusManager = PipelineStatusManager.initialize(pipelineName, input, List.of());
     private PipelineStatusService pipelineStatusService;
 
     @BeforeEach
