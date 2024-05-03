@@ -19,11 +19,9 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class PipelineStatusManagerTest {
-	private final String pipelineName = "my-pipeline";
 	@Mock
 	private LdioInput ldioInput;
 	@Mock
@@ -32,6 +30,7 @@ class PipelineStatusManagerTest {
 
 	@BeforeEach
 	void setUp() {
+		String pipelineName = "my-pipeline";
 		pipelineStatusManager = new PipelineStatusManager(pipelineName, ldioInput, List.of(ldioOutput));
 	}
 
