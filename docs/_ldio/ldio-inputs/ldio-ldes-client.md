@@ -116,6 +116,10 @@ api
 | _materialisation.version-of-property_ | Property that points to the versionOfPath                                             | No       | http://purl.org/dc/terms/isVersionOf | http://purl.org/dc/terms/isVersionOf | true or false    |
 | _materialisation.enable-latest-state_ | Indicates whether all state or only the latest state must be sent                     | No       | true                                 | false                                | true or false    |
 
+{: .note }
+Don't forgot to provide a timestamp-path in the general properties, as this property is not required, but necessary for this filter to work properly!
+
+
 {% include ldio-core/http-requester.md %}
 
 ### Postgres properties
