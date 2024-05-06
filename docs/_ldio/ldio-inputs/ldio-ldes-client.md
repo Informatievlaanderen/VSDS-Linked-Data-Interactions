@@ -41,14 +41,14 @@ If the patch is missing, members will be processed in random order.
 #### Exactly-once-filter
 
 To have the possibility to filter out already received members, the "exactly-once-filter" can be enabled in
-configuration. The filter will check whether a member was already processed in other fragments.  
+[configuration](#general-properties). The filter will check whether a member was already processed in other fragments.  
 The IDs of all processed members will be remembered by the filter and when a duplicate member is processed, it will be
 filtered out before sending it to the output of the Client.
 
 #### Latest-state-filter
 
 When version materialisation is enabled, state objects that does not represent the latest state can be filter out by
-enabling the "latest-state-filter" in the configuration.
+enabling the "latest-state-filter" in the [configuration](#version-materialisation-properties).
 
 Both the versionOf and the timestamp of the version object members will be remembered by the filter. When a new member
 with the same versionOf and a timestamp that is before or equal to the latest remembered timestamp, the member will be
@@ -90,14 +90,14 @@ CPU ([source](https://www.sqlite.org/faq.html#q19)).
 
 ### General properties
 
-| Property              | Description                                                                            | Required | Default     | Example                                   | Supported values                                                                                                        |
-|:----------------------|:---------------------------------------------------------------------------------------|:---------|:------------|:------------------------------------------|:------------------------------------------------------------------------------------------------------------------------|
-| _urls_                | List of URLs of the LDES data sources                                                  | Yes      | N/A         | http://localhost:8080/my-ldes             | HTTP and HTTPS URLs                                                                                                     |
-| _source-format_       | The 'Content-Type' that should be requested to the server                              | No       | text/turtle | application/n-quads                       | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
-| _state_               | 'memory', 'sqlite' or 'postgres' to indicate how the state should be persisted         | No       | memory      | sqlite                                    | 'memory', 'sqlite' or 'postgres'                                                                                        |
-| _keep-state_          | Indicates if the state should be persisted on shutdown (n/a for in memory states)      | No       | false       | false                                     | true or false                                                                                                           |
-| _timestamp-path_      | The property-path used to determine the timestamp on which the members will be ordered | No       | N/A         | http://www.w3.org/ns/prov#generatedAtTime | A property path                                                                                                         |
-| _enable-exactly-once_ | Indicates whether a member must be sent exactly once or at least once                  | No       | true        | true                                      | true or false                                                                                                           |
+| Property              | Description                                                                                                                                 | Required | Default     | Example                                   | Supported values                                                                                                        |
+|:----------------------|:--------------------------------------------------------------------------------------------------------------------------------------------|:---------|:------------|:------------------------------------------|:------------------------------------------------------------------------------------------------------------------------|
+| _urls_                | List of URLs of the LDES data sources                                                                                                       | Yes      | N/A         | http://localhost:8080/my-ldes             | HTTP and HTTPS URLs                                                                                                     |
+| _source-format_       | The 'Content-Type' that should be requested to the server                                                                                   | No       | text/turtle | application/n-quads                       | Any type supported by [Apache Jena](https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax) |
+| _state_               | 'memory', 'sqlite' or 'postgres' to indicate how the state should be persisted                                                              | No       | memory      | sqlite                                    | 'memory', 'sqlite' or 'postgres'                                                                                        |
+| _keep-state_          | Indicates if the state should be persisted on shutdown (n/a for in memory states)                                                           | No       | false       | false                                     | true or false                                                                                                           |
+| _timestamp-path_      | The property-path used to determine the timestamp on which the members will be ordered, and used for the `latest-state-filter` when enabled | No       | N/A         | http://www.w3.org/ns/prov#generatedAtTime | A property path                                                                                                         |
+| _enable-exactly-once_ | Indicates whether a member must be sent exactly once or at least once                                                                       | No       | true        | true                                      | true or false                                                                                                           |
 
 {: .note }
 The default `source-format` is `text/turtle`, as this RDF format supports relative URIs. However, if relative URIs are
@@ -115,6 +115,10 @@ api
 | _materialisation.enabled_             | Indicates if the client should return state-objects (true) or version-objects (false) | No       | false                                | true                                 | true or false    |
 | _materialisation.version-of-property_ | Property that points to the versionOfPath                                             | No       | http://purl.org/dc/terms/isVersionOf | http://purl.org/dc/terms/isVersionOf | true or false    |
 | _materialisation.enable-latest-state_ | Indicates whether all state or only the latest state must be sent                     | No       | true                                 | false                                | true or false    |
+
+{: .note }
+Don't forgot to provide a timestamp-path in the general properties, as this property is not required, but necessary for this filter to work properly!
+
 
 {% include ldio-core/http-requester.md %}
 
