@@ -74,6 +74,16 @@ class LdioRepositoryMaterialiserTest {
 
 			verify(materialiser).processAsync(anyList());
 		}
+
+		@Test
+		void given_ValidList_when_ProcessList_And_AsyncProcessingFailed_then_RollbackConnection() {
+			when(materialiser.processAsync(anyList()))
+					.thenReturn(CompletableFuture.failedFuture(new MaterialisationFailedException(new RuntimeException())));
+
+			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
+
+			verify(materialiser).processAsync(anyList());
+		}
 	}
 
 	@Nested
@@ -111,6 +121,25 @@ class LdioRepositoryMaterialiserTest {
 			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
 
 			verify(materialiser, timeout(BATCH_TIMEOUT)).processAsync(anyList());
+		}
+
+		@Test
+		void when_PausingLdioRepoMaterialiser_then_CommitLastMembers() {
+			when(materialiser.processAsync(anyList())).thenReturn(new CompletableFuture<>());
+
+			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
+			ldioRepositoryMaterialiser.pause();
+
+			verify(materialiser).processAsync(argThat(list -> list.size() == 10));
+		}
+
+		@Test
+		void when_StoppingLdioRepoMaterialiser_then_ShutdownMaterialiser() {
+			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
+			ldioRepositoryMaterialiser.shutdown();
+
+			verify(materialiser).shutdown();
+			verifyNoMoreInteractions(materialiser);
 		}
 	}
 
