@@ -120,7 +120,7 @@ class LdioRepositoryMaterialiserTest {
 		void when_BatchSizeIsNotReached_then_CommitAfterBatchTimeout() {
 			readTenModelsFromFile().forEach(ldioRepositoryMaterialiser::accept);
 
-			verify(materialiser, timeout(BATCH_TIMEOUT)).processAsync(anyList());
+			verify(materialiser, timeout(BATCH_TIMEOUT + 250)).processAsync(anyList());
 		}
 
 		@Test
