@@ -1,6 +1,8 @@
 package ldes.client.treenodesupplier;
 
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

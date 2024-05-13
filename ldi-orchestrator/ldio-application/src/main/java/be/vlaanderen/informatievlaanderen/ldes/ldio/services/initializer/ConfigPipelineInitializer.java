@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @Service
 public class ConfigPipelineInitializer implements PipelineInitializer {
-	private static final String name = "LDI Orchestrator Spring Config Initializer";
+	private static final String NAME = "LDI Orchestrator Spring Config Initializer";
 	private final Logger log = LoggerFactory.getLogger(ConfigPipelineInitializer.class);
 	private final OrchestratorConfig orchestratorConfig;
 	private final PipelineService pipelineService;
@@ -26,7 +26,7 @@ public class ConfigPipelineInitializer implements PipelineInitializer {
 
 	@Override
 	public String name() {
-		return name;
+		return NAME;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class ConfigPipelineInitializer implements PipelineInitializer {
 		if (orchestratorConfig.getPipelines() == null) {
 			return List.of();
 		}
-		log.warn("{} DEPRECATED. Any configs with the same name will be ignored", name);
+		log.warn("{} DEPRECATED. Any configs with the same name will be ignored", NAME);
 		return orchestratorConfig.getPipelines()
 				.stream()
 				.map(pipeline -> {

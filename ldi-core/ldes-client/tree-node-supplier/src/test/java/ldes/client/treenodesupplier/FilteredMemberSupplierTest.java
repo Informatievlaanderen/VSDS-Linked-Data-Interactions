@@ -1,6 +1,9 @@
 package ldes.client.treenodesupplier;
 
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
+import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
+import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberIdRepository;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class ExactlyOnceFilterMemberSupplierTest {
+class FilteredMemberSupplierTest {
 
-    private MemberSupplier memberSupplier = mock(MemberSupplier.class);
-    private ExactlyOnceFilterMemberSupplier filterMemberSupplier;
+    private final MemberSupplier memberSupplier = mock(MemberSupplier.class);
+    private FilteredMemberSupplier filterMemberSupplier;
     private SuppliedMember member;
     private SuppliedMember member2;
 
@@ -22,8 +25,8 @@ class ExactlyOnceFilterMemberSupplierTest {
         member = new SuppliedMember("id1", ModelFactory.createDefaultModel());
         member2 = new SuppliedMember("id2", ModelFactory.createDefaultModel());
 
-        ExactlyOnceFilter filter = new ExactlyOnceFilter(new InMemoryMemberIdRepository());
-        filterMemberSupplier = new ExactlyOnceFilterMemberSupplier(memberSupplier, filter,false);
+        ExactlyOnceFilter filter = new ExactlyOnceFilter(new InMemoryMemberIdRepository(), false);
+        filterMemberSupplier = new FilteredMemberSupplier(memberSupplier, filter);
     }
 
     @Test

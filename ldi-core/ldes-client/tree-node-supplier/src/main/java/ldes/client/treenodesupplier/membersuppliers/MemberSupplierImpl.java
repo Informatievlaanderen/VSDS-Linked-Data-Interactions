@@ -1,5 +1,6 @@
-package ldes.client.treenodesupplier;
+package ldes.client.treenodesupplier.membersuppliers;
 
+import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 
 public class MemberSupplierImpl implements MemberSupplier {

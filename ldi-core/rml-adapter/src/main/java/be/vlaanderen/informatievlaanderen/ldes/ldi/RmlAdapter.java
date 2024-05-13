@@ -62,7 +62,7 @@ public class RmlAdapter implements LdiAdapter {
 		if (!dataset.listNames().hasNext()) {
 			return Stream.of(dataset.getDefaultModel());
 		} else {
-			return stream(Spliterators.spliteratorUnknownSize(dataset.listNames(), Spliterator.ORDERED), true)
+			return stream(Spliterators.spliteratorUnknownSize(dataset.listNames(), Spliterator.ORDERED), false)
 					.map(dataset::getNamedModel)
 					.map(model -> enrichModel(model, dataset));
 		}
