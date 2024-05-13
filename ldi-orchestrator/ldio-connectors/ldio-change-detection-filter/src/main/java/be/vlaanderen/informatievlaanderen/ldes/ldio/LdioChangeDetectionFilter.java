@@ -25,6 +25,10 @@ public class LdioChangeDetectionFilter extends LdioTransformer {
 		this.next(filteredModel);
 	}
 
+	public void shutdown() {
+		changeDetectionFilter.destroyState();
+	}
+
 	private String extractSubjectFromModel(Model model) {
 		return model.listSubjects().filterDrop(Resource::isAnon).next().getURI();
 	}

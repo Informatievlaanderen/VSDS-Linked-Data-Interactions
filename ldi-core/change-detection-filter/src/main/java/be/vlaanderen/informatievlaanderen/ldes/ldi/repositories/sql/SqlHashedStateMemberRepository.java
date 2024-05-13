@@ -6,7 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.entities.Has
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.EntityManagerFactory;
 
 import javax.persistence.EntityManager;
-import java.util.Optional;
 
 public class SqlHashedStateMemberRepository implements HashedStateMemberRepository {
 	private final EntityManagerFactory entityManagerFactory;
@@ -17,11 +16,6 @@ public class SqlHashedStateMemberRepository implements HashedStateMemberReposito
 		this.entityManagerFactory = entityManagerFactory;
 		this.entityManager = entityManagerFactory.getEntityManager();
 		this.instanceName = instanceName;
-	}
-
-	@Override
-	public Optional<HashedStateMember> getHashedStateMember(String id) {
-		return Optional.empty();
 	}
 
 	@Override

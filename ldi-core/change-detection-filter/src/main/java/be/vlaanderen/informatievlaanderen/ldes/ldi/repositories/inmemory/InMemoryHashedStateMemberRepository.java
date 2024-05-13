@@ -12,12 +12,6 @@ public class InMemoryHashedStateMemberRepository implements HashedStateMemberRep
 		members = new HashMap<>();
 	}
 
-
-	@Override
-	public Optional<HashedStateMember> getHashedStateMember(String id) {
-		return Optional.ofNullable(members.get(id));
-	}
-
 	@Override
 	public boolean containsHashedStateMember(HashedStateMember hashedStateMember) {
 		final HashedStateMember member = members.get(hashedStateMember.memberId());

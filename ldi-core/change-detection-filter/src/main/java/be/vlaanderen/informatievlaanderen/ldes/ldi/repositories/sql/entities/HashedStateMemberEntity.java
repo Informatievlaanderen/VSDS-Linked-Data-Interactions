@@ -25,8 +25,4 @@ public class HashedStateMemberEntity {
 	public static HashedStateMemberEntity fromHashedStateMember(HashedStateMember hashedStateMember) {
 		return new HashedStateMemberEntity(hashedStateMember.memberId(), hashedStateMember.memberHash());
 	}
-
-	public HashedStateMember toHashedStateMember() {
-		return new HashedStateMember(id, hash);
-	}
 }

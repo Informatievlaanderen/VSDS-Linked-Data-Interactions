@@ -21,7 +21,7 @@ public class StatePersistenceFactory {
 				.orElse(DEFAULT_STATE_PERSISTENCE_STRATEGY);
 		Map<String, String> persistenceProperties = switch (state) {
 			case POSTGRES -> createPostgresProperties(properties);
-			case SQLITE -> Map.of(DATABASE_DIRECTORY_KEY, properties.getProperty(PersistenceProperties.SQLITE_DIRECTORY));
+			case SQLITE -> Map.of(DATABASE_DIRECTORY_KEY, properties.getOptionalProperty(PersistenceProperties.SQLITE_DIRECTORY).orElse("ldes-client"));
 			default -> Map.of();
 		};
 		return StatePersistence.from(state, persistenceProperties, properties.getPipelineName());
