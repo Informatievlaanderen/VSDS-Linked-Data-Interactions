@@ -1,5 +1,6 @@
 package ldes.client.treenodesupplier.domain.valueobject;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFactory;

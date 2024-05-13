@@ -1,5 +1,6 @@
 package ldes.client.treenodesupplier;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
@@ -23,7 +24,7 @@ import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.junit.After;
 import org.testcontainers.containers.PostgreSQLContainer;

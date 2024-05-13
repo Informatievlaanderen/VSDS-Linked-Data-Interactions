@@ -1,4 +1,4 @@
-package ldes.client.treenodesupplier.repository.sql.sqlite;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite;
 
 public class CreateDirectoryFailedException extends RuntimeException {
     public CreateDirectoryFailedException(Throwable cause) {

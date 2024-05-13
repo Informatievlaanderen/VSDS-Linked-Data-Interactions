@@ -11,12 +11,12 @@ import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFacto
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.sql.postgres.PostgresProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.testcontainers.containers.PostgreSQLContainer;
 

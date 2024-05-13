@@ -1,4 +1,4 @@
-package ldes.client.treenodesupplier.repository.sql.postgres;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres;
 
 import java.util.Map;
 

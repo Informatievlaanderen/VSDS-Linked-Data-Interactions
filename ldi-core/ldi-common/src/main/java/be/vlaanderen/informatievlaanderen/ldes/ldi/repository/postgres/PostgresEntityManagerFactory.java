@@ -1,6 +1,6 @@
-package ldes.client.treenodesupplier.repository.sql.postgres;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres;
 
-import ldes.client.treenodesupplier.repository.sql.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.EntityManagerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,8 +20,7 @@ public class PostgresEntityManagerFactory implements EntityManagerFactory {
 		em = emf.createEntityManager();
 	}
 
-	public static synchronized PostgresEntityManagerFactory getInstance(String instanceName,
-			Map<String, String> properties) {
+	public static synchronized PostgresEntityManagerFactory getInstance(String instanceName, Map<String, String> properties) {
 		return instances.computeIfAbsent(instanceName, s -> new PostgresEntityManagerFactory(properties));
 	}
 

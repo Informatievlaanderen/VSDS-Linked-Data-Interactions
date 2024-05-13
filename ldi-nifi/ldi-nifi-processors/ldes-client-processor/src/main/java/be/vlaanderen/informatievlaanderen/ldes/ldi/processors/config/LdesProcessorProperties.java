@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -92,6 +92,14 @@ public final class LdesProcessorProperties {
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
+
+	public static final PropertyDescriptor SQLITE_DIRECTORY = new PropertyDescriptor.Builder()
+			.name("SQLITE_DIRECTORY")
+			.displayName("Sqlite database directory")
+			.description("Sqlite database directory where the '.db' file can be stored")
+			.required(false)
+			.build();
+
 	public static final PropertyDescriptor KEEP_STATE = new PropertyDescriptor.Builder()
 			.name("KEEP_STATE")
 			.displayName("Keep state when the processor is removed from the flow")
@@ -355,6 +363,10 @@ public final class LdesProcessorProperties {
 
 	public static String getPostgresPassword(final ProcessContext context) {
 		return context.getProperty(POSTGRES_PASSWORD).getValue();
+	}
+
+	public static String getSqliteDirectory(final ProcessContext context) {
+		return context.getProperty(SQLITE_DIRECTORY).getValue();
 	}
 
 	public static boolean useVersionMaterialisation(final ProcessContext context) {

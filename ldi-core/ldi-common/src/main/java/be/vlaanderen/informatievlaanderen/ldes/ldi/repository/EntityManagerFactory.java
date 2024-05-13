@@ -1,4 +1,4 @@
-package ldes.client.treenodesupplier.repository.sql;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.repository;
 
 import javax.persistence.EntityManager;
 

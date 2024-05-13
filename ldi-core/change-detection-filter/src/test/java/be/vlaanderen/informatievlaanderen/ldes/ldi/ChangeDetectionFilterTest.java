@@ -1,20 +1,33 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.HashedStateMember;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class ChangeDetectionFilterTest {
-	private ChangeDetectionFilter changeDetectionFilter = new ChangeDetectionFilter();
+	@Mock
+	private HashedStateMemberRepository hashedStateMemberRepository;
+	@InjectMocks
+	private ChangeDetectionFilter changeDetectionFilter;
 
 	@Test
 	void when_FilterValidStateObject_then_ThrowNoException() {
@@ -31,6 +44,26 @@ class ChangeDetectionFilterTest {
 		assertThatThrownBy(() -> changeDetectionFilter.transform(invalidStateObject))
 				.isInstanceOf(IllegalStateException.class)
 				.hasMessage("State object must contain exactly one named node");
+	}
+
+	@Test
+	void given_RepositoryContainingMember_when_FilterModel_then_ReturnEmptyModel() {
+		when(hashedStateMemberRepository.containsHashedStateMember(any())).thenReturn(true);
+
+		final Model filteredModel = changeDetectionFilter.transform(supplyStateObject());
+
+		assertThat(filteredModel).matches(Model::isEmpty);
+	}
+
+	@Test
+	void given_EmptyRepository_when_FilterModel_then_ReturnExactModel() {
+		final Model modelToFilter = supplyStateObject();
+		final HashedStateMember expectedHashedStateMember = argThat(member -> member.memberId().equals("http://test-data/mobility-hindrance/1"));
+		when(hashedStateMemberRepository.containsHashedStateMember(expectedHashedStateMember)).thenReturn(false);
+
+		final Model filteredModel = changeDetectionFilter.transform(modelToFilter);
+
+		assertThat(filteredModel).isSameAs(modelToFilter);
 	}
 
 	private static Stream<Arguments> supplyInvalidTriples() {

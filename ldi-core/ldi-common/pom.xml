@@ -11,5 +11,13 @@
 
     <artifactId>ldi-common</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>${javax.version}</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

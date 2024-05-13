@@ -1,6 +1,6 @@
-package ldes.client.treenodesupplier.repository.sql.sqlite;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite;
 
-import ldes.client.treenodesupplier.repository.sql.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.EntityManagerFactory;
 import org.apache.commons.io.FileUtils;
 
 import javax.persistence.EntityManager;
@@ -17,26 +17,30 @@ public class SqliteEntityManagerFactory implements EntityManagerFactory {
 
 	public static final String DATABASE_DIRECTORY = "ldes-client";
 	public static final String PERSISTENCE_UNIT_NAME = "pu-sqlite-jpa";
-	public final String databaseName;
+	public static final String DATABASE_DIRECTORY_KEY = "directory";
+	private final String databaseDirectory;
+	private final String databaseName;
 	private static final Map<String, SqliteEntityManagerFactory> instances = new HashMap<>();
 	private final EntityManager em;
 	private final javax.persistence.EntityManagerFactory emf;
 
-	private SqliteEntityManagerFactory(String instanceName) {
+	private SqliteEntityManagerFactory(String databaseDirectory, String instanceName) {
+		this.databaseDirectory = databaseDirectory;
 		this.databaseName = instanceName + ".db";
 		emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, Map.of("javax.persistence.jdbc.url",
-				"jdbc:sqlite:./%s/%s".formatted(DATABASE_DIRECTORY, databaseName)));
+				"jdbc:sqlite:./%s/%s".formatted(databaseDirectory, databaseName)));
 		em = emf.createEntityManager();
 	}
 
-	public static synchronized SqliteEntityManagerFactory getInstance(String instanceName) {
+	public static synchronized SqliteEntityManagerFactory getInstance(String instanceName, Map<String, String> properties) {
+		final String databaseDirectory = properties.getOrDefault(DATABASE_DIRECTORY_KEY, DATABASE_DIRECTORY);
 		return instances.computeIfAbsent(instanceName, s -> {
 			try {
-				Files.createDirectories(Paths.get(DATABASE_DIRECTORY));
+				Files.createDirectories(Paths.get(databaseDirectory));
 			} catch (IOException e) {
 				throw new CreateDirectoryFailedException(e);
 			}
-			return new SqliteEntityManagerFactory(instanceName);
+			return new SqliteEntityManagerFactory(databaseDirectory, instanceName);
 		});
 	}
 
@@ -48,6 +52,6 @@ public class SqliteEntityManagerFactory implements EntityManagerFactory {
 		em.close();
 		emf.close();
 		instances.remove(instanceName);
-		FileUtils.deleteQuietly(new File(DATABASE_DIRECTORY, databaseName));
+		FileUtils.deleteQuietly(new File(databaseDirectory, databaseName));
 	}
 }

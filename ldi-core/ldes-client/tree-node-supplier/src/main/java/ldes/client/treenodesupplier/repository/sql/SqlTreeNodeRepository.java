@@ -1,5 +1,6 @@
 package ldes.client.treenodesupplier.repository.sql;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.EntityManagerFactory;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;

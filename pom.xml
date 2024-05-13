@@ -55,6 +55,14 @@
         <unittestskip>false</unittestskip>
         <integrationtestskip>false</integrationtestskip>
 
+        <!-- PERSISTENCE -->
+        <sqlite-jdbc.version>3.43.0.0</sqlite-jdbc.version>
+        <sqlite-dialect.version>0.1.4</sqlite-dialect.version>
+        <hibernate.version>5.6.15.Final</hibernate.version>
+        <javax-validation.version>2.0.1.Final</javax-validation.version>
+        <javax.version>2.2</javax.version>
+        <hikari.version>5.0.1</hikari.version>
+        <postgresql.version>42.6.0</postgresql.version>
 
         <jena.version>4.10.0</jena.version>
         <sis-embedded-db.version>1.4</sis-embedded-db.version>
@@ -71,6 +79,7 @@
         <!-- Testing -->
         <assertj.version>3.24.2</assertj.version>
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
+        <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
         <awaitility.version>4.2.0</awaitility.version>
         <byte-buddy.version>1.14.12</byte-buddy.version>
         <wiremock-jre8.version>2.35.1</wiremock-jre8.version>

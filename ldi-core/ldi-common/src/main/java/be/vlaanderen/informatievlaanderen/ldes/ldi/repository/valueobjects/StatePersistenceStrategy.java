@@ -1,4 +1,4 @@
-package ldes.client.treenodesupplier.domain.valueobject;
+package be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects;
 
 import org.apache.commons.lang3.StringUtils;
 

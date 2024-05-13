@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.PersistenceProperties.KEEP_STATE;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class MemberSupplierFactory {
