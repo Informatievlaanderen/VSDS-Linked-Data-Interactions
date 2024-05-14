@@ -51,7 +51,6 @@ public class LdioPipelineEventsListener<T extends LdiComponent> {
 		if (ldioComponent != null && resumeBehavior != null) {
 			resumeBehavior.applyNewStatus(ldioComponent);
 		}
-
 	}
 
 	@EventListener
@@ -62,30 +61,29 @@ public class LdioPipelineEventsListener<T extends LdiComponent> {
 		}
 	}
 
-
 	public static final class Builder<T extends LdiComponent> {
 		private PipelineStatusChangedBehavior<T> startBehavior;
 		private PipelineStatusChangedBehavior<T> pauseBehavior;
 		private PipelineStatusChangedBehavior<T> resumeBehavior;
 		private PipelineStatusChangedBehavior<T> stopBehavior;
 
-		public Builder<T> withStartBehavior(PipelineStatusChangedBehavior<T> val) {
-			startBehavior = val;
+		public Builder<T> withStartBehavior(PipelineStatusChangedBehavior<T> startBehavior) {
+			this.startBehavior = startBehavior;
 			return this;
 		}
 
-		public Builder<T> withPauseBehavior(PipelineStatusChangedBehavior<T> val) {
-			pauseBehavior = val;
+		public Builder<T> withPauseBehavior(PipelineStatusChangedBehavior<T> pauseBehavior) {
+			this.pauseBehavior = pauseBehavior;
 			return this;
 		}
 
-		public Builder<T> withResumeBehavior(PipelineStatusChangedBehavior<T> val) {
-			resumeBehavior = val;
+		public Builder<T> withResumeBehavior(PipelineStatusChangedBehavior<T> resumeBehavior) {
+			this.resumeBehavior = resumeBehavior;
 			return this;
 		}
 
-		public Builder<T> withStopBehavior(PipelineStatusChangedBehavior<T> val) {
-			stopBehavior = val;
+		public Builder<T> withStopBehavior(PipelineStatusChangedBehavior<T> stopBehavior) {
+			this.stopBehavior = stopBehavior;
 			return this;
 		}
 
