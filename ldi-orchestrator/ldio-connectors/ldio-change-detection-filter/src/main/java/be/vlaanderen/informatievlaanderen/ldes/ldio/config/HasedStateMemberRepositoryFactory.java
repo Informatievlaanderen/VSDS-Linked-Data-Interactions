@@ -14,12 +14,12 @@ import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.DATABASE_DIRECTORY_KEY;
 
-public class RepositoryFactory {
+public class HasedStateMemberRepositoryFactory {
 	public static final StatePersistenceStrategy DEFAULT_PERSISTENCE_STRATEGY = StatePersistenceStrategy.MEMORY;
 	public static final boolean DEFAULT_KEEP_STATE = false;
 	private final ComponentProperties properties;
 
-	public RepositoryFactory(ComponentProperties properties) {
+	public HasedStateMemberRepositoryFactory(ComponentProperties properties) {
 		this.properties = properties;
 	}
 

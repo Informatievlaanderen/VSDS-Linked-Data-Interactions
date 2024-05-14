@@ -50,6 +50,7 @@ import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors

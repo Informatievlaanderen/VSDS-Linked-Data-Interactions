@@ -47,12 +47,12 @@ class LdesProcessorPropertiesTest {
 
 	@Test
 	void test_getSqliteConfig() {
-		assertThat(LdesProcessorProperties.getStatePersistenceStrategy(getMockContext("SQLITE")))
+		assertThat(PersistenceProperties.getStatePersistenceStrategy(getMockContext("SQLITE")))
 				.isEqualTo(StatePersistenceStrategy.SQLITE);
-		assertThat(LdesProcessorProperties.getSqliteDirectory(getMockContext("/ldio/sqlite")))
-				.isEqualTo("/ldio/sqlite");
-		assertThat(LdesProcessorProperties.getSqliteDirectory(getMockContext(null)))
-				.isEqualTo("ldes-client");
+		assertThat(PersistenceProperties.getSqliteDirectory(getMockContext("/ldio/sqlite")))
+				.contains("/ldio/sqlite");
+		assertThat(PersistenceProperties.getSqliteDirectory(getMockContext(null)))
+				.isEmpty();
 	}
 
 	private static MockProcessContext getMockContext(String value) {
