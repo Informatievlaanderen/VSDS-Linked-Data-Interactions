@@ -5,13 +5,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMembe
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,14 +20,19 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ChangeDetectionFilterTest {
 	@Mock
 	private HashedStateMemberRepository hashedStateMemberRepository;
-	@InjectMocks
+
 	private ChangeDetectionFilter changeDetectionFilter;
+
+	@BeforeEach
+	void setUp() {
+		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
+	}
 
 	@Test
 	void when_FilterValidStateObject_then_ThrowNoException() {
@@ -66,6 +71,18 @@ class ChangeDetectionFilterTest {
 		assertThat(filteredModel).isSameAs(modelToFilter);
 	}
 
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	void given_KeepState_when_DestroyFilterState_then_VerifyRepositoryDestroy(boolean keepState) {
+		final int expectedDestroyRepositoryInvocations = keepState ? 0 : 1;
+		final var filter = new ChangeDetectionFilter(hashedStateMemberRepository, keepState);
+
+		filter.destroyState();
+
+		verify(hashedStateMemberRepository, times(expectedDestroyRepositoryInvocations)).destroyState();
+	}
+
+
 	private static Stream<Arguments> supplyInvalidTriples() {
 		final String twoStateObjects = """
 				<http://test-data/mobility-hindrance/1/2> <http://purl.org/dc/terms/isVersionOf> <http://test-data/mobility-hindrance/1> .
@@ -82,23 +99,6 @@ class ChangeDetectionFilterTest {
 	}
 
 	private static Model supplyStateObject() {
-		final String triples = """
-				@prefix dc: <http://purl.org/dc/terms/> .
-				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-				@prefix example: <http://example.org/> .
-
-				<http://test-data/mobility-hindrance/1>
-					a <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
-					dc:created "2023-04-06T09:58:15.867Z"^^xsd:dateTime ;
-					example:address [
-						example:city "Gent" ;
-						example:street "Ottergemsesteenweg" ;
-						example:houseNumber 456 ;
-						example:postalCode 9000 ;
-						example:country "Belgium" ;
-					] .
-				""";
-
-		return RDFParser.fromString(triples).lang(Lang.TTL).toModel();
+		return RDFParser.source("members/state-member.nq").toModel();
 	}
 }

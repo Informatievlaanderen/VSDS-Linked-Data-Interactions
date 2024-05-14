@@ -52,7 +52,7 @@ public class RepositoryFactory {
 
 	private SqlHashedStateMemberRepository createSqliteRepository() {
 		final String pipelineName = properties.getPipelineName();
-		final Map<String, String> sqliteProperties = Map.of(DATABASE_DIRECTORY_KEY, properties.getProperty(PersistenceProperties.SQLITE_DIRECTORY));
+		final Map<String, String> sqliteProperties = Map.of(DATABASE_DIRECTORY_KEY, properties.getOptionalProperty(PersistenceProperties.SQLITE_DIRECTORY).orElse("change-detection-filter"));
 		final var entityManagerFactory = SqliteEntityManagerFactory.getInstance(pipelineName, sqliteProperties);
 		return new SqlHashedStateMemberRepository(entityManagerFactory, pipelineName);
 	}

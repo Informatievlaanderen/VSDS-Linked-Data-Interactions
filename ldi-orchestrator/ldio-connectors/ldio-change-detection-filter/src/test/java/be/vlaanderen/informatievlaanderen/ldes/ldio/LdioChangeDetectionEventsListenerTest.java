@@ -1,13 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioRepositoryPipelineEventsListenerConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.ChangeDetectionFilter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioChangeDetectionEventsListenerConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioPipelineEventsListener;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,62 +24,34 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = LdioRepositoryPipelineEventsListenerConfig.class)
+@SpringBootTest(classes = LdioChangeDetectionEventsListenerConfig.class)
 @ExtendWith(value = {MockitoExtension.class})
-class PipelineEventsListenerTest {
+class LdioChangeDetectionEventsListenerTest {
 	@SpyBean
-	private LdioPipelineEventsListener<LdioRepositoryMaterialiser> pipelineEventsListener;
+	private LdioPipelineEventsListener<LdioChangeDetectionFilter> pipelineEventsListener;
 	@Autowired
 	private ApplicationEventPublisher eventPublisher;
 	private final String pipelineName = "pipeline-name";
 	@Mock
-	private Materialiser materialiser;
-	private LdioRepositoryMaterialiser ldioRepositoryMaterialiser;
+	private ChangeDetectionFilter filter;
+	private LdioChangeDetectionFilter ldioChangeDetectionFilter;
 
 	@BeforeEach
 	void setUp() {
-		ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, 10, 60000);
-		ldioRepositoryMaterialiser.start();
-		pipelineEventsListener.registerComponent(pipelineName, ldioRepositoryMaterialiser);
+		ldioChangeDetectionFilter = new LdioChangeDetectionFilter(filter);
+		pipelineEventsListener.registerComponent(pipelineName, ldioChangeDetectionFilter);
 	}
 
 	@Test
-	void when_PipelineDeletedEventIsPublished_then_ShutdownMaterialiser() {
+	void when_PipelineDeletedEventIsPublished_then_DestroyFilter() {
 		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineName));
 
 		verify(pipelineEventsListener).handlePipelineDeletedEvent(new PipelineDeletedEvent(pipelineName));
-		verify(materialiser).shutdown();
-	}
-
-	@Test
-	void given_EmptyListOfMembersToCommit_when_PublishPipelineHaltedEvent_then_ShutdownMaterialiser() {
-		final PipelineStatusEvent event = new PipelineStatusEvent(pipelineName, PipelineStatus.HALTED, StatusChangeSource.MANUAL);
-
-		eventPublisher.publishEvent(event);
-
-		verify(pipelineEventsListener).handlePipelineHaltedEvent(event);
-		verify(materialiser).shutdown();
-		verifyNoMoreInteractions(materialiser);
-	}
-
-	@Test
-	void given_NonEmptyListOfMembersToCommit_when_PublishPipelineHaltedEvent_then_CommitMembers_and_ShutdownMaterialiser() {
-		when(materialiser.processAsync(anyList())).thenReturn(new CompletableFuture<>());
-		ldioRepositoryMaterialiser.accept(ModelFactory.createDefaultModel());
-		final PipelineStatusEvent event = new PipelineStatusEvent(pipelineName, PipelineStatus.HALTED, StatusChangeSource.MANUAL);
-
-		eventPublisher.publishEvent(event);
-
-		verify(pipelineEventsListener).handlePipelineHaltedEvent(event);
-		verify(materialiser).processAsync(anyList());
-		verify(materialiser).shutdown();
-		verifyNoMoreInteractions(materialiser);
+		verify(filter).destroyState();
 	}
 
 	@Test
@@ -89,7 +61,7 @@ class PipelineEventsListenerTest {
 		eventPublisher.publishEvent(event);
 
 		verify(pipelineEventsListener).handlePipelineHaltedEvent(event);
-		verifyNoInteractions(materialiser);
+		verifyNoInteractions(filter);
 	}
 
 	@Test
@@ -108,16 +80,15 @@ class PipelineEventsListenerTest {
 
 		eventPublisher.publishEvent(event);
 
-		verify(pipelineEventsListener).registerComponent(pipelineName, ldioRepositoryMaterialiser);
-		verifyNoMoreInteractions(pipelineEventsListener);
-		verifyNoInteractions(materialiser);
+		verify(pipelineEventsListener).registerComponent(pipelineName, ldioChangeDetectionFilter);
+		verifyNoInteractions(filter);
 	}
 
 	static class PipelineStatusArgumentsProvider implements ArgumentsProvider {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Arrays.stream(PipelineStatus.values())
-					.filter(status -> !(status.equals(PipelineStatus.HALTED) || status.equals(PipelineStatus.RUNNING)))
+					.filter(status -> !status.equals(PipelineStatus.STOPPED))
 					.map(Arguments::of);
 		}
 	}

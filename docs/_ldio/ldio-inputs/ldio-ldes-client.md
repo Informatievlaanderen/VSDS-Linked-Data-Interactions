@@ -117,10 +117,16 @@ api
 | _materialisation.enable-latest-state_ | Indicates whether all state or only the latest state must be sent                     | No       | true                                 | false                                | true or false    |
 
 {: .note }
-Don't forgot to provide a timestamp-path in the general properties, as this property is not required, but necessary for this filter to work properly!
-
+Don't forgot to provide a timestamp-path in the general properties, as this property is not required, but necessary for
+this filter to work properly!
 
 {% include ldio-core/http-requester.md %}
+
+### SQLite properties
+
+| Property           | Description                                   | Required | Default | Example      | Supported values |
+|:-------------------|:----------------------------------------------|:---------|:--------|:-------------|:-----------------|
+| _sqlite.directory_ | Directory wherein the `.db` file can be saved | No       | N/A     | /ldio/sqlite | String           |
 
 ### Postgres properties
 

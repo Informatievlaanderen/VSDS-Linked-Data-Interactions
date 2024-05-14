@@ -23,6 +23,7 @@
         <module>archive-file-out</module>
         <module>archive-file-in</module>
         <module>ldi-processors-bundle</module>
+        <module>change-detection-processor</module>
     </modules>
 
 </project>

@@ -21,15 +21,19 @@ public class SqlHashedStateMemberRepository implements HashedStateMemberReposito
 	@Override
 	public boolean containsHashedStateMember(HashedStateMember hashedStateMember) {
 		return entityManager
-				.createNamedQuery("HashedStateMember.containsMember", Boolean.class)
+				.createNamedQuery("HashedStateMember.findMember", HashedStateMemberEntity.class)
 				.setParameter("memberId", hashedStateMember.memberId())
 				.setParameter("memberHash", hashedStateMember.memberHash())
-				.getSingleResult();
+				.getResultStream()
+				.findFirst()
+				.isPresent();
 	}
 
 	@Override
 	public void saveHashedStateMember(HashedStateMember hashedStateMember) {
+		entityManager.getTransaction().begin();
 		entityManager.merge(HashedStateMemberEntity.fromHashedStateMember(hashedStateMember));
+		entityManager.getTransaction().commit();
 	}
 
 	@Override

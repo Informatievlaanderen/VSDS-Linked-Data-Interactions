@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.AuthStrategy;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -98,6 +98,7 @@ public final class LdesProcessorProperties {
 			.displayName("Sqlite database directory")
 			.description("Sqlite database directory where the '.db' file can be stored")
 			.required(false)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor KEEP_STATE = new PropertyDescriptor.Builder()
@@ -366,7 +367,8 @@ public final class LdesProcessorProperties {
 	}
 
 	public static String getSqliteDirectory(final ProcessContext context) {
-		return context.getProperty(SQLITE_DIRECTORY).getValue();
+		final String sqliteDirectory = context.getProperty(SQLITE_DIRECTORY).getValue();
+		return sqliteDirectory == null ? "ldes-client" : sqliteDirectory;
 	}
 
 	public static boolean useVersionMaterialisation(final ProcessContext context) {

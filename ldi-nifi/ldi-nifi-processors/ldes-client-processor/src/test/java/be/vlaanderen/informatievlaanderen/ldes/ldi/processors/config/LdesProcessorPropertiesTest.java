@@ -1,14 +1,17 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.mock.MockProcessContext;
 import org.apache.nifi.util.MockPropertyValue;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 import java.util.List;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getDataSourceUrl;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdesProcessorPropertiesTest {
@@ -40,6 +43,16 @@ class LdesProcessorPropertiesTest {
 		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(singleInvalidUri));
 		var multiInvalidUri = getMockContext("inv alid,http://localhost/other");
 		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(multiInvalidUri));
+	}
+
+	@Test
+	void test_getSqliteConfig() {
+		assertThat(LdesProcessorProperties.getStatePersistenceStrategy(getMockContext("SQLITE")))
+				.isEqualTo(StatePersistenceStrategy.SQLITE);
+		assertThat(LdesProcessorProperties.getSqliteDirectory(getMockContext("/ldio/sqlite")))
+				.isEqualTo("/ldio/sqlite");
+		assertThat(LdesProcessorProperties.getSqliteDirectory(getMockContext(null)))
+				.isEqualTo("ldes-client");
 	}
 
 	private static MockProcessContext getMockContext(String value) {
