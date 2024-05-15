@@ -15,7 +15,7 @@ public class ChangeDetectionFilterProperties {
 	public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
 			.name("DATA_SOURCE_FORMAT")
 			.displayName("Data source format")
-			.description("RDF format identifier of the data source")
+			.description("Fallback RDF format identifier of the data source when 'mime.type' is missing")
 			.required(false)
 			.addValidator(new RDFLanguageValidator())
 			.defaultValue(DEFAULT_DATA_SOURCE_FORMAT.getHeaderString())

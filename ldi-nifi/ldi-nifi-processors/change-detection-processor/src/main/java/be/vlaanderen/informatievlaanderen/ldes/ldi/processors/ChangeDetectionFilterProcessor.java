@@ -7,6 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManag
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.annotation.lifecycle.OnRemoved;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -57,20 +58,26 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 
 	@Override
 	public void onTrigger(final ProcessContext context, final ProcessSession session) {
+		final Lang fallbackLang = getDataSourceFormat(context);
+
 		final FlowFile flowFile = session.get();
 		if (flowFile == null) {
 			return;
 		}
 
-		final Lang lang = getDataSourceFormat(context);
+		final String mimeType = flowFile.getAttribute("mime.type");
+		final Lang lang = mimeType != null
+				? RDFLanguages.contentTypeToLang(mimeType)
+				: fallbackLang;
 		final Model model = FlowManager.receiveDataAsModel(session, flowFile, lang);
 
 		final Model filteredModel = changeDetectionFilter.transform(model);
 
 		if (filteredModel.isEmpty()) {
 			sendRDFToRelation(session, flowFile, IGNORED);
+		} else {
+			sendRDFToRelation(session, flowFile, NEW_STATE_RECEIVED);
 		}
-		sendRDFToRelation(session, flowFile, NEW_STATE_RECEIVED);
 	}
 
 	@OnRemoved
