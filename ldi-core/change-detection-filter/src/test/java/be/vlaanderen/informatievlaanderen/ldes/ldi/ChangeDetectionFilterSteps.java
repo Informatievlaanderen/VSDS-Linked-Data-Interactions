@@ -48,7 +48,7 @@ public class ChangeDetectionFilterSteps {
 	@Given("A ChangeDetectionFilter with state persistence strategy POSTGRES")
 	public void aChangeDetectionFilterWithStatePersistenceStrategyPOSTGRES() {
 		postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
-				.withDatabaseName("integration-test-client-persistence")
+				.withDatabaseName("integration-change-detection-filter-persistence")
 				.withUsername("sa")
 				.withPassword("sa");
 		postgreSQLContainer.start();

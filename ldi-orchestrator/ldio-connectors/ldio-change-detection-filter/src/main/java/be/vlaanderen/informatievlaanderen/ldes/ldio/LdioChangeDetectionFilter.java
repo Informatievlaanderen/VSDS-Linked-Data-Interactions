@@ -21,6 +21,7 @@ public class LdioChangeDetectionFilter extends LdioTransformer {
 		final Model filteredModel = changeDetectionFilter.transform(model);
 		if (filteredModel.isEmpty()) {
 			log.atInfo().log("State member {} ignored: no changes detected", extractSubjectFromModel(model));
+			return;
 		}
 		this.next(filteredModel);
 	}
