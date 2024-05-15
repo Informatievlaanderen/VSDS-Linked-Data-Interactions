@@ -6,12 +6,11 @@ import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.mock.MockProcessContext;
 import org.apache.nifi.util.MockPropertyValue;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
 import java.util.List;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getDataSourceUrl;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdesProcessorPropertiesTest {

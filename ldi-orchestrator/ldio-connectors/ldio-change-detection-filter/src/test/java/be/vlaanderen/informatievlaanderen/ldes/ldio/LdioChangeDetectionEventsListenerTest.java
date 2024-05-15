@@ -15,7 +15,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @SpringBootTest(classes = LdioChangeDetectionEventsListenerConfig.class)
 @ExtendWith(value = {MockitoExtension.class})
