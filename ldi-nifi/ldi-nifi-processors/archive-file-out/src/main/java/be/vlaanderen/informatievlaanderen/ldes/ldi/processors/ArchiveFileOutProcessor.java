@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ArchiveFileOutProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.getDataSourceFormat;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 

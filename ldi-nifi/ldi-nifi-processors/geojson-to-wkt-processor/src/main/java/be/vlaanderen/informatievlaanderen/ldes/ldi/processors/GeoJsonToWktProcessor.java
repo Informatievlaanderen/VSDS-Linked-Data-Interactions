@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.GeoJsonToWktTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.GeoJsonToWktProcessorProperties;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
@@ -17,7 +16,10 @@ import org.apache.nifi.processor.Relationship;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.GeoJsonToWktProcessorProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.getDataSourceFormat;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.GeoJsonToWktProcessorProperties.TRANSFORM_TO_RDF_WKT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.GeoJsonToWktProcessorProperties.getTransformToRdfWkt;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -50,7 +52,7 @@ public class GeoJsonToWktProcessor extends AbstractProcessor {
 		final FlowFile flowFile = session.get();
 		if (flowFile != null) {
 			try {
-				Lang dataSourceFormat = GeoJsonToWktProcessorProperties.getDataSourceFormat(context);
+				Lang dataSourceFormat = getDataSourceFormat(context);
 				Model inputModel = receiveDataAsModel(session, flowFile, dataSourceFormat);
 				Model result = geoJsonToWktTransformer.transform(inputModel);
 				sendRDFToRelation(session, flowFile, result, SUCCESS, dataSourceFormat);
