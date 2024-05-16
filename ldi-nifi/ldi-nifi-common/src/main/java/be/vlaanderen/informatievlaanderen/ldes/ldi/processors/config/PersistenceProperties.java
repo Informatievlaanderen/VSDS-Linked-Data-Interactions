@@ -17,7 +17,7 @@ public class PersistenceProperties {
 	}
 
 	public static final PropertyDescriptor STATE_PERSISTENCE_STRATEGY = new PropertyDescriptor.Builder()
-			.name("STATE_PERSISTENCE_STRATEGY")
+			.name("PERSISTENCE_STRATEGY")
 			.displayName("How state is persisted (note that memory is volatile).")
 			.required(false)
 			.allowableValues(

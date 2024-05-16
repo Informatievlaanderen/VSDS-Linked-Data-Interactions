@@ -24,6 +24,8 @@ import java.util.List;
 
 public class ChangeDetectionFilter implements LdiOneToOneTransformer {
 	public static final String HASHING_ALGORIHTM = "SHA-256";
+	private static final Lang NORMALIZING_LANG = Lang.NQUADS;
+	private static final MediaType NORMALIZING_MEDIA_TYPE = MediaType.N_QUADS;
 	private final HashedStateMemberRepository hashedStateMemberRepository;
 	private final boolean keepState;
 
@@ -73,10 +75,10 @@ public class ChangeDetectionFilter implements LdiOneToOneTransformer {
 
 	private RdfDataset readDatasetFromJenaModel(Model model) {
 		final ByteArrayOutputStream receivedModelOutputStream = new ByteArrayOutputStream();
-		RDFWriter.source(model).lang(Lang.NQUADS).output(receivedModelOutputStream);
+		RDFWriter.source(model).lang(NORMALIZING_LANG).output(receivedModelOutputStream);
 		final InputStream inputStream = new ByteArrayInputStream(receivedModelOutputStream.toByteArray());
 		try {
-			return Rdf.createReader(MediaType.N_QUADS, inputStream).readDataset();
+			return Rdf.createReader(NORMALIZING_MEDIA_TYPE, inputStream).readDataset();
 		} catch (UnsupportedContentException | IOException | RdfReaderException e) {
 			throw new IllegalStateException("Unable to read the received model", e);
 		}

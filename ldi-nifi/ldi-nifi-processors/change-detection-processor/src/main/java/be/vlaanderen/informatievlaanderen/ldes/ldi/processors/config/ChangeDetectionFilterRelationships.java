@@ -7,7 +7,7 @@ public class ChangeDetectionFilterRelationships {
 	}
 
 	public static final Relationship NEW_STATE_RECEIVED = new Relationship.Builder()
-			.name("new state received")
+			.name("newStateReceived")
 			.description("State member has changed and gone successfully through the filter")
 			.build();
 
