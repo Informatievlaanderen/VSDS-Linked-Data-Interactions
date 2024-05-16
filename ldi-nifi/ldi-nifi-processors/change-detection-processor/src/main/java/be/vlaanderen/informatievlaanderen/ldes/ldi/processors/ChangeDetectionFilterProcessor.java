@@ -8,6 +8,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMembe
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnRemoved;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -28,6 +30,8 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Pers
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.sendRDFToRelation;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
+@Tags({"change-detection-filter", "vsds"})
+@CapabilityDescription("Checks if the state of state members has been changed, and if not the member will be ignored")
 public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 	private ChangeDetectionFilter changeDetectionFilter;
 
