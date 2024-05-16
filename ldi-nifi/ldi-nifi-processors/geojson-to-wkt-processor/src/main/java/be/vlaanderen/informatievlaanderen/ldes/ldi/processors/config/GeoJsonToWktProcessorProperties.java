@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -17,14 +18,16 @@ public class GeoJsonToWktProcessorProperties {
 	public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
 			.name("DATA_SOURCE_FORMAT")
 			.displayName("Data source format")
+			.description("RDF format identifier of the data source")
 			.required(true)
 			.defaultValue(Lang.NQUADS.getHeaderString())
-			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+			.addValidator(new RDFLanguageValidator())
 			.build();
 
 	public static final PropertyDescriptor TRANSFORM_TO_RDF_WKT = new PropertyDescriptor.Builder()
 			.name("TRANSFORM_TO_RDF_WKT")
-			.displayName("Transform GeoJson to RDF+WKT format, defaults to false and the default format is WKT")
+			.displayName("Transform to RDF wkt")
+			.description("Transform GeoJson to RDF+WKT format when enabled, otherwise the GeoJson is transformed to WKT")
 			.required(false)
 			.defaultValue(FALSE.toString())
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
