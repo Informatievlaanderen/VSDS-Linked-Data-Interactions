@@ -3,8 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioRepositoryMaterialiser;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.PipelineEventsListener;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioPipelineEventsListener;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,14 +17,14 @@ public class LdioRepositoryMaterialiserAutoConfig {
 
 	@SuppressWarnings("java:S6830")
 	@Bean(NAME)
-	public LdioOutputConfigurator ldiRepoMaterialiserConfigurator(PipelineEventsListener pipelineEventsListener) {
+	public LdioOutputConfigurator ldiRepoMaterialiserConfigurator(LdioPipelineEventsListener<LdioRepositoryMaterialiser> pipelineEventsListener) {
 		return new LdiRepoMaterialiserProcessorConfigurator(pipelineEventsListener);
 	}
 
 	public static class LdiRepoMaterialiserProcessorConfigurator implements LdioOutputConfigurator {
-		private final PipelineEventsListener pipelineEventsListener;
+		private final LdioPipelineEventsListener<LdioRepositoryMaterialiser> pipelineEventsListener;
 
-		public LdiRepoMaterialiserProcessorConfigurator(PipelineEventsListener pipelineEventsListener) {
+		public LdiRepoMaterialiserProcessorConfigurator(LdioPipelineEventsListener<LdioRepositoryMaterialiser> pipelineEventsListener) {
 			this.pipelineEventsListener = pipelineEventsListener;
 		}
 
@@ -37,7 +37,7 @@ public class LdioRepositoryMaterialiserAutoConfig {
 			final int batchSize = config.getOptionalInteger(BATCH_SIZE).orElse(BATCH_SIZE_DEFAULT);
 			final int batchTimeout = config.getOptionalInteger(BATCH_TIMEOUT).orElse(BATCH_TIMEOUT_DEFAULT);
 			final LdioRepositoryMaterialiser ldioRepositoryMaterialiser =  new LdioRepositoryMaterialiser(materialiser, batchSize, batchTimeout);
-			pipelineEventsListener.registerMaterialiser(config.getPipelineName(), ldioRepositoryMaterialiser);
+			pipelineEventsListener.registerComponent(config.getPipelineName(), ldioRepositoryMaterialiser);
 			return ldioRepositoryMaterialiser;
 		}
 	}

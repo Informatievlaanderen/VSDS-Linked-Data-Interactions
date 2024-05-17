@@ -1,8 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioRepositoryPipelineEventsListenerConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioPipelineEventsListener;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -28,11 +30,11 @@ import java.util.stream.Stream;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = PipelineEventsListener.class)
+@SpringBootTest(classes = LdioRepositoryPipelineEventsListenerConfig.class)
 @ExtendWith(value = {MockitoExtension.class})
 class PipelineEventsListenerTest {
 	@SpyBean
-	private PipelineEventsListener pipelineEventsListener;
+	private LdioPipelineEventsListener<LdioRepositoryMaterialiser> pipelineEventsListener;
 	@Autowired
 	private ApplicationEventPublisher eventPublisher;
 	private final String pipelineName = "pipeline-name";
@@ -44,7 +46,7 @@ class PipelineEventsListenerTest {
 	void setUp() {
 		ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, 10, 60000);
 		ldioRepositoryMaterialiser.start();
-		pipelineEventsListener.registerMaterialiser(pipelineName, ldioRepositoryMaterialiser);
+		pipelineEventsListener.registerComponent(pipelineName, ldioRepositoryMaterialiser);
 	}
 
 	@Test
@@ -106,7 +108,7 @@ class PipelineEventsListenerTest {
 
 		eventPublisher.publishEvent(event);
 
-		verify(pipelineEventsListener).registerMaterialiser(pipelineName, ldioRepositoryMaterialiser);
+		verify(pipelineEventsListener).registerComponent(pipelineName, ldioRepositoryMaterialiser);
 		verifyNoMoreInteractions(pipelineEventsListener);
 		verifyNoInteractions(materialiser);
 	}

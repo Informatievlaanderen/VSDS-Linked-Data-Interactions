@@ -25,6 +25,7 @@
         <module>file-archiving</module>
         <module>repository-materialiser</module>
         <module>ldi-common</module>
+        <module>change-detection-filter</module>
     </modules>
 
     <properties>

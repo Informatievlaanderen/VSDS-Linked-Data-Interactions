@@ -1,0 +1,14 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix example: <http://example.org/> .
+
+<http://test-data/mobility-hindrance/1>
+	a <https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitshinder> ;
+	dc:created "2023-04-06T09:58:15.867Z"^^xsd:dateTime ;
+	example:address [
+		example:city "Gent" ;
+		example:street "Ottergemsesteenweg" ;
+		example:houseNumber 456 ;
+		example:postalCode 9000 ;
+		example:country "Belgium" ;
+	] .
