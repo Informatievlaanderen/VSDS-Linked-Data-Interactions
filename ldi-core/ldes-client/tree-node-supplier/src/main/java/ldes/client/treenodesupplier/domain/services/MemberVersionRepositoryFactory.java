@@ -17,9 +17,9 @@ public class MemberVersionRepositoryFactory {
     public static MemberVersionRepository getMemberVersionRepositoryFactory(StatePersistenceStrategy statePersistenceStrategy,
                                                                             Map<String, String> properties, String instanceName) {
         return switch (statePersistenceStrategy) {
-            case SQLITE -> new SqlMemberVersionRepository(SqliteEntityManagerFactory.getInstance(instanceName, properties), instanceName);
+            case SQLITE -> new SqlMemberVersionRepository(SqliteEntityManagerFactory.getClientInstance(instanceName, properties), instanceName);
             case MEMORY -> new InMemoryMemberVersionRepository();
-            case POSTGRES -> new SqlMemberVersionRepository(PostgresEntityManagerFactory.getInstance(instanceName, properties), instanceName);
+            case POSTGRES -> new SqlMemberVersionRepository(PostgresEntityManagerFactory.getClientInstance(instanceName, properties), instanceName);
         };
     }
 }

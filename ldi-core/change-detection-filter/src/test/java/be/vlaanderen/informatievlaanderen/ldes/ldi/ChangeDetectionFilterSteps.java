@@ -40,7 +40,7 @@ public class ChangeDetectionFilterSteps {
 
 	@Given("A ChangeDetectionFilter with state persistence strategy SQLITE")
 	public void aChangeDetectionFilterWithStatePersistenceStrategySQLITE() {
-		final var emf = SqliteEntityManagerFactory.getInstance(DATABASE_INSTANCE_NAME, Map.of());
+		final var emf = SqliteEntityManagerFactory.getClientInstance(DATABASE_INSTANCE_NAME, Map.of());
 		HashedStateMemberRepository hashedStateMemberRepository = new SqlHashedStateMemberRepository(emf, DATABASE_INSTANCE_NAME);
 		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
 	}
@@ -56,7 +56,7 @@ public class ChangeDetectionFilterSteps {
 		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 
-		final var emf = PostgresEntityManagerFactory.getInstance(DATABASE_INSTANCE_NAME, postgresProperties.getProperties());
+		final var emf = PostgresEntityManagerFactory.getClientInstance(DATABASE_INSTANCE_NAME, postgresProperties.getProperties());
 		HashedStateMemberRepository hashedStateMemberRepository = new SqlHashedStateMemberRepository(emf, DATABASE_INSTANCE_NAME);
 		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
 	}

@@ -12,7 +12,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProper
 
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.DATABASE_DIRECTORY_KEY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresEntityManagerFactory.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.*;
 
 public class HasedStateMemberRepositoryFactory {
 	public static final StatePersistenceStrategy DEFAULT_PERSISTENCE_STRATEGY = StatePersistenceStrategy.MEMORY;
@@ -36,7 +37,7 @@ public class HasedStateMemberRepositoryFactory {
 
 	private SqlHashedStateMemberRepository createPostgresRepository() {
 		final String pipelineName = properties.getPipelineName();
-		final var entityManagerFactory = PostgresEntityManagerFactory.getInstance(pipelineName,
+		final var entityManagerFactory = PostgresEntityManagerFactory.getInstance(PERSISTENCE_UNIT_POSTGRES_CHANGE_DETECTION_FILTER, pipelineName,
 				createPostgresProperties());
 		return new SqlHashedStateMemberRepository(entityManagerFactory, pipelineName);
 	}
@@ -51,9 +52,13 @@ public class HasedStateMemberRepositoryFactory {
 	}
 
 	private SqlHashedStateMemberRepository createSqliteRepository() {
+		final boolean keepState = properties.getOptionalBoolean(PersistenceProperties.KEEP_STATE).orElse(DEFAULT_KEEP_STATE);
 		final String pipelineName = properties.getPipelineName();
-		final Map<String, String> sqliteProperties = Map.of(DATABASE_DIRECTORY_KEY, properties.getOptionalProperty(PersistenceProperties.SQLITE_DIRECTORY).orElse("change-detection-filter"));
-		final var entityManagerFactory = SqliteEntityManagerFactory.getInstance(pipelineName, sqliteProperties);
+		final Map<String, String> sqliteProperties = Map.of(
+				DATABASE_DIRECTORY_KEY, properties.getOptionalProperty(PersistenceProperties.SQLITE_DIRECTORY).orElse("change-detection-filter"),
+				HIBERNATE_HBM_2_DDL_AUTO, keepState ? UPDATE : CREATE_DROP
+		);
+		final var entityManagerFactory = SqliteEntityManagerFactory.getInstance(PERSISTENCE_UNIT_SQLITE_CHANGE_DETECTION_FILTER, pipelineName, sqliteProperties);
 		return new SqlHashedStateMemberRepository(entityManagerFactory, pipelineName);
 	}
 }

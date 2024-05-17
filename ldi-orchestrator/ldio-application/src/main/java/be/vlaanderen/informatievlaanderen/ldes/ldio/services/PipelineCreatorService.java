@@ -102,6 +102,7 @@ public class PipelineCreatorService {
 	private ComponentExecutor componentExecutor(final PipelineConfig pipelineConfig) {
 		List<LdioTransformer> ldioTransformers = pipelineConfig.getTransformers()
 				.stream()
+				.map(componentDefinition -> addPipelineNameIfMissingToComponentDefinition(componentDefinition, pipelineConfig.getName()))
 				.map(this::getLdioTransformer)
 				.toList();
 

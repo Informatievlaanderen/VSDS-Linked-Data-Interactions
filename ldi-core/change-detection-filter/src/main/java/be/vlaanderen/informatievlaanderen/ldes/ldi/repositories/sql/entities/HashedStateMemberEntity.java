@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Entity
 @Table
-@NamedQuery(name = "HashedStateMember.getById", query = "SELECT m FROM HashedStateMemberEntity m WHERE m.id = :memberId")
 @NamedQuery(name = "HashedStateMember.findMember", query = "FROM HashedStateMemberEntity m WHERE m.id = :memberId AND m.hash = :memberHash")
 public class HashedStateMemberEntity {
 	@Id

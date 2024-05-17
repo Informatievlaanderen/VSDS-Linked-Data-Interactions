@@ -18,10 +18,10 @@ public class MemberIdRepositoryFactory {
 														   Map<String, String> properties, String instanceName) {
 		return switch (statePersistenceStrategy) {
 			case SQLITE -> new SqlMemberIdRepository(instanceName,
-					SqliteEntityManagerFactory.getInstance(instanceName, properties));
+					SqliteEntityManagerFactory.getClientInstance(instanceName, properties));
 			case MEMORY -> new InMemoryMemberIdRepository();
 			case POSTGRES -> new SqlMemberIdRepository(instanceName,
-					PostgresEntityManagerFactory.getInstance(instanceName, properties));
+					PostgresEntityManagerFactory.getClientInstance(instanceName, properties));
 		};
 	}
 }

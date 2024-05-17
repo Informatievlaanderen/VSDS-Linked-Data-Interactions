@@ -29,7 +29,7 @@ public class HashedMemberRepositoryFactory {
 
 	private static SqlHashedStateMemberRepository createPostgresRepository(ProcessContext context) {
 		final String instanceName = context.getName();
-		final var entityManagerFactory = PostgresEntityManagerFactory.getInstance(instanceName, createPostgresProperties(context));
+		final var entityManagerFactory = PostgresEntityManagerFactory.getClientInstance(instanceName, createPostgresProperties(context));
 		return new SqlHashedStateMemberRepository(entityManagerFactory, instanceName);
 	}
 
@@ -46,7 +46,7 @@ public class HashedMemberRepositoryFactory {
 		final Map<String, String> sqliteProperties = Map.of(
 				DATABASE_DIRECTORY_KEY,
 				PersistenceProperties.getSqliteDirectory(context).orElse("change-detection-filter"));
-		final var entityManagerFactory = SqliteEntityManagerFactory.getInstance(instanceName, sqliteProperties);
+		final var entityManagerFactory = SqliteEntityManagerFactory.getClientInstance(instanceName, sqliteProperties);
 		return new SqlHashedStateMemberRepository(entityManagerFactory, instanceName);
 	}
 }
