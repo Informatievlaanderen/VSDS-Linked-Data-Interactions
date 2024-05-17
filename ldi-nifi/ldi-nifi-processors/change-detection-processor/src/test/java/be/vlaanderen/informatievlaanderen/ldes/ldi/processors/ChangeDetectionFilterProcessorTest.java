@@ -75,11 +75,11 @@ class ChangeDetectionFilterProcessorTest {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(
-					Map.of("STATE_PERSISTENCE_STRATEGY", "MEMORY", "KEEP_STATE", "false"),
-					Map.of("STATE_PERSISTENCE_STRATEGY", "SQLITE",
+					Map.of("PERSISTENCE_STRATEGY", "MEMORY", "KEEP_STATE", "false"),
+					Map.of("PERSISTENCE_STRATEGY", "SQLITE",
 							"SQLITE_DIRECTORY", "change-detection-filter",
 							"KEEP_STATE", "false"),
-					Map.of("STATE_PERSISTENCE_STRATEGY", "POSTGRES",
+					Map.of("PERSISTENCE_STRATEGY", "POSTGRES",
 							"POSTGRES_URL", postgreSQLContainer.getJdbcUrl(),
 							"POSTGRES_USERNAME", postgreSQLContainer.getUsername(),
 							"POSTGRES_PASSWORD", postgreSQLContainer.getPassword(),
