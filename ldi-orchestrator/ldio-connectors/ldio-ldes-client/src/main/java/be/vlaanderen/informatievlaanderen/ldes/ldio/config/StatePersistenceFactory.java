@@ -8,7 +8,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresP
 
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.DATABASE_DIRECTORY_KEY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.CREATE_DROP;
 
 public class StatePersistenceFactory {
 
@@ -21,7 +22,7 @@ public class StatePersistenceFactory {
 				.orElse(DEFAULT_STATE_PERSISTENCE_STRATEGY);
 		Map<String, String> persistenceProperties = switch (state) {
 			case POSTGRES -> createPostgresProperties(properties);
-			case SQLITE -> Map.of(DATABASE_DIRECTORY_KEY, properties.getOptionalProperty(PersistenceProperties.SQLITE_DIRECTORY).orElse("ldes-client"));
+			case SQLITE -> createSqliteProperties(properties);
 			default -> Map.of();
 		};
 		return StatePersistence.from(state, persistenceProperties, properties.getPipelineName());
@@ -34,5 +35,15 @@ public class StatePersistenceFactory {
 		boolean keepState = properties.getOptionalBoolean(PersistenceProperties.KEEP_STATE)
 				.orElse(DEFAULT_KEEP_STATE);
 		return new PostgresProperties(url, username, password, keepState).getProperties();
+	}
+
+	private Map<String, String> createSqliteProperties(ComponentProperties properties) {
+		boolean keepState = properties.getOptionalBoolean(PersistenceProperties.KEEP_STATE)
+				.orElse(DEFAULT_KEEP_STATE);
+		String databaseDirectory = properties.getOptionalProperty(PersistenceProperties.SQLITE_DIRECTORY).orElse("ldes-client");
+		return Map.of(
+				DATABASE_DIRECTORY_KEY, databaseDirectory,
+				HIBERNATE_HBM_2_DDL_AUTO, keepState ? UPDATE : CREATE_DROP
+		);
 	}
 }

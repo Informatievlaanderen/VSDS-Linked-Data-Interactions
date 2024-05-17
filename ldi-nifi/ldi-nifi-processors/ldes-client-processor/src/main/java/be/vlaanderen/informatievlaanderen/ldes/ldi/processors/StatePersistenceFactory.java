@@ -9,7 +9,7 @@ import org.apache.nifi.processor.ProcessContext;
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.getStatePersistenceStrategy;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.DATABASE_DIRECTORY_KEY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.*;
 
 public class StatePersistenceFactory {
 
@@ -17,10 +17,19 @@ public class StatePersistenceFactory {
 		StatePersistenceStrategy state = getStatePersistenceStrategy(context);
 		Map<String, String> persistenceProperties = switch (state) {
 			case POSTGRES -> createPostgresProperties(context);
-			case SQLITE -> Map.of(DATABASE_DIRECTORY_KEY, PersistenceProperties.getSqliteDirectory(context).orElse("ldes-client"));
+			case SQLITE -> createSqliteProperties(context);
 			default -> Map.of();
 		};
 		return StatePersistence.from(state, persistenceProperties, context.getName());
+	}
+
+	private Map<String, String> createSqliteProperties(ProcessContext context) {
+		boolean keepState = PersistenceProperties.stateKept(context);
+		String databaseDirectory = PersistenceProperties.getSqliteDirectory(context).orElse("ldes-client");
+		return Map.of(
+				DATABASE_DIRECTORY_KEY, databaseDirectory,
+				HIBERNATE_HBM_2_DDL_AUTO, keepState ? UPDATE : CREATE_DROP
+		);
 	}
 
 	private Map<String, String> createPostgresProperties(ProcessContext context) {

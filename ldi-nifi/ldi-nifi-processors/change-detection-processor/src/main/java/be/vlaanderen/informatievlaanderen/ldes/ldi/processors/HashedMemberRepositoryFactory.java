@@ -13,7 +13,7 @@ import org.apache.nifi.processor.ProcessContext;
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.getStatePersistenceStrategy;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.DATABASE_DIRECTORY_KEY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.*;
 
 public class HashedMemberRepositoryFactory {
 	private HashedMemberRepositoryFactory() {}
@@ -29,7 +29,7 @@ public class HashedMemberRepositoryFactory {
 
 	private static SqlHashedStateMemberRepository createPostgresRepository(ProcessContext context) {
 		final String instanceName = context.getName();
-		final var entityManagerFactory = PostgresEntityManagerFactory.getClientInstance(instanceName, createPostgresProperties(context));
+		final var entityManagerFactory = PostgresEntityManagerFactory.getInstance(PostgresEntityManagerFactory.PERSISTENCE_UNIT_POSTGRES_CHANGE_DETECTION_FILTER, instanceName, createPostgresProperties(context));
 		return new SqlHashedStateMemberRepository(entityManagerFactory, instanceName);
 	}
 
@@ -42,11 +42,13 @@ public class HashedMemberRepositoryFactory {
 	}
 
 	private static SqlHashedStateMemberRepository createSqliteRepository(ProcessContext context) {
+		final boolean keepState = PersistenceProperties.stateKept(context);
 		final String instanceName = context.getName();
 		final Map<String, String> sqliteProperties = Map.of(
-				DATABASE_DIRECTORY_KEY,
-				PersistenceProperties.getSqliteDirectory(context).orElse("change-detection-filter"));
-		final var entityManagerFactory = SqliteEntityManagerFactory.getClientInstance(instanceName, sqliteProperties);
+				DATABASE_DIRECTORY_KEY, PersistenceProperties.getSqliteDirectory(context).orElse("change-detection-filter"),
+				HIBERNATE_HBM_2_DDL_AUTO, keepState ? UPDATE : CREATE_DROP
+		);
+		final var entityManagerFactory = SqliteEntityManagerFactory.getInstance(PERSISTENCE_UNIT_SQLITE_CHANGE_DETECTION_FILTER, instanceName, sqliteProperties);
 		return new SqlHashedStateMemberRepository(entityManagerFactory, instanceName);
 	}
 }
