@@ -13,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ArchiveFileOutProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ArchiveFileOutProperties.ARCHIVE_ROOT_DIR;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ArchiveFileOutProperties.TIMESTAMP_PATH;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertFalse;

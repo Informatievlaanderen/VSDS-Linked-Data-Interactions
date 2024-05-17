@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.repository.SparqlSelectService;
 import org.apache.jena.rdf.model.Model;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 import com.google.gson.JsonElement;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.DATA_SOURCE_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.SPARQL_SELECT_QUERY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
@@ -51,7 +51,7 @@ public class SparqlSelectProcessor extends AbstractProcessor {
 		if (flowFile != null) {
 			try {
 				Model inputModel = receiveDataAsModel(session, flowFile,
-						SparqlProcessorProperties.getDataSourceFormat(context));
+						CommonProperties.getDataSourceFormat(context));
 				String queryString = context.getProperty(SPARQL_SELECT_QUERY).getValue();
 
 				final Iterable<JsonElement> queryResult = sparqlSelectService.executeSelect(inputModel, queryString);
