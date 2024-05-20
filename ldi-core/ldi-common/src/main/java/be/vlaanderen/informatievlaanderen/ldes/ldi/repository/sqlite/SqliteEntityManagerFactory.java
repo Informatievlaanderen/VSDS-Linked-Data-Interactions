@@ -50,7 +50,7 @@ public class SqliteEntityManagerFactory implements EntityManagerFactory {
 			} catch (IOException e) {
 				throw new CreateDirectoryFailedException(e);
 			}
-			return new SqliteEntityManagerFactory(persistenceUnitName, databaseDirectory, instanceName, properties.get(HIBERNATE_HBM_2_DDL_AUTO));
+			return new SqliteEntityManagerFactory(persistenceUnitName, databaseDirectory, instanceName, properties.getOrDefault(HIBERNATE_HBM_2_DDL_AUTO, UPDATE));
 		});
 	}
 
