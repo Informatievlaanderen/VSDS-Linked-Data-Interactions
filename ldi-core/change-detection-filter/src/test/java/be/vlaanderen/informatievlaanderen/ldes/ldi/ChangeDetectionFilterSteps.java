@@ -6,6 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.SqlHashedSta
 import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -40,7 +41,7 @@ public class ChangeDetectionFilterSteps {
 
 	@Given("A ChangeDetectionFilter with state persistence strategy SQLITE")
 	public void aChangeDetectionFilterWithStatePersistenceStrategySQLITE() {
-		final var emf = SqliteEntityManagerFactory.getInstance(DATABASE_INSTANCE_NAME, Map.of());
+		final var emf = SqliteEntityManagerFactory.getInstance(new SqliteProperties(DATABASE_INSTANCE_NAME, false));
 		HashedStateMemberRepository hashedStateMemberRepository = new SqlHashedStateMemberRepository(emf, DATABASE_INSTANCE_NAME);
 		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
 	}
