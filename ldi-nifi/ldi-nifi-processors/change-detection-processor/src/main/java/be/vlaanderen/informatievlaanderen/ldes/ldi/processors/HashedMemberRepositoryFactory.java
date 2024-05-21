@@ -4,16 +4,16 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Persistence
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.inmemory.InMemoryHashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.SqlHashedStateMemberRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import org.apache.nifi.processor.ProcessContext;
 
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.getStatePersistenceStrategy;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.DATABASE_DIRECTORY_KEY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory.DATABASE_DIRECTORY_KEY;
 
 public class HashedMemberRepositoryFactory {
 	private HashedMemberRepositoryFactory() {}

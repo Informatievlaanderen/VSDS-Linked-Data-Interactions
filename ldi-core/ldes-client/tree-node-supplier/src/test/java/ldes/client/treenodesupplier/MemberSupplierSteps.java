@@ -1,6 +1,7 @@
 package ldes.client.treenodesupplier;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
@@ -24,7 +25,7 @@ import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.junit.After;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -112,27 +113,28 @@ public class MemberSupplierSteps {
 
 	@And("a StatePersistenceStrategy MEMORY")
 	public StatePersistence aMemoryStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY, Map.of(),
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY, null,
 				"instanceName");
-		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.MEMORY, Map.of(),
+		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.MEMORY, null,
 				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of(), "instanceName");
-		memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.MEMORY, Map.of(),
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, null, "instanceName");
+		memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.MEMORY, null,
 				"instanceName");
 		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
 	public StatePersistence aSqliteStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE, Map.of(),
+		final SqliteProperties sqliteProperties = new SqliteProperties("instanceName", false);
+		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE, sqliteProperties,
 				"instanceName");
-		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.SQLITE, Map.of(),
+		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.SQLITE, sqliteProperties,
 				"instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, sqliteProperties, "instanceName");
 		memberVersionRepository = MemberVersionRepositoryFactory
-				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
+				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.SQLITE, sqliteProperties, "instanceName");
 		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
@@ -147,14 +149,14 @@ public class MemberSupplierSteps {
 		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.POSTGRES,
-				postgresProperties.getProperties(), "instanceName");
+				postgresProperties, "instanceName");
 		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.POSTGRES,
-				postgresProperties.getProperties(), "instanceName");
+				postgresProperties, "instanceName");
 		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties,
 						"instanceName");
 		memberVersionRepository = MemberVersionRepositoryFactory
-				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
+				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.POSTGRES, postgresProperties,
 				"instanceName");
 
 		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);

@@ -26,6 +26,7 @@
         <module>repository-materialiser</module>
         <module>ldi-common</module>
         <module>change-detection-filter</module>
+        <module>ldi-infra-sql</module>
     </modules>
 
     <properties>

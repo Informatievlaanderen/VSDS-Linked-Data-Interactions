@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.mock.MockProcessContext;

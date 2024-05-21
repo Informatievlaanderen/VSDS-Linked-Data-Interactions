@@ -1,13 +1,12 @@
 package ldes.client.treenodesupplier.domain.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberVersionRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlMemberVersionRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory;
-
-import java.util.Map;
 
 public class MemberVersionRepositoryFactory {
 
@@ -15,11 +14,11 @@ public class MemberVersionRepositoryFactory {
     }
 
     public static MemberVersionRepository getMemberVersionRepositoryFactory(StatePersistenceStrategy statePersistenceStrategy,
-                                                                            Map<String, String> properties, String instanceName) {
+                                                                            HibernateProperties properties, String instanceName) {
         return switch (statePersistenceStrategy) {
-            case SQLITE -> new SqlMemberVersionRepository(SqliteEntityManagerFactory.getInstance(instanceName, properties), instanceName);
+            case SQLITE -> new SqlMemberVersionRepository(SqliteEntityManagerFactory.getInstance(properties), instanceName);
             case MEMORY -> new InMemoryMemberVersionRepository();
-            case POSTGRES -> new SqlMemberVersionRepository(PostgresEntityManagerFactory.getInstance(instanceName, properties), instanceName);
+            case POSTGRES -> new SqlMemberVersionRepository(PostgresEntityManagerFactory.getInstance(instanceName, properties.getProperties()), instanceName);
         };
     }
 }

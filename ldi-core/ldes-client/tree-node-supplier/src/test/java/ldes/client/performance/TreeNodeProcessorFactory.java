@@ -2,6 +2,7 @@ package ldes.client.performance;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
@@ -11,12 +12,12 @@ import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFacto
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -49,14 +50,15 @@ class TreeNodeProcessorFactory {
 	}
 
 	private StatePersistence createSqliteStatePersistence() {
+		final SqliteProperties sqliteProperties = new SqliteProperties("instanceName", false);
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE,
-				Map.of(), "instanceName");
+				sqliteProperties, "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, Map.of(), "instanceName");
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, sqliteProperties, "instanceName");
 		MemberIdRepository memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.SQLITE,
-				Map.of(), "instanceName");
+				sqliteProperties, "instanceName");
 		MemberVersionRepository memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.SQLITE,
-				Map.of(), "instanceName");
+				sqliteProperties, "instanceName");
 
 		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
@@ -68,29 +70,30 @@ class TreeNodeProcessorFactory {
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(
 				StatePersistenceStrategy.POSTGRES,
-				postgresProperties.getProperties(), "instanceName");
+				postgresProperties, "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties.getProperties(),
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties,
 						"instanceName");
 		MemberIdRepository memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(
 				StatePersistenceStrategy.POSTGRES,
-				postgresProperties.getProperties(), "instanceName");
+				postgresProperties, "instanceName");
 		MemberVersionRepository memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(
 				StatePersistenceStrategy.POSTGRES,
-				postgresProperties.getProperties(), "instanceName");
+				postgresProperties, "instanceName");
 
 		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	private StatePersistence createInMemoryStatePersistence() {
+		final SqliteProperties sqliteProperties = new SqliteProperties("instanceName", false);
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY,
-				Map.of(), "instanceName");
+				sqliteProperties, "instanceName");
 		TreeNodeRecordRepository treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, Map.of(), "instanceName");
+				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, sqliteProperties, "instanceName");
 		MemberIdRepository memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.MEMORY,
-				Map.of(), "instanceName");
+				sqliteProperties, "instanceName");
 		MemberVersionRepository memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.MEMORY,
-				Map.of(), "instanceName");
+				sqliteProperties, "instanceName");
 		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 

@@ -1,13 +1,12 @@
 package ldes.client.treenodesupplier.domain.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlMemberRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory;
-
-import java.util.Map;
 
 public class MemberRepositoryFactory {
 
@@ -15,13 +14,13 @@ public class MemberRepositoryFactory {
 	}
 
 	public static MemberRepository getMemberRepository(StatePersistenceStrategy statePersistenceStrategy,
-			Map<String, String> properties, String instanceName) {
+													   HibernateProperties properties, String instanceName) {
 		return switch (statePersistenceStrategy) {
 			case SQLITE -> new SqlMemberRepository(instanceName,
-					SqliteEntityManagerFactory.getInstance(instanceName, properties));
+					SqliteEntityManagerFactory.getInstance(properties));
 			case MEMORY -> new InMemoryMemberRepository();
 			case POSTGRES -> new SqlMemberRepository(instanceName,
-					PostgresEntityManagerFactory.getInstance(instanceName, properties));
+					PostgresEntityManagerFactory.getInstance(instanceName, properties.getProperties()));
 		};
 	}
 }
