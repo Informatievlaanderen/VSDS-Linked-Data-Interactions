@@ -16,8 +16,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.VersionMaterialisationProcessorProperties.IS_VERSION_OF;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.VersionMaterialisationProcessorProperties.RESTRICT_OUTPUT_TO_MEMBER;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.VersionMaterialisationProcessorProperties.VERSION_OF_PROPERTY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.VersionMaterialisationProcessorProperties.RESTRICT_TO_MEMBERS;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -31,9 +31,9 @@ class VersionMaterialiseProcessorTest {
 
 	@Test
 	void testVersionMaterialiseMemberOnly() throws IOException {
-		testRunner.setProperty(IS_VERSION_OF,
+		testRunner.setProperty(VERSION_OF_PROPERTY,
 				"http://purl.org/dc/terms/isVersionOf");
-		testRunner.setProperty(RESTRICT_OUTPUT_TO_MEMBER, "true");
+		testRunner.setProperty(RESTRICT_TO_MEMBERS, "true");
 
 		String versionedMember = Files.readString(Path.of("src/test/resources/ldes-member-versioned.ttl"));
 		testRunner.enqueue(versionedMember, Map.of("mime.type", "text/turtle"));
@@ -57,8 +57,8 @@ class VersionMaterialiseProcessorTest {
 
 	@Test
 	void testVersionMaterialiseWithContext() throws IOException {
-		testRunner.setProperty(IS_VERSION_OF, "http://purl.org/dc/terms/isVersionOf");
-		testRunner.setProperty(RESTRICT_OUTPUT_TO_MEMBER, "false");
+		testRunner.setProperty(VERSION_OF_PROPERTY, "http://purl.org/dc/terms/isVersionOf");
+		testRunner.setProperty(RESTRICT_TO_MEMBERS, "false");
 
 		String versionedMember = Files.readString(Path.of("src/test/resources/ldes-member-versioned.ttl"));
 		testRunner.enqueue(versionedMember, Map.of("mime.type", "text/turtle"));

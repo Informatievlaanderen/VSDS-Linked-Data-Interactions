@@ -61,7 +61,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
 			.name("TIMESTAMP_PATH")
-			.displayName("Property path determining the timestamp used to order the members within a fragment")
+			.displayName("Timestamp path")
+			.description("Property path determining the timestamp used to order the members within a fragment")
 			.required(false)
 			.addValidator(Validator.VALID)
 			.defaultValue("http://www.w3.org/ns/prov#generatedAtTime")
@@ -69,7 +70,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor STREAM_TIMESTAMP_PATH_PROPERTY = new PropertyDescriptor.Builder()
 			.name("STREAM_TIMESTAMP_PATH_PROPERTY")
-			.displayName("Stream TimestampPath property to FlowFile")
+			.displayName("Stream timestamp path property")
+			.description("Stream TimestampPath property to FlowFile")
 			.required(true)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(TRUE.toString())
@@ -77,7 +79,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor STREAM_VERSION_OF_PROPERTY = new PropertyDescriptor.Builder()
 			.name("STREAM_VERSION_OF_PROPERTY")
-			.displayName("Stream VersionOf property to FlowFile")
+			.displayName("Stream versionOf property")
+			.description("Stream versionOf property to FlowFile")
 			.required(true)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(TRUE.toString())
@@ -85,7 +88,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor STREAM_SHAPE_PROPERTY = new PropertyDescriptor.Builder()
 			.name("STREAM_SHAPE_PROPERTY")
-			.displayName("Stream shape property to FlowFile")
+			.displayName("Stream shape property")
+			.description("Stream shape property to FlowFile")
 			.required(true)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(FALSE.toString())
@@ -93,7 +97,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor API_KEY_HEADER_PROPERTY = new PropertyDescriptor.Builder()
 			.name("API_KEY_HEADER_PROPERTY")
-			.displayName("API header that should be used for the API key")
+			.displayName("API-KEY header property")
+			.description("API header that should be used for the API key")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.defaultValue("X-API-KEY")
@@ -101,21 +106,24 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor API_KEY_PROPERTY = new PropertyDescriptor.Builder()
 			.name("API_KEY_PROPERTY")
-			.displayName("API key that should be used to access the API.")
+			.displayName("API-KEY property")
+			.description("API key that should be used to access the API.")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor OAUTH_CLIENT_ID = new PropertyDescriptor.Builder()
 			.name("OAUTH_CLIENT_ID")
-			.displayName("Client id used for Oauth2 client credentials flow")
+			.displayName("OAUTH client ID")
+			.description("Client id used for Oauth2 client credentials flow")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor OAUTH_CLIENT_SECRET = new PropertyDescriptor.Builder()
 			.name("OAUTH_CLIENT_SECRET")
-			.displayName("Client secret used for Oauth2 client credentials flow")
+			.displayName("OAUTH client secret")
+			.description("Client secret used for Oauth2 client credentials flow")
 			.sensitive(true)
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
@@ -123,21 +131,24 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor OAUTH_TOKEN_ENDPOINT = new PropertyDescriptor.Builder()
 			.name("OAUTH_TOKEN_ENDPOINT")
-			.displayName("Token endpoint used for Oauth2 client credentials flow.")
+			.displayName("OAUTH token endpoint")
+			.description("Token endpoint used for Oauth2 client credentials flow.")
 			.required(false)
 			.addValidator(StandardValidators.URL_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor OAUTH_SCOPE = new PropertyDescriptor.Builder()
 			.name("OAUTH_SCOPE")
-			.displayName("Scope used for Oauth2 client credentials flow.")
+			.displayName("OAUTH scope")
+			.description("Scope used for Oauth2 client credentials flow.")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor AUTHORIZATION_STRATEGY = new PropertyDescriptor.Builder()
 			.name("AUTHORIZATION_STRATEGY")
-			.displayName("Authorization strategy for the internal http client.")
+			.displayName("Authorization strategy")
+			.description("Authorization strategy for the internal http client.")
 			.required(true)
 			.defaultValue(AuthStrategy.NO_AUTH.name())
 			.allowableValues(Arrays.stream(AuthStrategy.values()).map(Enum::name).collect(Collectors.toSet()))
@@ -146,7 +157,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor RETRIES_ENABLED = new PropertyDescriptor.Builder()
 			.name("RETRIES_ENABLED")
-			.displayName("Indicates of retries are enabled when the http request fails.")
+			.displayName("Retries enabled")
+			.description("Indicates of retries are enabled when the http request fails.")
 			.required(false)
 			.defaultValue(TRUE.toString())
 			.allowableValues(FALSE.toString(), TRUE.toString())
@@ -155,7 +167,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor MAX_RETRIES = new PropertyDescriptor.Builder()
 			.name("MAX_RETRIES")
-			.displayName("Indicates max number of retries when retries are enabled.")
+			.displayName("Max retries")
+			.description("Indicates max number of retries when retries are enabled.")
 			.required(false)
 			.defaultValue(String.valueOf(5))
 			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
@@ -163,15 +176,16 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor STATUSES_TO_RETRY = new PropertyDescriptor.Builder()
 			.name("STATUSES_TO_RETRY")
-			.displayName(
-					"Custom comma seperated list of http status codes that can trigger a retry in the http client.")
+			.displayName("Statuses to retry")
+			.description("Custom comma seperated list of http status codes that can trigger a retry in the http client.")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor USE_VERSION_MATERIALISATION = new PropertyDescriptor.Builder()
 			.name("USE_VERSION_MATERIALISATION")
-			.displayName("Indicates of retries are enabled when the http request fails.")
+			.displayName("Use version materialisation")
+			.description("Indicates if the client should return state-objects when enabled or version-objects when disabled")
 			.required(false)
 			.defaultValue(FALSE.toString())
 			.allowableValues(FALSE.toString(), TRUE.toString())
@@ -190,6 +204,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor VERSION_OF_PROPERTY = new PropertyDescriptor.Builder()
 			.name("VERSION_OF_PROPERTY")
+			.displayName("Version of property")
+			.description("Property that points to the versionOfPath")
 			.required(true)
 			.defaultValue("http://purl.org/dc/terms/isVersionOf")
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
@@ -198,7 +214,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor USE_EXACTLY_ONCE_FILTER = new PropertyDescriptor.Builder()
 			.name("USE_EXACTLY_ONCE_FILTER")
-			.displayName("Use filter so members are outputted exactly once")
+			.displayName("Use exactly once filter")
+			.description("Use filter so members are outputted exactly once")
 			.required(false)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(TRUE.toString())
@@ -206,7 +223,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor USE_LATEST_STATE_FILTER = new PropertyDescriptor.Builder()
 			.name("USE_LATEST_STATE_FILTER")
-			.displayName("Use filter to only process the latest state and so all older versions are ignored")
+			.displayName("Use latest state filter")
+			.description("Use filter to only process the latest state and so all older versions are ignored, only when 'Use version materialisation' is set to true")
 			.required(false)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(TRUE.toString())
@@ -295,7 +313,6 @@ public final class LdesProcessorProperties {
 			return new ArrayList<>();
 		}
 	}
-
 
 	public static boolean useVersionMaterialisation(final ProcessContext context) {
 		return TRUE.equals(context.getProperty(USE_VERSION_MATERIALISATION).asBoolean());

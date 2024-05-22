@@ -1,7 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
@@ -18,11 +17,14 @@ import org.apache.nifi.processor.Relationship;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.getDataSourceFormat;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.INCLUDE_ORIGINAL;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.SPARQL_CONSTRUCT_QUERY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
-@Tags({ "ldes, vsds, SPARQL" })
+@Tags({"ldes, vsds, SPARQL"})
 @CapabilityDescription("SPARQL construct manipulation of an RDF flowfile.")
 public class SparqlConstructProcessor extends AbstractProcessor {
 
@@ -50,12 +52,10 @@ public class SparqlConstructProcessor extends AbstractProcessor {
 		final FlowFile flowFile = session.get();
 		if (flowFile != null) {
 			try {
-				final Model inputModel = receiveDataAsModel(session, flowFile,
-						SparqlProcessorProperties.getDataSourceFormat(context));
+				final Model inputModel = receiveDataAsModel(session, flowFile, getDataSourceFormat(context));
 
-				transformer.transform(inputModel)
-						.forEach(resultModel -> sendRDFToRelation(session, flowFile, resultModel, SUCCESS,
-								SparqlProcessorProperties.getDataSourceFormat(context)));
+				transformer.transform(inputModel).forEach(resultModel ->
+						sendRDFToRelation(session, flowFile, resultModel, SUCCESS, getDataSourceFormat(context)));
 			} catch (Exception e) {
 				getLogger().error("Error executing SPARQL CONSTRUCT query: {}", e.getMessage());
 				sendRDFToRelation(session, flowFile, FAILURE);

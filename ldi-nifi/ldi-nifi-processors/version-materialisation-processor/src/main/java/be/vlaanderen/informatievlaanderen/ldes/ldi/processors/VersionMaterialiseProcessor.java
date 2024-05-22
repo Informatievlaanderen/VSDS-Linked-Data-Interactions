@@ -2,8 +2,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -18,8 +18,7 @@ import org.apache.nifi.processor.Relationship;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.VersionMaterialisationProcessorProperties.IS_VERSION_OF;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.VersionMaterialisationProcessorProperties.RESTRICT_OUTPUT_TO_MEMBER;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.VersionMaterialisationProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -35,17 +34,14 @@ public class VersionMaterialiseProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(IS_VERSION_OF, RESTRICT_OUTPUT_TO_MEMBER);
+		return List.of(VERSION_OF_PROPERTY, RESTRICT_TO_MEMBERS);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		Property isVersionOfProperty = ModelFactory.createDefaultModel()
-				.createProperty(context.getProperty(IS_VERSION_OF).getValue());
+		Property isVersionOfProperty = ResourceFactory.createProperty(getVersionOfProperty(context));
 
-		boolean restrictMembers = context.getProperty(RESTRICT_OUTPUT_TO_MEMBER).asBoolean();
-
-		versionMaterialiser = new VersionMaterialiser(isVersionOfProperty, restrictMembers);
+		versionMaterialiser = new VersionMaterialiser(isVersionOfProperty, restrictToMembers(context));
 	}
 
 	@Override
