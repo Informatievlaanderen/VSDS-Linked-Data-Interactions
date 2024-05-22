@@ -21,9 +21,9 @@ class SqlitePropertiesTest {
 	@Test
 	void test_DatabaseDirectory() {
 		String databaseDirectory = "testDirectory";
-		SqliteProperties sqliteProperties = new SqliteProperties(databaseDirectory, INSTANCE_NAME, true);
+		SqliteProperties customDbDirectorySqliteProperties = new SqliteProperties(databaseDirectory, INSTANCE_NAME, true);
 
-		String result = sqliteProperties.getDatabaseDirectory();
+		String result = customDbDirectorySqliteProperties.getDatabaseDirectory();
 
 		assertThat(result).isEqualTo(databaseDirectory);
 	}
