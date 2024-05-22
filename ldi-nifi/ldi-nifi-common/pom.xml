@@ -23,6 +23,10 @@
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
             <artifactId>ldi-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-infra-sql</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

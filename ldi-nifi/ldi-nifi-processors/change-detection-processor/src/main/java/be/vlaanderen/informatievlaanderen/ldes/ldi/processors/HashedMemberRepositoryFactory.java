@@ -1,22 +1,23 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.inmemory.InMemoryHashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.SqlHashedStateMemberRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.postgres.PostgresProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import org.apache.nifi.processor.ProcessContext;
 
 import java.util.Map;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.getStatePersistenceStrategy;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.repository.sqlite.SqliteEntityManagerFactory.DATABASE_DIRECTORY_KEY;
 
 public class HashedMemberRepositoryFactory {
-	private HashedMemberRepositoryFactory() {}
+	private HashedMemberRepositoryFactory() {
+	}
 
 	public static HashedStateMemberRepository getRepository(ProcessContext context) {
 		StatePersistenceStrategy state = getStatePersistenceStrategy(context);
@@ -43,10 +44,11 @@ public class HashedMemberRepositoryFactory {
 
 	private static SqlHashedStateMemberRepository createSqliteRepository(ProcessContext context) {
 		final String instanceName = context.getName();
-		final Map<String, String> sqliteProperties = Map.of(
-				DATABASE_DIRECTORY_KEY,
-				PersistenceProperties.getSqliteDirectory(context).orElse("change-detection-filter"));
-		final var entityManagerFactory = SqliteEntityManagerFactory.getInstance(instanceName, sqliteProperties);
+		final boolean keepState = PersistenceProperties.stateKept(context);
+		final SqliteProperties sqliteProperties = PersistenceProperties.getSqliteDirectory(context)
+				.map(directory -> new SqliteProperties(directory, instanceName, keepState))
+				.orElseGet(() -> new SqliteProperties(instanceName, keepState));
+		final var entityManagerFactory = SqliteEntityManagerFactory.getInstance(sqliteProperties);
 		return new SqlHashedStateMemberRepository(entityManagerFactory, instanceName);
 	}
 }

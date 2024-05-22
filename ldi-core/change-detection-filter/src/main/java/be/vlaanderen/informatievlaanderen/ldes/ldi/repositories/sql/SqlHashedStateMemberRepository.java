@@ -1,9 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.HashedStateMember;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.HashedStateMemberEntity;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.entities.HashedStateMemberEntity;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.mapper.HashedStateMemberEntityMapper;
 
 import javax.persistence.EntityManager;
 
@@ -32,7 +33,7 @@ public class SqlHashedStateMemberRepository implements HashedStateMemberReposito
 	@Override
 	public void saveHashedStateMember(HashedStateMember hashedStateMember) {
 		entityManager.getTransaction().begin();
-		entityManager.merge(HashedStateMemberEntity.fromHashedStateMember(hashedStateMember));
+		entityManager.merge(HashedStateMemberEntityMapper.fromHashedStateMember(hashedStateMember));
 		entityManager.getTransaction().commit();
 	}
 

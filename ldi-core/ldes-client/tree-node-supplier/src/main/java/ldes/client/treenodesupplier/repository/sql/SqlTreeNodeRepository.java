@@ -1,9 +1,11 @@
 package ldes.client.treenodesupplier.repository.sql;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.TreeNodeRecordEntity;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
+import ldes.client.treenodesupplier.repository.mapper.TreeNodeRecordEntityMapper;
 
 import java.util.Optional;
 
@@ -23,7 +25,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
 	@Override
 	public void saveTreeNodeRecord(TreeNodeRecord treeNodeRecord) {
-		TreeNodeRecordEntity memberRecordEntity = TreeNodeRecordEntity.fromTreeNodeRecord(treeNodeRecord);
+		TreeNodeRecordEntity memberRecordEntity = TreeNodeRecordEntityMapper.fromTreeNodeRecord(treeNodeRecord);
 		entityManager.getTransaction().begin();
 		entityManager.merge(memberRecordEntity);
 		entityManager.getTransaction().commit();
@@ -44,10 +46,10 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 								" WHERE t.treeNodeStatus = :treeNodeStatus" +
 								" ORDER BY t.earliestNextVisit",
 						TreeNodeRecordEntity.class)
-				.setParameter("treeNodeStatus", treeNodeStatus)
+				.setParameter("treeNodeStatus", treeNodeStatus.name())
 				.getResultStream()
 				.findFirst()
-				.map(TreeNodeRecordEntity::toTreeNode);
+				.map(TreeNodeRecordEntityMapper::toTreeNode);
 	}
 
 	@Override
@@ -55,7 +57,7 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 		return ((Number) entityManager
 				.createNamedQuery("TreeNode.countByIdAndStatus")
 				.setParameter("id", treeNodeId)
-				.setParameter("treeNodeStatus", treeNodeStatus)
+				.setParameter("treeNodeStatus", treeNodeStatus.name())
 				.getSingleResult()).longValue() > 0;
 	}
 

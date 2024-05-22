@@ -18,6 +18,10 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-infra-sql</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
             <version>${spring-boot.version}</version>

@@ -215,6 +215,13 @@
             </dependency>
 
             <dependency>
+                <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+                <artifactId>ldi-infra-sql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+            <dependency>
                 <groupId>org.apache.jena</groupId>
                 <artifactId>jena-arq</artifactId>
                 <version>${jena.version}</version>

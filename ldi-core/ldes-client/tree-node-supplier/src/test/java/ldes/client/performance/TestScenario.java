@@ -1,6 +1,6 @@
 package ldes.client.performance;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repository.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 
 public enum TestScenario {
