@@ -204,6 +204,8 @@ public final class LdesProcessorProperties {
 
 	public static final PropertyDescriptor VERSION_OF_PROPERTY = new PropertyDescriptor.Builder()
 			.name("VERSION_OF_PROPERTY")
+			.displayName("Version of property")
+			.description("Property that points to the versionOfPath")
 			.required(true)
 			.defaultValue("http://purl.org/dc/terms/isVersionOf")
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
