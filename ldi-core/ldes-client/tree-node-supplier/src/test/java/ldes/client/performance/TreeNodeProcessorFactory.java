@@ -1,10 +1,12 @@
 package ldes.client.performance;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
@@ -12,17 +14,14 @@ import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFacto
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
-import java.util.Map;
 
 class TreeNodeProcessorFactory {
 

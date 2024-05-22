@@ -1,10 +1,11 @@
 package ldes.client.treenodesupplier;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -14,7 +15,10 @@ import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
-import ldes.client.treenodesupplier.domain.valueobject.*;
+import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
+import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
+import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
 import ldes.client.treenodesupplier.filters.LatestStateFilter;
 import ldes.client.treenodesupplier.filters.MemberFilter;
@@ -25,13 +29,11 @@ import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import org.apache.jena.riot.Lang;
 import org.junit.After;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.inmemory.InMemoryHashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.SqlHashedStateMemberRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import io.cucumber.java.en.Given;
@@ -14,8 +14,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
 import org.junit.After;
 import org.testcontainers.containers.PostgreSQLContainer;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

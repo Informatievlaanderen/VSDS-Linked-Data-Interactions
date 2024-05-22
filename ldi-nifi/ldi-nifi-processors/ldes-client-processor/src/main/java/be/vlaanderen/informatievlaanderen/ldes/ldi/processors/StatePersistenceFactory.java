@@ -1,14 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import org.apache.nifi.processor.ProcessContext;
-
-import java.util.Optional;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.getStatePersistenceStrategy;
 
