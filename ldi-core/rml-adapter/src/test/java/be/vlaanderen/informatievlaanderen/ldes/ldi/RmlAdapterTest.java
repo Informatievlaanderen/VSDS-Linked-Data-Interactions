@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFWriter;
@@ -44,17 +45,13 @@ class RmlAdapterTest {
 	void test_awv_observation() {
 		var models = runRmlTest("awv/observation/data.xml", "awv/observation/mapping.ttl", "application/xml");
 
-		// var expected =
-		// RDFParser.source("awv/observation/expected.nt").lang(Lang.NQUADS).toModel();
-
 		assertEquals(1, models.size());
-		// assertTrue(models.get(0).isIsomorphicWith(expected));
 	}
 
-	private List<org.apache.jena.rdf.model.Model> runRmlTest(String dataPath, String mappingPath, String mimeType) {
+	private List<Model> runRmlTest(String dataPath, String mappingPath, String mimeType) {
 		RmlAdapter rmlAdapter = new RmlAdapter(getFileContent(mappingPath));
 
-		List<org.apache.jena.rdf.model.Model> models = rmlAdapter.apply(LdiAdapter.Content.of(getFileContent(
+		List<Model> models = rmlAdapter.apply(LdiAdapter.Content.of(getFileContent(
 				dataPath), mimeType)).toList();
 
 		models.forEach(model -> {
