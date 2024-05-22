@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
 import java.util.Map;
 
+@FunctionalInterface
 public interface HibernateProperties {
 	String HIBERNATE_CONNECTION_URL = "hibernate.connection.url";
 	String HIBERNATE_CONNECTION_USERNAME = "hibernate.connection.username";

@@ -17,7 +17,6 @@ import java.util.Map;
 public class SqliteEntityManagerFactory implements EntityManagerFactory {
 
 	public static final String PERSISTENCE_UNIT_NAME = "pu-sqlite-jpa";
-	public static final String DATABASE_DIRECTORY_KEY = "directory";
 	private final SqliteProperties properties;
 	private static final Map<String, SqliteEntityManagerFactory> instances = new HashMap<>();
 	private final EntityManager em;

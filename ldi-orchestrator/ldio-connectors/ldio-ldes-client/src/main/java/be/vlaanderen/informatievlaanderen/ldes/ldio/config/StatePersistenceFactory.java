@@ -8,6 +8,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.PersistencePrope
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 
+import java.util.Map;
+
 public class StatePersistenceFactory {
 
 	public static final StatePersistenceStrategy DEFAULT_STATE_PERSISTENCE_STRATEGY = StatePersistenceStrategy.MEMORY;
@@ -20,7 +22,7 @@ public class StatePersistenceFactory {
 		HibernateProperties hibernateProperties = switch (state) {
 			case POSTGRES -> createPostgresProperties(properties);
 			case SQLITE -> createSqliteProperties(properties);
-			default -> null;
+			default -> Map::of;
 		};
 		return StatePersistence.from(state, hibernateProperties, properties.getPipelineName());
 	}
