@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>rml-adapter-processor</artifactId>
+    <packaging>nar</packaging>
 
     <dependencies>
         <dependency>
