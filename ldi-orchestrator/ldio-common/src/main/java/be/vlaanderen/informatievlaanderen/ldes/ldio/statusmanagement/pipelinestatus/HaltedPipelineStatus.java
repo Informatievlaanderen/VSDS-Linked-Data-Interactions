@@ -15,6 +15,6 @@ public class HaltedPipelineStatus implements PipelineStatus {
 
 	@Override
 	public boolean canGoToStatus(PipelineStatus status) {
-		return status instanceof RunningPipelineStatus || status instanceof StoppedPipelineStatus;
+		return status instanceof ResumedPipelineStatus || status instanceof StoppedPipelineStatus;
 	}
 }
