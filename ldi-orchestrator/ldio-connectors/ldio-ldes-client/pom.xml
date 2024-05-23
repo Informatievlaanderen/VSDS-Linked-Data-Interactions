@@ -63,5 +63,10 @@
             <artifactId>spring-boot-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-infra-sql</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

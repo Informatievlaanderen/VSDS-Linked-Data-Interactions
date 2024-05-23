@@ -1,5 +1,7 @@
 package ldes.client.treenodesupplier.domain.valueobject;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFactory;
@@ -8,8 +10,6 @@ import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-
-import java.util.Map;
 
 public class StatePersistence {
 
@@ -26,7 +26,7 @@ public class StatePersistence {
     }
 
     public static StatePersistence from(StatePersistenceStrategy statePersistenceStrategy,
-                                        Map<String, String> properties, String instanceName) {
+                                        HibernateProperties properties, String instanceName) {
         return new StatePersistence(
                 MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties, instanceName),
                 MemberIdRepositoryFactory.getMemberIdRepository(statePersistenceStrategy, properties, instanceName),

@@ -72,8 +72,8 @@ class RDF4JRepositoryMaterialisationProcessorTest {
 		final Model inputModel = RDFDataMgr.loadModel("people_data.nq");
 		final String inputString = RDFWriter.source(inputModel).lang(Lang.NQ).asString();
 
-		testRunner.setProperty("RDF4J remote repository location", sparqlHost);
-		testRunner.setProperty("Repository ID", REPOSITORY_ID);
+		testRunner.setProperty("SPARQL_HOST", sparqlHost);
+		testRunner.setProperty("REPOSITORY_ID", REPOSITORY_ID);
 		testRunner.enqueue(inputString);
 		testRunner.run();
 
@@ -86,7 +86,7 @@ class RDF4JRepositoryMaterialisationProcessorTest {
 		final Model inputModel = RDFDataMgr.loadModel("people_data.nq");
 		final String inputString = RDFWriter.source(inputModel).lang(Lang.NQ).asString();
 
-		testRunner.setProperty("Repository ID", "non-existing-id");
+		testRunner.setProperty("REPOSITORY_ID", "non-existing-id");
 
 		testRunner.enqueue(inputString);
 		testRunner.run();
@@ -97,8 +97,8 @@ class RDF4JRepositoryMaterialisationProcessorTest {
 
 	@Test
 	void given_ValidConfig_when_ProcessInvalidModel_then_FailureFlowFilesAreNotEmpty() {
-		testRunner.setProperty("RDF4J remote repository location", sparqlHost);
-		testRunner.setProperty("Repository ID", REPOSITORY_ID);
+		testRunner.setProperty("SPARQL_HOST", sparqlHost);
+		testRunner.setProperty("REPOSITORY_ID", REPOSITORY_ID);
 		testRunner.enqueue("Random input");
 		testRunner.run();
 

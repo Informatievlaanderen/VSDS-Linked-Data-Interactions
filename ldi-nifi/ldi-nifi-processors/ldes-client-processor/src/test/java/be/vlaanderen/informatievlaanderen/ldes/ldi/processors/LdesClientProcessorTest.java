@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
+import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.util.MockFlowFile;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
@@ -65,7 +67,7 @@ class LdesClientProcessorTest {
 	@ArgumentsSource(MatchNumberOfFlowFilesArgumentsProvider.class)
 	void shouldMatchNumberOfFlowFiles(String dataSourceUrl, int numberOfRuns) {
 		testRunner.setProperty("DATA_SOURCE_URLS", dataSourceUrl);
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY",
+		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY,
 				"SQLITE");
 
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
@@ -79,7 +81,7 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void when_NecessaryPropertiesAreSet_then_statePersistenceCanBeCreated(Map<String, String> properties) {
+	void when_NecessaryPropertiesAreSet_then_statePersistenceCanBeCreated(Map<PropertyDescriptor, String> properties) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
 		properties.forEach((key, value) -> testRunner.setProperty(key, value));
@@ -102,7 +104,7 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void shouldSupportRedirectLogic(Map<String, String> statePersistenceProps) {
+	void shouldSupportRedirectLogic(Map<PropertyDescriptor, String> statePersistenceProps) {
 		testRunner.setProperty("AUTHORIZATION_STRATEGY", "NO_AUTH");
 		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/200-response-with-indirect-url");
 		statePersistenceProps.forEach(testRunner::setProperty);
@@ -120,7 +122,7 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void shouldBeAbleToEndGracefully(Map<String, String> statePersistenceProps) {
+	void shouldBeAbleToEndGracefully(Map<PropertyDescriptor, String> statePersistenceProps) {
 		// This is an immutable fragment with 1 member and no relations. We reach the
 		// end of the ldes after 1 run.
 		testRunner.setProperty("DATA_SOURCE_URLS",
@@ -144,7 +146,7 @@ class LdesClientProcessorTest {
 	void shouldSupportDifferentHttpRequestExecutors(Map<String, String> properties) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY, "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		properties.forEach((key, value) -> testRunner.setProperty(key, value));
 
@@ -157,7 +159,7 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void shouldSupportRetry(Map<String, String> statePersistenceProps) {
+	void shouldSupportRetry(Map<PropertyDescriptor, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/retry");
 		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
@@ -176,7 +178,7 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void shouldSupportVersionMaterialisation(Map<String, String> statePersistenceProps) {
+	void shouldSupportVersionMaterialisation(Map<PropertyDescriptor, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
 		statePersistenceProps.forEach(testRunner::setProperty);
@@ -242,7 +244,7 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void shouldSupportOnlyOnceFilter(Map<String, String> statePersistenceProps) {
+	void shouldSupportOnlyOnceFilter(Map<PropertyDescriptor, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/duplicate-members?pageNumber=1");
 		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
@@ -267,7 +269,7 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void shouldSupportDisableOfOnlyOnceFilter(Map<String, String> statePersistenceProps) {
+	void shouldSupportDisableOfOnlyOnceFilter(Map<PropertyDescriptor, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/duplicate-members?pageNumber=1");
 		statePersistenceProps.forEach(testRunner::setProperty);
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
@@ -292,11 +294,11 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void shouldSupportVersionMaterialisationWithLatestStateFilter(Map<String, String> statePersistenceProps) {
+	void shouldSupportVersionMaterialisationWithLatestStateFilter(Map<PropertyDescriptor, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
 		statePersistenceProps.forEach(testRunner::setProperty);
-		testRunner.setProperty("STATE_PERSISTENCE_STRATEGY", "MEMORY");
+		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY, "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.TRUE.toString());
@@ -320,7 +322,7 @@ class LdesClientProcessorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(StatePersistenceArgumentsProvider.class)
-	void shouldNotSupportOnlyOnceFilterWhenVersionMaterialiserIsActive(Map<String, String> statePersistenceProps) {
+	void shouldNotSupportOnlyOnceFilterWhenVersionMaterialiserIsActive(Map<PropertyDescriptor, String> statePersistenceProps) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
 		statePersistenceProps.forEach(testRunner::setProperty);
@@ -361,11 +363,13 @@ class LdesClientProcessorTest {
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(
-					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "MEMORY")),
-					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "SQLITE")),
-					Arguments.of(Map.of("STATE_PERSISTENCE_STRATEGY", "POSTGRES", "POSTGRES_URL",
-							postgreSQLContainer.getJdbcUrl(), "POSTGRES_USERNAME", postgreSQLContainer.getUsername(),
-							"POSTGRES_PASSWORD", postgreSQLContainer.getPassword())));
+					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "MEMORY")),
+					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "SQLITE")),
+					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "POSTGRES",
+							POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
+							POSTGRES_USERNAME, postgreSQLContainer.getUsername(),
+							POSTGRES_PASSWORD, postgreSQLContainer.getPassword()))
+			);
 		}
 	}
 

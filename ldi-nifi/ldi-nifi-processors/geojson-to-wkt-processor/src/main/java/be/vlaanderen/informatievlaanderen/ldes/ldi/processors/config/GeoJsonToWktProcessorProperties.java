@@ -1,7 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
@@ -14,25 +12,14 @@ public class GeoJsonToWktProcessorProperties {
 	private GeoJsonToWktProcessorProperties() {
 	}
 
-	public static final PropertyDescriptor DATA_SOURCE_FORMAT = new PropertyDescriptor.Builder()
-			.name("DATA_SOURCE_FORMAT")
-			.displayName("Data source format")
-			.required(true)
-			.defaultValue(Lang.NQUADS.getHeaderString())
-			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
-			.build();
-
 	public static final PropertyDescriptor TRANSFORM_TO_RDF_WKT = new PropertyDescriptor.Builder()
 			.name("TRANSFORM_TO_RDF_WKT")
-			.displayName("Transform GeoJson to RDF+WKT format, defaults to false and the default format is WKT")
+			.displayName("Transform to RDF wkt")
+			.description("Transform GeoJson to RDF+WKT format when enabled, otherwise the GeoJson is transformed to WKT")
 			.required(false)
 			.defaultValue(FALSE.toString())
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.build();
-
-	public static Lang getDataSourceFormat(final ProcessContext context) {
-		return RDFLanguages.nameToLang(context.getProperty(DATA_SOURCE_FORMAT).getValue());
-	}
 
 	public static boolean getTransformToRdfWkt(final ProcessContext context) {
 		return TRUE.equals(context.getProperty(TRANSFORM_TO_RDF_WKT).asBoolean());

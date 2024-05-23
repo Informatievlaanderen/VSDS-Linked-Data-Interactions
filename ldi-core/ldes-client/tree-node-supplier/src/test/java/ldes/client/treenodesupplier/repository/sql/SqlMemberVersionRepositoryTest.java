@@ -1,6 +1,9 @@
 package ldes.client.treenodesupplier.repository.sql;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.MemberVersionRecordEntity;
 import ldes.client.treenodesupplier.domain.entities.MemberVersionRecord;
+import ldes.client.treenodesupplier.repository.mapper.MemberVersionRecordEntityMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +42,7 @@ class SqlMemberVersionRepositoryTest {
     @Test
     void test_addMemberVersion() {
         MemberVersionRecord actual = new MemberVersionRecord("versionOf", LocalDateTime.now());
-        MemberVersionRecordEntity entity = MemberVersionRecordEntity.fromMemberVersionRecord(actual);
+        MemberVersionRecordEntity entity = MemberVersionRecordEntityMapper.fromMemberVersionRecord(actual);
 
         repository.addMemberVersion(actual);
 

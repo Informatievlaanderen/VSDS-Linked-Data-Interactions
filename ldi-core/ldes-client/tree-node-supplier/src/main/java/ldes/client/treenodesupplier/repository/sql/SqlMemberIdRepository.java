@@ -1,5 +1,7 @@
 package ldes.client.treenodesupplier.repository.sql;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.MemberIdRecordEntity;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 
 import javax.persistence.EntityManager;

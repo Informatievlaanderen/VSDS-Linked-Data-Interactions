@@ -61,6 +61,12 @@
             <version>${project.version}</version>
             <type>nar</type>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi.nifi</groupId>
+            <artifactId>change-detection-processor</artifactId>
+            <version>${project.version}</version>
+            <type>nar</type>
+        </dependency>
     </dependencies>
 
     <build>

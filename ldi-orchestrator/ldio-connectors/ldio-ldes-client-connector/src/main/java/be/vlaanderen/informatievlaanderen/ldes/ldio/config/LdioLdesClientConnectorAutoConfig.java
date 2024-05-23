@@ -21,7 +21,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.KEEP_STATE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.PersistenceProperties.KEEP_STATE;
+
 
 @SuppressWarnings("java:S6830")
 @Configuration

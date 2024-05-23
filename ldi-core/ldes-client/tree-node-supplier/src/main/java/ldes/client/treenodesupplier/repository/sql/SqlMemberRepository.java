@@ -1,7 +1,10 @@
 package ldes.client.treenodesupplier.repository.sql;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.MemberRecordEntity;
 import ldes.client.treenodesupplier.domain.entities.MemberRecord;
 import ldes.client.treenodesupplier.repository.MemberRepository;
+import ldes.client.treenodesupplier.repository.mapper.MemberRecordEntityMapper;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -25,7 +28,7 @@ public class SqlMemberRepository implements MemberRepository {
 		return entityManager
 				.createNamedQuery("Member.getFirst", MemberRecordEntity.class)
 				.getResultStream()
-				.map(MemberRecordEntity::toMemberRecord)
+				.map(MemberRecordEntityMapper::toMemberRecord)
 				.findFirst();
 
 	}
@@ -43,7 +46,7 @@ public class SqlMemberRepository implements MemberRepository {
 	@Override
 	public void saveTreeMembers(Stream<MemberRecord> treeMemberStream) {
 		entityManager.getTransaction().begin();
-		treeMemberStream.map(MemberRecordEntity::fromMemberRecord)
+		treeMemberStream.map(MemberRecordEntityMapper::fromMemberRecord)
 				.forEach(entityManager::merge);
 		entityManager.getTransaction().commit();
 	}

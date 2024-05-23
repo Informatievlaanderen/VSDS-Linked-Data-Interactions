@@ -1,10 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
@@ -13,8 +10,6 @@ import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
 public final class CreateVersionObjectProcessorPropertyDescriptors {
-	private static final Model initModel = ModelFactory.createDefaultModel();
-
 	private static final String DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY = "https://uri.etsi.org/ngsi-ld/observedAt";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
@@ -35,7 +30,7 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 
 	public static final PropertyDescriptor DELIMITER = new PropertyDescriptor.Builder()
 			.name("DELIMITER")
-			.displayName("Delimiter between entity ID and timestamp value")
+			.displayName("Delimiter")
 			.description("Delimiter between entity ID and timestamp value")
 			.required(false)
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
@@ -56,7 +51,7 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 	public static final PropertyDescriptor VERSION_OF_KEY = new PropertyDescriptor.Builder()
 			.name("VERSION_OF_KEY")
 			.displayName("VersionOf Property")
-			.description("VersionOf Property, e.g. " + DEFAULT_VERSION_OF_KEY)
+			.description("A statement will be added to the model with the versionOf value and the given property, e.g. " + DEFAULT_VERSION_OF_KEY)
 			.required(false)
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.defaultValue(DEFAULT_VERSION_OF_KEY)
@@ -83,7 +78,7 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 	public static final PropertyDescriptor GENERATED_AT_TIME_PROPERTY = new PropertyDescriptor.Builder()
 			.name("GENERATED_AT_TIME_PROPERTY")
 			.displayName("GeneratedAtTime property")
-			.description("GeneratedAtTime property")
+			.description("A statement will be added to the model with the generatedAt value and the given property.")
 			.required(false)
 			.addValidator(Validator.VALID)
 			.defaultValue(DEFAULT_PROV_GENERATED_AT_TIME)
@@ -94,7 +89,7 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 	}
 
 	public static Resource getMemberRdfSyntaxType(ProcessContext context) {
-		return initModel.createResource(context.getProperty(MEMBER_RDF_SYNTAX_TYPE).getValue());
+		return ResourceFactory.createResource(context.getProperty(MEMBER_RDF_SYNTAX_TYPE).getValue());
 	}
 
 	public static String getDelimiter(ProcessContext context) {
@@ -102,15 +97,15 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 	}
 
 	public static Property getVersionOfKey(ProcessContext context) {
-		return initModel.createProperty(context.getProperty(VERSION_OF_KEY).getValue());
+		return ResourceFactory.createProperty(context.getProperty(VERSION_OF_KEY).getValue());
 	}
 
 	public static Property getGeneratedAtTimeProperty(ProcessContext context) {
 		String generatedAtTimeProperty = context.getProperty(GENERATED_AT_TIME_PROPERTY).getValue();
-		if (generatedAtTimeProperty.equals("")) {
+		if (generatedAtTimeProperty.isEmpty()) {
 			return null;
 		} else {
-			return initModel.createProperty(generatedAtTimeProperty);
+			return ResourceFactory.createProperty(generatedAtTimeProperty);
 		}
 
 	}

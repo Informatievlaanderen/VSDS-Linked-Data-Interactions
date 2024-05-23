@@ -21,7 +21,10 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ArchiveFileInProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ArchiveFileInProperties.ARCHIVE_ROOT_DIR;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ArchiveFileInProperties.getArchiveRootDirectory;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.getDataSourceFormat;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors

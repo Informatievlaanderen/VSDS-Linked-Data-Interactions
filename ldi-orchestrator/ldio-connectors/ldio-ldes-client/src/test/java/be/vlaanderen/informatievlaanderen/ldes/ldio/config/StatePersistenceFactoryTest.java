@@ -22,7 +22,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.PersistenceProperties.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

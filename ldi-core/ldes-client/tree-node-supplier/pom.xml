@@ -74,6 +74,11 @@
             <artifactId>HikariCP</artifactId>
             <version>${hikari.version}</version>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
+            <artifactId>ldi-infra-sql</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
