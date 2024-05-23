@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinest
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
 
-public class RunningPipelineStatus implements PipelineStatus {
+public class ResumedPipelineStatus implements PipelineStatus {
 	@Override
 	public void updateComponentStatus(LdioStatusComponent ldioComponent) {
 		ldioComponent.resume();

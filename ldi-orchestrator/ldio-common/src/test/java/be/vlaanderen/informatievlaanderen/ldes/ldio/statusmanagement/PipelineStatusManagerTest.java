@@ -1,114 +1,33 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.*;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusOutput;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.mock;
 
-@ExtendWith(MockitoExtension.class)
 class PipelineStatusManagerTest {
 	public static final String PIPELINE_NAME = "my-pipeline";
-	@Mock
-	private LdioInput ldioInput;
-	@Mock
-	private LdioStatusOutput ldioOutput;
 	private PipelineStatusManager pipelineStatusManager;
-
-
-	@Test
-	void test_InitPipeline() {
-		pipelineStatusManager = PipelineStatusManager.initialize(PIPELINE_NAME, ldioInput, List.of(ldioOutput));
-		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
-
-		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.INIT);
-		verify(ldioInput).start();
-		verify(ldioOutput).start();
-	}
-
-	@Test
-	void test_StartPipeline() {
-		initializePipelineWith(new StartedPipelineStatus());
-		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
-
-		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.RUNNING);
-		verify(ldioInput).start();
-		verify(ldioOutput).start();
-	}
-
-	@Test
-	void test_ResumeHaltedPipeline() {
-		initializePipelineWith(new StartedPipelineStatus());
-		pipelineStatusManager.updatePipelineStatus(new HaltedPipelineStatus());
-
-		pipelineStatusManager.updatePipelineStatus(new RunningPipelineStatus());
-		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
-
-		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.RUNNING);
-		verify(ldioInput).resume();
-		verify(ldioOutput).resume();
-	}
-
-	@Test
-	void given_StartedPipeline_test_HaltPipeline() {
-		initializePipelineWith(new StartedPipelineStatus());
-
-		pipelineStatusManager.updatePipelineStatus(new HaltedPipelineStatus());
-		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
-
-		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.HALTED);
-		verify(ldioInput).pause();
-		verify(ldioOutput).pause();
-	}
-
-	@Test
-	void given_InitPipeline_test_HaltPipeline() {
-		initializePipelineWith(new InitPipelineStatus());
-		pipelineStatusManager.updatePipelineStatus(new RunningPipelineStatus());
-
-		pipelineStatusManager.updatePipelineStatus(new HaltedPipelineStatus());
-		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
-
-		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.HALTED);
-		verify(ldioInput).pause();
-		verify(ldioOutput).pause();
-	}
 
 	@ParameterizedTest
 	@ArgumentsSource(IncompatibleInitStatusesProvider.class)
 	void given_newPipeline_when_initializeWithInvalidInitStatus_then_DoNothing(PipelineStatus initializingStatus) {
-		pipelineStatusManager = PipelineStatusManager.initializeWithStatus(PIPELINE_NAME, ldioInput, List.of(ldioOutput), initializingStatus);
+		pipelineStatusManager = PipelineStatusManager.initializeWithStatus(PIPELINE_NAME, mock(), List.of(mock(LdioStatusOutput.class)), initializingStatus);
 
 		assertThat(pipelineStatusManager.getPipelineStatus()).isNull();
-		verifyNoInteractions(ldioInput, ldioOutput);
-	}
-
-	@ParameterizedTest
-	@ArgumentsSource(InitialPipelineStatusProvider.class)
-	void test_StopAnyPipeline(PipelineStatus initialStatus) {
-		initializePipelineWith(new InitPipelineStatus());
-		pipelineStatusManager.updatePipelineStatus(initialStatus);
-
-		pipelineStatusManager.updatePipelineStatus(new StoppedPipelineStatus());
-		final var currentStatus = pipelineStatusManager.getPipelineStatusValue();
-
-		assertThat(currentStatus).isEqualTo(PipelineStatus.Value.STOPPED);
-		verify(ldioInput).shutdown();
-		verify(ldioOutput).shutdown();
 	}
 
 	@ParameterizedTest
@@ -140,26 +59,42 @@ class PipelineStatusManagerTest {
 	}
 
 	private void initializePipelineWith(PipelineStatus pipelineStatus) {
-		pipelineStatusManager = PipelineStatusManager.initializeWithStatus(PIPELINE_NAME, ldioInput, List.of(ldioOutput), pipelineStatus);
+		pipelineStatusManager = PipelineStatusManager.initializeWithStatus(PIPELINE_NAME, mock(), List.of(mock(LdioStatusOutput.class)), pipelineStatus);
 	}
 
-	static class InitialPipelineStatusProvider implements ArgumentsProvider {
-		@Override
-		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
-			return Stream.of(
-							new InitPipelineStatus(),
-							new StartedPipelineStatus(),
-							new RunningPipelineStatus(),
-							new HaltedPipelineStatus())
-					.map(Arguments::of);
-		}
+	@TestFactory
+	Stream<DynamicTest> test_correctStatusFlows() {
+		return Stream.of(
+						List.of(new InitPipelineStatus(), new StoppedPipelineStatus()),
+						List.of(new InitPipelineStatus(), new ResumedPipelineStatus(), new StoppedPipelineStatus()),
+						List.of(new StartedPipelineStatus(), new StoppedPipelineStatus()),
+						List.of(new StartedPipelineStatus(), new HaltedPipelineStatus(), new StoppedPipelineStatus()),
+						List.of(new StartedPipelineStatus(), new HaltedPipelineStatus(), new ResumedPipelineStatus(), new StoppedPipelineStatus()),
+						List.of(new StartedPipelineStatus(), new HaltedPipelineStatus(), new ResumedPipelineStatus(), new HaltedPipelineStatus(), new StoppedPipelineStatus())
+				)
+				.map(LinkedList::new)
+				.map(flow -> DynamicTest.dynamicTest(joinForName(flow), () -> {
+					initializePipelineWith(flow.poll());
+					int expectedCount = flow.size();
+
+					int updateCounter = 0;
+					while (!flow.isEmpty()) {
+						final var nextStatus = flow.poll();
+						pipelineStatusManager.updatePipelineStatus(nextStatus);
+						updateCounter++;
+					}
+
+					assertThat(updateCounter).isEqualTo(expectedCount);
+					assertThat(pipelineStatusManager.getPipelineStatus()).isInstanceOf(StoppedPipelineStatus.class);
+				}));
+
 	}
 
 	static class IncompatibleInitStatusesProvider implements ArgumentsProvider {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream
-					.of(new RunningPipelineStatus(), new HaltedPipelineStatus(), new StoppedPipelineStatus())
+					.of(new ResumedPipelineStatus(), new HaltedPipelineStatus(), new StoppedPipelineStatus())
 					.map(Arguments::of);
 		}
 	}
@@ -169,13 +104,13 @@ class PipelineStatusManagerTest {
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(
 					Arguments.of(new InitPipelineStatus(), new StartedPipelineStatus()),
-					Arguments.of(new RunningPipelineStatus(), new StartedPipelineStatus()),
-					Arguments.of(new RunningPipelineStatus(), new InitPipelineStatus()),
+					Arguments.of(new InitPipelineStatus(), new HaltedPipelineStatus()),
+					Arguments.of(new ResumedPipelineStatus(), new StartedPipelineStatus()),
+					Arguments.of(new ResumedPipelineStatus(), new InitPipelineStatus()),
 					Arguments.of(new StoppedPipelineStatus(), new InitPipelineStatus()),
 					Arguments.of(new StoppedPipelineStatus(), new StartedPipelineStatus()),
-					Arguments.of(new StoppedPipelineStatus(), new RunningPipelineStatus()),
-					Arguments.of(new StoppedPipelineStatus(), new HaltedPipelineStatus()),
-					Arguments.of(new InitPipelineStatus(), new HaltedPipelineStatus())
+					Arguments.of(new StoppedPipelineStatus(), new ResumedPipelineStatus()),
+					Arguments.of(new StoppedPipelineStatus(), new HaltedPipelineStatus())
 			);
 		}
 	}
@@ -186,13 +121,19 @@ class PipelineStatusManagerTest {
 			return Stream.of(
 					Arguments.of(new StoppedPipelineStatus(), new InitPipelineStatus()),
 					Arguments.of(new StoppedPipelineStatus(), new StartedPipelineStatus()),
-					Arguments.of(new StoppedPipelineStatus(), new RunningPipelineStatus()),
+					Arguments.of(new StoppedPipelineStatus(), new ResumedPipelineStatus()),
 					Arguments.of(new StoppedPipelineStatus(), new HaltedPipelineStatus()),
 					Arguments.of(new StartedPipelineStatus(), new InitPipelineStatus()),
 					Arguments.of(new HaltedPipelineStatus(), new StartedPipelineStatus()),
 					Arguments.of(new HaltedPipelineStatus(), new InitPipelineStatus())
 			);
 		}
+	}
+
+	private String joinForName(List<PipelineStatus> statusesFlow) {
+		return statusesFlow.stream()
+				.map(status -> status.getClass().getSimpleName())
+				.collect(Collectors.joining(" -> "));
 	}
 
 }
