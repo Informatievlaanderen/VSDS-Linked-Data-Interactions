@@ -52,7 +52,7 @@ public class RmlAdapterProcessor extends AbstractProcessor {
 					new ValidationResult.Builder()
 							.subject("RML mapping")
 							.valid(false)
-							.explanation("Both RML mapping content or RML mapping file cannot be set at the same time")
+							.explanation("both RML mapping content and RML mapping file cannot be set at the same time")
 							.build()
 			);
 		}
@@ -62,7 +62,7 @@ public class RmlAdapterProcessor extends AbstractProcessor {
 					new ValidationResult.Builder()
 							.subject("RML mapping")
 							.valid(false)
-							.explanation("Either RML mapping content or RML mapping file must be set")
+							.explanation("either RML mapping content or RML mapping file must be set")
 							.build()
 			);
 		}

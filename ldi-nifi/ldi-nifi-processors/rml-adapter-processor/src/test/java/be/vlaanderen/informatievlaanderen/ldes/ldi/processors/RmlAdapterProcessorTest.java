@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.opentest4j.AssertionFailedError;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +23,11 @@ import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_DESTINATION_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RmlAdapterProperties.RML_MAPPING_CONTENT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RmlAdapterProperties.RML_MAPPING_FILE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class RmlAdapterProcessorTest {
 	public static final Lang DESTINATION_FORMAT = Lang.NQUADS;
@@ -61,7 +64,7 @@ class RmlAdapterProcessorTest {
 	void test_awv_location() {
 		final Model expected = RDFParser.source("awv/location/expected.nt").lang(DESTINATION_FORMAT).toModel();
 		final String data = readFileContent("awv/location/data.xml");
-		testRunner.setProperty(RML_MAPPING_CONTENT, readFileContent("awv/location/mapping.ttl"));
+		testRunner.setProperty(RML_MAPPING_FILE, "src/test/resources/awv/location/mapping.ttl");
 
 		testRunner.enqueue(data, Map.of("mime.type", "application/xml"));
 		testRunner.run();
@@ -74,6 +77,22 @@ class RmlAdapterProcessorTest {
 		assertThat(result).matches(expected::isIsomorphicWith);
 	}
 
+	@Test
+	void given_BothRmlMappingContentAndFileAreSet_when_RunProcessor_then_ThrowException() {
+		testRunner.setProperty(RML_MAPPING_FILE, "src/test/resources/awv/location/mapping.ttl");
+		testRunner.setProperty(RML_MAPPING_CONTENT, readFileContent("awv/location/mapping.ttl"));
+
+		assertThatThrownBy(() -> testRunner.run())
+				.isInstanceOf(AssertionFailedError.class)
+				.hasMessageContaining("both RML mapping content and RML mapping file cannot be set at the same time");
+	}
+
+	@Test
+	void given_NeitherRmlMappingContentAndFileAreSet_when_RunProcessor_then_ThrowException() {
+		assertThatThrownBy(() -> testRunner.run())
+				.isInstanceOf(AssertionFailedError.class)
+				.hasMessageContaining("either RML mapping content or RML mapping file must be set");
+	}
 
 	private String readFileContent(String fileName) {
 		try {
