@@ -78,6 +78,16 @@ class RmlAdapterProcessorTest {
 	}
 
 	@Test
+	void test_emptyFlowFile() {
+		testRunner.setProperty(RML_MAPPING_FILE, "src/test/resources/awv/location/mapping.ttl");
+
+		testRunner.run();
+
+		testRunner.assertTransferCount(SUCCESS, 0);
+		testRunner.assertTransferCount(FAILURE, 0);
+	}
+
+	@Test
 	void given_BothRmlMappingContentAndFileAreSet_when_RunProcessor_then_ThrowException() {
 		testRunner.setProperty(RML_MAPPING_FILE, "src/test/resources/awv/location/mapping.ttl");
 		testRunner.setProperty(RML_MAPPING_CONTENT, readFileContent("awv/location/mapping.ttl"));
