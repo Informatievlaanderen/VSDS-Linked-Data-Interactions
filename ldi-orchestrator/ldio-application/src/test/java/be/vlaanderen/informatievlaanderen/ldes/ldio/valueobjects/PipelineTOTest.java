@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.ResumedPipelineStatus;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,10 +28,10 @@ class PipelineTOTest {
 	void fromPipelineConfig() {
 		PipelineConfigTO createdPipeline = getPipelineConfig();
 
-		PipelineTO pipelineTO = PipelineTO.build(createdPipeline, RUNNING, AUTO);
+		PipelineTO pipelineTO = PipelineTO.build(createdPipeline, new ResumedPipelineStatus(), AUTO);
 
 		assertEquals("pipeline", pipelineTO.name());
-		assertEquals(RUNNING, pipelineTO.status());
+		assertEquals(new ResumedPipelineStatus(), pipelineTO.status());
 		assertEquals(AUTO, pipelineTO.updateSource());
 		assertEquals("in", pipelineTO.input().getName());
 		assertTrue(pipelineTO.input().getConfig().containsKey("type"));

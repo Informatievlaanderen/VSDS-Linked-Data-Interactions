@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
@@ -17,15 +16,15 @@ public class PipelineStatusManager {
 	private StatusChangeSource lastStatusChangeSource;
 	private final String pipelineName;
 	private final LdioInput input;
-	private final List<LdiOutput> outputs;
+	private final List<LdioStatusComponent> outputs;
 
-	public PipelineStatusManager(String pipelineName, LdioInput input, List<LdiOutput> outputs) {
+	public PipelineStatusManager(String pipelineName, LdioInput input, List<LdioStatusComponent> outputs) {
 		this.pipelineName = pipelineName;
 		this.input = input;
 		this.outputs = outputs;
 	}
 
-	public static PipelineStatusManager initWithStatus(String name, LdioInput input, List<LdiOutput> outputs, PipelineStatus status) {
+	public static PipelineStatusManager initWithStatus(String name, LdioInput input, List<LdioStatusComponent> outputs, PipelineStatus status) {
 		final var pipelineStatusManager = new PipelineStatusManager(name, input, outputs);
 		pipelineStatusManager.updatePipelineStatus(status, StatusChangeSource.AUTO);
 		return pipelineStatusManager;
@@ -35,6 +34,15 @@ public class PipelineStatusManager {
 		return lastStatusChangeSource;
 	}
 
+	public PipelineStatus getPipelineStatus() {
+		return pipelineStatus;
+	}
+
+	public PipelineStatus.Value getPipelineStatusValue() {
+		return pipelineStatus.getStatusValue();
+	}
+
+
 	public String getPipelineName() {
 		return pipelineName;
 	}
@@ -43,8 +51,8 @@ public class PipelineStatusManager {
 		return input;
 	}
 
-	public List<LdiOutput> getOutputs() {
-		return outputs;
+	public List<LdioStatusComponent> getOutputs() {
+		return List.copyOf(outputs);
 	}
 
 	public Value updatePipelineStatus(PipelineStatus pipelineStatus, StatusChangeSource statusChangeSource) {
@@ -87,10 +95,7 @@ public class PipelineStatusManager {
 
 	private void updateComponentsStatus() {
 		pipelineStatus.updateComponentStatus(input);
-		outputs.stream()
-				.filter(LdioStatusComponent.class::isInstance)
-				.map(LdioStatusComponent.class::cast)
-				.forEach(pipelineStatus::updateComponentStatus);
+		outputs.forEach(pipelineStatus::updateComponentStatus);
 
 	}
 }

@@ -11,11 +11,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurato
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.SenderCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidComponentException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidPipelineNameException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.LdiAdapterMissingException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.PipelineStatusManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioStatusComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -71,23 +73,31 @@ public class PipelineCreatorService {
 			Map<String, String> inputConfig = new HashMap<>(config.getInput().getConfig().getConfig());
 			inputConfig.put(ORCHESTRATOR_NAME, orchestratorName);
 
-			verifyAdapter(config, configurator);
+			verifyAdapter(config, configurator.isAdapterRequired());
 
-			LdioInput ldiInput = configurator.configure(adapter, executor, eventPublisher, new ComponentProperties(pipeLineName, inputName, inputConfig));
+			LdioInput ldioInput = configurator.configure(adapter, executor, eventPublisher, new ComponentProperties(pipeLineName, inputName, inputConfig));
 
-			registerBean(pipeLineName, ldiInput);
-			eventPublisher.publishEvent(new InputCreatedEvent(config.getName(), ldiInput));
+			registerBean(pipeLineName, ldioInput);
+
+			List<LdioStatusComponent> ldioStatusOutputs = getLdioOutputs(config).stream()
+					.filter(LdioStatusComponent.class::isInstance)
+					.map(LdioStatusComponent.class::cast)
+					.toList();
+
+			final var pipelineStatusManager = PipelineStatusManager.initWithStatus(pipeLineName, ldioInput, ldioStatusOutputs, configurator.getInitialPipelineStatus());
+			eventPublisher.publishEvent(new InputCreatedEvent(config.getName(), ldioInput));
+			eventPublisher.publishEvent(new PipelineCreatedEvent(pipelineStatusManager));
 		} catch (NoSuchBeanDefinitionException e) {
 			throw new InvalidComponentException(config.getName(), e.getBeanName());
 		}
 	}
 
-	private static void verifyAdapter(PipelineConfig config, LdioInputConfigurator configurator) {
+	private static void verifyAdapter(PipelineConfig config, boolean isAdapterRequired) {
 		final ComponentDefinition adapter = config.getInput().getAdapter();
-		if(configurator.isAdapterRequired() && adapter == null) {
+		if (isAdapterRequired && adapter == null) {
 			throw new LdiAdapterMissingException(config.getName(), config.getInput().getName());
 		}
-		if(!configurator.isAdapterRequired() && adapter != null) {
+		if (!isAdapterRequired && adapter != null) {
 			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", config.getName(), config.getInput().getName(), adapter.getName());
 		}
 	}
@@ -105,11 +115,7 @@ public class PipelineCreatorService {
 				.map(this::getLdioTransformer)
 				.toList();
 
-		List<LdiOutput> ldiOutputs = pipelineConfig.getOutputs()
-				.stream()
-				.map(componentDefinition -> addPipelineNameIfMissingToComponentDefinition(componentDefinition, pipelineConfig.getName()))
-				.map(this::getLdioOutput)
-				.toList();
+		List<LdiOutput> ldiOutputs = getLdioOutputs(pipelineConfig);
 
 		LdioSender ldioSender = new LdioSender(pipelineConfig.getName(), ldiOutputs);
 
@@ -117,15 +123,14 @@ public class PipelineCreatorService {
 
 		processorChain.add(ldioSender);
 
-		LdioTransformer ldioTransformerPipeline = processorChain.get(0);
+		LdioTransformer ldioTransformerPipeline = processorChain.getFirst();
 
 		if (processorChain.size() > 1) {
-			ldioTransformerPipeline = LdioTransformer.link(processorChain.get(0), processorChain);
+			ldioTransformerPipeline = LdioTransformer.link(processorChain.getFirst(), processorChain);
 		}
 
 		registerBean(pipelineConfig.getName() + "-ldiSender", ldioSender);
 
-		eventPublisher.publishEvent(new SenderCreatedEvent(pipelineConfig.getName(), ldioSender));
 
 		return new ComponentExecutorImpl(ldioTransformerPipeline);
 	}
@@ -147,6 +152,14 @@ public class PipelineCreatorService {
 				.configure(componentDefinition.getConfig());
 
 		return debug ? new TransformerDebugger(ldiTransformer) : ldiTransformer;
+	}
+
+	private List<LdiOutput> getLdioOutputs(PipelineConfig pipelineConfig) {
+		return pipelineConfig.getOutputs()
+				.stream()
+				.map(componentDefinition -> addPipelineNameIfMissingToComponentDefinition(componentDefinition, pipelineConfig.getName()))
+				.map(this::getLdioOutput)
+				.toList();
 	}
 
 	private LdiOutput getLdioOutput(ComponentDefinition componentDefinition) {

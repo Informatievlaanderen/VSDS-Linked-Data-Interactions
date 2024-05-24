@@ -12,6 +12,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.InitPipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -76,6 +78,11 @@ public class LdioLdesClientConnectorAutoConfig {
 		@Override
 		public boolean isAdapterRequired() {
 			return false;
+		}
+
+		@Override
+		public PipelineStatus getInitialPipelineStatus() {
+			return new InitPipelineStatus();
 		}
 
 		private static EdcUrlProxy getEdcUrlProxy(ComponentProperties properties) {
