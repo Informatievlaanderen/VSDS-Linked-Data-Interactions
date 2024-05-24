@@ -26,7 +26,7 @@ public class RmlAdapterProperties {
 			.displayName("RML mapping file uri")
 			.description("File uri of the RML mapping")
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
-			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.addValidator(StandardValidators.FILE_EXISTS_VALIDATOR)
 			.required(false)
 			.build();
 

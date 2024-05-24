@@ -78,6 +78,14 @@ class RmlAdapterProcessorTest {
 	}
 
 	@Test
+	void given_NonExistingFile_when_RunProcessor_then_ThrowException() {
+		testRunner.setProperty(RML_MAPPING_FILE, "non-existing-file.ttl");
+
+		assertThatThrownBy(() -> testRunner.run())
+				.isInstanceOf(AssertionFailedError.class);
+	}
+
+	@Test
 	void test_emptyFlowFile() {
 		testRunner.setProperty(RML_MAPPING_FILE, "src/test/resources/awv/location/mapping.ttl");
 
