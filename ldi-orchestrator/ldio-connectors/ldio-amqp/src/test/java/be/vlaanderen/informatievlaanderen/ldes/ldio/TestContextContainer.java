@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 
 public class TestContextContainer {
@@ -15,4 +16,8 @@ public class TestContextContainer {
         return testContext;
     }
 
+    @After
+    public static void tearDownTestContext() {
+        testContext.activemq.stop();
+    }
 }

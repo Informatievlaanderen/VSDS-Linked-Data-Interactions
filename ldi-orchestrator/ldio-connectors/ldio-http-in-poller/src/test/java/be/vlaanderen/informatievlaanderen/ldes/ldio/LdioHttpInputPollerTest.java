@@ -22,7 +22,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.Mockito;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.support.CronTrigger;
 
 import java.time.Duration;
@@ -46,7 +45,6 @@ class LdioHttpInputPollerTest {
 	public static final int WIREMOCK_PORT = 12321;
 	private final LdiAdapter adapter = mock(LdiAdapter.class);
 	private final ComponentExecutor executor = mock(ComponentExecutor.class);
-	private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 	private final static String pipelineName = "pipeline";
 	private static final String BASE_URL = "http://localhost:%d".formatted(WIREMOCK_PORT);
 	private static final String ENDPOINT = "/resource";
@@ -213,7 +211,7 @@ class LdioHttpInputPollerTest {
 
 	private void initPoller(List<String> endpoints, PollingInterval pollingInterval, boolean continueOnFail) {
 		final LdioHttpInputPollerProperties properties = new LdioHttpInputPollerProperties(endpoints, pollingInterval, continueOnFail);
-		ldioHttpInputPoller = new LdioHttpInputPoller(executor, adapter, LdioObserver.register("Ldio:HttpInPoller", pipelineName, null), noAuthExecutor, properties, applicationEventPublisher);
+		ldioHttpInputPoller = new LdioHttpInputPoller(executor, adapter, LdioObserver.register("Ldio:HttpInPoller", pipelineName, null), noAuthExecutor, properties);
 	}
 
 }

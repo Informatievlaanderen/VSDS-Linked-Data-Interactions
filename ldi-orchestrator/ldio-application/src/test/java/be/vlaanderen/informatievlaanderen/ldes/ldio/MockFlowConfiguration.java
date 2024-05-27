@@ -7,12 +7,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurato
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StartedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -47,14 +48,18 @@ public class MockFlowConfiguration {
 		@Override
 		public LdioInput configure(LdiAdapter adapter,
 		                           ComponentExecutor executor,
-								   ApplicationEventPublisher applicationEventPublisher,
 		                           ComponentProperties config) {
-			return new DummyIn(executor, adapter, applicationEventPublisher);
+			return new DummyIn(executor, adapter);
 		}
 
 		@Override
 		public boolean isAdapterRequired() {
 			return true;
+		}
+
+		@Override
+		public PipelineStatus getInitialPipelineStatus() {
+			return new StartedPipelineStatus();
 		}
 	}
 

@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn.NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.HALT;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.RESUME;
 import static org.apache.jena.riot.RDFLanguages.contentTypeToLang;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 import static org.awaitility.Awaitility.await;
@@ -78,7 +76,8 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 			return Stream.of(toModel(content));
 		};
 		var ldioJmsInConfigurator = new LdioAmqpInAutoConfig().ldioConfigurator(ldioAmqpInRegistrator, null);
-		ldioInput = ldioJmsInConfigurator.configure(adapter, componentExecutor, applicationEventPublisher, properties);
+		ldioInput = ldioJmsInConfigurator.configure(adapter, componentExecutor, properties);
+		ldioInput.start();
 	}
 
 	@And("^I send a model from (.*) and (.*) to broker using the amqp producer")
@@ -126,12 +125,12 @@ public class AmqpInIntegrationTestSteps extends AmqpIntegrationTest {
 
 	@When("I pause the pipeline")
 	public void pausePipeline() {
-		ldioInput.updateStatus(HALT);
+		ldioInput.pause();
 	}
 
 	@When("I unpause the pipeline")
 	public void unPausePipeline() {
-		ldioInput.updateStatus(RESUME);
+		ldioInput.resume();
 	}
 
 	@And("The result value will not contain the model")

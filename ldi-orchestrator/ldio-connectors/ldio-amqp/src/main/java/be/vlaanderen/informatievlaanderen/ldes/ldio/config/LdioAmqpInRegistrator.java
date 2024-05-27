@@ -22,7 +22,6 @@ public class LdioAmqpInRegistrator {
 	public void registerListener(JmsConfig jmsConfig, SimpleJmsListenerEndpoint endpoint) {
 		jmsListenerEndpointRegistry.registerListenerContainer(endpoint,
 				createListenerContainerFactory(jmsConfig.username(), jmsConfig.password(), jmsConfig.remoteUrl()));
-		startListener(endpoint.getId());
 	}
 
 	public void startListener(String id) {

@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
-
-import static org.mockito.Mockito.mock;
 
 @Suite
 @SpringBootTest
@@ -23,12 +20,7 @@ public class AmqpIntegrationTest {
 	@Autowired
 	ApplicationContext applicationContext;
 
-	ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
-
 	public LdioAmqpInRegistrator jmsInRegistrator() {
 		return new LdioAmqpInRegistrator(applicationContext);
-	}
-	public ApplicationEventPublisher applicationEventPublisher() {
-		return applicationEventPublisher;
 	}
 }

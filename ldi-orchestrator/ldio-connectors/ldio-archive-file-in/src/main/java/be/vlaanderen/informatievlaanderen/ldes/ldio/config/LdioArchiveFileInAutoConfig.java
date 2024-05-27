@@ -5,12 +5,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.ArchiveFileCrawler;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioArchiveFileIn;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StartedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,18 +30,22 @@ public class LdioArchiveFileInAutoConfig {
 			@Override
 			public LdioInput configure(LdiAdapter adapter,
 									   ComponentExecutor executor,
-									   ApplicationEventPublisher applicationEventPublisher,
 									   ComponentProperties config) {
 				ArchiveFileCrawler archiveFileCrawler = new ArchiveFileCrawler(getArchiveDirectoryPath(config));
 				Lang hintLang = getSourceFormat(config);
 				String pipelineName = config.getPipelineName();
 
-				return new LdioArchiveFileIn(pipelineName, executor, observationRegistry, applicationEventPublisher, archiveFileCrawler, hintLang);
+				return new LdioArchiveFileIn(pipelineName, executor, observationRegistry, archiveFileCrawler, hintLang);
 			}
 
 			@Override
 			public boolean isAdapterRequired() {
 				return false;
+			}
+
+			@Override
+			public PipelineStatus getInitialPipelineStatus() {
+				return new StartedPipelineStatus();
 			}
 
 			private Path getArchiveDirectoryPath(ComponentProperties config) {

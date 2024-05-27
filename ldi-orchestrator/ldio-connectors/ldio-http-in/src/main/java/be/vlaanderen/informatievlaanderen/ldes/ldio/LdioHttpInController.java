@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class LdioHttpInController {
 		LdioHttpInProcess inputProcess = ofNullable(httpInProcesses.get(pipeline))
 				.orElseThrow(() -> new PipelineDoesNotExistException(pipeline));
 		if (inputProcess.isPaused()) {
-			return ResponseEntity.status(503).body(String.format("The LDIO pipeline named %s is currently paused.", pipeline));
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(String.format("The LDIO pipeline named %s is currently paused.", pipeline));
 		} else {
 			inputProcess.processInput(content, contentType);
 		}

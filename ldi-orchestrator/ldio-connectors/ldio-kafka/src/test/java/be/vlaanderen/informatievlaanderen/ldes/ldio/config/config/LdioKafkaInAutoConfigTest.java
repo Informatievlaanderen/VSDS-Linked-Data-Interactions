@@ -6,7 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioKafkaInAutoConfig
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.test.rule.EmbeddedKafkaRule;
 
 import java.util.HashMap;
@@ -16,11 +15,9 @@ import java.util.stream.Stream;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioKafkaIn.NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 class LdioKafkaInAutoConfigTest {
 
-	private ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 	private static final String TOPIC = "TopicName";
 	public static EmbeddedKafkaRule embeddedKafka = new EmbeddedKafkaRule(1, true, TOPIC);
 
@@ -33,7 +30,7 @@ class LdioKafkaInAutoConfigTest {
 		ComponentProperties componentProperties = new ComponentProperties("pipelineName", NAME, config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-				() -> configurator.configure((content) -> Stream.of(), null, applicationEventPublisher, componentProperties));
+				() -> configurator.configure((content) -> Stream.of(), null, componentProperties));
 
 		assertEquals("java.lang.IllegalArgumentException: Invalid 'security-protocol', " +
 				"the supported protocols are: [NO_AUTH, SASL_SSL_PLAIN]", exception.getMessage());
@@ -46,7 +43,7 @@ class LdioKafkaInAutoConfigTest {
 		Map<String, String> config = getBasicConfig();
 
 		assertDoesNotThrow(
-				() -> configurator.configure((content) -> Stream.of(), null, applicationEventPublisher, new ComponentProperties("pipelineName", NAME, config)));
+				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 	@Test
@@ -59,7 +56,7 @@ class LdioKafkaInAutoConfigTest {
 		config.put(KafkaInConfigKeys.SASL_JAAS_PASSWORD, "secret");
 
 		assertDoesNotThrow(
-				() -> configurator.configure((content) -> Stream.of(), null, applicationEventPublisher, new ComponentProperties("pipelineName", NAME, config)));
+				() -> configurator.configure((content) -> Stream.of(), null, new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 	private Map<String, String> getBasicConfig() {

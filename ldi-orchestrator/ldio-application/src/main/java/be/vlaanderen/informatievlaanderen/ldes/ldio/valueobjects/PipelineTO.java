@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

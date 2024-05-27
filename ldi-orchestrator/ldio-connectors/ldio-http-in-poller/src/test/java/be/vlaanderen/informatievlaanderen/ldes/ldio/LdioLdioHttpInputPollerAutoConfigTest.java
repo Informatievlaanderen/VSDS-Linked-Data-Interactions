@@ -16,7 +16,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.MockedConstruction;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 class LdioLdioHttpInputPollerAutoConfigTest {
-	private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
 	private final LdiAdapter adapter = mock(LdiAdapter.class);
 	private final ComponentExecutor executor = mock(ComponentExecutor.class);
 	private static final String BASE_URL = "http://localhost:10101";
@@ -57,7 +55,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 		try (MockedConstruction<LdioHttpInputPoller> ignored = mockConstruction(LdioHttpInputPoller.class)) {
 			LdioHttpInputPoller poller = new LdioHttpInputPollerAutoConfig()
 					.httpInputPollerConfigurator(null)
-					.configure(adapter, executor, applicationEventPublisher, createDefaultISOTestConfig());
+					.configure(adapter, executor, createDefaultISOTestConfig());
 			verify(poller, times(1)).start();
 		}
 	}
@@ -67,7 +65,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 		try (MockedConstruction<LdioHttpInputPoller> ignored = mockConstruction(LdioHttpInputPoller.class)) {
 			LdioHttpInputPoller poller = new LdioHttpInputPollerAutoConfig()
 					.httpInputPollerConfigurator(null)
-					.configure(adapter, executor, applicationEventPublisher, createDefaultCronTestConfig());
+					.configure(adapter, executor, createDefaultCronTestConfig());
 			verify(poller, times(1)).start();
 		}
 	}
@@ -77,7 +75,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 	void whenInvalidIntervalConfigured_thenCatchException(String interval) {
 		ThrowableAssert.ThrowingCallable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
 				.httpInputPollerConfigurator(null)
-				.configure(adapter, executor, applicationEventPublisher, createConfigWithInterval(BASE_URL + ENDPOINT, interval, "false"));
+				.configure(adapter, executor, createConfigWithInterval(BASE_URL + ENDPOINT, interval, "false"));
 
 		assertThatThrownBy(configurePoller).isInstanceOf(IllegalArgumentException.class);
 	}
@@ -87,7 +85,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 	void whenInvalidCronConfigured_thenCatchException(String cron) {
 		ThrowableAssert.ThrowingCallable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
 				.httpInputPollerConfigurator(null)
-				.configure(adapter, executor, applicationEventPublisher, createConfigWithCron(BASE_URL + ENDPOINT, cron, "false"));
+				.configure(adapter, executor, createConfigWithCron(BASE_URL + ENDPOINT, cron, "false"));
 
 		assertThatThrownBy(configurePoller).isInstanceOf(IllegalArgumentException.class);
 	}
@@ -108,7 +106,7 @@ class LdioLdioHttpInputPollerAutoConfigTest {
 		ComponentProperties componentProperties = new ComponentProperties("pipelineName", "", properties);
 
 		ThrowableAssert.ThrowingCallable configurePoller = () -> new LdioHttpInputPollerAutoConfig()
-				.httpInputPollerConfigurator(null).configure(adapter, executor, applicationEventPublisher, componentProperties);
+				.httpInputPollerConfigurator(null).configure(adapter, executor, componentProperties);
 
 		assertThatThrownBy(configurePoller)
 				.isInstanceOf(ConfigPropertyMissingException.class)

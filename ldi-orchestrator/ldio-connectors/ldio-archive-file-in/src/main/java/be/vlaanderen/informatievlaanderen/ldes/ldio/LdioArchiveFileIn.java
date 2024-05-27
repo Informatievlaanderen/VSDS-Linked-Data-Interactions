@@ -9,20 +9,18 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 
 public class LdioArchiveFileIn extends LdioInput {
 	public static final String NAME = "Ldio:ArchiveFileIn";
 	private final Logger log = LoggerFactory.getLogger(LdioArchiveFileIn.class);
 	private final ArchiveFileCrawler archiveFileCrawler;
 	private final Lang sourceFormat;
-	private boolean paused = false;
+	private boolean paused;
 
-	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ApplicationEventPublisher applicationEventPublisher, ArchiveFileCrawler crawler, Lang source) {
-		super(executor, null, LdioObserver.register(NAME, pipelineName, observationRegistry), applicationEventPublisher);
+	public LdioArchiveFileIn(String pipelineName, ComponentExecutor executor, ObservationRegistry observationRegistry, ArchiveFileCrawler crawler, Lang source) {
+		super(executor, null, LdioObserver.register(NAME, pipelineName, observationRegistry));
 		this.archiveFileCrawler = crawler;
 		this.sourceFormat = source;
-		start();
 		log.info("Starting with crawling the archive.");
 		crawlArchive();
 		log.info("Finished crawling the archive.");
@@ -33,13 +31,13 @@ public class LdioArchiveFileIn extends LdioInput {
 	public synchronized void crawlArchive() {
 		archiveFileCrawler.streamArchiveFilePaths().forEach(file -> {
 			while (paused) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
+				try {
+					this.wait();
+				} catch (InterruptedException e) {
 					log.error("Thread interrupted: {}", e.getMessage());
-                    Thread.currentThread().interrupt();
-                }
-            }
+					Thread.currentThread().interrupt();
+				}
+			}
 			Model model = RDFParser.source(file).lang(sourceFormat).toModel();
 			processModel(model);
 		});
@@ -49,14 +47,20 @@ public class LdioArchiveFileIn extends LdioInput {
 	public void shutdown() {
 		this.paused = true;
 	}
+
 	@Override
-	protected synchronized void resume() {
+	public void start() {
+		this.paused = false;
+	}
+
+	@Override
+	public synchronized void resume() {
 		this.paused = false;
 		this.notifyAll();
 	}
 
 	@Override
-	protected void pause() {
+	public void pause() {
 		this.paused = true;
 	}
 }

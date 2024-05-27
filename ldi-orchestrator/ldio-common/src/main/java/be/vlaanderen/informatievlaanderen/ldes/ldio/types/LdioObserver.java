@@ -53,9 +53,4 @@ public class LdioObserver {
 		return new LdioObserver(componentName, pipelineName, observationRegistry);
 	}
 
-	public String getPipelineName() {
-		return pipelineName;
-	}
-
-
 }

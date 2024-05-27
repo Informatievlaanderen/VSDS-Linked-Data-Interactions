@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,24 +18,24 @@ public interface OpenApiPipelineStatusController {
             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
     })
     @Operation(summary = "Get a list of all pipelines with their status.")
-    Map<String, PipelineStatus> getPipelineStatus();
+    Map<String, PipelineStatus.Value> getPipelineStatus();
 
     @ApiResponse(responseCode = "200", description = "Returns the current pipeline status",
-            content = {@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(implementation = PipelineStatus.class))
+            content = {@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(implementation = PipelineStatus.Value.class))
     })
     @Operation(summary = "Get the current status of a given pipeline.")
-    PipelineStatus getPipelineStatus(@PathVariable("pipelineId") String pipelineId);
+    PipelineStatus.Value getPipelineStatus(@PathVariable("pipelineId") String pipelineId);
 
     @ApiResponse(responseCode = "200", description = "Halts the current pipeline",
-            content = {@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(implementation = PipelineStatus.class))
+            content = {@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(implementation = PipelineStatus.Value.class))
             })
     @Operation(summary = "Pause a pipeline.")
-    PipelineStatus haltPipeline(@PathVariable("pipelineId") String pipelineId);
+    PipelineStatus.Value haltPipeline(@PathVariable("pipelineId") String pipelineId);
 
     @ApiResponse(responseCode = "200", description = "Resumes the current pipeline",
-            content = {@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(implementation = PipelineStatus.class))
+            content = {@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(implementation = PipelineStatus.Value.class))
             })
     @Operation(summary = "Resume a pipeline.")
-    PipelineStatus resumePipeline(@PathVariable("pipelineId") String pipelineId);
+    PipelineStatus.Value resumePipeline(@PathVariable("pipelineId") String pipelineId);
 
 }

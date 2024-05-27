@@ -5,6 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInProcess;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.HttpInPipelineCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.statusmanagement.pipelinestatus.StartedPipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -38,12 +40,11 @@ public class LdioHttpInAutoConfig {
 		@Override
 		public LdioInput configure(LdiAdapter adapter,
 								   ComponentExecutor executor,
-								   ApplicationEventPublisher applicationEventPublisher,
 								   ComponentProperties config) {
 			String pipelineName = config.getPipelineName();
 
 			LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
-			LdioHttpInProcess ldioHttpIn = new LdioHttpInProcess(executor, adapter, ldioObserver, applicationEventPublisher);
+			LdioHttpInProcess ldioHttpIn = new LdioHttpInProcess(executor, adapter, ldioObserver);
 
 			eventPublisher.publishEvent(new HttpInPipelineCreatedEvent(pipelineName, ldioHttpIn));
 			ldioHttpIn.start();
@@ -53,6 +54,11 @@ public class LdioHttpInAutoConfig {
 		@Override
 		public boolean isAdapterRequired() {
 			return true;
+		}
+
+		@Override
+		public PipelineStatus getInitialPipelineStatus() {
+			return new StartedPipelineStatus();
 		}
 	}
 }

@@ -4,16 +4,12 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
-import org.springframework.context.ApplicationEventPublisher;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
 
 public class DummyIn extends LdioInput {
 	private int counter = 0;
 
-	public DummyIn(ComponentExecutor executor, LdiAdapter adapter, ApplicationEventPublisher applicationEventPublisher) {
-		super(executor, adapter, LdioObserver.register("DummyIn", "test", null), applicationEventPublisher);
-		this.updateStatus(START);
+	public DummyIn(ComponentExecutor executor, LdiAdapter adapter) {
+		super(executor, adapter, LdioObserver.register("DummyIn", "test", null));
 	}
 
 	public void sendData() {
@@ -27,12 +23,16 @@ public class DummyIn extends LdioInput {
 	}
 
 	@Override
-	protected void resume() {
+	public void start() {
+	}
+
+	@Override
+	public void resume() {
 
 	}
 
 	@Override
-	protected void pause() {
+	public void pause() {
 
 	}
 }

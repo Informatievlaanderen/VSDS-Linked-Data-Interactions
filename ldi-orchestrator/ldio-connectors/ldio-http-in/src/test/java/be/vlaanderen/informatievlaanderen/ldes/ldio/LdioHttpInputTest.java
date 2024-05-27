@@ -17,8 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpInProcess.NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.HALT;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.RESUME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -43,14 +41,14 @@ class LdioHttpInputTest {
 		when(adapter.apply(any())).thenReturn(Stream.empty());
 
 		input = (LdioInput) new LdioHttpInAutoConfig.LdioHttpInConfigurator(eventPublisher, null)
-				.configure(adapter, executor, eventPublisher, new ComponentProperties(endpoint, NAME));
+				.configure(adapter, executor, new ComponentProperties(endpoint, NAME));
 	}
 
 	@Test
 	void testHttpEndpoint() throws Exception {
 		String content = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 		String contentType = "application/n-quads";
-		input.updateStatus(RESUME);
+		input.resume();
 
 		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().isAccepted());
 
@@ -60,13 +58,13 @@ class LdioHttpInputTest {
 	void when_PipelineIsHalted_Then_MessageIsNotProcessed() throws Exception {
 		String content = "_:b0 <http://schema.org/name> \"Jane Doe\" .";
 		String contentType = "application/n-quads";
-		input.updateStatus(HALT);
+		input.pause();
 
 		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().is(503));
 
 		verifyNoInteractions(adapter);
 
-		input.updateStatus(RESUME);
+		input.resume();
 
 		mockMvc.perform(post("/%s".formatted(endpoint)).content(content).contentType(contentType)).andExpect(status().isAccepted());
 
