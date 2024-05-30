@@ -8,6 +8,10 @@ import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
 import java.util.Optional;
 
+/**
+ * Wrapper around the RepositoryConnectionHolder, to make more an abstraction of the actions that can be done
+ * through the RepositoryConnection and already handling with some overhead of the named graph
+ */
 public class MaterialiserConnection {
 	private final String namedGraph;
 	private final RepositoryConnectionHolder holder;

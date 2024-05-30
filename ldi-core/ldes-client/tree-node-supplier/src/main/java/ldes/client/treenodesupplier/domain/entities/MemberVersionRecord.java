@@ -3,6 +3,9 @@ package ldes.client.treenodesupplier.domain.entities;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Record that represents the versionOf and timestamp of a specific member
+ */
 public class MemberVersionRecord {
     private final String versionOf;
     private final LocalDateTime timestamp;

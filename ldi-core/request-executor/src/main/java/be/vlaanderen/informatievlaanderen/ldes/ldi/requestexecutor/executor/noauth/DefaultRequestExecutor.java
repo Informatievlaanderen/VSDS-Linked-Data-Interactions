@@ -9,6 +9,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 
 import java.io.IOException;
 
+/**
+ * Default implementation of the RequestExecutor and acts like a wrapper around the Apache HttpClient
+ */
 public class DefaultRequestExecutor implements RequestExecutor {
 
 	private final HttpClient httpClient;

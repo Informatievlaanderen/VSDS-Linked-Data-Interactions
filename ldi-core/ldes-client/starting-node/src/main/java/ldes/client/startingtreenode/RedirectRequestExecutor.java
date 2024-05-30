@@ -11,6 +11,9 @@ import org.apache.http.HttpHeaders;
 
 import java.util.List;
 
+/**
+ * Wrapper around a RequestExecutor instance to more easily handle redirect responses
+ */
 public class RedirectRequestExecutor {
 
 	private final RequestExecutor requestExecutor;

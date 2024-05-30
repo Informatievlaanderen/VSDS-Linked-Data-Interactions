@@ -16,6 +16,9 @@ import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.*;
 
+/**
+ * Will transform a State Object into a Version Object.
+ */
 public class VersionObjectCreator implements LdiOneToOneTransformer {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(VersionObjectCreator.class);
@@ -31,15 +34,30 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	public static final String LINKED_DATA_MODEL_IS_EMPTY = "Received an empty data model";
 	public static final String CREATED_VERSION = "Created version: {}";
 
+	/**
+	 * Extractor that will be used to generate a timestamp for the version object
+	 */
 	private final PropertyExtractor dateObservedPropertyExtractor;
+	/**
+	 * Representation of the member type resource that the state object represents
+	 */
 	private final Resource memberTypeResource;
+	/**
+	 * Represents that needs to be used to expand the named subject of the member to a version object member id
+	 */
 	private final String delimiter;
+	/**
+	 * Property path that will be used as a predicate to foresee the state object of a timestamp
+	 */
 	private final Property generatedAtTimeProperty;
+	/**
+	 * Property path that will be used a predicate to foresee the state object of a version-of
+	 */
 	private final Property versionOfProperty;
 
 	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, Resource memberTypeResource,
-	                            String delimiter,
-	                            Property generatedAtTimeProperty, Property versionOfProperty) {
+								String delimiter,
+								Property generatedAtTimeProperty, Property versionOfProperty) {
 		this.dateObservedPropertyExtractor = dateObservedPropertyExtractor;
 		this.memberTypeResource = memberTypeResource;
 		this.delimiter = delimiter;

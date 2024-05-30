@@ -15,15 +15,14 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Adapter that will transform a NGSI V2 input into NGSI LD.
+ */
 public class NgsiV2ToLdAdapter implements LdiAdapter {
 
 	private final String coreContext;
 	private final String ldContext;
 	private final String dataIdentifier;
-
-	public NgsiV2ToLdAdapter(String dataIdentifier, String coreContext) {
-		this(dataIdentifier, coreContext, null);
-	}
 
 	public NgsiV2ToLdAdapter(String dataIdentifier, String coreContext, String ldContext) {
 		if (dataIdentifier == null) {
@@ -38,7 +37,7 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 		this.ldContext = ldContext;
 	}
 
-	public Stream<LinkedDataModel> translateJsonToLD(String data) {
+	Stream<LinkedDataModel> translateJsonToLD(String data) {
 		try {
 			LinkedDataModel model = new ObjectMapper()
 					.readerFor(LinkedDataModel.class)

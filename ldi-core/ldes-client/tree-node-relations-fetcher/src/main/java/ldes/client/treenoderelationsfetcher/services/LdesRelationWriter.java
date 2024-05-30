@@ -5,6 +5,9 @@ import ldes.client.treenoderelationsfetcher.domain.valueobjects.LdesRelation;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Writer utility class that is responsible for writing an LDES relation into a tree kind string representation
+ */
 public class LdesRelationWriter {
 	private static final String RELATION_PREFIX = "+- ";
 	private static final String RELATIONS_CONNECTION_STRING = "|  ";

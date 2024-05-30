@@ -9,6 +9,9 @@ import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
+/**
+ * Used when the provided starting node of the LDES is the LDES definition itself or the tree:view definition
+ */
 public class ViewSpecification implements StartingNodeSpecification {
 	public static final String TREE = "https://w3id.org/tree#";
 	public static final Property TREE_VIEW = createProperty(TREE, "view");

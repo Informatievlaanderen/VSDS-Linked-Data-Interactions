@@ -16,7 +16,8 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
 
 /**
- * Handles sending the actual HTTP request to the server.
+ * Implementation of the RequestExecutor and acts like a wrapper around an OAuthService, therefor dealing with
+ * sending http request to secured server is easier
  */
 public class ClientCredentialsRequestExecutor implements RequestExecutor {
 

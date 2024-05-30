@@ -36,6 +36,7 @@ public class ChangeDetectionFilter implements LdiOneToOneTransformer {
 
 	/**
 	 * Filters out the model by returning an empty model when the model's hash has already been processed
+	 *
 	 * @param model The model to be filtered
 	 * @return Either the same model if not processed yet, otherwise an empty model
 	 */
@@ -46,15 +47,18 @@ public class ChangeDetectionFilter implements LdiOneToOneTransformer {
 		canonicalizeInputModel(model, outputStream);
 		String hashedModel = hashModelBytes(outputStream.toByteArray());
 		final HashedStateMember hashedStateMember = new HashedStateMember(subject.getURI(), hashedModel);
-		if(hashedStateMemberRepository.containsHashedStateMember(hashedStateMember)) {
+		if (hashedStateMemberRepository.containsHashedStateMember(hashedStateMember)) {
 			return ModelFactory.createDefaultModel();
 		}
 		hashedStateMemberRepository.saveHashedStateMember(hashedStateMember);
 		return model;
 	}
 
+	/**
+	 * Clean up the resources, should be called when the component is not used anymore
+	 */
 	public void destroyState() {
-		if(!keepState) {
+		if (!keepState) {
 			hashedStateMemberRepository.destroyState();
 		}
 	}

@@ -12,13 +12,10 @@ public class TreeNodeRecord {
 	private final String treeNodeUrl;
 	private TreeNodeStatus treeNodeStatus;
 	private LocalDateTime earliestNextVisit;
-	private List<String> memberIds;
+	private final List<String> memberIds;
 
 	public TreeNodeRecord(String treeNodeUrl) {
-		this.treeNodeUrl = treeNodeUrl;
-		this.treeNodeStatus = TreeNodeStatus.NOT_VISITED;
-		this.earliestNextVisit = LocalDateTime.now();
-		this.memberIds = new ArrayList<>();
+		this(treeNodeUrl, TreeNodeStatus.NOT_VISITED, LocalDateTime.now(), new ArrayList<>());
 	}
 
 	public TreeNodeRecord(String treeNodeUrl, TreeNodeStatus treeNodeStatus, LocalDateTime earliestNextVisit, List<String> memberIds) {
@@ -32,17 +29,33 @@ public class TreeNodeRecord {
 		return treeNodeUrl;
 	}
 
+	/**
+	 * @return a representation of how much of this TreeNode has been processed
+	 */
 	public TreeNodeStatus getTreeNodeStatus() {
 		return treeNodeStatus;
 	}
 
+	/**
+	 * Keeps track when this TreeNode could have been changed,
+	 * which would make no sense fetching this TreeNode again before this timestamp
+	 *
+	 * @return a timestamp suggesting when to fetch this TreeNode again
+	 */
 	public LocalDateTime getEarliestNextVisit() {
 		return earliestNextVisit;
 	}
+
+	/**
+	 * @return a list of all the id of all the members that are part of this TreeNode
+	 */
 	public List<String> getMemberIds() {
 		return memberIds;
 	}
 
+	/**
+	 * Updates the TreeNodeStatus based on the mutabilityStatus received from the HTTP response
+	 */
 	public void updateStatus(MutabilityStatus mutabilityStatus) {
 		if (mutabilityStatus.isMutable()) {
 			treeNodeStatus = TreeNodeStatus.MUTABLE_AND_ACTIVE;
@@ -52,14 +65,31 @@ public class TreeNodeRecord {
 		earliestNextVisit = mutabilityStatus.getEarliestNextVisit();
 	}
 
-	public boolean hasReceived(String id) {
-		return memberIds.contains(id);
+	/**
+	 * Check whether the member has already been received
+	 *
+	 * @param memberId the id of the member that needs to be checked
+	 * @return <code>true</code> if the member is new, <code>false</code> if the member has already been received before
+	 */
+	public boolean hasReceived(String memberId) {
+		return memberIds.contains(memberId);
 	}
 
+	/**
+	 * Add newly received members to this TreeNode
+	 *
+	 * @param receivedMemberIds the ids of the new members
+	 */
 	public void addToReceived(List<String> receivedMemberIds) {
 		memberIds.addAll(receivedMemberIds);
 	}
 
+	/**
+	 * Marks this TreeNode as completely processed.
+	 * <br />
+	 * To save some resources, the list of members is cleared, as it does not matter anymore which members of
+	 * this TreeNode has been processed
+	 */
 	public void markImmutableWithoutUnprocessedMembers() {
 		memberIds.clear();
 		treeNodeStatus = TreeNodeStatus.IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS;

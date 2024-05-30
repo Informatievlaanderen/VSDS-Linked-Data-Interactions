@@ -11,6 +11,9 @@ import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
+/**
+ * Contains the response details received from the server.
+ */
 public class Response {
 
 	private final Request request;
@@ -21,6 +24,7 @@ public class Response {
 	public Response(Request request, List<Header> headers, int httpStatus, String body) {
 		this(request, headers, httpStatus, body == null ? null : body.getBytes());
 	}
+
 	public Response(Request request, List<Header> headers, int httpStatus, byte[] body) {
 		this.request = request;
 		this.httpStatus = httpStatus;

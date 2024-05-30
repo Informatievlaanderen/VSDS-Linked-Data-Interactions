@@ -13,8 +13,11 @@ import java.util.stream.Stream;
 
 import static ldes.client.treenodefetcher.domain.valueobjects.Constants.*;
 
+/**
+ * Wrapper around the RDF response to extract more easily the required information from that response
+ */
 public class ModelResponse {
-	private TimestampExtractor timestampExtractor;
+	private final TimestampExtractor timestampExtractor;
 	private final ModelExtract modelExtract = new ModelExtract(new StatementTripleBoundary(TripleBoundary.stopNowhere));
 	private final Model model;
 

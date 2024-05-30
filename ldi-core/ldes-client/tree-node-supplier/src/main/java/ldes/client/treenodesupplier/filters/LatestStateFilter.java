@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
+/**
+ * Filter that makes sure that a member represents only the latest state
+ */
 public class LatestStateFilter implements MemberFilter {
 
 	private final MemberVersionRepository memberVersionRepository;
@@ -20,6 +23,12 @@ public class LatestStateFilter implements MemberFilter {
 	private final String versionOfPath;
 
 
+	/**
+	 * @param memberVersionRepository repository that keeps track of the processed versions of the members
+	 * @param keepState               if the state must be kept, or can be reset on restart of the filter
+	 * @param timestampPath           URI of the predicate that contains the timestamp
+	 * @param versionOfPath           URI of the predicate that contains the version-of
+	 */
 	public LatestStateFilter(MemberVersionRepository memberVersionRepository, boolean keepState, String timestampPath, String versionOfPath) {
 		this.memberVersionRepository = memberVersionRepository;
 		this.keepState = keepState;
@@ -41,9 +50,12 @@ public class LatestStateFilter implements MemberFilter {
 		memberVersionRepository.addMemberVersion(new MemberVersionRecord(versionOf, timestamp));
 	}
 
+	/**
+	 * Clean up the database when the filter is not required anymore and the state must not be kept
+	 */
 	@Override
 	public void destroyState() {
-		if(!keepState) {
+		if (!keepState) {
 			memberVersionRepository.destroyState();
 		}
 	}

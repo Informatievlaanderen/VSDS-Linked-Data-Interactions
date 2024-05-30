@@ -3,6 +3,10 @@ package ldes.client.treenodefetcher.domain.valueobjects;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+/**
+ * Keeps track when the received http response is about the change, is in fact a reflection of the
+ * <code>Cache-Control</code> header
+ */
 public class MutabilityStatus {
 
 	public static final int DEFAULT_MAX_AGE = 60;

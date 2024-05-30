@@ -23,6 +23,7 @@ public class PostgresEntityManagerFactory implements EntityManagerFactory {
 		return instances.computeIfAbsent(instanceName, s -> new PostgresEntityManagerFactory(properties));
 	}
 
+	@Override
 	public EntityManager getEntityManager() {
 		return em;
 	}

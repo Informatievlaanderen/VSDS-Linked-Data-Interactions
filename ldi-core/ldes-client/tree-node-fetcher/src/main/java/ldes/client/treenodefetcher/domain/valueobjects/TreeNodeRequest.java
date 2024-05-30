@@ -9,6 +9,9 @@ import org.apache.jena.riot.Lang;
 
 import java.util.List;
 
+/**
+ * Contains the endpoint to connect to the server. This can be only be a fragment
+ */
 public class TreeNodeRequest {
 	private final String treeNodeUrl;
 	private final Lang lang;

@@ -13,6 +13,10 @@ public class TimestampFromPathExtractor implements TimestampExtractor {
 
 	private final Property timestampPath;
 
+	/**
+	 *
+	 * @param timestampPath Predicate where the timestamp should be extracted from
+	 */
 	public TimestampFromPathExtractor(Property timestampPath) {
 		this.timestampPath = timestampPath;
 	}

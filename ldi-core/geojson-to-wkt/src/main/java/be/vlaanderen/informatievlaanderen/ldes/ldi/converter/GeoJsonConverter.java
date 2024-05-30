@@ -7,6 +7,12 @@ import java.util.List;
 
 public interface GeoJsonConverter {
 
+    /**
+     * Creates new Geometry statements based on
+     * @param statement
+     * @param geometryModel
+     * @return
+     */
     List<Statement> createNewGeometryStatements(Statement statement, Model geometryModel);
 
 }

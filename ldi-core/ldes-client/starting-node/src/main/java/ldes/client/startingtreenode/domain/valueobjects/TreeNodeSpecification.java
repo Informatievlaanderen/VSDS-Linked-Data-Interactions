@@ -9,6 +9,9 @@ import java.util.Optional;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 
+/**
+ * Used when the starting node is already part of a view, or in other words, a fragment
+ */
 public class TreeNodeSpecification implements StartingNodeSpecification {
 	public static final String TREE = "https://w3id.org/tree#";
 	public static final Resource TREE_NODE_RESOURCE = createResource(TREE + "Node");

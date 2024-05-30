@@ -18,6 +18,9 @@ public class PrefixAdder {
 	private static final String VALID_PREFIX_REGEX = "^[a-zA-Z_][\\w.-]*$"; // NCName regex
 	private static final Logger LOGGER = LoggerFactory.getLogger(PrefixAdder.class);
 
+	/**
+	 * Adds prefix to the RDF model, which can come in handy for RDF formats like <code>text/turtle</code>
+	 */
 	public static Model addPrefixesToModel(Model model) {
 		Map<String, String> nameSpaceMap = new HashMap<>();
 		Map<String, String> localNamesMap = new HashMap<>();
@@ -28,7 +31,7 @@ public class PrefixAdder {
 	}
 
 	private static void removePrefixesWithNonCompliantLocalName(Map<String, String> nameSpaceMap,
-			Map<String, String> localNamesMap) {
+																Map<String, String> localNamesMap) {
 		localNamesMap.forEach((localName, prefix) -> {
 			if (!localName.matches(VALID_LOCALNAME_REGEX)) {
 				nameSpaceMap.remove(prefix);
@@ -37,7 +40,7 @@ public class PrefixAdder {
 	}
 
 	private static void extractNamespaces(Map<String, String> nameSpaceMap, Map<String, String> localNamesMap,
-			Statement statement) {
+										  Statement statement) {
 
 		addPotentialPrefixToNamespaceMap(nameSpaceMap, localNamesMap, statement.getPredicate().getNameSpace(),
 				statement.getPredicate().getLocalName());
@@ -49,8 +52,8 @@ public class PrefixAdder {
 	}
 
 	private static void addPotentialPrefixToNamespaceMap(Map<String, String> nameSpaceMap,
-			Map<String, String> localNamesMap,
-			String predicateNameSpace, String localName) {
+														 Map<String, String> localNamesMap,
+														 String predicateNameSpace, String localName) {
 		String candidateForPrefix = getPrefixCandidate(predicateNameSpace);
 		if (isValidPrefixCandidate(candidateForPrefix)) {
 			nameSpaceMap.put(candidateForPrefix, predicateNameSpace);

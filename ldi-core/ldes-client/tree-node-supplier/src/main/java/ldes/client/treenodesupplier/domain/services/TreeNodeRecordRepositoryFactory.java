@@ -12,6 +12,12 @@ public class TreeNodeRecordRepositoryFactory {
 	private TreeNodeRecordRepositoryFactory() {
 	}
 
+	/**
+	 * @param statePersistenceStrategy via what persistence strategy the repository should work
+	 * @param properties               a representation of the required config properties to set up the persistence unit
+	 * @param instanceName             will be used to be able to keep more easily track of the return repo
+	 * @return the memberIdRepository for a specific instance (could be a NiFi flow or a LDIO pipeline)
+	 */
 	public static TreeNodeRecordRepository getTreeNodeRecordRepository(
 			StatePersistenceStrategy statePersistenceStrategy, HibernateProperties properties, String instanceName) {
 		return switch (statePersistenceStrategy) {

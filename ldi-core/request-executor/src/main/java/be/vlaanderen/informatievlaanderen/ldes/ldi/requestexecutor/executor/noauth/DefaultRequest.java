@@ -12,6 +12,10 @@ import org.apache.http.entity.ContentType;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Wrapper around the effective own custom Request object to convert it to an Apache HttpUriRequest that will be used
+ * in the effective HttpClient
+ */
 public class DefaultRequest {
 
 	private final Request request;
@@ -20,6 +24,9 @@ public class DefaultRequest {
 		this.request = request;
 	}
 
+	/**
+	 * @return an Apache HttpUriRequest, based on the provided Request present in this wrapper class
+	 */
 	public HttpUriRequest getHttpRequest() {
 		final HttpRequestBase httpRequest = createRequest();
 		request.getRequestHeaders().forEach(header -> httpRequest.addHeader(header.getKey(), header.getValue()));

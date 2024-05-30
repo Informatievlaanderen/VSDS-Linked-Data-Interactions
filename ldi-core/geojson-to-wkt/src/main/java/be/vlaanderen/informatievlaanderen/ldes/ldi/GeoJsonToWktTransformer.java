@@ -12,10 +12,18 @@ import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.WktConverter.GEOJSON_GEOMETRY;
 
+/**
+ * Ldi Transformer components that is in fact a wrapper around a GeoJsonConverter
+ */
 public class GeoJsonToWktTransformer implements LdiOneToOneTransformer {
 
 	private final GeoJsonConverter geoJsonConverter;
 
+	/**
+	 * Constructs either around a converter that converts the GeoJson to simple WKT or to WKT in RDF format
+	 *
+	 * @param transformToRdfWkt boolean that determines whether to convert the input to RDF+WKT if true or to simple RDF if false
+	 */
 	public GeoJsonToWktTransformer(boolean transformToRdfWkt) {
 		this.geoJsonConverter = transformToRdfWkt ?
 				new GeoJsonToRdfPlusWktConverter() :

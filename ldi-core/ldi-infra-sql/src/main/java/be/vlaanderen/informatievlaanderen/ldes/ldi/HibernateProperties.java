@@ -11,5 +11,8 @@ public interface HibernateProperties {
 	String UPDATE = "update";
 	String CREATE_DROP = "create-drop";
 
+	/**
+	 * @return a map that has the hibernate property names as keys with the right value to it
+	 */
 	Map<String, String> getProperties();
 }

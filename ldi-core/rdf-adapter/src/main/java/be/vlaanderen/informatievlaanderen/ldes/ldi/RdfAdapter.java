@@ -11,6 +11,9 @@ import java.util.stream.Stream;
 
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
 
+/**
+ * Basic adapter that will convert an RDF string to a linked data model
+ */
 public class RdfAdapter implements LdiAdapter {
 
 	private final Context context;

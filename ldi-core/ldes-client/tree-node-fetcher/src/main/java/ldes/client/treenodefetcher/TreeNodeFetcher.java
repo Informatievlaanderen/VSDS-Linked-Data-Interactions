@@ -16,6 +16,9 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Responsible for fetching the next TreeNodes
+ */
 public class TreeNodeFetcher {
 
 	private static final LocalDateTime maxSupportedDateTime = LocalDateTime.of(294276, 12, 31, 23, 59, 59);
@@ -27,6 +30,10 @@ public class TreeNodeFetcher {
 		this.timestampExtractor = timestampExtractor;
 	}
 
+	/**
+	 * @param treeNodeRequest based on the relations found in the previous TreeNode
+	 * @return the new TreeNode with all its information
+	 */
 	public TreeNodeResponse fetchTreeNode(TreeNodeRequest treeNodeRequest) {
 		final Response response = requestExecutor.execute(treeNodeRequest.createRequest());
 

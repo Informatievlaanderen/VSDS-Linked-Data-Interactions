@@ -42,10 +42,12 @@ public class SqliteEntityManagerFactory implements EntityManagerFactory {
 		});
 	}
 
+	@Override
 	public EntityManager getEntityManager() {
 		return em;
 	}
 
+	@Override
 	public void destroyState(String instanceName) {
 		em.close();
 		emf.close();

@@ -9,8 +9,15 @@ import java.util.*;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
+/**
+ * Will transform a Version Object into a State Object.
+ */
 public class VersionMaterialiser implements LdiOneToOneTransformer {
 	private final Property versionPredicate;
+	/**
+	 * Represents whether only the statements of the node containing the versionOf property needs to be returned,
+	 * including potential nested blank nodes
+	 */
 	private final boolean restrictToMembers;
 
 	public VersionMaterialiser(Property versionPredicate, boolean restrictToMembers) {
@@ -50,7 +57,7 @@ public class VersionMaterialiser implements LdiOneToOneTransformer {
 		// Object references a versioned entity, replace it with the 'de-versioned'
 		// identifier.
 		if (statement.getObject().isResource()
-				&& versionIdEntityIdMap.containsKey(object)) {
+			&& versionIdEntityIdMap.containsKey(object)) {
 			object = versionIdEntityIdMap.get(object);
 		}
 
@@ -73,8 +80,7 @@ public class VersionMaterialiser implements LdiOneToOneTransformer {
 	 * potential nested blank nodes.
 	 * Excludes statements about referenced entities, provided as context.
 	 *
-	 * @param inputModel
-	 *            The model to reduce.
+	 * @param inputModel The model to reduce.
 	 * @return The reduced model.
 	 */
 	private Model reduceToLDESMemberOnlyModel(Model inputModel) {
