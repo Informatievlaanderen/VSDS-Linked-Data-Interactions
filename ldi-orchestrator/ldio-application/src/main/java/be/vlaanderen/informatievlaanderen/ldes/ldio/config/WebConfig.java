@@ -11,6 +11,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
+/**
+ * Configurer that adds the right HttpRequest and HttpResponse body converters to the application
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 	@Override

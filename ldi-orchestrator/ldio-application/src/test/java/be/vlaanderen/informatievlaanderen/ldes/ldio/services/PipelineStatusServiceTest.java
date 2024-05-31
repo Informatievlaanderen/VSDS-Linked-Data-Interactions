@@ -20,7 +20,7 @@ class PipelineStatusServiceTest {
 
     @BeforeEach
     void setup() {
-        pipelineStatusService = new PipelineStatusService(eventPublisher);
+        pipelineStatusService = new PipelineStatusServiceImpl(eventPublisher);
         pipelineStatusService.handlePipelineCreated(new InputCreatedEvent(pipelineName, input));
     }
 

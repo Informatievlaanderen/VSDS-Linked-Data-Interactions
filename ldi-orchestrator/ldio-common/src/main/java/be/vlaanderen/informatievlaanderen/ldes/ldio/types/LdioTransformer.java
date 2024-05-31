@@ -9,6 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Ldio Wrapper that will be used to wrap any
+ * {@link be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer} or
+ * {@link be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToManyTransformer}
+ */
 public abstract class LdioTransformer implements LdiComponent {
 	private LdioTransformer nextProcessor;
 	private final Logger log = LoggerFactory.getLogger(this.getClass());

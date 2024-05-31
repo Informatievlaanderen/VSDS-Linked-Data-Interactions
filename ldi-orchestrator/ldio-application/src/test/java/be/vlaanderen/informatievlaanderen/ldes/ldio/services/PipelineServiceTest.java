@@ -12,13 +12,13 @@ import static org.mockito.Mockito.*;
 class PipelineServiceTest {
     private final String pipelineName = "pipeline";
     private final PipelineCreatorService pipelineCreatorService = mock(PipelineCreatorService.class);
-    private final PipelineStatusService pipelineStatusService = mock(PipelineStatusService.class);
+    private final PipelineStatusService pipelineStatusService = mock(PipelineStatusServiceImpl.class);
     private final PipelineFileRepository pipelineRepository = mock(PipelineFileRepository.class);
     private PipelineService pipelineService;
 
     @BeforeEach
     void setup() {
-        pipelineService = new PipelineService(pipelineCreatorService, pipelineStatusService, pipelineRepository);
+        pipelineService = new PipelineServiceImpl(pipelineCreatorService, pipelineStatusService, pipelineRepository);
     }
 
     @Test

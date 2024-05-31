@@ -1,126 +1,51 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineDoesNotExistException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
+public interface PipelineStatusService {
+	/**
+	 * @param pipelineName name of the pipeline the status must be fetched
+	 * @return the status of the pipeline
+	 */
+	PipelineStatus getPipelineStatus(String pipelineName);
 
-@Component
-public class PipelineStatusService {
-	private final ApplicationEventPublisher eventPublisher;
-	private final Logger logger = LoggerFactory.getLogger(PipelineStatusService.class);
-	private final Map<String, SavedPipeline> savedPipelines;
+	/**
+	 * @param pipelineName name of the pipeline the source of the status change must be fetched
+	 * @return the last status change source of the pipeline
+	 */
+	StatusChangeSource getPipelineStatusChangeSource(String pipelineName);
 
-	public PipelineStatusService(ApplicationEventPublisher eventPublisher) {
-		this.eventPublisher = eventPublisher;
-		this.savedPipelines = new HashMap<>();
-	}
+	/**
+	 * Resume the pipeline if halted
+	 *
+	 * @param pipelineId name of the halted pipeline that must be resumed
+	 * @return the updated pipeline status
+	 */
+	PipelineStatus resumeHaltedPipeline(String pipelineId);
 
-	public PipelineStatus getPipelineStatus(String pipelineName) {
-		return Optional.ofNullable(savedPipelines.get(pipelineName))
-				.map(SavedPipeline::getStatus)
-				.orElseThrow(() -> new PipelineDoesNotExistException(pipelineName));
-	}
+	/**
+	 * Halt the pipeline if running
+	 *
+	 * @param pipelineId name of the pipeline that must be paused
+	 * @return the updated pipeline status
+	 */
+	PipelineStatus haltRunningPipeline(String pipelineId);
 
-	public StatusChangeSource getPipelineStatusChangeSource(String pipelineName) {
-		return Optional.ofNullable(savedPipelines.get(pipelineName))
-				.map(SavedPipeline::getLastStatusChangeSource)
-				.orElseThrow(() -> new PipelineDoesNotExistException(pipelineName));
-	}
+	/**
+	 * Stops the pipeline completely
+	 *
+	 * @param pipelineId name of the pipeline that must be stopped
+	 * @return the updated pipeline status
+	 */
+	PipelineStatus stopPipeline(String pipelineId);
 
-	@EventListener
-	public void handlePipelineStatusResponse(PipelineStatusEvent statusEvent) {
-		SavedPipeline currentSavedPipeline = savedPipelines.get(statusEvent.pipelineId());
-		if (currentSavedPipeline == null) {
-			logger.warn("Non initialized pipeline received status update: {}", statusEvent.pipelineId());
-			return;
-		}
-		currentSavedPipeline.updateStatus(statusEvent.status(), statusEvent.statusChangeSource());
-	}
-
-	@EventListener
-	public void handlePipelineCreated(InputCreatedEvent event) {
-		savedPipelines.put(event.pipelineName(), new SavedPipeline(event.ldioInput(), event.ldioInput().getStatus()));
-	}
-
-	public PipelineStatus resumeHaltedPipeline(String pipelineId) {
-		var pipelineStatus = getPipelineStatus(pipelineId);
-
-		return switch (pipelineStatus) {
-			case HALTED -> savedPipelines.get(pipelineId).getLdioInput().updateStatus(RESUME);
-			case INIT -> INIT;
-			case RUNNING -> RUNNING;
-			case STOPPED -> STOPPED;
-		};
-	}
-
-	public PipelineStatus haltRunningPipeline(String pipelineId) {
-		PipelineStatus pipelineStatus = getPipelineStatus(pipelineId);
-
-		return switch (pipelineStatus) {
-			case RUNNING -> savedPipelines.get(pipelineId).getLdioInput().updateStatus(HALT);
-			case INIT -> INIT;
-			case HALTED -> HALTED;
-			case STOPPED -> STOPPED;
-		};
-	}
-
-	public PipelineStatus stopPipeline(String pipelineId) {
-		PipelineStatus newPipelineStatus = savedPipelines.get(pipelineId).getLdioInput().updateStatus(STOP);
-		this.savedPipelines.remove(pipelineId);
-		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineId));
-		return newPipelineStatus;
-	}
-
-	public Map<String, PipelineStatus> getPipelineStatusOverview() {
-		return savedPipelines.entrySet()
-				.stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getStatus()));
-	}
-
-	static class SavedPipeline {
-		private final LdioInput ldioInput;
-		private PipelineStatus status;
-		private StatusChangeSource lastStatusChangeSource;
-
-		public SavedPipeline(LdioInput ldioInput, PipelineStatus status) {
-			this.ldioInput = ldioInput;
-			this.status = status;
-			lastStatusChangeSource = AUTO;
-		}
-
-		public void updateStatus(PipelineStatus status, StatusChangeSource statusChangeSource) {
-			this.status = status;
-			this.lastStatusChangeSource = statusChangeSource;
-		}
-
-		public PipelineStatus getStatus() {
-			return status;
-		}
-
-		public LdioInput getLdioInput() {
-			return ldioInput;
-		}
-
-		public StatusChangeSource getLastStatusChangeSource() {
-			return lastStatusChangeSource;
-		}
-	}
+	/**
+	 * Fetches an overview of the existing pipelines with their status
+	 *
+	 * @return a map with the pipeline name as key and the belonging pipeline status as value
+	 */
+	Map<String, PipelineStatus> getPipelineStatusOverview();
 }

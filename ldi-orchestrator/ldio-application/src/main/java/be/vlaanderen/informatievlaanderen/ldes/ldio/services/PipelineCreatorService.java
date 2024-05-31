@@ -84,17 +84,16 @@ public class PipelineCreatorService {
 
 	private static void verifyAdapter(PipelineConfig config, LdioInputConfigurator configurator) {
 		final ComponentDefinition adapter = config.getInput().getAdapter();
-		if(configurator.isAdapterRequired() && adapter == null) {
+		if (configurator.isAdapterRequired() && adapter == null) {
 			throw new LdiAdapterMissingException(config.getName(), config.getInput().getName());
 		}
-		if(!configurator.isAdapterRequired() && adapter != null) {
+		if (!configurator.isAdapterRequired() && adapter != null) {
 			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", config.getName(), config.getInput().getName(), adapter.getName());
 		}
 	}
 
 	public void removePipeline(String pipeline) {
-		DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) configContext.getBeanFactory();
-		LdioInput ldioInput = (LdioInput) beanRegistry.getBean(pipeline);
+		LdioInput ldioInput = beanFactory.getBean(pipeline, LdioInput.class);
 		ldioInput.shutdown();
 		beanFactory.destroyBean(pipeline);
 	}
