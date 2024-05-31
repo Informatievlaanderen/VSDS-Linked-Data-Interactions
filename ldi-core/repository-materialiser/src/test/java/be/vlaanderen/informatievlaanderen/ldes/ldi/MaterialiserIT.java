@@ -151,6 +151,24 @@ class MaterialiserIT {
 		assertThat(Models.isomorphic(updatedDbModel, updatedRdfModel)).isTrue();
 	}
 
+	@ParameterizedTest
+	@ArgumentsSource(NamedGraphProvider.class)
+	void given_geoData_when_processModel_then_addValidGeoDataToRepo(String namedGraph) throws IOException {
+		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, namedGraph);
+		final Model expectedModel = Rio.parse(new FileInputStream("src/test/resources/geo/measurement.ttl"), "", RDFFormat.TURTLE);
+		final org.apache.jena.rdf.model.Model inputModel = RDFParser.source("geo/measurement.ttl").toModel();
+		materialiser.process(List.of(inputModel));
+
+		Model dbModel = new LinkedHashModel();
+		materialiser.getMaterialiserConnection()
+				.getStatements(null, null, null)
+				.stream()
+				.map(MaterialiserIT::deleteContextFromStatement)
+				.forEach(dbModel::add);
+
+		assertThat(Models.isomorphic(expectedModel, dbModel)).isTrue();
+	}
+
 	void populateAndCheckRepository(List<String> files, String namedGraph) throws IOException {
 		List<Model> models = new ArrayList<>();
 		for (String testFile : files) {

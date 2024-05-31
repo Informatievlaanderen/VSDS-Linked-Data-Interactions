@@ -38,14 +38,13 @@ public class JenaToRDF4JConverter {
 
 	private static Value convertValue(RDFNode node) {
 		if (node.isResource()) {
-			org.apache.jena.rdf.model.Resource resource = (org.apache.jena.rdf.model.Resource) node;
-			return convertResource(resource);
+			return convertResource(node.asResource());
 		} else {
 			Literal literal = node.asLiteral();
 			if(literal.getLanguage() != null && !literal.getLanguage().isEmpty()) {
-				return SimpleValueFactory.getInstance().createLiteral(literal.getValue().toString(), literal.getLanguage());
+				return SimpleValueFactory.getInstance().createLiteral(literal.getString(), literal.getLanguage());
 			}
-			return SimpleValueFactory.getInstance().createLiteral(literal.getValue().toString(), SimpleValueFactory.getInstance().createIRI(literal.getDatatypeURI()));
+			return SimpleValueFactory.getInstance().createLiteral(literal.getString(), SimpleValueFactory.getInstance().createIRI(literal.getDatatypeURI()));
 		}
 	}
 }

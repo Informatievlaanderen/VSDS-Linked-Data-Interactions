@@ -1,0 +1,25 @@
+@prefix geosparql:                <http://www.opengis.net/ont/geosparql#> .
+@prefix ldes:                     <https://w3id.org/ldes#> .
+@prefix observaties-en-metingen:  <https://data.vlaanderen.be/ns/observaties-en-metingen#> .
+@prefix prov:                     <http://www.w3.org/ns/prov#> .
+@prefix rdf:                      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sensoren-en-bemonstering: <https://data.vlaanderen.be/ns/sensoren-en-bemonstering#> .
+@prefix terms:                    <http://purl.org/dc/terms/> .
+@prefix tree:                     <https://w3id.org/tree#> .
+@prefix waterkwaliteit:           <https://data.vlaanderen.be/ns/waterkwaliteit#> .
+
+<urn:ngsi-ld:MeasurementStation:421877/2024-05-30T14:31:13.278763680>
+        rdf:type              sensoren-en-bemonstering:Station;
+        terms:isVersionOf     <urn:ngsi-ld:MeasurementStation:421877>;
+        terms:modified        "2024-05-24T13:31:35.183Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+        prov:generatedAtTime  "2024-05-30T14:31:13.278Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+        observaties-en-metingen:geometrie
+                [ rdf:type         observaties-en-metingen:Punt;
+                  geosparql:asWKT  "<http://www.opengis.net/def/crs/EPSG/9.9.1/4326> POINT (5.735558 51.10408)"^^geosparql:wktLiteral
+                ];
+        observaties-en-metingen:identificator
+                "421877";
+        waterkwaliteit:bemonsterdObject
+                [ rdf:type           waterkwaliteit:WaterObject;
+                  terms:description  "Maaseik/Jagersborg/Witbeek"
+                ] .
