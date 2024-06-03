@@ -4,7 +4,7 @@ import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 
 /**
- * Filter that makes sure that a member is processed exactly only once
+ * Filter that makes sure that a member is processed exactly once
  */
 public class ExactlyOnceFilter implements MemberFilter {
 	private final MemberIdRepository memberIdRepository;

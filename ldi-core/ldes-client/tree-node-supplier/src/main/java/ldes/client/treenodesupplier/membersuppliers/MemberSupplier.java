@@ -5,7 +5,7 @@ import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import java.util.function.Supplier;
 
 /**
- * Interface that supply the fetched members of an LDES
+ * Interface that supplies the fetched members of an LDES
  */
 public interface MemberSupplier extends Supplier<SuppliedMember> {
 	/**
@@ -14,7 +14,7 @@ public interface MemberSupplier extends Supplier<SuppliedMember> {
 	void init();
 
 	/**
-	 * Release resources when the filter is not required anymore
+	 * Release resources when the supplier is not required anymore
 	 */
 	void destroyState();
 }

@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import static ldes.client.treenodefetcher.domain.valueobjects.Constants.*;
 
 /**
- * Wrapper around the RDF response to extract more easily the required information from that response
+ * Wrapper around the RDF response to more easily extract the required information from that response
  */
 public class ModelResponse {
 	private final TimestampExtractor timestampExtractor;

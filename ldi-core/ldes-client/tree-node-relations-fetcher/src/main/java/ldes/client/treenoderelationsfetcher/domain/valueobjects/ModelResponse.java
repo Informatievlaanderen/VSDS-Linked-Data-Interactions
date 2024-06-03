@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 /**
- * Wrapper around the RDF TreeNode response to extract more easily the relations from that response
+ * Wrapper around the RDF TreeNode response to more easily extract the relations from that response
  */
 public class ModelResponse {
 	private static final Resource ANY_RESOURCE = null;

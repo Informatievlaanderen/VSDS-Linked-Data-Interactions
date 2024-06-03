@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
- * Keeps track when the received http response is about the change, is in fact a reflection of the
+ * Keeps track when the received http response is about to change, is in fact a reflection of the
  * <code>Cache-Control</code> header
  */
 public class MutabilityStatus {

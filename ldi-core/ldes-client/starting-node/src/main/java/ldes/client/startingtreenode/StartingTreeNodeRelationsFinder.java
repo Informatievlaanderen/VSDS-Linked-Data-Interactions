@@ -34,7 +34,7 @@ public class StartingTreeNodeRelationsFinder {
 	 * Determines all starting relations that needs to be queued.
 	 *
 	 * @param startingNodeRequest can contain a collection, view or treeNode.
-	 * @return all nods that must be further queued by the discoverer
+	 * @return all nodes that must be further queued by the discoverer
 	 */
 	public List<StartingTreeNode> findAllStartingTreeNodes(final StartingNodeRequest startingNodeRequest) {
 		final Response response = requestExecutor.execute(startingNodeRequest);

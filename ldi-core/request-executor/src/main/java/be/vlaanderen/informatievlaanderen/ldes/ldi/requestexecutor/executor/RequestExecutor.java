@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 
 /**
- * Custom interface to make more manageable to deal with HttpRequests and HttpResponses
+ * Custom interface to make it more manageable to deal with HttpRequests and HttpResponses
  */
 public interface RequestExecutor {
 

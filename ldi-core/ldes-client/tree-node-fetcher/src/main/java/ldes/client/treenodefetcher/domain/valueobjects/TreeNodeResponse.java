@@ -5,7 +5,7 @@ import ldes.client.treenodefetcher.domain.entities.TreeMember;
 import java.util.List;
 
 /**
- * Wrapper around the RDF response that represents a fragment to extract more easily the required information
+ * Wrapper around the RDF response that represents a fragment to more easily extract the required information
  * from that response
  */
 public class TreeNodeResponse {

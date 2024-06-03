@@ -24,7 +24,7 @@ public class LatestStateFilter implements MemberFilter {
 
 
 	/**
-	 * @param memberVersionRepository repository that keeps track of the processed versions of the members
+	 * @param memberVersionRepository repository that keeps track of the latest processed versions of the members
 	 * @param keepState               if the state must be kept, or can be reset on restart of the filter
 	 * @param timestampPath           URI of the predicate that contains the timestamp
 	 * @param versionOfPath           URI of the predicate that contains the version-of

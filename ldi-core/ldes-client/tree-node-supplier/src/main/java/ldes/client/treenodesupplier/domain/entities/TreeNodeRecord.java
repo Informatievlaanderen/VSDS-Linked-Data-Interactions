@@ -37,8 +37,8 @@ public class TreeNodeRecord {
 	}
 
 	/**
-	 * Keeps track when this TreeNode could have been changed,
-	 * which would make no sense fetching this TreeNode again before this timestamp
+	 * Keeps track when this TreeNode could be changed at the earliest, fetching this TreeNode again before this
+	 * timestamp is pointless
 	 *
 	 * @return a timestamp suggesting when to fetch this TreeNode again
 	 */
@@ -88,7 +88,7 @@ public class TreeNodeRecord {
 	 * Marks this TreeNode as completely processed.
 	 * <br />
 	 * To save some resources, the list of members is cleared, as it does not matter anymore which members of
-	 * this TreeNode has been processed
+	 * this TreeNode have been processed
 	 */
 	public void markImmutableWithoutUnprocessedMembers() {
 		memberIds.clear();

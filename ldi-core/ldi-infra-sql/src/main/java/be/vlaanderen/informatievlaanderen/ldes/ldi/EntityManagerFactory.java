@@ -14,7 +14,7 @@ public interface EntityManagerFactory {
 	/**
 	 * Destroy the EntityManager and EntityManagerFactory from the javax library for the specified instanceName
 	 *
-	 * @param instanceName name of the instances where from the EntityManager and EntityManagerFactory must be destroyed
+	 * @param instanceName name of the instances from which the EntityManager and EntityManagerFactory must be destroyed
 	 */
 	void destroyState(String instanceName);
 }

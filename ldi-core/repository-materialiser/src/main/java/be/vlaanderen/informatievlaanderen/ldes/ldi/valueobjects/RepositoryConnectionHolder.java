@@ -8,7 +8,7 @@ import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
 /**
- * Wrapper around the RDF4J RepositoryConnection to isolate it more and give to maintenance of the connection more out of hands
+ * Wrapper around the RDF4J RepositoryConnection to isolate it more and give the maintenance of the connection out of hands
  */
 public class RepositoryConnectionHolder {
 	private final RepositoryManager repositoryManager;

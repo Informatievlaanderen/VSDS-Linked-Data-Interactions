@@ -39,7 +39,7 @@ public class PostRequest extends Request {
 	}
 
 	/**
-	 * Converts the request body, which is a byte array, to a string. Mind that not the byte array cannot always to proper converted to a string
+	 * Converts the request body, which is a byte array, to a string. Mind that the byte array cannot always to proper converted to a string
 	 *
 	 * @return the request body as a string
 	 */
