@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.types;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
@@ -85,6 +86,11 @@ public abstract class LdioInput implements LdiComponent {
 		log.info("UPDATED status for pipeline '{}' to {}", ldioObserver.getPipelineName(), pipelineStatus);
 		applicationEventPublisher.publishEvent(new PipelineStatusEvent(ldioObserver.getPipelineName(), this.pipelineStatus, MANUAL));
 		return this.pipelineStatus;
+	}
+
+	public void shutdownPipeline() {
+		log.info("SHUTTING DOWN pipeline {} because end of LDES has been reached", this.ldioObserver.getPipelineName());
+		applicationEventPublisher.publishEvent(new PipelineShutdownEvent(ldioObserver.getPipelineName()));
 	}
 
 	protected abstract void resume();
