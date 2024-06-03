@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * EventListener that listens that pipeline status changes
+ *
+ * @param <T> Generic type that can be any LdiComponent
+ */
 public class LdioPipelineEventsListener<T extends LdiComponent> {
 	private final Map<String, T> ldioComponents = new HashMap<>();
 	private final PipelineStatusChangedBehavior<T> startBehavior;

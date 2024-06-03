@@ -15,6 +15,12 @@ public record PipelineConfigTO(String name, String description, InputComponentDe
 		this.outputs = outputs;
 	}
 
+	/**
+	 * Maps a pipeline config to a data transfer object
+	 *
+	 * @param config the pipeline config to be mapped to a TO
+	 * @return the data transfer object
+	 */
 	public static PipelineConfigTO fromPipelineConfig(PipelineConfig config) {
 		var adapter = config.getInput().getAdapter() == null ? null :
 				new ComponentDefinitionTO(config.getInput().getAdapter().getName(), config.getInput().getAdapter().getConfigMap());
@@ -25,6 +31,11 @@ public record PipelineConfigTO(String name, String description, InputComponentDe
 		return new PipelineConfigTO(config.getName(), config.getDescription(), input, transformers, outputs);
 	}
 
+	/**
+	 * Maps the instance of the data transfer object to a pipeline config object
+	 *
+	 * @return the pipeline config
+	 */
 	public PipelineConfig toPipelineConfig() {
 		var config = new PipelineConfig();
 		config.setName(name);

@@ -1,14 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.converters;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A custom deserializer that flattens a JSON object into a Map of Strings.
@@ -19,15 +19,15 @@ public class FlattenDeserializer extends JsonDeserializer<Map<String, String>> {
 	/**
 	 * Deserializes a JSON object into a flattened map.
 	 *
-	 * @param p    The JSON parser.
-	 * @param ctxt The deserialization context.
+	 * @param parser  The JSON parser.
+	 * @param context The deserialization context.
 	 * @return A map where the keys are JSON paths and the values are the corresponding values from the input JSON.
 	 * @throws IOException If an input or output exception occurred.
 	 */
 	@Override
-	public Map<String, String> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+	public Map<String, String> deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 		Map<String, String> result = new HashMap<>();
-		JsonNode node = p.getCodec().readTree(p);
+		JsonNode node = parser.getCodec().readTree(parser);
 		flatten("", node, result);
 		return result;
 	}
@@ -36,7 +36,7 @@ public class FlattenDeserializer extends JsonDeserializer<Map<String, String>> {
 	 * Recursively flattens a JSON node.
 	 *
 	 * @param prefix The current path prefix.
-	 * @param node The current JSON node.
+	 * @param node   The current JSON node.
 	 * @param result The result map.
 	 */
 	private void flatten(String prefix, JsonNode node, Map<String, String> result) {

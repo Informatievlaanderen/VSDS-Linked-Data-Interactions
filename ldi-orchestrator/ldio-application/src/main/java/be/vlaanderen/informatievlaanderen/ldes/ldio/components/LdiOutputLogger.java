@@ -8,6 +8,9 @@ import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Wrapper around any LdiOutput for logging purposes
+ */
 public class LdiOutputLogger implements LdiOutput {
 	private final LdiOutput ldiOutput;
 	private final ObservationRegistry observationRegistry;

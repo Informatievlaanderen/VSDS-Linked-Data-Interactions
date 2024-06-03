@@ -7,6 +7,9 @@ import org.apache.jena.riot.RDFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Wrapper around any LdioTransformer for debugging purposes
+ */
 public class TransformerDebugger extends LdioTransformer {
 	private final Logger log;
 

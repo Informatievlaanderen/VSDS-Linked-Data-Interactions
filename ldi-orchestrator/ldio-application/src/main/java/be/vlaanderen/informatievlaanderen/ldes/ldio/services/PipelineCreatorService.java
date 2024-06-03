@@ -54,7 +54,15 @@ public class PipelineCreatorService {
 		this.beanFactory = (DefaultListableBeanFactory) configContext.getBeanFactory();
 	}
 
-	public void initialisePipeline(PipelineConfig config) throws InvalidComponentException, InvalidPipelineNameException, LdiAdapterMissingException {
+	/**
+	 * Initializes a pipeline with the provided pipeline config
+	 *
+	 * @param config Definition of the pipeline
+	 * @throws InvalidComponentException    when no configurator could be found for the defined component name
+	 * @throws InvalidPipelineNameException when the pipeline name does not match RegEx {@link PipelineConfig#NAME_PATTERN}
+	 * @throws LdiAdapterMissingException   when a ldi adapter is expected, but not configured
+	 */
+	public void initialisePipeline(PipelineConfig config) {
 		try {
 			String pipeLineName = config.getName();
 			validateName(pipeLineName);
@@ -84,17 +92,21 @@ public class PipelineCreatorService {
 
 	private static void verifyAdapter(PipelineConfig config, LdioInputConfigurator configurator) {
 		final ComponentDefinition adapter = config.getInput().getAdapter();
-		if(configurator.isAdapterRequired() && adapter == null) {
+		if (configurator.isAdapterRequired() && adapter == null) {
 			throw new LdiAdapterMissingException(config.getName(), config.getInput().getName());
 		}
-		if(!configurator.isAdapterRequired() && adapter != null) {
+		if (!configurator.isAdapterRequired() && adapter != null) {
 			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", config.getName(), config.getInput().getName(), adapter.getName());
 		}
 	}
 
+	/**
+	 * Removes the pipeline from the spring bean registry
+	 *
+	 * @param pipeline name of the pipeline to delete
+	 */
 	public void removePipeline(String pipeline) {
-		DefaultListableBeanFactory beanRegistry = (DefaultListableBeanFactory) configContext.getBeanFactory();
-		LdioInput ldioInput = (LdioInput) beanRegistry.getBean(pipeline);
+		LdioInput ldioInput = beanFactory.getBean(pipeline, LdioInput.class);
 		ldioInput.shutdown();
 		beanFactory.destroyBean(pipeline);
 	}

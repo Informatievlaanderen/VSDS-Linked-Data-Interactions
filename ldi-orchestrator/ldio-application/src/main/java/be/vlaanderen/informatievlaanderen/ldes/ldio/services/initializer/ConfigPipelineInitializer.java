@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @deprecated since the implementation of dynamic pipelines, pipelines should either be added in the folder self or by the admin api
+ */
+@Deprecated(forRemoval = true)
 @Service
 public class ConfigPipelineInitializer implements PipelineInitializer {
 	private static final String NAME = "LDI Orchestrator Spring Config Initializer";

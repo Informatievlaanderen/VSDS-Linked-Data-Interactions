@@ -4,10 +4,23 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 
 public interface TokenService {
 
+	/**
+	 * Awaits on the token header until the EDC token is available
+	 *
+	 * @return http header that contains the EDC token
+	 */
 	RequestHeader waitForTokenHeader();
 
+	/**
+	 * Clears the EDC token, so it cannot be used anymore
+	 */
 	void invalidateToken();
 
+	/**
+	 * Sets the EDC token based on the string
+	 *
+	 * @param token string representation of the EDC token
+	 */
 	void updateToken(String token);
 
 	void pause();
