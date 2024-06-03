@@ -19,6 +19,10 @@ public class OAuth20ServiceTokenCacheWrapper {
 		this.oAuth20Service = oAuth20Service;
 	}
 
+	/**
+	 * Deals with tokens and the possibility that the token has been expired
+	 * @return an unexpired and valid OAuth2 Access Token
+	 */
 	public OAuth2AccessToken getAccessTokenClientCredentialsGrant() {
 		return tokenExpiryWrapper.getAccessToken().orElseGet(() -> {
 			try {

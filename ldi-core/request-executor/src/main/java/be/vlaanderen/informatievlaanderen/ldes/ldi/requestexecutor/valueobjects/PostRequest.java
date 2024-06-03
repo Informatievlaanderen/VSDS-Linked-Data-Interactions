@@ -9,6 +9,9 @@ import java.util.Objects;
 public class PostRequest extends Request {
 
 	public static final String METHOD_NAME = "POST";
+	/**
+	 * Representation of the request body as a byte array, this is for binary support purposes
+	 */
 	private final byte[] body;
 
 	public PostRequest(String url, RequestHeaders requestHeaders, String body) {
@@ -20,6 +23,7 @@ public class PostRequest extends Request {
 		this.body = body;
 	}
 
+	@Override
 	public String getMethod() {
 		return METHOD_NAME;
 	}
@@ -34,6 +38,11 @@ public class PostRequest extends Request {
 		return new PostRequest(url, requestHeaders, body);
 	}
 
+	/**
+	 * Converts the request body, which is a byte array, to a string. Mind that the byte array cannot always to proper converted to a string
+	 *
+	 * @return the request body as a string
+	 */
 	public String getBodyAsString() {
 		return new String(body);
 	}

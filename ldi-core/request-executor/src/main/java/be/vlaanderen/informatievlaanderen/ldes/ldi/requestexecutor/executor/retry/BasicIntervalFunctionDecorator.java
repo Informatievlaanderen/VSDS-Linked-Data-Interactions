@@ -13,6 +13,9 @@ import java.util.function.Supplier;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+/**
+ * Wrapper to deal with the retry intervals when an http response execution has failed
+ */
 public class BasicIntervalFunctionDecorator implements IntervalBiFunction<Response> {
 
 	private final Logger log = LoggerFactory.getLogger(BasicIntervalFunctionDecorator.class);

@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.stream.Stream;
 
+/**
+ * LdiAdapter implementation that adapts json to json-ld by adding a context to the json data
+ */
 public class JsonToLdAdapter implements LdiAdapter {
 
 	private final Logger log = LoggerFactory.getLogger(JsonToLdAdapter.class);
@@ -34,6 +37,13 @@ public class JsonToLdAdapter implements LdiAdapter {
 		this.jenaContext = jenaContext;
 	}
 
+	/**
+	 * Implementation of the adaptation function that converts json to json-ld
+	 *
+	 * @param content the json content, should have <code>application/json</code> as mime-type
+	 * @return the data adapted to json-ld
+	 * @throws UnsupportedMimeTypeException when an invalid mime-type is provided and <code>application/json</code> is not forced
+	 */
 	@Override
 	public Stream<Model> apply(Content content) {
 		if (!validateMimeType(content.mimeType())) {
@@ -63,7 +73,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 			}
 
 			throw new IllegalArgumentException("Only objects and arrays can be transformed to RDF. " +
-					"The following json does not match this criteria: " + json);
+											   "The following json does not match this criteria: " + json);
 		} catch (JsonParseException e) {
 			throw new ParseToJsonException(e, data);
 		}
@@ -81,7 +91,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 			return model;
 		} else {
 			throw new IllegalArgumentException("Only objects can be transformed to RDF. " +
-					"The following json does not match this criteria: " + json);
+											   "The following json does not match this criteria: " + json);
 		}
 	}
 

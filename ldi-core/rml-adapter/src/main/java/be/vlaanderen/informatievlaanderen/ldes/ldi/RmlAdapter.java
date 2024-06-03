@@ -33,6 +33,9 @@ import java.util.stream.Stream;
 
 import static java.util.stream.StreamSupport.stream;
 
+/**
+ * Adapter that converts non-linked data object to a linked data RDF object
+ */
 public class RmlAdapter implements LdiAdapter {
 	private final RdfRmlMapper rmlMapper;
 

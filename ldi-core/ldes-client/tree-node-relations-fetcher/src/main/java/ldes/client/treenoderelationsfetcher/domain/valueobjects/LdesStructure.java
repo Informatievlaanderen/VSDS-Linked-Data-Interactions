@@ -5,6 +5,11 @@ import ldes.client.treenoderelationsfetcher.services.LdesRelationWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Representation of all the relations of an LDES
+ * <br />
+ * Is in fact the composite in the composite pattern
+ */
 public class LdesStructure implements LdesRelation {
 	private final String rootUrl;
 	private final List<LdesRelation> relations;
@@ -17,11 +22,6 @@ public class LdesStructure implements LdesRelation {
 	@Override
 	public void addRelation(LdesRelation ldesRelation) {
 		relations.add(ldesRelation);
-	}
-
-	@Override
-	public boolean containsChild(LdesRelation child) {
-		return relations.contains(child);
 	}
 
 	@Override
@@ -49,8 +49,7 @@ public class LdesStructure implements LdesRelation {
 	 */
 	@Override
 	public String asString() {
-		final LdesRelationWriter ldesRelationWriter = new LdesRelationWriter();
-		return ldesRelationWriter.writeToString(this);
+		return new LdesRelationWriter().writeToString(this);
 	}
 
 	/**

@@ -7,6 +7,9 @@ import org.apache.jena.rdf.model.RDFNode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation that extracts all the properties that belongs to the specified propertyPath
+ */
 public class PropertyPathExtractor implements PropertyExtractor {
 
 	private static final String OBJECT_VAR_NAME = "object";

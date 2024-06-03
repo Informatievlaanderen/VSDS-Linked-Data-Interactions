@@ -25,10 +25,19 @@ public abstract class Request {
 		return requestHeaders;
 	}
 
+	/**
+	 * @return A string representation via which HTTP method the request will be executed
+	 */
 	public abstract String getMethod();
 
+	/**
+	 * @return a copy of the instance with the url replaced
+	 */
 	public abstract Request with(String url);
 
+	/**
+	 * @return a copy of the instance with the request headers replaced
+	 */
 	public abstract Request with(RequestHeaders requestHeaders);
 
 	@Override

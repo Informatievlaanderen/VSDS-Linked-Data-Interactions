@@ -10,6 +10,11 @@ import java.util.Optional;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
+/**
+ * Represents all the relations of a single TreeNode of a LDES
+ * <br />
+ * Is in fact a leaf in the composite pattern
+ */
 public class TreeRelation implements LdesRelation {
 	private static final String W3C_TREE = "https://w3id.org/tree#";
 	private static final Property W3ID_TREE_NODE = createProperty(W3C_TREE, "node");
@@ -40,11 +45,6 @@ public class TreeRelation implements LdesRelation {
 	@Override
 	public void addRelation(LdesRelation ldesRelation) {
 		relations.add(ldesRelation);
-	}
-
-	@Override
-	public boolean containsChild(LdesRelation child) {
-		return relations.contains(child);
 	}
 
 	@Override

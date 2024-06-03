@@ -21,8 +21,7 @@ public class RetryAfter {
 	 * "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After">specification</a>
 	 * this header can be a date or an integer.
 	 *
-	 * @param retryHeader
-	 *            represents either a valid http date or an integer for milliseconds
+	 * @param retryHeader represents either a valid http date or an integer for milliseconds
 	 */
 	public static RetryAfter from(String retryHeader) {
 		if (NumberUtils.isParsable(retryHeader)) {
@@ -35,8 +34,7 @@ public class RetryAfter {
 	}
 
 	/**
-	 * Returns the number of millis until a retry can be done.
-	 * Return value is always positive.
+	 * @return a long that represents the millis until a retry can be done, is always positive.
 	 */
 	public long getMillisUntilRetry() {
 		LocalDateTime now = LocalDateTime.now();

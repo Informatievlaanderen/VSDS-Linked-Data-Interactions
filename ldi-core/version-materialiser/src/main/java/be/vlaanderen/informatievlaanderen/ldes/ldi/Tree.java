@@ -3,6 +3,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
 
+/**
+ * Tree spec constants
+ */
 public class Tree {
 	private Tree() {
 	}

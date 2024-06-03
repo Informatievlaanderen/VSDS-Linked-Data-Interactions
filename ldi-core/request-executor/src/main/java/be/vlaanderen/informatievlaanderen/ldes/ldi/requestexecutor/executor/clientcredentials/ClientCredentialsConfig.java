@@ -41,6 +41,7 @@ public class ClientCredentialsConfig implements RequestExecutorSupplier {
 		this.enableRedirectHandling = enableRedirectHandling;
 	}
 
+	@Override
 	public RequestExecutor createRequestExecutor() {
 		return new ClientCredentialsRequestExecutor(new OAuth20ServiceTokenCacheWrapper(createService()));
 	}

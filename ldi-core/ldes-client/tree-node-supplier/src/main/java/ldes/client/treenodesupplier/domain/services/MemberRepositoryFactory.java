@@ -13,6 +13,12 @@ public class MemberRepositoryFactory {
 	private MemberRepositoryFactory() {
 	}
 
+	/**
+	 * @param statePersistenceStrategy via what persistence strategy the repository should work
+	 * @param properties               a representation of the required config properties to set up the persistence unit
+	 * @param instanceName             will be used to be able to more easily keep track of the return repo
+	 * @return the memberNRepository for a specific instance (could be a NiFi flow or a LDIO pipeline)
+	 */
 	public static MemberRepository getMemberRepository(StatePersistenceStrategy statePersistenceStrategy,
 													   HibernateProperties properties, String instanceName) {
 		return switch (statePersistenceStrategy) {

@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Responsible for discovering the entire structure below a provided starting uri
+ */
 public class LdesStructureDiscoverer {
 	private static final Logger log = LoggerFactory.getLogger(LdesStructureDiscoverer.class);
 	private final String startingUrl;
@@ -22,6 +25,9 @@ public class LdesStructureDiscoverer {
 		this.requestExecutor = requestExecutor;
 	}
 
+	/**
+	 * @return the entire structure of the (sub)set below the starting uri
+	 */
 	public LdesStructure discoverLdesStructure() {
 		final LdesStructure ldesStructure = new LdesStructure(startingUrl);
 		getStartingTreeRelations()

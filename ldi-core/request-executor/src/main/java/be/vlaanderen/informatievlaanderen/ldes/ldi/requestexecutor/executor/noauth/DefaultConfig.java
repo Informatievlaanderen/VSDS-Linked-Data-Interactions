@@ -17,6 +17,11 @@ public class DefaultConfig implements RequestExecutorSupplier {
         this.enableRedirectHandling = enableRedirectHandling;
     }
 
+	/**
+	 *
+	 * @return instance of DefaultRequestExecutor
+	 */
+	@Override
 	public RequestExecutor createRequestExecutor() {
 		final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 		if (!enableRedirectHandling) {

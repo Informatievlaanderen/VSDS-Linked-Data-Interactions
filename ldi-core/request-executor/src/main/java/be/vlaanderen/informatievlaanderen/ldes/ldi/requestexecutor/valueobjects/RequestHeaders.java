@@ -12,6 +12,11 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 		this.headers = requestHeaders;
 	}
 
+	/**
+	 *
+	 * @param requestHeader new header that needs to be added to the existing headers
+	 * @return A copy of the instance with the new header added
+	 */
 	public RequestHeaders withRequestHeader(RequestHeader requestHeader) {
 		ArrayList<RequestHeader> updatedRequestHeaders = new ArrayList<>(headers);
 		updatedRequestHeaders.add(requestHeader);
