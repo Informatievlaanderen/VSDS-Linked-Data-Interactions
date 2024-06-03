@@ -7,13 +7,13 @@ import java.util.Map;
 
 public interface PipelineStatusService {
 	/**
-	 * @param pipelineName name of the pipeline the status must be fetched
+	 * @param pipelineName name of the pipeline of which the status must be fetched
 	 * @return the status of the pipeline
 	 */
 	PipelineStatus getPipelineStatus(String pipelineName);
 
 	/**
-	 * @param pipelineName name of the pipeline the source of the status change must be fetched
+	 * @param pipelineName name of the pipeline of which the source of the status change must be fetched
 	 * @return the last status change source of the pipeline
 	 */
 	StatusChangeSource getPipelineStatusChangeSource(String pipelineName);
