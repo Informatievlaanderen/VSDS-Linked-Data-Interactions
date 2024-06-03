@@ -1,12 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -24,6 +26,11 @@ public class PipelineServiceImpl implements PipelineService {
 		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineStatusService = pipelineStatusService;
 		this.pipelineRepository = pipelineRepository;
+	}
+
+	@EventListener
+	public void handlePipelineShutdown(PipelineShutdownEvent event) {
+		this.requestDeletion(event.pipelineId());
 	}
 
 	@Override

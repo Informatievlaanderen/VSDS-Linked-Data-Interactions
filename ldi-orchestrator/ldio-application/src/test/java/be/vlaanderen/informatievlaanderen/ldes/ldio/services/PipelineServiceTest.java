@@ -14,7 +14,7 @@ class PipelineServiceTest {
     private final PipelineCreatorService pipelineCreatorService = mock(PipelineCreatorService.class);
     private final PipelineStatusService pipelineStatusService = mock(PipelineStatusServiceImpl.class);
     private final PipelineFileRepository pipelineRepository = mock(PipelineFileRepository.class);
-    private PipelineService pipelineService;
+    private PipelineServiceImpl pipelineService;
 
     @BeforeEach
     void setup() {
