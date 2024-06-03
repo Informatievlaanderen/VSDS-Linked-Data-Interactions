@@ -16,7 +16,7 @@ class PipelineStatusServiceTest {
     private final String pipelineName = "pipeline";
     private final LdioInput input = mock(LdioInput.class);
     private final ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
-    private PipelineStatusService pipelineStatusService;
+    private PipelineStatusServiceImpl pipelineStatusService;
 
     @BeforeEach
     void setup() {
