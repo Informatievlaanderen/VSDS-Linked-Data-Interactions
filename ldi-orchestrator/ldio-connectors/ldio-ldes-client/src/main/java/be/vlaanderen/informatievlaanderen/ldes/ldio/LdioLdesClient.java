@@ -1,11 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
-import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
+import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -24,6 +25,7 @@ public class LdioLdesClient extends LdioInput {
 	private boolean threadRunning = true;
 	private boolean paused = false;
 	private final boolean keepState;
+	private final String pipelineName;
 
 	public LdioLdesClient(ComponentExecutor componentExecutor,
                           LdioObserver ldioObserver,
@@ -31,6 +33,7 @@ public class LdioLdesClient extends LdioInput {
                           ApplicationEventPublisher applicationEventPublisher,
 						  boolean keepState) {
 		super(componentExecutor, null, ldioObserver, applicationEventPublisher);
+		this.pipelineName = ldioObserver.getPipelineName();
 		this.memberSupplier = memberSupplier;
         this.keepState = keepState;
     }
@@ -59,7 +62,7 @@ public class LdioLdesClient extends LdioInput {
 				processModel(memberSupplier.get().getModel());
 			}
 		} catch (EndOfLdesException e) {
-			log.warn(e.getMessage());
+			shutdownPipeline();
 		} catch (Exception e) {
 			log.error("LdesClientRunner FAILURE: {}", e.getMessage());
 		}
@@ -93,5 +96,10 @@ public class LdioLdesClient extends LdioInput {
 	@Override
 	protected void pause() {
 		this.paused = true;
+	}
+
+	private void shutdownPipeline() {
+		log.info("SHUTTING DOWN pipeline {} because end of LDES has been reached", pipelineName);
+		applicationEventPublisher.publishEvent(new PipelineShutdownEvent(pipelineName));
 	}
 }
