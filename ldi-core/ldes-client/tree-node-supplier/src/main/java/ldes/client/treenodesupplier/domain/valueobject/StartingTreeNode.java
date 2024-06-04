@@ -2,6 +2,9 @@ package ldes.client.treenodesupplier.domain.valueobject;
 
 import org.apache.jena.riot.Lang;
 
+/**
+ * Contains the rootNode endpoint information to start the client and the expected RDF format for the response
+ */
 public class StartingTreeNode {
 
 	private final String startingNodeUrl;

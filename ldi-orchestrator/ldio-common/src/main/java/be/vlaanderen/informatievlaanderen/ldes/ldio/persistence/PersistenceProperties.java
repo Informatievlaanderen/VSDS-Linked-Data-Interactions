@@ -1,5 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.persistence;
 
+/**
+ * LDIO properties for managing the persistence
+ */
 public class PersistenceProperties {
 	private PersistenceProperties() {}
 

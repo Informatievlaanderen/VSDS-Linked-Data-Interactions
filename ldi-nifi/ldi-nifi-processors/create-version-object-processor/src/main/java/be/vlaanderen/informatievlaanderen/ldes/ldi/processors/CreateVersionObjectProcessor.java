@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_DESTINATION_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.getDataDestinationFormat;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorPropertyDescriptors.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CreateVersionObjectProcessorRelationships.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;

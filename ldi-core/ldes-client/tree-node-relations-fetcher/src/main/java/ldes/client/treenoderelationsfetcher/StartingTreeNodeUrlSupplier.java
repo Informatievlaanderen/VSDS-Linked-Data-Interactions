@@ -16,6 +16,13 @@ public class StartingTreeNodeUrlSupplier {
 		startingTreeNodeRelationsFinder = new StartingTreeNodeRelationsFinder(requestExecutor);
 	}
 
+	/**
+	 * Fetching the first relations of a (sub)set below an uri
+	 *
+	 * @param url  the starting uri
+	 * @param lang the RDF format in which the response is received
+	 * @return a list of the first relations below the starting uri
+	 */
 	public List<StartingTreeNode> getStartingTreeNodeRelations(String url, Lang lang) {
 		final StartingNodeRequest startingNodeRequest = new StartingNodeRequest(url, lang, new RedirectHistory());
 		return startingTreeNodeRelationsFinder

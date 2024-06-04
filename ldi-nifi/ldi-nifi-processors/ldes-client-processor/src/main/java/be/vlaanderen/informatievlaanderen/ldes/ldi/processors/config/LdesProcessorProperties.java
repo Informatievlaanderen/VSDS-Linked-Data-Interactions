@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_DESTINATION_FORMAT;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -25,10 +26,6 @@ public final class LdesProcessorProperties {
 	 * The expected RDF format of the LDES data source
 	 */
 	public static final Lang DEFAULT_DATA_SOURCE_FORMAT = Lang.JSONLD;
-	/**
-	 * The desired RDF format for output
-	 */
-	public static final Lang DEFAULT_DATA_DESTINATION_FORMAT = Lang.NQUADS;
 
 	private LdesProcessorProperties() {
 	}
@@ -48,15 +45,6 @@ public final class LdesProcessorProperties {
 			.required(false)
 			.addValidator(new RDFLanguageValidator())
 			.defaultValue(DEFAULT_DATA_SOURCE_FORMAT.getHeaderString())
-			.build();
-
-	public static final PropertyDescriptor DATA_DESTINATION_FORMAT = new PropertyDescriptor.Builder()
-			.name("DATA_DESTINATION_FORMAT")
-			.displayName("Data destination format")
-			.description("RDF format identifier of the data destination")
-			.required(false)
-			.addValidator(new RDFLanguageValidator())
-			.defaultValue(DEFAULT_DATA_DESTINATION_FORMAT.getHeaderString())
 			.build();
 
 	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()

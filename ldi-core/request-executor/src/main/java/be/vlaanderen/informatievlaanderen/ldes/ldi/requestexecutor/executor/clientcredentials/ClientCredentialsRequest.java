@@ -8,6 +8,10 @@ import org.apache.http.HttpHeaders;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Verb;
 
+/**
+ * Wrapper around the effective own custom Request object to convert it to an OAuthRequest
+ * in the effective HttpClient
+ */
 public class ClientCredentialsRequest {
 
 	private final Request request;

@@ -5,12 +5,15 @@ import java.util.Optional;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
+/**
+ * Class to deal with the validity of an OAuth2 token
+ */
 public class OAuth2AccessTokenExpiryWrapper {
 
 	private final OAuth2AccessToken token;
 	private final LocalDateTime expiryTs;
 
-	public OAuth2AccessTokenExpiryWrapper(OAuth2AccessToken token, LocalDateTime expiryTs) {
+	private OAuth2AccessTokenExpiryWrapper(OAuth2AccessToken token, LocalDateTime expiryTs) {
 		this.token = token;
 		this.expiryTs = expiryTs;
 	}

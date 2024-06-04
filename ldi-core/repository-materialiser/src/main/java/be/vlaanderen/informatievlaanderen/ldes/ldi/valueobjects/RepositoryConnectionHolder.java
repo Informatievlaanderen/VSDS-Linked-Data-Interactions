@@ -7,6 +7,9 @@ import org.eclipse.rdf4j.repository.http.CustomHTTPRepositoryConnection;
 import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
+/**
+ * Wrapper around the RDF4J RepositoryConnection to isolate it more and give the maintenance of the connection out of hands
+ */
 public class RepositoryConnectionHolder {
 	private final RepositoryManager repositoryManager;
 	private final String repositoryId;
@@ -30,9 +33,9 @@ public class RepositoryConnectionHolder {
 	}
 
 	public void shutdown() {
-		if(connection != null) {
+		if (connection != null) {
 			connection.close();
 		}
 		repositoryManager.shutDown();
- 	}
+	}
 }

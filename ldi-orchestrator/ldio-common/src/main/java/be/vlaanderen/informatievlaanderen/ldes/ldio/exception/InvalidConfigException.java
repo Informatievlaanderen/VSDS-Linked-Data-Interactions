@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.exception;
 
-public class InvalidConfigException extends RuntimeException {
+public class InvalidConfigException extends PipelineException {
     private final String cause;
 
     public InvalidConfigException(String cause) {

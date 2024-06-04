@@ -28,7 +28,7 @@ public abstract class LdioInput implements LdiComponent {
 	private final ComponentExecutor executor;
 	private final LdiAdapter adapter;
 	private final LdioObserver ldioObserver;
-	private final ApplicationEventPublisher applicationEventPublisher;
+	protected final ApplicationEventPublisher applicationEventPublisher;
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private PipelineStatus pipelineStatus;

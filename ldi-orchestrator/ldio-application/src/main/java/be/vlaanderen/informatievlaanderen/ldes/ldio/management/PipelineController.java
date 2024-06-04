@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioMediaType;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineService;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineServiceImpl;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineTO;
@@ -16,10 +16,10 @@ import java.util.List;
 @RequestMapping(path = "/admin/api/v1/pipeline")
 public class PipelineController implements OpenApiPipelineController {
 
-	private final PipelineService pipelineService;
+	private final PipelineServiceImpl pipelineService;
 	private final PipelineStatusService pipelineStatusService;
 
-	public PipelineController(PipelineService pipelineService, PipelineStatusService pipelineStatusService) {
+	public PipelineController(PipelineServiceImpl pipelineService, PipelineStatusService pipelineStatusService) {
 		this.pipelineService = pipelineService;
 		this.pipelineStatusService = pipelineStatusService;
 	}

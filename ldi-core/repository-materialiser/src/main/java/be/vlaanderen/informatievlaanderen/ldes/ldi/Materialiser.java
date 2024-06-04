@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Component that will write linked data models to a specified triples store or RDF repository
+ */
 public class Materialiser {
 	private final MaterialiserConnection materialiserConnection;
 

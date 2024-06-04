@@ -10,15 +10,23 @@ import ldes.client.treenodesupplier.repository.sql.SqlMemberVersionRepository;
 
 public class MemberVersionRepositoryFactory {
 
-    private MemberVersionRepositoryFactory() {
-    }
+	private MemberVersionRepositoryFactory() {
+	}
 
-    public static MemberVersionRepository getMemberVersionRepositoryFactory(StatePersistenceStrategy statePersistenceStrategy,
-                                                                            HibernateProperties properties, String instanceName) {
-        return switch (statePersistenceStrategy) {
-            case SQLITE -> new SqlMemberVersionRepository(SqliteEntityManagerFactory.getInstance(properties), instanceName);
-            case MEMORY -> new InMemoryMemberVersionRepository();
-            case POSTGRES -> new SqlMemberVersionRepository(PostgresEntityManagerFactory.getInstance(instanceName, properties.getProperties()), instanceName);
-        };
-    }
+	/**
+	 * @param statePersistenceStrategy via what persistence strategy the repository should work
+	 * @param properties               a representation of the required config properties to set up the persistence unit
+	 * @param instanceName             will be used to be able to more easily keep track of the return repo
+	 * @return the memberVersionRepository for a specific instance (could be a NiFi flow or a LDIO pipeline)
+	 */
+	public static MemberVersionRepository getMemberVersionRepositoryFactory(StatePersistenceStrategy statePersistenceStrategy,
+																			HibernateProperties properties, String instanceName) {
+		return switch (statePersistenceStrategy) {
+			case SQLITE ->
+					new SqlMemberVersionRepository(SqliteEntityManagerFactory.getInstance(properties), instanceName);
+			case MEMORY -> new InMemoryMemberVersionRepository();
+			case POSTGRES ->
+					new SqlMemberVersionRepository(PostgresEntityManagerFactory.getInstance(instanceName, properties.getProperties()), instanceName);
+		};
+	}
 }

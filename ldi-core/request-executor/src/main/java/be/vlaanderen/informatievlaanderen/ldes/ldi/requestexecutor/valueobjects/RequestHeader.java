@@ -14,6 +14,9 @@ public class RequestHeader {
 		this.value = notNull(value);
 	}
 
+	/**
+	 * @param headerString representation of the header as following: <br /> <code>Header-Key: Header-Value</code>
+	 */
 	public static RequestHeader from(String headerString) {
 		int indexFirstColon = headerString.indexOf(":");
 		String key = headerString.substring(0, indexFirstColon).trim();

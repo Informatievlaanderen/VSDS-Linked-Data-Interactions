@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.stream.Stream;
 
+/**
+ * Wrapper around any LdiAdapter for debugging purposes
+ */
 public class AdapterDebugger implements LdiAdapter {
 	private final Logger log;
 	private final LdiAdapter adapter;

@@ -18,6 +18,13 @@ public class TreeRelationsFetcher {
 	public TreeRelationsFetcher(RequestExecutor requestExecutor) {
 		this.requestExecutor = requestExecutor;
 	}
+
+	/**
+	 * Fetches a new TreeNode and extract all the relations out of it
+	 *
+	 * @param treeNodeRequest based on the relations found in the previous TreeNode
+	 * @return a new list of all the next TreeNode relations that were present in the received TreeNode
+	 */
 	public List<TreeRelation> fetchTreeRelations(TreeNodeRequest treeNodeRequest) throws UnsupportedOperationException {
 		final Response response = requestExecutor.execute(treeNodeRequest.createRequest());
 

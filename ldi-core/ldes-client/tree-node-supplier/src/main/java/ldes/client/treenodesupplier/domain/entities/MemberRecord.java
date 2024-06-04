@@ -10,8 +10,8 @@ import com.sun.istack.NotNull;
 
 public class MemberRecord implements Comparable<MemberRecord>{
 	private final String memberId;
-	private LocalDateTime createdAt;
-	private Model model;
+	private final LocalDateTime createdAt;
+	private final Model model;
 
 	public MemberRecord(String memberId, Model model, LocalDateTime createdAt) {
 		this.memberId = memberId;

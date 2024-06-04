@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.validators.RDFLanguageValidator;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
@@ -13,7 +13,6 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 	private static final String DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY = "https://uri.etsi.org/ngsi-ld/observedAt";
 	private static final String DEFAULT_DELIMITER = "/";
 	private static final String DEFAULT_VERSION_OF_KEY = "http://purl.org/dc/terms/isVersionOf";
-	private static final String DEFAULT_DATA_DESTINATION_FORMAT = "application/n-quads";
 	private static final String DEFAULT_DATA_INPUT_FORMAT = "application/ld+json";
 	private static final String DEFAULT_PROV_GENERATED_AT_TIME = "http://www.w3.org/ns/prov#generatedAtTime";
 
@@ -66,15 +65,6 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 			.defaultValue(DEFAULT_DATA_INPUT_FORMAT)
 			.build();
 
-	public static final PropertyDescriptor DATA_DESTINATION_FORMAT = new PropertyDescriptor.Builder()
-			.name("DATA_DESTINATION_FORMAT")
-			.displayName("Data destination format")
-			.description("RDF format identifier of the data destination")
-			.required(false)
-			.addValidator(new RDFLanguageValidator())
-			.defaultValue(DEFAULT_DATA_DESTINATION_FORMAT)
-			.build();
-
 	public static final PropertyDescriptor GENERATED_AT_TIME_PROPERTY = new PropertyDescriptor.Builder()
 			.name("GENERATED_AT_TIME_PROPERTY")
 			.displayName("GeneratedAtTime property")
@@ -108,9 +98,5 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 			return ResourceFactory.createProperty(generatedAtTimeProperty);
 		}
 
-	}
-
-	public static Lang getDataDestinationFormat(ProcessContext context) {
-		return RDFLanguages.nameToLang(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
 	}
 }

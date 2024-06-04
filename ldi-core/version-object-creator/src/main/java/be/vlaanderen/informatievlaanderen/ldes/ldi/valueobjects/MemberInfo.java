@@ -1,5 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects;
 
+/**
+ * Contains the information of a version object member
+ */
 public class MemberInfo {
 	private final String versionOf;
 	private final String observedAt;

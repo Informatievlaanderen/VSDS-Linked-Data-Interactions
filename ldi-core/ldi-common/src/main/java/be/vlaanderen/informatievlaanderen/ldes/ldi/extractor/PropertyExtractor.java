@@ -5,6 +5,7 @@ import org.apache.jena.rdf.model.RDFNode;
 
 import java.util.List;
 
+@FunctionalInterface
 public interface PropertyExtractor {
 
 	List<RDFNode> getProperties(Model model);

@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Wrapper around the Apache HttpResponse, so that the response can be managed easier
+ */
 public class DefaultResponse {
 
 	private final HttpResponse httpResponse;

@@ -1,12 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter;
 
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.RDFWriter;
+import org.apache.jena.riot.RDFWriterBuilder;
 
 import java.io.OutputStream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.PrefixAdder.addPrefixesToModel;
 
+/**
+ * Default implementation of the LdiRdfWriter
+ */
 public class GenericRdfWriter implements LdiRdfWriter {
 
 	private final RDFWriterBuilder rdfWriter;

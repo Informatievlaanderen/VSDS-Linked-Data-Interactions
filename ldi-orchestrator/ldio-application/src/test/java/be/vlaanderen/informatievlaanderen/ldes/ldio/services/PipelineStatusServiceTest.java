@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
@@ -15,11 +16,11 @@ class PipelineStatusServiceTest {
     private final String pipelineName = "pipeline";
     private final LdioInput input = mock(LdioInput.class);
     private final ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
-    private PipelineStatusService pipelineStatusService;
+    private PipelineStatusServiceImpl pipelineStatusService;
 
     @BeforeEach
     void setup() {
-        pipelineStatusService = new PipelineStatusService(eventPublisher);
+        pipelineStatusService = new PipelineStatusServiceImpl(eventPublisher);
         pipelineStatusService.handlePipelineCreated(new InputCreatedEvent(pipelineName, input));
     }
 
@@ -30,6 +31,7 @@ class PipelineStatusServiceTest {
 
         assertEquals(PipelineStatus.STOPPED, result);
         verify(input).updateStatus(PipelineStatusTrigger.STOP);
+        verify(eventPublisher).publishEvent(new PipelineDeletedEvent(pipelineName));
     }
 
 }

@@ -2,6 +2,9 @@ package ldes.client.treenodesupplier.domain.valueobject;
 
 import org.apache.jena.rdf.model.Model;
 
+/**
+ * Wrapper around the received RDF model
+ */
 public class SuppliedMember {
 
 	private final String id;

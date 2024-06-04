@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Will modify the model based on the given SPARQL Construct Query
+ */
 public class SparqlConstructTransformer implements LdiOneToManyTransformer {
 
 	private final Query query;

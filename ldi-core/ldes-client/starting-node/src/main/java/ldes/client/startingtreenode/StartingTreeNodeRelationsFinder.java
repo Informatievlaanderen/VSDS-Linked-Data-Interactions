@@ -30,6 +30,12 @@ public class StartingTreeNodeRelationsFinder {
 		this.requestExecutor = new RedirectRequestExecutor(requestExecutor);
 	}
 
+	/**
+	 * Determines all starting relations that needs to be queued.
+	 *
+	 * @param startingNodeRequest can contain a collection, view or treeNode.
+	 * @return all nodes that must be further queued by the discoverer
+	 */
 	public List<StartingTreeNode> findAllStartingTreeNodes(final StartingNodeRequest startingNodeRequest) {
 		final Response response = requestExecutor.execute(startingNodeRequest);
 		final Model model = getModelFromResponse(startingNodeRequest.lang(), response.getBody().orElseThrow(), startingNodeRequest.url());
