@@ -19,9 +19,11 @@ import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import org.apache.jena.riot.Lang;
+import org.mockito.Mockito;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 class TreeNodeProcessorFactory {
 
@@ -36,7 +38,7 @@ class TreeNodeProcessorFactory {
 		};
 		final RequestExecutor requestExecutor = requestExecutorFactory.createNoAuthExecutor();
 		final TimestampExtractor timestampExtractor = new TimestampFromCurrentTimeExtractor();
-		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor);
+		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor, Mockito.mock(Consumer.class));
 	}
 
 	private PostgreSQLContainer startPostgresContainer() {

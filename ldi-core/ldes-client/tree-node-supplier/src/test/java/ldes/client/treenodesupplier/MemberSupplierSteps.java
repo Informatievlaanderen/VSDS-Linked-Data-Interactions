@@ -15,10 +15,7 @@ import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
-import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
-import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
+import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
 import ldes.client.treenodesupplier.filters.LatestStateFilter;
 import ldes.client.treenodesupplier.filters.MemberFilter;
@@ -31,9 +28,11 @@ import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import org.apache.jena.riot.Lang;
 import org.junit.After;
+import org.mockito.Mockito;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,6 +49,7 @@ public class MemberSupplierSteps {
 	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
 	private PostgreSQLContainer<?> postgreSQLContainer;
+	private final Consumer<ClientStatus> clientStatusConsumer = Mockito.mock(Consumer.class);
 
 	// Multi MemberSupplier
 	private final MemberSupplier[] memberSuppliers = new MemberSupplier[2];
@@ -105,7 +105,8 @@ public class MemberSupplierSteps {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
 				new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository),
 				requestExecutorFactory.createNoAuthExecutor(),
-				timestampPath.isEmpty() ? new TimestampFromCurrentTimeExtractor() : new TimestampFromPathExtractor(createProperty(timestampPath)));
+				timestampPath.isEmpty() ? new TimestampFromCurrentTimeExtractor() : new TimestampFromPathExtractor(createProperty(timestampPath)),
+				clientStatusConsumer);
 	}
 
 	@Then("Member {string} is processed")
@@ -206,11 +207,11 @@ public class MemberSupplierSteps {
 		memberSuppliers[0] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg0),
 				requestExecutorFactory.createNoAuthExecutor(),
-				new TimestampFromPathExtractor(createProperty(timestampPath))), false);
+				new TimestampFromPathExtractor(createProperty(timestampPath)), clientStatusConsumer), false);
 		memberSuppliers[1] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
 				defineStatePersistence(arg1),
 				requestExecutorFactory.createNoAuthExecutor(),
-				new TimestampFromPathExtractor(createProperty(timestampPath))), false);
+				new TimestampFromPathExtractor(createProperty(timestampPath)), clientStatusConsumer), false);
 	}
 
 	@When("I request one member from the MemberSuppliers")

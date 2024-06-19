@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.lang.Thread.sleep;
 
@@ -25,13 +26,16 @@ public class TreeNodeProcessor {
 	private final TreeNodeFetcher treeNodeFetcher;
 	private final LdesMetaData ldesMetaData;
 	private final RequestExecutor requestExecutor;
+	private final Consumer<ClientStatus> clientStatusConsumer;
 	private MemberRecord memberRecord;
 
 	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
-	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor) {
+	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor,
+	                         Consumer<ClientStatus> clientStatusConsumer) {
 		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
 		this.memberRepository = statePersistence.getMemberRepository();
 		this.requestExecutor = requestExecutor;
+		this.clientStatusConsumer = clientStatusConsumer;
 		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor, timestampExtractor);
 		this.ldesMetaData = ldesMetaData;
 	}
@@ -102,8 +106,14 @@ public class TreeNodeProcessor {
 		return treeNodeRecordRepository
 				.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS)
 				.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.NOT_VISITED)
-						.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
-								.orElseThrow(() -> new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends."))));
+						.orElseGet(() -> {
+							clientStatusConsumer.accept(ClientStatus.SYNCHRONISING);
+							return treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
+									.orElseThrow(() -> {
+										clientStatusConsumer.accept(ClientStatus.COMPLETED);
+										return new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends.");
+									});
+						}));
 	}
 
 	private void waitUntilNextVisit(TreeNodeRecord treeNodeRecord) {
