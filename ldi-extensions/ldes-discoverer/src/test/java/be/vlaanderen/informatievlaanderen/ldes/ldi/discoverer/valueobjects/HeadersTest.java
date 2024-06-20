@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.valueobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.HeadersMatcher;
 import org.apache.http.Header;
-import org.apache.http.message.BasicHeader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,9 +12,7 @@ import org.springframework.boot.ApplicationArguments;
 import java.util.Collection;
 import java.util.List;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.discoverer.HeadersMatcher.containsAllHeaders;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

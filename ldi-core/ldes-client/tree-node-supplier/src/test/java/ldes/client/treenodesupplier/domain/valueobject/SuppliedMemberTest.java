@@ -4,7 +4,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SuppliedMemberTest {
 
@@ -13,8 +13,9 @@ class SuppliedMemberTest {
 		Model model = ModelFactory.createDefaultModel();
 		SuppliedMember suppliedMember = new SuppliedMember("id", model);
 
-		model = null;
-		assertNotNull(suppliedMember.getModel());
+		assertThat(suppliedMember.getModel())
+				.isNotNull()
+				.matches(Model::isEmpty);
 	}
 
 }
