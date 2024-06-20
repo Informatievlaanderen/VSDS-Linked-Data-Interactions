@@ -10,6 +10,7 @@ public class ClientStatusConsumer implements Consumer<ClientStatus> {
 	private final Logger log = LoggerFactory.getLogger(ClientStatusConsumer.class);
 	private final String pipelineId;
 	private final ClientStatusService statusService;
+	private ClientStatus previousState;
 
 	public ClientStatusConsumer(String pipelineId, ClientStatusService statusService) {
 		this.pipelineId = pipelineId;
@@ -18,7 +19,10 @@ public class ClientStatusConsumer implements Consumer<ClientStatus> {
 
 	@Override
 	public void accept(ClientStatus clientStatus) {
-		log.info("LDES Client pipeline '{}' has status {}", pipelineId, clientStatus);
-		statusService.updateStatus(pipelineId, clientStatus);
+		if (clientStatus != previousState) {
+			log.info("LDES Client pipeline '{}' has status {}", pipelineId, clientStatus);
+			statusService.updateStatus(pipelineId, clientStatus);
+			previousState = clientStatus;
+		}
 	}
 }

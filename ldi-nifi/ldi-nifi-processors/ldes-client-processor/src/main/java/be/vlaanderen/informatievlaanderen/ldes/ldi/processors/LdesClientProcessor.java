@@ -231,7 +231,6 @@ public class LdesClientProcessor extends AbstractProcessor {
 	}
 
 	private Consumer<ClientStatus> clientStatusConsumer() {
-		//TODO review NiFi UC
 		return status -> LOGGER.info("LDES Client is now {}", status);
 	}
 

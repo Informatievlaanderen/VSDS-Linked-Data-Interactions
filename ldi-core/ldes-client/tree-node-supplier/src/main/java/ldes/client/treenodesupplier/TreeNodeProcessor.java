@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.lang.Thread.sleep;
+import static ldes.client.treenodesupplier.domain.valueobject.ClientStatus.*;
 
 public class TreeNodeProcessor {
 
@@ -103,17 +104,22 @@ public class TreeNodeProcessor {
 	}
 
 	private TreeNodeRecord getNextTreeNode() {
-		return treeNodeRecordRepository
+		TreeNodeRecord treeNodeRecord = treeNodeRecordRepository
 				.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS)
 				.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.NOT_VISITED)
-						.orElseGet(() -> {
-							clientStatusConsumer.accept(ClientStatus.SYNCHRONISING);
-							return treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
-									.orElseThrow(() -> {
-										clientStatusConsumer.accept(ClientStatus.COMPLETED);
-										return new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends.");
-									});
-						}));
+						.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
+								.orElseThrow(() -> {
+									clientStatusConsumer.accept(COMPLETED);
+									return new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends.");
+								})));
+
+		switch (treeNodeRecord.getTreeNodeStatus()) {
+			case IMMUTABLE_WITH_UNPROCESSED_MEMBERS, IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS, NOT_VISITED ->
+					clientStatusConsumer.accept(REPLICATING);
+			case MUTABLE_AND_ACTIVE -> clientStatusConsumer.accept(SYNCHRONISING);
+		}
+
+		return treeNodeRecord;
 	}
 
 	private void waitUntilNextVisit(TreeNodeRecord treeNodeRecord) {

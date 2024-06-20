@@ -8,6 +8,15 @@ Feature: LdesClientIntegrationTest
     And I configure this to be of RDF format "application/ld+json"
     When I start an ldes-ldio-in component
     Then All 6 members from the stream are passed to the pipeline
+    And I expect 1 REPLICATING, 0 SYNCHRONISING and 1 COMPLETED updates
+
+  Scenario: Reading an Open LDES Stream
+    Given I want to follow the following LDES
+      | /page-without-relations |
+    And I configure this to be of RDF format "application/ld+json"
+    When I start an ldes-ldio-in component
+    Then All 2 members from the stream are passed to the pipeline
+    And I expect 1 REPLICATING, 1 SYNCHRONISING and 0 COMPLETED updates
 
   Scenario: Reading multiple LDES Streams
     Given I want to follow the following LDES
@@ -15,6 +24,7 @@ Feature: LdesClientIntegrationTest
       | /items/grouped?group=2 |
     When I start an ldes-ldio-in component
     Then All 8 members from the stream are passed to the pipeline
+    And I expect 1 REPLICATING, 0 SYNCHRONISING and 1 COMPLETED updates
 
   Scenario Outline: Reading an LDES Stream with latest state filter enabled
     Given I want to follow the following LDES
