@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.management.status;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
 import ldes.client.treenodesupplier.domain.valueobject.ClientStatus;
 import org.springframework.context.event.EventListener;
@@ -32,11 +31,6 @@ public class ClientStatusService {
 
 	public Optional<ClientStatus> getClientStatus(String pipelineId) {
 		return Optional.ofNullable(clientStatuses.get(pipelineId));
-	}
-
-	@EventListener
-	public void inputCreatedEvent(InputCreatedEvent event) {
-		clientStatuses.put(event.pipelineName(), ClientStatus.REPLICATING);
 	}
 
 	@EventListener
