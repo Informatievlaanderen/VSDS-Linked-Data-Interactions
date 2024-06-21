@@ -48,7 +48,7 @@ public class LdioLdesClientAutoConfig {
 			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor, clientStatusConsumer).getMemberSupplier();
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			final LdioObserver ldioObserver = LdioObserver.register(LdioLdesClient.NAME, pipelineName, observationRegistry);
-			final var ldesClient = new LdioLdesClient(componentExecutor, ldioObserver, memberSupplier, applicationEventPublisher, keepState);
+			final var ldesClient = new LdioLdesClient(componentExecutor, ldioObserver, memberSupplier, applicationEventPublisher, keepState, clientStatusConsumer);
 			ldesClient.start();
 			return ldesClient;
 		}

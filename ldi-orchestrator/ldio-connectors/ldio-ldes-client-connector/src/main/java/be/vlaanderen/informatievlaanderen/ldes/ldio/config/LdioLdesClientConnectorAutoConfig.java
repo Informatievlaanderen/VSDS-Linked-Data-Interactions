@@ -74,7 +74,7 @@ public class LdioLdesClientConnectorAutoConfig {
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
 			final var ldesClient = new LdioLdesClient(executor, ldioObserver, memberSupplier,
-					applicationEventPublisher, keepState);
+					applicationEventPublisher, keepState, clientStatusConsumer);
 			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
 
 			ldesClient.start();
