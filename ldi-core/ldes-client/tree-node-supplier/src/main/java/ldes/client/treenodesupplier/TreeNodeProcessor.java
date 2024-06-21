@@ -14,6 +14,7 @@ import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -113,10 +114,12 @@ public class TreeNodeProcessor {
 									return new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends.");
 								})));
 
-		switch (treeNodeRecord.getTreeNodeStatus()) {
-			case IMMUTABLE_WITH_UNPROCESSED_MEMBERS, IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS, NOT_VISITED ->
-					clientStatusConsumer.accept(REPLICATING);
-			case MUTABLE_AND_ACTIVE -> clientStatusConsumer.accept(SYNCHRONISING);
+		if (Objects.requireNonNull(treeNodeRecord.getTreeNodeStatus()) == TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS ||
+		    treeNodeRecord.getTreeNodeStatus() == TreeNodeStatus.IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS ||
+		    treeNodeRecord.getTreeNodeStatus() == TreeNodeStatus.NOT_VISITED) {
+			clientStatusConsumer.accept(REPLICATING);
+		} else if (treeNodeRecord.getTreeNodeStatus() == TreeNodeStatus.MUTABLE_AND_ACTIVE) {
+			clientStatusConsumer.accept(SYNCHRONISING);
 		}
 
 		return treeNodeRecord;
