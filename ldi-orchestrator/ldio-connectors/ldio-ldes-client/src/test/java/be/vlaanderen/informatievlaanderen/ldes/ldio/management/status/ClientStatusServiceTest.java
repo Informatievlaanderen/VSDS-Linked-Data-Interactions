@@ -10,7 +10,7 @@ import static ldes.client.treenodesupplier.domain.valueobject.ClientStatus.REPLI
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = ClientStatusService.class)
-public class ClientStatusServiceTest {
+class ClientStatusServiceTest {
 	@Autowired
 	private ClientStatusService clientStatusService;
 
