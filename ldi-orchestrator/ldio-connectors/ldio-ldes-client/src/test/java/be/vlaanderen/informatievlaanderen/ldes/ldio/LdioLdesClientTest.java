@@ -3,6 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
@@ -36,6 +37,9 @@ class LdioLdesClientTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
+    @Mock
+    private ClientStatusConsumer clientStatusConsumer;
+
     private LdioLdesClient client;
     private final String pipelineName = "pipeline";
 
@@ -47,8 +51,8 @@ class LdioLdesClientTest {
                 observer,
                 supplier,
                 eventPublisher,
-                false
-        );
+                false,
+                clientStatusConsumer);
     }
 
     @AfterEach

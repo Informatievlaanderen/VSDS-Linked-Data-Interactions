@@ -12,6 +12,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
@@ -32,8 +34,9 @@ public class LdioLdesClientConnectorAutoConfig {
 
 	@Bean(NAME)
 	public LdioInputConfigurator ldioConfigurator(ApplicationEventPublisher eventPublisher,
+	                                              ClientStatusService clientStatusService,
 	                                              ObservationRegistry observationRegistry) {
-		return new LdioClientConnectorConfigurator(eventPublisher, observationRegistry);
+		return new LdioClientConnectorConfigurator(eventPublisher, clientStatusService, observationRegistry);
 	}
 
 	public static class LdioClientConnectorConfigurator implements LdioInputConfigurator {
@@ -42,12 +45,15 @@ public class LdioLdesClientConnectorAutoConfig {
 		public static final String PROXY_URL_TO_REPLACE = "proxy-url-to-replace";
 		public static final String PROXY_URL_REPLACEMENT = "proxy-url-replacement";
 		private final ApplicationEventPublisher eventPublisher;
+		private final ClientStatusService clientStatusService;
 		private final ObservationRegistry observationRegistry;
 		private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 		private final RequestExecutor baseRequestExecutor = requestExecutorFactory.createNoAuthExecutor();
 
-		public LdioClientConnectorConfigurator(ApplicationEventPublisher eventPublisher, ObservationRegistry observationRegistry) {
+		public LdioClientConnectorConfigurator(ApplicationEventPublisher eventPublisher, ClientStatusService clientStatusService,
+		                                       ObservationRegistry observationRegistry) {
 			this.eventPublisher = eventPublisher;
+			this.clientStatusService = clientStatusService;
 			this.observationRegistry = observationRegistry;
 		}
 
@@ -62,11 +68,13 @@ public class LdioLdesClientConnectorAutoConfig {
 			final var urlProxy = getEdcUrlProxy(properties);
 			final var edcRequestExecutor = requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService,
 					urlProxy);
-			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, edcRequestExecutor).getMemberSupplier();
+			final var clientStatusConsumer = new ClientStatusConsumer(pipelineName, clientStatusService);
+			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, edcRequestExecutor,
+					clientStatusConsumer).getMemberSupplier();
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
 			final var ldesClient = new LdioLdesClient(executor, ldioObserver, memberSupplier,
-					applicationEventPublisher, keepState);
+					applicationEventPublisher, keepState, clientStatusConsumer);
 			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
 
 			ldesClient.start();

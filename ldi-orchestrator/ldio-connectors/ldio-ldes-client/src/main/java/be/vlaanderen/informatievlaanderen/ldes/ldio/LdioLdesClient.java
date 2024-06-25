@@ -2,9 +2,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineShutdownEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
+import ldes.client.treenodesupplier.domain.valueobject.ClientStatus;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import org.slf4j.Logger;
@@ -26,16 +28,18 @@ public class LdioLdesClient extends LdioInput {
 	private boolean paused = false;
 	private final boolean keepState;
 	private final String pipelineName;
+	private final ClientStatusConsumer clientStatusConsumer;
 
 	public LdioLdesClient(ComponentExecutor componentExecutor,
-                          LdioObserver ldioObserver,
-                          MemberSupplier memberSupplier,
-                          ApplicationEventPublisher applicationEventPublisher,
-						  boolean keepState) {
+	                      LdioObserver ldioObserver,
+	                      MemberSupplier memberSupplier,
+	                      ApplicationEventPublisher applicationEventPublisher,
+	                      boolean keepState, ClientStatusConsumer clientStatusConsumer) {
 		super(componentExecutor, null, ldioObserver, applicationEventPublisher);
 		this.pipelineName = ldioObserver.getPipelineName();
 		this.memberSupplier = memberSupplier;
         this.keepState = keepState;
+		this.clientStatusConsumer = clientStatusConsumer;
     }
 
 	@Override
@@ -64,6 +68,7 @@ public class LdioLdesClient extends LdioInput {
 		} catch (EndOfLdesException e) {
 			shutdownPipeline();
 		} catch (Exception e) {
+			clientStatusConsumer.accept(ClientStatus.ERROR);
 			log.error("LdesClientRunner FAILURE: {}", e.getMessage());
 		}
 	}

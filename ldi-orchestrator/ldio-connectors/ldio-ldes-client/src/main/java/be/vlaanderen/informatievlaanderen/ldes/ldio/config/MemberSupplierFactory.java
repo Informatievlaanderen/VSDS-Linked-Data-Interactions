@@ -9,6 +9,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMiss
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidConfigException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
+import ldes.client.treenodesupplier.domain.valueobject.ClientStatus;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.PersistenceProperties.KEEP_STATE;
@@ -40,10 +42,13 @@ public class MemberSupplierFactory {
 
     private final ComponentProperties properties;
     private final RequestExecutor requestExecutor;
+    private final Consumer<ClientStatus> clientStatusConsumer;
 
-    public MemberSupplierFactory(ComponentProperties properties, RequestExecutor requestExecutor) {
+    public MemberSupplierFactory(ComponentProperties properties, RequestExecutor requestExecutor,
+                                 Consumer<ClientStatus> clientStatusConsumer) {
         this.properties = properties;
         this.requestExecutor = requestExecutor;
+        this.clientStatusConsumer = clientStatusConsumer;
     }
 
     public MemberSupplier getMemberSupplier() {
@@ -86,7 +91,7 @@ public class MemberSupplierFactory {
                 .map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
                 .orElseGet(TimestampFromCurrentTimeExtractor::new);
 
-        return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor);
+        return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor, clientStatusConsumer);
     }
 
     private StatePersistence getStatePersistence() {
