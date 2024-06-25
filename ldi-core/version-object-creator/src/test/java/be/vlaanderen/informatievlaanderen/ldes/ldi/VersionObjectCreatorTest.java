@@ -131,13 +131,13 @@ class VersionObjectCreatorTest {
 
 	@ParameterizedTest
 	@ArgumentsSource(JsonLDFileArgumentsProvider.class)
-	void shouldMatchCountOfObjects(String fileName, String expectedId, LocalDateTime startTestTime, String memberType)
+	void shouldMatchCountOfObjects(String fileName, String expectedId, LocalDateTime startTestTime, List<String> memberTypes)
 			throws IOException, URISyntaxException {
 
 		Model model = RDFParserBuilder.create().fromString(getJsonString(fileName)).lang(Lang.JSONLD).toModel();
 
 		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(),
-				model.createResource(memberType),
+				memberTypes.stream().map(model::createResource).toList(),
 				DEFAULT_DELIMITER, null, null);
 
 		Model versionObject = versionObjectCreator.transform(model);
@@ -229,14 +229,14 @@ class VersionObjectCreatorTest {
 	}
 
 	private VersionObjectCreator createVersionObjectCreator(Model inputModel, String dateObservedPath) {
-		Resource memberType = inputModel.createResource("http://example.org/Something");
+		List<Resource> memberTypes = List.of(inputModel.createResource("http://example.org/Something"));
 		PropertyExtractor dateObservedPropertyExtractor = PropertyPathExtractor.from(dateObservedPath);
 		Property generatedAtTimeProperty = inputModel.createProperty("http://www.w3.org/ns/prov#generatedAtTime");
 		Property versionOfProperty = inputModel.createProperty("http://purl.org/dc/terms/isVersionOf");
 
 		return new VersionObjectCreator(
 				dateObservedPropertyExtractor,
-				memberType,
+				memberTypes,
 				DEFAULT_DELIMITER,
 				generatedAtTimeProperty,
 				versionOfProperty
@@ -260,15 +260,25 @@ class VersionObjectCreatorTest {
 					Arguments.of("example-waterqualityobserved.json",
 							"urn:ngsi-v2:cot-imec-be:WaterQualityObserved:imec-iow-3orY3reQDK5n3TMpPnLVYR/",
 							now,
-							"https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved"),
+							List.of("https://uri.etsi.org/ngsi-ld/default-context/WaterQualityObserved")),
 					Arguments.of("example-device.json",
 							"urn:ngsi-v2:cot-imec-be:Device:imec-iow-UR5gEycRuaafxnhvjd9jnU/",
 							now,
-							"https://uri.etsi.org/ngsi-ld/default-context/Device"),
+							List.of("https://uri.etsi.org/ngsi-ld/default-context/Device")),
 					Arguments.of("example-device-model.json",
 							"urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005/",
 							now,
-							"https://uri.etsi.org/ngsi-ld/default-context/DeviceModel"));
+							List.of("https://uri.etsi.org/ngsi-ld/default-context/DeviceModel")),
+					Arguments.of("example-device-model.json",
+							"urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005/",
+							now,
+							List.of()),
+					Arguments.of("example-device-model.json",
+							"urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005/",
+							now,
+							List.of("https://www.test.org",
+									"https://uri.etsi.org/ngsi-ld/default-context/DeviceModel",
+									"https://www.something.org")));
 		}
 	}
 

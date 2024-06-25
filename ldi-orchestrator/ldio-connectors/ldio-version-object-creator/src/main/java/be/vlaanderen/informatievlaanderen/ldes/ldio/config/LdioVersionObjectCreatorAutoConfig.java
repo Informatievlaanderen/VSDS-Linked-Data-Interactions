@@ -14,7 +14,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Optional;
+import java.util.List;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioVersionObjectCreator.NAME;
 
@@ -39,8 +39,8 @@ public class LdioVersionObjectCreatorAutoConfig {
 					.map(PropertyExtractor.class::cast)
 					.orElseGet(EmptyPropertyExtractor::new);
 
-			Resource memberType = Optional.of(properties.getProperty("member-type"))
-					.map(initModel::createResource).orElse(null);
+			List<Resource> memberTypes = properties.getPropertyList("member-type").stream()
+					.map(initModel::createResource).toList();
 
 			String delimiter = properties.getOptionalProperty("delimiter").orElse("/");
 
@@ -52,7 +52,7 @@ public class LdioVersionObjectCreatorAutoConfig {
 					.map(initModel::createProperty)
 					.orElseGet(() -> initModel.createProperty(DEFAULT_VERSION_OF_KEY));
 
-			return new LdioVersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter,
+			return new LdioVersionObjectCreator(dateObservedPropertyExtractor, memberTypes, delimiter,
 					generatedAtProperty,
 					versionOfProperty);
 		}

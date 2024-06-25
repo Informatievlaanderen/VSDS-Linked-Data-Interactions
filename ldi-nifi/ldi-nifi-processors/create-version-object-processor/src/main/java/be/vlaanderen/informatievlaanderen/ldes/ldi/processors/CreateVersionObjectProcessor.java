@@ -80,13 +80,13 @@ public class CreateVersionObjectProcessor extends AbstractProcessor {
 		PropertyExtractor dateObservedPropertyExtractor = dateObservedProperty != null
 				? PropertyPathExtractor.from(dateObservedProperty)
 				: new EmptyPropertyExtractor();
-		Resource memberType = getMemberRdfSyntaxType(context);
+		List<Resource> memberTypes = getMemberRdfSyntaxTypes(context);
 		String delimiter = getDelimiter(context);
 		Property versionOfKey = getVersionOfKey(context);
 		Property generatedAtTimeProperty = getGeneratedAtTimeProperty(context);
 		dataDestinationFormat = getDataDestinationFormat(context);
 
-		versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberType, delimiter,
+		versionObjectCreator = new VersionObjectCreator(dateObservedPropertyExtractor, memberTypes, delimiter,
 				generatedAtTimeProperty,
 				versionOfKey);
 	}

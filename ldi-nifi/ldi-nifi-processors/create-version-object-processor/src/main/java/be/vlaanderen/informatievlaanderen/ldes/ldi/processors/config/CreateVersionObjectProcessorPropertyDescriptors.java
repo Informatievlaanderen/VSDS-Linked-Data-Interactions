@@ -9,6 +9,9 @@ import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
+import java.util.Arrays;
+import java.util.List;
+
 public final class CreateVersionObjectProcessorPropertyDescriptors {
 	private static final String DEFAULT_DATE_OBSERVED_VALUE_RDF_PROPERTY = "https://uri.etsi.org/ngsi-ld/observedAt";
 	private static final String DEFAULT_DELIMITER = "/";
@@ -78,8 +81,11 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 		return context.getProperty(DATE_OBSERVED_VALUE_RDF_PROPERTY).getValue();
 	}
 
-	public static Resource getMemberRdfSyntaxType(ProcessContext context) {
-		return ResourceFactory.createResource(context.getProperty(MEMBER_RDF_SYNTAX_TYPE).getValue());
+	public static List<Resource> getMemberRdfSyntaxTypes(ProcessContext context) {
+		return Arrays.stream(context.getProperty(MEMBER_RDF_SYNTAX_TYPE).getValue().split(","))
+				.map(String::trim)
+				.map(ResourceFactory::createResource)
+				.toList();
 	}
 
 	public static String getDelimiter(ProcessContext context) {
