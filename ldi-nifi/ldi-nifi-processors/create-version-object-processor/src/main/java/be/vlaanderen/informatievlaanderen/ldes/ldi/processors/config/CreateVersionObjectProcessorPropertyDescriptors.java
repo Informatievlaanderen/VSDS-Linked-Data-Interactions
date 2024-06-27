@@ -24,8 +24,8 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 
 	public static final PropertyDescriptor MEMBER_RDF_SYNTAX_TYPE = new PropertyDescriptor.Builder()
 			.name("MEMBER_RDF_SYNTAX_TYPE")
-			.displayName("IRI to member RDF syntax type")
-			.description("IRI that declares a http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+			.displayName("IRI's to member RDF syntax type")
+			.description("Comma separated list of IRI's that declare a http://www.w3.org/1999/02/22-rdf-syntax-ns#type of all possible members")
 			.required(true)
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.build();
