@@ -84,13 +84,7 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 
 	private Optional<String> extractMemberInfo(Model linkedDataModel) {
 		return linkedDataModel.listStatements(null, SYNTAX_TYPE, (RDFNode) null)
-				.filterKeep(statement -> {
-					if (!memberTypeResources.isEmpty()) {
-						return memberTypeResources.contains(statement.getResource());
-					} else {
-						return true;
-					}
-				})
+				.filterKeep(statement -> memberTypeResources.contains(statement.getResource()))
 				.nextOptional()
 				.map(Statement::getSubject)
 				.map(Resource::asNode)

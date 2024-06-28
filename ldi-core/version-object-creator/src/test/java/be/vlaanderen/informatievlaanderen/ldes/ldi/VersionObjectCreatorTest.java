@@ -152,6 +152,25 @@ class VersionObjectCreatorTest {
 	}
 
 	@Test
+	void when_EmptyList_Then_ShouldNotMatch() throws URISyntaxException, IOException {
+		final LocalDateTime now = LocalDateTime.now();
+		Model model = RDFParserBuilder.create().fromString(getJsonString("example-waterqualityobserved.json")).lang(Lang.JSONLD).toModel();
+		VersionObjectCreator versionObjectCreator = new VersionObjectCreator(new EmptyPropertyExtractor(),
+				List.of(),
+				DEFAULT_DELIMITER, null, null);
+
+		Model versionObject = versionObjectCreator.transform(model);
+
+		final String minuteTheTestStarted = getPartOfLocalDateTime(now);
+		final String minuteAfterTheTestStarted = getPartOfLocalDateTime(now.plusMinutes(1));
+		assertTrue(versionObject.listStatements()
+				.toList()
+				.stream()
+				.noneMatch(stmt -> stmt.getSubject().toString().contains(minuteTheTestStarted) ||
+						stmt.getSubject().toString().contains(minuteAfterTheTestStarted)));
+	}
+
+	@Test
 	void when_memberInfoExtractionFails_warningMessageIsLogged() {
 		ListAppender<ILoggingEvent> listAppender = createListAppender();
 		Model inputModel = RDFParser.fromString("""
@@ -269,10 +288,6 @@ class VersionObjectCreatorTest {
 							"urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005/",
 							now,
 							List.of("https://uri.etsi.org/ngsi-ld/default-context/DeviceModel")),
-					Arguments.of("example-device-model.json",
-							"urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005/",
-							now,
-							List.of()),
 					Arguments.of("example-device-model.json",
 							"urn:ngsi-v2:cot-imec-be:devicemodel:imec-iow-sensor-v0005/",
 							now,
