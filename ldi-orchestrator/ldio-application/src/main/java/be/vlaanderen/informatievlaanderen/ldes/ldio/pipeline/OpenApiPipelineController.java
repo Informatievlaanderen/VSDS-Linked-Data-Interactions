@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

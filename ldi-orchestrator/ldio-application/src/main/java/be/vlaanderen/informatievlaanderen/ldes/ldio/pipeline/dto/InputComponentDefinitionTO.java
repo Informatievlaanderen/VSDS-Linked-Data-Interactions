@@ -1,6 +1,6 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.deserialisers.FlattenDeserializer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.deserialisers.FlattenDeserializer;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

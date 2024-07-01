@@ -2,11 +2,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.ComponentDefinitionTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.InputComponentDefinitionTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.LdiAdapterMissingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.PipelineCreatorService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.ComponentDefinitionTO;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.InputComponentDefinitionTO;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

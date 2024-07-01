@@ -1,11 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.repositories.PipelineRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

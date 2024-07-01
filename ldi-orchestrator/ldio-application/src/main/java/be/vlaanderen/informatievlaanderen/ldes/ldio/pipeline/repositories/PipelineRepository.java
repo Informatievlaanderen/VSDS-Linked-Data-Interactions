@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.repositories;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineConfigTO;
 
 import java.io.File;
 import java.util.List;
