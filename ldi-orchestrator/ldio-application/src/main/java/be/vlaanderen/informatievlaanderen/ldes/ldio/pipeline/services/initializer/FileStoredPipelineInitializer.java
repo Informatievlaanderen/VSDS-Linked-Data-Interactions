@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.initializer;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.repositories.PipelineFileRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.PipelineService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

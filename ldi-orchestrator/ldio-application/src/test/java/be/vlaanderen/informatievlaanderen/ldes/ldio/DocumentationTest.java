@@ -6,15 +6,31 @@ import org.springframework.modulith.docs.Documenter;
 
 class DocumentationTest {
 
-	ApplicationModules modules = ApplicationModules.of(Application.class);
+
 
 	@Test
 	void writeDocumentationSnippets() {
+		ApplicationModules modules = ApplicationModules.of(Application.class);
 
 		System.out.println(modules);
 
 		new Documenter(modules)
 				.writeModulesAsPlantUml()
+				.writeDocumentation()
+				.writeModuleCanvases()
+				.writeIndividualModulesAsPlantUml();
+	}
+
+	@Test
+	void x() {
+		ApplicationModules modules = ApplicationModules.of("be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline");
+
+		modules.forEach(System.out::println);
+
+		new Documenter(modules)
+				.writeModulesAsPlantUml()
+				.writeDocumentation()
+				.writeModuleCanvases()
 				.writeIndividualModulesAsPlantUml();
 	}
 }

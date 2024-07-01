@@ -2,9 +2,9 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.repositories;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineParsingException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO.fromPipelineConfig;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineConfigTO.fromPipelineConfig;
 import static java.util.Optional.ofNullable;
 
 @Service

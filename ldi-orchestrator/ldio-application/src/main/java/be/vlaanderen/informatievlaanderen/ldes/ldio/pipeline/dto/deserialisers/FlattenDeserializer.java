@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.deserialisers;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.deserialisers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

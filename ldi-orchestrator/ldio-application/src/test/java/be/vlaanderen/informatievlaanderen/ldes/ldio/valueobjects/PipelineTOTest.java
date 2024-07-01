@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.ComponentDefinitionTO;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.InputComponentDefinitionTO;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.ComponentDefinitionTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.InputComponentDefinitionTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.PipelineTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -18,7 +18,10 @@ public class OpenApiConfig {
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
                 .group("management")
-                .packagesToScan("be.vlaanderen.informatievlaanderen.ldes.ldio.management")
+                .packagesToScan("be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline",
+                        "be.vlaanderen.informatievlaanderen.ldes.ldio.catalog",
+                        "be.vlaanderen.informatievlaanderen.ldes.ldio.status",
+                        "be.vlaanderen.informatievlaanderen.ldes.ldio.management")
                 .build();
     }
 

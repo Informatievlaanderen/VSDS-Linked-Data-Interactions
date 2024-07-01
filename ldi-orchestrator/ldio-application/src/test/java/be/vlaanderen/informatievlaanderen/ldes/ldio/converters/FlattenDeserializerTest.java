@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.converters;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.deserialisers.FlattenDeserializer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.dto.deserialisers.FlattenDeserializer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
