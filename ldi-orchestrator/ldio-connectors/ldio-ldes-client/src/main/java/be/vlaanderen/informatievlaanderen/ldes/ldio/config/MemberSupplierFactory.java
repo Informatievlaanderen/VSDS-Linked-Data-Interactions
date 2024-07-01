@@ -5,9 +5,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.InvalidConfigException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.InvalidConfigException;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.ClientStatus;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.PersistenceProperties.KEEP_STATE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties.KEEP_STATE;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 public class MemberSupplierFactory {

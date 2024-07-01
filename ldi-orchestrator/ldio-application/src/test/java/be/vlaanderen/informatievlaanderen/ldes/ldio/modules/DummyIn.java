@@ -2,11 +2,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.modules;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.LdioObserver;
 import org.springframework.context.ApplicationEventPublisher;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.status.PipelineStatusTrigger.START;
 
 public class DummyIn extends LdioInput {
 	private int counter = 0;

@@ -4,8 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.PersistenceProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 
 import java.util.Map;

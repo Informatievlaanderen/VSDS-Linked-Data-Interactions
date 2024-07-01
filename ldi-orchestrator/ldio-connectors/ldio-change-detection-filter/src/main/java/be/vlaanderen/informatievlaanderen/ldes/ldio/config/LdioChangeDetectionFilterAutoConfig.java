@@ -3,10 +3,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.ChangeDetectionFilter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioChangeDetectionFilter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.PersistenceProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

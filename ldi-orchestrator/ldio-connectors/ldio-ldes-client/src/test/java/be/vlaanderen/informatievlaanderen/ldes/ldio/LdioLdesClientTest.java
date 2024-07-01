@@ -1,12 +1,12 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineShutdownEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineShutdownEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.status.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.status.StatusChangeSource;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import org.junit.jupiter.api.AfterEach;

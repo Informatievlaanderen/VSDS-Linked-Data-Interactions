@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.modules;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOneToOneTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 

@@ -1,12 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.ComponentDefinitionTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.InputComponentDefinitionTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus.RUNNING;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource.AUTO;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.status.PipelineStatus.RUNNING;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.status.StatusChangeSource.AUTO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
