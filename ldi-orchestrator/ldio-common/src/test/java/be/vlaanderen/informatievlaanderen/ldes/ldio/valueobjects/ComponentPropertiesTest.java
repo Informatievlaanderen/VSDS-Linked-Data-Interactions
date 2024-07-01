@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

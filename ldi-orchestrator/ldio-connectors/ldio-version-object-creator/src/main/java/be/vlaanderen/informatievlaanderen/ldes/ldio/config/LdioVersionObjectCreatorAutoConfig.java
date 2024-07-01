@@ -4,10 +4,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtrac
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioVersionObjectCreator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;

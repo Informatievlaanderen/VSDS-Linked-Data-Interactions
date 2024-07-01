@@ -1,10 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.InputCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.status.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.status.PipelineStatusTrigger;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStatusServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;

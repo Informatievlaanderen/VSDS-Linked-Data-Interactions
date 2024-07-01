@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.types;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.LdioObserver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

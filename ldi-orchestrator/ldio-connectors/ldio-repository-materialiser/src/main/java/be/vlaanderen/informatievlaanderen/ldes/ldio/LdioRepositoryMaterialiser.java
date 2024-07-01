@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.ObserveConfiguration.ERROR_TEMPLATE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.ObserveConfiguration.ERROR_TEMPLATE;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 public class LdioRepositoryMaterialiser implements LdiOutput {

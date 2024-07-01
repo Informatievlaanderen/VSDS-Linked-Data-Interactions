@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.repositories.PipelineFileRepository;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.to.PipelineConfigTO;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
@@ -19,7 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.repositories.PipelineFileRepositoryTest.getInitialFiles;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.repositories.PipelineFileRepositoryTest.getInitialFiles;
 import static org.junit.Assert.assertEquals;
 
 @CucumberContextConfiguration

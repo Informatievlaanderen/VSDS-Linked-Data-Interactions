@@ -5,8 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampF
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioFileOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.LdioOutputConfigurator;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

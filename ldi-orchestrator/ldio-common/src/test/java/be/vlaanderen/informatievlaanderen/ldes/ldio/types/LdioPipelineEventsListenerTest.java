@@ -1,11 +1,13 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.types;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.InputCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineStatusEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatus;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.StatusChangeSource;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.InputCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.LdioPipelineEventsListener;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.PipelineStatusChangedBehavior;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.status.PipelineStatus;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.status.StatusChangeSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
