@@ -5,14 +5,13 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.services.initializer.FileSto
 import be.vlaanderen.informatievlaanderen.ldes.ldio.services.initializer.PipelineInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
+import org.springframework.modulith.ApplicationModuleInitializer;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
 
 @Service
-public class PipelineStartupService {
+public class PipelineStartupService implements ApplicationModuleInitializer {
 	private final Logger log = LoggerFactory.getLogger(PipelineStartupService.class);
 
 	private final Stream<PipelineInitializer> pipelineInitiators;
@@ -22,8 +21,8 @@ public class PipelineStartupService {
 		this.pipelineInitiators = Stream.of(fileStoredPipelineInitializer, configPipelineInitializer);
 	}
 
-	@EventListener
-	public void initPipelines(ContextRefreshedEvent ignored) {
+	@Override
+	public void initialize() {
 		pipelineInitiators.forEach(initializer -> {
 			log.info("=== Processing pipelines with {} ===", initializer.name());
 			var pipelines = initializer.initPipelines();
