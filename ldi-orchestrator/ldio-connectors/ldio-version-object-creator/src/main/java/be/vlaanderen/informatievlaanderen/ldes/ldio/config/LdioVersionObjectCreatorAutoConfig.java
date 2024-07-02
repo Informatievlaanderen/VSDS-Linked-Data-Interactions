@@ -45,11 +45,14 @@ public class LdioVersionObjectCreatorAutoConfig {
 					.map(PropertyExtractor.class::cast)
 					.orElseGet(EmptyPropertyExtractor::new);
 
-			List<Resource> memberTypes = properties.getPropertyList(MEMBER_TYPE).stream()
-					.map(initModel::createResource).toList();
-			if (memberTypes.isEmpty()) {
+			List<String> memberTypesPropertyList = properties.getPropertyList(MEMBER_TYPE);
+
+			if (memberTypesPropertyList.isEmpty() || memberTypesPropertyList.stream().allMatch(String::isEmpty)) {
 				throw new ConfigPropertyMissingException(properties.getPipelineName(), properties.getComponentName(), MEMBER_TYPE);
 			}
+
+			List<Resource> memberTypes = memberTypesPropertyList.stream()
+					.map(initModel::createResource).toList();
 
 			String delimiter = properties.getOptionalProperty(DELIMITER).orElse("/");
 
