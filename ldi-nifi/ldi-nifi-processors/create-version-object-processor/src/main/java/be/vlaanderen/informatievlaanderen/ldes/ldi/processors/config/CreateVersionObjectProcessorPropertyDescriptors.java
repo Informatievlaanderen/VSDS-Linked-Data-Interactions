@@ -27,7 +27,7 @@ public final class CreateVersionObjectProcessorPropertyDescriptors {
 			.displayName("IRIs to member RDF syntax type")
 			.description("Comma separated list of IRIs that declare a http://www.w3.org/1999/02/22-rdf-syntax-ns#type of all possible members")
 			.required(true)
-			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.build();
 
 	public static final PropertyDescriptor DELIMITER = new PropertyDescriptor.Builder()
