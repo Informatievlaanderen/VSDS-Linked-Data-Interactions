@@ -14,9 +14,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApi
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.LdioInputConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.LdioObserver;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import org.springframework.context.ApplicationEventPublisher;

@@ -7,8 +7,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.SaslSslPlainConfigProvi
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.listener.LdioKafkaInListener;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.LdioObserver;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

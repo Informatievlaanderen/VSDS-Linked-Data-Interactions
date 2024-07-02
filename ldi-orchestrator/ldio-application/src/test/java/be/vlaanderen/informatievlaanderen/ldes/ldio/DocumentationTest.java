@@ -25,12 +25,15 @@ class DocumentationTest {
 	void x() {
 		ApplicationModules modules = ApplicationModules.of("be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline");
 
-		modules.forEach(System.out::println);
-
 		new Documenter(modules)
 				.writeModulesAsPlantUml()
 				.writeDocumentation()
 				.writeModuleCanvases()
 				.writeIndividualModulesAsPlantUml();
+
+		modules.forEach(System.out::println);
+		modules.verify();
+
+
 	}
 }

@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.InputCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineDeletedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.InputCreatedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.status.events.PipelineStatusEvent;
 import org.springframework.context.event.EventListener;
 
 import java.util.HashMap;

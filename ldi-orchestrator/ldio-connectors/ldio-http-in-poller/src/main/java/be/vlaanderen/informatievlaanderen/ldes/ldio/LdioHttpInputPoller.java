@@ -9,7 +9,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerPr
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.UnsuccesfulPollingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;

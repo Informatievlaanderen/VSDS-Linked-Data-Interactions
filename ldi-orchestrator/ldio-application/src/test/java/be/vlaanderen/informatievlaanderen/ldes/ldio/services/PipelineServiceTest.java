@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.events.PipelineShutdownEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.repositories.PipelineFileRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.PipelineCreatorService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.PipelineServiceImpl;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineServiceImpl;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineCreatorService;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineShutdownEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineFileRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStatusServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
