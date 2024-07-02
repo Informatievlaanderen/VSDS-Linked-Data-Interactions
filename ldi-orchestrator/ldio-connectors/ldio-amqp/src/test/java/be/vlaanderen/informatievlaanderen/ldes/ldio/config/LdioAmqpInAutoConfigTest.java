@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 
 class LdioAmqpInAutoConfigTest {
 	private ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+
 	@Test
 	void shouldThrowExceptionWhenInvalidUrlConfig() {
 		var configurator = new LdioAmqpInAutoConfig.LdioJmsInConfigurator(
@@ -26,11 +27,11 @@ class LdioAmqpInAutoConfigTest {
 		ComponentProperties componentProperties = new ComponentProperties("pipelineName", NAME, config);
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-				() -> configurator.configure((content) -> Stream.of(), null, applicationEventPublisher, componentProperties));
+				() -> configurator.configure(content -> Stream.of(), null, applicationEventPublisher, componentProperties));
 
 		assertEquals("Property remote-url is not in format of either " +
-		             "'amqp[s]://hostname:port[?option=value[&option2=value...]]' or " +
-		             "'amqpws[s]://hostname:port[/path][?option=value[&option2=value...]]", exception.getMessage());
+				"'amqp[s]://hostname:port[?option=value[&option2=value...]]' or " +
+				"'amqpws[s]://hostname:port[/path][?option=value[&option2=value...]]", exception.getMessage());
 	}
 
 	@Test
@@ -41,7 +42,7 @@ class LdioAmqpInAutoConfigTest {
 		Map<String, String> config = getBasicConfig();
 
 		assertDoesNotThrow(
-				() -> configurator.configure((content) -> Stream.of(), null, applicationEventPublisher, new ComponentProperties("pipelineName", NAME, config)));
+				() -> configurator.configure(content -> Stream.of(), null, applicationEventPublisher, new ComponentProperties("pipelineName", NAME, config)));
 	}
 
 	private Map<String, String> getBasicConfig() {

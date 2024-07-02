@@ -55,7 +55,6 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 		componentExecutorResult = new ArrayList<>();
 	}
 
-	@SuppressWarnings("unchecked")
 	@And("I start a listener with an LdioKafkaIn component")
 	public void iCreateAnLdioKafkaInComponent() {
 		ComponentProperties properties = new ComponentProperties("pipelineName", NAME, config);
@@ -112,7 +111,7 @@ public class KafkaInIntegrationTestSteps extends KafkaIntegrationTest {
 	}
 
 	@Then("Wait for a grace period")
-	public void theListenerWillWaitForPeriod() throws InterruptedException {
+	public void theListenerWillWaitForPeriod() {
 		Awaitility.waitAtMost(1500, TimeUnit.MILLISECONDS);
 	}
 

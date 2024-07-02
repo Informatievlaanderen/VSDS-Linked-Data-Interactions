@@ -5,6 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
@@ -21,15 +23,17 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.persistence.Persisten
 public class LdioLdesClientAutoConfig {
 	@SuppressWarnings("java:S6830")
 	@Bean(LdioLdesClient.NAME)
-	public LdioInputConfigurator ldioConfigurator(ObservationRegistry observationRegistry) {
-		return new LdioLdesClientConfigurator(observationRegistry);
+	public LdioInputConfigurator ldioConfigurator(ClientStatusService clientStatusService, ObservationRegistry observationRegistry) {
+		return new LdioLdesClientConfigurator(clientStatusService, observationRegistry);
 	}
 
 	public static class LdioLdesClientConfigurator implements LdioInputConfigurator {
+		private final ClientStatusService clientStatusService;
 
 		private final ObservationRegistry observationRegistry;
 
-		public LdioLdesClientConfigurator(ObservationRegistry observationRegistry) {
+		public LdioLdesClientConfigurator(ClientStatusService clientStatusService, ObservationRegistry observationRegistry) {
+			this.clientStatusService = clientStatusService;
 			this.observationRegistry = observationRegistry;
 		}
 
@@ -40,10 +44,11 @@ public class LdioLdesClientAutoConfig {
 			String pipelineName = properties.getPipelineName();
 			final var requestExecutorFactory = new RequestExecutorFactory(false);
 			final var requestExecutor = new LdioRequestExecutorSupplier(requestExecutorFactory).getRequestExecutor(properties);
-			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor).getMemberSupplier();
+			final var clientStatusConsumer = new ClientStatusConsumer(pipelineName, clientStatusService);
+			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor, clientStatusConsumer).getMemberSupplier();
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			final LdioObserver ldioObserver = LdioObserver.register(LdioLdesClient.NAME, pipelineName, observationRegistry);
-			final var ldesClient = new LdioLdesClient(componentExecutor, ldioObserver, memberSupplier, applicationEventPublisher, keepState);
+			final var ldesClient = new LdioLdesClient(componentExecutor, ldioObserver, memberSupplier, applicationEventPublisher, keepState, clientStatusConsumer);
 			ldesClient.start();
 			return ldesClient;
 		}

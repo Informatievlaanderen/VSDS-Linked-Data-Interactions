@@ -14,10 +14,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampF
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import io.github.resilience4j.retry.Retry;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
-import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
-import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
-import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
+import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
 import ldes.client.treenodesupplier.filters.LatestStateFilter;
 import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
@@ -47,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_DESTINATION_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.*;
@@ -115,7 +113,8 @@ public class LdesClientProcessor extends AbstractProcessor {
 		String timestampPath = LdesProcessorProperties.getTimestampPath(context);
 		TimestampExtractor timestampExtractor = timestampPath.isBlank() ? new TimestampFromCurrentTimeExtractor() :
 				new TimestampFromPathExtractor(createProperty(timestampPath));
-		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor);
+		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor,
+				timestampExtractor, clientStatusConsumer());
 		keepState = stateKept(context);
 		final MemberSupplierImpl baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
 
@@ -229,6 +228,10 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	public static String convertModelToString(Model model, Lang dataDestinationFormat) {
 		return RDFWriter.source(model).lang(dataDestinationFormat).asString();
+	}
+
+	private Consumer<ClientStatus> clientStatusConsumer() {
+		return status -> LOGGER.info("LDES Client is now {}", status);
 	}
 
 }

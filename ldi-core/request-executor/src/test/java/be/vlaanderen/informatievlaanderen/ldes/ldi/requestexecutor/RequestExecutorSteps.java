@@ -136,14 +136,14 @@ public class RequestExecutorSteps {
 
 	@Then("It takes approximately {int} ms to execute the request {int} times")
 	public void itTakesSecondsToExecuteTheRequestTimes(int ms, int requestCount) {
-		LocalDateTime start = LocalDateTime.now();
+		LocalDateTime startTime = LocalDateTime.now();
 		for (int i = 0; i < requestCount; i++) {
 			response = requestExecutor.execute(request);
 		}
-		LocalDateTime end = LocalDateTime.now();
+		LocalDateTime endTime = LocalDateTime.now();
 
-		assertTrue(Duration.between(start, end).toMillis() > ms - 250);
-		assertTrue(Duration.between(start, end).toMillis() < ms + 250);
+		assertTrue(Duration.between(startTime, endTime).toMillis() > ms - 250);
+		assertTrue(Duration.between(startTime, endTime).toMillis() < ms + 250);
 	}
 
 	@Given("I have a requestExecutor which does {int} retries with custom http status code {int} and limits requests")

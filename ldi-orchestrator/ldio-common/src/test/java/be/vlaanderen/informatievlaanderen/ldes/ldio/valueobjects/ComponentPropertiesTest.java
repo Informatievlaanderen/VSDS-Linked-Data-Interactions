@@ -7,8 +7,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
-import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ComponentPropertiesTest {
@@ -180,32 +181,38 @@ class ComponentPropertiesTest {
 	@Nested
 	class GetOptionalPropertyFromFile {
 
-		ComponentProperties componentProperties = new ComponentProperties(pipelineName, componentName, Map.of(
-				"non-existant", "non-existant-file",
-				"query", "src/test/resources/query.rq"));
+		ComponentProperties componentProperties;
 
 		@Test
 		void shouldReturnEmptyIfFileMissing() {
-			assertTrue(componentProperties.getOptionalPropertyFromFile("non-existant").isEmpty());
+			componentProperties = new ComponentProperties(pipelineName, componentName, Map.of(
+					"non-existant", "non-existant-file",
+					"query", "src/test/resources/query.rq"));
+
+			assertThat(componentProperties.getOptionalPropertyFromFile("non-existant")).isEmpty();
 		}
 
 		@Test
 		void shouldThrowExceptionIfUnreadableFile() throws IOException {
-			ComponentProperties componentProperties = new ComponentProperties(pipelineName, componentName,
+			componentProperties = new ComponentProperties(pipelineName, componentName,
 					Map.of("non-regular-file", Files.createTempDirectory("queryDir").toFile().getAbsolutePath()));
 
-			assertThrows(IllegalArgumentException.class,
-					() -> componentProperties.getOptionalPropertyFromFile("non-regular-file"));
+			assertThatThrownBy(() -> componentProperties.getOptionalPropertyFromFile("non-regular-file"))
+					.isInstanceOf(IllegalArgumentException.class);
 		}
 
 		@Test
 		void shouldReturnFileContentsWhenFileExistsAndIsReadable() {
-			assertEquals("sparql", componentProperties.getOptionalPropertyFromFile("query").get());
+			componentProperties = new ComponentProperties(pipelineName, componentName, Map.of(
+					"non-existant", "non-existant-file",
+					"query", "src/test/resources/query.rq"));
+
+			assertThat(componentProperties.getOptionalPropertyFromFile("query")).contains("sparql");
 		}
 
 		@Test
 		void shouldReturnEmptyIfNotFilePath() {
-			ComponentProperties componentProperties = new ComponentProperties(pipelineName, componentName,
+			componentProperties = new ComponentProperties(pipelineName, componentName,
 					Map.of("query", """
 							PREFIX schema: <http://schema.org/>
 
@@ -218,7 +225,7 @@ class ComponentPropertiesTest {
 							}
 							"""));
 
-			assertEquals(Optional.empty(), componentProperties.getOptionalPropertyFromFile("query"));
+			assertThat(componentProperties.getOptionalPropertyFromFile("query")).isEmpty();
 		}
 	}
 

@@ -26,7 +26,7 @@ class SparqlConstructTransformerTest {
 
 	private final static Model INIT_MODEL = ModelFactory.createDefaultModel();
 
-	private final static String constructQuery = """
+	private final static String defaultConstructQuery = """
 			CONSTRUCT {
 			  <http://transformed-quad/> <http://test/> "Transformed data"
 			}
@@ -60,7 +60,7 @@ class SparqlConstructTransformerTest {
 	@Test
 	void when_executeTransform_ExpectTransformedModel() {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
-				QueryFactory.create(constructQuery), false);
+				QueryFactory.create(defaultConstructQuery), false);
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
@@ -74,7 +74,7 @@ class SparqlConstructTransformerTest {
 	@Test
 	void when_executeTransform_includeOriginal_ExpectTransformedModelWithOriginal() {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
-				QueryFactory.create(constructQuery), true);
+				QueryFactory.create(defaultConstructQuery), true);
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
@@ -155,9 +155,7 @@ class SparqlConstructTransformerTest {
 
 	@Test
 	void initGeoFunctionsTest() {
-
-		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
-				QueryFactory.create(geoConstructFirstCoordinateQuery), false);
+		new SparqlConstructTransformer(QueryFactory.create(geoConstructFirstCoordinateQuery), false);
 
 		FunctionRegistry registry = FunctionRegistry.get();
 

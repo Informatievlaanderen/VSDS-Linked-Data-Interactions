@@ -41,7 +41,7 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	/**
 	 * Representation of the member type resource that the state object represents
 	 */
-	private final Resource memberTypeResource;
+	private final List<Resource> memberTypeResources;
 	/**
 	 * Represents that needs to be used to expand the named subject of the member to a version object member id
 	 */
@@ -55,11 +55,11 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	 */
 	private final Property versionOfProperty;
 
-	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, Resource memberTypeResource,
-								String delimiter,
-								Property generatedAtTimeProperty, Property versionOfProperty) {
+	public VersionObjectCreator(PropertyExtractor dateObservedPropertyExtractor, List<Resource> memberTypeResources,
+	                            String delimiter,
+	                            Property generatedAtTimeProperty, Property versionOfProperty) {
 		this.dateObservedPropertyExtractor = dateObservedPropertyExtractor;
-		this.memberTypeResource = memberTypeResource;
+		this.memberTypeResources = memberTypeResources;
 		this.delimiter = delimiter;
 		this.generatedAtTimeProperty = generatedAtTimeProperty;
 		this.versionOfProperty = versionOfProperty;
@@ -83,7 +83,8 @@ public class VersionObjectCreator implements LdiOneToOneTransformer {
 	}
 
 	private Optional<String> extractMemberInfo(Model linkedDataModel) {
-		return linkedDataModel.listStatements(null, SYNTAX_TYPE, memberTypeResource)
+		return linkedDataModel.listStatements(null, SYNTAX_TYPE, (RDFNode) null)
+				.filterKeep(statement -> memberTypeResources.contains(statement.getResource()))
 				.nextOptional()
 				.map(Statement::getSubject)
 				.map(Resource::asNode)

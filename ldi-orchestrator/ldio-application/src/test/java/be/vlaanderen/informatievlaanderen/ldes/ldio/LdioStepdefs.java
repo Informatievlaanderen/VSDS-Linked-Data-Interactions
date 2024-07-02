@@ -115,7 +115,7 @@ public class LdioStepdefs {
 	}
 
 	private void postPipeline(String filePath, String contentType, int statusCode) throws IOException {
-		var content = IOUtils.toString(new FileInputStream(filePath));
+		var content = IOUtils.toByteArray(new FileInputStream(filePath));
 		client.post()
 				.uri(managementURI)
 				.contentType(MediaType.valueOf(contentType))
