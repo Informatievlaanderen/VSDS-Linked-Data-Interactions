@@ -5,7 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineSh
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.PipelineTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

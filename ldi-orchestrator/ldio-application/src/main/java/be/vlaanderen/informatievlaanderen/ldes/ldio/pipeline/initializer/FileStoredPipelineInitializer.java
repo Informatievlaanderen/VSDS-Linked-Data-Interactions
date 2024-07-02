@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineFileRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineConfigTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

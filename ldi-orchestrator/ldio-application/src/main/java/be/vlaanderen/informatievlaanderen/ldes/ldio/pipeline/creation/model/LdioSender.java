@@ -1,6 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.model;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
 import io.micrometer.core.instrument.Metrics;
 import org.apache.jena.rdf.model.Model;
 

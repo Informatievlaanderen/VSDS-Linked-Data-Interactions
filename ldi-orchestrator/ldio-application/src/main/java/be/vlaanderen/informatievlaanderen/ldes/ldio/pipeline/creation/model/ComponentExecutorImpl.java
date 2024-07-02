@@ -1,6 +1,7 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.model;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 
 public class ComponentExecutorImpl implements ComponentExecutor {

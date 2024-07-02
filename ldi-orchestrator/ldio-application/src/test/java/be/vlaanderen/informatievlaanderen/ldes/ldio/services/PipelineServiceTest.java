@@ -8,6 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStat
 import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStatusServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,7 +23,7 @@ class PipelineServiceTest {
 
     @BeforeEach
     void setup() {
-        pipelineService = new PipelineServiceImpl(pipelineCreatorService, pipelineStatusService, pipelineRepository);
+	    pipelineService = new PipelineServiceImpl(pipelineCreatorService, pipelineStatusService, pipelineRepository, mock(ApplicationEventPublisher.class));
     }
 
     @Test
