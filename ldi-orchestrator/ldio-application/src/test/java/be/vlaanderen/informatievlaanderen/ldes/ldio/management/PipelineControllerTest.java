@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.management;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineController;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.PipelineController;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

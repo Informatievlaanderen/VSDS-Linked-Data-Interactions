@@ -5,7 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioAmqpInRegistrator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.InvalidAmqpMessageException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.services.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioObserver;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.LdioAmpqInProperties;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
