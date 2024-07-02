@@ -23,7 +23,7 @@ class DocumentationTest {
 
 	@Test
 	void x() {
-		ApplicationModules modules = ApplicationModules.of("be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline");
+		ApplicationModules modules = ApplicationModules.of(Application.class);
 
 		new Documenter(modules)
 				.writeModulesAsPlantUml()

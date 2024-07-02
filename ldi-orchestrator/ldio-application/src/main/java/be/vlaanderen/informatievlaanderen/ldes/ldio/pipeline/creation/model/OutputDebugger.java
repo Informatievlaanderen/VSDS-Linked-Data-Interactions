@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.model;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;

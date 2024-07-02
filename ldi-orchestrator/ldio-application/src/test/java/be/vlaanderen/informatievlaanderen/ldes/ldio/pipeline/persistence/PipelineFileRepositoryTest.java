@@ -6,7 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.Compon
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.InputComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineParsingException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineConfigTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;

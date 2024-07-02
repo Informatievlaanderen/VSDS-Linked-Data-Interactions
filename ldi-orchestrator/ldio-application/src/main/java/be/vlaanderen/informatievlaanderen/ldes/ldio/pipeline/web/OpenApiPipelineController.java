@@ -1,5 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,10 +18,11 @@ import java.util.List;
 
 @Tag(name = "Pipeline controller")
 public interface OpenApiPipelineController {
+    String APPLICATION_YAML_VALUE = "application/yaml";
 
     @ApiResponse(responseCode = "200", description = "A list of all active pipelines is shown.", content = {
             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineTO.class)),
-            @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class))
+            @Content(mediaType = APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class))
     })
     @Operation(summary = "Get a list of all active pipelines.")
     @GetMapping
@@ -27,13 +30,13 @@ public interface OpenApiPipelineController {
 
     @ApiResponse(responseCode = "201", description = "The new pipeline is returned.", content = {
             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineTO.class)),
-            @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class))
+            @Content(mediaType = APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineTO.class))
     })
     @Operation(summary = "Create a new pipeline.")
     @PostMapping
     PipelineTO addPipeline(@RequestBody(description = "The pipeline configuration", content = {
             @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PipelineConfigTO.class)),
-            @Content(mediaType = LdioMediaType.APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineConfigTO.class))
+            @Content(mediaType = APPLICATION_YAML_VALUE, schema = @Schema(implementation = PipelineConfigTO.class))
     }) PipelineConfigTO config);
 
     @ApiResponse(responseCode = "202")

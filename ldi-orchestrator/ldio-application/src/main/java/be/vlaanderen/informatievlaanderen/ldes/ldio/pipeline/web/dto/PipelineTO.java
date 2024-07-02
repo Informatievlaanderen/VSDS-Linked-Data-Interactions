@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.status.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.status.StatusChangeSource;

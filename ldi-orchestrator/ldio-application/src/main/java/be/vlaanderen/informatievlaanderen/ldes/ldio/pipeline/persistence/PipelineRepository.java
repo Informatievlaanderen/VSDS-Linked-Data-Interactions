@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.PipelineConfigTO;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineConfigTO;
 
 import java.io.File;
 import java.util.List;
