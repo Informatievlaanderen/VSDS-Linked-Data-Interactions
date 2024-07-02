@@ -4,11 +4,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.model.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.InvalidComponentException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.InvalidPipelineNameException;
@@ -26,8 +24,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig.DEBUG;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig.ORCHESTRATOR_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig.DEBUG;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig.NAME_PATTERN;
 
 @Service

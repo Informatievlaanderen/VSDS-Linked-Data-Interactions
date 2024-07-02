@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentDefinition;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.InputComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.InputComponentDefinition;
 
 import java.util.List;
 

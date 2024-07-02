@@ -1,15 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineCreatorService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineShutdownEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineRepository;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineTO;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +21,12 @@ public class PipelineServiceImpl implements PipelineService {
 	private final PipelineCreatorService pipelineCreatorService;
 	private final PipelineStatusService pipelineStatusService;
 	private final PipelineRepository pipelineRepository;
-	private final ApplicationEventPublisher eventPublisher;
 
 	public PipelineServiceImpl(PipelineCreatorService pipelineCreatorService, PipelineStatusService pipelineStatusService,
-	                           PipelineRepository pipelineRepository, ApplicationEventPublisher eventPublisher) {
+	                           PipelineRepository pipelineRepository) {
 		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineStatusService = pipelineStatusService;
 		this.pipelineRepository = pipelineRepository;
-		this.eventPublisher = eventPublisher;
 	}
 
 	@EventListener

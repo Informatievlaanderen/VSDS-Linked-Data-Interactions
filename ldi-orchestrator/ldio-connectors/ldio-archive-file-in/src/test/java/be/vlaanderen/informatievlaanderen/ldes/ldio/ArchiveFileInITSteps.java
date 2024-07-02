@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioArchiveFileInAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.micrometer.observation.ObservationRegistry;

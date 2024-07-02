@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineServiceImpl;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineConfigTO;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineTO;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.status.services.PipelineStatusService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

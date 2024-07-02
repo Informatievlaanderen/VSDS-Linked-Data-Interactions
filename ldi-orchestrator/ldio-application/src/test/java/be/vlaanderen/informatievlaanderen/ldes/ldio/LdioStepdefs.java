@@ -7,6 +7,9 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.apache.commons.io.IOUtils;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
@@ -123,5 +126,18 @@ public class LdioStepdefs {
 				.exchange()
 				.expectStatus()
 				.isEqualTo(statusCode);
+	}
+
+	static class MinStarterLdioApp {
+		static ConfigurableWebApplicationContext setupApp(String file) {
+			System.setProperty("spring.main.allow-bean-definition-overriding", "true");
+
+			SpringApplication app = new SpringApplicationBuilder(Application.class)
+					.web(WebApplicationType.SERVLET)
+					.properties("spring.config.location=classpath:/startup/" + file + ".yml")
+					.build();
+
+			return (ConfigurableWebApplicationContext) app.run();
+		}
 	}
 }

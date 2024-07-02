@@ -2,8 +2,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class LdioHttpInProcess extends LdioInput {

@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.initializer;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;

@@ -6,8 +6,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtract
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioVaultTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioVaultTransformer;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -20,7 +20,7 @@ import org.apache.jena.riot.RDFParserBuilder;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer.link;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer.link;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 import static org.apache.jena.rdf.model.ResourceFactory.createResource;
 import static org.apache.jena.riot.RDFLanguages.nameToLang;
