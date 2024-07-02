@@ -2,10 +2,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioObserver;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineShutdownEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.status.PipelineStatusTrigger;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineShutdownEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusTrigger;
 import ldes.client.treenodesupplier.domain.valueobject.ClientStatus;
 import ldes.client.treenodesupplier.domain.valueobject.EndOfLdesException;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;

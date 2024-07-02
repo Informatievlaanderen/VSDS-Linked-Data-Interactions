@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.ChangeDetectionFilter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.slf4j.Logger;

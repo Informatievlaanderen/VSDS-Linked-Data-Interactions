@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.management.status;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineDeletedEvent;
 import ldes.client.treenodesupplier.domain.valueobject.ClientStatus;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

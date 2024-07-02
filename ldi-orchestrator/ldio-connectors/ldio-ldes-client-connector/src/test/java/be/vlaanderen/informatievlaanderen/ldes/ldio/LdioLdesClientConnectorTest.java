@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TransferService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineDeletedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

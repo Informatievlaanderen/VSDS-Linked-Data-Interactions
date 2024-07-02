@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentDefinition;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.InputComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.InputComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineParsingException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineConfigTO;

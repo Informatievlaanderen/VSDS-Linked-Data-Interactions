@@ -2,8 +2,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.collection.LdioLdesClientConnectorApiCollection;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineDeletedEvent;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.status.events.PipelineStatusEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.events.PipelineStatusEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

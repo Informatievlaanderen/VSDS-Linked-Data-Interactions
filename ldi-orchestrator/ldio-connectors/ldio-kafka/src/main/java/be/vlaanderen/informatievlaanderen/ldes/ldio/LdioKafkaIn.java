@@ -6,9 +6,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.SaslSslPlainConfigProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.listener.LdioKafkaInListener;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioObserver;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -21,8 +21,8 @@ import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig.ORCHESTRATOR_NAME;
 
 public class LdioKafkaIn extends LdioInput {
     public static final String NAME = "Ldio:KafkaIn";

@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.model;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.components.LdioTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;

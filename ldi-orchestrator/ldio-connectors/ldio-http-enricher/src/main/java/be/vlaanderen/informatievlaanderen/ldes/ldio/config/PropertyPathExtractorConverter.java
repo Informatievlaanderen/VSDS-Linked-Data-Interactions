@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.EmptyPropertyExtrac
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.extractor.PropertyPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.RequestPropertyPathExtractors;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpEnricherProperties.*;
 

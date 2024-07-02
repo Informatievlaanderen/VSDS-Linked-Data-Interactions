@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.catalog;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.LdioAdapterConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.LdioInputConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.LdioOutputConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioAdapterConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioOutputConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformerConfigurator;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

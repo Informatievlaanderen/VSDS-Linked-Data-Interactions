@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.configurator.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioAmqpIn.NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.OrchestratorConfig.ORCHESTRATOR_NAME;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig.ORCHESTRATOR_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
