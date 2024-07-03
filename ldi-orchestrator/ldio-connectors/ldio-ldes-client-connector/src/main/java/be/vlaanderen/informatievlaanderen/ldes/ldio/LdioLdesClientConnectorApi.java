@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TokenService;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.edc.services.TransferService;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger.START;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusTrigger.START;
 
 public class LdioLdesClientConnectorApi {
 	private final TransferService transferService;

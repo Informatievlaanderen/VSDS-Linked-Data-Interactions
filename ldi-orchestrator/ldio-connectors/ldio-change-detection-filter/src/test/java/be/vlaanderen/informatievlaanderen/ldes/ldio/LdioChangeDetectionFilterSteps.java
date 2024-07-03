@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioChangeDetectionFilterAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioTransformerConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioVaultTransformer;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformerConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioVaultTransformer;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioTransformer.link;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer.link;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LdioChangeDetectionFilterSteps {
