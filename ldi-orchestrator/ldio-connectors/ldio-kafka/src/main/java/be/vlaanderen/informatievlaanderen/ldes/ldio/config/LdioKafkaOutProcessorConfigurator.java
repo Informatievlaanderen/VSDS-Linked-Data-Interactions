@@ -8,7 +8,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.SaslSslPlainConfigProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.keyextractor.KafkaKeyExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioOutputConfigurator;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.kafka.clients.producer.ProducerConfig;

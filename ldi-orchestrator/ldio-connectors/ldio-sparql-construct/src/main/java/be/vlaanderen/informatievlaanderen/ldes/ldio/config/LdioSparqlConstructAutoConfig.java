@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioSparqlConstruct;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformerConfigurator;
 import org.apache.jena.query.Query;

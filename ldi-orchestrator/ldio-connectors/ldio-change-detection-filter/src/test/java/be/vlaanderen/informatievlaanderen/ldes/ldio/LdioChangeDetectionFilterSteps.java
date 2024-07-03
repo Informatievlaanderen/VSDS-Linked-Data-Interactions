@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioChangeDetectionFilterAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioVaultTransformer;
 import io.cucumber.java.en.Given;

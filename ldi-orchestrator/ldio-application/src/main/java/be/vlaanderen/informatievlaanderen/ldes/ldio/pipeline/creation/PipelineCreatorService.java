@@ -6,6 +6,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.model.*;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.InvalidComponentException;

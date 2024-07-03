@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation;
+package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
 

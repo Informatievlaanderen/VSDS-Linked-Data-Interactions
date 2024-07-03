@@ -13,7 +13,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;

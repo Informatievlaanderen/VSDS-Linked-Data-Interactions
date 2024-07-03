@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentDefinition;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.InputComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.InputComponentDefinition;
 
 import java.util.LinkedList;
 import java.util.List;

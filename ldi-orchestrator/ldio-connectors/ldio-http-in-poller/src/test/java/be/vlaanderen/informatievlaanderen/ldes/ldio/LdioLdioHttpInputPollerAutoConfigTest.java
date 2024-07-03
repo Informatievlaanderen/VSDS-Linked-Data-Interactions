@@ -6,7 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidC
 import be.vlaanderen.informatievlaanderen.ldes.ldio.PollingIntervalTest.InvalidIntervalArgumentsProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Test;

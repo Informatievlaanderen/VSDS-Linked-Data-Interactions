@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 
 /**
  * Base interface to configure all LDIO components except for the {@link LdioInput}

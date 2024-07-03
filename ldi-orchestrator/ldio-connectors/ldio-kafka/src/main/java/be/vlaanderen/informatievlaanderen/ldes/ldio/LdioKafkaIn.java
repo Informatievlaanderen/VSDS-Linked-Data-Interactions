@@ -6,7 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.SaslSslPlainConfigProvider;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.SecurityProtocolNotSupportedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.listener.LdioKafkaInListener;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;
 import org.apache.jena.riot.Lang;

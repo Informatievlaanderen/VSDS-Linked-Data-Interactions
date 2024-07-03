@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.ChangeDetectionFilter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioChangeDetectionFilter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties;

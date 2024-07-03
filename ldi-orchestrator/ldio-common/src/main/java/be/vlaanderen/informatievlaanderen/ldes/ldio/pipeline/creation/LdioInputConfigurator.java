@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import org.springframework.context.ApplicationEventPublisher;
 
 /**

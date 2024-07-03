@@ -6,7 +6,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.AmqpConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioAmqpInAutoConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioAmqpInRegistrator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
 import io.cucumber.java.After;
 import io.cucumber.java.ParameterType;

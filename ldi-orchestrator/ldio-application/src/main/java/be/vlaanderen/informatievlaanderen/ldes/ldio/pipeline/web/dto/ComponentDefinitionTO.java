@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentDefinition;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.FlattenDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 

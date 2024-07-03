@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.auth.KafkaAuthStrategy;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.KafkaInConfigKeys;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioKafkaInAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
