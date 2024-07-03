@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.exception.ConfigPropertyMissingException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioConfigurator;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,24 +17,25 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioVersionObj
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LdioVersionObjectCreatorAutoConfigTest {
-    private final LdioConfigurator configurator = new LdioVersionObjectCreatorAutoConfig().ldioConfigurator();
-    @ParameterizedTest
-    @ArgumentsSource(configProvider.class)
-    void when_NoMemberTypes_Then_exceptionIsThrown(Map<String, String> config) {
-        ComponentProperties componentProperties = new ComponentProperties("pipelineName", "cName", config);
+	private final LdioConfigurator configurator = new LdioVersionObjectCreatorAutoConfig().ldioConfigurator();
 
-        assertThrows(ConfigPropertyMissingException.class,() -> configurator.configure(componentProperties)) ;
-    }
+	@ParameterizedTest
+	@ArgumentsSource(configProvider.class)
+	void when_NoMemberTypes_Then_exceptionIsThrown(Map<String, String> config) {
+		ComponentProperties componentProperties = new ComponentProperties("pipelineName", "cName", config);
 
-    static class configProvider implements ArgumentsProvider {
-        @Override
-        public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
-            Map<String, String> empty = new HashMap<>();
-            empty.put(MEMBER_TYPE, "");
-            return Stream.of(
-                    Arguments.of(new HashMap<String, String>()),
-                    Arguments.of(empty)
-            );
-        }
-    }
+		assertThrows(ConfigPropertyMissingException.class, () -> configurator.configure(componentProperties));
+	}
+
+	static class configProvider implements ArgumentsProvider {
+		@Override
+		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
+			Map<String, String> empty = new HashMap<>();
+			empty.put(MEMBER_TYPE, "");
+			return Stream.of(
+					Arguments.of(new HashMap<String, String>()),
+					Arguments.of(empty)
+			);
+		}
+	}
 }
