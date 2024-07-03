@@ -22,15 +22,16 @@ public class DummyIn extends LdioInput {
 
 	@Override
 	public void shutdown() {
+		// No implementation needed for this test class
 	}
 
 	@Override
 	protected void resume() {
-
+		// No implementation needed for this test class
 	}
 
 	@Override
 	protected void pause() {
-
+		// No implementation needed for this test class
 	}
 }

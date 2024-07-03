@@ -14,39 +14,39 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ComponentPropertiesTest {
-	private static final String pipelineName = "Pname";
-	private static final String componentName = "Cname";
+	private static final String PIPELINE_NAME = "Pname";
+	private static final String COMPONENT_NAME = "Cname";
 
 	@Nested
 	class GetPropertyList {
 
-		private static final String key = "url";
+		private static final String KEY = "url";
 
 
 		@Test
 		void ShouldReturnProperty_WhenNotAnArray() {
-			ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of(key, "example.com"));
+			ComponentProperties properties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME, Map.of(KEY, "example.com"));
 
-			assertEquals(1, properties.getPropertyList(key).size());
-			assertEquals("example.com", properties.getPropertyList(key).get(0));
+			assertEquals(1, properties.getPropertyList(KEY).size());
+			assertEquals("example.com", properties.getPropertyList(KEY).get(0));
 		}
 
 		@Test
 		void ShouldReturnAllProperties_WhenAnArray() {
-			ComponentProperties properties = new ComponentProperties(pipelineName, componentName,
+			ComponentProperties properties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME,
 					Map.of("url.0", "example.com",
 							"url.1", "other-example.com"));
 
-			assertEquals(2, properties.getPropertyList(key).size());
-			assertEquals("example.com", properties.getPropertyList(key).get(0));
-			assertEquals("other-example.com", properties.getPropertyList(key).get(1));
+			assertEquals(2, properties.getPropertyList(KEY).size());
+			assertEquals("example.com", properties.getPropertyList(KEY).get(0));
+			assertEquals("other-example.com", properties.getPropertyList(KEY).get(1));
 		}
 
 		@Test
 		void ShouldReturnEmpty_WhenPropertyNotFound() {
-			ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of());
+			ComponentProperties properties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME, Map.of());
 
-			assertTrue(properties.getPropertyList(key).isEmpty());
+			assertTrue(properties.getPropertyList(KEY).isEmpty());
 		}
 	}
 
@@ -55,7 +55,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldReturnNestedProperties_whenFound() {
-			ComponentProperties properties = new ComponentProperties(pipelineName, componentName,
+			ComponentProperties properties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME,
 					Map.of("adapter.name", "my-adapter",
 							"adapter.config.context", "example.com",
 							"adapter.config.alt", "alternative"));
@@ -69,7 +69,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldReturnEmpty_whenNotFound() {
-			ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of("foo", "bar"));
+			ComponentProperties properties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME, Map.of("foo", "bar"));
 
 			ComponentProperties nestedProperties = properties.extractNestedProperties("adapter.config");
 
@@ -78,7 +78,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldReturnEmpty_whenThereAreNoProperties() {
-			ComponentProperties properties = new ComponentProperties(pipelineName, componentName);
+			ComponentProperties properties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME);
 
 			ComponentProperties nestedProperties = properties.extractNestedProperties("adapter.config");
 
@@ -87,7 +87,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldReturnEmpty_whenKeyIsNullOrEmpty() {
-			ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of("a", "b"));
+			ComponentProperties properties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME, Map.of("a", "b"));
 
 			assertTrue(properties.extractNestedProperties(null).getConfig().isEmpty());
 			assertTrue(properties.extractNestedProperties("").getConfig().isEmpty());
@@ -95,7 +95,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldReturnEmpty_whenKeyMatchesValueInsteadOfNestedStructure() {
-			ComponentProperties properties = new ComponentProperties(pipelineName, componentName, Map.of("a", "b"));
+			ComponentProperties properties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME, Map.of("a", "b"));
 			assertTrue(properties.extractNestedProperties("a").getConfig().isEmpty());
 		}
 	}
@@ -107,14 +107,14 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldHaveEmptyConfigWithNoArgumentConstructor() {
-			ComponentProperties componentProperties = new ComponentProperties(pipelineName, componentName);
+			ComponentProperties componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME);
 
 			assertTrue(componentProperties.getConfig().isEmpty());
 		}
 
 		@Test
 		void shouldHaveConfigWithArgumentConstructor() {
-			ComponentProperties componentProperties = new ComponentProperties(pipelineName, componentName, config);
+			ComponentProperties componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME, config);
 
 			assertEquals(config, componentProperties.getConfig());
 		}
@@ -124,7 +124,7 @@ class ComponentPropertiesTest {
 	class GetProperty {
 		@Test
 		void test() {
-			ComponentProperties componentProperties = new ComponentProperties(pipelineName, componentName,
+			ComponentProperties componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME,
 					Map.of("key", "value", "keyTwo", "valueTwo"));
 
 			assertEquals("value", componentProperties.getProperty("key"));
@@ -136,7 +136,7 @@ class ComponentPropertiesTest {
 
 	@Nested
 	class GetOptionalBoolean {
-		ComponentProperties componentProperties = new ComponentProperties(pipelineName, componentName,
+		ComponentProperties componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME,
 				Map.of("string", "string", "trueLowerCase", "true", "trueMixedCase", "TrUe",
 						"trueUpperCase", "TRUE"));
 
@@ -160,7 +160,7 @@ class ComponentPropertiesTest {
 
 	@Nested
 	class GetOptionalInteger {
-		ComponentProperties componentProperties = new ComponentProperties(pipelineName, componentName,
+		ComponentProperties componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME,
 				Map.of("string", "string", "integer", "2"));
 
 		@Test
@@ -186,7 +186,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldReturnEmptyIfFileMissing() {
-			componentProperties = new ComponentProperties(pipelineName, componentName, Map.of(
+			componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME, Map.of(
 					"non-existant", "non-existant-file",
 					"query", "src/test/resources/query.rq"));
 
@@ -195,7 +195,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldThrowExceptionIfUnreadableFile() throws IOException {
-			componentProperties = new ComponentProperties(pipelineName, componentName,
+			componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME,
 					Map.of("non-regular-file", Files.createTempDirectory("queryDir").toFile().getAbsolutePath()));
 
 			assertThatThrownBy(() -> componentProperties.getOptionalPropertyFromFile("non-regular-file"))
@@ -204,7 +204,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldReturnFileContentsWhenFileExistsAndIsReadable() {
-			componentProperties = new ComponentProperties(pipelineName, componentName, Map.of(
+			componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME, Map.of(
 					"non-existant", "non-existant-file",
 					"query", "src/test/resources/query.rq"));
 
@@ -213,7 +213,7 @@ class ComponentPropertiesTest {
 
 		@Test
 		void shouldReturnEmptyIfNotFilePath() {
-			componentProperties = new ComponentProperties(pipelineName, componentName,
+			componentProperties = new ComponentProperties(PIPELINE_NAME, COMPONENT_NAME,
 					Map.of("query", """
 							PREFIX schema: <http://schema.org/>
 

@@ -6,10 +6,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentDefinition;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.InputCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.model.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentDefinition;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.InvalidComponentException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.InvalidPipelineNameException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.LdiAdapterMissingException;
@@ -90,7 +90,7 @@ public class PipelineCreatorService {
 			throw new LdiAdapterMissingException(config.getName(), config.getInput().getName());
 		}
 		if (!configurator.isAdapterRequired() && adapter != null) {
-			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", config.getName(), config.getInput().getName(), adapter.getName());
+			log.warn("Pipeline \"{}\": Input: \"{}\": \"{}\" ignored", normalise(config.getName()), normalise(config.getInput().getName()), normalise(adapter.getName()));
 		}
 	}
 
@@ -194,5 +194,9 @@ public class PipelineCreatorService {
 			componentDefinition.getConfig().setPipelineName(pipelineName);
 		}
 		return componentDefinition;
+	}
+
+	private static String normalise(String input) {
+		return input.replaceAll("[\n\r]", "_");
 	}
 }
