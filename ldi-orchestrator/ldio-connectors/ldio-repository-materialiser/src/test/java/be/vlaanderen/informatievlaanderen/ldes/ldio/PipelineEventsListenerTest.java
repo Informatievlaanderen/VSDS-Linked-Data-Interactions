@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.RepositorySink;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioRepositoryPipelineEventsListenerConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.LdioPipelineEventsListener;
@@ -24,7 +24,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.anyList;
@@ -34,19 +33,19 @@ import static org.mockito.Mockito.*;
 @ExtendWith(value = {MockitoExtension.class})
 class PipelineEventsListenerTest {
 	@SpyBean
-	private LdioPipelineEventsListener<LdioRepositoryMaterialiser> pipelineEventsListener;
+	private LdioPipelineEventsListener<LdioRepositorySink> pipelineEventsListener;
 	@Autowired
 	private ApplicationEventPublisher eventPublisher;
 	private final String pipelineName = "pipeline-name";
 	@Mock
-	private Materialiser materialiser;
-	private LdioRepositoryMaterialiser ldioRepositoryMaterialiser;
+	private RepositorySink repositorySink;
+	private LdioRepositorySink ldioRepositorySink;
 
 	@BeforeEach
 	void setUp() {
-		ldioRepositoryMaterialiser = new LdioRepositoryMaterialiser(materialiser, 10, 60000);
-		ldioRepositoryMaterialiser.start();
-		pipelineEventsListener.registerComponent(pipelineName, ldioRepositoryMaterialiser);
+		ldioRepositorySink = new LdioRepositorySink(repositorySink, 10, 60000);
+		ldioRepositorySink.start();
+		pipelineEventsListener.registerComponent(pipelineName, ldioRepositorySink);
 	}
 
 	@Test
@@ -54,7 +53,7 @@ class PipelineEventsListenerTest {
 		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineName));
 
 		verify(pipelineEventsListener).handlePipelineDeletedEvent(new PipelineDeletedEvent(pipelineName));
-		verify(materialiser).shutdown();
+		verify(repositorySink).shutdown();
 	}
 
 	@Test
@@ -64,22 +63,21 @@ class PipelineEventsListenerTest {
 		eventPublisher.publishEvent(event);
 
 		verify(pipelineEventsListener).handlePipelineHaltedEvent(event);
-		verify(materialiser).shutdown();
-		verifyNoMoreInteractions(materialiser);
+		verify(repositorySink).shutdown();
+		verifyNoMoreInteractions(repositorySink);
 	}
 
 	@Test
 	void given_NonEmptyListOfMembersToCommit_when_PublishPipelineHaltedEvent_then_CommitMembers_and_ShutdownMaterialiser() {
-		when(materialiser.processAsync(anyList())).thenReturn(new CompletableFuture<>());
-		ldioRepositoryMaterialiser.accept(ModelFactory.createDefaultModel());
+		ldioRepositorySink.accept(ModelFactory.createDefaultModel());
 		final PipelineStatusEvent event = new PipelineStatusEvent(pipelineName, PipelineStatus.HALTED, StatusChangeSource.MANUAL);
 
 		eventPublisher.publishEvent(event);
 
 		verify(pipelineEventsListener).handlePipelineHaltedEvent(event);
-		verify(materialiser).processAsync(anyList());
-		verify(materialiser).shutdown();
-		verifyNoMoreInteractions(materialiser);
+		verify(repositorySink).process(anyList());
+		verify(repositorySink).shutdown();
+		verifyNoMoreInteractions(repositorySink);
 	}
 
 	@Test
@@ -89,7 +87,7 @@ class PipelineEventsListenerTest {
 		eventPublisher.publishEvent(event);
 
 		verify(pipelineEventsListener).handlePipelineHaltedEvent(event);
-		verifyNoInteractions(materialiser);
+		verifyNoInteractions(repositorySink);
 	}
 
 	@Test
@@ -108,9 +106,9 @@ class PipelineEventsListenerTest {
 
 		eventPublisher.publishEvent(event);
 
-		verify(pipelineEventsListener).registerComponent(pipelineName, ldioRepositoryMaterialiser);
+		verify(pipelineEventsListener).registerComponent(pipelineName, ldioRepositorySink);
 		verifyNoMoreInteractions(pipelineEventsListener);
-		verifyNoInteractions(materialiser);
+		verifyNoInteractions(repositorySink);
 	}
 
 	static class PipelineStatusArgumentsProvider implements ArgumentsProvider {

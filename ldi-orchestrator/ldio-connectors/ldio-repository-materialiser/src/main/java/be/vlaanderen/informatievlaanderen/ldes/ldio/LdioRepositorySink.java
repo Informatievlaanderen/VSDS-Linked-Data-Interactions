@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.RepositorySink;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -19,17 +19,17 @@ import java.util.concurrent.TimeUnit;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.ObserveConfiguration.ERROR_TEMPLATE;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
-public class LdioRepositoryMaterialiser implements LdiOutput {
-	private static final Logger log = LoggerFactory.getLogger(LdioRepositoryMaterialiser.class);
-	public static final String NAME = "Ldio:RepositoryMaterialiser";
+public class LdioRepositorySink implements LdiOutput {
+	public static final String NAME = "Ldio:RepositorySink";
+	private static final Logger log = LoggerFactory.getLogger(LdioRepositorySink.class);
 	private ScheduledExecutorService scheduledExecutorService;
 	private final int batchSize;
 	private final int batchTimeout;
-	private final Materialiser materialiser;
+	private final RepositorySink sink;
 	private final List<Model> membersToCommit;
 
-	public LdioRepositoryMaterialiser(Materialiser materialiser, int batchSize, int batchTimeout) {
-		this.materialiser = materialiser;
+	public LdioRepositorySink(RepositorySink sink, int batchSize, int batchTimeout) {
+		this.sink = sink;
 		this.batchSize = batchSize;
 		this.batchTimeout = batchTimeout;
 		this.membersToCommit = new ArrayList<>();
@@ -39,30 +39,30 @@ public class LdioRepositoryMaterialiser implements LdiOutput {
 	public void accept(Model model) {
 		membersToCommit.add(model);
 		if (membersToCommit.size() >= batchSize) {
-			sendToMaterialiser();
+			sendToSink();
 			resetExecutor();
 		}
 	}
 
 	public void start() {
 		scheduledExecutorService = newSingleThreadScheduledExecutor();
-		scheduledExecutorService.scheduleAtFixedRate(this::sendToMaterialiser, batchTimeout, batchTimeout, TimeUnit.MILLISECONDS);
+		scheduledExecutorService.scheduleAtFixedRate(this::sendToSink, batchTimeout, batchTimeout, TimeUnit.MILLISECONDS);
 	}
 
 	public void shutdown() {
-		materialiser.shutdown();
 		scheduledExecutorService.shutdown();
+		sink.shutdown();
 	}
 
-	public synchronized void sendToMaterialiser() {
+	public synchronized void sendToSink() {
 		if (!membersToCommit.isEmpty()) {
 			final List<Model> members = List.copyOf(membersToCommit);
-			materialiser.processAsync(members)
-					.exceptionally(throwable -> {
-						handleException(throwable, members);
-						return null;
-					});
 			membersToCommit.clear();
+			try {
+				sink.process(members);
+			} catch (Exception e) {
+				handleException(e, members);
+			}
 		}
 	}
 

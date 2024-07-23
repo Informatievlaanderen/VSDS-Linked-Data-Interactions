@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.Materialiser;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.RepositorySink;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.parser.JenaContextProvider;
 import org.apache.jena.rdf.model.Model;
@@ -37,7 +37,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.Fl
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
-	private Materialiser materialiser;
+	private RepositorySink repositorySink;
 	private Context jenaContext;
 
 	@Override
@@ -61,8 +61,8 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		if (materialiser == null) {
-			materialiser = new Materialiser(context.getProperty(SPARQL_HOST).getValue(),
+		if (repositorySink == null) {
+			repositorySink = new RepositorySink(context.getProperty(SPARQL_HOST).getValue(),
 					context.getProperty(REPOSITORY_ID).getValue(),
 					context.getProperty(NAMED_GRAPH).getValue());
 		}
@@ -87,7 +87,7 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 					.map(content -> RDFParser.fromString(content).context(jenaContext).lang(dataSourceFormat).toModel())
 					.toList();
 
-			materialiser.process(models);
+			repositorySink.process(models);
 
 			session.transfer(flowFiles, SUCCESS);
 		} catch (Exception e) {
@@ -98,6 +98,6 @@ public class RDF4JRepositoryMaterialisationProcessor extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		materialiser.shutdown();
+		repositorySink.shutdown();
 	}
 }

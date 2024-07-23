@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.MaterialisationFailedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.JenaToRDF4JConverter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ModelSubjectsExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.MaterialiserConnection;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.RepositorySinkConnection;
 import org.apache.jena.rdf.model.Model;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Value;
@@ -14,56 +14,51 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Component that will write linked data models to a specified triples store or RDF repository
  */
-public class Materialiser {
-	private final MaterialiserConnection materialiserConnection;
+public class RepositorySink {
+	private final RepositorySinkConnection repositorySinkConnection;
 
-	public Materialiser(String hostUrl, String repositoryId, String namedGraph) {
+	public RepositorySink(String hostUrl, String repositoryId, String namedGraph) {
 		this(new RemoteRepositoryManager(hostUrl), repositoryId, namedGraph);
 	}
 
-	public Materialiser(RepositoryManager repositoryManager, String repositoryId, String namedGraph) {
-		this.materialiserConnection = new MaterialiserConnection(repositoryManager, repositoryId, namedGraph);
+	public RepositorySink(RepositoryManager repositoryManager, String repositoryId, String namedGraph) {
+		this.repositorySinkConnection = new RepositorySinkConnection(repositoryManager, repositoryId, namedGraph);
 	}
 
-	protected MaterialiserConnection getMaterialiserConnection() {
-		return materialiserConnection;
+	protected RepositorySinkConnection getRepositoryConnection() {
+		return repositorySinkConnection;
 	}
 
 	public void process(List<Model> jenaModels) {
-		synchronized (materialiserConnection) {
+		synchronized (repositorySinkConnection) {
 			try {
 				jenaModels.stream().map(JenaToRDF4JConverter::convert).forEach(updateModel -> {
 					deleteEntity(updateModel);
-					materialiserConnection.add(updateModel);
+					repositorySinkConnection.add(updateModel);
 				});
-				materialiserConnection.commit();
+				repositorySinkConnection.commit();
 			} catch (Exception e) {
-				materialiserConnection.rollback();
+				repositorySinkConnection.rollback();
 				throw new MaterialisationFailedException(e);
 			}
 		}
 	}
 
-	public CompletableFuture<Void> processAsync(List<Model> jenaModels) {
-		return CompletableFuture.runAsync(() -> process(jenaModels));
-	}
-
 	public void closeConnection() {
-		materialiserConnection.close();
+		repositorySinkConnection.close();
 	}
 
 	public void shutdown() {
-		materialiserConnection.shutdown();
+		repositorySinkConnection.shutdown();
 	}
 
 	protected void deleteEntity(org.eclipse.rdf4j.model.Model model) {
 		getAllSubjectsFromModel(model)
-				.forEach(subject -> materialiserConnection.remove(subject, null, null));
+				.forEach(subject -> repositorySinkConnection.remove(subject, null, null));
 	}
 
 	private Set<Resource> getAllSubjectsFromModel(org.eclipse.rdf4j.model.Model model) {
@@ -73,7 +68,7 @@ public class Materialiser {
 		while (!subjectStack.isEmpty()) {
 			Resource subject = subjectStack.pop();
 
-			materialiserConnection.getStatements(subject, null, null).forEach(statement -> {
+			repositorySinkConnection.getStatements(subject, null, null).forEach(statement -> {
 				Value object = statement.getObject();
 				if (object.isBNode()) {
 					Resource bnode = (Resource) object;

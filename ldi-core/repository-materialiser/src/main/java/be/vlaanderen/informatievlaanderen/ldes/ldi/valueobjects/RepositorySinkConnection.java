@@ -12,11 +12,11 @@ import java.util.Optional;
  * Wrapper around the RepositoryConnectionHolder, to make more an abstraction of the actions that can be done
  * through the RepositoryConnection and already handling with some overhead of the named graph
  */
-public class MaterialiserConnection {
+public class RepositorySinkConnection {
 	private final String namedGraph;
 	private final RepositoryConnectionHolder holder;
 
-	public MaterialiserConnection(RepositoryManager repositoryManager, String repositoryId, String namedGraph) {
+	public RepositorySinkConnection(RepositoryManager repositoryManager, String repositoryId, String namedGraph) {
 		this.namedGraph = namedGraph;
 		this.holder = new RepositoryConnectionHolder(repositoryManager, repositoryId);
 	}
@@ -41,15 +41,15 @@ public class MaterialiserConnection {
 	}
 
 	public void commit() {
-		final RepositoryConnection connection = holder.getConnection();
-		connection.commit();
-		connection.close();
+		try (RepositoryConnection connection = holder.getConnection()) {
+			connection.commit();
+		}
 	}
 
 	public void rollback() {
-		final RepositoryConnection connection = holder.getConnection();
-		connection.rollback();
-		connection.close();
+		try (RepositoryConnection connection = holder.getConnection()) {
+			connection.rollback();
+		}
 	}
 
 	public void close() {

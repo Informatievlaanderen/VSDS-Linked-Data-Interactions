@@ -33,9 +33,9 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MaterialiserIT {
+class RepositorySinkIT {
 	private static final String LOCAL_REPOSITORY_ID = "test";
-	private static Materialiser materialiser;
+	private static RepositorySink repositorySink;
 	private RepositoryManager subject;
 	@TempDir
 	File dataDir;
@@ -51,22 +51,22 @@ class MaterialiserIT {
 
 	@AfterEach
 	public void tearDown() {
-		materialiser.shutdown();
+		repositorySink.shutdown();
 	}
 
 	@ParameterizedTest
 	@ArgumentsSource(NamedGraphProvider.class)
 	void when_DeleteEntities_Then_EntitiesRemovedFromStore(String namedGraph) throws Exception {
-		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, namedGraph);
+		repositorySink = new RepositorySink(subject, LOCAL_REPOSITORY_ID, namedGraph);
 
 		final int statementOfModel2And3Count = 9;
 		final List<String> testFiles = IntStream.range(1, 4).mapToObj("src/test/resources/people/%d.nq"::formatted).toList();
 		populateAndCheckRepository(testFiles, namedGraph);
 		final Model modelToDelete = Rio.parse(new FileInputStream("src/test/resources/people/1.nq"), "", RDFFormat.NQUADS);
 
-		materialiser.deleteEntity(modelToDelete);
+		repositorySink.deleteEntity(modelToDelete);
 
-		List<Statement> statements = materialiser.getMaterialiserConnection()
+		List<Statement> statements = repositorySink.getRepositoryConnection()
 				.getStatements(null, null, null).stream().toList();
 
 		assertThat(statements).hasSize(statementOfModel2And3Count);
@@ -75,15 +75,15 @@ class MaterialiserIT {
 	@ParameterizedTest
 	@ArgumentsSource(NamedGraphProvider.class)
 	void when_UpdateEntities_Then_OldTriplesRemoved(String namedGraph) throws Exception {
-		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, namedGraph);
+		repositorySink = new RepositorySink(subject, LOCAL_REPOSITORY_ID, namedGraph);
 
 		final List<String> testFiles = IntStream.range(1, 6).mapToObj("src/test/resources/people/%d.nq"::formatted).toList();
 		populateAndCheckRepository(testFiles, namedGraph);
 
 		List<org.apache.jena.rdf.model.Model> models = List.of(RDFParser.source("people/5-updated.nq").toModel());
-		materialiser.process(models);
+		repositorySink.process(models);
 
-		List<Statement> statements = materialiser.getMaterialiserConnection()
+		List<Statement> statements = repositorySink.getRepositoryConnection()
 				.getStatements(null, null, null).stream().toList();
 
 		assertThat(statements)
@@ -94,28 +94,28 @@ class MaterialiserIT {
 
 	@Test
 	void given_TwoDifferentNamedGraphs_when_processModelsWithSameSubjects_then_ExpectNoChangesInOtherNamedGraph() {
-		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, "http://example.org/named-graph-1");
-		final Materialiser secondMaterialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, "http://example.org/named-graph-2");
+		repositorySink = new RepositorySink(subject, LOCAL_REPOSITORY_ID, "http://example.org/named-graph-1");
+		final RepositorySink secondRepositorySink = new RepositorySink(subject, LOCAL_REPOSITORY_ID, "http://example.org/named-graph-2");
 
 		final org.apache.jena.rdf.model.Model firstJenaModel = RDFParser.source("movies/1.ttl").toModel();
 		final org.apache.jena.rdf.model.Model secondJenaModel = RDFParser.source("movies/2.ttl").toModel();
-		materialiser.process(List.of(firstJenaModel));
-		secondMaterialiser.process(List.of(secondJenaModel));
+		repositorySink.process(List.of(firstJenaModel));
+		secondRepositorySink.process(List.of(secondJenaModel));
 
 		Model firstModel = new LinkedHashModel();
 		Model secondModel = new LinkedHashModel();
 
-		materialiser.getMaterialiserConnection()
+		repositorySink.getRepositoryConnection()
 				.getStatements(null, null, null)
 				.stream()
-				.map(MaterialiserIT::deleteContextFromStatement)
+				.map(RepositorySinkIT::deleteContextFromStatement)
 				.forEach(firstModel::add);
 
 
-		secondMaterialiser.getMaterialiserConnection()
+		secondRepositorySink.getRepositoryConnection()
 				.getStatements(null, null, null)
 				.stream()
-				.map(MaterialiserIT::deleteContextFromStatement)
+				.map(RepositorySinkIT::deleteContextFromStatement)
 				.forEach(secondModel::add);
 
 		assertThat(firstModel)
@@ -124,28 +124,28 @@ class MaterialiserIT {
 		assertThat(secondModel)
 				.hasSize((int) secondJenaModel.size());
 
-		materialiser.closeConnection();
-		secondMaterialiser.closeConnection();
+		repositorySink.closeConnection();
+		secondRepositorySink.closeConnection();
 	}
 
 	@ParameterizedTest
 	@ArgumentsSource(NamedGraphProvider.class)
 	void given_ComplexModelToUpdate_test_Process(String namedGraph) throws IOException {
-		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, namedGraph);
+		repositorySink = new RepositorySink(subject, LOCAL_REPOSITORY_ID, namedGraph);
 
 		final org.apache.jena.rdf.model.Model originalModel = RDFParser.source("movies/1.ttl").toModel();
-		materialiser.process(List.of(originalModel));
+		repositorySink.process(List.of(originalModel));
 
 		final org.apache.jena.rdf.model.Model updatedJenaModel = RDFParser.source("movies/2.ttl").toModel();
 		final Model updatedRdfModel = Rio.parse(new FileInputStream("src/test/resources/movies/2.ttl"), "", RDFFormat.TURTLE);
-		materialiser.process(List.of(updatedJenaModel));
+		repositorySink.process(List.of(updatedJenaModel));
 
 
 		Model updatedDbModel = new LinkedHashModel();
-		materialiser.getMaterialiserConnection()
+		repositorySink.getRepositoryConnection()
 				.getStatements(null, null, null)
 				.stream()
-				.map(MaterialiserIT::deleteContextFromStatement)
+				.map(RepositorySinkIT::deleteContextFromStatement)
 				.forEach(updatedDbModel::add);
 
 		assertThat(Models.isomorphic(updatedDbModel, updatedRdfModel)).isTrue();
@@ -154,16 +154,16 @@ class MaterialiserIT {
 	@ParameterizedTest
 	@ArgumentsSource(NamedGraphProvider.class)
 	void given_geoData_when_processModel_then_addValidGeoDataToRepo(String namedGraph) throws IOException {
-		materialiser = new Materialiser(subject, LOCAL_REPOSITORY_ID, namedGraph);
+		repositorySink = new RepositorySink(subject, LOCAL_REPOSITORY_ID, namedGraph);
 		final Model expectedModel = Rio.parse(new FileInputStream("src/test/resources/geo/measurement.ttl"), "", RDFFormat.TURTLE);
 		final org.apache.jena.rdf.model.Model inputModel = RDFParser.source("geo/measurement.ttl").toModel();
-		materialiser.process(List.of(inputModel));
+		repositorySink.process(List.of(inputModel));
 
 		Model dbModel = new LinkedHashModel();
-		materialiser.getMaterialiserConnection()
+		repositorySink.getRepositoryConnection()
 				.getStatements(null, null, null)
 				.stream()
-				.map(MaterialiserIT::deleteContextFromStatement)
+				.map(RepositorySinkIT::deleteContextFromStatement)
 				.forEach(dbModel::add);
 
 		assertThat(Models.isomorphic(expectedModel, dbModel)).isTrue();
@@ -173,14 +173,14 @@ class MaterialiserIT {
 		List<Model> models = new ArrayList<>();
 		for (String testFile : files) {
 			var model = Rio.parse(new FileInputStream(testFile), "", RDFFormat.NQUADS);
-			materialiser.getMaterialiserConnection().add(model);
+			repositorySink.getRepositoryConnection().add(model);
 			models.add(model);
 		}
 
-		List<Statement> statements = materialiser.getMaterialiserConnection().getStatements(null, null, null).stream().toList();
+		List<Statement> statements = repositorySink.getRepositoryConnection().getStatements(null, null, null).stream().toList();
 		if (!namedGraph.isEmpty()) {
 			statements = statements.stream()
-					.map(MaterialiserIT::deleteContextFromStatement)
+					.map(RepositorySinkIT::deleteContextFromStatement)
 					.toList();
 		}
 

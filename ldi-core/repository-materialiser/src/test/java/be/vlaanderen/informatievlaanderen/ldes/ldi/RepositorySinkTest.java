@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class MaterialiserTest {
+class RepositorySinkTest {
 	private static final String CHANGED_FILE = "src/test/resources/people_data_03.nq";
 
 	private static final String REPOSITORY_ID = "repo-id";
@@ -42,18 +42,18 @@ class MaterialiserTest {
 	private RepositoryManager repositoryManager;
 	@Mock
 	private Repository repository;
-	private Materialiser materialiser;
+	private RepositorySink repositorySink;
 
 	@BeforeEach
 	void setUp() {
 		when(repositoryManager.getRepository(REPOSITORY_ID)).thenReturn(repository);
 		when(repository.getConnection()).thenReturn(connection);
-		materialiser = new Materialiser(repositoryManager, REPOSITORY_ID, "");
+		repositorySink = new RepositorySink(repositoryManager, REPOSITORY_ID, "");
 	}
 
 	@AfterEach
 	void tearDown() {
-		materialiser.shutdown();
+		repositorySink.shutdown();
 	}
 
 	@Test
@@ -69,7 +69,7 @@ class MaterialiserTest {
 
 		Model modelToDelete = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		materialiser.deleteEntity(modelToDelete);
+		repositorySink.deleteEntity(modelToDelete);
 		entityIds.forEach(subjectIri -> {
 			verify(connection).getStatements(subjectIri, null, null);
 			verify(connection).remove(subjectIri, null, null);
@@ -84,7 +84,7 @@ class MaterialiserTest {
 				.thenReturn(new RepositoryResult<>(new CollectionIteration<>(Set.of())));
 		Model changedModel = Rio.parse(new FileInputStream(CHANGED_FILE), "", RDFFormat.NQUADS);
 
-		materialiser.process(List.of(RDFParser.source(CHANGED_FILE).toModel()));
+		repositorySink.process(List.of(RDFParser.source(CHANGED_FILE).toModel()));
 
 		verify(connection).remove(SimpleValueFactory.getInstance().createIRI("http://somewhere/DickJones/"), null, null);
 		verify(connection).remove(SimpleValueFactory.getInstance().createIRI("http://somewhere/SarahJones/"), null, null);
@@ -101,7 +101,7 @@ class MaterialiserTest {
 
 		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
 
-		materialiser.process(models);
+		repositorySink.process(models);
 
 		verify(connection, times(10)).remove(any(Resource.class), isNull(), isNull());
 		verify(connection, times(10)).add(any(Model.class));
@@ -118,7 +118,7 @@ class MaterialiserTest {
 
 		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
 
-		assertThatThrownBy(() -> materialiser.process(models))
+		assertThatThrownBy(() -> repositorySink.process(models))
 				.isInstanceOf(MaterialisationFailedException.class)
 				.hasCauseInstanceOf(RepositoryException.class);
 
@@ -137,7 +137,7 @@ class MaterialiserTest {
 
 		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
 
-		assertThatThrownBy(() -> materialiser.process(models))
+		assertThatThrownBy(() -> repositorySink.process(models))
 				.isInstanceOf(MaterialisationFailedException.class)
 				.hasCauseInstanceOf(RepositoryException.class);
 
@@ -156,7 +156,7 @@ class MaterialiserTest {
 
 		List<org.apache.jena.rdf.model.Model> models = readTenModelsFromFile().toList();
 
-		assertThatThrownBy(() -> materialiser.process(models))
+		assertThatThrownBy(() -> repositorySink.process(models))
 				.isInstanceOf(MaterialisationFailedException.class)
 				.hasCauseInstanceOf(RepositoryException.class);
 
