@@ -23,7 +23,7 @@
         <module>rml-adapter</module>
         <module>json-to-ld-adapter</module>
         <module>file-archiving</module>
-        <module>repository-materialiser</module>
+        <module>repository-sink</module>
         <module>ldi-common</module>
         <module>change-detection-filter</module>
         <module>ldi-infra-sql</module>

@@ -45,7 +45,7 @@
         </dependency>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi.nifi</groupId>
-            <artifactId>rdf4j-repository-materialisation-processor</artifactId>
+            <artifactId>rdf4j-repository-sink-processor</artifactId>
             <version>${project.version}</version>
             <type>nar</type>
         </dependency>

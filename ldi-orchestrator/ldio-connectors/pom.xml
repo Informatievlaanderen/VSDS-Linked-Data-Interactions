@@ -38,7 +38,7 @@
         <module>ldio-rml-adapter</module>
         <module>ldio-azure-blob-out</module>
         <module>ldio-file-out</module>
-        <module>ldio-repository-materialiser</module>
+        <module>ldio-repository-sink</module>
         <module>ldio-change-detection-filter</module>
 
     </modules>

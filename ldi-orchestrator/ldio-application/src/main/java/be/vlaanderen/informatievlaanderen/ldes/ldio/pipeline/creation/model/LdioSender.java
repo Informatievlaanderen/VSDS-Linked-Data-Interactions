@@ -29,7 +29,7 @@ public class LdioSender extends LdioTransformer {
 
 	@Override
 	public void apply(Model model) {
-		Metrics.counter(LDIO_DATA_OUT, PIPELINE_NAME, pipelineName).increment();
 		ldiOutputs.parallelStream().forEach(ldiOutput -> ldiOutput.accept(model));
+		Metrics.counter(LDIO_DATA_OUT, PIPELINE_NAME, pipelineName).increment();
 	}
 }
