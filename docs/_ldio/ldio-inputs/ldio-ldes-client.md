@@ -45,6 +45,8 @@ To have the possibility to filter out already received members, the "exactly-onc
 The IDs of all processed members will be remembered by the filter and when a duplicate member is processed, it will be
 filtered out before sending it to the output of the Client.
 
+Note that this filter can not be enabled with version materialisation.
+
 #### Latest-state-filter
 
 When version materialisation is enabled, state objects that does not represent the latest state can be filter out by
