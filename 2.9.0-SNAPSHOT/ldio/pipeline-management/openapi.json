@@ -1,0 +1,410 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "LDIO Management API",
+    "description": "This API makes it possible manage the LDIO application.",
+    "version": "2.3.0-SNAPSHOT"
+  },
+  "externalDocs": {
+    "description": "LDIO documentation",
+    "url": "https://informatievlaanderen.github.io/VSDS-Linked-Data-Interactions/"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8088",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/admin/api/v1/pipeline": {
+      "get": {
+        "tags": [
+          "Pipeline controller"
+        ],
+        "summary": "Get a list of all active pipelines.",
+        "operationId": "overview",
+        "responses": {
+          "200": {
+            "description": "A list of all active pipelines is shown.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineTO"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Pipeline controller"
+        ],
+        "summary": "Create a new pipeline.",
+        "operationId": "addPipeline",
+        "requestBody": {
+          "description": "The pipeline configuration",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PipelineConfigTO"
+              }
+            },
+            "application/yaml": {
+              "schema": {
+                "$ref": "#/components/schemas/PipelineConfigTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The new pipeline is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineTO"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/api/v1/pipeline/{pipelineId}/resume": {
+      "post": {
+        "tags": [
+          "Pipeline status controller"
+        ],
+        "summary": "Resume a pipeline.",
+        "operationId": "resumePipeline",
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resumes the current pipeline",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "INIT",
+                    "STARTING",
+                    "RESUMING",
+                    "RUNNING",
+                    "HALTED",
+                    "STOPPING",
+                    "STOPPED"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/api/v1/pipeline/{pipelineId}/halt": {
+      "post": {
+        "tags": [
+          "Pipeline status controller"
+        ],
+        "summary": "Pause a pipeline.",
+        "operationId": "haltPipeline",
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Halts the current pipeline",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "INIT",
+                    "STARTING",
+                    "RESUMING",
+                    "RUNNING",
+                    "HALTED",
+                    "STOPPING",
+                    "STOPPED"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/api/v1/pipeline/{pipelineId}/status": {
+      "get": {
+        "tags": [
+          "Pipeline status controller"
+        ],
+        "summary": "Get the current status of a given pipeline.",
+        "operationId": "getPipelineStatus",
+        "parameters": [
+          {
+            "name": "pipelineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the current pipeline status",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "INIT",
+                    "STARTING",
+                    "RESUMING",
+                    "RUNNING",
+                    "HALTED",
+                    "STOPPING",
+                    "STOPPED"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/api/v1/pipeline/status": {
+      "get": {
+        "tags": [
+          "Pipeline status controller"
+        ],
+        "summary": "Get a list of all pipelines with their status.",
+        "operationId": "getPipelineStatus_1",
+        "responses": {
+          "200": {
+            "description": "Returns a list of all the pipelines with their current status.",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/admin/api/v1/catalog": {
+      "get": {
+        "tags": [
+          "Catalog controller"
+        ],
+        "summary": "Get a list of all available components.",
+        "operationId": "catalog",
+        "responses": {
+          "200": {
+            "description": "A list of all available components is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LdioCatalog"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/api/v1/pipeline/{pipeline}": {
+      "delete": {
+        "tags": [
+          "Pipeline controller"
+        ],
+        "summary": "Delete a pipeline.",
+        "operationId": "deletePipeline",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ComponentDefinitionTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "InputComponentDefinitionTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "adapter": {
+            "$ref": "#/components/schemas/ComponentDefinitionTO"
+          },
+          "config": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PipelineConfigTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "input": {
+            "$ref": "#/components/schemas/InputComponentDefinitionTO"
+          },
+          "transformers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComponentDefinitionTO"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComponentDefinitionTO"
+            }
+          }
+        }
+      },
+      "PipelineTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "INIT",
+              "STARTING",
+              "RESUMING",
+              "RUNNING",
+              "HALTED",
+              "STOPPING",
+              "STOPPED"
+            ]
+          },
+          "updateSource": {
+            "type": "string",
+            "enum": [
+              "AUTO",
+              "MANUAL"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "input": {
+            "$ref": "#/components/schemas/InputComponentDefinitionTO"
+          },
+          "transformers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComponentDefinitionTO"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComponentDefinitionTO"
+            }
+          }
+        }
+      },
+      "LdioCatalog": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "adapters": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "transformers": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "outputs": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
