@@ -56,7 +56,7 @@ jobs:
           git config --global user.name "VSDS CI"
           git config --global url.https://${{ env.PAT }}@github.com/.insteadOf https://github.com/
         env:
-          PAT: ${{secrets.PAT}}
+          PAT: ${{secrets.DEPLOY_DOCS_PAT}}
       - run: |
           gh-pages-multi deploy --title ${{env.title}} -t ${{steps.version.outputs.version}} -s docs/_site
         env:
