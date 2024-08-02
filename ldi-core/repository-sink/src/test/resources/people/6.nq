@@ -1,0 +1,6 @@
+<http://somewhere/SaylorTwift/> <http://www.w3.org/2001/vcard-rdf/3.0#FN> "Saylor Twift" .
+<http://somewhere/SaylorTwift/> <http://www.w3.org/2001/vcard-rdf/3.0#N> <http://somewhere/.well-known/genid/1> .
+<http://somewhere/.well-known/genid/1> <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Saylor" .
+<http://somewhere/.well-known/genid/1> <http://www.w3.org/2001/vcard-rdf/3.0#Given> <http://somewhere/.well-known/genid/2> .
+<http://somewhere/.well-known/genid/2> <http://www.w3.org/2001/vcard-rdf/3.0#Nickname> "1Saylor" .
+<http://somewhere/.well-known/genid/2> <http://www.w3.org/2001/vcard-rdf/3.0#Last> "Twift" .

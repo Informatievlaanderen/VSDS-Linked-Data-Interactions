@@ -77,19 +77,24 @@ class RepositorySinkIT {
 	void when_UpdateEntities_Then_OldTriplesRemoved(String namedGraph) throws Exception {
 		repositorySink = new RepositorySink(subject, LOCAL_REPOSITORY_ID, namedGraph);
 
-		final List<String> testFiles = IntStream.range(1, 6).mapToObj("src/test/resources/people/%d.nq"::formatted).toList();
+		final List<String> testFiles = IntStream.rangeClosed(1, 6).mapToObj("src/test/resources/people/%d.nq"::formatted).toList();
 		populateAndCheckRepository(testFiles, namedGraph);
 
 		List<org.apache.jena.rdf.model.Model> models = List.of(RDFParser.source("people/5-updated.nq").toModel());
+		repositorySink.process(models);
+
+		models = List.of(RDFParser.source("people/6-updated.nq").toModel());
 		repositorySink.process(models);
 
 		List<Statement> statements = repositorySink.getRepositoryConnection()
 				.getStatements(null, null, null).stream().toList();
 
 		assertThat(statements)
-				.hasSize(21)
+				.hasSize(26)
 				.anyMatch(statement -> statement.getObject().stringValue().equals("CHANGED"))
-				.noneMatch(statement -> statement.getObject().stringValue().equals("Taylor"));
+				.noneMatch(statement -> statement.getObject().stringValue().equals("Taylor"))
+				.noneMatch(statement -> statement.getObject().stringValue().equals("Twift"))
+				.noneMatch(statement -> statement.getPredicate().stringValue().equals("http://www.w3.org/2001/vcard-rdf/3.0#Nickname"));
 	}
 
 	@Test
