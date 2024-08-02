@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.Inp
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineDeletedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineDoesNotExistException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.events.PipelineStatusEvent;
-import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,9 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig.PIPELINE_NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver.LDIO_DATA_IN;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.model.LdioSender.LDIO_DATA_OUT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatus.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusTrigger.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.StatusChangeSource.AUTO;
@@ -89,11 +85,8 @@ public class PipelineStatusServiceImpl implements PipelineStatusService {
 	}
 
 	@Override
-	public PipelineStatus stopPipeline(String pipelineId) throws InterruptedException {
+	public PipelineStatus stopPipeline(String pipelineId) {
 		PipelineStatus newPipelineStatus = savedPipelines.get(pipelineId).getLdioInput().updateStatus(STOP);
-		while (!pipelineEmpty(pipelineId)) {
-			wait(100);
-		}
 		this.savedPipelines.remove(pipelineId);
 		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineId));
 		return newPipelineStatus;
@@ -104,13 +97,6 @@ public class PipelineStatusServiceImpl implements PipelineStatusService {
 		return savedPipelines.entrySet()
 				.stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getStatus()));
-	}
-
-	private boolean pipelineEmpty(String pipelineName) {
-		var in = Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName).count();
-		var out = Metrics.counter(LDIO_DATA_OUT, PIPELINE_NAME, pipelineName).count();
-
-		return in == out;
 	}
 
 	static class SavedPipeline {

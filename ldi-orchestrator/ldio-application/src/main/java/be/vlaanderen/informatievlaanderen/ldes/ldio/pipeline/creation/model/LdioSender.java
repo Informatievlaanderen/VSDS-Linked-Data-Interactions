@@ -14,9 +14,9 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConf
  * a pipeline to make sure the output of that chain can be sent to the provided outputs of that pipeline
  */
 public class LdioSender extends LdioTransformer {
-	public static final String LDIO_DATA_OUT = "ldio_data_out";
 	private final List<LdiOutput> ldiOutputs;
 	private final String pipelineName;
+	private static final String LDIO_DATA_OUT = "ldio_data_out";
 
 	public LdioSender(String pipelineName,
 					  List<LdiOutput> ldiOutputs) {

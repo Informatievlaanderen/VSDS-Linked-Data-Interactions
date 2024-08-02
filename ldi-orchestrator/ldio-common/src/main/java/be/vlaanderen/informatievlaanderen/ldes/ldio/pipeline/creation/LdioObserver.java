@@ -16,7 +16,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConf
  * Observer that is dealing with errors and metrics from ldio actions
  */
 public class LdioObserver {
-	public static final String LDIO_DATA_IN = "ldio_data_in";
+	private static final String LDIO_DATA_IN = "ldio_data_in";
 	private static final String LDIO_COMPONENT_NAME = "ldio_type";
 	private static final Logger log = LoggerFactory.getLogger(LdioObserver.class);
 	private final String componentName;
