@@ -14,12 +14,13 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Component that will write linked data models to a specified triples store or RDF repository
  */
 public class RepositorySink {
-	private static final String SKOLEM_PATTERN = ".*/.well-known/genid/.*";
+	private static final Pattern SKOLEM_PATTERN = Pattern.compile(".*/.well-known/genid/.*");
 	private final RepositorySinkConnection repositorySinkConnection;
 
 	public RepositorySink(String hostUrl, String repositoryId, String namedGraph) {
@@ -76,7 +77,7 @@ public class RepositorySink {
 					subjectStack.push(bnode);
 					subjects.add(bnode);
 				}
-				if (object.stringValue().matches(SKOLEM_PATTERN)) {
+				if (SKOLEM_PATTERN.matcher(object.stringValue()).matches()) {
 					Resource bnode = (Resource) object;
 					subjectStack.push(bnode);
 					subjects.add(bnode);
