@@ -42,6 +42,6 @@ public interface OpenApiPipelineController {
     @ApiResponse(responseCode = "202")
     @ApiResponse(responseCode = "204")
     @Operation(summary = "Delete a pipeline.")
-    ResponseEntity<Void> deletePipeline(@PathVariable String pipeline);
+    ResponseEntity<Void> deletePipeline(@PathVariable String pipeline) throws InterruptedException;
 
 }

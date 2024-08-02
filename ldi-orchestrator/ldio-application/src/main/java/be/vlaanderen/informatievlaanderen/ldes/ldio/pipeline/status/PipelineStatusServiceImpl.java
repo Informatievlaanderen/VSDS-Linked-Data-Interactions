@@ -89,14 +89,10 @@ public class PipelineStatusServiceImpl implements PipelineStatusService {
 	}
 
 	@Override
-	public PipelineStatus stopPipeline(String pipelineId) {
+	public PipelineStatus stopPipeline(String pipelineId) throws InterruptedException {
 		PipelineStatus newPipelineStatus = savedPipelines.get(pipelineId).getLdioInput().updateStatus(STOP);
 		while (!pipelineEmpty(pipelineId)) {
-			try {
-				wait(100);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
+			wait(100);
 		}
 		this.savedPipelines.remove(pipelineId);
 		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineId));

@@ -37,7 +37,7 @@ public interface PipelineStatusService {
 	 * @param pipelineId name of the pipeline that must be stopped
 	 * @return the updated pipeline status
 	 */
-	PipelineStatus stopPipeline(String pipelineId);
+	PipelineStatus stopPipeline(String pipelineId) throws InterruptedException;
 
 	/**
 	 * Fetches an overview of the existing pipelines with their status

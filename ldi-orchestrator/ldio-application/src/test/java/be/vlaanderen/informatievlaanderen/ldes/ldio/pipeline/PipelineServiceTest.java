@@ -25,7 +25,7 @@ class PipelineServiceTest {
     }
 
     @Test
-    void when_StoppingPipeline_Then_MethodsAreCalled() {
+    void when_StoppingPipeline_Then_MethodsAreCalled() throws InterruptedException {
         when(pipelineRepository.exists(pipelineName)).thenReturn(true);
 
         boolean result = pipelineService.requestDeletion(pipelineName);
@@ -35,7 +35,7 @@ class PipelineServiceTest {
     }
 
     @Test
-    void when_StoppingNonExistingPipeline_Then_NoMethodsAreCalled() {
+    void when_StoppingNonExistingPipeline_Then_NoMethodsAreCalled() throws InterruptedException {
         when(pipelineRepository.exists(pipelineName)).thenReturn(false);
 
         boolean result = pipelineService.requestDeletion(pipelineName);
@@ -45,7 +45,7 @@ class PipelineServiceTest {
     }
 
     @Test
-    void when_PipelineShutdown_Then_RemovePipeline() {
+    void when_PipelineShutdown_Then_RemovePipeline() throws InterruptedException {
         when(pipelineRepository.exists(pipelineName)).thenReturn(true);
         PipelineShutdownEvent pipelineShutdownEvent = new PipelineShutdownEvent(pipelineName);
 

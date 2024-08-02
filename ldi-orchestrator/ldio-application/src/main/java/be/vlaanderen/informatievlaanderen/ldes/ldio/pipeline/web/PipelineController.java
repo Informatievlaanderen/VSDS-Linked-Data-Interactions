@@ -58,7 +58,7 @@ public class PipelineController implements OpenApiPipelineController {
 	 */
 	@Override
 	@DeleteMapping("/{pipeline}")
-	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline) {
+	public ResponseEntity<Void> deletePipeline(@PathVariable String pipeline) throws InterruptedException {
 		if (pipelineService.requestDeletion(pipeline)) {
 			return ResponseEntity.accepted().build();
 		} else return ResponseEntity.noContent().build();

@@ -30,5 +30,5 @@ public interface PipelineService {
 	 * @param pipeline name of the pipeline to be deleted
 	 * @return <code>true</code> if deletion succeeded, otherwise <code>false</code>
 	 */
-	boolean requestDeletion(String pipeline);
+	boolean requestDeletion(String pipeline) throws InterruptedException;
 }
