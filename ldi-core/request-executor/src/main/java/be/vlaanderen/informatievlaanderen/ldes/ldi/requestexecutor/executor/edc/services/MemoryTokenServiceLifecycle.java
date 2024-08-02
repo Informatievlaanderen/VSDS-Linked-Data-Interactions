@@ -18,7 +18,7 @@ public class MemoryTokenServiceLifecycle {
     private synchronized void checkPause() {
         while (paused) {
             try {
-                wait();
+                wait(100);
             }  catch (InterruptedException e) {
                 log.error("Thread interrupted: {}", e.getMessage());
                 Thread.currentThread().interrupt();
