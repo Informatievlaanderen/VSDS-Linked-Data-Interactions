@@ -19,6 +19,7 @@ import java.util.Set;
  * Component that will write linked data models to a specified triples store or RDF repository
  */
 public class RepositorySink {
+	private static final String SKOLEM_PATTERN = ".*/.well-known/genid/.*";
 	private final RepositorySinkConnection repositorySinkConnection;
 
 	public RepositorySink(String hostUrl, String repositoryId, String namedGraph) {
@@ -71,6 +72,11 @@ public class RepositorySink {
 			repositorySinkConnection.getStatements(subject, null, null).forEach(statement -> {
 				Value object = statement.getObject();
 				if (object.isBNode()) {
+					Resource bnode = (Resource) object;
+					subjectStack.push(bnode);
+					subjects.add(bnode);
+				}
+				if (object.stringValue().matches(SKOLEM_PATTERN)) {
 					Resource bnode = (Resource) object;
 					subjectStack.push(bnode);
 					subjects.add(bnode);
