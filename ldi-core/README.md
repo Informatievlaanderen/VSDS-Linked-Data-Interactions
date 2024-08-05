@@ -39,4 +39,5 @@ More information can be found [here](ngsiv2-to-ld-adapter/README.md).
 
 ## 6. Repository Sink
 
-Allows an eventstream to be materialised in a triple store. More information can be found [here](repository-materialiser/README.md).
+Allows an eventstream to be materialised in a triple store. More information can be
+found [here](repository-sink/README.md).

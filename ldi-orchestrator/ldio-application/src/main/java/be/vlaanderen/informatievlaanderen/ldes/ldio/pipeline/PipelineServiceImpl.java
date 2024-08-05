@@ -30,7 +30,7 @@ public class PipelineServiceImpl implements PipelineService {
 	}
 
 	@EventListener
-	public void handlePipelineShutdown(PipelineShutdownEvent event) {
+	public void handlePipelineShutdown(PipelineShutdownEvent event) throws InterruptedException {
 		this.requestDeletion(event.pipelineId());
 	}
 
@@ -65,7 +65,7 @@ public class PipelineServiceImpl implements PipelineService {
 	}
 
 	@Override
-	public boolean requestDeletion(String pipeline) {
+	public boolean requestDeletion(String pipeline) throws InterruptedException {
 		if (pipelineRepository.exists(pipeline)) {
 			pipelineStatusService.stopPipeline(pipeline);
 			deletePipelineFromServices(pipeline);

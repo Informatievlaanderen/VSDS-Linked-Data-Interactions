@@ -23,7 +23,7 @@ class PipelineStatusServiceTest {
     }
 
     @Test
-    void when_StoppingPipeline_Then_MethodsAreCalled() {
+    void when_StoppingPipeline_Then_MethodsAreCalled() throws InterruptedException {
         when(input.updateStatus(any())).thenReturn(PipelineStatus.STOPPED);
         PipelineStatus result = pipelineStatusService.stopPipeline(pipelineName);
 
