@@ -156,6 +156,42 @@ class RepositorySinkIT {
 		assertThat(Models.isomorphic(updatedDbModel, updatedRdfModel)).isTrue();
 	}
 
+	@Test
+	void given_SkolemizedMembers_test_Process() throws IOException {
+		repositorySink = new RepositorySink(subject, LOCAL_REPOSITORY_ID, "");
+
+		final org.apache.jena.rdf.model.Model model1 = RDFParser.source("members/member-1.nq").toModel();
+		final org.apache.jena.rdf.model.Model model2 = RDFParser.source("members/member-2.nq").toModel();
+		final org.apache.jena.rdf.model.Model updatedModel1 = RDFParser.source("members/member-1.updated.nq").toModel();
+
+		final Model composedModel = Rio.parse(new FileInputStream("src/test/resources/members/nq/all.nq"), RDFFormat.NQUADS);
+		final Model updatedComposedModel = Rio.parse(new FileInputStream("src/test/resources/members/nq/all.updated.nq"), "", RDFFormat.NQUADS);
+
+		repositorySink.process(List.of(model1, model2));
+
+		Model dbModel = new LinkedHashModel();
+		repositorySink.getRepositoryConnection()
+				.getStatements(null, null, null)
+				.stream()
+				.map(RepositorySinkIT::deleteContextFromStatement)
+				.forEach(dbModel::add);
+
+		assertThat(Models.isomorphic(dbModel, composedModel)).isTrue();
+
+		repositorySink.process(List.of(updatedModel1));
+
+		Model updatedDbModel = new LinkedHashModel();
+		repositorySink.getRepositoryConnection()
+				.getStatements(null, null, null)
+				.stream()
+				.map(RepositorySinkIT::deleteContextFromStatement)
+				.forEach(updatedDbModel::add);
+
+
+		assertThat(Models.isomorphic(updatedDbModel, updatedComposedModel)).isTrue();
+
+	}
+
 	@ParameterizedTest
 	@ArgumentsSource(NamedGraphProvider.class)
 	void given_geoData_when_processModel_then_addValidGeoDataToRepo(String namedGraph) throws IOException {

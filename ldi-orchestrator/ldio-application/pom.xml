@@ -350,11 +350,11 @@
             </dependencies>
         </profile>
         <profile>
-            <id>ldio-repository-materialiser</id>
+            <id>ldio-repository-sink</id>
             <dependencies>
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-repository-materialiser</artifactId>
+                    <artifactId>ldio-repository-sink</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>

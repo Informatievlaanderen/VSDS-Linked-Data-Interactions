@@ -72,12 +72,7 @@ public class RepositorySink {
 
 			repositorySinkConnection.getStatements(subject, null, null).forEach(statement -> {
 				Value object = statement.getObject();
-				if (object.isBNode()) {
-					Resource bnode = (Resource) object;
-					subjectStack.push(bnode);
-					subjects.add(bnode);
-				}
-				if (SKOLEM_PATTERN.matcher(object.stringValue()).matches()) {
+				if (object.isBNode() || isSkolemized(object)) {
 					Resource bnode = (Resource) object;
 					subjectStack.push(bnode);
 					subjects.add(bnode);
@@ -86,5 +81,9 @@ public class RepositorySink {
 
 		}
 		return subjects;
+	}
+
+	private static boolean isSkolemized(Value object) {
+		return SKOLEM_PATTERN.matcher(object.stringValue()).matches();
 	}
 }

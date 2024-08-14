@@ -1,0 +1,46 @@
+<https://example.org/id/observation/1> <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#Verkeerstelling.tellingresultaat> "6"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<https://example.org/id/observation/1> <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#Verkeerstelling.geobserveerdKenmerk> <http://schema.org/.well-known/genid/a028ace7-478b-4483-b193-ab3b87382d05> .
+<https://example.org/id/observation/1> <https://data.vlaanderen.be/ns/verkeersmetingen#geobserveerdObject> <http://schema.org/.well-known/genid/9c1a2374-5fb4-426c-8c6f-cac6e5bae448> .
+<https://example.org/id/observation/1> <http://www.w3.org/ns/sosa/madeBySensor> <http://schema.org/.well-known/genid/b4d98450-1358-4fad-9a2c-475b5648cecf> .
+<https://example.org/id/observation/1> <http://www.w3.org/ns/prov#generatedAtTime> "2024-08-14T08:46:12.533Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/id/observation/1> <http://def.isotc211.org/iso19156/2011/Observation#OM_Observation.phenomenonTime> <http://schema.org/.well-known/genid/0ff70b8d-b3dc-4fd9-b5cf-d8b5a252585e> .
+<https://example.org/id/observation/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#Verkeerstelling> .
+<http://schema.org/.well-known/genid/03d5c756-102c-44f2-9566-c8959e7d6794> <https://data.vlaanderen.be/ns/netwerk#Knoop.geometrie> <http://schema.org/.well-known/genid/55f37932-59df-4b2d-81c2-153b0c5cd3c2> .
+<http://schema.org/.well-known/genid/03d5c756-102c-44f2-9566-c8959e7d6794> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://data.vlaanderen.be/ns/weg#Wegknoop> .
+<http://schema.org/.well-known/genid/2fc2360c-9e8c-4b19-8f29-d5d05bf70919> <https://data.vlaanderen.be/ns/netwerk#Knoop.geometrie> <http://schema.org/.well-known/genid/d351b57e-93a8-4f33-8963-9975c67fff87> .
+<http://schema.org/.well-known/genid/2fc2360c-9e8c-4b19-8f29-d5d05bf70919> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://data.vlaanderen.be/ns/weg#Wegknoop> .
+<http://schema.org/.well-known/genid/dc780dad-278d-482b-b827-78cbdd7d18dd> <http://www.opengis.net/ont/geosparql#asWKT> "POINT (3.22994761168957 51.1994773490174)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
+<http://schema.org/.well-known/genid/dc780dad-278d-482b-b827-78cbdd7d18dd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.opengis.net/ont/sf#Point> .
+<http://schema.org/.well-known/genid/55f37932-59df-4b2d-81c2-153b0c5cd3c2> <http://www.opengis.net/ont/geosparql#asWKT> "POINT (3.23008742183447 51.1993964651886)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
+<http://schema.org/.well-known/genid/55f37932-59df-4b2d-81c2-153b0c5cd3c2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.opengis.net/ont/sf#Point> .
+<http://schema.org/.well-known/genid/2d74698e-cbbe-4808-9e4f-e84f3d8b8e6d> <https://data.vlaanderen.be/ns/netwerk#eindknoop> <http://schema.org/.well-known/genid/2fc2360c-9e8c-4b19-8f29-d5d05bf70919> .
+<http://schema.org/.well-known/genid/2d74698e-cbbe-4808-9e4f-e84f3d8b8e6d> <https://data.vlaanderen.be/ns/netwerk#beginknoop> <http://schema.org/.well-known/genid/03d5c756-102c-44f2-9566-c8959e7d6794> .
+<http://schema.org/.well-known/genid/2d74698e-cbbe-4808-9e4f-e84f3d8b8e6d> <https://data.vlaanderen.be/ns/netwerk#Link.geometriemiddellijn> <http://schema.org/.well-known/genid/88f2807d-4720-4282-aec4-9b37d8a7bc73> .
+<http://schema.org/.well-known/genid/2d74698e-cbbe-4808-9e4f-e84f3d8b8e6d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://data.vlaanderen.be/ns/weg#Wegsegment> .
+<http://schema.org/.well-known/genid/88f2807d-4720-4282-aec4-9b37d8a7bc73> <http://www.opengis.net/ont/geosparql#asWKT> "LINESTRING (3.23008742183447 51.1993964651886, 3.22994761168957 51.1994773490174, 3.22981584817171 51.1995498292108)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
+<http://schema.org/.well-known/genid/88f2807d-4720-4282-aec4-9b37d8a7bc73> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.opengis.net/ont/sf#LineString> .
+<http://schema.org/.well-known/genid/a028ace7-478b-4483-b193-ab3b87382d05> <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#Verkeerstellingkenmerk.kenmerktype> <https://data.vlaanderen.be/doc/concept/VkmVerkeersKenmerkType/aantal> .
+<http://schema.org/.well-known/genid/a028ace7-478b-4483-b193-ab3b87382d05> <https://data.vlaanderen.be/ns/verkeersmetingen#voertuigType> <https://data.vlaanderen.be/doc/concept/VkmVoertuigType/fiets> .
+<http://schema.org/.well-known/genid/a028ace7-478b-4483-b193-ab3b87382d05> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#Verkeerstellingkenmerk> .
+<http://schema.org/.well-known/genid/d351b57e-93a8-4f33-8963-9975c67fff87> <http://www.opengis.net/ont/geosparql#asWKT> "POINT (3.22981584817171 51.1995498292108)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> .
+<http://schema.org/.well-known/genid/d351b57e-93a8-4f33-8963-9975c67fff87> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.opengis.net/ont/sf#Point> .
+<http://schema.org/.well-known/genid/23805e57-44b9-4de7-b8f3-51c95fd08b3c> <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2022-11-20T20:15:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://schema.org/.well-known/genid/23805e57-44b9-4de7-b8f3-51c95fd08b3c> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2006/time#Instant> .
+<http://schema.org/.well-known/genid/b622e1f4-6546-43e9-b28b-e70ed5e0ba2a> <https://schema.org/value> "1.328417e+1"^^<http://www.w3.org/2001/XMLSchema#double> .
+<http://schema.org/.well-known/genid/b622e1f4-6546-43e9-b28b-e70ed5e0ba2a> <https://schema.org/unitCode> "m"^^<https://w3id.org/cdt/ucumunit> .
+<http://schema.org/.well-known/genid/b622e1f4-6546-43e9-b28b-e70ed5e0ba2a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://def.isotc211.org/iso19103/2015/MeasureTypes#Length> .
+<http://schema.org/.well-known/genid/85ca8756-f734-41f7-a797-6e11c431c946> <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#Rijrichting.netwerkreferentieelement> <http://schema.org/.well-known/genid/2d74698e-cbbe-4808-9e4f-e84f3d8b8e6d> .
+<http://schema.org/.well-known/genid/85ca8756-f734-41f7-a797-6e11c431c946> <https://data.vlaanderen.be/ns/weg#rijrichting> <https://inspire.ec.europa.eu/codelist/LinkDirectionValue/inDirection> .
+<http://schema.org/.well-known/genid/85ca8756-f734-41f7-a797-6e11c431c946> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://data.vlaanderen.be/ns/weg#Rijrichting> .
+<http://schema.org/.well-known/genid/0ff70b8d-b3dc-4fd9-b5cf-d8b5a252585e> <http://www.w3.org/2006/time#hasXSDDuration> "PT15M"^^<http://www.w3.org/2001/XMLSchema#duration> .
+<http://schema.org/.well-known/genid/0ff70b8d-b3dc-4fd9-b5cf-d8b5a252585e> <http://www.w3.org/2006/time#hasBeginning> <http://schema.org/.well-known/genid/23805e57-44b9-4de7-b8f3-51c95fd08b3c> .
+<http://schema.org/.well-known/genid/0ff70b8d-b3dc-4fd9-b5cf-d8b5a252585e> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2006/time#TemporalEntity> .
+<http://schema.org/.well-known/genid/9c1a2374-5fb4-426c-8c6f-cac6e5bae448> <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#Verkeersmeetpunt.verkeersmeetpuntnetwerkreferentie> <http://schema.org/.well-known/genid/41def7d1-95bf-4bba-adcd-762d2bb57f5f> .
+<http://schema.org/.well-known/genid/9c1a2374-5fb4-426c-8c6f-cac6e5bae448> <https://data.vlaanderen.be/ns/verkeersmetingen#bemonsterdObject> <http://schema.org/.well-known/genid/85ca8756-f734-41f7-a797-6e11c431c946> .
+<http://schema.org/.well-known/genid/9c1a2374-5fb4-426c-8c6f-cac6e5bae448> <http://def.isotc211.org/iso19156/2011/SamplingPoint#SF_SamplingPoint.shape> <http://schema.org/.well-known/genid/dc780dad-278d-482b-b827-78cbdd7d18dd> .
+<http://schema.org/.well-known/genid/9c1a2374-5fb4-426c-8c6f-cac6e5bae448> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://data.vlaanderen.be/ns/verkeersmetingen#Verkeersmeetpunt> .
+<http://schema.org/.well-known/genid/41def7d1-95bf-4bba-adcd-762d2bb57f5f> <https://data.vlaanderen.be/ns/netwerk#toepassingsRichting> <https://inspire.ec.europa.eu/codelist/LinkDirectionValue/bothDirection> .
+<http://schema.org/.well-known/genid/41def7d1-95bf-4bba-adcd-762d2bb57f5f> <https://data.vlaanderen.be/ns/netwerk#Puntreferentie.opPositie> <http://schema.org/.well-known/genid/b622e1f4-6546-43e9-b28b-e70ed5e0ba2a> .
+<http://schema.org/.well-known/genid/41def7d1-95bf-4bba-adcd-762d2bb57f5f> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://data.vlaanderen.be/ns/netwerk#Puntreferentie> .
+<http://schema.org/.well-known/genid/b4d98450-1358-4fad-9a2c-475b5648cecf> <http://purl.org/dc/terms/type> <https://data.vlaanderen.be/doc/concept/VkmMeetInstrumentType/rubberslang> .
+<http://schema.org/.well-known/genid/b4d98450-1358-4fad-9a2c-475b5648cecf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/sosa/Sensor> .

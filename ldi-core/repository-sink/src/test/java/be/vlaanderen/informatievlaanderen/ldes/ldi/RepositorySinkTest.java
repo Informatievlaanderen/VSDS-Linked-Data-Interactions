@@ -161,7 +161,8 @@ class RepositorySinkTest {
 				.hasCauseInstanceOf(RepositoryException.class);
 
 		verify(connection, times(4)).getStatements(any(), isNull(), isNull());
-		verify(connection, times(3)).remove(any(Resource.class), isNull(), isNull());		verify(connection, times(3)).add(any(Model.class));
+		verify(connection, times(3)).remove(any(Resource.class), isNull(), isNull());
+		verify(connection, times(3)).add(any(Model.class));
 		verify(connection, never()).commit();
 		verify(connection).rollback();
 	}
