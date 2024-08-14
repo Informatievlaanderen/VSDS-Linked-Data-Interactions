@@ -46,6 +46,8 @@ jobs:
           path: |
             **/*with-dependencies.jar
             **/*application.jar
+            **/ldes-discoverer.jar
+
 
   build-ldio-image:
     runs-on: ubuntu-latest
