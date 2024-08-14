@@ -46,6 +46,7 @@ jobs:
           path: |
             **/*with-dependencies.jar
             **/*application.jar
+
   build-ldio-image:
     runs-on: ubuntu-latest
     needs: build
@@ -66,7 +67,8 @@ jobs:
         with:
           context: .github
           push: false
-          file: ldio.Dockerfile
+          file: .github/ldio.Dockerfile
+
   build-discoverer-image:
     runs-on: ubuntu-latest
     needs: build
@@ -87,4 +89,4 @@ jobs:
         with:
           context: .github
           push: false
-          file: ldes-discoverer.Dockerfile
+          file: ./ldes-discoverer.Dockerfile
