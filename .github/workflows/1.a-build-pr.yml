@@ -89,4 +89,4 @@ jobs:
         with:
           context: .github
           push: false
-          file: ./ldes-discoverer.Dockerfile
+          file: .github/ldes-discoverer.Dockerfile
