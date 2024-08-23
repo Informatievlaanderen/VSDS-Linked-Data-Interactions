@@ -19,14 +19,19 @@ public class ExactlyOnceFilter implements MemberFilter {
 		this.keepState = keepState;
 	}
 
-	@Override
-	public boolean isAllowed(SuppliedMember member) {
-		return !memberIdRepository.contains(member.getId());
-	}
+//	@Override
+//	public boolean isAllowed(SuppliedMember member) {
+//		return !memberIdRepository.contains(member.getId());
+//	}
+//
+//	@Override
+//	public void saveAllowedMember(SuppliedMember member) {
+//		memberIdRepository.addMemberId(member.getId());
+//	}
 
 	@Override
-	public void saveAllowedMember(SuppliedMember member) {
-		memberIdRepository.addMemberId(member.getId());
+	public boolean saveMemberIfAllowed(SuppliedMember member) {
+		return memberIdRepository.addMemberIdIfNotExists(member.getId());
 	}
 
 	/**

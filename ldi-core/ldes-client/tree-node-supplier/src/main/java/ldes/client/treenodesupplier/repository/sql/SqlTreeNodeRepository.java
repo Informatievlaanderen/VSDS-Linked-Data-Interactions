@@ -34,19 +34,20 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 	@Override
 	public boolean existsById(String treeNodeId) {
 		return entityManager
-				.createNamedQuery("TreeNode.countById", Long.class)
+				.createNamedQuery("TreeNode.getById", TreeNodeRecordEntity.class)
 				.setParameter("id", treeNodeId)
-				.getSingleResult() > 0;
+				.setMaxResults(1)
+				.getResultStream()
+				.findFirst()
+				.isPresent();
 	}
 
 	@Override
 	public Optional<TreeNodeRecord> getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus treeNodeStatus) {
 		return entityManager
-				.createQuery("SELECT t FROM TreeNodeRecordEntity t" +
-								" WHERE t.treeNodeStatus = :treeNodeStatus" +
-								" ORDER BY t.earliestNextVisit",
-						TreeNodeRecordEntity.class)
+				.createNamedQuery("TreeNode.getByStatusAndDate", TreeNodeRecordEntity.class)
 				.setParameter("treeNodeStatus", treeNodeStatus.name())
+				.setMaxResults(1)
 				.getResultStream()
 				.findFirst()
 				.map(TreeNodeRecordEntityMapper::toTreeNode);
@@ -54,11 +55,14 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
 	@Override
 	public boolean existsByIdAndStatus(String treeNodeId, TreeNodeStatus treeNodeStatus) {
-		return ((Number) entityManager
-				.createNamedQuery("TreeNode.countByIdAndStatus")
+		return entityManager
+				.createNamedQuery("TreeNode.getByIdAndStatus", TreeNodeRecordEntity.class)
 				.setParameter("id", treeNodeId)
 				.setParameter("treeNodeStatus", treeNodeStatus.name())
-				.getSingleResult()).longValue() > 0;
+				.setMaxResults(1)
+				.getResultStream()
+				.findFirst()
+				.isPresent();
 	}
 
 	@Override
@@ -69,8 +73,11 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 	@Override
 	public boolean containsTreeNodeRecords() {
 		return entityManager
-				.createNamedQuery("TreeNode.count", Long.class)
-				.getSingleResult() > 0;
+				.createNamedQuery("TreeNode.getAll", TreeNodeRecordEntity.class)
+				.setMaxResults(1)
+				.getResultStream()
+				.findFirst()
+				.isPresent();
 	}
 
 	@Override

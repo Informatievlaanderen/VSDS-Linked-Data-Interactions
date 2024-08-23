@@ -26,22 +26,26 @@ public class SqlMemberRepository implements MemberRepository {
 	public Optional<MemberRecord> getTreeMember() {
 
 		return entityManager
-				.createNamedQuery("Member.getFirst", MemberRecordEntity.class)
+				.createNamedQuery("Member.getAllOrderedByCreation", MemberRecordEntity.class)
+				.setMaxResults(1)
 				.getResultStream()
-				.map(MemberRecordEntityMapper::toMemberRecord)
-				.findFirst();
-
+				.findFirst()
+				.map(MemberRecordEntityMapper::toMemberRecord);
 	}
 
 	@Override
 	public void deleteMember(MemberRecord member) {
-		entityManager.getTransaction().begin();
-		entityManager
-				.createNamedQuery("Member.deleteByMemberId")
-				.setParameter("memberId", member.getMemberId())
-				.executeUpdate();
-		entityManager.getTransaction().commit();
-	}
+		org.hibernate.Session session = entityManager.unwrap(org.hibernate.Session.class);
+		session.doWork(c -> {
+			var statelessSession = session.getSessionFactory().openStatelessSession(c);
+			try (statelessSession) {
+				statelessSession
+						.createNamedQuery("Member.deleteByMemberId")
+						.setParameter("memberId", member.getMemberId())
+						.executeUpdate();
+			}
+		});
+    }
 
 	@Override
 	public void saveTreeMembers(Stream<MemberRecord> treeMemberStream) {
