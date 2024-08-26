@@ -30,8 +30,8 @@ public class RepositorySinkConnection {
 
 	public RepositoryResult<Statement> getStatements(Resource subject, IRI predicate, Value object) {
 		return getNamedGraphIri()
-				.map(namedGraphIri -> holder.getConnection().getStatements(subject, predicate, object, false, namedGraphIri))
-				.orElseGet(() -> holder.getConnection().getStatements(subject, predicate, object, false));
+				.map(namedGraphIri -> holder.getConnection().getStatements(subject, predicate, object, namedGraphIri))
+				.orElseGet(() -> holder.getConnection().getStatements(subject, predicate, object));
 	}
 
 	public void remove(List<Statement> statements) {
