@@ -6,6 +6,7 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.RepositoryResult;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,17 +30,16 @@ public class RepositorySinkConnection {
 
 	public RepositoryResult<Statement> getStatements(Resource subject, IRI predicate, Value object) {
 		return getNamedGraphIri()
-				.map(namedGraphIri -> holder.getConnection().getStatements(subject, predicate, object, namedGraphIri))
-				.orElseGet(() -> holder.getConnection().getStatements(subject, predicate, object));
+				.map(namedGraphIri -> holder.getConnection().getStatements(subject, predicate, object, false, namedGraphIri))
+				.orElseGet(() -> holder.getConnection().getStatements(subject, predicate, object, false));
 	}
 
-	public void remove(Resource subject, IRI predicate, Value object) {
+	public void remove(List<Statement> statements) {
 		getNamedGraphIri().ifPresentOrElse(
-				namedGraphIri -> holder.getConnection().remove(subject, predicate, object, namedGraphIri),
-				() -> holder.getConnection().remove(subject, predicate, object)
+				namedGraphIri -> holder.getConnection().remove(statements, namedGraphIri),
+				() -> holder.getConnection().remove(statements)
 		);
 	}
-
 	public void commit() {
 		try (RepositoryConnection connection = holder.getConnection()) {
 			connection.commit();

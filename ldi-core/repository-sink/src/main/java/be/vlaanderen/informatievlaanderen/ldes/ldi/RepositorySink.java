@@ -6,14 +6,12 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ModelSubjectsExtract
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.RepositorySinkConnection;
 import org.apache.jena.rdf.model.Model;
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -59,32 +57,23 @@ public class RepositorySink {
 	}
 
 	protected void deleteEntity(org.eclipse.rdf4j.model.Model model) {
-		getAllSubjectsFromModel(model)
-				.forEach(subject -> repositorySinkConnection.remove(subject, null, null));
+		repositorySinkConnection.remove(getAllOldModelStatements(model));
 	}
 
-	private Set<Resource> getAllSubjectsFromModel(org.eclipse.rdf4j.model.Model model) {
-		final Set<Resource> subjects = ModelSubjectsExtractor.extractSubjects(model);
-		final Deque<Resource> subjectStack = new ArrayDeque<>(subjects);
+	private List<Statement> getAllOldModelStatements(org.eclipse.rdf4j.model.Model model) {
+		final List<Statement> result = new ArrayList<>(10000); // TODO: check how to better determine initial capacity
+		final Deque<Resource> subjectStack = new ArrayDeque<>(ModelSubjectsExtractor.extractSubjects(model));
 
 		while (!subjectStack.isEmpty()) {
 			Resource subject = subjectStack.pop();
-
 			repositorySinkConnection.getStatements(subject, null, null).forEach(statement -> {
+				result.add(statement);
 				Value object = statement.getObject();
-				if (object.isBNode()) {
-					Resource bnode = (Resource) object;
-					subjectStack.push(bnode);
-					subjects.add(bnode);
-				}
-				if (SKOLEM_PATTERN.matcher(object.stringValue()).matches()) {
-					Resource bnode = (Resource) object;
-					subjectStack.push(bnode);
-					subjects.add(bnode);
+				if (object.isBNode() || (object.isIRI() && SKOLEM_PATTERN.matcher(object.stringValue()).matches())) {
+					subjectStack.push((Resource) object);
 				}
 			});
-
 		}
-		return subjects;
+		return result;
 	}
 }
