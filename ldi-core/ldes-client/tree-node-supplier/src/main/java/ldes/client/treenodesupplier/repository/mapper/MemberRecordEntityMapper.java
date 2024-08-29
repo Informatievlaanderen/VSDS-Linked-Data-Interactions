@@ -9,6 +9,7 @@ import org.apache.jena.riot.RDFWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class MemberRecordEntityMapper {
 	private MemberRecordEntityMapper() {
@@ -16,11 +17,15 @@ public class MemberRecordEntityMapper {
 
 	public static MemberRecordEntity fromMemberRecord(MemberRecord treeMember) {
 		final Model model = treeMember.getModel();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		RDFWriter.source(model).lang(Lang.RDFPROTO).output(stream);
-		final byte[] bytes = stream.toByteArray();
-		return new MemberRecordEntity(treeMember.getMemberId(), treeMember.getCreatedAt(), bytes);
-	}
+        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+            RDFWriter.source(model).lang(Lang.RDFPROTO).output(stream);
+            stream.flush();
+			final byte[] bytes = stream.toByteArray();
+			return new MemberRecordEntity(treeMember.getMemberId(), treeMember.getCreatedAt(), bytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	public static MemberRecord toMemberRecord(MemberRecordEntity memberRecordEntity) {
 		final Model model = RDFParser.source(new ByteArrayInputStream(memberRecordEntity.getModelAsBytes())).lang(Lang.RDFPROTO).toModel();
