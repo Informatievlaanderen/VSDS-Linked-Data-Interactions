@@ -1,39 +1,30 @@
 package ldes.client.treenodesupplier.repository.sql;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.MemberIdRecordEntity;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 
-import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 public class SqlMemberIdRepository implements MemberIdRepository {
-    final EntityManagerFactory entityManagerFactory;
-    private final EntityManager entityManager;
-    private final String instanceName;
+	private final EntityManagerFactory entityManagerFactory;
+	private final String instanceName;
 
-    public SqlMemberIdRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-        this.entityManager = entityManagerFactory.getEntityManager();
-        this.instanceName = instanceName;
-    }
+	public SqlMemberIdRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
+		this.entityManagerFactory = entityManagerFactory;
+		this.instanceName = instanceName;
+	}
 
-    @Override
-    public void addMemberId(String memberId) {
-        MemberIdRecordEntity memberRecordEntity = MemberIdRecordEntity.fromId(memberId);
-        entityManager.getTransaction().begin();
-        entityManager.persist(memberRecordEntity);
-        entityManager.getTransaction().commit();
-    }
+	@Transactional
+	@Override
+	public boolean addMemberIdIfNotExists(String memberId) {
+		return entityManagerFactory.executeStatelessQuery(session -> session
+				.createNamedQuery("MemberId.insert")
+				.setParameter("memberId", memberId)
+				.executeUpdate()) > 0;
+	}
 
-    @Override
-    public boolean contains(String memberId) {
-        return entityManager.createNamedQuery("MemberId.get", MemberIdRecordEntity.class)
-                .setParameter("id", memberId)
-                .getResultStream()
-                .findAny().isPresent();
-    }
-    @Override
-    public void destroyState() {
-        entityManagerFactory.destroyState(instanceName);
-    }
+	@Override
+	public void destroyState() {
+		entityManagerFactory.destroyState(instanceName);
+	}
 }

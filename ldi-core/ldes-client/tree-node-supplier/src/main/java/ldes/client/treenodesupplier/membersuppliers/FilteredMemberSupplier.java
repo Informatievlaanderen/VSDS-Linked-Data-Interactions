@@ -28,11 +28,10 @@ public class FilteredMemberSupplier extends MemberSupplierDecorator {
 	@Override
 	public SuppliedMember get() {
 		SuppliedMember member = super.get();
-		while (!filter.isAllowed(member)) {
+		while (!filter.saveMemberIfAllowed(member)) {
 			log.debug("Member {} has been ignored by the {}", member.getId(), filter.getClass().getSimpleName());
 			member = super.get();
 		}
-		filter.saveAllowedMember(member);
 		return member;
 	}
 

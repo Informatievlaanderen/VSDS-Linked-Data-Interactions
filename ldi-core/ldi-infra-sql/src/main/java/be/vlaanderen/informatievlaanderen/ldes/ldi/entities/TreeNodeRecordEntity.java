@@ -1,15 +1,18 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.entities;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.*;
-
 @Entity
-@NamedQuery(name = "TreeNode.count", query = "SELECT COUNT(t) FROM TreeNodeRecordEntity t")
-@NamedQuery(name = "TreeNode.countById", query = "SELECT COUNT(t) FROM TreeNodeRecordEntity t WHERE t.id = :id")
-@NamedQuery(name = "TreeNode.countByIdAndStatus", query = "SELECT COUNT(t) FROM TreeNodeRecordEntity t WHERE t.id = :id and t.treeNodeStatus = :treeNodeStatus")
-@NamedQuery(name = "TreeNode.getByTreeNodeStatus", query = "SELECT t FROM TreeNodeRecordEntity t WHERE t.treeNodeStatus = :treeNodeStatus")
+@Table(indexes = {
+		@Index(name="treenoderecordentity_treenodeurl_treenodestatus", columnList = "treeNodeUrl,treeNodeStatus"),
+		@Index(name="treenoderecordentity_treenodestatus_earliestnextvisit", columnList = "treeNodeStatus,earliestNextVisit")
+})
+@NamedQuery(name = "TreeNode.getAll", query = "SELECT t FROM TreeNodeRecordEntity t")
+@NamedQuery(name = "TreeNode.getById", query = "SELECT t FROM TreeNodeRecordEntity t WHERE t.id = :id")
+@NamedQuery(name = "TreeNode.getByIdAndStatus", query = "SELECT t FROM TreeNodeRecordEntity t WHERE t.id = :id and t.treeNodeStatus = :treeNodeStatus")
+@NamedQuery(name = "TreeNode.getByStatusAndDate", query = "SELECT t FROM TreeNodeRecordEntity t WHERE t.treeNodeStatus = :treeNodeStatus ORDER BY t.earliestNextVisit")
 public class TreeNodeRecordEntity {
 
 	@Id
