@@ -47,10 +47,11 @@ public class ChangeDetectionFilter implements LdiOneToOneTransformer {
 		canonicalizeInputModel(model, outputStream);
 		String hashedModel = hashModelBytes(outputStream.toByteArray());
 		final HashedStateMember hashedStateMember = new HashedStateMember(subject.getURI(), hashedModel);
-		if (hashedStateMemberRepository.saveHashedStateMemberIfNotExists(hashedStateMember)) {
-			return model;
+		if (hashedStateMemberRepository.containsHashedStateMember(hashedStateMember)) {
+			return ModelFactory.createDefaultModel();
 		}
-		return ModelFactory.createDefaultModel();
+		hashedStateMemberRepository.saveHashedStateMember(hashedStateMember);
+		return model;
 	}
 
 	/**

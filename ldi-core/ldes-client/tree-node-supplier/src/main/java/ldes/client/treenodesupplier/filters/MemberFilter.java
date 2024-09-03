@@ -10,7 +10,7 @@ public interface MemberFilter {
 	 * Saves the member if it is allowed to supply the member
 	 *
 	 * @param member the members that will be checked if it is allowed to supply and saves it if so
-	 * @return whether the member is allowed
+	 * @return whether the member is allowed and saved
 	 */
 	boolean saveMemberIfAllowed(SuppliedMember member);
 
