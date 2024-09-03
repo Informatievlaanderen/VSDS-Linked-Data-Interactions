@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table
-@NamedNativeQuery(name = "HashedStateMember.insert", query = "INSERT INTO HashedStateMemberEntity(id, hash) VALUES (?, ?)")
+@NamedNativeQuery(name = "HashedStateMember.insert", query = "INSERT INTO HashedStateMemberEntity(id, hash) VALUES (?, ?) ON CONFLICT DO NOTHING")
 public class HashedStateMemberEntity {
 	@Id
 	private String id;
