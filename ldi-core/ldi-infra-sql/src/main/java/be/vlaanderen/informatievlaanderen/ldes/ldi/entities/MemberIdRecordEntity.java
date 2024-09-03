@@ -1,21 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.entities;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.Table;
 
 @Entity
-@Table()
-@NamedQuery(name = "MemberId.get", query = "SELECT m FROM MemberIdRecordEntity m WHERE m.id = :id")
+@Table
+@NamedNativeQuery(name = "MemberId.insert", query = "INSERT INTO MemberIdRecordEntity(id) VALUES (:memberId) ON CONFLICT DO NOTHING")
 public class MemberIdRecordEntity {
-    @Id
-    private String id;
-
-    public MemberIdRecordEntity() {
-    }
-    public MemberIdRecordEntity(String id) {
-        this.id = id;
-    }
-
-    public static MemberIdRecordEntity fromId(String id) {
-        return new MemberIdRecordEntity(id);
-    }
+	@Id
+	private String id;
 }

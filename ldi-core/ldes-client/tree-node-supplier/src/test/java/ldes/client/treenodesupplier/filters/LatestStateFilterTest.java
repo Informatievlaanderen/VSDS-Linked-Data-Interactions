@@ -56,18 +56,20 @@ class LatestStateFilterTest {
 		final boolean actual = latestStateFilter.saveMemberIfAllowed(olderMember);
 
 		assertThat(actual).isFalse();
-		verify(memberVersionRepository).addMemberVersion(new MemberVersionRecord(VERSION_OF, any()));
+		verify(memberVersionRepository, never()).addMemberVersion(new MemberVersionRecord(VERSION_OF, any()));
 	}
 
-//	@Test
-//	void test_saveAllowedMember() {
-//		final SuppliedMember member = new SuppliedMember(memberId, createModel());
-//
-//		latestStateFilter.saveAllowedMember(member);
-//
-//
-//		verify(memberVersionRepository).addMemberVersion(new MemberVersionRecord(VERSION_OF, any()));
-//	}
+	@Test
+	void test_saveAllowedMember() {
+		final SuppliedMember member = new SuppliedMember(memberId, createModel());
+		when(memberVersionRepository.isVersionAfterTimestamp(any())).thenReturn(true);
+
+
+		latestStateFilter.saveMemberIfAllowed(member);
+
+
+		verify(memberVersionRepository).addMemberVersion(new MemberVersionRecord(VERSION_OF, any()));
+	}
 
 	@Test
 	void given_KeepStateIsFalse_when_DestroyState_then_DestroyStateFromRepo() {

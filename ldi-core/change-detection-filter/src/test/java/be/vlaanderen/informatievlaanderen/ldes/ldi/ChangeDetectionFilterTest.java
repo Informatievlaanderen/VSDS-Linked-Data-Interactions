@@ -53,7 +53,7 @@ class ChangeDetectionFilterTest {
 
 	@Test
 	void given_RepositoryContainingMember_when_FilterModel_then_ReturnEmptyModel() {
-		when(hashedStateMemberRepository.containsHashedStateMember(any())).thenReturn(true);
+		when(hashedStateMemberRepository.saveHashedStateMemberIfNotExists(any())).thenReturn(false);
 
 		final Model filteredModel = changeDetectionFilter.transform(supplyStateObject());
 
@@ -64,7 +64,7 @@ class ChangeDetectionFilterTest {
 	void given_EmptyRepository_when_FilterModel_then_ReturnExactModel() {
 		final Model modelToFilter = supplyStateObject();
 		final HashedStateMember expectedHashedStateMember = argThat(member -> member.memberId().equals("http://test-data/mobility-hindrance/1"));
-		when(hashedStateMemberRepository.containsHashedStateMember(expectedHashedStateMember)).thenReturn(false);
+		when(hashedStateMemberRepository.saveHashedStateMemberIfNotExists(expectedHashedStateMember)).thenReturn(true);
 
 		final Model filteredModel = changeDetectionFilter.transform(modelToFilter);
 

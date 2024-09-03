@@ -8,21 +8,11 @@ import java.util.List;
 public class InMemoryMemberIdRepository implements MemberIdRepository {
 	private final List<String> memberIds = new ArrayList<>();
 
-//	@Override
-//	public void addMemberId(String memberId) {
-//		memberIds.add(memberId);
-//	}
-//
-//	@Override
-//	public boolean contains(String memberId) {
-//		return memberIds.contains(memberId);
-//	}
-
 	@Override
 	public boolean addMemberIdIfNotExists(String memberId) {
 		if (memberIds.contains(memberId)) {
 			return false;
-		};
+		}
 		memberIds.add(memberId);
 		return true;
 	}

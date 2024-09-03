@@ -35,12 +35,12 @@ class SqlMemberVersionRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        when(entityManagerFactory.getEntityManager()).thenReturn(entityManager);
         repository = new SqlMemberVersionRepository(entityManagerFactory, instanceName);
     }
 
     @Test
     void test_addMemberVersion() {
+        when(entityManagerFactory.getEntityManager()).thenReturn(entityManager);
         MemberVersionRecord actual = new MemberVersionRecord("versionOf", LocalDateTime.now());
         MemberVersionRecordEntity entity = MemberVersionRecordEntityMapper.fromMemberVersionRecord(actual);
 
@@ -51,7 +51,8 @@ class SqlMemberVersionRepositoryTest {
 
     @Test
     void whenNoOlderVersionPresent_isVersionAfterTimestampIsTrue() {
-        TypedQuery<MemberVersionRecordEntity> mockedQuery = mock(TypedQuery.class);
+        when(entityManagerFactory.getEntityManager()).thenReturn(entityManager);
+        TypedQuery<MemberVersionRecordEntity> mockedQuery = mock();
         when(entityManager.createNamedQuery("MemberVersion.findMemberVersionAfterTimestamp", MemberVersionRecordEntity.class)).thenReturn(mockedQuery);
         when(mockedQuery.setParameter(anyString(), any())).thenReturn(mockedQuery);
 
@@ -64,6 +65,7 @@ class SqlMemberVersionRepositoryTest {
 
     @Test
     void whenOlderVersionIsPresent_isVersionAfterTimestampIsFalse() {
+        when(entityManagerFactory.getEntityManager()).thenReturn(entityManager);
         final String versionOf = "versionOf";
         MemberVersionRecordEntity olderVersion = new MemberVersionRecordEntity(versionOf, LocalDateTime.now().minusDays(1));
         MemberVersionRecord memberVersion = new MemberVersionRecord(versionOf, LocalDateTime.now());

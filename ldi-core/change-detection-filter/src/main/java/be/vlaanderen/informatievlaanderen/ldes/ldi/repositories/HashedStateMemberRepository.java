@@ -7,14 +7,12 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.HashedStateMember;
  */
 public interface HashedStateMemberRepository {
 	/**
-	 * Checks if the database already contain a record that contains the exact same HashedStateMember
+	 * Saves the record if the database does contain a record with the exact same HashedStateMember yet
 	 *
 	 * @param hashedStateMember representation object that contains a memberId and the hash of the state member
-	 * @return true if an exact same record has found, otherwise false
+	 * @return <code>true</code> if the member is saved successfully, otherwise <code>false</code>
 	 */
-	boolean containsHashedStateMember(HashedStateMember hashedStateMember);
-
-	void saveHashedStateMember(HashedStateMember hashedStateMember);
+	boolean saveHashedStateMemberIfNotExists(HashedStateMember hashedStateMember);
 
 	/**
 	 * Clean up the resources, should be called when the repository is not used anymore

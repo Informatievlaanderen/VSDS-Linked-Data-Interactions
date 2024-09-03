@@ -23,7 +23,8 @@ public class MemberRecordEntityMapper {
 	}
 
 	public static MemberRecord toMemberRecord(MemberRecordEntity memberRecordEntity) {
-		final Model model = RDFParser.source(new ByteArrayInputStream(memberRecordEntity.getModelAsBytes())).lang(Lang.RDFPROTO).toModel();
+		final byte[] bytes = memberRecordEntity.getModelAsBytes();
+		final Model model = RDFParser.source(new ByteArrayInputStream(bytes)).lang(Lang.RDFPROTO).toModel();
 		return new MemberRecord(memberRecordEntity.getMemberId(), model, memberRecordEntity.getCreatedAt());
 	}
 }

@@ -36,25 +36,12 @@ public class LatestStateFilter implements MemberFilter {
 		this.versionOfPath = versionOfPath;
 	}
 
-//	@Override
-//	public boolean isAllowed(SuppliedMember member) {
-//		final String versionOf = extractVersionOf(member);
-//		final LocalDateTime timestamp = extractTimestampWithSubject(member);
-//		return memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(versionOf, timestamp));
-//	}
-//
-//	@Override
-//	public void saveAllowedMember(SuppliedMember member) {
-//		final String versionOf = extractVersionOf(member);
-//		final LocalDateTime timestamp = extractTimestampWithSubject(member);
-//		memberVersionRepository.addMemberVersion(new MemberVersionRecord(versionOf, timestamp));
-//	}
 
 	@Override
 	public boolean saveMemberIfAllowed(SuppliedMember member) {
 		final String versionOf = extractVersionOf(member);
 		final LocalDateTime timestamp = extractTimestampWithSubject(member);
-		var isAllowed = memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(versionOf, timestamp));
+		final boolean isAllowed = memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(versionOf, timestamp));
 		if (isAllowed) {
 			memberVersionRepository.addMemberVersion(new MemberVersionRecord(versionOf, timestamp));
 		}
