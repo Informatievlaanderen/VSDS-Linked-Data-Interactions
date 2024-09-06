@@ -43,12 +43,14 @@ public class MemberSupplierFactory {
     private final ComponentProperties properties;
     private final RequestExecutor requestExecutor;
     private final Consumer<ClientStatus> clientStatusConsumer;
+	private final StatePersistenceFactory statePersistenceFactory;
 
     public MemberSupplierFactory(ComponentProperties properties, RequestExecutor requestExecutor,
-                                 Consumer<ClientStatus> clientStatusConsumer) {
+                                 Consumer<ClientStatus> clientStatusConsumer, StatePersistenceFactory statePersistenceFactory) {
         this.properties = properties;
         this.requestExecutor = requestExecutor;
         this.clientStatusConsumer = clientStatusConsumer;
+	    this.statePersistenceFactory = statePersistenceFactory;
     }
 
     public MemberSupplier getMemberSupplier() {
@@ -95,7 +97,7 @@ public class MemberSupplierFactory {
     }
 
     private StatePersistence getStatePersistence() {
-        return new StatePersistenceFactory().getStatePersistence(properties);
+	    return statePersistenceFactory.getStatePersistence(properties);
     }
 
     private Boolean getKeepState() {

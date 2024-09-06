@@ -35,7 +35,7 @@ class MemberSupplierFactoryTest {
 		defaultInputConfig.put(USE_VERSION_MATERIALISATION, "true");
 		final var componentProperties = new ComponentProperties("pipelineName", "cName", defaultInputConfig);
 
-		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer).getMemberSupplier();
+		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer, null).getMemberSupplier();
 
 		assertThat(memberSupplier).isInstanceOf(VersionMaterialisedMemberSupplier.class);
 	}
@@ -45,7 +45,7 @@ class MemberSupplierFactoryTest {
 		defaultInputConfig.put(USE_EXACTLY_ONCE_FILTER, "false");
 		final var componentProperties = new ComponentProperties("pipelineName", "cName", defaultInputConfig);
 
-		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer).getMemberSupplier();
+		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer, null).getMemberSupplier();
 
 		assertThat(memberSupplier).isInstanceOf(MemberSupplierImpl.class);
 	}
@@ -53,7 +53,7 @@ class MemberSupplierFactoryTest {
 	void when_VersionMaterialisationIsNotEnabled_then_OnlyOnceMemberSupplierIsReturned() {
 		final var componentProperties = new ComponentProperties("pipelineName", "cName", defaultInputConfig);
 
-		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer).getMemberSupplier();
+		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer, null).getMemberSupplier();
 
 		assertThat(memberSupplier).isInstanceOf(FilteredMemberSupplier.class);
 	}
@@ -64,7 +64,7 @@ class MemberSupplierFactoryTest {
 		defaultInputConfig.put(USE_LATEST_STATE_FILTER, "true");
 		final var componentProperties = new ComponentProperties("pipelineName", "cName", defaultInputConfig);
 
-		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer).getMemberSupplier();
+		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer, null).getMemberSupplier();
 
 		assertThat(memberSupplier)
 				.isInstanceOf(VersionMaterialisedMemberSupplier.class)
@@ -78,7 +78,7 @@ class MemberSupplierFactoryTest {
 		defaultInputConfig.put(USE_LATEST_STATE_FILTER, "false");
 		final var componentProperties = new ComponentProperties("pipelineName", "cName", defaultInputConfig);
 
-		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer).getMemberSupplier();
+		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer, null).getMemberSupplier();
 
 		assertThat(memberSupplier)
 				.isInstanceOf(VersionMaterialisedMemberSupplier.class)
@@ -92,7 +92,7 @@ class MemberSupplierFactoryTest {
 		defaultInputConfig.put(USE_LATEST_STATE_FILTER, "true");
 		final var componentProperties = new ComponentProperties("pipelineName", "cName", defaultInputConfig);
 
-		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer).getMemberSupplier();
+		MemberSupplier memberSupplier = new MemberSupplierFactory(componentProperties, null, statusConsumer, null).getMemberSupplier();
 
 		assertThat(memberSupplier).isInstanceOf(MemberSupplierImpl.class);
 	}
@@ -101,7 +101,7 @@ class MemberSupplierFactoryTest {
 	void when_NoUrlsAreConfigured_then_ThrowException() {
 		final String expectedErrorMessage = "Pipeline \"pipelineName\": \"cName\" : Missing value for property \"urls\" .";
 		final var componentProperties = new ComponentProperties("pipelineName", "cName", Map.of("url", "http://localhost:8080/ldes"));
-		final MemberSupplierFactory memberSupplierFactory = new MemberSupplierFactory(componentProperties, null, statusConsumer);
+		final MemberSupplierFactory memberSupplierFactory = new MemberSupplierFactory(componentProperties, null, statusConsumer, null);
 		assertThatThrownBy(memberSupplierFactory::getMemberSupplier)
 				.isInstanceOf(ConfigPropertyMissingException.class)
 				.hasMessage(expectedErrorMessage);

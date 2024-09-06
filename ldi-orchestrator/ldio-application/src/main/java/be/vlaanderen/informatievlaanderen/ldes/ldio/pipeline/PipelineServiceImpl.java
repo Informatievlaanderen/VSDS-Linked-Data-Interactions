@@ -4,6 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineCr
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineConfigEntity;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineConfigRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineTO;
@@ -21,12 +23,15 @@ public class PipelineServiceImpl implements PipelineService {
 	private final PipelineCreatorService pipelineCreatorService;
 	private final PipelineStatusService pipelineStatusService;
 	private final PipelineRepository pipelineRepository;
+	private final PipelineConfigRepository pipelineConfigRepository;
+
 
 	public PipelineServiceImpl(PipelineCreatorService pipelineCreatorService, PipelineStatusService pipelineStatusService,
-	                           PipelineRepository pipelineRepository) {
+	                           PipelineRepository pipelineRepository, PipelineConfigRepository pipelineConfigRepository) {
 		this.pipelineCreatorService = pipelineCreatorService;
 		this.pipelineStatusService = pipelineStatusService;
 		this.pipelineRepository = pipelineRepository;
+		this.pipelineConfigRepository = pipelineConfigRepository;
 	}
 
 	@EventListener
@@ -42,6 +47,7 @@ public class PipelineServiceImpl implements PipelineService {
 			pipelineCreatorService.initialisePipeline(pipeline);
 			pipelineRepository.activateNewPipeline(pipeline);
 			log.atInfo().log("CREATION of pipeline '{}' successfully finished", pipeline.getName().replaceAll("[\n\r]", "_"));
+			pipelineConfigRepository.save(PipelineConfigEntity.fromConfig(pipeline));
 			return pipeline;
 		}
 	}
@@ -53,6 +59,7 @@ public class PipelineServiceImpl implements PipelineService {
 		} else {
 			pipelineCreatorService.initialisePipeline(pipeline);
 			pipelineRepository.activateExistingPipeline(pipeline, persistedFile);
+			pipelineConfigRepository.save(PipelineConfigEntity.fromConfig(pipeline));
 			return pipeline;
 		}
 	}

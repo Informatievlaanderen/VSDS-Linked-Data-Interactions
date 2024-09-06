@@ -1,6 +1,7 @@
 package ldes.client.treenodesupplier.domain.services;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.h2.H2EntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
@@ -25,6 +26,8 @@ public class MemberVersionRepositoryFactory {
 			case SQLITE ->
 					new SqlMemberVersionRepository(SqliteEntityManagerFactory.getInstance(properties), instanceName);
 			case MEMORY -> new InMemoryMemberVersionRepository();
+			case H2 ->
+					new SqlMemberVersionRepository(H2EntityManagerFactory.getInstance(instanceName, properties.getProperties()), instanceName);
 			case POSTGRES ->
 					new SqlMemberVersionRepository(PostgresEntityManagerFactory.getInstance(instanceName, properties.getProperties()), instanceName);
 		};

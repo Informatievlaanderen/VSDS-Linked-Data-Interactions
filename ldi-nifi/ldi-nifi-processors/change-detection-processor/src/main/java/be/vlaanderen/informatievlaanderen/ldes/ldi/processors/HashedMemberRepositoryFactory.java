@@ -25,6 +25,7 @@ public class HashedMemberRepositoryFactory {
 			case POSTGRES -> createPostgresRepository(context);
 			case SQLITE -> createSqliteRepository(context);
 			case MEMORY -> new InMemoryHashedStateMemberRepository();
+			case H2 -> null;
 		};
 	}
 

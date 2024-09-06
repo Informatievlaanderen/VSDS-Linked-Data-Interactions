@@ -35,6 +35,7 @@ class TreeNodeProcessorFactory {
 			case MEMORY -> createInMemoryStatePersistence();
 			case SQLITE -> createSqliteStatePersistence();
 			case POSTGRES -> createPostgresPersistence();
+			case H2 -> null;
 		};
 		final RequestExecutor requestExecutor = requestExecutorFactory.createNoAuthExecutor();
 		final TimestampExtractor timestampExtractor = new TimestampFromCurrentTimeExtractor();

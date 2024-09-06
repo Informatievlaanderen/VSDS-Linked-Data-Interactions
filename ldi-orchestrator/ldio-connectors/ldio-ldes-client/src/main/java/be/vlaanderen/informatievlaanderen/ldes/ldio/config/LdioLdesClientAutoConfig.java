@@ -6,10 +6,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
@@ -23,16 +23,18 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.
 public class LdioLdesClientAutoConfig {
 	@SuppressWarnings("java:S6830")
 	@Bean(LdioLdesClient.NAME)
-	public LdioInputConfigurator ldioConfigurator(ClientStatusService clientStatusService, ObservationRegistry observationRegistry) {
-		return new LdioLdesClientConfigurator(clientStatusService, observationRegistry);
+	public LdioInputConfigurator ldioConfigurator(StatePersistenceFactory statePersistenceFactory, ClientStatusService clientStatusService, ObservationRegistry observationRegistry) {
+		return new LdioLdesClientConfigurator(statePersistenceFactory, clientStatusService, observationRegistry);
 	}
 
 	public static class LdioLdesClientConfigurator implements LdioInputConfigurator {
+		private final StatePersistenceFactory statePersistenceFactory;
 		private final ClientStatusService clientStatusService;
 
 		private final ObservationRegistry observationRegistry;
 
-		public LdioLdesClientConfigurator(ClientStatusService clientStatusService, ObservationRegistry observationRegistry) {
+		public LdioLdesClientConfigurator(StatePersistenceFactory statePersistenceFactory, ClientStatusService clientStatusService, ObservationRegistry observationRegistry) {
+			this.statePersistenceFactory = statePersistenceFactory;
 			this.clientStatusService = clientStatusService;
 			this.observationRegistry = observationRegistry;
 		}
@@ -45,7 +47,7 @@ public class LdioLdesClientAutoConfig {
 			final var requestExecutorFactory = new RequestExecutorFactory(false);
 			final var requestExecutor = new LdioRequestExecutorSupplier(requestExecutorFactory).getRequestExecutor(properties);
 			final var clientStatusConsumer = new ClientStatusConsumer(pipelineName, clientStatusService);
-			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor, clientStatusConsumer).getMemberSupplier();
+			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, requestExecutor, clientStatusConsumer, statePersistenceFactory).getMemberSupplier();
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			final LdioObserver ldioObserver = LdioObserver.register(LdioLdesClient.NAME, pipelineName, observationRegistry);
 			final var ldesClient = new LdioLdesClient(componentExecutor, ldioObserver, memberSupplier, applicationEventPublisher, keepState, clientStatusConsumer);

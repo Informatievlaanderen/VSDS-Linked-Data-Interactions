@@ -13,10 +13,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -70,7 +70,7 @@ public class LdioLdesClientConnectorAutoConfig {
 					urlProxy);
 			final var clientStatusConsumer = new ClientStatusConsumer(pipelineName, clientStatusService);
 			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, edcRequestExecutor,
-					clientStatusConsumer).getMemberSupplier();
+					clientStatusConsumer, null).getMemberSupplier();
 			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
 			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
 			final var ldesClient = new LdioLdesClient(executor, ldioObserver, memberSupplier,

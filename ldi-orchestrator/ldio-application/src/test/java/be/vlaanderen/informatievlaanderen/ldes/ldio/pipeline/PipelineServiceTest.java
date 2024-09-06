@@ -21,7 +21,7 @@ class PipelineServiceTest {
 
     @BeforeEach
     void setup() {
-        pipelineService = new PipelineServiceImpl(pipelineCreatorService, pipelineStatusService, pipelineRepository);
+	    pipelineService = new PipelineServiceImpl(pipelineCreatorService, pipelineStatusService, pipelineRepository, null);
     }
 
     @Test

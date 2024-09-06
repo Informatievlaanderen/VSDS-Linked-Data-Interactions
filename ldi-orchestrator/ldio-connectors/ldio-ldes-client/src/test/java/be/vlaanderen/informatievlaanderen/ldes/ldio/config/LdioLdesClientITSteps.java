@@ -61,7 +61,7 @@ public class LdioLdesClientITSteps extends LdesClientInIT {
 		ComponentExecutor componentExecutor = members::add;
 
 		var props = new ComponentProperties(pipelineName, NAME, componentPropsMap);
-		var ldioInputConfigurator = new LdioLdesClientAutoConfig().ldioConfigurator(statusService, null);
+		var ldioInputConfigurator = new LdioLdesClientAutoConfig().ldioConfigurator(null, statusService, null);
 		ldioInputConfigurator.configure(null, componentExecutor, applicationEventPublisher, props);
 	}
 

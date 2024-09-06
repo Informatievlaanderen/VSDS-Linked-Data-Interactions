@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.h2.H2Properties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
@@ -19,9 +20,14 @@ public class StatePersistenceFactory {
 		HibernateProperties properties = switch (state) {
 			case POSTGRES -> createPostgresProperties(context);
 			case SQLITE -> createSqliteProperties(context);
+			case H2 -> createH2Properties(context);
 			default -> Map::of;
 		};
 		return StatePersistence.from(state, properties, context.getName());
+	}
+
+	public H2Properties createH2Properties(ProcessContext context) {
+		return new H2Properties(PersistenceProperties.stateKept(context));
 	}
 
 	private PostgresProperties createPostgresProperties(ProcessContext context) {
