@@ -2,9 +2,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioInput;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.PipelineStatusTrigger;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.OrchestratorConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConfig;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusTrigger;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;

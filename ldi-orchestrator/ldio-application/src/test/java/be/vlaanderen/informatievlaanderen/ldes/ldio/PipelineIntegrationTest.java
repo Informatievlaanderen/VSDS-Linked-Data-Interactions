@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.DummyIn;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.modules.MockVault;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.DummyIn;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.MockVault;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;

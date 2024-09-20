@@ -41,9 +41,10 @@ class LatestStateFilterTest {
 		final SuppliedMember newerMember = new SuppliedMember(memberId, newerModel);
 		when(memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(VERSION_OF, newerTimestamp))).thenReturn(true);
 
-		final boolean actual = latestStateFilter.isAllowed(newerMember);
+		final boolean actual = latestStateFilter.saveMemberIfAllowed(newerMember);
 
 		assertThat(actual).isTrue();
+		verify(memberVersionRepository).addMemberVersion(new MemberVersionRecord(VERSION_OF, any()));
 	}
 
 	@Test
@@ -52,16 +53,19 @@ class LatestStateFilterTest {
 		final SuppliedMember olderMember = new SuppliedMember(memberId, createModel());
 		when(memberVersionRepository.isVersionAfterTimestamp(new MemberVersionRecord(VERSION_OF, olderTimestamp))).thenReturn(false);
 
-		final boolean actual = latestStateFilter.isAllowed(olderMember);
+		final boolean actual = latestStateFilter.saveMemberIfAllowed(olderMember);
 
 		assertThat(actual).isFalse();
+		verify(memberVersionRepository, never()).addMemberVersion(new MemberVersionRecord(VERSION_OF, any()));
 	}
 
 	@Test
 	void test_saveAllowedMember() {
 		final SuppliedMember member = new SuppliedMember(memberId, createModel());
+		when(memberVersionRepository.isVersionAfterTimestamp(any())).thenReturn(true);
 
-		latestStateFilter.saveAllowedMember(member);
+
+		latestStateFilter.saveMemberIfAllowed(member);
 
 
 		verify(memberVersionRepository).addMemberVersion(new MemberVersionRecord(VERSION_OF, any()));

@@ -15,7 +15,6 @@ public interface HashedStateMemberRepository {
 	boolean containsHashedStateMember(HashedStateMember hashedStateMember);
 
 	void saveHashedStateMember(HashedStateMember hashedStateMember);
-
 	/**
 	 * Clean up the resources, should be called when the repository is not used anymore
 	 */

@@ -7,19 +7,12 @@ import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
  */
 public interface MemberFilter {
 	/**
-	 * Checks whether the supplied member can go through the filter
+	 * Saves the member if it is allowed to supply the member
 	 *
-	 * @param member member under filtration test
-	 * @return <code>true</code> if the member can go through the filter, otherwise false
+	 * @param member the members that will be checked if it is allowed to supply and saves it if so
+	 * @return whether the member is allowed and saved
 	 */
-	boolean isAllowed(SuppliedMember member);
-
-	/**
-	 * Saves the newly allowed member, as this can affect the filtration process
-	 *
-	 * @param member member to be saved
-	 */
-	void saveAllowedMember(SuppliedMember member);
+	boolean saveMemberIfAllowed(SuppliedMember member);
 
 	/**
 	 * Release resources when the filter is not required anymore

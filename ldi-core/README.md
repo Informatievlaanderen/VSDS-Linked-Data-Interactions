@@ -37,6 +37,6 @@ To support the ingestion of input data in [NGSI V2 format](https://fiware-tutori
 the NgsiV2ToLd processor will take the inputted NGSI V2 data and transform it to [NGSI LD](https://vloca-kennishub.vlaanderen.be/NGSI_(LD)).
 More information can be found [here](ngsiv2-to-ld-adapter/README.md).
 
-## 6. Repository materialiser
+## 6. Repository Sink
 
 Allows an eventstream to be materialised in a triple store. More information can be found [here](repository-materialiser/README.md).

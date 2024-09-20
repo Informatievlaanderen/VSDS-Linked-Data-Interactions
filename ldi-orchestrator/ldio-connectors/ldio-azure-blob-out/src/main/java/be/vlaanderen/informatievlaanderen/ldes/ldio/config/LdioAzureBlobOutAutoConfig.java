@@ -2,8 +2,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdiAzureBlobOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioOutputConfigurator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -3,8 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.rdf.formatter.LdiRdfWriterProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdiConsoleOut;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.configurator.LdioOutputConfigurator;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioOutputConfigurator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

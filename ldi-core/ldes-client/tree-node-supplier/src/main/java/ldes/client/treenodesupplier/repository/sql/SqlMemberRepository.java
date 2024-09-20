@@ -9,46 +9,39 @@ import ldes.client.treenodesupplier.repository.mapper.MemberRecordEntityMapper;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.persistence.EntityManager;
-
 public class SqlMemberRepository implements MemberRepository {
-	final EntityManagerFactory entityManagerFactory;
-	private final EntityManager entityManager;
+	private final EntityManagerFactory entityManagerFactory;
 	private final String instanceName;
 
 	public SqlMemberRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
-		this.entityManager = entityManagerFactory.getEntityManager();
 		this.instanceName = instanceName;
 	}
 
 	@Override
 	public Optional<MemberRecord> getTreeMember() {
-
-		return entityManager
-				.createNamedQuery("Member.getFirst", MemberRecordEntity.class)
+		return entityManagerFactory.getEntityManager()
+				.createNamedQuery("Member.getAllOrderedByCreation", MemberRecordEntity.class)
+				.setMaxResults(1)
 				.getResultStream()
-				.map(MemberRecordEntityMapper::toMemberRecord)
-				.findFirst();
-
+				.findFirst()
+				.map(MemberRecordEntityMapper::toMemberRecord);
 	}
 
 	@Override
 	public void deleteMember(MemberRecord member) {
-		entityManager.getTransaction().begin();
-		entityManager
+		entityManagerFactory.executeStatelessQuery(session -> session
 				.createNamedQuery("Member.deleteByMemberId")
 				.setParameter("memberId", member.getMemberId())
-				.executeUpdate();
-		entityManager.getTransaction().commit();
+				.executeUpdate());
 	}
 
 	@Override
 	public void saveTreeMembers(Stream<MemberRecord> treeMemberStream) {
-		entityManager.getTransaction().begin();
+		entityManagerFactory.getEntityManager().getTransaction().begin();
 		treeMemberStream.map(MemberRecordEntityMapper::fromMemberRecord)
-				.forEach(entityManager::merge);
-		entityManager.getTransaction().commit();
+				.forEach(entityManagerFactory.getEntityManager()::merge);
+		entityManagerFactory.getEntityManager().getTransaction().commit();
 	}
 
 	@Override

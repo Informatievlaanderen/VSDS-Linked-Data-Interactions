@@ -11,6 +11,8 @@ public interface EntityManagerFactory {
 	 */
 	EntityManager getEntityManager();
 
+	int executeStatelessQuery(StatelessQueryExecutor queryExecutor);
+
 	/**
 	 * Destroy the EntityManager and EntityManagerFactory from the javax library for the specified instanceName
 	 *

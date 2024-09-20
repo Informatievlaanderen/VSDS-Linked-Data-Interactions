@@ -7,7 +7,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpInputPollerProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.PollingInterval;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.exceptions.MissingHeaderException;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.types.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;
 import com.github.tomakehurst.wiremock.client.CountMatchingStrategy;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;

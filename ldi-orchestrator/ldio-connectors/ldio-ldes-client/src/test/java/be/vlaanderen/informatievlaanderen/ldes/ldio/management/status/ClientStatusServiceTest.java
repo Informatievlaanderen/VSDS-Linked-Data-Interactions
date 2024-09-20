@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.management.status;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldio.events.PipelineDeletedEvent;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineDeletedEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
