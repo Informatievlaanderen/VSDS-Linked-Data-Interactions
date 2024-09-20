@@ -1,42 +1,31 @@
 package ldes.client.performance;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import org.apache.jena.riot.Lang;
 
 public enum TestScenario {
 
 	// @formatter:off
-	MEMORY10(StatePersistenceStrategy.MEMORY, FragmentSize.TEN),
-	POSTGRES10(StatePersistenceStrategy.POSTGRES, FragmentSize.TEN),
-	SQLITE10(StatePersistenceStrategy.SQLITE, FragmentSize.TEN),
-	MEMORY250(StatePersistenceStrategy.MEMORY, FragmentSize.TWOFIFTY),
-	POSTGRES250(StatePersistenceStrategy.POSTGRES, FragmentSize.TWOFIFTY),
-	SQLITE250(StatePersistenceStrategy.SQLITE, FragmentSize.TWOFIFTY),
-	MEMORY_EXTERNAL(StatePersistenceStrategy.MEMORY, FragmentSize.EXT),
-	MEMORY_EXTERNAL_250_TURTLE(StatePersistenceStrategy.MEMORY, FragmentSize.EXT_TWOFIFTY, Lang.TURTLE),
-	MEMORY_EXTERNAL_1000_TURTLE(StatePersistenceStrategy.MEMORY, FragmentSize.EXT_THOUSAND, Lang.TURTLE),
-	MEMORY_EXTERNAL_500_TURTLE(StatePersistenceStrategy.MEMORY, FragmentSize.EXT_TWOFIFTY, Lang.TURTLE),
-	MEMORY_EXTERNAL_250_PROTOBUF(StatePersistenceStrategy.MEMORY, FragmentSize.EXT_TWOFIFTY, Lang.RDFPROTO),
-	MEMORY_EXTERNAL_500_PROTOBUF(StatePersistenceStrategy.MEMORY, FragmentSize.EXT_TWOFIFTY, Lang.RDFPROTO),
-	MEMORY_EXTERNAL_1000_PROTOBUF(StatePersistenceStrategy.MEMORY, FragmentSize.EXT_THOUSAND, Lang.RDFPROTO);
+	S_10(FragmentSize.TEN),
+	S_250(FragmentSize.TWOFIFTY),
+	EXTERNAL(FragmentSize.EXT),
+	EXTERNAL_250_TURTLE(FragmentSize.EXT_TWOFIFTY, Lang.TURTLE),
+	EXTERNAL_1000_TURTLE(FragmentSize.EXT_THOUSAND, Lang.TURTLE),
+	EXTERNAL_500_TURTLE(FragmentSize.EXT_TWOFIFTY, Lang.TURTLE),
+	EXTERNAL_250_PROTOBUF(FragmentSize.EXT_TWOFIFTY, Lang.RDFPROTO),
+	EXTERNAL_500_PROTOBUF(FragmentSize.EXT_TWOFIFTY, Lang.RDFPROTO),
+	EXTERNAL_1000_PROTOBUF(FragmentSize.EXT_THOUSAND, Lang.RDFPROTO);
 	// @formatter:on
 
-	private final StatePersistenceStrategy persistenceStrategy;
 	private final FragmentSize fragmentSize;
 	private final Lang sourceFormat;
 
-	TestScenario(StatePersistenceStrategy persistenceStrategy, FragmentSize fragmentSize) {
-		this(persistenceStrategy, fragmentSize, Lang.TURTLE);
+	TestScenario(FragmentSize fragmentSize) {
+		this(fragmentSize, Lang.TURTLE);
 	}
 
-	TestScenario(StatePersistenceStrategy persistenceStrategy, FragmentSize fragmentSize, Lang sourceFormat) {
-		this.persistenceStrategy = persistenceStrategy;
+	TestScenario(FragmentSize fragmentSize, Lang sourceFormat) {
 		this.fragmentSize = fragmentSize;
 		this.sourceFormat = sourceFormat;
-	}
-
-	public StatePersistenceStrategy getPersistenceStrategy() {
-		return persistenceStrategy;
 	}
 
 	public String getStartingEndpoint() {

@@ -1,20 +1,14 @@
 package ldes.client.treenodesupplier;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.h2.H2Properties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
-import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
-import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFactory;
-import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
 import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
 import ldes.client.treenodesupplier.filters.LatestStateFilter;
@@ -29,7 +23,6 @@ import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import org.apache.jena.riot.Lang;
 import org.junit.After;
 import org.mockito.Mockito;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -48,7 +41,6 @@ public class MemberSupplierSteps {
 	private MemberSupplier memberSupplier;
 	private LdesMetaData ldesMetaData;
 	private SuppliedMember suppliedMember;
-	private PostgreSQLContainer<?> postgreSQLContainer;
 	private final Consumer<ClientStatus> clientStatusConsumer = Mockito.mock(Consumer.class);
 
 	// Multi MemberSupplier
@@ -64,10 +56,10 @@ public class MemberSupplierSteps {
 
 	@After
 	public void teardown() {
-		if (postgreSQLContainer != null) {
-			postgreSQLContainer.stop();
-			postgreSQLContainer = null;
-		}
+		this.memberRepository.destroyState();
+		this.memberIdRepository.destroyState();
+		this.memberVersionRepository.destroyState();
+		this.treeNodeRecordRepository.destroyState();
 	}
 
 	@When("I request one member from the MemberSupplier")
@@ -88,11 +80,13 @@ public class MemberSupplierSteps {
 	@Given("A starting url {string}")
 	public void aStartingUrl(String url) {
 		ldesMetaData = new LdesMetaData(List.of(url), Lang.JSONLD);
+		initStatePersistence();
 	}
 
 	@Given("^Starting urls$")
 	public void startingUrls(List<String> urls) {
 		ldesMetaData = new LdesMetaData(urls, Lang.TURTLE);
+		initStatePersistence();
 	}
 
 	@Given("I set a timestamp path {string}")
@@ -112,57 +106,6 @@ public class MemberSupplierSteps {
 	@Then("Member {string} is processed")
 	public void memberIsProcessed(String memberId) {
 		assertThat(suppliedMember.getId()).isEqualTo(memberId);
-	}
-
-	@And("a StatePersistenceStrategy MEMORY")
-	public StatePersistence aMemoryStatePersistenceStrategy() {
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY, null,
-				"instanceName");
-		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.MEMORY, null,
-				"instanceName");
-		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, null, "instanceName");
-		memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.MEMORY, null,
-				"instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
-	}
-
-	@And("a StatePersistenceStrategy SQLITE")
-	public StatePersistence aSqliteStatePersistenceStrategy() {
-		final SqliteProperties sqliteProperties = new SqliteProperties("instanceName", false);
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE, sqliteProperties,
-				"instanceName");
-		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.SQLITE, sqliteProperties,
-				"instanceName");
-		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, sqliteProperties, "instanceName");
-		memberVersionRepository = MemberVersionRepositoryFactory
-				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.SQLITE, sqliteProperties, "instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
-	}
-
-	@And("a StatePersistenceStrategy POSTGRES")
-	public StatePersistence aPostgresStatePersistenceStrategy() {
-		postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
-				.withDatabaseName("integration-test-client-persistence")
-				.withUsername("sa")
-				.withPassword("sa");
-		postgreSQLContainer.start();
-
-		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
-				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
-		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.POSTGRES,
-				postgresProperties, "instanceName");
-		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.POSTGRES,
-				postgresProperties, "instanceName");
-		treeNodeRecordRepository = TreeNodeRecordRepositoryFactory
-				.getTreeNodeRecordRepository(StatePersistenceStrategy.POSTGRES, postgresProperties,
-						"instanceName");
-		memberVersionRepository = MemberVersionRepositoryFactory
-				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.POSTGRES, postgresProperties,
-				"instanceName");
-
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@Then("MemberSupplier is destroyed")
@@ -191,32 +134,23 @@ public class MemberSupplierSteps {
 		memberSupplier.init();
 	}
 
-	private StatePersistence defineStatePersistence(String persistenceStrategy) {
-		return switch (persistenceStrategy) {
-			case "POSTGRES" -> aPostgresStatePersistenceStrategy();
-			case "SQLITE" -> aSqliteStatePersistenceStrategy();
-			case "MEMORY" -> aMemoryStatePersistenceStrategy();
-			default -> null;
-		};
-	}
-
-	@And("a {word} MemberSupplier and a {word} MemberSupplier")
-	public void aStatePersistenceStrategyProcessorAndAStatePersistenceStrategyProcessor(String arg0, String arg1) {
+	@And("2 MemberSuppliers")
+	public void aStatePersistenceStrategyProcessorAndAStatePersistenceStrategyProcessor() {
 		timestampPath = "http://www.w3.org/ns/prov#generatedAtTime";
 
 		memberSuppliers[0] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
-				defineStatePersistence(arg0),
+				initStatePersistence(),
 				requestExecutorFactory.createNoAuthExecutor(),
 				new TimestampFromPathExtractor(createProperty(timestampPath)), clientStatusConsumer), false);
 		memberSuppliers[1] = new MemberSupplierImpl(new TreeNodeProcessor(ldesMetaData,
-				defineStatePersistence(arg1),
+				initStatePersistence(),
 				requestExecutorFactory.createNoAuthExecutor(),
 				new TimestampFromPathExtractor(createProperty(timestampPath)), clientStatusConsumer), false);
 	}
 
 	@When("I request one member from the MemberSuppliers")
 	public void iRequestOneMemberFromTheMemberSuppliers() {
-		for(MemberSupplier supplier : memberSuppliers) {
+		for (MemberSupplier supplier : memberSuppliers) {
 			supplier.init();
 		}
 		suppliedMembers[0] = memberSuppliers[0].get();
@@ -246,5 +180,15 @@ public class MemberSupplierSteps {
 		final MemberFilter latestStateFilter = new LatestStateFilter(memberVersionRepository, keepState, timestampPath, "http://purl.org/dc/terms/isVersionOf");
 		memberSupplier = new FilteredMemberSupplier(baseMemberSupplier, latestStateFilter);
 		memberSupplier.init();
+	}
+
+	private StatePersistence initStatePersistence() {
+		var pipelineName = "testPipeline";
+		var statePersistence = StatePersistence.from(new H2Properties(pipelineName), pipelineName);
+		this.memberRepository = statePersistence.memberRepository();
+		this.memberIdRepository = statePersistence.memberIdRepository();
+		this.memberVersionRepository = statePersistence.memberVersionRepository();
+		this.treeNodeRecordRepository = statePersistence.treeNodeRecordRepository();
+		return statePersistence;
 	}
 }

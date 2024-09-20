@@ -2,9 +2,12 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.ChangeDetectionFilter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.h2.H2EntityManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.h2.H2Properties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.SqlHashedStateMemberRepository;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
@@ -26,7 +29,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Chan
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ChangeDetectionFilterProperties.getDataSourceFormat;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ChangeDetectionFilterRelationships.IGNORED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ChangeDetectionFilterRelationships.NEW_STATE_RECEIVED;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.KEEP_STATE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.sendRDFToRelation;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -44,18 +47,15 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 	protected List<PropertyDescriptor> getSupportedPropertyDescriptors() {
 		return List.of(
 				DATA_SOURCE_FORMAT,
-				STATE_PERSISTENCE_STRATEGY,
-				POSTGRES_URL,
-				POSTGRES_USERNAME,
-				POSTGRES_PASSWORD,
-				SQLITE_DIRECTORY,
 				KEEP_STATE
 		);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
-		final HashedStateMemberRepository repository = HashedMemberRepositoryFactory.getRepository(context);
+		var h2EntityManager = H2EntityManager.getInstance(context.getName(), new H2Properties(context.getName()).getProperties());
+		final HashedStateMemberRepository repository = new SqlHashedStateMemberRepository(h2EntityManager, context.getName());
+
 		final boolean keepState = PersistenceProperties.stateKept(context);
 		changeDetectionFilter = new ChangeDetectionFilter(repository, keepState);
 	}

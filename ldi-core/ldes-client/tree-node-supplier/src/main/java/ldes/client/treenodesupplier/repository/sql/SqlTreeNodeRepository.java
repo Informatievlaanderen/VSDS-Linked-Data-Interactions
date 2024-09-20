@@ -2,14 +2,13 @@ package ldes.client.treenodesupplier.repository.sql;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.TreeNodeRecordEntity;
+import jakarta.persistence.EntityManager;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.mapper.TreeNodeRecordEntityMapper;
 
 import java.util.Optional;
-
-import javax.persistence.EntityManager;
 
 public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 

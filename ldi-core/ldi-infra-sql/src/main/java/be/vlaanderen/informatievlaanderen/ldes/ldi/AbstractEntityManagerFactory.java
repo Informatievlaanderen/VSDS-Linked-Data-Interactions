@@ -1,17 +1,14 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 
-import javax.persistence.EntityManager;
-
 public abstract class AbstractEntityManagerFactory implements EntityManagerFactory {
-	private final javax.persistence.EntityManagerFactory entityManagerFactory;
 	private final EntityManager entityManager;
 
-	protected AbstractEntityManagerFactory(javax.persistence.EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
-		this.entityManager = entityManagerFactory.createEntityManager();
+	protected AbstractEntityManagerFactory(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 	@Override
@@ -32,6 +29,5 @@ public abstract class AbstractEntityManagerFactory implements EntityManagerFacto
 	@Override
 	public void destroyState(String instanceName) {
 		entityManager.close();
-		entityManagerFactory.close();
 	}
 }

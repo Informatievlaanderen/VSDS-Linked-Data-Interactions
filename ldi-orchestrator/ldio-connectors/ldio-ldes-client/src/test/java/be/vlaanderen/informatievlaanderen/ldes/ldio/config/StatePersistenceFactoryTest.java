@@ -1,49 +1,25 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
-import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
-import ldes.client.treenodesupplier.repository.inmemory.InMemoryTreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlMemberRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlTreeNodeRepository;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StatePersistenceFactoryTest {
 
-	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
-	private static PostgreSQLContainer postgreSQLContainer;
-
-	@BeforeAll
-	static void beforeAll() {
-		postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
-				.withDatabaseName("integration-test-client-persistence")
-				.withUsername("sa")
-				.withPassword("sa");
-		postgreSQLContainer.start();
-	}
-
-	@AfterAll
-	static void afterAll() {
-		postgreSQLContainer.stop();
-	}
+	private final String H2_URL = "jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH";
+	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory(H2_URL, "sa", "");
 
 	@ParameterizedTest
 	@ArgumentsSource(ComponentPropertiesArgumentsProvider.class)
@@ -52,39 +28,22 @@ class StatePersistenceFactoryTest {
 	                                                             Class<TreeNodeRecordRepository> expectedTreeNodeRecordRepositoryClass) {
 		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(componentProperties);
 
-		MemberRepository memberRepository = statePersistence.getMemberRepository();
+		MemberRepository memberRepository = statePersistence.memberRepository();
 		assertEquals(expectedMemberRepositoryClass, memberRepository.getClass());
-		TreeNodeRecordRepository treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
+		TreeNodeRecordRepository treeNodeRecordRepository = statePersistence.treeNodeRecordRepository();
 		assertEquals(expectedTreeNodeRecordRepositoryClass, treeNodeRecordRepository.getClass());
 
 		memberRepository.destroyState();
 		treeNodeRecordRepository.destroyState();
 	}
 
-	@Test
-	void when_stateIsPostgres_and_additionalPropertiesAreMissing_then_throwException() {
-		ComponentProperties props = new ComponentProperties("pipelineName", "", Map.of(STATE, "postgres"));
-
-		assertThrows(ConfigPropertyMissingException.class, () -> statePersistenceFactory.getStatePersistence(props));
-	}
-
 	private static class ComponentPropertiesArgumentsProvider implements ArgumentsProvider {
 		@Override
 		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
 			return Stream.of(
-					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "memory")),
-							InMemoryMemberRepository.class,
-							InMemoryTreeNodeRecordRepository.class),
-					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "sqlite")),
+					Arguments.of(new ComponentProperties("pipelineName", ""),
 							SqlMemberRepository.class,
-							SqlTreeNodeRepository.class),
-					Arguments.of(
-							new ComponentProperties("pipelineName", ""
-									, Map.of(STATE, "postgres",
-									POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
-									POSTGRES_USERNAME, postgreSQLContainer.getUsername(), POSTGRES_PASSWORD,
-									postgreSQLContainer.getPassword(), KEEP_STATE, "false")),
-							SqlMemberRepository.class, SqlTreeNodeRepository.class));
+							SqlTreeNodeRepository.class));
 		}
 	}
 

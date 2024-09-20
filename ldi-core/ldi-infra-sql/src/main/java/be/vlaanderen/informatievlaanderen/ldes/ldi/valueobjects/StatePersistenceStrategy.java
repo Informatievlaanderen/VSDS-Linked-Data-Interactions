@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 public enum StatePersistenceStrategy {
 
-	MEMORY, SQLITE, POSTGRES, H2;
+	H2;
 
 	public static Optional<StatePersistenceStrategy> from(String s) {
 		return Stream.of(values()).filter(val -> val.name().equals(StringUtils.upperCase(s))).findFirst();

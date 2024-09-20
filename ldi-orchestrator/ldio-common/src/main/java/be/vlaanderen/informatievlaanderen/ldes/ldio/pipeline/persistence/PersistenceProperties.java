@@ -11,5 +11,4 @@ public class PersistenceProperties {
 	public static final String POSTGRES_USERNAME = "postgres.username";
 	public static final String POSTGRES_PASSWORD = "postgres.password";
 	public static final String POSTGRES_URL = "postgres.url";
-	public static final String SQLITE_DIRECTORY = "sqlite.directory";
 }

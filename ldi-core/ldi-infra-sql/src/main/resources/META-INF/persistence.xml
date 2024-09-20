@@ -5,27 +5,8 @@
 
     <persistence-unit name="pu-h2-jpa">
 
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <properties>
 
-            <property name="hibernate.dialect" value="org.sqlite.hibernate.dialect.SQLiteDialect"/>
-            <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.format_sql" value="false"/>
-
-            <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
-
-            <property name="hibernate.connection.provider_class" value="com.zaxxer.hikari.hibernate.HikariConnectionProvider" />
-        </properties>
-
-    </persistence-unit>
-
-    <persistence-unit name="pu-postgres-jpa">
-
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <properties>
-            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect" />
-        </properties>
     </persistence-unit>
 </persistence>

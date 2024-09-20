@@ -9,16 +9,16 @@ public class H2Properties implements HibernateProperties {
 	private final String username;
 	private final String password;
 
-	public H2Properties(String username, String password, String url) {
+	public H2Properties(String username, String password, String url, String schemaName) {
 		this.username = username;
 		this.password = password;
-		this.url = url;
+		this.url = "%s;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS \"%s\"\\;SET SCHEMA \"%s\";".formatted(url, schemaName, schemaName);
 	}
 
-	public H2Properties(boolean keepState) {
+	public H2Properties(String schemaName) {
 		this.username = "sa";
 		this.password = "";
-		this.url = getUrl(keepState);
+		this.url = "%s;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS \"%s\"\\;SET SCHEMA \"%s\";".formatted(getUrl(), schemaName, schemaName);
 	}
 
 	public Map<String, String> getProperties() {
@@ -29,7 +29,7 @@ public class H2Properties implements HibernateProperties {
 				HIBERNATE_HBM_2_DDL_AUTO, UPDATE);
 	}
 
-	private String getUrl(boolean keepState) {
-		return keepState ? "jdbc:h2:mem:testdb" : "jdbc:h2:file:/path/to/your/database";
+	private String getUrl() {
+		return "jdbc:h2:file:./h2/ldi";
 	}
 }

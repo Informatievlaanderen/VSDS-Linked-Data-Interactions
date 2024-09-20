@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  * Custom interface to manage the EntityManager, EntityManagerFactory from the javax library and their lifecycle more easily

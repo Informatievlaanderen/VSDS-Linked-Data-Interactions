@@ -43,14 +43,14 @@ public class MemberSupplierFactory {
     private final ComponentProperties properties;
     private final RequestExecutor requestExecutor;
     private final Consumer<ClientStatus> clientStatusConsumer;
-	private final StatePersistenceFactory statePersistenceFactory;
+	private final StatePersistence statePersistence;
 
     public MemberSupplierFactory(ComponentProperties properties, RequestExecutor requestExecutor,
                                  Consumer<ClientStatus> clientStatusConsumer, StatePersistenceFactory statePersistenceFactory) {
         this.properties = properties;
         this.requestExecutor = requestExecutor;
         this.clientStatusConsumer = clientStatusConsumer;
-	    this.statePersistenceFactory = statePersistenceFactory;
+	    this.statePersistence = statePersistenceFactory.getStatePersistence(properties);
     }
 
     public MemberSupplier getMemberSupplier() {
@@ -73,11 +73,11 @@ public class MemberSupplierFactory {
     private LatestStateFilter getLatestStateFilter() {
         String timestampPath = properties.getOptionalProperty(TIMESTAMP_PATH_PROP).orElse(DEFAULT_TIMESTAMP_KEY);
         String versionOfPath = properties.getOptionalProperty(VERSION_OF_PROPERTY).orElse(DEFAULT_VERSION_OF_KEY);
-        return new LatestStateFilter(getStatePersistence().getMemberVersionRepository(), getKeepState(), timestampPath, versionOfPath);
+	    return new LatestStateFilter(statePersistence.memberVersionRepository(), getKeepState(), timestampPath, versionOfPath);
     }
 
     private ExactlyOnceFilter getExactlyOnceFilter() {
-        return new ExactlyOnceFilter(getStatePersistence().getMemberIdRepository(), getKeepState());
+	    return new ExactlyOnceFilter(statePersistence.memberIdRepository(), getKeepState());
     }
 
     private TreeNodeProcessor getTreeNodeProcessor() {
@@ -93,11 +93,7 @@ public class MemberSupplierFactory {
                 .map(timestampPath -> (TimestampExtractor) new TimestampFromPathExtractor(createProperty(timestampPath)))
                 .orElseGet(TimestampFromCurrentTimeExtractor::new);
 
-        return new TreeNodeProcessor(ldesMetaData, getStatePersistence(), requestExecutor, timestampExtractor, clientStatusConsumer);
-    }
-
-    private StatePersistence getStatePersistence() {
-	    return statePersistenceFactory.getStatePersistence(properties);
+	    return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor, clientStatusConsumer);
     }
 
     private Boolean getKeepState() {

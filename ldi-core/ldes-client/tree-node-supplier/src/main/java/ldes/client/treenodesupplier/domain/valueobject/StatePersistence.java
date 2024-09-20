@@ -1,50 +1,28 @@
 package ldes.client.treenodesupplier.domain.valueobject;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
-import ldes.client.treenodesupplier.domain.services.*;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.h2.H2EntityManager;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
+import ldes.client.treenodesupplier.repository.sql.SqlMemberIdRepository;
+import ldes.client.treenodesupplier.repository.sql.SqlMemberRepository;
+import ldes.client.treenodesupplier.repository.sql.SqlMemberVersionRepository;
+import ldes.client.treenodesupplier.repository.sql.SqlTreeNodeRepository;
 
-public class StatePersistence {
+public record StatePersistence(MemberRepository memberRepository, MemberIdRepository memberIdRepository,
+                               TreeNodeRecordRepository treeNodeRecordRepository,
+                               MemberVersionRepository memberVersionRepository) {
 
-	private final MemberRepository memberRepository;
-	private final MemberIdRepository memberIdRepository;
-	private final TreeNodeRecordRepository treeNodeRecordRepository;
-	private final MemberVersionRepository memberVersionRepository;
-
-	public StatePersistence(MemberRepository memberRepository, MemberIdRepository memberIdRepository, TreeNodeRecordRepository treeNodeRecordRepository, MemberVersionRepository memberVersionRepository) {
-		this.memberRepository = memberRepository;
-		this.memberIdRepository = memberIdRepository;
-		this.treeNodeRecordRepository = treeNodeRecordRepository;
-		this.memberVersionRepository = memberVersionRepository;
+	public static StatePersistence from(HibernateProperties properties, String pipelineName) {
+		var h2EntityManager = H2EntityManager.getInstance(pipelineName, properties.getProperties());
+		return new StatePersistence(
+				new SqlMemberRepository(pipelineName, h2EntityManager),
+				new SqlMemberIdRepository(pipelineName, h2EntityManager),
+				new SqlTreeNodeRepository(pipelineName, h2EntityManager),
+				new SqlMemberVersionRepository(pipelineName, h2EntityManager));
 	}
 
-    public static StatePersistence from(StatePersistenceStrategy statePersistenceStrategy,
-                                        HibernateProperties properties, String instanceName) {
-        return new StatePersistence(
-                MemberRepositoryFactory.getMemberRepository(statePersistenceStrategy, properties, instanceName),
-                MemberIdRepositoryFactory.getMemberIdRepository(statePersistenceStrategy, properties, instanceName),
-                TreeNodeRecordRepositoryFactory
-                        .getTreeNodeRecordRepository(statePersistenceStrategy, properties, instanceName),
-                MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(statePersistenceStrategy, properties, instanceName));
-    }
 
-	public MemberRepository getMemberRepository() {
-		return memberRepository;
-	}
-
-	public MemberIdRepository getMemberIdRepository() {
-		return memberIdRepository;
-	}
-
-	public TreeNodeRecordRepository getTreeNodeRecordRepository() {
-		return treeNodeRecordRepository;
-	}
-
-	public MemberVersionRepository getMemberVersionRepository() {
-		return memberVersionRepository;
-	}
 }

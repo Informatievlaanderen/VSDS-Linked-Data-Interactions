@@ -49,7 +49,8 @@ import java.util.function.Consumer;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_DESTINATION_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.KEEP_STATE;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.stateKept;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -76,7 +77,6 @@ public class LdesClientProcessor extends AbstractProcessor {
 		return List.of(DATA_SOURCE_URLS,
 				DATA_SOURCE_FORMAT,
 				DATA_DESTINATION_FORMAT,
-				STATE_PERSISTENCE_STRATEGY,
 				KEEP_STATE,
 				TIMESTAMP_PATH,
 				USE_EXACTLY_ONCE_FILTER,
@@ -93,9 +93,6 @@ public class LdesClientProcessor extends AbstractProcessor {
 				RETRIES_ENABLED,
 				MAX_RETRIES,
 				STATUSES_TO_RETRY,
-				POSTGRES_URL,
-				POSTGRES_USERNAME,
-				POSTGRES_PASSWORD,
 				RESTRICT_TO_MEMBERS,
 				STREAM_TIMESTAMP_PATH_PROPERTY,
 				STREAM_VERSION_OF_PROPERTY,
@@ -131,7 +128,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 		} else if (useExactlyOnceFilter(context)) {
 			memberSupplier = new FilteredMemberSupplier(
 					baseMemberSupplier,
-					new ExactlyOnceFilter(statePersistence.getMemberIdRepository(), keepState)
+					new ExactlyOnceFilter(statePersistence.memberIdRepository(), keepState)
 			);
 		} else {
 			memberSupplier = baseMemberSupplier;
@@ -145,7 +142,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 	}
 
 	private LatestStateFilter getLatestStateFilter(ProcessContext context, StatePersistence statePersistence) {
-		return new LatestStateFilter(statePersistence.getMemberVersionRepository(), keepState, getTimestampPath(context), getVersionOfProperty(context));
+		return new LatestStateFilter(statePersistence.memberVersionRepository(), keepState, getTimestampPath(context), getVersionOfProperty(context));
 	}
 
 	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {

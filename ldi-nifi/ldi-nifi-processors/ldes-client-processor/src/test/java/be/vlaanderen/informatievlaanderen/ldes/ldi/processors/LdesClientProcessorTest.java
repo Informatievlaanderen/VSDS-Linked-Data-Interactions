@@ -9,21 +9,22 @@ import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.util.MockFlowFile;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.opentest4j.AssertionFailedError;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
@@ -36,22 +37,6 @@ class LdesClientProcessorTest {
 	private static final String VERSION_OF = "http://purl.org/dc/terms/isVersionOf";
 
 	private TestRunner testRunner;
-
-	private static PostgreSQLContainer<?> postgreSQLContainer;
-
-	@BeforeAll
-	static void beforeAll() {
-		postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
-				.withDatabaseName("integration-test-client-persistence")
-				.withUsername("sa")
-				.withPassword("sa");
-		postgreSQLContainer.start();
-	}
-
-	@AfterAll
-	static void afterAll() {
-		postgreSQLContainer.stop();
-	}
 
 	@BeforeEach
 	public void init() {
@@ -67,8 +52,6 @@ class LdesClientProcessorTest {
 	@ArgumentsSource(MatchNumberOfFlowFilesArgumentsProvider.class)
 	void shouldMatchNumberOfFlowFiles(String dataSourceUrl, int numberOfRuns) {
 		testRunner.setProperty("DATA_SOURCE_URLS", dataSourceUrl);
-		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY,
-				"SQLITE");
 
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 
@@ -146,7 +129,6 @@ class LdesClientProcessorTest {
 	void shouldSupportDifferentHttpRequestExecutors(Map<String, String> properties) {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
-		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY, "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		properties.forEach((key, value) -> testRunner.setProperty(key, value));
 
@@ -298,7 +280,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("DATA_SOURCE_URLS",
 				"http://localhost:10101/exampleData?generatedAtTime=2022-05-03T00:00:00.000Z");
 		statePersistenceProps.forEach(testRunner::setProperty);
-		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY, "MEMORY");
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.TRUE.toString());
@@ -363,12 +344,10 @@ class LdesClientProcessorTest {
 		@Override
 		public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
 			return Stream.of(
-					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "MEMORY")),
-					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "SQLITE")),
-					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "POSTGRES",
-							POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
-							POSTGRES_USERNAME, postgreSQLContainer.getUsername(),
-							POSTGRES_PASSWORD, postgreSQLContainer.getPassword()))
+					Arguments.of(Map.of())
+//							POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
+//							POSTGRES_USERNAME, postgreSQLContainer.getUsername(),
+//							POSTGRES_PASSWORD, postgreSQLContainer.getPassword()))
 			);
 		}
 	}

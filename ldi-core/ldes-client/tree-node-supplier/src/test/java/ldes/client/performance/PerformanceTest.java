@@ -41,7 +41,7 @@ class PerformanceTest {
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f10_s1000.csv"),
 				1000,
-				List.of(TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
+				List.of(TestScenario.S_10));
 	}
 
 	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
@@ -51,8 +51,7 @@ class PerformanceTest {
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f250_s1000.csv"),
 				1000,
-				List.of(TestScenario.MEMORY250, TestScenario.SQLITE250,
-						TestScenario.POSTGRES250));
+				List.of(TestScenario.S_250));
 	}
 
 	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
@@ -62,7 +61,7 @@ class PerformanceTest {
 		testRunner(
 				separatorsToSystem("target/compare_persistence_strategies_f10_s100_000.csv"),
 				100_000,
-				List.of(TestScenario.MEMORY10, TestScenario.SQLITE10, TestScenario.POSTGRES10));
+				List.of(TestScenario.S_10));
 	}
 
 	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
@@ -72,7 +71,7 @@ class PerformanceTest {
 		testRunner(
 				separatorsToSystem("target/memory_real_test.csv"),
 				10_000,
-				List.of(TestScenario.MEMORY_EXTERNAL));
+				List.of(TestScenario.EXTERNAL));
 	}
 
 	@Disabled("These tests do not contain assertions and should be run manually to generate test reports.")
@@ -82,12 +81,12 @@ class PerformanceTest {
 		testRunner(
 				separatorsToSystem("target/compare_rdf_formats.csv"),
 				10_000,
-				List.of(TestScenario.MEMORY_EXTERNAL_250_TURTLE,
-						TestScenario.MEMORY_EXTERNAL_250_PROTOBUF,
-						TestScenario.MEMORY_EXTERNAL_500_TURTLE,
-						TestScenario.MEMORY_EXTERNAL_500_PROTOBUF,
-						TestScenario.MEMORY_EXTERNAL_1000_TURTLE,
-						TestScenario.MEMORY_EXTERNAL_1000_PROTOBUF)
+				List.of(TestScenario.EXTERNAL_250_TURTLE,
+						TestScenario.EXTERNAL_500_TURTLE,
+						TestScenario.EXTERNAL_1000_TURTLE,
+						TestScenario.EXTERNAL_250_PROTOBUF,
+						TestScenario.EXTERNAL_500_PROTOBUF,
+						TestScenario.EXTERNAL_1000_PROTOBUF)
 		);
 	}
 
@@ -98,7 +97,7 @@ class PerformanceTest {
 		testRunner(
 				separatorsToSystem("target/test_memory_f250_s100_000.csv"),
 				100_000,
-				List.of(TestScenario.MEMORY250));
+				List.of(TestScenario.S_250));
 	}
 
 	// Runs 1h14m
@@ -109,7 +108,7 @@ class PerformanceTest {
 		testRunner(
 				separatorsToSystem("target/test_postgres_f250_s100_000.csv"),
 				100_000,
-				List.of(TestScenario.POSTGRES250));
+				List.of(TestScenario.S_250));
 	}
 
 	private void testRunner(String fileName, int testSize, List<TestScenario> scenarios) {
@@ -120,7 +119,7 @@ class PerformanceTest {
 
 	private void runTest(TestScenario test, CsvFile csvFile, int testSize) {
 		final TreeNodeProcessor treeNodeProcessor = treeNodeProcessorFactory
-				.createTreeNodeProcessor(test.getPersistenceStrategy(), List.of(test.getStartingEndpoint()), test.getSourceFormat());
+				.createTreeNodeProcessor(List.of(test.getStartingEndpoint()), test.getSourceFormat());
 		treeNodeProcessor.init();
 
 		LocalDateTime lastInterval = LocalDateTime.now();

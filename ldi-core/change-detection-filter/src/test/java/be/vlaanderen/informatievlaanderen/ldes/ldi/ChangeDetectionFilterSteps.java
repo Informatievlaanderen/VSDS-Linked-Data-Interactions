@@ -1,12 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.inmemory.InMemoryHashedStateMemberRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.SqlHashedStateMemberRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -34,29 +29,6 @@ public class ChangeDetectionFilterSteps {
 	@Given("A ChangeDetectionFilter with state persistence strategy MEMORY")
 	public void aChangeDetectionFilterWithStatePersistenceStrategyMEMORY() {
 		HashedStateMemberRepository hashedStateMemberRepository = new InMemoryHashedStateMemberRepository();
-		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
-	}
-
-	@Given("A ChangeDetectionFilter with state persistence strategy SQLITE")
-	public void aChangeDetectionFilterWithStatePersistenceStrategySQLITE() {
-		final var emf = SqliteEntityManagerFactory.getInstance(new SqliteProperties(DATABASE_INSTANCE_NAME, false));
-		HashedStateMemberRepository hashedStateMemberRepository = new SqlHashedStateMemberRepository(emf, DATABASE_INSTANCE_NAME);
-		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
-	}
-
-	@Given("A ChangeDetectionFilter with state persistence strategy POSTGRES")
-	public void aChangeDetectionFilterWithStatePersistenceStrategyPOSTGRES() {
-		postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
-				.withDatabaseName("integration-change-detection-filter-persistence")
-				.withUsername("sa")
-				.withPassword("sa");
-		postgreSQLContainer.start();
-
-		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
-				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
-
-		final var emf = PostgresEntityManagerFactory.getInstance(DATABASE_INSTANCE_NAME, postgresProperties.getProperties());
-		HashedStateMemberRepository hashedStateMemberRepository = new SqlHashedStateMemberRepository(emf, DATABASE_INSTANCE_NAME);
 		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
 	}
 

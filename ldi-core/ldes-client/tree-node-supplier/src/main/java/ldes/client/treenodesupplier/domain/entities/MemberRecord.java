@@ -3,10 +3,9 @@ package ldes.client.treenodesupplier.domain.entities;
 import ldes.client.treenodesupplier.domain.valueobject.SuppliedMember;
 import org.apache.jena.rdf.model.Model;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import com.sun.istack.NotNull;
 
 public class MemberRecord implements Comparable<MemberRecord>{
 	private final String memberId;

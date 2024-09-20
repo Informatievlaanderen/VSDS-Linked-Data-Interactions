@@ -3,8 +3,10 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import io.cucumber.java.After;
 import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -34,10 +36,18 @@ public class LdioLdesClientITSteps extends LdesClientInIT {
 	private final Map<String, String> componentPropsMap = new HashMap<>();
 	private final List<Model> members = new ArrayList<>();
 	private final ClientStatusService statusService = mock(ClientStatusService.class);
+	private final String H2_URL = "jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH";
+	private LdioInput ldioInput;
 
 	@BeforeAll
 	public static void before_all() {
 		wireMockServer.start();
+	}
+
+	@After
+	public void shutDown() {
+		ldioInput.shutdown();
+		;
 	}
 
 	@Given("I want to follow the following LDES")
@@ -61,8 +71,9 @@ public class LdioLdesClientITSteps extends LdesClientInIT {
 		ComponentExecutor componentExecutor = members::add;
 
 		var props = new ComponentProperties(pipelineName, NAME, componentPropsMap);
-		var ldioInputConfigurator = new LdioLdesClientAutoConfig().ldioConfigurator(null, statusService, null);
-		ldioInputConfigurator.configure(null, componentExecutor, applicationEventPublisher, props);
+		var ldioInputConfigurator = new LdioLdesClientAutoConfig()
+				.ldioConfigurator(new StatePersistenceFactory(H2_URL, "sa", ""), statusService, null);
+		ldioInput = ldioInputConfigurator.configure(null, componentExecutor, applicationEventPublisher, props);
 	}
 
 	@Then("All {int} members from the stream are passed to the pipeline")

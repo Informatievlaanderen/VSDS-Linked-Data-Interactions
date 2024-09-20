@@ -1,6 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table

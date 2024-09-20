@@ -3,25 +3,16 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.ArgumentsProvider;
-import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.*;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ChangeDetectionFilterRelationships.IGNORED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ChangeDetectionFilterRelationships.NEW_STATE_RECEIVED;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.KEEP_STATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ChangeDetectionFilterProcessorTest {
@@ -52,9 +43,10 @@ class ChangeDetectionFilterProcessorTest {
 		((ChangeDetectionFilterProcessor) testRunner.getProcessor()).onRemoved();
 	}
 
-	@ParameterizedTest
-	@ArgumentsSource(PropertiesProvider.class)
-	void test_Filter(Map<PropertyDescriptor, String> properties) {
+	@Test
+	void test_Filter() {
+		Map<PropertyDescriptor, String> properties = Map.of(KEEP_STATE, "false");
+
 		properties.forEach(testRunner::setProperty);
 
 		testRunner.enqueue(createInputStreamForFile("members/state-member.nq"));
@@ -71,24 +63,6 @@ class ChangeDetectionFilterProcessorTest {
 		assertThat(ignoredMembers)
 				.as("Number of members that should have been ignored")
 				.isEqualTo(1);
-	}
-
-	static class PropertiesProvider implements ArgumentsProvider {
-		@Override
-		public Stream<Arguments> provideArguments(ExtensionContext extensionContext) {
-			return Stream.of(
-					Map.of(STATE_PERSISTENCE_STRATEGY, "MEMORY",
-							KEEP_STATE, "false"),
-					Map.of(STATE_PERSISTENCE_STRATEGY, "SQLITE",
-							SQLITE_DIRECTORY, "change-detection-filter",
-							KEEP_STATE, "false"),
-					Map.of(STATE_PERSISTENCE_STRATEGY, "POSTGRES",
-							POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
-							POSTGRES_USERNAME, postgreSQLContainer.getUsername(),
-							POSTGRES_PASSWORD, postgreSQLContainer.getPassword(),
-							KEEP_STATE, "false")
-					).map(Arguments::of);
-		}
 	}
 
 	private InputStream createInputStreamForFile(String fileName) {
