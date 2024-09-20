@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
+import java.time.ZonedDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RetryAfterTest {
 
@@ -26,8 +28,9 @@ class RetryAfterTest {
 		void should_parseDate_when_inputIsDate() {
 			// Format for valid http date format
 			// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, d MMM yyyy HH:mm:ss 'GMT'");
-			String httpDate = LocalDateTime.now(ZoneOffset.UTC).plusSeconds(25).format(formatter);
+			String httpDate = ZonedDateTime.now(ZoneOffset.UTC)
+					.plusSeconds(25)
+					.format(RFC_1123_DATE_TIME);
 
 			long millisUntilRetry = RetryAfter.from(httpDate).getMillisUntilRetry();
 

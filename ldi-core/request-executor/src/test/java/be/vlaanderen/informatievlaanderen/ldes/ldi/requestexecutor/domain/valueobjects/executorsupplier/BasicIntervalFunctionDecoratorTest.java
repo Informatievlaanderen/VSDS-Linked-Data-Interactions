@@ -14,11 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
+import java.time.ZonedDateTime;
 import java.util.List;
 
+import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -87,9 +87,9 @@ class BasicIntervalFunctionDecoratorTest {
 	private String getHttpDateString(int secondsOffset) {
 		// Format for valid http date format
 		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, d MMM yyyy HH:mm:ss 'GMT'");
-
-		return LocalDateTime.now(ZoneOffset.UTC).plusSeconds(secondsOffset).format(formatter);
+		return ZonedDateTime.now(ZoneOffset.UTC)
+				.plusSeconds(secondsOffset)
+				.format(RFC_1123_DATE_TIME);
 	}
 
 }

@@ -1,12 +1,13 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.http.client.utils.DateUtils;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 public class RetryAfter {
 
@@ -27,8 +28,8 @@ public class RetryAfter {
 		if (NumberUtils.isParsable(retryHeader)) {
 			return new RetryAfter(LocalDateTime.now().plusSeconds(Integer.parseInt(retryHeader)));
 		} else {
-			Date date = DateUtils.parseDate(retryHeader);
-			LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			Instant instant = ZonedDateTime.parse(retryHeader, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
+			LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 			return new RetryAfter(localDateTime);
 		}
 	}
