@@ -21,6 +21,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      version: ${{ steps.determine-version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 21
@@ -52,11 +54,14 @@ jobs:
           gpg-private-key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
+      - name: Determine version
+        id: determine-version
+        run: |
+          export VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
+          echo "::set-output name=version::$VERSION"
       - name: Analyse & publish package
         run: |
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar deploy -Dsonar.projectKey=Informatievlaanderen_VSDS-Linked-Data-Interactions -Pcoverage,release -Dparallel=all -DperCoreThreadCount=true
-          export VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
-          echo "version=$VERSION" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -93,9 +98,9 @@ jobs:
       - name: Define docker variables
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "IMAGE_TAG=${{ env.version }}" >> $GITHUB_ENV
+            echo "IMAGE_TAG=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
             echo "IMAGES=ldes/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
-            if [[ "${{ env.version }}" != *"SNAPSHOT"* ]]; then
+            if [[ "${{ needs.build.outputs.version }}" != *"SNAPSHOT"* ]]; then
               echo "LATEST=latest" >> $GITHUB_ENV
             fi
           else
@@ -154,9 +159,9 @@ jobs:
       - name: Define docker variables
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "IMAGE_TAG=${{ env.version }}" >> $GITHUB_ENV
+            echo "IMAGE_TAG=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
             echo "IMAGES=ldes/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
-            if [[ "${{ env.version }}" != *"SNAPSHOT"* ]]; then
+            if [[ "${{ needs.build.outputs.version }}" != *"SNAPSHOT"* ]]; then
               echo "LATEST=latest" >> $GITHUB_ENV
             fi
           else
