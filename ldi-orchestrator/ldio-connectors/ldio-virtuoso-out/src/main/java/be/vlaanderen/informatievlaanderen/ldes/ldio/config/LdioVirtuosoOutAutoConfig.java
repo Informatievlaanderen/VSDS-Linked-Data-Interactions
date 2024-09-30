@@ -17,10 +17,10 @@ public class LdioVirtuosoOutAutoConfig {
 	@SuppressWarnings("java:S6830")
 	@Bean(NAME)
 	public LdioOutputConfigurator ldiHttpOutConfigurator() {
-		return new LdioHttpOutConfigurator();
+		return new LdioVirtuosoOutConfigurator();
 	}
 
-	public static class LdioHttpOutConfigurator implements LdioOutputConfigurator {
+	public static class LdioVirtuosoOutConfigurator implements LdioOutputConfigurator {
 
 		@Override
 		public LdiComponent configure(ComponentProperties config) {
