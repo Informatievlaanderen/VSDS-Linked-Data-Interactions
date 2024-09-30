@@ -38,7 +38,6 @@ public class SqlHashedStateMemberRepository implements HashedStateMemberReposito
 
 	@Override
 	public void destroyState() {
-		entityManager.close();
 		entityManagerFactory.destroyState(instanceName);
 	}
 }

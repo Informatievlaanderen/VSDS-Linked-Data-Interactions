@@ -38,10 +38,11 @@ public class SqlMemberRepository implements MemberRepository {
 
 	@Override
 	public void saveTreeMembers(Stream<MemberRecord> treeMemberStream) {
-		entityManagerFactory.getEntityManager().getTransaction().begin();
+		var tx = entityManagerFactory.getEntityManager().getTransaction();
+		tx.begin();
 		treeMemberStream.map(MemberRecordEntityMapper::fromMemberRecord)
 				.forEach(entityManagerFactory.getEntityManager()::merge);
-		entityManagerFactory.getEntityManager().getTransaction().commit();
+		tx.commit();
 	}
 
 	@Override

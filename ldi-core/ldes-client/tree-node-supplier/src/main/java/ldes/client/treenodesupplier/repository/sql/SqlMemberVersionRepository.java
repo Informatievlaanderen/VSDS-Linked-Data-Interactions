@@ -44,7 +44,6 @@ public class SqlMemberVersionRepository implements MemberVersionRepository {
 
     @Override
     public void destroyState() {
-        entityManager.close();
         entityManagerFactory.destroyState(instanceName);
     }
 }

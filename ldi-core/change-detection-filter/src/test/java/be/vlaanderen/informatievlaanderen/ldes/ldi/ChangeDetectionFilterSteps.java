@@ -1,7 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.inmemory.InMemoryHashedStateMemberRepository;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.h2.H2EntityManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.h2.H2Properties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql.SqlHashedStateMemberRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -26,10 +27,11 @@ public class ChangeDetectionFilterSteps {
 		}
 	}
 
-	@Given("A ChangeDetectionFilter with state persistence strategy MEMORY")
+	@Given("A ChangeDetectionFilter with state persistence strategy")
 	public void aChangeDetectionFilterWithStatePersistenceStrategyMEMORY() {
-		HashedStateMemberRepository hashedStateMemberRepository = new InMemoryHashedStateMemberRepository();
-		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
+		var h2EntityManager = H2EntityManager.getInstance(DATABASE_INSTANCE_NAME, new H2Properties(DATABASE_INSTANCE_NAME).getProperties());
+		var repo = new SqlHashedStateMemberRepository(h2EntityManager, DATABASE_INSTANCE_NAME);
+		changeDetectionFilter = new ChangeDetectionFilter(repo, false);
 	}
 
 	@Then("The filtered member is not empty")

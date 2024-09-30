@@ -154,6 +154,5 @@ public class TreeNodeProcessor {
 
 	public void destroyState() {
 		memberRepository.destroyState();
-		treeNodeRecordRepository.destroyState();
 	}
 }
