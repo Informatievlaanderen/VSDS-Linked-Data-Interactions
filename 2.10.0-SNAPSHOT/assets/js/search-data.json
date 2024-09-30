@@ -1,0 +1,954 @@
+{"0": {
+    "doc": "Home",
+    "title": "Linked Data Interactions Project",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/#linked-data-interactions-project",
+    
+    "relUrl": "/#linked-data-interactions-project"
+  },"1": {
+    "doc": "Home",
+    "title": "Introduction",
+    "content": "The Linked Data Interactions project is an effort to make interactions with Linked Data more fluently by providing easy building blocks. This project was created in function of the VSDS project . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/#introduction",
+    
+    "relUrl": "/#introduction"
+  },"2": {
+    "doc": "Home",
+    "title": "Supported Frameworks",
+    "content": "Currently, we support 2 frameworks to use these building blocks in: . | Linked Data Interactions Orchestrator: A lightweight application maintained by the LDI team. | Apache Nifi: A powerful system to easily process and distribute data | . Component support over frameworks . As the LDI team is rather small and focused on supporting the VSDS project, we sometimes have to postpone full integration of our building blocks in all supported frameworks. However, since the LDI project is open source, feel free to contribute and/or create issues at our GitHub project . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/#supported-frameworks",
+    
+    "relUrl": "/#supported-frameworks"
+  },"3": {
+    "doc": "Home",
+    "title": "Home",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/",
+    
+    "relUrl": "/"
+  },"4": {
+    "doc": "Basic Http In to Console",
+    "title": "Basic Http In to Console",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex1-basicHttp",
+    
+    "relUrl": "/ldio/examples/ex1-basicHttp"
+  },"5": {
+    "doc": "Basic Http In to Console",
+    "title": "Used Components",
+    "content": ". | Http In | Console Out | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex1-basicHttp#used-components",
+    
+    "relUrl": "/ldio/examples/ex1-basicHttp#used-components"
+  },"6": {
+    "doc": "Basic Http In to Console",
+    "title": "Setup",
+    "content": "For this setup, we will start with a Http Listener who will take in data and write it back out via the console . ldio.config.yaml: . orchestrator: pipelines: - name: data description: \"This pipeline uses a HTTP listener to read incoming RDF data and writes them to the console\" input: name: Ldio:HttpIn adapter: name: Ldio:RdfAdapter outputs: - name: Ldio:ConsoleOut . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex1-basicHttp#setup",
+    
+    "relUrl": "/ldio/examples/ex1-basicHttp#setup"
+  },"7": {
+    "doc": "Basic Http In to Console",
+    "title": "Execution",
+    "content": "We can now post the following data to http://{hostname}:{port}/data whilst including the header Content-Type: application/n-quads : . { \"@context\": \"http://schema.org/\", \"@type\": \"Person\", \"name\": \"Jane Doe\", \"jobTitle\": \"Professor\", \"telephone\": \"(425) 123-4567\", \"url\": \"http://www.janedoe.com\" } . If done successfully, you will see in the console the converted model which defaults to application/n-quads: . _:b0 &lt;http://schema.org/jobTitle&gt; \"Professor\" . _:b0 &lt;http://schema.org/name&gt; \"Jane Doe\" . _:b0 &lt;http://schema.org/telephone&gt; \"(425) 123-4567\" . _:b0 &lt;http://schema.org/url&gt; &lt;http://www.janedoe.com&gt; . _:b0 &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://schema.org/Person&gt; . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex1-basicHttp#execution",
+    
+    "relUrl": "/ldio/examples/ex1-basicHttp#execution"
+  },"8": {
+    "doc": "Scraping an API",
+    "title": "Scraping an API",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex2-scrape-api",
+    
+    "relUrl": "/ldio/examples/ex2-scrape-api"
+  },"9": {
+    "doc": "Scraping an API",
+    "title": "Used Components",
+    "content": ". | Http In Poller | RML Adapter | Version Object Creator | Console Out | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex2-scrape-api#used-components",
+    
+    "relUrl": "/ldio/examples/ex2-scrape-api#used-components"
+  },"10": {
+    "doc": "Scraping an API",
+    "title": "Setup",
+    "content": "For this setup, we will periodically scrape a public API, map it with RML to Linked Data, Transform it to a Version Object and write it to console. RML Mapping . Since RML can sometimes be hard on human eyes, we’ll convert our YARRRML to RML via Matey. Through this, we can convert this YARRRML to the following RML. prefixes: ex: \"http://example.com/\" cs: \"http://www.cheapshark.com/\" ldi: \"http://www.vlaanderen.be/ns/ldi#\" mappings: person: sources: - ['deals.json~jsonpath', '$[*]'] s: http://www.cheapshark.com/gamedeals/$(gameID) g: http://www.cheapshark.com/gamedeals/$(gameID)/$(lastChange) po: - [a, cs:GameDeal] - [cs:title, $(title)] - [cs:metacriticLink, $(metacriticLink)] - [cs:thumb, $(thumb)] - p: cs:releaseDate o: function: ldi:epochToIso8601 parameters: - [ldi:epoch, $(releaseDate) ] datatype: xsd:DateTime - p: cs:lastChange o: function: ldi:epochToIso8601 parameters: - [ldi:epoch, $(lastChange) ] datatype: xsd:DateTime - [cs:isOnSale, $(isOnSale), xsd:Boolean] - [cs:normalPrice, $(normalPrice), xsd:Double] - [cs:salePrice, $(salePrice), xsd:Double] . mapping.ttl . Let’s save the mapping.ttl in our current directory. ldio.config.yaml: . orchestrator: pipelines: - name: data input: name: Ldio:HttpInPoller config: url: https://www.cheapshark.com/api/1.0/deals?pageSize=1000 interval: PT30M adapter: name: Ldio:RmlAdapter config: mapping: \"mapping.ttl\" transformers: - name: Ldio:VersionObjectCreator config: date-observed-property: \"http://www.cheapshark.com/lastChange\" member-type: \"http://www.cheapshark.com/GameDeal\" generatedAt-property: \"https://w3id.org/ldes#timestampPath\" versionOf-property: \"https://w3id.org/ldes#versionOfPath\" outputs: - name: Ldio:ConsoleOut config: content-type: text/turtle . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex2-scrape-api#setup",
+    
+    "relUrl": "/ldio/examples/ex2-scrape-api#setup"
+  },"11": {
+    "doc": "Scraping an API",
+    "title": "Execution",
+    "content": "Once started, you should be seeing data in your console similar to . &lt;http://www.cheapshark.com/gamedeals/157072/2023-06-28T21:31:20.000Z&gt; a &lt;http://www.cheapshark.com/GameDeal&gt; ; &lt;http://www.cheapshark.com/isOnSale&gt; \"1\"^^&lt;http://www.w3.org/2001/XMLSchema#Boolean&gt; ; &lt;http://www.cheapshark.com/lastChange&gt; \"2023-06-28T21:31:20.000Z\"^^&lt;http://www.w3.org/2001/XMLSchema#DateTime&gt; ; &lt;http://www.cheapshark.com/metacriticLink&gt; \"/game/pc/one-piece-burning-blood---gold-edition\" ; &lt;http://www.cheapshark.com/normalPrice&gt; \"74.98\"^^&lt;http://www.w3.org/2001/XMLSchema#Double&gt; ; &lt;http://www.cheapshark.com/releaseDate&gt; \"2016-09-01T00:00:00.000Z\"^^&lt;http://www.w3.org/2001/XMLSchema#DateTime&gt; ; &lt;http://www.cheapshark.com/salePrice&gt; \"6.45\"^^&lt;http://www.w3.org/2001/XMLSchema#Double&gt; ; &lt;http://www.cheapshark.com/thumb&gt; &lt;https://gamersgatep.imgix.net/a/3/4/026d064cc7e1fb721f497398a3435dfcfbe0c43a.jpg?auto=&amp;w=&gt; ; &lt;http://www.cheapshark.com/title&gt; \"ONE PIECE BURNING BLOOD GOLD EDITION\" ; &lt;https://w3id.org/ldes#timestampPath&gt; \"2023-06-28T21:31:20.000Z\"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt; ; &lt;https://w3id.org/ldes#versionOfPath&gt; &lt;http://www.cheapshark.com/gamedeals/157072&gt; . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex2-scrape-api#execution",
+    
+    "relUrl": "/ldio/examples/ex2-scrape-api#execution"
+  },"12": {
+    "doc": "Enrich a model",
+    "title": "Enrich A Model",
+    "content": "As part of this example, we will store some Car data in a Graph Database. We will later use that data to extend our user data Model to include the Car data. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex3-enrich-model#enrich-a-model",
+    
+    "relUrl": "/ldio/examples/ex3-enrich-model#enrich-a-model"
+  },"13": {
+    "doc": "Enrich a model",
+    "title": "Used Components",
+    "content": ". | Http In | RDF Adapter | Console Out | Repository Sink | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex3-enrich-model#used-components",
+    
+    "relUrl": "/ldio/examples/ex3-enrich-model#used-components"
+  },"14": {
+    "doc": "Enrich a model",
+    "title": "Setup",
+    "content": "For this setup, we will have two pipelines: . | A to-graph pipeline that will take in our “Car” Linked Data and send it straight to a GraphDB | A enriched pipeline that will extend the data with the saved car data | . RDF4J Server . To save the “Car” data, we first need to set up a GraphDB Server. This can be done by mounting a rdf4j workbench image. docker run -d -p 8081:8080 -e JAVA_OPTS=\"-Xms1g -Xmx4g\" eclipse/rdf4j-workbench:latest . Once spun up, a simple repository can be configured via doing the following curl command: . test-db.ttl: . @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;. @prefix rep: &lt;http://www.openrdf.org/config/repository#&gt;. @prefix sr: &lt;http://www.openrdf.org/config/repository/sail#&gt;. @prefix sail: &lt;http://www.openrdf.org/config/sail#&gt;. @prefix ms: &lt;http://www.openrdf.org/config/sail/memory#&gt;. [] a rep:Repository ; rep:repositoryID \"test\" ; rdfs:label \"test memory store\" ; rep:repositoryImpl [ rep:repositoryType \"openrdf:SailRepository\" ; sr:sailImpl [ sail:sailType \"openrdf:MemoryStore\" ; ms:persist true ; ms:syncDelay 120 ] ]. curl -X PUT -H \"Content-Type: text/turtle\" --data-binary @test-db.ttl http://localhost:8081/rdf4j-server/repositories/test . LDIO . ldio.config.yaml: . orchestrator: pipelines: - name: \"to-graph\" input: name: \"Ldio:HttpIn\" adapter: name: \"Ldio:RdfAdapter\" outputs: - name: \"Ldio:RepositoryMaterialiser\" config: sparql-host: http://localhost:8081/rdf4j-server repository-id: test - name: \"enriched\" input: name: \"Ldio:HttpIn\" adapter: name: \"Ldio:RdfAdapter\" transformers: - name: \"Ldio:SparqlConstructTransformer\" config: query: \" PREFIX schema: &lt;http://schema.org/&gt; CONSTRUCT { ?s ?p ?o . ?car ?cp ?co . } WHERE { ?s ?p ?o . ?s schema:hasCar ?car SERVICE &lt;http://localhost:8081/rdf4j-server/repositories/test&gt; { ?car ?cp ?co . } } \" outputs: - name: \"Ldio:ConsoleOut\" . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex3-enrich-model#setup",
+    
+    "relUrl": "/ldio/examples/ex3-enrich-model#setup"
+  },"15": {
+    "doc": "Enrich a model",
+    "title": "Execution",
+    "content": "1. Ingestion of Car Data . First, we will post these three turtle files to our “to-graph” pipeline at endpoint http://localhost:8080/to-graph with the Content-Type header set to ‘text/turtle’ . @prefix schema: &lt;http://schema.org/&gt; . @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; . &lt;http://example.com/cars/Volvo/XC40&gt; a schema:Car ; schema:brand \"Volvo\"^^xsd:string ; schema:max-speed \"180\"^^xsd:integer ; schema:model \"XC40\"^^xsd:string . @prefix schema: &lt;http://schema.org/&gt; . @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; . &lt;http://example.com/cars/Ferrari/F40&gt; a schema:Car ; schema:brand \"Ferrari\"^^xsd:string ; schema:max-speed \"315\"^^xsd:integer ; schema:model \"F40\"^^xsd:string . @prefix schema: &lt;http://schema.org/&gt; . @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; . &lt;http://example.com/cars/Reliant/Robin&gt; a schema:Car ; schema:brand \"Reliant\"^^xsd:string ; schema:max-speed \"136\"^^xsd:integer ; schema:model \"Robin\"^^xsd:string . 2. Send un-enriched member to pipeline . Secondly, we will post our un-enriched User model to our “enriched” pipeline at endpoint http://localhost:8080/enriched with the Content-Type header set to ‘text/turtle’. This pipeline will not only include the posted statements, but will include the models from the GraphDB based on their URI. @prefix schema: &lt;http://schema.org/&gt; . &lt;http://example.com/people/SpideyBoy&gt; schema:hasCar &lt;http://example.com/cars/Ferrari/F40&gt;, &lt;http://example.com/cars/Volvo/XC40&gt; ; schema:jobTitle \"Spidey Boy\" ; schema:name \"Peter Parker\" ; a schema:Person . 3. Result: an Enriched Model . After posting the User model, you should be seeing data in your console similar to . @prefix Ferrari: &lt;http://example.com/cars/Ferrari/&gt; . @prefix Volvo: &lt;http://example.com/cars/Volvo/&gt; . @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; . @prefix schema: &lt;http://schema.org/&gt; . Volvo:XC40 rdf:type schema:Car ; schema:brand \"Volvo\" ; schema:max-speed 180 ; schema:model \"XC40\" . &lt;http://example.com/people/SpideyBoy&gt; rdf:type schema:Person ; schema:hasCar Ferrari:F40 , Volvo:XC40 ; schema:jobTitle \"Spidey Boy\" ; schema:name \"Peter Parker\" . Ferrari:F40 rdf:type schema:Car ; schema:brand \"Ferrari\" ; schema:max-speed 315 ; schema:model \"F40\" . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex3-enrich-model#execution",
+    
+    "relUrl": "/ldio/examples/ex3-enrich-model#execution"
+  },"16": {
+    "doc": "Enrich a model",
+    "title": "Enrich a model",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/ex3-enrich-model",
+    
+    "relUrl": "/ldio/examples/ex3-enrich-model"
+  },"17": {
+    "doc": "Examples",
+    "title": "Linked Data Interactions Orchestrator Examples",
+    "content": "Through the table of contents, you will find examples of the LDIO config that can be placed inside the ldio.config.yml to get the desired results. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/index#linked-data-interactions-orchestrator-examples",
+    
+    "relUrl": "/ldio/examples/index#linked-data-interactions-orchestrator-examples"
+  },"18": {
+    "doc": "Examples",
+    "title": "Examples",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/examples/index",
+    
+    "relUrl": "/ldio/examples/index"
+  },"19": {
+    "doc": "The Linked Data Interactions Orchestrator",
+    "title": "The Linked Data Interactions Orchestrator",
+    "content": "A lightweight application maintained by the LDI team. Its creation came when a more lightweight alternative for Apache NiFi was needed. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/index",
+    
+    "relUrl": "/ldio/index"
+  },"20": {
+    "doc": "The Linked Data Interactions Orchestrator",
+    "title": "Docker Compose",
+    "content": "The easiest way to start working with the LDIO is by using Docker. The image is located on the Docker Hub. To set up your environment, start by creating a new folder dedicated to your LDIO project. Within this folder, create two files: a docker-compose.yml and a YAML configuration file. The YAML file can be named according to your preference and can be added to the volume bindings pointing to the ldio/application.yml file. To enable Swagger UI, debug logging, or monitoring, please follow the instructions provided below on how to incorporate them into the LDIO YAML configuration file. docker-compose.yml: . version: '3.3' services: ldio-workbench: container_name: ldio-workbench image: ldes/ldi-orchestrator:2.4.0-SNAPSHOT volumes: - ./ldio.config.yml:/ldio/application.yml:ro ports: - \"&lt;port&gt;:8080\" . Once configured with the LDIO config, execute the command . docker compose up . If any extra files are required for a processor (mapping/queries/…), you can add them in your volume binding pointing to the ldio folder as follows: . Note that the name given for the file can be whatever, as long as it is unique. - ./file.extension:/ldio/file.extension:ro . If any custom processors have been created, you can add the jars in your volume binding pointing to the ldio/lib folder as follows: . Note that the name given for the jar file can be whatever, as long as it is unique. - &lt;path to custom processor&gt;:/ldio/lib/custom-processor.jar:ro . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/index#docker-compose",
+    
+    "relUrl": "/ldio/index#docker-compose"
+  },"21": {
+    "doc": "The Linked Data Interactions Orchestrator",
+    "title": "Enable swagger UI",
+    "content": "To use the swagger UI on your own LDIO deployment you can add the below config, and go to &lt;base-url&gt;/v1/swagger. springdoc: swagger-ui: path: /v1/swagger . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/index#enable-swagger-ui",
+    
+    "relUrl": "/ldio/index#enable-swagger-ui"
+  },"22": {
+    "doc": "The Linked Data Interactions Orchestrator",
+    "title": "LDIO DEBUG Logging",
+    "content": "To enable logging the input model for a . | LDIO Adapter | LDIO Transformer | LDIO Output | . Make sure you . | Add the following property in your application config: logging: level: be.vlaanderen.informatievlaanderen: DEBUG . | Add the debug: true property to your transformer or output config. | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/index#ldio-debug-logging",
+    
+    "relUrl": "/ldio/index#ldio-debug-logging"
+  },"23": {
+    "doc": "The Linked Data Interactions Orchestrator",
+    "title": "LDIO Logging &amp; Monitoring",
+    "content": "To provide a better insight in the workings in the LDIO, we expose a prometheus endpoint (/actuator/prometheus) that encloses some metrics (with included tags): . | ldio_data_in_total: Number (Amount of items passed at the start of Transformer Pipeline) . | pipeline: String (Refers to the pipeline name) | ldio_type: String (Refers to the LDIO Input Type of pipeline) | . | ldio_data_out_total: Number (Amount of items passed at the end of Transformer Pipeline) . | pipeline: String (Refers to the pipeline name) | . | . To consult these metrics, make sure the prometheus endpoint is enabled by setting the following setting: . management: endpoints: web: exposure: include: - prometheus . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/index#ldio-logging--monitoring",
+    
+    "relUrl": "/ldio/index#ldio-logging--monitoring"
+  },"24": {
+    "doc": "LDIO Adapters",
+    "title": "Linked Data Orchestrator Adapters",
+    "content": "Adapters are be used in conjunction with the LDI Input. They will transform the provided content into and internal Linked Data model and sends it down the pipeline for further processing. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/index#linked-data-orchestrator-adapters",
+    
+    "relUrl": "/ldio/ldio-adapters/index#linked-data-orchestrator-adapters"
+  },"25": {
+    "doc": "LDIO Adapters",
+    "title": "Overview",
+    "content": "| Adapter | Description | Inputs | Advantages | Disadvantages | . | JSON to JSON-LD | Receives JSON messages and adds linked data context to transform the messages to JSON-LD | . | JSON | . | . | Easy to set up: plug in context | . | . | Only works with JSON as input | Slower performance when deserializing model | . | . | RDF | Takes in an RDF string and converts it into an internal linked data model | . | RDF string | . | . | Easy to set up: no configuration needed | . | . | Only works with RDF as input | Only supports valid RDF MIME types | . | . | RML | Transform a non-linked data object (JSON/CSV/XML) to RDF object | . | JSON | CSV | XML | . | . | Most powerful adapter | Can convert multiple input objects | . | . | RML knowledge needed to do mapping | . | . | NGSIv2 to NGSI-LD | Converts NGSIv2 to an NGSI-LD model | . | NGSIv2 (JSON) | . |   | . | Only works with NGSIv2 as input | Slower performance when deserializing model | . | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/index#overview",
+    
+    "relUrl": "/ldio/ldio-adapters/index#overview"
+  },"26": {
+    "doc": "LDIO Adapters",
+    "title": "LDIO Adapters",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/index",
+    
+    "relUrl": "/ldio/ldio-adapters/index"
+  },"27": {
+    "doc": "Json To JsonLd Transformer",
+    "title": "LDIO Json To JsonLd Adapter",
+    "content": "Ldio:JsonToLdAdapter . The json-to-ld-adapter receives json messages and adds a linked data context to transform the messages to json-ld. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-json-to-json-ld#ldio-json-to-jsonld-adapter",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-json-to-json-ld#ldio-json-to-jsonld-adapter"
+  },"28": {
+    "doc": "Json To JsonLd Transformer",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | context | URI of json-ld context Or an JSON-LD context object. | Yes | N/A | http://example.com/my-api | URI or Json Object (containing “@context” entry) | . | force-content-type | Flag that indicates if application/json should be forced as mime type. | No | false | true | true or false | . | max-jsonld-cache-capacity | After retrieving an external JSON-LD context, it is cached for reuse. This property allows to specify the size of this cache (number of stored contexts). | No | 100 | 100 | Integer | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-json-to-json-ld#config",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-json-to-json-ld#config"
+  },"29": {
+    "doc": "Json To JsonLd Transformer",
+    "title": "Json To JsonLd Transformer",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-json-to-json-ld",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-json-to-json-ld"
+  },"30": {
+    "doc": "NGSIv2 To LD Adapter",
+    "title": "LDIO NGSIv2 To LD Adapter",
+    "content": "Ldio:NgsiV2ToLdAdapter . This adapter will transform a NGSI V2 input into NGSI LD. Jackson is used to first deserialize the input to java objects which can then be serialized to the LD format. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-ngsiv2-to-ld#ldio-ngsiv2-to-ld-adapter",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-ngsiv2-to-ld#ldio-ngsiv2-to-ld-adapter"
+  },"31": {
+    "doc": "NGSIv2 To LD Adapter",
+    "title": "Notes",
+    "content": "The algorithm applies several deviations from the standard formats. These deviations are: . | The observedAt attribute is added to every property, its value is determined by the dateObserved attribute of the input. | The timestamp attribute of a metadata property normally determines the observedAt property but is ignored in this algorithm. | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-ngsiv2-to-ld#notes",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-ngsiv2-to-ld#notes"
+  },"32": {
+    "doc": "NGSIv2 To LD Adapter",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | core-context | URI of a core json-ld context. | Yes | N/A | http://example.com/my-api | HTTP and HTTPS urls | . | ld-context | URI of a custom json-ld context. | No | N/A | http://example.com/my-api | HTTP and HTTPS urls | . | data-identifier | Identifier that points to data in provided json. | Yes | N/A | data | String | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-ngsiv2-to-ld#config",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-ngsiv2-to-ld#config"
+  },"33": {
+    "doc": "NGSIv2 To LD Adapter",
+    "title": "NGSIv2 To LD Adapter",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-ngsiv2-to-ld",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-ngsiv2-to-ld"
+  },"34": {
+    "doc": "RDF Adapter",
+    "title": "LDIO RDF Adapter",
+    "content": "Ldio:RdfAdapter . As the most basic adapter, the RDF Adapter will take in an RDF string and convert it into an internal Linked Data model based on the given content type. This internal Linked Data model is then available for utilization in various other components, such as transformers and outputs. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-rdf-adapter#ldio-rdf-adapter",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-rdf-adapter#ldio-rdf-adapter"
+  },"35": {
+    "doc": "RDF Adapter",
+    "title": "Notes",
+    "content": "This Adapter only supports valid RDF mime types . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-rdf-adapter#notes",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-rdf-adapter#notes"
+  },"36": {
+    "doc": "RDF Adapter",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | max-jsonld-cache-capacity | After retrieving an external JSON-LD context, it is cached for reuse. This property allows to specify the size of this cache (number of stored contexts). | No | 100 | 100 | Integer | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-rdf-adapter#config",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-rdf-adapter#config"
+  },"37": {
+    "doc": "RDF Adapter",
+    "title": "RDF Adapter",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-rdf-adapter",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-rdf-adapter"
+  },"38": {
+    "doc": "RML Adapter",
+    "title": "LDIO RML Adapter",
+    "content": "Ldio:RmlAdapter . The RML Adapter allows a user to transform a non-LD object (json/CSV/XML) to an RDF object. This is done by providing a RML mapping file. For more details on how to form a correct RML mapping, visit the RML documentation. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-rml-adapter#ldio-rml-adapter",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-rml-adapter#ldio-rml-adapter"
+  },"39": {
+    "doc": "RML Adapter",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | mapping | Path to content of RML/content of RML mapping. | Yes | N/A | mapping.ttl | Path/String | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-rml-adapter#config",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-rml-adapter#config"
+  },"40": {
+    "doc": "RML Adapter",
+    "title": "RML Adapter",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-adapters/ldio-rml-adapter",
+    
+    "relUrl": "/ldio/ldio-adapters/ldio-rml-adapter"
+  },"41": {
+    "doc": "LDIO Inputs",
+    "title": "Linked Data Orchestrator Inputs",
+    "content": "The LDI Core module contains the components maintained by the VSDS team in order to accommodate the onboarding of LDES onboarders. Each component can be wrapped in a desired implementation framework (LDI-orchestrator, NiFi, …) to be used. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/index#linked-data-orchestrator-inputs",
+    
+    "relUrl": "/ldio/ldio-inputs/index#linked-data-orchestrator-inputs"
+  },"42": {
+    "doc": "LDIO Inputs",
+    "title": "LDIO Inputs",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/index",
+    
+    "relUrl": "/ldio/ldio-inputs/index"
+  },"43": {
+    "doc": "AMQP In",
+    "title": "LDIO AMQP In",
+    "content": "Ldio:AmqpIn . The LDIO AMQP In listens to messages from an AMQP 1.0 queue. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-amqp-in#ldio-amqp-in",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-amqp-in#ldio-amqp-in"
+  },"44": {
+    "doc": "AMQP In",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | remote-url | URI to AMQP queue | Yes | N/A | amqp://server:61616 | In line with amqp[s]://hostname:port[?option=value[&amp;option2=value...]] or amqpws[s]://hostname:port[/path][?option=value[&amp;option2=value...]] | . | queue | Name of the queue | Yes | N/A | quickstart-events | String | . | username | Username used in authentication | Yes | N/A | client | String | . | password | Password used in the authentication | Yes | N/A | secret | String | . | content-type | Content-type suggestion* for received messages of queue | No | application/n-quads | application/n-quads | Any content type supported by Apache Jena | . | When the header of the message contains a “contentType” property, the listener will use the content type provided by the header. | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-amqp-in#config",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-amqp-in#config"
+  },"45": {
+    "doc": "AMQP In",
+    "title": "Example",
+    "content": "input: name: Ldio:AmqpIn config: remote-url: amqp://localhost:61616 username: artemis password: artemis queue: example content-type: application/ld+json . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-amqp-in#example",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-amqp-in#example"
+  },"46": {
+    "doc": "AMQP In",
+    "title": "Pausing",
+    "content": "When paused, this component will not receive any messages from the queue and will start syncing with the queue when unpaused. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-amqp-in#pausing",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-amqp-in#pausing"
+  },"47": {
+    "doc": "AMQP In",
+    "title": "AMQP In",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-amqp-in",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-amqp-in"
+  },"48": {
+    "doc": "HTTP In Poller",
+    "title": "LDIO HTTP In Poller",
+    "content": "Ldio:HttpInPoller . The LDIO Http In Poller is a basic Http Poller that will poll a target URL on a specified interval. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-http-in-poller#ldio-http-in-poller",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-http-in-poller#ldio-http-in-poller"
+  },"49": {
+    "doc": "HTTP In Poller",
+    "title": "Config",
+    "content": "General properties . | Property | Description | Required | Default | Example | Supported values | . | url | Target URL to poll from. | Yes | N/A | http://example.com/my-api | HTTP and HTTPS urls (lists are supported) | . | cron | Cron expression to declare when the polling should take place 1 | Yes2 | N/A | */10 * * * * * | Spring Cron Expression | . | interval | Polling interval declared in ISO 8601 format. | Yes2 | N/A | PT1S | ISO 8601 formatted String | . | continueOnFail | Indicated if continue if polling results in failure | No | true | true | true or false | . LDIO Http Requester properties . Authentication properties . | Property | Description | Required | Default | Supported values | Example | . | auth.type | The type of authentication required by the LDES server | No | NO_AUTH | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS | OAUTH2_CLIENT_CREDENTIALS | . | auth.api-key | The api key when using auth.type ‘API_KEY’ | No | N/A | String | myKey | . | auth.api-key-header | The header for the api key when using auth.type ‘API_KEY’ | No | X-API-KEY | String | X-API-KEY | . | auth.client-id | The client identifier when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | String | myId | . | auth.client-secret | The client secret when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | String | mySecret | . | auth.token-endpoint | The token endpoint when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | HTTP and HTTPS urls | http://localhost:8000/token | . | auth.scope | The Oauth2 scope when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | HTTP and HTTPS urls | http://localhost:8000/token | . Retry properties . | Property | Description | Required | Default | Supported values | Example | . | retries.enabled | Indicates if the http client should retry http requests when the server cannot be reached. | No | true | Boolean value | true | . | retries.max | Max number of retries the http client should do when retries.enabled = true | No | 5 | Integer | 100 | . | retries.statuses-to-retry | Custom comma seperated list of http status codes that can trigger a retry in the http client. | No | N/A | Comma seperated list of Integers | 410,451 | . When retries are enabled, the following statuses are always retried, regardless of the configured statuses-to-retry: . | 429 | 5xx (500 and above) | . Rate limit properties . | Property | Description | Required | Default | Supported values | Example | . | rate-limit.enabled | Indicates if the http client should limit http requests when calling the server. | No | false | true or false | false | . | rate-limit.limit | Limit of requests per period, which is defined below, that the http client should do when rate-limit.enabled = true | No | 500 | Integer | 100 | . | rate-limit.period | Period in which the limit of requests, which is defined above, can be reached by the http client when rate-limit.enabled = true | No | PT1M | ISO 8601 Duration | PT1H | . Http headers . | Property | Description | Required | Default | Supported values | Example | . | http.headers.[].key/value | A list of custom http headers can be added. A key and value has to be provided for every header. | No | N/A | String | role | . Example Http Requester config config: http: headers: - key: role value: developer - key: alt-role value: programmer auth: type: API_KEY api-key: my-secret api-key-header: x-api-key retries: enabled: true max: 10 statuses-to-retry: 410,451 rate-limit: enabled: true period: P1D limit: 1000 . Multiple urls . The Http In Poller supports polling multiple endpoints. Example configuration: . name: Ldio:HttpInPoller config: auth: type: API_KEY api-key: my-key api-key-header: X-API-Key url: - https://webhook.site/6cb49dd1-aa05-4e77-8870-f06903805b30 - https://webhook.site/e8078b99-4b09-496d-baa8-8ba309dec6b6 interval: PT3S . When using multiple endpoints, the other config (auth config, interval, etc.) applies to all endpoints. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-http-in-poller#config",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-http-in-poller#config"
+  },"50": {
+    "doc": "HTTP In Poller",
+    "title": "Pausing",
+    "content": "When paused, this component will stop making any of the scheduled HTTP-calls. When resumed, it will restart these calls as if the component had been restarted, meaning any configured periods will start counting from the moment the pipeline was resumed instead of when it was originally created. | The cron schedules are in timezone ‘UTC’. &#8617; . | Either choose the ‘cron’ option or the ‘interval’. However, the interval property will become deprecated. &#8617; &#8617;2 . | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-http-in-poller#pausing",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-http-in-poller#pausing"
+  },"51": {
+    "doc": "HTTP In Poller",
+    "title": "HTTP In Poller",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-http-in-poller",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-http-in-poller"
+  },"52": {
+    "doc": "HTTP In",
+    "title": "LDIO HTTP In",
+    "content": "Ldio:HttpIn . The LDIO Http In is a basic Http Listener. Data can be written to http://{hostname}:{port}/{pipeline name} . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-http-in#ldio-http-in",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-http-in#ldio-http-in"
+  },"53": {
+    "doc": "HTTP In",
+    "title": "Config",
+    "content": "This component has no required config . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-http-in#config",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-http-in#config"
+  },"54": {
+    "doc": "HTTP In",
+    "title": "Pausing",
+    "content": "When paused, this component will return an 503 response to any HTTP-calls it receives . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-http-in#pausing",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-http-in#pausing"
+  },"55": {
+    "doc": "HTTP In",
+    "title": "HTTP In",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-http-in",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-http-in"
+  },"56": {
+    "doc": "Kafka In",
+    "title": "LDIO Kafka In",
+    "content": "Ldio:KafkaIn . The LDIO Kafka In listens to messages from a kafka topic. Two security protocols are supported: . | NO SECURITY | SASL SSL PLAIN | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-kafka-in#ldio-kafka-in",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-kafka-in#ldio-kafka-in"
+  },"57": {
+    "doc": "Kafka In",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | content-type | Any content type supported by Apache Jena | Yes | N/A | application/n-quads | Any type supported by Apache Jena | . | bootstrap-servers | Comma separated list of uris of the bootstrap servers | Yes | N/A | localhost:9012 | url | . | topics | Names of the topics (comma separated) | Yes | N/A | quickstart-events | String | . | group-id | Group identifier the consumer belongs to | No | generated value | group-1 | String | . | security-protocol | Security protocol to be used to connect to the kafka broker | No | NO_AUTH | SASL_SSL_PLAIN | SASL_SSL_PLAIN or NO_AUTH | . | sasl-jaas-user | Username used in the security protocol | No | null | client | String | . | sasl-jaas-password | Password used in the security protocol | No | null | secret | String | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-kafka-in#config",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-kafka-in#config"
+  },"58": {
+    "doc": "Kafka In",
+    "title": "Example",
+    "content": "NO SECURITY . outputs: - name: Ldio:KafkaIn config: content-type: application/n-quads topics: quickstart-events bootstrap-servers: localhost:9092 . SASL SSL PLAIN . outputs: - name: Ldio:KafkaIn config: content-type: application/n-quads topics: quickstart-events bootstrap-servers: localhost:9092 group-id: testing_group security-protocol: SASL_SSL_PLAIN sasl-jaas-user: client sasl-jaas-password: client-secret . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-kafka-in#example",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-kafka-in#example"
+  },"59": {
+    "doc": "Kafka In",
+    "title": "Pausing",
+    "content": "When paused, this component will stop listening to the kafka topics. When resumed, it will try to resync with all topics. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-kafka-in#pausing",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-kafka-in#pausing"
+  },"60": {
+    "doc": "Kafka In",
+    "title": "Kafka In",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-kafka-in",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-kafka-in"
+  },"61": {
+    "doc": "LDES Client with Connector",
+    "title": "LDIO Ldes Client Connector",
+    "content": "Ldio:LdesClientConnector . An EDC (Eclipse dataspace Connector) LDIO wrapper component for the ldio ldes client to add EDC support to this component. If you’d like to know how to configure the LDES Client, we refer to the ldio ldes client. The additional functionality provided by this component makes it possible to use the Ldes Client to consume an LDES through an EDC connector. This component exposes two endpoints: . | http://://transfer The Ldio component will start the data transfer with the connector. You have to send the transfer request to the LdioLdesClientConnector instead of the EDC consumer connector. The LDIO Ldes Client Connector will start the transfer with the connector and also keep the transfer alive while consuming the LDES (e.g. request a new token when it expires). | http://://token This endpoint should never be called directly. This is the callback to be provided in the transfer request. The EDC connector will use this callback endpoint to provide the LDES Client with a token. | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client-connector#ldio-ldes-client-connector",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client-connector#ldio-ldes-client-connector"
+  },"62": {
+    "doc": "LDES Client with Connector",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | connector-transfer-url | The transfer url of the EDC connector which has to be called to start a transfer | Yes | N/A | http://consumer-connector:29193/management/v2/transferprocesses | HTTP and HTTPS urls | . | proxy-url-to-replace | Makes it possible to proxy a part of the url of the LDES**. Indicates which part of the url should be replaced. | No | empty string | http://ldes-behind-connectors.dev | string | . | proxy-url-replacement | Makes it possible to proxy a part of the url of the LDES**. Indicates the replacement url part. | No | memory | http://consumer-connector:29193 | string | . ** The url mentioned here are the actual url’s used by the LDES Server (hostname). These are included in the results bodies to indicate relations, etc. This is a temporary solution until the client and server support relative urls. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client-connector#config",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client-connector#config"
+  },"63": {
+    "doc": "LDES Client with Connector",
+    "title": "Examples",
+    "content": "input: name: Ldio:LdesClientConnector config: url: http://consumer-connector:29291/public connector-transfer-url: http://consumer-connector:29193/management/v2/transferprocesses proxy-url-to-replace: http://localhost:8081/devices proxy-url-replacement: http://consumer-connector:29291/public source-format: application/n-quads . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client-connector#examples",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client-connector#examples"
+  },"64": {
+    "doc": "LDES Client with Connector",
+    "title": "INIT phase",
+    "content": "Contrary to the other ldio-input components, the connector waits in the INIT status for the edc-token and will only progress to the RUNNING status once it has received this token. More on the statuses in ldio can be found here. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client-connector#init-phase",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client-connector#init-phase"
+  },"65": {
+    "doc": "LDES Client with Connector",
+    "title": "Pausing",
+    "content": "When paused, this component will stop processing the current fragment and not make any calls to the server. When resumed, it will continue with the fragment where it stopped and continue as normal. This component can not be paused while waiting for the token. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client-connector#pausing",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client-connector#pausing"
+  },"66": {
+    "doc": "LDES Client with Connector",
+    "title": "LDES Client with Connector",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client-connector",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client-connector"
+  },"67": {
+    "doc": "LDES Client",
+    "title": "LDIO LDES Client",
+    "content": "The LDES Client is a component which can be used by data consumers to replicate and synchronize an LDES. When replication or synchronization is halted, the LDES Client is able to resume where it has stopped. More information on how consumption of an LDES works can be found here. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client#ldio-ldes-client",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client#ldio-ldes-client"
+  },"68": {
+    "doc": "LDES Client",
+    "title": "Processing fragments",
+    "content": "One or more URLs need to be configured in the LDES Client. If more URLs are configured, they need to be part of the same LDES. The configured fragments (URLs) will be processed and all relations will be added to the (non-persisted) queue. As long as the LDES Client runs, new fragments that need to be processed can be added to the queue. The LDES Client will keep track of the mutable and immutable fragments it did already process. When an immutable fragment that already has been processed is added to the queue, it will be ignored. Mutable fragments usually have a max-age set in the Cache-control header. If this isn’t the case, a default expiration interval will be used to set an expiration date on the fragment. When the max-age or default expiration interval of a fragment expires, the fragment will be put into the queue again so that the LDES Client fetches it again. Processing members within fragments . The LDES Client keeps track of the processed members of mutable fragments, to make sure members are only processed once within a fragment. When the fragment is marked as immutable, and no members can be added anymore, the LDES Client will stop keeping track of members processed within that fragment. Members within a fragment can be processed in order of time based on a timestamp. The path to this timestamp needs to be configured. If the patch is missing, members will be processed in random order. Filtering . Exactly-once-filter . To have the possibility to filter out already received members, the “exactly-once-filter” can be enabled in configuration. The filter will check whether a member was already processed in other fragments. The IDs of all processed members will be remembered by the filter and when a duplicate member is processed, it will be filtered out before sending it to the output of the Client. Latest-state-filter . When version materialisation is enabled, state objects that does not represent the latest state can be filter out by enabling the “latest-state-filter” in the configuration. Both the versionOf and the timestamp of the version object members will be remembered by the filter. When a new member with the same versionOf and a timestamp that is before or equal to the latest remembered timestamp, the member will be filtered out. When a member is processed that has a later timestamp than the last remembered member, that last remembered member will be overwritten and the new member will be processed. Flow of the Latest State Filter . flowchart LR ; CLIENT[LDIO LDES Client] --&gt; Version_Object((Version\\n object)); Version_Object --&gt; Latest_State_Filter(Latest State\\nFilter); Latest_State_Filter --&gt; Filtering{Newer then\\n last processed\\n member?}; Filtering --&gt;|Yes| Version_Materialiser(Version\\nMaterialiser); Version_Materialiser --&gt; State_Object((State\\n object)); State_Object --&gt; Sender[Ldio Sender]; Filtering ----&gt;|No| Ignore[Ignore member]; . This Latest State Filter is only available for the version materialiser within the LDIO LDES Client, not for the transformer component . Persistence strategies . The Client offers different ways to persist state of the processed members: . | Strategy | Description | Advantages | Disadvantages | . | Memory | Store the state of members in the memory of the LDES Client | . | Fastest processing | Easiest setup | . | . | Not suitable for large datasets (>500k), heap will overflow | State is lost when the client stops/restarts | . | . | SQLite | A SQLite database is used to store state of members | . | Easy setup | State is not lost between runs | . | . | Slowest processing** | . | . | PostgreSQL | A PostgreSQL database is used to store state of the members | . | Fastest processing for larger datasets | State is not lost between runs | . | . | Database is needed | . | . ** We use a transaction for every processed record and SQLite is limited by the CPU (source). ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client#processing-fragments",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client#processing-fragments"
+  },"69": {
+    "doc": "LDES Client",
+    "title": "Config",
+    "content": "General properties . | Property | Description | Required | Default | Example | Supported values | . | urls | List of URLs of the LDES data sources | Yes | N/A | http://localhost:8080/my-ldes | HTTP and HTTPS URLs | . | source-format | The ‘Content-Type’ that should be requested to the server | No | text/turtle | application/n-quads | Any type supported by Apache Jena | . | state | ‘memory’, ‘sqlite’ or ‘postgres’ to indicate how the state should be persisted | No | memory | sqlite | ‘memory’, ‘sqlite’ or ‘postgres’ | . | keep-state | Indicates if the state should be persisted on shutdown (n/a for in memory states) | No | false | false | true or false | . | timestamp-path | The property-path used to determine the timestamp on which the members will be ordered, and used for the latest-state-filter when enabled | No | N/A | http://www.w3.org/ns/prov#generatedAtTime | A property path | . | enable-exactly-once | Indicates whether a member must be sent exactly once or at least once | No | true | true | true or false | . The default source-format is text/turtle, as this RDF format supports relative URIs. However, if relative URIs are not used, application/n-quads or even the binary format application/rdf+protobuf are better options, as these formats are faster to parse. Setting the keep-state property to true makes it so that the state can not be deleted through the pipeline-management api . Version materialisation properties . | Property | Description | Required | Default | Example | Supported values | . | materialisation.enabled | Indicates if the client should return state-objects (true) or version-objects (false) | No | false | true | true or false | . | materialisation.version-of-property | Property that points to the versionOfPath | No | http://purl.org/dc/terms/isVersionOf | http://purl.org/dc/terms/isVersionOf | true or false | . | materialisation.enable-latest-state | Indicates whether all state or only the latest state must be sent | No | true | false | true or false | . Don’t forgot to provide a timestamp-path in the general properties, as this property is not required, but necessary for this filter to work properly! . LDIO Http Requester properties . Authentication properties . | Property | Description | Required | Default | Supported values | Example | . | auth.type | The type of authentication required by the LDES server | No | NO_AUTH | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS | OAUTH2_CLIENT_CREDENTIALS | . | auth.api-key | The api key when using auth.type ‘API_KEY’ | No | N/A | String | myKey | . | auth.api-key-header | The header for the api key when using auth.type ‘API_KEY’ | No | X-API-KEY | String | X-API-KEY | . | auth.client-id | The client identifier when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | String | myId | . | auth.client-secret | The client secret when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | String | mySecret | . | auth.token-endpoint | The token endpoint when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | HTTP and HTTPS urls | http://localhost:8000/token | . | auth.scope | The Oauth2 scope when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | HTTP and HTTPS urls | http://localhost:8000/token | . Retry properties . | Property | Description | Required | Default | Supported values | Example | . | retries.enabled | Indicates if the http client should retry http requests when the server cannot be reached. | No | true | Boolean value | true | . | retries.max | Max number of retries the http client should do when retries.enabled = true | No | 5 | Integer | 100 | . | retries.statuses-to-retry | Custom comma seperated list of http status codes that can trigger a retry in the http client. | No | N/A | Comma seperated list of Integers | 410,451 | . When retries are enabled, the following statuses are always retried, regardless of the configured statuses-to-retry: . | 429 | 5xx (500 and above) | . Rate limit properties . | Property | Description | Required | Default | Supported values | Example | . | rate-limit.enabled | Indicates if the http client should limit http requests when calling the server. | No | false | true or false | false | . | rate-limit.limit | Limit of requests per period, which is defined below, that the http client should do when rate-limit.enabled = true | No | 500 | Integer | 100 | . | rate-limit.period | Period in which the limit of requests, which is defined above, can be reached by the http client when rate-limit.enabled = true | No | PT1M | ISO 8601 Duration | PT1H | . Http headers . | Property | Description | Required | Default | Supported values | Example | . | http.headers.[].key/value | A list of custom http headers can be added. A key and value has to be provided for every header. | No | N/A | String | role | . Example Http Requester config config: http: headers: - key: role value: developer - key: alt-role value: programmer auth: type: API_KEY api-key: my-secret api-key-header: x-api-key retries: enabled: true max: 10 statuses-to-retry: 410,451 rate-limit: enabled: true period: P1D limit: 1000 . SQLite properties . | Property | Description | Required | Default | Example | Supported values | . | sqlite.directory | Directory wherein the .db file can be saved | No | N/A | /ldio/sqlite | String | . Postgres properties . | Property | Description | Required | Default | Example | Supported values | . | postgres.url | JDBC URL of the Postgres database | No | N/A | jdbc:postgresql://test.postgres.database.azure.com:5432/sample | String | . | postgres.username | Username used to connect to Postgres database | No | N/A | myUsername@test | String | . | postgres.password | Password used to connect to Postgres database | No | N/A | myPassword | String | . Configuration Examples . input: name: Ldio:LdesClient config: urls: - http://localhost:8080/my-ldes sourceFormat: text/turtle materialisation: enabled: true retries: enabled: true auth: type: OAUTH2_CLIENT_CREDENTIALS client-id: clientId client-secret: secret token-endpoint: http://localhost:8000/token . input: name: Ldio:LdesClient config: urls: - http://localhost:8080/my-ldes sourceFormat: text/turtle retries: enabled: true state: postgres postgres: url: jdbc:postgresql://test.postgres.database.azure.com:5432/sample username: myUsername@test password: myPassword . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client#config",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client#config"
+  },"70": {
+    "doc": "LDES Client",
+    "title": "Pausing the LDES Client",
+    "content": ". | When paused, the LDES Client will stop processing the current fragment and will not request new fragments from the server. | When resumed, the LDES Client will continue processing the fragment where it has stopped and it will request new fragments form the server. | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client#pausing-the-ldes-client",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client#pausing-the-ldes-client"
+  },"71": {
+    "doc": "LDES Client",
+    "title": "LDES Client",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-inputs/ldio-ldes-client",
+    
+    "relUrl": "/ldio/ldio-inputs/ldio-ldes-client"
+  },"72": {
+    "doc": "LDIO Outputs",
+    "title": "Linked Data Orchestrator Outputs",
+    "content": "The LDI Core module contains the components maintained by the VSDS team in order to accommodate the onboarding of LDES onboarders. Each component can be wrapped in a desired implementation framework (LDI-orchestrator, NiFi, …) to be used. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/index#linked-data-orchestrator-outputs",
+    
+    "relUrl": "/ldio/ldio-outputs/index#linked-data-orchestrator-outputs"
+  },"73": {
+    "doc": "LDIO Outputs",
+    "title": "LDIO Outputs",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/index",
+    
+    "relUrl": "/ldio/ldio-outputs/index"
+  },"74": {
+    "doc": "AMQP Out",
+    "title": "LDIO AMQP Out",
+    "content": "Ldio:AmqpOut . The LDIO AMQP Out sends messages to an AMQP 1.0 queue. The content-type configured in the rdf-writer.content-type is added as a header to the message with key “contentType”. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-amqp-out#ldio-amqp-out",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-amqp-out#ldio-amqp-out"
+  },"75": {
+    "doc": "AMQP Out",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Supported values | Example | . | remote-url | URI to AMQP queue | Yes | N/A | In line with amqp[s]://hostname:port[?option=value[&amp;option2=value...]] or amqpws[s]://hostname:port[/path][?option=value[&amp;option2=value...]] | amqp://server:61616 | . | queue | Name of the queue | Yes | N/A | String | quickstart-events | . | username | Username used in authentication | Yes | N/A | String | client | . | password | Password used in the authentication | Yes | N/A | String | secret | . RDF Writer Properties . | Property | Description | Required | Default | Supported values | Example | . | rdf-writer.content-type | Target content type. | No | text/turtle | Any type supported by Apache Jena | application/ld+json | . | rdf-writer.frame | Additional JSON-LD Frame to format the outputted JSON-LD Object. | No | N/A | Any valid JSON Object that describes a JSON-LD Frame | See https://www.w3.org/TR/json-ld11-framing/#sample-library-frame | . Example RDF Writer config Format as N-Quads: . config: rdf-writer: content-type: application/n-quads . Format as JSON-LD with given frame: . config: rdf-writer: content-type: application/ld+json frame: | { \"@context\": {\"@vocab\": \"http://example.org/\"}, \"@type\": \"Library\", \"contains\": { \"@type\": \"Book\", \"contains\": { \"@type\": \"Chapter\" } } } . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-amqp-out#config",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-amqp-out#config"
+  },"76": {
+    "doc": "AMQP Out",
+    "title": "Example",
+    "content": "outputs: - name: Ldio:AmqpOut config: remote-url: amqp://localhost:61616 username: artemis password: artemis queue: example rdf-writer: content-type: application/n-quads . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-amqp-out#example",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-amqp-out#example"
+  },"77": {
+    "doc": "AMQP Out",
+    "title": "AMQP Out",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-amqp-out",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-amqp-out"
+  },"78": {
+    "doc": "Console Out",
+    "title": "LDIO Console Out",
+    "content": "Ldio:ConsoleOut . The LDIO Console Out will output its given model to the console. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-console-out#ldio-console-out",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-console-out#ldio-console-out"
+  },"79": {
+    "doc": "Console Out",
+    "title": "Config",
+    "content": "RDF Writer Properties . | Property | Description | Required | Default | Supported values | Example | . | rdf-writer.content-type | Target content type. | No | text/turtle | Any type supported by Apache Jena | application/ld+json | . | rdf-writer.frame | Additional JSON-LD Frame to format the outputted JSON-LD Object. | No | N/A | Any valid JSON Object that describes a JSON-LD Frame | See https://www.w3.org/TR/json-ld11-framing/#sample-library-frame | . Example RDF Writer config Format as N-Quads: . config: rdf-writer: content-type: application/n-quads . Format as JSON-LD with given frame: . config: rdf-writer: content-type: application/ld+json frame: | { \"@context\": {\"@vocab\": \"http://example.org/\"}, \"@type\": \"Library\", \"contains\": { \"@type\": \"Book\", \"contains\": { \"@type\": \"Chapter\" } } } . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-console-out#config",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-console-out#config"
+  },"80": {
+    "doc": "Console Out",
+    "title": "Console Out",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-console-out",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-console-out"
+  },"81": {
+    "doc": "HTTP Out",
+    "title": "LDIO HTTP Out",
+    "content": "Ldio:HttpOut . The LDIO HTTP Out is a basic Http Client that will send the given Linked Data model to a target url. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-http-out#ldio-http-out",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-http-out#ldio-http-out"
+  },"82": {
+    "doc": "HTTP Out",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | endpoint | Target url. | Yes | N/A | http://example.com/endpoint | HTTP and HTTPS urls | . RDF Writer Properties . | Property | Description | Required | Default | Supported values | Example | . | rdf-writer.content-type | Target content type. | No | text/turtle | Any type supported by Apache Jena | application/ld+json | . | rdf-writer.frame | Additional JSON-LD Frame to format the outputted JSON-LD Object. | No | N/A | Any valid JSON Object that describes a JSON-LD Frame | See https://www.w3.org/TR/json-ld11-framing/#sample-library-frame | . Example RDF Writer config Format as N-Quads: . config: rdf-writer: content-type: application/n-quads . Format as JSON-LD with given frame: . config: rdf-writer: content-type: application/ld+json frame: | { \"@context\": {\"@vocab\": \"http://example.org/\"}, \"@type\": \"Library\", \"contains\": { \"@type\": \"Book\", \"contains\": { \"@type\": \"Chapter\" } } } . LDIO Http Requester properties . Authentication properties . | Property | Description | Required | Default | Supported values | Example | . | auth.type | The type of authentication required by the LDES server | No | NO_AUTH | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS | OAUTH2_CLIENT_CREDENTIALS | . | auth.api-key | The api key when using auth.type ‘API_KEY’ | No | N/A | String | myKey | . | auth.api-key-header | The header for the api key when using auth.type ‘API_KEY’ | No | X-API-KEY | String | X-API-KEY | . | auth.client-id | The client identifier when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | String | myId | . | auth.client-secret | The client secret when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | String | mySecret | . | auth.token-endpoint | The token endpoint when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | HTTP and HTTPS urls | http://localhost:8000/token | . | auth.scope | The Oauth2 scope when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | HTTP and HTTPS urls | http://localhost:8000/token | . Retry properties . | Property | Description | Required | Default | Supported values | Example | . | retries.enabled | Indicates if the http client should retry http requests when the server cannot be reached. | No | true | Boolean value | true | . | retries.max | Max number of retries the http client should do when retries.enabled = true | No | 5 | Integer | 100 | . | retries.statuses-to-retry | Custom comma seperated list of http status codes that can trigger a retry in the http client. | No | N/A | Comma seperated list of Integers | 410,451 | . When retries are enabled, the following statuses are always retried, regardless of the configured statuses-to-retry: . | 429 | 5xx (500 and above) | . Rate limit properties . | Property | Description | Required | Default | Supported values | Example | . | rate-limit.enabled | Indicates if the http client should limit http requests when calling the server. | No | false | true or false | false | . | rate-limit.limit | Limit of requests per period, which is defined below, that the http client should do when rate-limit.enabled = true | No | 500 | Integer | 100 | . | rate-limit.period | Period in which the limit of requests, which is defined above, can be reached by the http client when rate-limit.enabled = true | No | PT1M | ISO 8601 Duration | PT1H | . Http headers . | Property | Description | Required | Default | Supported values | Example | . | http.headers.[].key/value | A list of custom http headers can be added. A key and value has to be provided for every header. | No | N/A | String | role | . Example Http Requester config config: http: headers: - key: role value: developer - key: alt-role value: programmer auth: type: API_KEY api-key: my-secret api-key-header: x-api-key retries: enabled: true max: 10 statuses-to-retry: 410,451 rate-limit: enabled: true period: P1D limit: 1000 . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-http-out#config",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-http-out#config"
+  },"83": {
+    "doc": "HTTP Out",
+    "title": "HTTP Out",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-http-out",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-http-out"
+  },"84": {
+    "doc": "Kafka Out",
+    "title": "LDIO Kafka Out",
+    "content": "Ldio:KafkaOut . The LDIO Kafka Out sends messages to a kafka topic. Two security protocols are supported: . | NO SECURITY | SASL SSL PLAIN | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-kafka-out#ldio-kafka-out",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-kafka-out#ldio-kafka-out"
+  },"85": {
+    "doc": "Kafka Out",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | bootstrap-servers | Comma separated list of uris of the bootstrap servers | Yes | N/A | localhost:9012 | url | . | topic | Name of the topic | Yes | N/A | quickstart-events | String | . | key-property-path | Optional property path to extract the kafka key from the data model | No | null | http://purl.org/dc/terms/title | ARQ property path | . | security-protocol | Security protocol to be used to connect to the kafka broker | No | NO_AUTH | SASL_SSL_PLAIN | SASL_SSL_PLAIN or NO_AUTH | . | sasl-jaas-user | Username used in the security protocol | No | null | client | String | . | sasl-jaas-password | Password used in the security protocol | No | null | secret | String | . | frame-type | RDF type of the objects that need to be included for JSON-LD framing. | No | N/A | http://purl.org/goodrelations/v1#Offering | Any RDF type | . RDF Writer Properties . | Property | Description | Required | Default | Supported values | Example | . | rdf-writer.content-type | Target content type. | No | text/turtle | Any type supported by Apache Jena | application/ld+json | . | rdf-writer.frame | Additional JSON-LD Frame to format the outputted JSON-LD Object. | No | N/A | Any valid JSON Object that describes a JSON-LD Frame | See https://www.w3.org/TR/json-ld11-framing/#sample-library-frame | . Example RDF Writer config Format as N-Quads: . config: rdf-writer: content-type: application/n-quads . Format as JSON-LD with given frame: . config: rdf-writer: content-type: application/ld+json frame: | { \"@context\": {\"@vocab\": \"http://example.org/\"}, \"@type\": \"Library\", \"contains\": { \"@type\": \"Book\", \"contains\": { \"@type\": \"Chapter\" } } } . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-kafka-out#config",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-kafka-out#config"
+  },"86": {
+    "doc": "Kafka Out",
+    "title": "Example",
+    "content": "NO SECURITY . outputs: - name: Ldio:KafkaOut config: bootstrap-servers: localhost:9092 topic: quickstart-events key-property-path: &lt;https://purl.org/geojson/vocab#properties&gt;/&lt;http://purl.org/dc/terms/title&gt; . SASL SSL PLAIN . outputs: - name: Ldio:KafkaOut config: bootstrap-servers: localhost:9092 topic: quickstart-events key-property-path: &lt;https://purl.org/geojson/vocab#properties&gt;/&lt;http://purl.org/dc/terms/title&gt; security-protocol: SASL_SSL_PLAIN sasl-jaas-user: client sasl-jaas-password: client-secret . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-kafka-out#example",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-kafka-out#example"
+  },"87": {
+    "doc": "Kafka Out",
+    "title": "Kafka Out",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-kafka-out",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-kafka-out"
+  },"88": {
+    "doc": "Repository Sink",
+    "title": "Repository Sink",
+    "content": "Ldio:RepositorySink . The repository Sink is used to flush an LDES stream into a triplestore. Any triplestore that supports the RDF4J remote repository API can be used. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-repository-sink",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-repository-sink"
+  },"89": {
+    "doc": "Repository Sink",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | sparql-host | The url of the server hosting the repository | Yes | N/A | http://repositoryServer | URL | . | repository-id | The rdf4j repository id | Yes | N/A | repoId | String | . | named-graph | If set, the triples will be written to this named graph | No | N/A | http://name | Any valid IRI | . | batch-size | Number of members or models that will be committed at once | No | 500 | 500 | Integer | . | batch-timeout | If the batch size has not been reached within this number of milliseconds, the members will be committed anyway. | No | 120000 | 30000 | Integer | . Batching . To increase the performance of this materialiser, members will be committed in batch to the triple store. However, it’s important to notice that this can have an impact on the data integrity. First of all, there could be a delay, with a maximum delay of the configured batch timeout, when the triple store will be up-to-date. Secondly, if something goes wrong halfway of a batch, all the members in that batch will not be committed to triple story and thus will be gone. So the more important data integrity is, the lower the batch-size and batch-timeout should be configured. If a more performant repository materialiser is desired, batch-size and batch-timeout should be configured somewhat higher. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-outputs/ldio-repository-sink#config",
+    
+    "relUrl": "/ldio/ldio-outputs/ldio-repository-sink#config"
+  },"90": {
+    "doc": "LDIO Transformers",
+    "title": "Linked Data Interactions Orchestrator Transformers",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/index#linked-data-interactions-orchestrator-transformers",
+    
+    "relUrl": "/ldio/ldio-transformers/index#linked-data-interactions-orchestrator-transformers"
+  },"91": {
+    "doc": "LDIO Transformers",
+    "title": "LDIO Transformers",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/index",
+    
+    "relUrl": "/ldio/ldio-transformers/index"
+  },"92": {
+    "doc": "Change Detection Filter",
+    "title": "LDIO Change Detection Filter",
+    "content": "Ldio:ChangeDetectionFilter . The LDIO Change Detection Filter, which is in fact a transformer, keeps track of each member with the same subject if the state has changed. If not, the member will be ignored, otherwise the member will be sent further through the pipeline. This can come in handy when you do not want to spam your server for example with duplicate state objects. Flow of the Change Detection Filter . flowchart LR ; PREV_TRANSFORMER[Previous transformer] --&gt; State_Object((State\\n object)); State_Object --&gt; FILTER(Change Detection\\nFilter); FILTER --&gt; HASH((Hashed\\n model)) HASH --&gt; Filtering{Contains\\n member with\\n same subject and\\n same hashed\\n model?}; Filtering --&gt;|No| NEXT_TRANSFORMER[Next\\n transformer]; Filtering --&gt;|Yes| Ignore[Ignore member]; . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-change-detection-filter#ldio-change-detection-filter",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-change-detection-filter#ldio-change-detection-filter"
+  },"93": {
+    "doc": "Change Detection Filter",
+    "title": "Config",
+    "content": "General properties . | Property | Description | Required | Default | Example | Supported values | . | state | ‘memory’, ‘sqlite’ or ‘postgres’ to indicate how the state should be persisted | No | memory | sqlite | ‘memory’, ‘sqlite’ or ‘postgres’ | . | keep-state | Indicates if the state should be persisted on shutdown (n/a for in memory states) | No | false | false | true or false | . SQLite properties . | Property | Description | Required | Default | Example | Supported values | . | sqlite.directory | Directory wherein the .db file can be saved | No | N/A | /ldio/sqlite | String | . Postgres properties . | Property | Description | Required | Default | Example | Supported values | . | postgres.url | JDBC URL of the Postgres database | No | N/A | jdbc:postgresql://test.postgres.database.azure.com:5432/sample | String | . | postgres.username | Username used to connect to Postgres database | No | N/A | myUsername@test | String | . | postgres.password | Password used to connect to Postgres database | No | N/A | myPassword | String | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-change-detection-filter#config",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-change-detection-filter#config"
+  },"94": {
+    "doc": "Change Detection Filter",
+    "title": "Change Detection Filter",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-change-detection-filter",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-change-detection-filter"
+  },"95": {
+    "doc": "GeoJson To WKT Transformer",
+    "title": "LDIO GeoJson To WKT Transformer",
+    "content": "Ldio:GeoJsonToWktTransformer . The GeoJson to Wkt Transformer will transform any GeoJson statements (with predicate https://purl.org/geojson/vocab#geometry) to a wkt string. When the transform-to-rdf+wkt-enabled configuration is enabled, GeoJSON statements will be converted into RDF+WKT format. For example: . { \"https://purl.org/geojson/vocab#geojson:geometry\": { \"@type\": \"Point\", \"https://purl.org/geojson/vocab#geojson:coordinates\": [ 100.0, 0.0 ] } } . becomes: . { \"http://www.w3.org/ns/locn#geometry\": { \"@value\": \"POINT (100 0)\", \"@type\": \"http://www.opengis.net/ont/geosparql#wktLiteral\" } } . With transform-to-rdf+wkt-enabled set to true it becomes: . @prefix geojson: &lt;https://purl.org/geojson/vocab#&gt; . @prefix sf: &lt;http://www.opengis.net/ont/sf#&gt; . @prefix geo: &lt;http://www.opengis.net/ont/geosparql#&gt; . @prefix locn: &lt;http://www.w3.org/ns/locn#&gt; . &lt;http://example.com/features/point&gt; a geojson:Feature; locn:geometry [ a sf:Point; geo:asWKT \"POINT (100 0)\"^^geo:wktLiteral ] . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-geojson-to-wkt#ldio-geojson-to-wkt-transformer",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-geojson-to-wkt#ldio-geojson-to-wkt-transformer"
+  },"96": {
+    "doc": "GeoJson To WKT Transformer",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | transform-to-rdf+wkt-enabled | Transform GeoJson to RDF+WKT format, defaults to false and the default format is WKT | No | false | false | true/false | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-geojson-to-wkt#config",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-geojson-to-wkt#config"
+  },"97": {
+    "doc": "GeoJson To WKT Transformer",
+    "title": "GeoJson To WKT Transformer",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-geojson-to-wkt",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-geojson-to-wkt"
+  },"98": {
+    "doc": "Http Enricher Transformer",
+    "title": "LDIO Http Enricher",
+    "content": "Ldio:HttpEnricher . A transformer which allows to send a GET or POST HTTP request to a dynamic URL provided by the model. The response is converted to linked data and added to the incoming model. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-http-enricher#ldio-http-enricher",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-http-enricher#ldio-http-enricher"
+  },"99": {
+    "doc": "Http Enricher Transformer",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Supported values | Example | . | adapter.name | This transformer requires an ldio-adapter to convert the responses to linked data. | Yes | N/A | Paths of supported LDIO Adapters | Ldio:RdfAdapter | . | adapter.config.xxx | Optional config that may be required by the adapter | No | N/A | Paths of supported LDIO Adapters | Ldio:RdfAdapter | . | url-property-path | Path defining the url that needs to be selected on the model for the http request. | Yes | N/A | Valid property paths | http://example.org/url | . | header-property-path | Path defining the headers that needs to be selected on the model for the http request. | No | N/A | Valid property paths | http://example.org/header | . | body-property-path | Path defining the body that needs to be selected on the model to be added when a POST http request is used. | No | N/A | Valid property paths | http://example.org/meta/http://example.org/body | . | http-method-property-path | Path defining the http method that needs to be selected on the model for the http request. | No | GET | GET or POST | GET | . LDIO Http Requester properties . Authentication properties . | Property | Description | Required | Default | Supported values | Example | . | auth.type | The type of authentication required by the LDES server | No | NO_AUTH | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS | OAUTH2_CLIENT_CREDENTIALS | . | auth.api-key | The api key when using auth.type ‘API_KEY’ | No | N/A | String | myKey | . | auth.api-key-header | The header for the api key when using auth.type ‘API_KEY’ | No | X-API-KEY | String | X-API-KEY | . | auth.client-id | The client identifier when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | String | myId | . | auth.client-secret | The client secret when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | String | mySecret | . | auth.token-endpoint | The token endpoint when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | HTTP and HTTPS urls | http://localhost:8000/token | . | auth.scope | The Oauth2 scope when using auth.type ‘OAUTH2_CLIENT_CREDENTIALS’ | No | N/A | HTTP and HTTPS urls | http://localhost:8000/token | . Retry properties . | Property | Description | Required | Default | Supported values | Example | . | retries.enabled | Indicates if the http client should retry http requests when the server cannot be reached. | No | true | Boolean value | true | . | retries.max | Max number of retries the http client should do when retries.enabled = true | No | 5 | Integer | 100 | . | retries.statuses-to-retry | Custom comma seperated list of http status codes that can trigger a retry in the http client. | No | N/A | Comma seperated list of Integers | 410,451 | . When retries are enabled, the following statuses are always retried, regardless of the configured statuses-to-retry: . | 429 | 5xx (500 and above) | . Rate limit properties . | Property | Description | Required | Default | Supported values | Example | . | rate-limit.enabled | Indicates if the http client should limit http requests when calling the server. | No | false | true or false | false | . | rate-limit.limit | Limit of requests per period, which is defined below, that the http client should do when rate-limit.enabled = true | No | 500 | Integer | 100 | . | rate-limit.period | Period in which the limit of requests, which is defined above, can be reached by the http client when rate-limit.enabled = true | No | PT1M | ISO 8601 Duration | PT1H | . Http headers . | Property | Description | Required | Default | Supported values | Example | . | http.headers.[].key/value | A list of custom http headers can be added. A key and value has to be provided for every header. | No | N/A | String | role | . Example Http Requester config config: http: headers: - key: role value: developer - key: alt-role value: programmer auth: type: API_KEY api-key: my-secret api-key-header: x-api-key retries: enabled: true max: 10 statuses-to-retry: 410,451 rate-limit: enabled: true period: P1D limit: 1000 . Note that all adapters are supported. When the adapter requires additional config, this can be added as seen below in the example. Example: . This example contains a JsonToLdAdapter which needs “core-context” as config. At the bottom there is also “auth” config provided for the request executor. - name: Ldio:HttpEnricher config: adapter: name: Ldio:JsonToLdAdapter config: core-context: file:///ldio/jsonld/observation.jsonld url-property-path: &lt;http://example.org/url&gt; header-property-path: &lt;http://example.org/meta&gt;/&lt;http://example.org/headers&gt; body-property-path: &lt;http://example.org/meta&gt;/&lt;http://example.org/body&gt; http-method-property-path: &lt;http://example.org/meta&gt;/&lt;http://example.org/method&gt; auth: type: API_KEY api-key: my-secret api-key-header: x-api-key . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-http-enricher#config",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-http-enricher#config"
+  },"100": {
+    "doc": "Http Enricher Transformer",
+    "title": "Http Enricher Transformer",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-http-enricher",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-http-enricher"
+  },"101": {
+    "doc": "SPARQL Construct",
+    "title": "LDIO SPARQL Construct",
+    "content": "Ldio:SparqlConstructTransformer . The SPARQL Construct Transformer will modify the model based on the given SPARQL Construct Query. SPARQL Construct is a query language used in semantic Web technologies to create RDF (Resource Description Framework) graphs from existing RDF data. It allows users to specify a pattern of data they wish to extract from the RDF data and construct a new graph based on that pattern. The SPARQL Construct query language provides a powerful way to create new RDF data by using existing data as the input. It can be used to transform RDF data into different formats, as well as to simplify the structure of RDF data by aggregating or filtering data. This SPARQL Construct Transfomer building block can be used to execute model transformations. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-sparql-construct#ldio-sparql-construct",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-sparql-construct#ldio-sparql-construct"
+  },"102": {
+    "doc": "SPARQL Construct",
+    "title": "Splitting models using SPARQL Construct",
+    "content": "This component can be used to split models into multiple models using graphs. For example, the below query will create a dataset containing multiple models defined by ‘GRAPH’. The SPARQL construct component will extract all named models from the dataset and add all statements from the default model. The component will then return a collection of models. CONSTRUCT { GRAPH ?s { ?s ?p ?o } } WHERE { ?s ?p ?o } . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-sparql-construct#splitting-models-using-sparql-construct",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-sparql-construct#splitting-models-using-sparql-construct"
+  },"103": {
+    "doc": "SPARQL Construct",
+    "title": "SPARQL functions",
+    "content": "We support some additional geo functions that can call inside your SPARQL Construct query, . with the following namespace: . prefix geoc: https://opengis.net/def/function/geosparql/custom# . | Function | Description | Input | Output | . | geoc:lineAtIndex | get LineString from MultiLineString by index. | MultiLineString(wktLiteral) &amp; index | LineString(wktLiteral) | . | geoc:firstCoordinate | get first Coordinate of LineString. | LineString(wktLiteral) | Coordinate(wktLiteral) | . | geoc:lastCoordinate | get last Coordinate of LineString. | LineString(wktLiteral) | Coordinate(wktLiteral) | . | geoc:lineLength | calculate total line length of LineString. | LineString(wktLiteral) | distance in meters | . | geoc:midPoint | calculate midpoint of LineString. | LineString(wktLiteral) | Coordinate(wktLiteral) | . | geoc:pointAtFromStart | calculate point on LineString by distance. | LineString(wktLiteral) &amp; distance in meters | Coordinate(wktLiteral) | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-sparql-construct#sparql-functions",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-sparql-construct#sparql-functions"
+  },"104": {
+    "doc": "SPARQL Construct",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | query | Path to content of SPARQL Query/content of SPARQL query. | Yes | N/A | query.rq | Path/String | . | infer | Include original model in end result. | No | false | false | true or false | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-sparql-construct#config",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-sparql-construct#config"
+  },"105": {
+    "doc": "SPARQL Construct",
+    "title": "SPARQL Construct",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-sparql-construct",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-sparql-construct"
+  },"106": {
+    "doc": "Version Materializer",
+    "title": "LDIO Version Materializer",
+    "content": "Ldio:VersionMaterialiser . The Version Materializer will transform a Version Object to a State Object. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-version-materializer#ldio-version-materializer",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-version-materializer#ldio-version-materializer"
+  },"107": {
+    "doc": "Version Materializer",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | versionOf-property | Property that points to the versionOfPath. | Yes | N/A | “http://purl.org/dc/terms/isVersionOf” | String | . | restrict-to-members | Only returns the statements of the node containing the versionOf property, including potential nested blank nodes. | No | false | false | true or false | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-version-materializer#config",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-version-materializer#config"
+  },"108": {
+    "doc": "Version Materializer",
+    "title": "Example",
+    "content": "Version Object . A version object is an entity that represents the state of an object at a specific point in time and associates it with a unique identifier (member ID). This identifier serves as the subject within the context of the RDF data model. An example would be: . @prefix time: &lt;http://www.w3.org/2006/time#&gt; . @prefix ex: &lt;http://example.org/&gt; . @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; . @prefix dc: &lt;http://purl.org/dc/terms/&gt; . @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; . &lt;http://example.org/member#2024-01-01T13:00:00+01:00&gt; a ex:Something ; ex:created [ a time:Instant ; time:inXSDDateTimeStamp \"2024-01-01T13:00:00+01:00\"^^xsd:DateTime ] ; prov:generatedAtTime \"2024-01-01T13:00:00+01:00\"^^xsd:DateTime ; dc:isVersionOf &lt;http://example.org/Something&gt; ; . State Object . For each version object, the transformer will generate a corresponding state object and remove all statements that include the versionOf predicate. An example of the created state object by the previous version object would be: . @prefix time: &lt;http://www.w3.org/2006/time#&gt; . @prefix ex: &lt;http://example.org/&gt; . @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; . @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; . &lt;http://example.org/member&gt; a ex:Something ; ex:created [ a time:Instant ; time:inXSDDateTimeStamp \"2023-08-18T13:08:00+01:00\"^^xsd:DateTime ] . prov:generatedAtTime \"2024-01-01T13:00:00+01:00\"^^xsd:DateTime ; . Configuration . The YAML configuration of this example would be as follows: . transformers: - name: Ldio:VersionMaterialiser config: versionOf-property: http://purl.org/dc/terms/isVersionOf . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-version-materializer#example",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-version-materializer#example"
+  },"109": {
+    "doc": "Version Materializer",
+    "title": "Version Materializer",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-version-materializer",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-version-materializer"
+  },"110": {
+    "doc": "Version Object Creator",
+    "title": "LDIO Version Object Creator",
+    "content": "Ldio:VersionObjectCreator . The Version Object Creator will transform a State Object to a Version Object. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-version-object-creator#ldio-version-object-creator",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-version-object-creator#ldio-version-object-creator"
+  },"111": {
+    "doc": "Version Object Creator",
+    "title": "Config",
+    "content": "| Property | Description | Required | Default | Example | Supported values | . | date-observed-property | Property path (IRI format ‘&lt;&gt;’) that points to a literal which should be used as timestampPath. Defaults to current timestamp. | No | Current Timestamp | &lt;https://example.org/ObservedAt&gt; | String | . | member-type | Defines the RDF type of the object to be transformed to a version object. | Yes | N/A | https://example.org/Person | String | . | delimiter | Defines how the version object id will be constructed. (versionOf + delimiter + dateObserved) | No | / | / | String | . | generatedAt-property | A statement will be added to the model with the generatedAt value and the given property. | No | http://www.w3.org/ns/prov#generatedAtTime | http://www.w3.org/ns/prov#generatedAtTime | String | . | versionOf-property | A statement will be added to the model with the versionOf value and the given property. | No | http://purl.org/dc/terms/isVersionOf | http://purl.org/dc/terms/isVersionOf | String | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-version-object-creator#config",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-version-object-creator#config"
+  },"112": {
+    "doc": "Version Object Creator",
+    "title": "Example",
+    "content": "State Object . A state object is an entity that represents the most recent state of an object, and in this context, the subject is not unique. Below is an example presented in RDF format: Below is an example presented in RDF format: . @prefix time: &lt;http://www.w3.org/2006/time#&gt; . @prefix ex: &lt;http://example.org/&gt; . @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; . &lt;http://example.org/member&gt; a ex:Something ; ex:created [ a time:Instant ; time:inXSDDateTimeStamp \"2023-08-18T13:08:00+01:00\"^^xsd:DateTime ] . A property path can be provided for the date-observed-property. You can provide the following date-observed-property: &lt;http://example.org/created&gt;/&lt;http://www.w3.org/2006/time#inXSDDateTimeStamp&gt; to select time:inXSDDateTimeStamp within ex:created. Version Object . A version object is an entity that represents the state of an object at a specific point in time and associates it with a unique identifier (member ID). This identifier serves as the subject within the context of the RDF data model. The transformer will perform three key tasks: . | Modify the named subject with a unique identifier based on the provided date-observed-property and delimiter | Add a timestamp statement | Add a versionOf statement | . An example of the created version object by the previous state object would be: . @prefix time: &lt;http://www.w3.org/2006/time#&gt; . @prefix ex: &lt;http://example.org/&gt; . @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; . @prefix dc: &lt;http://purl.org/dc/terms/&gt; . @prefix prov: &lt;http://www.w3.org/ns/prov#&gt; . &lt;http://example.org/member#2024-01-01T13:00:00+01:00&gt; a ex:Something ; ex:created [ a time:Instant ; time:inXSDDateTimeStamp \"2024-01-01T13:00:00+01:00\"^^xsd:DateTime ] ; prov:generatedAtTime \"2024-01-01T13:00:00+01:00\"^^xsd:DateTime ; dc:isVersionOf &lt;http://example.org/Something&gt; ; . Configuration . The YAML configuration of this example would be as follows: . transformers: - name: Ldio:VersionObjectCreator config: member-type: - http://example.org/Something - http://example.org/SomethingElse delimiter: \"#\" date-observed-property: &lt;http://example.org/created&gt;/&lt;http://www.w3.org/2006/time#inXSDDateTimeStamp&gt; generatedAt-property: http://www.w3.org/ns/prov#generatedAtTime versionOf-property: http://purl.org/dc/terms/isVersionOf . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-version-object-creator#example",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-version-object-creator#example"
+  },"113": {
+    "doc": "Version Object Creator",
+    "title": "Version Object Creator",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/ldio-version-object-creator",
+    
+    "relUrl": "/ldio/ldio-transformers/ldio-version-object-creator"
+  },"114": {
+    "doc": "Pipeline Management",
+    "title": "Management of Pipelines",
+    "content": "Pipelines in LDIO can be created in YAML or JSON configuration (although all example configurations are made in YAML, these can also be formatted in JSON). A default pipeline looks as follows: . name: my-first-pipeline input: name: fully-qualified name of LDI Input config: foo: bar adapter: name: fully-qualified name of LDI Adapter config: foo: bar transformers: - name: fully-qualified name of LDI Transformer config: foo: bar outputs: - name: fully-qualified name of LDI Transformer config: foo: bar . | Note that one orchestrator can have multiple pipelines | Note that one pipeline can have multiple LDI Transformers and LDI Outputs | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index#management-of-pipelines",
+    
+    "relUrl": "/ldio/pipeline-management/index#management-of-pipelines"
+  },"115": {
+    "doc": "Pipeline Management",
+    "title": "Anatomy of a pipeline",
+    "content": "Each pipeline is built up of the following components: . | LDIO Input: A component that will receive data (not necessarily LD) to then feed the LDIO pipeline. | LDIO Adapter: To be used in conjunction with the LDIO Input, the LDIO Adapter will transform the provided content into and internal Linked Data model and sends it down the pipeline. | LDIO Transformer: A component that takes in a Linked Data model, transforms/modifies it and then puts it back on the pipeline. | LDIO Output: A component that will take in Linked Data and will export it to external sources. | . stateDiagram-v2 direction LR LDI_Input --&gt; LDI_Transformer : LD LDI_Transformer --&gt; LDI_Output : LD state LDI_Input { direction LR [*] --&gt; LDI_Adapter : Non LD state LDI_Adapter { direction LR [*] --&gt; adapt adapt --&gt; [*] } LDI_Adapter --&gt; [*] : LD } state LDI_Transformer { direction LR [*] --&gt; transform transform --&gt; [*] } state LDI_Output { direction LR [*] --&gt; [*] } . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index#anatomy-of-a-pipeline",
+    
+    "relUrl": "/ldio/pipeline-management/index#anatomy-of-a-pipeline"
+  },"116": {
+    "doc": "Pipeline Management",
+    "title": "Persistence of Pipelines",
+    "content": "By default, all pipelines defined after startup (via management API) will be lost on restart. To prevent this behaviour, add the orchestrator.directory property as follows: . orchestrator: directory: \"{directory in application folder}\" . If this directory does not exist, it will be created. NOTE: An application config can be defined by creating an application YAML file in the LDIO directory (in docker, this correlates to /ldio/application.yml). ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index#persistence-of-pipelines",
+    
+    "relUrl": "/ldio/pipeline-management/index#persistence-of-pipelines"
+  },"117": {
+    "doc": "Pipeline Management",
+    "title": "Pausing &amp; Resuming LDIO",
+    "content": "Sometimes it might be preferred to pause an LDIO pipeline instead of deleting and recreating it. The endpoints to manage pipelines can be found here . The exact behaviour of a paused pipeline depends on its input component and can be found in the documentation of these components. However, it will always complete its current run through the pipeline and then seize sending any output. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index#pausing--resuming-ldio",
+    
+    "relUrl": "/ldio/pipeline-management/index#pausing--resuming-ldio"
+  },"118": {
+    "doc": "Pipeline Management",
+    "title": "Pipeline Management",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index",
+    
+    "relUrl": "/ldio/pipeline-management/index"
+  },"119": {
+    "doc": "Pipeline Management API",
+    "title": "Pipeline Management API",
+    "content": "Swagger UI | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-api",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-api"
+  },"120": {
+    "doc": "Pipeline Status",
+    "title": "Status",
+    "content": "An individual ldio-pipeline can be in one of several different statuses. These different statuses and their behaviour are dependent on the input component of the pipeline. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#status",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-status#status"
+  },"121": {
+    "doc": "Pipeline Status",
+    "title": "Overview Of The Status Flow",
+    "content": "graph LR; INIT --&gt; RUNNING; INIT --&gt; STOPPED; RUNNING --&gt; STOPPED; RUNNING --&gt; HALTED; HALTED --&gt; RUNNING; HALTED --&gt; STOPPED; The above diagram shows the flow between the different statuses of the pipeline. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#overview-of-the-status-flow",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-status#overview-of-the-status-flow"
+  },"122": {
+    "doc": "Pipeline Status",
+    "title": "INIT",
+    "content": "The startup step of the ldio pipeline. This is the preparation step before the input component can receive data and pass it on to the rest of the pipeline. In most components this step will take little time. The only exception for now is the client-connector. It is not possible to pause the pipeline while in this state. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#init",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-status#init"
+  },"123": {
+    "doc": "Pipeline Status",
+    "title": "RUNNING",
+    "content": "This status indicates that the ldio pipeline is running and that the input component is ready to or currently receiving or fetching data. This is the only state in which the pipeline can be paused. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#running",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-status#running"
+  },"124": {
+    "doc": "Pipeline Status",
+    "title": "HALTED",
+    "content": "Every ldio pipeline can be paused, the exact behavior of which depends on the ldio input component used. A more in depth explanation can be found on the pages for the individual input components. Currently, the HALTED status can only be reached through manually pausing the pipeline through the pipeline-api. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#halted",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-status#halted"
+  },"125": {
+    "doc": "Pipeline Status",
+    "title": "STOPPED",
+    "content": "When a pipeline is deleted, it will first change to the STOPPED status, this ensures the state is correctly saved in stateful components and that the entire pipeline can be gracefully shutdown. This status will only last a short while before the pipeline is deleted and the status can no longer be queried. The pipeline can be stopped from any other status. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#stopped",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-status#stopped"
+  },"126": {
+    "doc": "Pipeline Status",
+    "title": "Status Change Source",
+    "content": "The ldio pipeline keeps track of if the last status change was triggered manually or automatic. Manually changing the status can be done through the pipeline-api. When in the RUNNING state, this indicates if the pipeline has been started (automatic) or unpaused (manual). ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#status-change-source",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-status#status-change-source"
+  },"127": {
+    "doc": "Pipeline Status",
+    "title": "Pipeline Status",
+    "content": " ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status",
+    
+    "relUrl": "/ldio/pipeline-management/pipeline-status"
+  },"128": {
+    "doc": "Startup Configuration",
+    "title": "Startup Configuration",
+    "content": "Startup Configuration . On startup, pipelines can be defined by creating an application YAML file in the LDIO directory (in docker, this correlates to /ldio/application.yml) that looks as follows: . orchestrator: pipelines: - name: my-first-pipeline input: name: fully-qualified name of LDI Input config: foo: bar adapter: name: fully-qualified name of LDI Adapter config: foo: bar transformers: - name: fully-qualified name of LDI Transformer config: foo: bar outputs: - name: fully-qualified name of LDI Transformer config: foo: bar . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/startup-config",
+    
+    "relUrl": "/ldio/pipeline-management/startup-config"
+  },"129": {
+    "doc": "Linked Data Interactions For Apache NiFi",
+    "title": "Linked Data Interactions For Apache NiFi",
+    "content": "Apache Nifi is an easy to use, powerful, and reliable system to process and distribute data. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-nifi/index",
+    
+    "relUrl": "/ldi-nifi/index"
+  },"130": {
+    "doc": "Linked Data Interactions For Apache NiFi",
+    "title": "Set up NiFi instance with LDI processors",
+    "content": "The processors can be imported into a NiFi docker instance via volume binding: . | Create a docker-compose.yml file with the following content in a new directory services: nifi: image: apache/nifi:2.0.0-M2 environment: SINGLE_USER_CREDENTIALS_USERNAME: admin SINGLE_USER_CREDENTIALS_PASSWORD: ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB ports: - 8443:8443 volumes: - ./nifi-ext:/opt/nifi/nifi-current/nar_extensions:rw . | Create a directory nifi-ext in your current directory. | Download either the ...-nar-bundle.jar and unpack this or download the individual required processors (.nar extension) from the nexus repository. Next, place the required processors in the nifi-ext directory. | Finally, start your instance. docker compose up . | Log in at https://localhost:8443/nifi with the credentials mentioned in step 1 | All downloaded extensions are available under the be.vlaanderen.informatievlaanderen.ldes.ldi.nifi group. | . All documentation and notes about configuration are available in the NiFi component itself. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-nifi/index#set-up-nifi-instance-with-ldi-processors",
+    
+    "relUrl": "/ldi-nifi/index#set-up-nifi-instance-with-ldi-processors"
+  },"131": {
+    "doc": "LDI NiFi Processors",
+    "title": "LDI NiFi Processors",
+    "content": "Due to special requests, non conformance to the LDI APIs or extra complexity, a few processors were only implemented in NiFi. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-nifi/processors/index",
+    
+    "relUrl": "/ldi-nifi/processors/index"
+  },"132": {
+    "doc": "SPARQL Interactions Processors",
+    "title": "SPARQL Interactions Processors",
+    "content": "The SPARQL Interactions Processors is a bundle of the LDI SPARQL Construct and also a SPARQL SELECT Processor. The SPARQL SELECT provides the option to query your dataset. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-nifi/processors/sparql-interactions",
+    
+    "relUrl": "/ldi-nifi/processors/sparql-interactions"
+  },"133": {
+    "doc": "Linked Data Interactions LDES Discoverer",
+    "title": "Linked Data Interactions LDES Discoverer",
+    "content": "A lightweight application that discovers the structure of an LDES or a view by retrieving all the tree node relations of that LDES or view. A use case for this could be when you are only interested in a part of the event stream. To know what part you can follow, the structure can be discovered first. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-standalones/ldes-discoverer",
+    
+    "relUrl": "/ldi-standalones/ldes-discoverer"
+  },"134": {
+    "doc": "Linked Data Interactions LDES Discoverer",
+    "title": "Config",
+    "content": "Base configuration . | Property | Description | Required | Default | Example | Supported values | . | url | Url where from the discoverer needs to start | true | N/A | http://example.com/my-api | HTTP and HTTPS url | . | source-format | The ‘Content-Type’ that should be requested to the server. | false | text/turtle | application/n-quads | Any type supported by Apache Jena | . Optional config . Authentication . | Property | Description | Default | Example | Supported values | . | auth-type | The type of authentication required by the LDES server | NO_AUTH | OAUTH2_CLIENT_CREDENTIALS | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS | . | api-key | The api key when using auth-type ‘API_KEY’ | N/A | myKey | String | . | api-key-header | The header for the api key when using auth-type ‘API_KEY’ | X-API-KEY | X-API-KEY | String | . | client-id | The client identifier when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | myId | String | . | client-secret | The client secret when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | mySecret | String | . | token-endpoint | The token endpoint when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | http://localhost:8000/token | HTTP and HTTPS urls | . | scope | The Oauth2 scope when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | http://localhost:8000/token | HTTP and HTTPS urls | . Further customization . | Property | Description | Default | Example | Supported values | . | disable-retry | Boolean flag that disables retrying to send http requests when the server cannot be reached. (enabled when omitted) | N/A | N/A | N/A | . | retry-limit | Max number of retries the http client should do (only on absence of disable-retry) | 5 | 100 | Integer | . | retry-statuses | Custom comma seperated list of http status codes that can trigger a retry in the http client. | N/A | 410,451 | Comma seperated list of Integers | . | rate-limit | Limit of requests per period, which is defined below, that the http client should do | N/A | 500 | Integer | . | rate-limit-period | Period in which the limit of requests, which is defined above, can be reached by the http client | PT1M | PT1H | ISO 8601 Duration | . | header | Parameter for each individual header that is required | N/A | Connection: keep-alive | String | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-standalones/ldes-discoverer#config",
+    
+    "relUrl": "/ldi-standalones/ldes-discoverer#config"
+  },"135": {
+    "doc": "Linked Data Interactions LDES Discoverer",
+    "title": "How to run",
+    "content": "This tutorial will show how to use the discoverer in Docker. In this example, we will try to discover the structure of an event stream called observations. For simplicity, we recommend passing the config as arguments. Run the ldes-discoverer with minimal config . docker run ldes/ldes-discoverer --url=\"http://ldes-server/observations\" . Run the ldes-discoverer with rate-limit, authentication and two additional headers . docker run ldes/ldes-discoverer --url=\"http://ldes-server/observations\" --retry-limit=3 --rate-limit=400 \\ --header=\"Connection: keep alive\" --header=\"X-Source-App: ldes-discoverer\" \\ --auth-type=API_KEY --api-key=\"my-secret-api-key\" . NOTE: when an url contains a &amp; symbol, which will be picked up by the shell as an operator. For instance, running docker run ldes/ldes-discoverer --url=http://ldes-server/observations?year=2023&amp;month=05&amp;day=11 will result in the shell trying to execute three different command, where the last two will be month=05 and day=11, which will fail of course. To resolve this, make sure the url is encapsulated in quotation marks. Example output . In the logging of the application, both the total number of relations and the relations itself will be displayed. This will be present as the last logging statement of the app and would look something like this: . 2024-02-08T14:26:25.279+01:00 INFO 48176 --- [ main] b.v.i.l.l.d.common.LdesDiscovererExecutor : http://ldes-server/observations contains a total of 10 relations: http://ldes-server/observations +- http://ldes-server/observations/by-time | +- http://ldes-server/observations/by-time?year=2022 | +- http://ldes-server/observations/by-time?year=2022&amp;month=08 | +- http://ldes-server/observations/by-time?year=2023 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=07 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=16 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=20 +- http://ldes-server/observations/paged +- http://ldes-server/observations/paged?pageNumber=1 . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-standalones/ldes-discoverer#how-to-run",
+    
+    "relUrl": "/ldi-standalones/ldes-discoverer#how-to-run"
+  }
+}
