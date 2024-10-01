@@ -267,7 +267,7 @@
           "200": {
             "description": "Status of a requested pipeline",
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
                   "type": "string",
                   "enum": [
