@@ -17,6 +17,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.PipelineConf
  */
 public class LdioObserver {
 	private static final String LDIO_DATA_IN = "ldio_data_in";
+	private static final String LDIO_DATA_OUT = "ldio_data_out";
 	private static final String LDIO_COMPONENT_NAME = "ldio_type";
 	private static final Logger log = LoggerFactory.getLogger(LdioObserver.class);
 	private final String componentName;
@@ -67,6 +68,13 @@ public class LdioObserver {
 	 */
 	public void increment() {
 		Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).increment();
+	}
+
+	public boolean hasProcessedAllData() {
+		final double dataIn = Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).count();
+		final double dataOut = Metrics.counter(LDIO_DATA_OUT, PIPELINE_NAME, pipelineName).count();
+		log.atInfo().log("Received data: {} - Sent data: {}", dataIn, dataOut);
+		return dataOut >= dataIn;
 	}
 
 	/**
