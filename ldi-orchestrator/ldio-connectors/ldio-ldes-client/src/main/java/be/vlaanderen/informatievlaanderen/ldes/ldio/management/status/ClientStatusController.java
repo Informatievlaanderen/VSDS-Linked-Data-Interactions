@@ -26,7 +26,7 @@ public class ClientStatusController {
 		this.clientStatusService = clientStatusService;
 	}
 
-	@GetMapping()
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponse(responseCode = "200", description = "A list statuses of all active LDES Client pipelines.", content = {
 			@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = ClientStatusTo.class))),
 	})
@@ -35,9 +35,9 @@ public class ClientStatusController {
 		return clientStatusService.getClientStatuses();
 	}
 
-	@GetMapping(path = "{pipeline}", produces = "application/json")
+	@GetMapping(path = "{pipeline}", produces = MediaType.TEXT_PLAIN_VALUE)
 	@ApiResponse(responseCode = "200", description = "Status of a requested pipeline", content = {
-			@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ClientStatus.class)),
+			@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(implementation = ClientStatus.class)),
 	})
 	@ApiResponse(responseCode = "404", description = "No LDES Client pipeline exists by that name", content = {
 			@Content(schema = @Schema()),
