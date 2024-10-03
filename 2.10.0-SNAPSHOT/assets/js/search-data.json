@@ -631,7 +631,7 @@
   },"90": {
     "doc": "LDIO Transformers",
     "title": "Linked Data Interactions Orchestrator Transformers",
-    "content": " ",
+    "content": "The LDI Core module contains the components maintained by the VSDS team in order to accommodate the onboarding of LDES onboarders. Each component can be wrapped in a desired implementation framework (LDI-orchestrator, NiFi, …) to be used. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/ldio-transformers/index#linked-data-interactions-orchestrator-transformers",
     
     "relUrl": "/ldio/ldio-transformers/index#linked-data-interactions-orchestrator-transformers"
@@ -798,152 +798,187 @@
     "relUrl": "/ldio/ldio-transformers/ldio-version-object-creator"
   },"114": {
     "doc": "Pipeline Management",
-    "title": "Management of Pipelines",
-    "content": "Pipelines in LDIO can be created in YAML or JSON configuration (although all example configurations are made in YAML, these can also be formatted in JSON). A default pipeline looks as follows: . name: my-first-pipeline input: name: fully-qualified name of LDI Input config: foo: bar adapter: name: fully-qualified name of LDI Adapter config: foo: bar transformers: - name: fully-qualified name of LDI Transformer config: foo: bar outputs: - name: fully-qualified name of LDI Transformer config: foo: bar . | Note that one orchestrator can have multiple pipelines | Note that one pipeline can have multiple LDI Transformers and LDI Outputs | . ",
-    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index#management-of-pipelines",
-    
-    "relUrl": "/ldio/pipeline-management/index#management-of-pipelines"
-  },"115": {
-    "doc": "Pipeline Management",
-    "title": "Anatomy of a pipeline",
-    "content": "Each pipeline is built up of the following components: . | LDIO Input: A component that will receive data (not necessarily LD) to then feed the LDIO pipeline. | LDIO Adapter: To be used in conjunction with the LDIO Input, the LDIO Adapter will transform the provided content into and internal Linked Data model and sends it down the pipeline. | LDIO Transformer: A component that takes in a Linked Data model, transforms/modifies it and then puts it back on the pipeline. | LDIO Output: A component that will take in Linked Data and will export it to external sources. | . stateDiagram-v2 direction LR LDI_Input --&gt; LDI_Transformer : LD LDI_Transformer --&gt; LDI_Output : LD state LDI_Input { direction LR [*] --&gt; LDI_Adapter : Non LD state LDI_Adapter { direction LR [*] --&gt; adapt adapt --&gt; [*] } LDI_Adapter --&gt; [*] : LD } state LDI_Transformer { direction LR [*] --&gt; transform transform --&gt; [*] } state LDI_Output { direction LR [*] --&gt; [*] } . ",
-    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index#anatomy-of-a-pipeline",
-    
-    "relUrl": "/ldio/pipeline-management/index#anatomy-of-a-pipeline"
-  },"116": {
-    "doc": "Pipeline Management",
-    "title": "Persistence of Pipelines",
-    "content": "By default, all pipelines defined after startup (via management API) will be lost on restart. To prevent this behaviour, add the orchestrator.directory property as follows: . orchestrator: directory: \"{directory in application folder}\" . If this directory does not exist, it will be created. NOTE: An application config can be defined by creating an application YAML file in the LDIO directory (in docker, this correlates to /ldio/application.yml). ",
-    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index#persistence-of-pipelines",
-    
-    "relUrl": "/ldio/pipeline-management/index#persistence-of-pipelines"
-  },"117": {
-    "doc": "Pipeline Management",
-    "title": "Pausing &amp; Resuming LDIO",
-    "content": "Sometimes it might be preferred to pause an LDIO pipeline instead of deleting and recreating it. The endpoints to manage pipelines can be found here . The exact behaviour of a paused pipeline depends on its input component and can be found in the documentation of these components. However, it will always complete its current run through the pipeline and then seize sending any output. ",
-    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index#pausing--resuming-ldio",
-    
-    "relUrl": "/ldio/pipeline-management/index#pausing--resuming-ldio"
-  },"118": {
-    "doc": "Pipeline Management",
     "title": "Pipeline Management",
     "content": " ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/index",
     
     "relUrl": "/ldio/pipeline-management/index"
+  },"115": {
+    "doc": "LDES Client Status",
+    "title": "LDES Client Status",
+    "content": "Just like the LDIO pipelines have a status, so does the Ldio:LdesClient. The client status can be fetched when a pipeline that has a running status, and of course when it contains an LDES client as input component. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/ldes-client-status",
+    
+    "relUrl": "/ldio/pipeline-management/ldes-client-status"
+  },"116": {
+    "doc": "LDES Client Status",
+    "title": "Overview Of The Status Flow",
+    "content": "graph LR ; REPLICATING --&gt; SYNCHRONISING; REPLICATING --&gt; COMPLETED; SYNCHRONISING --&gt; COMPLETED; SYNCHRONISING --&gt; ERROR; REPLICATING --&gt; ERROR; . The above diagram shows the flow between the different statuses of the client. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/ldes-client-status#overview-of-the-status-flow",
+    
+    "relUrl": "/ldio/pipeline-management/ldes-client-status#overview-of-the-status-flow"
+  },"117": {
+    "doc": "LDES Client Status",
+    "title": "REPLICATING",
+    "content": "The startup status of the client. This status indicates that the LDES client have not yet fetched all the available fragments of a view (or views if so configured) . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/ldes-client-status#replicating",
+    
+    "relUrl": "/ldio/pipeline-management/ldes-client-status#replicating"
+  },"118": {
+    "doc": "LDES Client Status",
+    "title": "SYNCHRONISING",
+    "content": "This status indicates that all the fragments of the configured view(s) have been fetched at least once, and there is at least one fragment that does not have an immutable state yet. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/ldes-client-status#synchronising",
+    
+    "relUrl": "/ldio/pipeline-management/ldes-client-status#synchronising"
   },"119": {
+    "doc": "LDES Client Status",
+    "title": "ERROR",
+    "content": "This status indicates that an error has occurred somewhere while REPLICATING or SYNCHRONISING . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/ldes-client-status#error",
+    
+    "relUrl": "/ldio/pipeline-management/ldes-client-status#error"
+  },"120": {
+    "doc": "LDES Client Status",
+    "title": "COMPLETED",
+    "content": "This status indicates that all the fragments of the configured view has been fetched at least once and all those have an immutable state, or in other words, the end of the LDES has been reached. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/ldes-client-status#completed",
+    
+    "relUrl": "/ldio/pipeline-management/ldes-client-status#completed"
+  },"121": {
+    "doc": "Management of Pipelines",
+    "title": "Management of Pipelines",
+    "content": "Pipelines in LDIO can be created in YAML or JSON configuration (although all example configurations are made in YAML, these can also be formatted in JSON). A default pipeline looks as follows: . name: my-first-pipeline input: name: name of LDI Input config: foo: bar adapter: name: name of LDI Adapter config: foo: bar transformers: - name: name of LDI Transformer config: foo: bar outputs: - name: name of LDI Transformer config: foo: bar . | Note that one orchestrator can have multiple pipelines | Note that one pipeline can have multiple LDI Transformers and LDI Outputs | . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/management-of-pipelines",
+    
+    "relUrl": "/ldio/pipeline-management/management-of-pipelines"
+  },"122": {
+    "doc": "Management of Pipelines",
+    "title": "Anatomy of a pipeline",
+    "content": "Each pipeline is built up of the following components: . | LDIO Input: A component that will receive data (not necessarily LD) to then feed the LDIO pipeline. | LDIO Adapter: To be used in conjunction with the LDIO Input, the LDIO Adapter will transform the provided content into and internal Linked Data model and sends it down the pipeline. | LDIO Transformer: A component that takes in a Linked Data model, transforms/modifies it and then puts it back on the pipeline. | LDIO Output: A component that will take in Linked Data and will export it to external sources. | . stateDiagram-v2 direction LR LDI_Input --&gt; LDI_Transformer : LD LDI_Transformer --&gt; LDI_Output : LD state LDI_Input { direction LR [*] --&gt; LDI_Adapter : Non LD state LDI_Adapter { direction LR [*] --&gt; adapt adapt --&gt; [*] } LDI_Adapter --&gt; [*] : LD } state LDI_Transformer { direction LR [*] --&gt; transform transform --&gt; [*] } state LDI_Output { direction LR [*] --&gt; [*] } . ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/management-of-pipelines#anatomy-of-a-pipeline",
+    
+    "relUrl": "/ldio/pipeline-management/management-of-pipelines#anatomy-of-a-pipeline"
+  },"123": {
+    "doc": "Management of Pipelines",
+    "title": "Persistence of Pipelines",
+    "content": "By default, all pipelines defined after startup (via management API) will be lost on restart. To prevent this behaviour, add the orchestrator.directory property as follows: . orchestrator: directory: \"{directory in application folder}\" . If this directory does not exist, it will be created. NOTE: An application config can be defined by creating an application YAML file in the LDIO directory (in docker, this correlates to /ldio/application.yml). ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/management-of-pipelines#persistence-of-pipelines",
+    
+    "relUrl": "/ldio/pipeline-management/management-of-pipelines#persistence-of-pipelines"
+  },"124": {
+    "doc": "Management of Pipelines",
+    "title": "Pausing &amp; Resuming LDIO",
+    "content": "Sometimes it might be preferred to pause an LDIO pipeline instead of deleting and recreating it. The endpoints to manage pipelines can be found here . The exact behaviour of a paused pipeline depends on its input component and can be found in the documentation of these components. However, it will always complete its current run through the pipeline and then seize sending any output. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/management-of-pipelines#pausing--resuming-ldio",
+    
+    "relUrl": "/ldio/pipeline-management/management-of-pipelines#pausing--resuming-ldio"
+  },"125": {
     "doc": "Pipeline Management API",
     "title": "Pipeline Management API",
     "content": "Swagger UI | . ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-api",
     
     "relUrl": "/ldio/pipeline-management/pipeline-api"
-  },"120": {
+  },"126": {
     "doc": "Pipeline Status",
-    "title": "Status",
+    "title": "Pipeline Status",
     "content": "An individual ldio-pipeline can be in one of several different statuses. These different statuses and their behaviour are dependent on the input component of the pipeline. ",
-    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#status",
+    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status",
     
-    "relUrl": "/ldio/pipeline-management/pipeline-status#status"
-  },"121": {
+    "relUrl": "/ldio/pipeline-management/pipeline-status"
+  },"127": {
     "doc": "Pipeline Status",
     "title": "Overview Of The Status Flow",
-    "content": "graph LR; INIT --&gt; RUNNING; INIT --&gt; STOPPED; RUNNING --&gt; STOPPED; RUNNING --&gt; HALTED; HALTED --&gt; RUNNING; HALTED --&gt; STOPPED; The above diagram shows the flow between the different statuses of the pipeline. ",
+    "content": "graph LR ; INIT --&gt; RUNNING; INIT --&gt; STOPPED; RUNNING --&gt; STOPPED; RUNNING --&gt; HALTED; HALTED --&gt; RUNNING; HALTED --&gt; STOPPED; . The above diagram shows the flow between the different statuses of the pipeline. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#overview-of-the-status-flow",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#overview-of-the-status-flow"
-  },"122": {
+  },"128": {
     "doc": "Pipeline Status",
     "title": "INIT",
     "content": "The startup step of the ldio pipeline. This is the preparation step before the input component can receive data and pass it on to the rest of the pipeline. In most components this step will take little time. The only exception for now is the client-connector. It is not possible to pause the pipeline while in this state. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#init",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#init"
-  },"123": {
+  },"129": {
     "doc": "Pipeline Status",
     "title": "RUNNING",
     "content": "This status indicates that the ldio pipeline is running and that the input component is ready to or currently receiving or fetching data. This is the only state in which the pipeline can be paused. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#running",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#running"
-  },"124": {
+  },"130": {
     "doc": "Pipeline Status",
     "title": "HALTED",
     "content": "Every ldio pipeline can be paused, the exact behavior of which depends on the ldio input component used. A more in depth explanation can be found on the pages for the individual input components. Currently, the HALTED status can only be reached through manually pausing the pipeline through the pipeline-api. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#halted",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#halted"
-  },"125": {
+  },"131": {
     "doc": "Pipeline Status",
     "title": "STOPPED",
     "content": "When a pipeline is deleted, it will first change to the STOPPED status, this ensures the state is correctly saved in stateful components and that the entire pipeline can be gracefully shutdown. This status will only last a short while before the pipeline is deleted and the status can no longer be queried. The pipeline can be stopped from any other status. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#stopped",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#stopped"
-  },"126": {
+  },"132": {
     "doc": "Pipeline Status",
     "title": "Status Change Source",
     "content": "The ldio pipeline keeps track of if the last status change was triggered manually or automatic. Manually changing the status can be done through the pipeline-api. When in the RUNNING state, this indicates if the pipeline has been started (automatic) or unpaused (manual). ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#status-change-source",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#status-change-source"
-  },"127": {
-    "doc": "Pipeline Status",
-    "title": "Pipeline Status",
-    "content": " ",
-    "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/pipeline-status",
-    
-    "relUrl": "/ldio/pipeline-management/pipeline-status"
-  },"128": {
+  },"133": {
     "doc": "Startup Configuration",
     "title": "Startup Configuration",
-    "content": "Startup Configuration . On startup, pipelines can be defined by creating an application YAML file in the LDIO directory (in docker, this correlates to /ldio/application.yml) that looks as follows: . orchestrator: pipelines: - name: my-first-pipeline input: name: fully-qualified name of LDI Input config: foo: bar adapter: name: fully-qualified name of LDI Adapter config: foo: bar transformers: - name: fully-qualified name of LDI Transformer config: foo: bar outputs: - name: fully-qualified name of LDI Transformer config: foo: bar . ",
+    "content": "On startup, pipelines can be defined by creating an application YAML file in the LDIO directory (in docker, this correlates to /ldio/application.yml) that looks as follows: . orchestrator: pipelines: - name: my-first-pipeline input: name: name of LDI Input config: foo: bar adapter: name: name of LDI Adapter config: foo: bar transformers: - name: name of LDI Transformer config: foo: bar outputs: - name: name of LDI Output config: foo: bar . Since the introduction of dynamic pipelines . Since version 2.1.0, it is possible to manage pipelines on the fly. If pipelines must be instantiated on startup, those pipelines can be added to a configured directory. First of all, to configure the directory, the /ldio/application.yml should look like this: . orchestrator: directory: &lt;PIPELINE_DIRECTORY&gt; . The folder contains a yaml file for each pipeline. It is the preferred way to call the file the same way as the name of the pipeline, in this case, that would be my-first-pipeline.yml: . name: my-first-pipeline input: name: name of LDI Input config: foo: bar adapter: name: name of LDI Adapter config: foo: bar transformers: - name: name of LDI Transformer config: foo: bar outputs: - name: name of LDI Output config: foo: bar . ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldio/pipeline-management/startup-config",
     
     "relUrl": "/ldio/pipeline-management/startup-config"
-  },"129": {
+  },"134": {
     "doc": "Linked Data Interactions For Apache NiFi",
     "title": "Linked Data Interactions For Apache NiFi",
     "content": "Apache Nifi is an easy to use, powerful, and reliable system to process and distribute data. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-nifi/index",
     
     "relUrl": "/ldi-nifi/index"
-  },"130": {
+  },"135": {
     "doc": "Linked Data Interactions For Apache NiFi",
     "title": "Set up NiFi instance with LDI processors",
     "content": "The processors can be imported into a NiFi docker instance via volume binding: . | Create a docker-compose.yml file with the following content in a new directory services: nifi: image: apache/nifi:2.0.0-M2 environment: SINGLE_USER_CREDENTIALS_USERNAME: admin SINGLE_USER_CREDENTIALS_PASSWORD: ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB ports: - 8443:8443 volumes: - ./nifi-ext:/opt/nifi/nifi-current/nar_extensions:rw . | Create a directory nifi-ext in your current directory. | Download either the ...-nar-bundle.jar and unpack this or download the individual required processors (.nar extension) from the nexus repository. Next, place the required processors in the nifi-ext directory. | Finally, start your instance. docker compose up . | Log in at https://localhost:8443/nifi with the credentials mentioned in step 1 | All downloaded extensions are available under the be.vlaanderen.informatievlaanderen.ldes.ldi.nifi group. | . All documentation and notes about configuration are available in the NiFi component itself. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-nifi/index#set-up-nifi-instance-with-ldi-processors",
     
     "relUrl": "/ldi-nifi/index#set-up-nifi-instance-with-ldi-processors"
-  },"131": {
+  },"136": {
     "doc": "LDI NiFi Processors",
     "title": "LDI NiFi Processors",
     "content": "Due to special requests, non conformance to the LDI APIs or extra complexity, a few processors were only implemented in NiFi. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-nifi/processors/index",
     
     "relUrl": "/ldi-nifi/processors/index"
-  },"132": {
+  },"137": {
     "doc": "SPARQL Interactions Processors",
     "title": "SPARQL Interactions Processors",
     "content": "The SPARQL Interactions Processors is a bundle of the LDI SPARQL Construct and also a SPARQL SELECT Processor. The SPARQL SELECT provides the option to query your dataset. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-nifi/processors/sparql-interactions",
     
     "relUrl": "/ldi-nifi/processors/sparql-interactions"
-  },"133": {
+  },"138": {
     "doc": "Linked Data Interactions LDES Discoverer",
     "title": "Linked Data Interactions LDES Discoverer",
     "content": "A lightweight application that discovers the structure of an LDES or a view by retrieving all the tree node relations of that LDES or view. A use case for this could be when you are only interested in a part of the event stream. To know what part you can follow, the structure can be discovered first. ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-standalones/ldes-discoverer",
     
     "relUrl": "/ldi-standalones/ldes-discoverer"
-  },"134": {
+  },"139": {
     "doc": "Linked Data Interactions LDES Discoverer",
     "title": "Config",
     "content": "Base configuration . | Property | Description | Required | Default | Example | Supported values | . | url | Url where from the discoverer needs to start | true | N/A | http://example.com/my-api | HTTP and HTTPS url | . | source-format | The ‘Content-Type’ that should be requested to the server. | false | text/turtle | application/n-quads | Any type supported by Apache Jena | . Optional config . Authentication . | Property | Description | Default | Example | Supported values | . | auth-type | The type of authentication required by the LDES server | NO_AUTH | OAUTH2_CLIENT_CREDENTIALS | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS | . | api-key | The api key when using auth-type ‘API_KEY’ | N/A | myKey | String | . | api-key-header | The header for the api key when using auth-type ‘API_KEY’ | X-API-KEY | X-API-KEY | String | . | client-id | The client identifier when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | myId | String | . | client-secret | The client secret when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | mySecret | String | . | token-endpoint | The token endpoint when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | http://localhost:8000/token | HTTP and HTTPS urls | . | scope | The Oauth2 scope when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | http://localhost:8000/token | HTTP and HTTPS urls | . Further customization . | Property | Description | Default | Example | Supported values | . | disable-retry | Boolean flag that disables retrying to send http requests when the server cannot be reached. (enabled when omitted) | N/A | N/A | N/A | . | retry-limit | Max number of retries the http client should do (only on absence of disable-retry) | 5 | 100 | Integer | . | retry-statuses | Custom comma seperated list of http status codes that can trigger a retry in the http client. | N/A | 410,451 | Comma seperated list of Integers | . | rate-limit | Limit of requests per period, which is defined below, that the http client should do | N/A | 500 | Integer | . | rate-limit-period | Period in which the limit of requests, which is defined above, can be reached by the http client | PT1M | PT1H | ISO 8601 Duration | . | header | Parameter for each individual header that is required | N/A | Connection: keep-alive | String | . ",
     "url": "/VSDS-Linked-Data-Interactions/2.10.0-SNAPSHOT/ldi-standalones/ldes-discoverer#config",
     
     "relUrl": "/ldi-standalones/ldes-discoverer#config"
-  },"135": {
+  },"140": {
     "doc": "Linked Data Interactions LDES Discoverer",
     "title": "How to run",
     "content": "This tutorial will show how to use the discoverer in Docker. In this example, we will try to discover the structure of an event stream called observations. For simplicity, we recommend passing the config as arguments. Run the ldes-discoverer with minimal config . docker run ldes/ldes-discoverer --url=\"http://ldes-server/observations\" . Run the ldes-discoverer with rate-limit, authentication and two additional headers . docker run ldes/ldes-discoverer --url=\"http://ldes-server/observations\" --retry-limit=3 --rate-limit=400 \\ --header=\"Connection: keep alive\" --header=\"X-Source-App: ldes-discoverer\" \\ --auth-type=API_KEY --api-key=\"my-secret-api-key\" . NOTE: when an url contains a &amp; symbol, which will be picked up by the shell as an operator. For instance, running docker run ldes/ldes-discoverer --url=http://ldes-server/observations?year=2023&amp;month=05&amp;day=11 will result in the shell trying to execute three different command, where the last two will be month=05 and day=11, which will fail of course. To resolve this, make sure the url is encapsulated in quotation marks. Example output . In the logging of the application, both the total number of relations and the relations itself will be displayed. This will be present as the last logging statement of the app and would look something like this: . 2024-02-08T14:26:25.279+01:00 INFO 48176 --- [ main] b.v.i.l.l.d.common.LdesDiscovererExecutor : http://ldes-server/observations contains a total of 10 relations: http://ldes-server/observations +- http://ldes-server/observations/by-time | +- http://ldes-server/observations/by-time?year=2022 | +- http://ldes-server/observations/by-time?year=2022&amp;month=08 | +- http://ldes-server/observations/by-time?year=2023 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=07 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=16 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=20 +- http://ldes-server/observations/paged +- http://ldes-server/observations/paged?pageNumber=1 . ",

@@ -219,6 +219,70 @@
         }
       }
     },
+    "/admin/api/v1/pipeline/ldes-client": {
+      "get": {
+        "tags": [
+          "LDES Client Status"
+        ],
+        "summary": "Get a list of all LDES Client statuses pipelines.",
+        "operationId": "getStatusses",
+        "responses": {
+          "200": {
+            "description": "A list statuses of all active LDES Client pipelines.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClientStatusTo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/api/v1/pipeline/ldes-client/{pipeline}": {
+      "get": {
+        "tags": [
+          "LDES Client Status"
+        ],
+        "summary": "Get the status of a requested LDES Client pipeline.",
+        "operationId": "getPipelineStatus_2",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "No LDES Client pipeline exists by that name"
+          },
+          "200": {
+            "description": "Status of a requested pipeline",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "REPLICATING",
+                    "SYNCHRONISING",
+                    "COMPLETED",
+                    "ERROR"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admin/api/v1/catalog": {
       "get": {
         "tags": [
@@ -369,6 +433,23 @@
             "items": {
               "$ref": "#/components/schemas/ComponentDefinitionTO"
             }
+          }
+        }
+      },
+      "ClientStatusTo": {
+        "type": "object",
+        "properties": {
+          "pipeline": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "REPLICATING",
+              "SYNCHRONISING",
+              "COMPLETED",
+              "ERROR"
+            ]
           }
         }
       },
