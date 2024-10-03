@@ -73,7 +73,7 @@ public class LdioObserver {
 	public boolean hasProcessedAllData() {
 		final double dataIn = Metrics.counter(LDIO_DATA_IN, PIPELINE_NAME, pipelineName, LDIO_COMPONENT_NAME, componentName).count();
 		final double dataOut = Metrics.counter(LDIO_DATA_OUT, PIPELINE_NAME, pipelineName).count();
-		log.atInfo().log("Received data: {} - Sent data: {}", dataIn, dataOut);
+		log.atDebug().log("Received data: {} - Sent data: {}", dataIn, dataOut);
 		return dataOut >= dataIn;
 	}
 

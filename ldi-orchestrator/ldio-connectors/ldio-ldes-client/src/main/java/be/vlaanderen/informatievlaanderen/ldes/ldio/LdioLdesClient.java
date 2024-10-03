@@ -22,6 +22,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 public class LdioLdesClient extends LdioInput {
 
 	public static final String NAME = "Ldio:LdesClient";
+	public static final String LDIO_SHUTDOWN_THREAD_NAME = "ldio-ldes-client-shutdown";
 
 	private final Logger log = LoggerFactory.getLogger(LdioLdesClient.class);
 
@@ -108,7 +109,7 @@ public class LdioLdesClient extends LdioInput {
 	}
 
 	private void shutdownPipeline() {
-		Thread.ofVirtual().name("ldio-ldes-client-shutdown").start(() -> {
+		Thread.ofVirtual().name(LDIO_SHUTDOWN_THREAD_NAME).start(() -> {
 			while (Boolean.FALSE.equals(canGracefullyShutdownChecker.get())) {
 				try {
 					Thread.sleep(Duration.ofSeconds(30));
