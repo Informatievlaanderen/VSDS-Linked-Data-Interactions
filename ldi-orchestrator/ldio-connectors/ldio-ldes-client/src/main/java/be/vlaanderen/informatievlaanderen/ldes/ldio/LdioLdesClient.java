@@ -13,18 +13,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 public class LdioLdesClient extends LdioInput {
 
 	public static final String NAME = "Ldio:LdesClient";
+	public static final String LDIO_SHUTDOWN_THREAD_NAME = "ldio-ldes-client-shutdown";
 
 	private final Logger log = LoggerFactory.getLogger(LdioLdesClient.class);
 
 	private final MemberSupplier memberSupplier;
 	private boolean threadRunning = true;
+	private final Supplier<Boolean> canGracefullyShutdownChecker;
 	private boolean paused = false;
 	private final boolean keepState;
 	private final String pipelineName;
@@ -37,10 +41,11 @@ public class LdioLdesClient extends LdioInput {
 	                      boolean keepState, ClientStatusConsumer clientStatusConsumer) {
 		super(componentExecutor, null, ldioObserver, applicationEventPublisher);
 		this.pipelineName = ldioObserver.getPipelineName();
+		this.canGracefullyShutdownChecker = ldioObserver::hasProcessedAllData;
 		this.memberSupplier = memberSupplier;
-        this.keepState = keepState;
+		this.keepState = keepState;
 		this.clientStatusConsumer = clientStatusConsumer;
-    }
+	}
 
 	@Override
 	public void start() {
@@ -77,7 +82,7 @@ public class LdioLdesClient extends LdioInput {
 		while (paused) {
 			try {
 				this.wait();
-			}  catch (InterruptedException e) {
+			} catch (InterruptedException e) {
 				log.error("Thread interrupted: {}", e.getMessage());
 				Thread.currentThread().interrupt();
 			}
@@ -104,7 +109,17 @@ public class LdioLdesClient extends LdioInput {
 	}
 
 	private void shutdownPipeline() {
-		log.info("SHUTTING DOWN pipeline {} because end of LDES has been reached", pipelineName);
-		applicationEventPublisher.publishEvent(new PipelineShutdownEvent(pipelineName));
+		Thread.ofVirtual().name(LDIO_SHUTDOWN_THREAD_NAME).start(() -> {
+			while (Boolean.FALSE.equals(canGracefullyShutdownChecker.get())) {
+				try {
+					Thread.sleep(Duration.ofSeconds(30));
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+			}
+			log.info("SHUTTING DOWN pipeline {} because end of LDES has been reached", pipelineName);
+			updateStatus(PipelineStatusTrigger.HALT);
+			applicationEventPublisher.publishEvent(new PipelineShutdownEvent(pipelineName));
+		});
 	}
 }
