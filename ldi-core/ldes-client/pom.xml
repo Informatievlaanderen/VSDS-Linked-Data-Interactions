@@ -18,6 +18,7 @@
         <module>tree-node-fetcher</module>
         <module>tree-node-supplier</module>
         <module>tree-node-relations-fetcher</module>
+        <module>event-stream-properties-fetcher</module>
     </modules>
 
     <dependencies>
