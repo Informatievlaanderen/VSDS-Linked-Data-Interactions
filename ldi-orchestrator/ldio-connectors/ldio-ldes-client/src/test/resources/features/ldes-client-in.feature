@@ -32,8 +32,6 @@ Feature: LdesClientIntegrationTest
     And I want to add the following properties
       | materialisation.enabled             | true                                      |
       | materialisation.enable-latest-state | <isLatestStateFilterEnabled>              |
-      | materialisation.version-of-property | http://purl.org/dc/terms/isVersionOf      |
-      | timestamp-path                      | http://www.w3.org/ns/prov#generatedAtTime |
     And I configure this to be of RDF format "application/ld+json"
     When I start an ldes-ldio-in component
     Then All <expectedMemberSize> members from the stream are passed to the pipeline

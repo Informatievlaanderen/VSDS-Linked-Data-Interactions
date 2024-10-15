@@ -1,20 +1,88 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
-public class LdioLdesClientProperties {
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.InvalidConfigException;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	private LdioLdesClientProperties() {
+import java.util.List;
+import java.util.Optional;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientPropertyKeys.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties.KEEP_STATE;
+
+public class LdioLdesClientProperties {
+	private static final Logger log = LoggerFactory.getLogger(LdioLdesClientProperties.class);
+	public static final boolean DEFAULT_KEEP_STATE = false;
+	public static final boolean DEFAULT_USE_LATEST_STATE_FILTER = true;
+	public static final boolean DEFAULT_EXACTLY_ONCE_ENABLED = true;
+	private final ComponentProperties properties;
+
+	private LdioLdesClientProperties(ComponentProperties properties) {
+		this.properties = properties;
 	}
 
-	// general properties
-	public static final String URLS = "urls";
-	public static final String SOURCE_FORMAT = "source-format";
+	public List<String> getUrls() {
+		final List<String> urls = properties.getPropertyList(URLS);
+		if (urls.isEmpty()) {
+			throw new ConfigPropertyMissingException(properties.getPipelineName(), properties.getComponentName(), "urls");
+		}
+		return urls;
+	}
 
-	public static final String TIMESTAMP_PATH_PROP = "timestamp-path";
-	public static final String USE_EXACTLY_ONCE_FILTER = "enable-exactly-once";
+	public String getFirstUrl() {
+		return getUrls().getFirst();
+	}
 
-	// version materialisation properties
-	public static final String USE_VERSION_MATERIALISATION = "materialisation.enabled";
-	public static final String VERSION_OF_PROPERTY = "materialisation.version-of-property";
-	public static final String USE_LATEST_STATE_FILTER = "materialisation.enable-latest-state";
+	public Lang getSourceFormat() {
+		return properties.getOptionalProperty(SOURCE_FORMAT)
+				.map(RDFLanguages::nameToLang)
+				.orElse(DEFAULT_SOURCE_FORMAT);
+	}
 
+	public boolean isExactlyOnceEnabled() {
+		return properties.getOptionalBoolean(USE_EXACTLY_ONCE_FILTER)
+				.or(() -> getOptionalVersionMaterialisationBoolean().map(isEnabled -> !isEnabled))
+				.orElse(DEFAULT_EXACTLY_ONCE_ENABLED);
+	}
+
+	public boolean isVersionMaterialisationEnabled() {
+		return getOptionalVersionMaterialisationBoolean()
+				.orElseGet(() -> {
+					log.warn("Version-materialization in the LDES Client hasn’t been turned on. " +
+							"Please note that in the future, this will be the default output of the LDES Client " +
+							"and having version-objects as output will have to be configured explicitly.");
+					return false;
+				});
+	}
+
+	private Optional<Boolean> getOptionalVersionMaterialisationBoolean() {
+		return properties.getOptionalBoolean(USE_VERSION_MATERIALISATION);
+	}
+
+	public boolean isKeepStateEnabled() {
+		return properties.getOptionalBoolean(KEEP_STATE).orElse(DEFAULT_KEEP_STATE);
+	}
+
+	public boolean isLatestStateEnabled() {
+		return properties.getOptionalBoolean(USE_LATEST_STATE_FILTER).orElse(DEFAULT_USE_LATEST_STATE_FILTER);
+	}
+
+	public ComponentProperties getProperties() {
+		return properties;
+	}
+
+	public static LdioLdesClientProperties fromComponentProperties(ComponentProperties properties) {
+		final LdioLdesClientProperties clientProps = new LdioLdesClientProperties(properties);
+		if (clientProps.isVersionMaterialisationEnabled() && clientProps.isExactlyOnceEnabled()) {
+			throw new InvalidConfigException("The exactly once filter can not be enabled with version materialisation.");
+		}
+		if(clientProps.isVersionMaterialisationEnabled()) {
+			log.warn("The exactly once filter can not be used while version materialisation is active, disabling filter");
+		}
+		return clientProps;
+	}
 }

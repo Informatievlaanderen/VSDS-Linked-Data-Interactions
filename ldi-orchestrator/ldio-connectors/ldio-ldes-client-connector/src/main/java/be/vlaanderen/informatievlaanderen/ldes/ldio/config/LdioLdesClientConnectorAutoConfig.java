@@ -10,20 +10,20 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientConnectorApi;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.event.LdesClientConnectorApiCreatedEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInput;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioInputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioObserver;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import io.micrometer.observation.ObservationRegistry;
+import ldes.client.eventstreamproperties.EventStreamPropertiesFetcher;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties.KEEP_STATE;
 
 
 @SuppressWarnings("java:S6830")
@@ -60,6 +60,7 @@ public class LdioLdesClientConnectorAutoConfig {
 		@Override
 		public LdioInput configure(LdiAdapter adapter, ComponentExecutor executor, ApplicationEventPublisher applicationEventPublisher, ComponentProperties properties) {
 			final String pipelineName = properties.getPipelineName();
+			final LdioLdesClientProperties ldioLdesClientProperties = LdioLdesClientProperties.fromComponentProperties(properties);
 			final var connectorTransferUrl = properties.getProperty(CONNECTOR_TRANSFER_URL);
 			final var transferService = new MemoryTransferService(baseRequestExecutor, connectorTransferUrl);
 			final var memoryTokenServiceLifecycle = new MemoryTokenServiceLifecycle();
@@ -68,10 +69,16 @@ public class LdioLdesClientConnectorAutoConfig {
 			final var urlProxy = getEdcUrlProxy(properties);
 			final var edcRequestExecutor = requestExecutorFactory.createEdcExecutor(baseRequestExecutor, tokenService,
 					urlProxy);
+			final var eventStreamPropertiesFetcher = new EventStreamPropertiesFetcher(edcRequestExecutor);
 			final var clientStatusConsumer = new ClientStatusConsumer(pipelineName, clientStatusService);
-			final MemberSupplier memberSupplier = new MemberSupplierFactory(properties, edcRequestExecutor,
-					clientStatusConsumer).getMemberSupplier();
-			final boolean keepState = properties.getOptionalBoolean(KEEP_STATE).orElse(false);
+			final MemberSupplier memberSupplier = new MemberSupplierFactory(
+					ldioLdesClientProperties,
+					eventStreamPropertiesFetcher,
+					edcRequestExecutor,
+					clientStatusConsumer
+			).getMemberSupplier();
+
+			final boolean keepState = ldioLdesClientProperties.isKeepStateEnabled();
 			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
 			final var ldesClient = new LdioLdesClient(executor, ldioObserver, memberSupplier,
 					applicationEventPublisher, keepState, clientStatusConsumer);

@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.services.ComponentExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientPropertyKeys;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -22,13 +22,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClient.NAME;
-import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties.URLS;
+import static be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientPropertyKeys.URLS;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
 
 public class LdioLdesClientITSteps extends LdesClientInIT {
-	private final static WireMockServer wireMockServer = new WireMockServer(options().port(10101));
+	private static final WireMockServer wireMockServer = new WireMockServer(options().port(10101));
 	private final String pipelineName = "pipelineName";
 	private final ApplicationEventPublisher applicationEventPublisher = applicationEventPublisher();
 	private final Map<String, String> componentPropsMap = new HashMap<>();
@@ -52,7 +52,7 @@ public class LdioLdesClientITSteps extends LdesClientInIT {
 
 	@And("I configure this to be of RDF format {string}")
 	public void iConfigureThisToBeOfRDFFormat(String contentType) {
-		componentPropsMap.put(LdioLdesClientProperties.SOURCE_FORMAT, contentType);
+		componentPropsMap.put(LdioLdesClientPropertyKeys.SOURCE_FORMAT, contentType);
 	}
 
 	@When("^I start an ldes-ldio-in component")

@@ -19,7 +19,7 @@ public class EventStreamPropertiesFetcher {
 	public EventStreamProperties fetchEventStreamProperties(PropertiesRequest request) {
 		final EventStreamProperties eventStreamProperties = executePropertiesRequest(request);
 
-		if(eventStreamProperties.isComplete()) {
+		if(eventStreamProperties.containsRequiredProperties()) {
 			return eventStreamProperties;
 		}
 

@@ -219,6 +219,11 @@
                 <artifactId>ldi-infra-sql</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>be.vlaanderen.informatievlaanderen.ldes.client</groupId>
+                <artifactId>event-stream-properties-fetcher</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
 
             <dependency>

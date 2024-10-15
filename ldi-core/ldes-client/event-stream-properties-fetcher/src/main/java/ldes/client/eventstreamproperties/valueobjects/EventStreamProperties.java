@@ -1,7 +1,5 @@
 package ldes.client.eventstreamproperties.valueobjects;
 
-import java.util.Optional;
-
 public final class EventStreamProperties {
 	private final String uri;
 	private final String versionOfPath;
@@ -23,15 +21,15 @@ public final class EventStreamProperties {
 		return uri;
 	}
 
-	public Optional<String> getVersionOfPath() {
-		return Optional.ofNullable(versionOfPath);
+	public String getVersionOfPath() {
+		return versionOfPath;
 	}
 
-	public Optional<String> getTimestampPath() {
-		return Optional.ofNullable(timestampPath);
+	public String getTimestampPath() {
+		return timestampPath;
 	}
 
-	public boolean isComplete() {
-		return getTimestampPath().isPresent() && getVersionOfPath().isPresent();
+	public boolean containsRequiredProperties() {
+		return timestampPath != null && versionOfPath != null;
 	}
 }
