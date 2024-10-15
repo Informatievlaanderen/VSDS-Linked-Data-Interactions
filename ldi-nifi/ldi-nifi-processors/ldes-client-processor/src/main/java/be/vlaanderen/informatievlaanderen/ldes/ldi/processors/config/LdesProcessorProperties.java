@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.components.Validator;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.util.StandardValidators;
 
@@ -45,15 +44,6 @@ public final class LdesProcessorProperties {
 			.required(false)
 			.addValidator(new RDFLanguageValidator())
 			.defaultValue(DEFAULT_DATA_SOURCE_FORMAT.getHeaderString())
-			.build();
-
-	public static final PropertyDescriptor TIMESTAMP_PATH = new PropertyDescriptor.Builder()
-			.name("TIMESTAMP_PATH")
-			.displayName("Timestamp path")
-			.description("Property path determining the timestamp used to order the members within a fragment")
-			.required(false)
-			.addValidator(Validator.VALID)
-			.defaultValue("http://www.w3.org/ns/prov#generatedAtTime")
 			.build();
 
 	public static final PropertyDescriptor STREAM_TIMESTAMP_PATH_PROPERTY = new PropertyDescriptor.Builder()
@@ -190,16 +180,6 @@ public final class LdesProcessorProperties {
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.build();
 
-	public static final PropertyDescriptor VERSION_OF_PROPERTY = new PropertyDescriptor.Builder()
-			.name("VERSION_OF_PROPERTY")
-			.displayName("Version of property")
-			.description("Property that points to the versionOfPath")
-			.required(true)
-			.defaultValue("http://purl.org/dc/terms/isVersionOf")
-			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
-			.addValidator(StandardValidators.URI_VALIDATOR)
-			.build();
-
 	public static final PropertyDescriptor USE_EXACTLY_ONCE_FILTER = new PropertyDescriptor.Builder()
 			.name("USE_EXACTLY_ONCE_FILTER")
 			.displayName("Use exactly once filter")
@@ -236,10 +216,6 @@ public final class LdesProcessorProperties {
 
 	public static Lang getDataDestinationFormat(final ProcessContext context) {
 		return RDFLanguages.nameToLang(context.getProperty(DATA_DESTINATION_FORMAT).getValue());
-	}
-
-	public static String getTimestampPath(final ProcessContext context) {
-		return context.getProperty(TIMESTAMP_PATH).getValue();
 	}
 
 	public static boolean streamTimestampPathProperty(final ProcessContext context) {
@@ -316,10 +292,6 @@ public final class LdesProcessorProperties {
 
 	public static boolean restrictToMembers(final ProcessContext context) {
 		return TRUE.equals(context.getProperty(RESTRICT_TO_MEMBERS).asBoolean());
-	}
-
-	public static String getVersionOfProperty(final ProcessContext context) {
-		return context.getProperty(VERSION_OF_PROPERTY).getValue();
 	}
 
 	private static boolean isValidUrl(String url) {

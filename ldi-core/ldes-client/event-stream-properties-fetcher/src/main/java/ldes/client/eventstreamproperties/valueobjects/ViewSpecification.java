@@ -13,8 +13,9 @@ public class ViewSpecification implements StartingNodeSpecification {
 	public static final Property LDES_EVENT_STREAM = createProperty(LDES, "EventStream");
 	public static final String RDF_SYNTAX = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	public static final Property RDF_SYNTAX_TYPE = createProperty(RDF_SYNTAX, "type");
-	public static final String LDES_VERSION_OF_PATH = "versionOfPath";
-	public static final String LDES_TIMESTAMP_PATH = "timestampPath";
+	public static final Property TREE_SHAPE = createProperty("https://w3id.org/tree#", "shape");
+	public static final Property LDES_VERSION_OF_PATH = createProperty(LDES, "versionOfPath");
+	public static final Property LDES_TIMESTAMP_PATH = createProperty(LDES, "timestampPath");
 
 	private final Model model;
 
@@ -25,10 +26,14 @@ public class ViewSpecification implements StartingNodeSpecification {
 	@Override
 	public EventStreamProperties extractEventStreamProperties() {
 		final Resource subject = extractEventStream(model).orElseThrow();
+		final String shapeUri = Optional.ofNullable(subject.getPropertyResourceValue(TREE_SHAPE))
+				.map(Resource::getURI)
+				.orElse("");
 		return new EventStreamProperties(
 				subject.getURI(),
-				subject.getProperty(createProperty(LDES, LDES_VERSION_OF_PATH)).getObject().asResource().getURI(),
-				subject.getProperty(createProperty(LDES, LDES_TIMESTAMP_PATH)).getObject().asResource().getURI()
+				subject.getPropertyResourceValue(LDES_VERSION_OF_PATH).getURI(),
+				subject.getPropertyResourceValue(LDES_TIMESTAMP_PATH).getURI(),
+				shapeUri
 		);
 	}
 

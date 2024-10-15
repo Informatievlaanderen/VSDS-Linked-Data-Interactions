@@ -14,7 +14,8 @@ class ViewSpecificationTest {
 		final EventStreamProperties expectedESProperties = new EventStreamProperties(
 				"http://localhost:12121/observations",
 				"http://purl.org/dc/terms/isVersionOf",
-				"http://www.w3.org/ns/prov#generatedAtTime"
+				"http://www.w3.org/ns/prov#generatedAtTime",
+				""
 		);
 		final Model model = RDFParser.source(fileUri).toModel();
 

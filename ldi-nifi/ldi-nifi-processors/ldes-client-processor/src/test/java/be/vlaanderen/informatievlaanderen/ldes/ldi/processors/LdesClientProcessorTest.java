@@ -186,7 +186,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.FALSE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run();
 
@@ -205,8 +204,7 @@ class LdesClientProcessorTest {
 
 	@Test
 	void when_runningLdesClientWithStreamPropertiesFlags_expectsLdesPropertiesInFlowFile() {
-		testRunner.setProperty("DATA_SOURCE_URLS",
-				"http://localhost:10101/exampleData?scenario=gml-data");
+		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/exampleData?scenario=gml-data");
 		testRunner.setProperty("STREAM_SHAPE_PROPERTY", Boolean.TRUE.toString());
 
 		testRunner.run();
@@ -250,7 +248,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run(4);
 
@@ -275,7 +272,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.FALSE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run(4);
 
@@ -303,7 +299,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.TRUE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run(2);
 
@@ -330,7 +325,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run();
 
