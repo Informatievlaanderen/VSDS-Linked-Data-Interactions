@@ -50,13 +50,7 @@ public class LdioLdesClientProperties {
 	}
 
 	public boolean isVersionMaterialisationEnabled() {
-		return getOptionalVersionMaterialisationBoolean()
-				.orElseGet(() -> {
-					log.warn("Version-materialization in the LDES Client hasn’t been turned on. " +
-							"Please note that in the future, this will be the default output of the LDES Client " +
-							"and having version-objects as output will have to be configured explicitly.");
-					return false;
-				});
+		return getOptionalVersionMaterialisationBoolean().orElse(false);
 	}
 
 	private Optional<Boolean> getOptionalVersionMaterialisationBoolean() {
@@ -77,12 +71,30 @@ public class LdioLdesClientProperties {
 
 	public static LdioLdesClientProperties fromComponentProperties(ComponentProperties properties) {
 		final LdioLdesClientProperties clientProps = new LdioLdesClientProperties(properties);
-		if (clientProps.isVersionMaterialisationEnabled() && clientProps.isExactlyOnceEnabled()) {
+		warnWhenVersionMaterialisationIsNotEnabled(clientProps);
+		checkIfBothVersionMaterialisationAndExactlyOnceAreExplicitlyEnabled(clientProps);
+		logIfExactlyOnceFilterMustBeDisabled(clientProps);
+		return clientProps;
+	}
+
+	private static void warnWhenVersionMaterialisationIsNotEnabled(LdioLdesClientProperties clientProps) {
+		if(clientProps.getOptionalVersionMaterialisationBoolean().isEmpty()) {
+			log.atWarn().log("""
+					Version-materialization in the LDES Client hasn’t been turned on. Please note that in the future, \
+					this will be the default output of the LDES Client \
+					and having version-objects as output will have to be configured explicitly.""");
+		}
+	}
+
+	private static void checkIfBothVersionMaterialisationAndExactlyOnceAreExplicitlyEnabled(LdioLdesClientProperties clientProps) {
+		if(clientProps.isVersionMaterialisationEnabled() && clientProps.isExactlyOnceEnabled()) {
 			throw new InvalidConfigException("The exactly once filter can not be enabled with version materialisation.");
 		}
-		if(clientProps.isVersionMaterialisationEnabled()) {
+	}
+
+	private static void logIfExactlyOnceFilterMustBeDisabled(LdioLdesClientProperties clientProps) {
+		if(clientProps.isExactlyOnceEnabled()) {
 			log.warn("The exactly once filter can not be used while version materialisation is active, disabling filter");
 		}
-		return clientProps;
 	}
 }
