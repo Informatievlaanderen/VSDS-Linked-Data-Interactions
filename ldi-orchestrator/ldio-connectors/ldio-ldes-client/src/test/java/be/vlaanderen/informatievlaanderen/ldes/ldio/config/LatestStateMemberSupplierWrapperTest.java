@@ -27,7 +27,7 @@ class LatestStateMemberSupplierWrapperTest {
 
 	@BeforeEach
 	void setUp() {
-		final EventStreamProperties eventStreamProperties = new EventStreamProperties("test", "test", "test");
+		final EventStreamProperties eventStreamProperties = new EventStreamProperties("test", "test", "test", "test");
 		latestStateMemberSupplierWrapper = new LatestStateMemberSupplierWrapper(eventStreamProperties, ldioLdesClientProperties);
 	}
 

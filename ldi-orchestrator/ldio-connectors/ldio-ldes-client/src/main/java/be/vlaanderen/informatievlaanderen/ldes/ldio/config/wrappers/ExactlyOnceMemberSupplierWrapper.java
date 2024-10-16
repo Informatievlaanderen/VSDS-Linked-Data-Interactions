@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config.wrappers;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.StatePersistenceFactory;
+import ldes.client.treenodesupplier.domain.services.MemberSupplierWrapper;
 import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
 import ldes.client.treenodesupplier.filters.MemberFilter;

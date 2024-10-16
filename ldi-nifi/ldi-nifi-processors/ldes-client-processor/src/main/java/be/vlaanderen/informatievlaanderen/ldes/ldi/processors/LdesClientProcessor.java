@@ -1,8 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.VersionMaterialiser;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.wrappers.MemberSupplierWrappersBuilder;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
@@ -15,12 +15,8 @@ import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
 import ldes.client.eventstreamproperties.valueobjects.PropertiesRequest;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.*;
-import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
-import ldes.client.treenodesupplier.filters.LatestStateFilter;
-import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
-import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.apache.jena.rdf.model.Model;
@@ -62,9 +58,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 	private MemberSupplier memberSupplier;
 	private EventStreamProperties eventStreamProperties;
 	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
-	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
 	private boolean hasLdesEnded;
-	private boolean keepState;
 
 	@Override
 	public Set<Relationship> getRelationships() {
@@ -107,41 +101,20 @@ public class LdesClientProcessor extends AbstractProcessor {
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
 		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
 		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrls, dataSourceFormat);
-		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(context);
+		StatePersistence statePersistence = new StatePersistenceFactory().getStatePersistence(context);
 		eventStreamProperties = fetchEventStreamProperties(ldesMetaData, requestExecutor);
 		TimestampExtractor timestampExtractor = new TimestampFromPathExtractor(createProperty(eventStreamProperties.getTimestampPath()));
 		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor,
 				timestampExtractor, clientStatusConsumer());
-		keepState = stateKept(context);
-		final MemberSupplierImpl baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, keepState);
-
-		if (useVersionMaterialisation(context)) {
-			final var versionOfProperty = createProperty(eventStreamProperties.getVersionOfPath());
-			final var versionMaterialiser = new VersionMaterialiser(versionOfProperty, restrictToMembers(context));
-			MemberSupplier decoratedMemberSupplier = useLatestStateFilter(context)
-					? new FilteredMemberSupplier(baseMemberSupplier, getLatestStateFilter(statePersistence))
-					: baseMemberSupplier;
-			memberSupplier = new VersionMaterialisedMemberSupplier(
-					decoratedMemberSupplier,
-					versionMaterialiser
-			);
-		} else if (useExactlyOnceFilter(context)) {
-			memberSupplier = new FilteredMemberSupplier(
-					baseMemberSupplier,
-					new ExactlyOnceFilter(statePersistence.getMemberIdRepository(), keepState)
-			);
-		} else {
-			memberSupplier = baseMemberSupplier;
-		}
-
+		final MemberSupplier baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, stateKept(context));
+		memberSupplier = new MemberSupplierWrappersBuilder()
+				.withContext(context)
+				.withEventStreamProperties(eventStreamProperties)
+				.build()
+				.wrapMemberSupplier(baseMemberSupplier);
 		memberSupplier.init();
-
 		LOGGER.info("LDES Client processor {} configured to follow (sub)streams {} (expected LDES source format: {})",
 				context.getName(), dataSourceUrls, dataSourceFormat);
-	}
-
-	private LatestStateFilter getLatestStateFilter(StatePersistence statePersistence) {
-		return new LatestStateFilter(statePersistence.getMemberVersionRepository(), keepState, eventStreamProperties.getTimestampPath(), eventStreamProperties.getVersionOfPath());
 	}
 
 	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {
@@ -213,7 +186,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		if (!keepState && memberSupplier != null) {
+		if (memberSupplier != null) {
 			memberSupplier.destroyState();
 		}
 	}

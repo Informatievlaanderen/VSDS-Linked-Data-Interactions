@@ -1,7 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.wrappers.VersionMaterialiserMemberSupplierWrapper;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.wrappers.VersionMaterialisedMemberSupplierWrapper;
 import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.VersionMaterialisedMemberSupplier;
@@ -15,33 +15,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class VersionMaterialiserMemberSupplierWrapperTest {
+class VersionMaterialisedMemberSupplierWrapperTest {
 	@Mock
 	private LdioLdesClientProperties ldioLdesClientProperties;
 	@Mock
 	private MemberSupplier baseSupplier;
-	private VersionMaterialiserMemberSupplierWrapper versionMaterialiserMemberSupplierWrapper;
+	private VersionMaterialisedMemberSupplierWrapper versionMaterialisedMemberSupplierWrapper;
 
 	@BeforeEach
 	void setUp() {
-		final EventStreamProperties eventStreamProperties = new EventStreamProperties("test", "test", "test");
-		versionMaterialiserMemberSupplierWrapper = new VersionMaterialiserMemberSupplierWrapper(eventStreamProperties, ldioLdesClientProperties);
+		final EventStreamProperties eventStreamProperties = new EventStreamProperties("test", "test", "test", "test");
+		versionMaterialisedMemberSupplierWrapper = new VersionMaterialisedMemberSupplierWrapper(eventStreamProperties, ldioLdesClientProperties);
 	}
 
 	@Test
-	void given_ExactlyOnceEnabled_when_wrap_then_ReturnFilteredMemberSupplier() {
+	void given_VersionMaterialisationEnabled_when_wrap_then_ReturnVersionMaterialisedMemberSupplier() {
 		when(ldioLdesClientProperties.isVersionMaterialisationEnabled()).thenReturn(true);
 
-		final MemberSupplier memberSupplier = versionMaterialiserMemberSupplierWrapper.wrapMemberSupplier(baseSupplier);
+		final MemberSupplier memberSupplier = versionMaterialisedMemberSupplierWrapper.wrapMemberSupplier(baseSupplier);
 
 		assertThat(memberSupplier).isInstanceOf(VersionMaterialisedMemberSupplier.class);
 	}
 
 	@Test
-	void given_ExactlyOnceDisabled_when_wrap_then_ReturnFilteredMemberSupplier() {
+	void given_VersionMaterialisationDisabled_when_wrap_then_ReturnBaseMemberSupplier() {
 		when(ldioLdesClientProperties.isVersionMaterialisationEnabled()).thenReturn(false);
 
-		final MemberSupplier memberSupplier = versionMaterialiserMemberSupplierWrapper.wrapMemberSupplier(baseSupplier);
+		final MemberSupplier memberSupplier = versionMaterialisedMemberSupplierWrapper.wrapMemberSupplier(baseSupplier);
 
 		assertThat(memberSupplier).isSameAs(baseSupplier);
 	}

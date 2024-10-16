@@ -67,8 +67,7 @@ class LdesClientProcessorTest {
 	@ArgumentsSource(MatchNumberOfFlowFilesArgumentsProvider.class)
 	void shouldMatchNumberOfFlowFiles(String dataSourceUrl, int numberOfRuns) {
 		testRunner.setProperty("DATA_SOURCE_URLS", dataSourceUrl);
-		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY,
-				"SQLITE");
+		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY, "SQLITE");
 
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 

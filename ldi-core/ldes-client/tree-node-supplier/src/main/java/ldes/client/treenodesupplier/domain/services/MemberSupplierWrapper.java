@@ -1,4 +1,4 @@
-package be.vlaanderen.informatievlaanderen.ldes.ldio.config.wrappers;
+package ldes.client.treenodesupplier.domain.services;
 
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 

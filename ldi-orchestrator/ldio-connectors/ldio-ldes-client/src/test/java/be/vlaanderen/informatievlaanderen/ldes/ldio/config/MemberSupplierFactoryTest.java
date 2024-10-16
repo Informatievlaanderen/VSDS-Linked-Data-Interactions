@@ -41,7 +41,7 @@ class MemberSupplierFactoryTest {
 	void setUp() {
 		defaultInputConfig = new HashMap<>();
 		defaultInputConfig.put(URLS, "http://example.org");
-		eventStreamProperties = new EventStreamProperties("http://localhost:8080/collection", "versionOf", "timestamp");
+		eventStreamProperties = new EventStreamProperties("http://localhost:8080/collection", "versionOf", "timestamp", "shaclUri");
 	}
 
 	@Test

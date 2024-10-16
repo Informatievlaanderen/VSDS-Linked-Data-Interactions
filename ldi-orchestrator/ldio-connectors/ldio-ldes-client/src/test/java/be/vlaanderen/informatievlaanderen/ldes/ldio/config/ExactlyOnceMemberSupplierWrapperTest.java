@@ -36,7 +36,7 @@ class ExactlyOnceMemberSupplierWrapperTest {
 	}
 
 	@Test
-	void given_ExactlyOnceDisabled_when_wrap_then_ReturnFilteredMemberSupplier() {
+	void given_ExactlyOnceDisabled_when_wrap_then_ReturnBaseMemberSupplier() {
 		when(ldioLdesClientProperties.isExactlyOnceEnabled()).thenReturn(false);
 
 		final MemberSupplier memberSupplier = exactlyOnceMemberSupplierWrapper.wrapMemberSupplier(baseSupplier);

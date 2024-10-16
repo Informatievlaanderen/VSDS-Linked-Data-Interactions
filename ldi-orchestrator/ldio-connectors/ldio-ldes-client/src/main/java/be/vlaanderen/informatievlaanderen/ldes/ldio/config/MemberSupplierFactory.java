@@ -4,7 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.wrappers.MemberSupplierWrappers;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.wrappers.MemberSupplierWrappersBuilder;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.management.status.ClientStatusConsumer;
 import ldes.client.eventstreamproperties.EventStreamPropertiesFetcher;
 import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
@@ -40,7 +40,7 @@ public class MemberSupplierFactory {
 		log.info("Starting LdesClientRunner run setup");
 		final EventStreamProperties eventStreamProperties = eventStreamPropertiesFetcher.fetchEventStreamProperties(new PropertiesRequest(clientProperties.getFirstUrl(), clientProperties.getSourceFormat()));
 		MemberSupplier baseMemberSupplier = new MemberSupplierImpl(getTreeNodeProcessor(eventStreamProperties), clientProperties.isKeepStateEnabled());
-		baseMemberSupplier = new MemberSupplierWrappers.Builder()
+		baseMemberSupplier = new MemberSupplierWrappersBuilder()
 				.withEventStreamProperties(eventStreamProperties)
 				.withLdioLdesClientProperties(clientProperties)
 				.build()
