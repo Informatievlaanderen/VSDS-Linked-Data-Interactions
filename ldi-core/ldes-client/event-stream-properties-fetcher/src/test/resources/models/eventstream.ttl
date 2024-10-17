@@ -1,0 +1,59 @@
+@prefix by-location:                <http://localhost:12121/observations/by-location/> .
+@prefix by-page:                    <http://localhost:12121/observations/by-page/> .
+@prefix dc:                         <http://purl.org/dc/terms/> .
+@prefix dcat:                       <http://www.w3.org/ns/dcat#> .
+@prefix ldes:                       <https://w3id.org/ldes#> .
+@prefix observations:               <http://localhost:12121/observations/> .
+@prefix prov:                       <http://www.w3.org/ns/prov#> .
+@prefix rdf:                        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:                       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix shacl:                      <http://www.w3.org/ns/shacl#> .
+@prefix skos:                       <http://www.w3.org/2004/02/skos/core#> .
+@prefix terms:                      <http://purl.org/dc/terms/> .
+@prefix tree:                       <https://w3id.org/tree#> .
+@prefix vsds-verkeersmetingen:      <https://implementatie.data.vlaanderen.be/ns/vsds-verkeersmetingen#> .
+
+observations:by-location
+        rdf:type              tree:Node , rdfs:Resource ;
+        tree:viewDescription  by-location:description .
+
+<https://w3id.org/ldes/specification>
+        rdf:type  dc:Standard .
+
+by-location:description
+        rdf:type                    dcat:DataService , tree:ViewDescription ;
+        ldes:retentionPolicy        [ rdf:type    ldes:DurationAgoPolicy ;
+                                      tree:value  "P2Y"^^<http://www.w3.org/2001/XMLSchema#duration>
+                                    ] ;
+        tree:fragmentationStrategy  ( [ rdf:type                tree:GeospatialFragmentation ;
+                                        tree:fragmentationPath  "http://www.opengis.net/ont/geosparql#asWKT" ;
+                                        tree:maxZoom            "14"
+                                      ]
+                                    ) ;
+        tree:pageSize               "250"^^<http://www.w3.org/2001/XMLSchema#int> .
+
+
+
+by-page:description  rdf:type       dcat:DataService , tree:ViewDescription ;
+        ldes:retentionPolicy        [ rdf:type    ldes:DurationAgoPolicy ;
+                                      tree:value  "P2Y"^^<http://www.w3.org/2001/XMLSchema#duration>
+                                    ] ;
+        tree:fragmentationStrategy  () ;
+        tree:pageSize               "250"^^<http://www.w3.org/2001/XMLSchema#int> .
+
+
+<https://w3id.org/tree/specification>
+        rdf:type  dc:Standard .
+
+<http://localhost:12121/observations>
+        rdf:type            ldes:EventStream ;
+        ldes:timestampPath  prov:generatedAtTime ;
+        ldes:versionOfPath  dc:isVersionOf ;
+        tree:shape          [ rdf:type           shacl:NodeShape ;
+                              shacl:targetClass  vsds-verkeersmetingen:Verkeerstelling
+                            ] ;
+        tree:view           observations:by-page , observations:by-location .
+
+
+observations:by-page  rdf:type  tree:Node , rdfs:Resource ;
+        tree:viewDescription  by-page:description .

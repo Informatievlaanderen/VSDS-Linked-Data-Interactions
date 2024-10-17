@@ -5,8 +5,7 @@
   },
   "response": {
     "status": 200,
-    "jsonBody":
-    [
+    "jsonBody": [
       {
         "@context": {
           "tree": "https://w3id.org/tree#",
@@ -48,6 +47,12 @@
         },
         "@id": "http://localhost:10101/feed",
         "@type": "ldes:EventStream",
+        "ldes:versionOfPath": {
+          "@id": "dc:isVersionOf"
+        },
+        "ldes:timestampPath": {
+          "@id": "dc:modified"
+        },
         "tree:view": {
           "@id": "http://localhost:10101/feed?page=2023",
           "ldes:retentionPolicy": {

@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/items"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "items-ldes.ttl",
+    "headers": {
+      "Content-Type": "text/turtle;charset=UTF-8",
+      "Cache-Control": "public, max-age=604800, immutable"
+    }
+  }
+}
+
