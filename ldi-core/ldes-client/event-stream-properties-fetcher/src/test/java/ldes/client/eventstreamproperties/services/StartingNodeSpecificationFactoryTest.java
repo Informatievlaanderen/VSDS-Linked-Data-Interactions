@@ -14,7 +14,7 @@ class StartingNodeSpecificationFactoryTest {
 		Model model = RDFParser.fromString(invalid).lang(Lang.NQ).toModel();
 
 		assertThatThrownBy(() -> StartingNodeSpecificationFactory.fromModel(model))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessage("The model is not a valid StartingNodeSpecification");
+				.isInstanceOf(IllegalStateException.class)
+				.hasMessage("The provided starting node must contain either a dcterms:isPartOf property or the ldes:versionOfPath and ldes:timestampPath properties");
 	}
 }

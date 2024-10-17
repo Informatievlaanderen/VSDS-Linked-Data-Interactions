@@ -16,7 +16,7 @@ public class StartingNodeSpecificationFactory {
 		if (ViewSpecification.isViewSpecification(model)) {
 			return new ViewSpecification(model);
 		}
-		throw new IllegalArgumentException("The model is not a valid StartingNodeSpecification");
+		throw new IllegalStateException("The provided starting node must contain either a dcterms:isPartOf property or the ldes:versionOfPath and ldes:timestampPath properties");
 	}
 
 }
