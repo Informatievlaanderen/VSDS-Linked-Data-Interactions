@@ -1,6 +1,7 @@
 package ldes.client.eventstreamproperties;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import ldes.client.eventstreamproperties.services.StartingNodeSpecificationFactory;
 import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
 import ldes.client.eventstreamproperties.valueobjects.PropertiesRequest;
@@ -28,12 +29,26 @@ public class EventStreamPropertiesFetcher {
 	}
 
 	private EventStreamProperties executePropertiesRequest(PropertiesRequest request) {
-		return requestExecutor.execute(request.createRequest()).getBody()
-				.map(ByteArrayInputStream::new)
-				.map(body -> RDFParser.source(body).lang(request.lang()).toModel())
-				.map(StartingNodeSpecificationFactory::fromModel)
-				.map(StartingNodeSpecification::extractEventStreamProperties)
-				.orElseThrow();
+		final Response response = requestExecutor.execute(request.createRequest());
+
+		if(response.isOk()) {
+			return response.getBody()
+					.map(ByteArrayInputStream::new)
+					.map(body -> RDFParser.source(body).lang(request.lang()).toModel())
+					.map(StartingNodeSpecificationFactory::fromModel)
+					.map(StartingNodeSpecification::extractEventStreamProperties)
+					.orElseThrow();
+		}
+
+		if(response.isRedirect()) {
+			return response.getRedirectLocation()
+					.map(request::withUrl)
+					.map(this::executePropertiesRequest)
+					.orElseThrow(() -> new IllegalStateException("No Location Header in redirect."));
+		}
+
+		throw new UnsupportedOperationException(
+				"Cannot handle response " + response.getHttpStatus() + " of EventStreamPropertiesRequest " + request);
 	}
 
 
