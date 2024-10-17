@@ -32,7 +32,7 @@ class EventStreamPropertiesFetcherTest {
 
 	@BeforeEach
 	void setUp() {
-		RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+		RequestExecutor requestExecutor = new RequestExecutorFactory(false).createNoAuthExecutor();
 		fetcher = new EventStreamPropertiesFetcher(requestExecutor);
 	}
 
@@ -41,6 +41,21 @@ class EventStreamPropertiesFetcherTest {
 		URL resource = getClass().getClassLoader().getResource("models/eventstream.ttl");
 		final byte[] responseBytes = Files.readAllBytes(Path.of(Objects.requireNonNull(resource).toURI()));
 		stubFor(get("/observations").willReturn(ok().withBody(responseBytes)));
+
+		final EventStreamProperties properties = fetcher.fetchEventStreamProperties(new PropertiesRequest("http://localhost:12121/observations", Lang.TTL));
+
+		verify(getRequestedFor(urlEqualTo("/observations")));
+		assertThat(properties)
+				.usingRecursiveComparison()
+				.isEqualTo(eventStreamProperties);
+	}
+
+	@Test
+	void given_EventStreamWitRedirects_when_FetchProperties_then_ReturnValidProperties() throws IOException, URISyntaxException {
+		URL resource = getClass().getClassLoader().getResource("models/eventstream.ttl");
+		final byte[] responseBytes = Files.readAllBytes(Path.of(Objects.requireNonNull(resource).toURI()));
+		stubFor(get("/observations").willReturn(temporaryRedirect("http://localhost:12121/observations-redirected")));
+		stubFor(get("/observations-redirected").willReturn(ok().withBody(responseBytes)));
 
 		final EventStreamProperties properties = fetcher.fetchEventStreamProperties(new PropertiesRequest("http://localhost:12121/observations", Lang.TTL));
 

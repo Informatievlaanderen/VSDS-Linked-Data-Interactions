@@ -21,4 +21,9 @@ public record PropertiesRequest(String url, Lang lang) {
 	public PropertiesRequest withUrl(String url) {
 		return new PropertiesRequest(url, lang);
 	}
+
+	@Override
+	public String toString() {
+		return "PropertiesRequest{url='%s', lang=%s}".formatted(url, lang);
+	}
 }
