@@ -18,6 +18,7 @@ import java.util.Objects;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @WireMockTest(httpPort = EventStreamPropertiesFetcherTest.WIREMOCK_PORT)
 class EventStreamPropertiesFetcherTest {
@@ -63,6 +64,17 @@ class EventStreamPropertiesFetcherTest {
 		assertThat(properties)
 				.usingRecursiveComparison()
 				.isEqualTo(eventStreamProperties);
+	}
+
+	@Test
+	void given_NoEventStream_when_FetchProperties_then_ReturnValidProperties() {
+		stubFor(get("/observations").willReturn(notFound()));
+		PropertiesRequest request = new PropertiesRequest("http://localhost:12121/observations", Lang.TTL);
+
+		assertThatThrownBy(() -> fetcher.fetchEventStreamProperties(request))
+				.isInstanceOf(UnsupportedOperationException.class)
+				.hasMessage("Cannot handle response 404 of EventStreamPropertiesRequest %s", request);
+		verify(getRequestedFor(urlEqualTo("/observations")));
 	}
 
 	@Test
