@@ -71,6 +71,7 @@ public class LdioLdesClientConnectorAutoConfig {
 					urlProxy);
 			final var eventStreamPropertiesFetcher = new EventStreamPropertiesFetcher(edcRequestExecutor);
 			final var clientStatusConsumer = new ClientStatusConsumer(pipelineName, clientStatusService);
+			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService)));
 			final MemberSupplier memberSupplier = new MemberSupplierFactory(
 					ldioLdesClientProperties,
 					eventStreamPropertiesFetcher,
@@ -82,8 +83,6 @@ public class LdioLdesClientConnectorAutoConfig {
 			final LdioObserver ldioObserver = LdioObserver.register(NAME, pipelineName, observationRegistry);
 			final var ldesClient = new LdioLdesClient(executor, ldioObserver, memberSupplier,
 					applicationEventPublisher, keepState, clientStatusConsumer);
-			eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(pipelineName, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
-
 			ldesClient.start();
 			return ldesClient;
 		}
