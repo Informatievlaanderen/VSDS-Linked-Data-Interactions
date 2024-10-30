@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SkolemisationTransformerProcessorTest {
+	public static final String MIME_TYPE_KEY = "mime.type";
 	private TestRunner testRunner;
 
 	@BeforeEach
@@ -48,7 +49,7 @@ class SkolemisationTransformerProcessorTest {
 	@EmptySource
 	@ValueSource(strings = {" ", "http://"})
 	void test_InvalidProperties(String skolemDomain) {
-		testRunner.setProperty(SkolemisationTransformerProperties.SKOLEM_DOMAIN, skolemDomain);
+		testRunner.setProperty("SKOLEM_DOMAIN", skolemDomain);
 
 		assertThatThrownBy(() -> testRunner.run())
 				.isInstanceOf(AssertionError.class)
@@ -56,12 +57,12 @@ class SkolemisationTransformerProcessorTest {
 	}
 
 	@Test
-	void name() throws URISyntaxException, IOException {
+	void given_ValidModel_when_Skolemise_then_AddSkolemisedModelToSuccessRelation() throws URISyntaxException, IOException {
 		Lang mimetype = Lang.TURTLE;
-		testRunner.setProperty("SKOLEM_DOMAIN", "http://example.com");
+		testRunner.setProperty(SkolemisationTransformerProperties.SKOLEM_DOMAIN, "http://example.com");
 
 		URI uri = Objects.requireNonNull(getClass().getClassLoader().getResource("mob-hind-model.ttl")).toURI();
-		testRunner.enqueue(Path.of(uri), Map.of("mime.type", mimetype.getHeaderString()));
+		testRunner.enqueue(Path.of(uri), Map.of(MIME_TYPE_KEY, mimetype.getHeaderString()));
 
 		testRunner.run();
 
@@ -69,6 +70,17 @@ class SkolemisationTransformerProcessorTest {
 		Model result = RDFParser.create().source(flowFile.getContentStream()).lang(mimetype).toModel();
 
 		assertThat(result).has(noBlankNodes());
+	}
+
+	@Test
+	void given_InvalidModel_when_Skolemise_AddModelToFailureRelation() {
+		testRunner.setProperty(SkolemisationTransformerProperties.SKOLEM_DOMAIN, "http://example.com");
+
+		testRunner.enqueue("invalid model", Map.of(MIME_TYPE_KEY, Lang.TURTLE.getHeaderString()));
+
+		testRunner.run();
+
+		assertThat(testRunner.getFlowFilesForRelationship("failure")).hasSize(1);
 	}
 
 	private Condition<Model> noBlankNodes() {
