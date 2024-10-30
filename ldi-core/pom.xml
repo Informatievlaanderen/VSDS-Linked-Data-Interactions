@@ -27,6 +27,7 @@
         <module>ldi-common</module>
         <module>change-detection-filter</module>
         <module>ldi-infra-sql</module>
+        <module>skolemisation-transformer</module>
     </modules>
 
     <properties>

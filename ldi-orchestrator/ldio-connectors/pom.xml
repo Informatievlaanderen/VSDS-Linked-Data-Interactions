@@ -41,6 +41,7 @@
         <module>ldio-repository-sink</module>
         <module>ldio-change-detection-filter</module>
         <module>ldio-virtuoso-out</module>
+        <module>ldio-skolemisation-transformer</module>
 
     </modules>
 
