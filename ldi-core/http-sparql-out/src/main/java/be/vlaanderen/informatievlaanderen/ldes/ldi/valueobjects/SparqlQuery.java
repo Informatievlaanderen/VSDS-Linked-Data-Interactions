@@ -22,6 +22,6 @@ public class SparqlQuery {
 				.mapWith(Resource::getURI)
 				.toList();
 
-		return deleteFunction.createQueryForResources(subjects).orElse("") + insertFunction.createQuery(model);
+		return deleteFunction.createQueryForResources(subjects).orElse("") + "\n" + insertFunction.createQuery(model);
 	}
 }

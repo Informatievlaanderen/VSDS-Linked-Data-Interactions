@@ -53,7 +53,7 @@ public class LdioHttpSparqlOutAutoConfig {
 		}
 
 		private static DeleteFunction createDeleteFunction(LdioHttpSparqlOutProperties properties) {
-			if (properties.isReplacementEnabled()) {
+			if (!properties.isReplacementEnabled()) {
 				return DeleteFunctionBuilder.disabled();
 			}
 			return properties.getReplacementDeleteFunction()

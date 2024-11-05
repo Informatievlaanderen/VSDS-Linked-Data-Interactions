@@ -12,7 +12,7 @@ class DeleteFunctionBuilderTest {
 	@Test
 	void test_FromDepth1() {
 		final String expected = """
-				DELETE DATA { ?s ?p ?o }
+				DELETE { ?s ?p ?o }
 				WHERE {
 				    {
 				    	VALUES ?o0 { <http://example.com> }
@@ -36,7 +36,7 @@ class DeleteFunctionBuilderTest {
 	@Test
 	void test_FromDepth3() {
 		final String expected = """
-				DELETE DATA { ?s ?p ?o }
+				DELETE { ?s ?p ?o }
 				WHERE {
 				    {
 				        VALUES ?o0 { <http://example.com> }
@@ -82,23 +82,19 @@ class DeleteFunctionBuilderTest {
 	@Test
 	void given_Graph_test_FromDepth1() {
 		final String expected = """
-				DELETE DATA {
-					GRAPH <http://example.org/graph> {
-						?s ?p ?o
-					}
+				DELETE FROM <http://example.org/graph> {
+					?s ?p ?o
 				}
 				WHERE {
-					GRAPH <http://example.org/graph> {
-						{
-							VALUES ?o0 { <http://example.com> }
-							?o0 ?p ?o .
-							BIND (?o0 AS ?s)
-						}
-						UNION {
-						    ?o0 ?p1 ?o1 .
-						    ?o1 ?p ?o .
-						    BIND (?o1 AS ?s)
-						}
+					{
+						VALUES ?o0 { <http://example.com> }
+						?o0 ?p ?o .
+						BIND (?o0 AS ?s)
+					}
+					UNION {
+					    ?o0 ?p1 ?o1 .
+					    ?o1 ?p ?o .
+					    BIND (?o1 AS ?s)
 					}
 				}""";
 
