@@ -26,7 +26,7 @@ class DeleteFunctionBuilderTest {
 				    }
 				}""";
 
-		final DeleteFunction query = QueryBuilder.delete().withDepth(1);
+		final DeleteFunction query = DeleteFunctionBuilder.create().withDepth(1);
 
 		assertThat(query.createQueryForResources("http://example.com"))
 				.get(InstanceOfAssertFactories.STRING)
@@ -63,7 +63,7 @@ class DeleteFunctionBuilderTest {
 				    }
 				}""";
 
-		final DeleteFunction query = QueryBuilder.delete().withDepth(3);
+		final DeleteFunction query = DeleteFunctionBuilder.create().withDepth(3);
 
 		assertThat(query.createQueryForResources("http://example.com"))
 				.get(InstanceOfAssertFactories.STRING)
@@ -72,24 +72,12 @@ class DeleteFunctionBuilderTest {
 
 	@Test
 	void test_Disabled() {
-		final DeleteFunction query = QueryBuilder.delete().disabled();
+		final DeleteFunction query = DeleteFunctionBuilder.disabled();
 
 		assertThat(query)
 				.usingRecursiveComparison()
 				.isEqualTo(DeleteFunction.empty());
 	}
-
-	@Test
-	void test_WithQuery() {
-		final DeleteFunction expected = DeleteFunction.ofQuery("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  VALUES ?s { <http://example.com> } }");
-
-		final DeleteFunction result = QueryBuilder.delete("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  VALUES ?s { <http://example.com> } }");
-
-		assertThat(result)
-				.usingRecursiveComparison()
-				.isEqualTo(expected);
-	}
-
 
 	@Test
 	void given_Graph_test_FromDepth1() {
@@ -114,7 +102,7 @@ class DeleteFunctionBuilderTest {
 					}
 				}""";
 
-		final DeleteFunction query = QueryBuilder.withGraph("http://example.org/graph").delete().withDepth(1);
+		final DeleteFunction query = DeleteFunctionBuilder.withGraph("http://example.org/graph").withDepth(1);
 
 		assertThat(query.createQueryForResources("http://example.com"))
 				.get(InstanceOfAssertFactories.STRING)
@@ -124,7 +112,7 @@ class DeleteFunctionBuilderTest {
 	@Test
 	void given_DepthIsZero_when_Build_then_ThrowException() {
 		assertThatIllegalArgumentException()
-				.isThrownBy(() -> QueryBuilder.delete().withDepth(0))
+				.isThrownBy(() -> DeleteFunctionBuilder.create().withDepth(0))
 				.withMessage("Depth must be greater than 0");
 	}
 }

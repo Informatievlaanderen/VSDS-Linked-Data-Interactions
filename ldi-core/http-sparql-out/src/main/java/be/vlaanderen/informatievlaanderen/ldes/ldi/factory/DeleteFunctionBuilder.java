@@ -13,14 +13,13 @@ public class DeleteFunctionBuilder {
 		this.base = base;
 	}
 
-	public DeleteFunction disabled() {
+	public static DeleteFunction disabled() {
 		return DeleteFunction.empty();
 	}
 
 	public static DeleteFunctionBuilder create() {
 		return new DeleteFunctionBuilder(BASE_TEMPLATE);
 	}
-
 
 	public static DeleteFunctionBuilder withGraph(String graph) {
 		final String graphBase = "GRAPH <%s> { %%s }".formatted(graph);

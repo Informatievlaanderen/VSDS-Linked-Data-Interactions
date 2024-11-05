@@ -42,6 +42,7 @@
         <module>ldio-change-detection-filter</module>
         <module>ldio-virtuoso-out</module>
         <module>ldio-skolemisation-transformer</module>
+        <module>ldio-http-sparql-out</module>
 
     </modules>
 

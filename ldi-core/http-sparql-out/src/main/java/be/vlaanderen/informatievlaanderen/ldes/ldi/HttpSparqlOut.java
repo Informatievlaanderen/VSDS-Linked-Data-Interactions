@@ -6,7 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeaders;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.Response;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.skolemisation.Skolemizer;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiOutput;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.SparqlQuery;
 import org.apache.http.HttpHeaders;
 import org.apache.jena.rdf.model.Model;
@@ -15,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class HttpSparqlOut implements LdiOutput {
+public class HttpSparqlOut {
 	private static final Logger log = LoggerFactory.getLogger(HttpSparqlOut.class);
 	private final String endpoint;
 	private final SparqlQuery sparqlQuery;
@@ -29,8 +28,7 @@ public class HttpSparqlOut implements LdiOutput {
 		this.requestExecutor = requestExecutor;
 	}
 
-	@Override
-	public void accept(Model model) {
+	public void write(Model model) {
 		if(model.isEmpty()) {
 			return;
 		}
@@ -50,6 +48,5 @@ public class HttpSparqlOut implements LdiOutput {
 						response.getRequestedUrl(), response.getHttpStatus(), response.getBodyAsString().orElse(null));
 			}
 		}
-
 	}
 }
