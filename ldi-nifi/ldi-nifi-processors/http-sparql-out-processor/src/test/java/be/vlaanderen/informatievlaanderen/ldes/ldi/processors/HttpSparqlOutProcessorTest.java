@@ -160,6 +160,7 @@ class HttpSparqlOutProcessorTest {
 
 			verify(postRequestedFor(urlEqualTo("/sparql-fail")));
 			assertThat(result).matches(expectedModel::isIsomorphicWith);
+			assertThat(testRunner.getLogger().getErrorMessages()).hasSize(1);
 		}
 	}
 

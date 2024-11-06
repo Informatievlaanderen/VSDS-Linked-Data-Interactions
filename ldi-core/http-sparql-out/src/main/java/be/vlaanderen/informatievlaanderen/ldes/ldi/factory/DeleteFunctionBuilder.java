@@ -27,7 +27,7 @@ public class DeleteFunctionBuilder {
 	}
 
 	public DeleteFunction withDepth(int depth) {
-		if (depth < 1) {
+		if (depth < 0) {
 			throw new IllegalArgumentException("Depth must be greater than 0");
 		}
 		final String whereConditions = IntStream.range(1, depth + 1)

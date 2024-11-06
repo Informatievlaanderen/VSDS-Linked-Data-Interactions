@@ -15,7 +15,7 @@ public class SparqlQuery {
 		this.deleteFunction = deleteFunction;
 	}
 
-	public String createQuery(Model model) {
+	public String getQueryForModel(Model model) {
 		final List<String> subjects = model.listSubjects()
 				.filterDrop(RDFNode::isAnon)
 				.mapWith(RDFNode::asResource)

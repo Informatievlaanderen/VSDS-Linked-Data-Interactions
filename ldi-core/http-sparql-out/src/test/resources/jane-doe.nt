@@ -1,0 +1,3 @@
+<http://localhost:8080/people> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> .
+<http://localhost:8080/people> <http://schema.org/name> "Jane Doe" .
+<http://localhost:8080/people> <http://schema.org/jobTitle> "Professor" .

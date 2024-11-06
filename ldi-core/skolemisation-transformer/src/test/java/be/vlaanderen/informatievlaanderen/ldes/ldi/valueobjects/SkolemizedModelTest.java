@@ -19,8 +19,8 @@ class SkolemizedModelTest {
 
 		assertThat(skolemizedModel)
 				.has(noBlankNodes())
-				.has(skolemizedObjectsWithPrefix(1, SKOLEM_URI_TEMPLATE.replace("%s", "")))
-				.has(skolemizedSubjectsWithPrefix(2, SKOLEM_URI_TEMPLATE.replace("%s", "")));
+				.has(skolemizedObjectsWithPrefix(2, SKOLEM_URI_TEMPLATE.replace("%s", "")))
+				.has(skolemizedSubjectsWithPrefix(3, SKOLEM_URI_TEMPLATE.replace("%s", "")));
 	}
 
 	@Test

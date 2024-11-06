@@ -34,7 +34,7 @@ public class HttpSparqlOut {
 			return;
 		}
 
-		String query = sparqlQuery.createQuery(skolemizer.skolemize(model));
+		String query = sparqlQuery.getQueryForModel(skolemizer.skolemize(model));
 
 		final PostRequest request = new PostRequest(endpoint, new RequestHeaders(List.of(
 				new RequestHeader(HttpHeaders.CONTENT_TYPE, "application/sparql-update"),
