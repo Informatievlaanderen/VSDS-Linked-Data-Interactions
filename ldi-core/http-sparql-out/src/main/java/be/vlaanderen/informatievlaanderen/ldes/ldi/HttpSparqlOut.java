@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.WriteActionFailedException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.PostRequest;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.RequestHeader;
@@ -29,7 +30,7 @@ public class HttpSparqlOut {
 	}
 
 	public void write(Model model) {
-		if(model.isEmpty()) {
+		if (model.isEmpty()) {
 			return;
 		}
 
@@ -43,9 +44,9 @@ public class HttpSparqlOut {
 			if (response.isSuccess()) {
 				log.debug("{} {} {}", request.getMethod(), request.getUrl(), response.getHttpStatus());
 			} else {
-				log.atError().log("Failed to post model. The request url was {}. " +
-								"The http response obtained from the server has code {} and body \"{}\".",
-						response.getRequestedUrl(), response.getHttpStatus(), response.getBodyAsString().orElse(null));
+				final String message = "Failed to post model. The request url was %s. The http response obtained from the server has code %s and body \"%s\"."
+						.formatted(response.getRequestedUrl(), response.getHttpStatus(), response.getBodyAsString().orElse(null));
+				throw new WriteActionFailedException(message);
 			}
 		}
 	}
