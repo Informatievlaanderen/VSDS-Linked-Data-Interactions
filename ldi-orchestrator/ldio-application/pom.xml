@@ -380,16 +380,6 @@
             </dependencies>
         </profile>
         <profile>
-            <id>ldio-virtuoso-out</id>
-            <dependencies>
-                <dependency>
-                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-virtuoso-out</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
             <id>ldio-http-sparql-out</id>
             <dependencies>
                 <dependency>
