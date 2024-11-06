@@ -108,7 +108,7 @@ class DeleteFunctionBuilderTest {
 	@Test
 	void given_DepthIsZero_when_Build_then_ThrowException() {
 		assertThatIllegalArgumentException()
-				.isThrownBy(() -> DeleteFunctionBuilder.create().withDepth(0))
-				.withMessage("Depth must be greater than 0");
+				.isThrownBy(() -> DeleteFunctionBuilder.create().withDepth(-1))
+				.withMessage("Depth must be a positive number");
 	}
 }
