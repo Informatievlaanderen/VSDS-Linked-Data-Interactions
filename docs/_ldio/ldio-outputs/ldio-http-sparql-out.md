@@ -21,6 +21,8 @@ The HTTP SPARQL Out component can be used to write data to a SPARQL host, with V
 | _replacement.depth_          | How deep the default delete query must delete nested nodes from the existing subject, will be ignored if `replacement.deleteFunction`is set | No       | 10      | 15                                       | Integer          |
 | _replacement.deleteFunction_ | If this property is set, then the default delete function will be overridden with this delete function                                      | No       | N/A     | `DELETE { ?s ?p ?o}  WHERE { ?s ?p ?o }` | String           |
 
+{% include ldio-core/http-requester.md %}
+
 ### Replacement
 
 Replacement includes that all old nodes from certain subjects must be deleted before the new nodes with the same subject

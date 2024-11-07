@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpSparqlOutAuto
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioHttpSparqlOutProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
+import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -12,9 +13,15 @@ import org.apache.jena.riot.RDFParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -90,6 +97,17 @@ class LdioHttpSparqlOutTest {
 		verify(postRequestedFor(urlEqualTo("/sparql")).withRequestBody(containing(customDeleteFunction).and(notContaining("FROM"))));
 	}
 
+	@ParameterizedTest
+	@ArgumentsSource(AuthPropertiesProvider.class)
+	void given_AuthConfig_when_SparqlOut_then_PostQueryWithHeader(Map<String, String> authProperties) {
+		final Map<String, String> properties = extendProperties(authProperties);
+		ldioHttpSparqlOut = configurator.configure(new ComponentProperties(PIPELINE_NAME, LdioHttpSparqlOut.NAME, properties));
+
+		ldioHttpSparqlOut.accept(model);
+
+		verify(postRequestedFor(urlEqualTo("/sparql")).withBasicAuth(AuthPropertiesProvider.basicCredentials));
+	}
+
 	@Test
 	void when_EndpointIsNotConfigured_then_ThrowMissingConfigPropertyException() {
 		ComponentProperties componentProperties = new ComponentProperties(PIPELINE_NAME, LdioHttpSparqlOut.NAME);
@@ -102,5 +120,26 @@ class LdioHttpSparqlOutTest {
 		final Map<String, String> extendedProperties = new HashMap<>(minimalProperties);
 		extendedProperties.putAll(properties);
 		return extendedProperties;
+	}
+
+	private static class AuthPropertiesProvider implements ArgumentsProvider {
+		static final String USERNAME = "sparql";
+		static final String PASSWORD = "changeme";
+		static final BasicCredentials basicCredentials = new BasicCredentials(USERNAME, PASSWORD);
+
+		@Override
+		public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+			return Stream.of(
+					Map.of(
+							"auth.type", "API_KEY",
+							"auth.api-key", basicCredentials.asAuthorizationHeaderValue(),
+							"auth.api-key-header", "Authorization"
+					),
+					Map.of(
+							"http.headers.0.key", "Authorization",
+							"http.headers.0.value", basicCredentials.asAuthorizationHeaderValue()
+							)
+			).map(Arguments::of);
+		}
 	}
 }

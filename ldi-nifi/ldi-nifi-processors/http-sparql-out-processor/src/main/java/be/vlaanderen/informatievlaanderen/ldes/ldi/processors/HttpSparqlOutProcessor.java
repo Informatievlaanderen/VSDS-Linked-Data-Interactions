@@ -4,8 +4,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.HttpSparqlOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SkolemisationTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.factory.DeleteFunctionBuilder;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.factory.InsertFunctionBuilder;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.RequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.skolemisation.EmptySkolemizer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.skolemisation.Skolemizer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.skolemisation.SkolemizerImpl;
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.HttpSparqlOutProcessorProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RequestExecutorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -46,7 +47,17 @@ public class HttpSparqlOutProcessor extends AbstractProcessor {
 				REPLACEMENT_ENABLED,
 				REPLACEMENT_DEPTH,
 				REPLACEMENT_DELETE_FUNCTION,
-				SKOLEMISATION_DOMAIN
+				SKOLEMISATION_DOMAIN,
+				API_KEY_HEADER_PROPERTY,
+				API_KEY_PROPERTY,
+				OAUTH_CLIENT_ID,
+				OAUTH_CLIENT_SECRET,
+				OAUTH_TOKEN_ENDPOINT,
+				OAUTH_SCOPE,
+				AUTHORIZATION_STRATEGY,
+				RETRIES_ENABLED,
+				MAX_RETRIES,
+				STATUSES_TO_RETRY
 		);
 	}
 
@@ -66,7 +77,7 @@ public class HttpSparqlOutProcessor extends AbstractProcessor {
 				.map(SkolemisationTransformer::new)
 				.map(skolemisationTransformer -> (Skolemizer) new SkolemizerImpl(skolemisationTransformer))
 				.orElseGet(EmptySkolemizer::new);
-		final RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+		final RequestExecutor requestExecutor = new RequestExecutorSupplier().getRequestExecutor(context);
 
 		final SparqlQuery sparqlQuery = new SparqlQuery(insertFunction, deleteFunction);
 		httpSparqlOut = new HttpSparqlOut(getEndpoint(context), sparqlQuery, skolemizer, requestExecutor);

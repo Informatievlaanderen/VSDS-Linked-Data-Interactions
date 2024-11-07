@@ -5,7 +5,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.SkolemisationTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.factory.DeleteFunctionBuilder;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.factory.InsertFunctionBuilder;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.skolemisation.EmptySkolemizer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.skolemisation.Skolemizer;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.skolemisation.SkolemizerImpl;
@@ -16,6 +15,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.SparqlQuery;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioHttpSparqlOut;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioOutputConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.requestexecutor.LdioRequestExecutorSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,7 +44,7 @@ public class LdioHttpSparqlOutAutoConfig {
 					.map(SkolemisationTransformer::new)
 					.map(skolemisationTransformer -> (Skolemizer) new SkolemizerImpl(skolemisationTransformer))
 					.orElseGet(EmptySkolemizer::new);
-			final RequestExecutor requestExecutor = new RequestExecutorFactory().createNoAuthExecutor();
+			final RequestExecutor requestExecutor = new LdioRequestExecutorSupplier().getRequestExecutor(properties);
 
 			final SparqlQuery sparqlQuery = new SparqlQuery(insertFunction, deleteFunction);
 			final HttpSparqlOut httpSparqlOut = new HttpSparqlOut(httpSparqlOutProperties.getEndpoint(), sparqlQuery, skolemizer, requestExecutor);

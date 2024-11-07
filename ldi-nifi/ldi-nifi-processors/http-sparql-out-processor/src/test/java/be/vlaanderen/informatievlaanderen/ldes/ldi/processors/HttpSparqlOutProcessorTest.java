@@ -1,5 +1,6 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import com.github.tomakehurst.wiremock.client.BasicCredentials;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
@@ -26,6 +27,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.HttpSparqlOutProcessorProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RequestExecutorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -165,6 +167,21 @@ class HttpSparqlOutProcessorTest {
 			verify(postRequestedFor(urlEqualTo("/sparql-fail")));
 			assertThat(result).matches(expectedModel::isIsomorphicWith);
 			assertThat(testRunner.getLogger().getErrorMessages()).hasSize(1);
+		}
+
+		@Test
+		void given_AuthConfig_when_SparqlOut_then_PostQuerywithHeader() throws IOException {
+			final BasicCredentials basicCredentials = new BasicCredentials("sparql", "changeme");
+
+			minimalProperties.forEach(testRunner::setProperty);
+			testRunner.setProperty(AUTHORIZATION_STRATEGY, "API_KEY");
+			testRunner.setProperty(API_KEY_HEADER_PROPERTY, "Authorization");
+			testRunner.setProperty(API_KEY_PROPERTY, basicCredentials.asAuthorizationHeaderValue());
+
+			testRunner.enqueue(path, Map.of(MIME_TYPE, mimetype.getHeaderString()));
+			testRunner.run();
+
+			verify(postRequestedFor(urlEqualTo("/sparql")).withBasicAuth(basicCredentials));
 		}
 	}
 
