@@ -8,7 +8,7 @@ title: Skolemisation Transformer
 
 ***Ldio:SkolemisationTransformer***
 
-A transformer which skolemise the incoming model.
+A transformer which skolemises the incoming model.
 
 ## What is Skolemisation
 
