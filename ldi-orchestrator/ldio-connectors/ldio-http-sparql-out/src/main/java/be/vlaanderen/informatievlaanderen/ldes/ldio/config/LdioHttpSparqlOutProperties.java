@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjec
 import java.util.Optional;
 
 public class LdioHttpSparqlOutProperties {
+	public static final String ENDPOINT = "endpoint";
 	public static final String GRAPH = "graph";
 	public static final String SKOLEMISATION_SKOLEM_DOMAIN = "skolemisation.skolemDomain";
 	public static final String REPLACEMENT_DEPTH = "replacement.depth";
@@ -20,7 +21,7 @@ public class LdioHttpSparqlOutProperties {
 	}
 
 	public String getEndpoint() {
-		return componentProperties.getProperty("endpoint");
+		return componentProperties.getProperty(ENDPOINT);
 	}
 
 	public Optional<String> getGraph() {

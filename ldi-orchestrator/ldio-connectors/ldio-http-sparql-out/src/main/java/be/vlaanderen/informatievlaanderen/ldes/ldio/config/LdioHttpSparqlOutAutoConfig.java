@@ -26,11 +26,11 @@ public class LdioHttpSparqlOutAutoConfig {
 
 	@SuppressWarnings("java:S6830")
 	@Bean(name = NAME)
-	LdioOutputConfigurator ldiHttpSparqlOutConfigurator() {
+	public LdioHttpSparqlOutConfigurator ldiHttpSparqlOutConfigurator() {
 		return new LdioHttpSparqlOutConfigurator();
 	}
 
-	static class LdioHttpSparqlOutConfigurator implements LdioOutputConfigurator {
+	public static class LdioHttpSparqlOutConfigurator implements LdioOutputConfigurator {
 
 		@Override
 		public LdiOutput configure(ComponentProperties properties) {

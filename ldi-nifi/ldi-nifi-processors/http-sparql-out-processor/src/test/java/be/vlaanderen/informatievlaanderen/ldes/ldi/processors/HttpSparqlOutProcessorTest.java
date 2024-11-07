@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class HttpSparqlOutProcessorTest {
-	static final int PORT = 12321;
+	private static final int PORT = 12321;
 	private static final Map<PropertyDescriptor, String> minimalProperties = Map.of(
 			ENDPOINT, "http://localhost:%s/sparql".formatted(PORT),
 			GRAPH, "http://example.graph.com"
@@ -83,22 +83,26 @@ class HttpSparqlOutProcessorTest {
 		@BeforeEach
 		void setUp() {
 			expectedModel = RDFParser.source(path).lang(Lang.TURTLE).toModel();
-			stubFor(post(urlEqualTo("/sparql")).willReturn(aResponse().withStatus(200)));
+			stubFor(post(urlEqualTo("/sparql")).willReturn(ok()));
 		}
 
 		@Test
-		void given_ValidModel_when_SparqlOut_then_AddModelToSuccessRelation() throws IOException {
-			minimalProperties.forEach(testRunner::setProperty);
+		void given_ValidModel_when_SparqlOut_then_AddModelToSuccessRelation() {
+			testRunner.setProperty(ENDPOINT, "http://localhost:%s/sparql".formatted(PORT));
 			testRunner.setProperty(REPLACEMENT_ENABLED, Boolean.FALSE.toString());
 
-			testRunner.enqueue(path, Map.of(MIME_TYPE, mimetype.getHeaderString()));
+			final String content = "<http://localhost:8080/people> <http://schema.org/name> \"Jane Doe\" .\n";
+			Model expected = RDFParser.create().fromString(content).lang(Lang.NT).toModel();
+			final String expectedRequestBody = "INSERT DATA { %s }".formatted(content);
+
+			testRunner.enqueue(content, Map.of(MIME_TYPE, Lang.NT.getHeaderString()));
 			testRunner.run();
 
 			MockFlowFile flowFile = testRunner.getFlowFilesForRelationship(SUCCESS).getFirst();
-			Model result = RDFParser.create().source(flowFile.getContentStream()).lang(mimetype).toModel();
+			Model result = RDFParser.create().source(flowFile.getContentStream()).lang(Lang.NT).toModel();
 
-			verify(postRequestedFor(urlEqualTo("/sparql")).withRequestBody(containing("INSERT DATA").and(notContaining("DELETE FROM"))));
-			assertThat(result).matches(expectedModel::isIsomorphicWith);
+			verify(postRequestedFor(urlEqualTo("/sparql")).withRequestBody(containing(expectedRequestBody)));
+			assertThat(result).matches(expected::isIsomorphicWith);
 		}
 
 		@Test
