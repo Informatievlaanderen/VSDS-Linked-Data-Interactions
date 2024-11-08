@@ -25,6 +25,8 @@
         <module>ldi-processors-bundle</module>
         <module>change-detection-processor</module>
         <module>rml-adapter-processor</module>
+        <module>skolemisation-transformer-processor</module>
+        <module>http-sparql-out-processor</module>
     </modules>
 
 </project>

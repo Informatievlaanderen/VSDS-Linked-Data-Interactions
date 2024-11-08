@@ -2,14 +2,11 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.RequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.wrappers.MemberSupplierWrappersBuilder;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.retry.RetryConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorDecorator;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.RequestExecutorFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
-import io.github.resilience4j.retry.Retry;
 import ldes.client.eventstreamproperties.EventStreamPropertiesFetcher;
 import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
 import ldes.client.eventstreamproperties.valueobjects.PropertiesRequest;
@@ -17,8 +14,6 @@ import ldes.client.treenodesupplier.TreeNodeProcessor;
 import ldes.client.treenodesupplier.domain.valueobject.*;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
-import org.apache.http.Header;
-import org.apache.http.message.BasicHeader;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFWriter;
@@ -46,6 +41,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Comm
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RequestExecutorProperties.*;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -57,7 +53,6 @@ public class LdesClientProcessor extends AbstractProcessor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LdesClientProcessor.class);
 	private MemberSupplier memberSupplier;
 	private EventStreamProperties eventStreamProperties;
-	private final RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(false);
 	private boolean hasLdesEnded;
 
 	@Override
@@ -99,7 +94,8 @@ public class LdesClientProcessor extends AbstractProcessor {
 	public void onScheduled(final ProcessContext context) {
 		List<String> dataSourceUrls = LdesProcessorProperties.getDataSourceUrl(context);
 		Lang dataSourceFormat = LdesProcessorProperties.getDataSourceFormat(context);
-		final RequestExecutor requestExecutor = getRequestExecutorWithPossibleRetry(context);
+		final RequestExecutorSupplier requestExecutorSupplier = new RequestExecutorSupplier();
+		final RequestExecutor requestExecutor = requestExecutorSupplier.getRequestExecutor(context);
 		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrls, dataSourceFormat);
 		StatePersistence statePersistence = new StatePersistenceFactory().getStatePersistence(context);
 		eventStreamProperties = fetchEventStreamProperties(ldesMetaData, requestExecutor);
@@ -115,33 +111,6 @@ public class LdesClientProcessor extends AbstractProcessor {
 		memberSupplier.init();
 		LOGGER.info("LDES Client processor {} configured to follow (sub)streams {} (expected LDES source format: {})",
 				context.getName(), dataSourceUrls, dataSourceFormat);
-	}
-
-	private RequestExecutor getRequestExecutorWithPossibleRetry(final ProcessContext context) {
-		return RequestExecutorDecorator.decorate(getRequestExecutor(context)).with(getRetry(context)).get();
-	}
-
-	private Retry getRetry(final ProcessContext context) {
-		if (retriesEnabled(context)) {
-			return RetryConfig.of(getMaxRetries(context), getStatusesToRetry(context)).getRetry();
-		} else {
-			return null;
-		}
-	}
-
-	private RequestExecutor getRequestExecutor(final ProcessContext context) {
-		return switch (getAuthorizationStrategy(context)) {
-			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
-			case API_KEY -> {
-				List<Header> headers = List.of(
-						new BasicHeader(getApiKeyHeader(context), getApiKey(context))
-				);
-				yield requestExecutorFactory.createNoAuthExecutor(headers);
-			}
-			case OAUTH2_CLIENT_CREDENTIALS ->
-					requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
-							getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
-		};
 	}
 
 	private EventStreamProperties fetchEventStreamProperties(LdesMetaData ldesMetaData, RequestExecutor requestExecutor) {
@@ -161,7 +130,6 @@ public class LdesClientProcessor extends AbstractProcessor {
 			LOGGER.warn(exception.getMessage());
 			hasLdesEnded = true;
 		}
-
 	}
 
 	private void processNextMember(ProcessContext context, ProcessSession session) {

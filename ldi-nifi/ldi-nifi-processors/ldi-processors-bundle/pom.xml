@@ -73,6 +73,18 @@
             <version>${project.version}</version>
             <type>nar</type>
         </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi.nifi</groupId>
+            <artifactId>skolemisation-transformer-processor</artifactId>
+            <version>${project.version}</version>
+            <type>nar</type>
+        </dependency>
+        <dependency>
+            <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi.nifi</groupId>
+            <artifactId>http-sparql-out-processor</artifactId>
+            <version>${project.version}</version>
+            <type>nar</type>
+        </dependency>
     </dependencies>
 
     <build>

@@ -380,11 +380,21 @@
             </dependencies>
         </profile>
         <profile>
-            <id>ldio-virtuoso-out</id>
+            <id>ldio-http-sparql-out</id>
             <dependencies>
                 <dependency>
                     <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
-                    <artifactId>ldio-virtuoso-out</artifactId>
+                    <artifactId>ldio-http-sparql-out</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>ldio-skolemisation-transformer</id>
+            <dependencies>
+                <dependency>
+                    <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
+                    <artifactId>ldio-skolemisation-transformer</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>
