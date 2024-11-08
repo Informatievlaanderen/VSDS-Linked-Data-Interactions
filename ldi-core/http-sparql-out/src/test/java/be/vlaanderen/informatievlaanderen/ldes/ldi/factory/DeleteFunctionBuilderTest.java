@@ -15,7 +15,6 @@ class DeleteFunctionBuilderTest {
 				DELETE { ?s ?p ?o }
 				WHERE {
 				    {
-				    	VALUES ?o0 { <http://example.com> }
 				        ?o0 ?p ?o .
 				        BIND (?o0 AS ?s)
 				    }
@@ -24,11 +23,12 @@ class DeleteFunctionBuilderTest {
 				        ?o1 ?p ?o .
 				        BIND (?o1 AS ?s)
 				    }
+				    FILTER (?o0 IN (<http://example.com>, <http://example.org>))
 				}""";
 
 		final DeleteFunction query = DeleteFunctionBuilder.create().withDepth(1);
 
-		assertThat(query.createQueryForResources("http://example.com"))
+		assertThat(query.createQueryForResources("http://example.com", "http://example.org"))
 				.get(InstanceOfAssertFactories.STRING)
 				.isEqualToIgnoringWhitespace(expected);
 	}
@@ -39,7 +39,6 @@ class DeleteFunctionBuilderTest {
 				DELETE { ?s ?p ?o }
 				WHERE {
 				    {
-				        VALUES ?o0 { <http://example.com> }
 				        ?o0 ?p ?o .
 				        BIND (?o0 AS ?s)
 				    }
@@ -61,6 +60,7 @@ class DeleteFunctionBuilderTest {
 				        ?o3 ?p ?o .
 				        BIND (?o3 AS ?s)
 				    }
+				    FILTER (?o0 IN (<http://example.com>))
 				}""";
 
 		final DeleteFunction query = DeleteFunctionBuilder.create().withDepth(3);
@@ -87,7 +87,6 @@ class DeleteFunctionBuilderTest {
 				}
 				WHERE {
 					{
-						VALUES ?o0 { <http://example.com> }
 						?o0 ?p ?o .
 						BIND (?o0 AS ?s)
 					}
@@ -96,6 +95,7 @@ class DeleteFunctionBuilderTest {
 					    ?o1 ?p ?o .
 					    BIND (?o1 AS ?s)
 					}
+				    FILTER (?o0 IN (<http://example.com>))
 				}""";
 
 		final DeleteFunction query = DeleteFunctionBuilder.withGraph("http://example.org/graph").withDepth(1);
@@ -106,7 +106,7 @@ class DeleteFunctionBuilderTest {
 	}
 
 	@Test
-	void given_DepthIsZero_when_Build_then_ThrowException() {
+	void given_DepthIsNegative_when_Build_then_ThrowException() {
 		assertThatIllegalArgumentException()
 				.isThrownBy(() -> DeleteFunctionBuilder.create().withDepth(-1))
 				.withMessage("Depth must be a positive number");

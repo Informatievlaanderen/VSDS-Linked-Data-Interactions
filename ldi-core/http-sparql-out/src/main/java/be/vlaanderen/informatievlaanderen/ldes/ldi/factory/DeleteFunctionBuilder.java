@@ -34,11 +34,10 @@ public class DeleteFunctionBuilder {
 				.mapToObj(DeleteFunctionBuilder::createUnionClause)
 				.collect(Collectors.joining("",  """
 						    {
-						        VALUES ?o0 { <%s> }
 						        ?o0 ?p ?o .
 						        BIND (?o0 AS ?s)
 						    }
-						""", ""));
+						""", "FILTER (?o0 IN (%s))"));
 		final String query = base.formatted(whereConditions);
 		return DeleteFunction.ofQuery(query);
 	}
