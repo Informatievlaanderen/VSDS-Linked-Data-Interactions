@@ -27,7 +27,7 @@ COPY ./ldi-orchestrator/ldio-connectors/ldio-version-object-creator/target/ldio-
 COPY ./ldi-orchestrator/ldio-connectors/ldio-geojson-to-wkt/target/ldio-geojson-to-wkt-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-http-enricher/target/ldio-http-enricher-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-change-detection-filter/target/ldio-change-detection-filter-jar-with-dependencies.jar ./lib/
-COPY ./ldi-orchestrator/ldio-connectors/ldio-http-sparql-out/target/ldio-http-sparql-out-jar-with-dependencies.jar ./lib/
+COPY ./ldi-orchestrator/ldio-connectors/ldio-skolemisation-transformer/target/ldio-skolemisation-transformer-jar-with-dependencies.jar ./lib/
 
 COPY ./ldi-orchestrator/ldio-connectors/ldio-console-out/target/ldio-console-out-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-http-out/target/ldio-http-out-jar-with-dependencies.jar ./lib/
