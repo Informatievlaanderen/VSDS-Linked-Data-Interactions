@@ -10,24 +10,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DeleteFunctionTest {
 	@Test
 	void test_GetQueryForResource() {
-		final DeleteFunction query = DeleteFunction.ofQuery("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  VALUES ?s { <%s> } }");
+		final DeleteFunction query = DeleteFunction.ofQuery("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  FILTER (?s IN (%s)) }");
 
 		final Optional<String> queryForResource = query.createQueryForResources("http://example.com");
 
 		assertThat(queryForResource)
 				.get(InstanceOfAssertFactories.STRING)
-				.isEqualToIgnoringWhitespace("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  VALUES ?s { <http://example.com> } }");
+				.isEqualToIgnoringWhitespace("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  FILTER (?s IN (<http://example.com>)) }");
 	}
 
 	@Test
 	void test_GetQueryForResources() {
-		final DeleteFunction query = DeleteFunction.ofQuery("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  VALUES ?s { <%s> } }");
+		final DeleteFunction query = DeleteFunction.ofQuery("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  FILTER (?s IN (%s)) }");
 
 		final Optional<String> queryForResource = query.createQueryForResources("http://example.com", "http://example.org");
 
 		assertThat(queryForResource)
 				.get(InstanceOfAssertFactories.STRING)
-				.isEqualToIgnoringWhitespace("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  VALUES ?s { <http://example.com> <http://example.org> } }");
+				.isEqualToIgnoringWhitespace("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o  FILTER (?s IN (<http://example.com>,<http://example.org>)) }");
 
 	}
 

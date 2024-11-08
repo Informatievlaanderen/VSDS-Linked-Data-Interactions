@@ -35,10 +35,10 @@ class SparqlQueryTest {
 				DELETE { ?s ?p ?o }
 				WHERE {
 				    {
-				        VALUES ?o0 { <http://localhost:8080/people> }
 				        ?o0 ?p ?o .
 				        BIND (?o0 AS ?s)
 				    }
+				    FILTER (?o0 IN (<http://localhost:8080/people>))
 				}
 				INSERT DATA { <http://localhost:8080/people> <http://schema.org/name> "Jane Doe" . }""";
 	}
