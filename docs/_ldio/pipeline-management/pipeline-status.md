@@ -2,24 +2,25 @@
 layout: default
 parent: Pipeline Management
 title: Pipeline Status
+nav_order: 3
 ---
-# Status
+# Pipeline Status
 
 An individual ldio-pipeline can be in one of several different statuses.
 These different statuses and their behaviour are dependent on the input component of the pipeline.
 
-# Overview Of The Status Flow
+## Overview Of The Status Flow
 
-
-<div class="mermaid" style="width: 400px; height: 130px;">
-graph LR;
+```mermaid
+graph LR
+;
     INIT --> RUNNING;
     INIT --> STOPPED;
     RUNNING --> STOPPED;
     RUNNING --> HALTED;
     HALTED --> RUNNING;
     HALTED --> STOPPED;
-</div>
+```
 
 The above diagram shows the flow between the different statuses of the pipeline.
 

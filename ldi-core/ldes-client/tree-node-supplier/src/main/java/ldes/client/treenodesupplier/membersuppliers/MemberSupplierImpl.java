@@ -29,7 +29,7 @@ public class MemberSupplierImpl implements MemberSupplier {
 
 	@Override
 	public void destroyState() {
-		if (!keepState) {
+		if (!keepState && treeNodeProcessor != null) {
 			treeNodeProcessor.destroyState();
 		}
 	}

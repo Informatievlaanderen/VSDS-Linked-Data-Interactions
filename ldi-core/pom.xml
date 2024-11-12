@@ -3,7 +3,7 @@
     <parent>
         <artifactId>linked-data-interactions</artifactId>
         <groupId>be.vlaanderen.informatievlaanderen.ldes</groupId>
-        <version>2.9.0</version>
+        <version>2.10.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,6 +27,8 @@
         <module>ldi-common</module>
         <module>change-detection-filter</module>
         <module>ldi-infra-sql</module>
+        <module>skolemisation-transformer</module>
+        <module>http-sparql-out</module>
     </modules>
 
     <properties>

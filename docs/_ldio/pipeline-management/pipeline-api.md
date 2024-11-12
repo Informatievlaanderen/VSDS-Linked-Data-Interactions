@@ -2,6 +2,7 @@
 layout: default
 parent: Pipeline Management
 title: Pipeline Management API
+nav_order: 2
 ---
 
 <html>
