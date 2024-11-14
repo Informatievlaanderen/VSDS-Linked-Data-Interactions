@@ -69,14 +69,14 @@
                 <artifactId>zipkin-reporter-brave</artifactId>
                 <version>${zipkin-reporter.version}</version>
             </dependency>
-            
+
             <!-- INSTRUMENTATION -->
             <dependency>
                 <groupId>io.pyroscope</groupId>
                 <artifactId>agent</artifactId>
                 <version>${pyroscope.version}</version>
             </dependency>
-            
+
         </dependencies>
     </dependencyManagement>
 
