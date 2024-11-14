@@ -10,7 +10,7 @@ USER ldio
 WORKDIR /ldio
 
 COPY ./ldi-orchestrator/ldio-application/target/ldio-application.jar ./
-COPY ./ldi-orchestrator/ldio-application-instrumentation/target/ldio-instrumentation.jar ./lib/
+COPY ./ldi-orchestrator/ldio-instrumentation/target/ldio-instrumentation.jar ./lib/
 
 COPY ./ldi-orchestrator/ldio-connectors/ldio-http-in/target/ldio-http-in-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-http-in-poller/target/ldio-http-in-poller-jar-with-dependencies.jar ./lib/
