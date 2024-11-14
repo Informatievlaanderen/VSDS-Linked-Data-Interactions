@@ -51,7 +51,7 @@
 
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
-            <artifactId>ldio-application-instrumentation</artifactId>
+            <artifactId>ldio-instrumentation</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>

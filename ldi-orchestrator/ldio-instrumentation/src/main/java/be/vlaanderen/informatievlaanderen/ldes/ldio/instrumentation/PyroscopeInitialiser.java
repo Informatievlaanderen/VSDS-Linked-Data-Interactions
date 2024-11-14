@@ -14,9 +14,7 @@ public class PyroscopeInitialiser {
     @PostConstruct
     public void init() {
         if(usePyroscope) {
-            PyroscopeAgent.start(
-                    Config.build()
-            );
+            PyroscopeAgent.start(Config.build());
         }
     }
 }
