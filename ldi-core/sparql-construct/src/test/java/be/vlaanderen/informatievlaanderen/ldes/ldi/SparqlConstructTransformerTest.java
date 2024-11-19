@@ -24,16 +24,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SparqlConstructTransformerTest {
 
-	private final static Model INIT_MODEL = ModelFactory.createDefaultModel();
+	private static final Model INIT_MODEL = ModelFactory.createDefaultModel();
 
-	private final static String defaultConstructQuery = """
+	private static final String DEFAULT_CONSTRUCT_QUERY = """
 			CONSTRUCT {
 			  <http://transformed-quad/> <http://test/> "Transformed data"
 			}
 			WHERE { ?s ?p ?o }
 			""";
 
-	private final static String geoConstructFirstCoordinateQuery = """
+	private static final String GEO_CONSTRUCT_FIRST_COORDINATE_QUERY = """
 			prefix tree: <https://w3id.org/tree#>
 			prefix geosparql: <http://www.opengis.net/ont/geosparql#>
 
@@ -60,7 +60,7 @@ class SparqlConstructTransformerTest {
 	@Test
 	void when_executeTransform_ExpectTransformedModel() {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
-				QueryFactory.create(defaultConstructQuery), false);
+				QueryFactory.create(DEFAULT_CONSTRUCT_QUERY), false);
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
@@ -74,7 +74,7 @@ class SparqlConstructTransformerTest {
 	@Test
 	void when_executeTransform_includeOriginal_ExpectTransformedModelWithOriginal() {
 		SparqlConstructTransformer sparqlConstructTransformer = new SparqlConstructTransformer(
-				QueryFactory.create(defaultConstructQuery), true);
+				QueryFactory.create(DEFAULT_CONSTRUCT_QUERY), true);
 
 		Model model = ModelFactory.createDefaultModel().add(originalData);
 
@@ -155,7 +155,7 @@ class SparqlConstructTransformerTest {
 
 	@Test
 	void initGeoFunctionsTest() {
-		new SparqlConstructTransformer(QueryFactory.create(geoConstructFirstCoordinateQuery), false);
+		new SparqlConstructTransformer(QueryFactory.create(GEO_CONSTRUCT_FIRST_COORDINATE_QUERY), false);
 
 		FunctionRegistry registry = FunctionRegistry.get();
 

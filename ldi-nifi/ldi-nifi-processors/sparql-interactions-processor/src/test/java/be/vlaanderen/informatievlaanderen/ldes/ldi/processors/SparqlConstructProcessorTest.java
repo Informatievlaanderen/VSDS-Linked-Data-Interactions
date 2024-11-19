@@ -22,23 +22,23 @@ class SparqlConstructProcessorTest {
 		testRunner = TestRunners.newTestRunner(SparqlConstructProcessor.class);
 	}
 
-	private final static String constructQuery = """
+	private static final String CONSTRUCT_QUERY = """
 			CONSTRUCT {
 			  <http://inferred-triple/> <http://test/> "Inferred data"
 			}
 			WHERE { ?s ?p ?o }
 			""";
 
-	private final static String flowFileContents = """
+	private static final String FLOW_FILE_CONTENTS = """
 			<http://data-in-flowfile/> <http://test/> "Source data!" .
 			""";
 
 	@Test
 	void whenSuccess_andInfer_shouldContainSourceAndInferredData() {
 		testRunner.setProperty(INCLUDE_ORIGINAL, Boolean.TRUE.toString());
-		testRunner.setProperty(SPARQL_CONSTRUCT_QUERY, constructQuery);
+		testRunner.setProperty(SPARQL_CONSTRUCT_QUERY, CONSTRUCT_QUERY);
 
-		testRunner.enqueue(flowFileContents);
+		testRunner.enqueue(FLOW_FILE_CONTENTS);
 
 		testRunner.run();
 
@@ -50,9 +50,9 @@ class SparqlConstructProcessorTest {
 	@Test
 	void whenSuccess_andReplace_shouldContainOnlyInferredData() {
 		testRunner.setProperty(INCLUDE_ORIGINAL, Boolean.FALSE.toString());
-		testRunner.setProperty(SPARQL_CONSTRUCT_QUERY, constructQuery);
+		testRunner.setProperty(SPARQL_CONSTRUCT_QUERY, CONSTRUCT_QUERY);
 
-		testRunner.enqueue(flowFileContents);
+		testRunner.enqueue(FLOW_FILE_CONTENTS);
 
 		testRunner.run();
 
@@ -68,7 +68,7 @@ class SparqlConstructProcessorTest {
 		final String invalidQuery = "SELECT ?s ?p ?o { ?s ?p ?o }";
 		testRunner.setProperty(SPARQL_CONSTRUCT_QUERY, invalidQuery);
 
-		testRunner.enqueue(flowFileContents);
+		testRunner.enqueue(FLOW_FILE_CONTENTS);
 
 		testRunner.run();
 
