@@ -94,6 +94,7 @@ class LdioRequestExecutorSupplierTest {
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
 		List<Header> expectedHeaders =
 				List.of(
+						new BasicHeaderWithEquals("Accept-Encoding", "gzip"),
 						new BasicHeaderWithEquals("header-key", "header-value"),
 						new BasicHeaderWithEquals("other-header-key", "other-header-value"),
 						new BasicHeaderWithEquals("key-header", "key")
@@ -143,7 +144,7 @@ class LdioRequestExecutorSupplierTest {
 				CLIENT_SECRET, "secret",
 				TOKEN_ENDPOINT, "token"));
 		RequestExecutor requestExecutor = mock(RequestExecutor.class);
-		when(requestExecutorFactory.createClientCredentialsExecutor(List.of(), "client", "secret", "token", null))
+		when(requestExecutorFactory.createClientCredentialsExecutor(List.of(new BasicHeaderWithEquals("Accept-Encoding", "gzip")), "client", "secret", "token", null))
 				.thenReturn(requestExecutor);
 
 		RequestExecutor result = requestExecutorSupplier.getRequestExecutor(properties);
