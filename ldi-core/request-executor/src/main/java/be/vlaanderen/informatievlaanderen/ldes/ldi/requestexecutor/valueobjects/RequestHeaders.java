@@ -27,6 +27,10 @@ public class RequestHeaders implements Iterable<RequestHeader> {
 		return new RequestHeaders(new ArrayList<>());
 	}
 
+	public static RequestHeaders of(RequestHeader... requestHeaders) {
+		return new RequestHeaders(Arrays.asList(requestHeaders));
+	}
+
 	@Override
 	public Iterator<RequestHeader> iterator() {
 		return headers.iterator();

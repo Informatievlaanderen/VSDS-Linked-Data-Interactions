@@ -7,8 +7,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.valueobjects.
 import org.apache.http.HttpHeaders;
 import org.apache.jena.riot.Lang;
 
-import java.util.List;
-
 /**
  * Contains the endpoint to connect to the server. This can only be a fragment
  */
@@ -25,8 +23,10 @@ public class TreeNodeRequest {
 	}
 
 	public Request createRequest() {
-		RequestHeaders requestHeaders = new RequestHeaders(
-				List.of(new RequestHeader(HttpHeaders.ACCEPT, lang.getHeaderString())));
+		RequestHeaders requestHeaders = RequestHeaders.of(
+				new RequestHeader(HttpHeaders.ACCEPT, lang.getHeaderString()),
+				new RequestHeader(HttpHeaders.ACCEPT_ENCODING, "gzip")
+		);
 		if (etag != null) {
 			requestHeaders = requestHeaders.withRequestHeader(new RequestHeader(HttpHeaders.IF_NONE_MATCH, etag));
 		}
