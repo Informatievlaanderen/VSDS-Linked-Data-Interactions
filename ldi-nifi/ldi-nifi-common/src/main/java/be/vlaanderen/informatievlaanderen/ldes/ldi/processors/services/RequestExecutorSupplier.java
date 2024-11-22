@@ -29,18 +29,16 @@ public class RequestExecutorSupplier {
 	}
 
 	private RequestExecutor getBaseRequestExecutor(final ProcessContext context) {
-		final BasicHeader acceptEncodingHeader = new BasicHeader("Accept-Encoding", "gzip");
 		return switch (getAuthorizationStrategy(context)) {
-			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor(List.of(acceptEncodingHeader));
+			case NO_AUTH -> requestExecutorFactory.createNoAuthExecutor();
 			case API_KEY -> {
 				List<Header> headers = List.of(
-						acceptEncodingHeader,
 						new BasicHeader(getApiKeyHeader(context), getApiKey(context))
 				);
 				yield requestExecutorFactory.createNoAuthExecutor(headers);
 			}
 			case OAUTH2_CLIENT_CREDENTIALS ->
-					requestExecutorFactory.createClientCredentialsExecutor(List.of(acceptEncodingHeader), getOauthClientId(context),
+					requestExecutorFactory.createClientCredentialsExecutor(getOauthClientId(context),
 							getOauthClientSecret(context), getOauthTokenEndpoint(context), getOauthScope(context));
 		};
 	}

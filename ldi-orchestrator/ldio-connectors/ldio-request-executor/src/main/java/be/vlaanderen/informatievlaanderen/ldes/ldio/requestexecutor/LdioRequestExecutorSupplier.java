@@ -106,7 +106,7 @@ public class LdioRequestExecutorSupplier {
 
     private List<Header> getHttpHeaders(ComponentProperties componentProperties) {
         final ComponentProperties headers = componentProperties.extractNestedProperties(HTTP_HEADERS);
-        final List<Header> result = new ArrayList<>(List.of(new BasicHeader(HTTP_ACCEPT_ENCODING_HEADER_KEY, HTTP_ACCEPT_ENCODING_HEADER_VALUE)));
+        final List<Header> result = new ArrayList<>();
         for (int i = 0; isNotEmpty(headers.extractNestedProperties(String.valueOf(i)).getConfig()); i++) {
             ComponentProperties headerProperties = headers.extractNestedProperties(String.valueOf(i));
             BasicHeader basicHeader = new BasicHeader(
