@@ -10,8 +10,6 @@ public class RequestExecutorProperties {
     public static final String HTTP_HEADERS_VALUE = "value";
     public static final String HTTP_METHOD = "http.method";
     public static final String HTTP_CONTENT_TYPE = "http.content-type";
-    public static final String HTTP_ACCEPT_ENCODING_HEADER_KEY = "Accept-Encoding";
-    public static final String HTTP_ACCEPT_ENCODING_HEADER_VALUE = "gzip";
 
     public static final String RETRIES_ENABLED = "retries.enabled";
     public static final String MAX_RETRIES = "retries.max";

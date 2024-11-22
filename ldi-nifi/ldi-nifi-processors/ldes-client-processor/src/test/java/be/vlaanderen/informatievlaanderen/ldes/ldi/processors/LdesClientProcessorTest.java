@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -51,7 +50,6 @@ class LdesClientProcessorTest {
 
 	@AfterAll
 	static void afterAll() {
-		WireMock.verify(RequestPatternBuilder.allRequests().withHeader("Accept-Encoding", WireMock.matching("gzip")));
 		postgreSQLContainer.stop();
 	}
 
