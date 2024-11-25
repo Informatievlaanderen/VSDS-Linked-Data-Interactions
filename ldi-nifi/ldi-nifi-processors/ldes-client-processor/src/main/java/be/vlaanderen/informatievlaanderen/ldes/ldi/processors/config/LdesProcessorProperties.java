@@ -101,10 +101,11 @@ public final class LdesProcessorProperties {
 	public static final PropertyDescriptor USE_LATEST_STATE_FILTER = new PropertyDescriptor.Builder()
 			.name("USE_LATEST_STATE_FILTER")
 			.displayName("Use latest state filter")
-			.description("Use filter to only process the latest state and so all older versions are ignored, only when 'Use version materialisation' is set to true")
+			.description("Use filter to only process the latest state and so all older versions are ignored")
 			.required(false)
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(TRUE.toString())
+			.dependsOn(USE_VERSION_MATERIALISATION, TRUE.toString())
 			.build();
 
 	public static List<String> getDataSourceUrl(final ProcessContext context) {
