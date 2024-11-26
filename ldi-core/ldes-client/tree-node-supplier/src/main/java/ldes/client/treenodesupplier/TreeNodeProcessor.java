@@ -1,5 +1,6 @@
 package ldes.client.treenodesupplier;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
@@ -69,16 +70,22 @@ public class TreeNodeProcessor {
 			treeNodeRecord.markImmutableWithoutUnprocessedMembers();
 			treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		} else {
-			waitUntilNextVisit(treeNodeRecord);
-			TreeNodeResponse treeNodeResponse = treeNodeFetcher
-					.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
-			treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
-			saveNewRelations(treeNodeResponse);
-			List<TreeMember> newMembers = getNewMembersFromResponse(treeNodeResponse, treeNodeRecord);
-			saveNewMembers(newMembers);
-			treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
-			treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
-			treeNodeRecordRepository.resetContext();
+			try {
+				waitUntilNextVisit(treeNodeRecord);
+				TreeNodeResponse treeNodeResponse = treeNodeFetcher
+						.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
+				treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
+				saveNewRelations(treeNodeResponse);
+				List<TreeMember> newMembers = getNewMembersFromResponse(treeNodeResponse, treeNodeRecord);
+				saveNewMembers(newMembers);
+				treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
+				treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+				treeNodeRecordRepository.resetContext();
+			} catch (HttpRequestException e) {
+				treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+				throw e;
+			}
+
 		}
 	}
 
