@@ -11,6 +11,6 @@ public class PipelineInitialisationException extends PipelineException {
 
 	@Override
 	public String getMessage() {
-		return "Error while initialising pipeline '%s': %s".formatted(pipelineName, exception.getMessage());
+		return "Error while initialising pipeline \"%s\": %s".formatted(pipelineName, exception.getMessage());
 	}
 }

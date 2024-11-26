@@ -13,7 +13,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class PipelineExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = {PipelineAlreadyExistsException.class, InvalidPipelineNameException.class,
-			InvalidComponentException.class, LdiAdapterMissingException.class, ConfigPropertyMissingException.class})
+			InvalidComponentException.class, LdiAdapterMissingException.class, ConfigPropertyMissingException.class,
+			PipelineInitialisationException.class})
 	public ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
 		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
