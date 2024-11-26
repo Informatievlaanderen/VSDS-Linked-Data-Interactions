@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineCr
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineInitialisationException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineTO;
@@ -39,10 +40,14 @@ public class PipelineServiceImpl implements PipelineService {
 		if (pipelineRepository.exists(pipeline.getName())) {
 			throw new PipelineAlreadyExistsException(pipeline.getName());
 		} else {
-			pipelineCreatorService.initialisePipeline(pipeline);
-			pipelineRepository.activateNewPipeline(pipeline);
-			log.atInfo().log("CREATION of pipeline '{}' successfully finished", pipeline.getName().replaceAll("[\n\r]", "_"));
-			return pipeline;
+			try {
+				pipelineCreatorService.initialisePipeline(pipeline);
+				pipelineRepository.activateNewPipeline(pipeline);
+				log.atInfo().log("CREATION of pipeline '{}' successfully finished", pipeline.getName().replaceAll("[\n\r]", "_"));
+				return pipeline;
+			} catch (RuntimeException e) {
+				throw new PipelineInitialisationException(pipeline.getName(), e);
+			}
 		}
 	}
 
@@ -51,9 +56,14 @@ public class PipelineServiceImpl implements PipelineService {
 		if (pipelineRepository.exists(pipeline.getName())) {
 			throw new PipelineAlreadyExistsException(pipeline.getName());
 		} else {
-			pipelineCreatorService.initialisePipeline(pipeline);
-			pipelineRepository.activateExistingPipeline(pipeline, persistedFile);
-			return pipeline;
+			try {
+				pipelineCreatorService.initialisePipeline(pipeline);
+				pipelineRepository.activateExistingPipeline(pipeline, persistedFile);
+				log.atInfo().log("CREATION of pipeline '{}' successfully finished", pipeline.getName().replaceAll("[\n\r]", "_"));
+				return pipeline;
+			} catch (RuntimeException e) {
+				throw new PipelineInitialisationException(pipeline.getName(), e);
+			}
 		}
 	}
 
