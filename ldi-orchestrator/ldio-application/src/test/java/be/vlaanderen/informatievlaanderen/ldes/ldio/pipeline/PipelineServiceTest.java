@@ -28,9 +28,6 @@ class PipelineServiceTest {
 		pipelineService = new PipelineServiceImpl(pipelineCreatorService, pipelineStatusService, pipelineRepository);
 	}
 
-	// TODO: Add tests for the other methods
-
-
 	@Test
 	void when_StoppingPipeline_Then_MethodsAreCalled() {
 		when(pipelineRepository.exists(pipelineName)).thenReturn(true);
