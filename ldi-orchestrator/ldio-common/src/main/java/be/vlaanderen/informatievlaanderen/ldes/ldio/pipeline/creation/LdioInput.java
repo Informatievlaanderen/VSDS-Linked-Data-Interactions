@@ -66,11 +66,11 @@ public abstract class LdioInput implements LdiComponent {
 
 	public abstract void shutdown();
 
-	@SuppressWarnings("java:S6916")
 	public PipelineStatus updateStatus(PipelineStatusTrigger trigger) {
 		return updateStatus(trigger, MANUAL);
 	}
 
+	@SuppressWarnings("java:S6916")
 	public PipelineStatus updateStatus(PipelineStatusTrigger trigger, StatusChangeSource source) {
 		switch (trigger) {
 			case START -> this.pipelineStatus = RUNNING;

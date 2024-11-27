@@ -132,7 +132,7 @@ public class LdioLdesClient extends LdioInput {
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-		} while (!canGracefullyShutdownChecker.get());
+		} while (Boolean.FALSE.equals(canGracefullyShutdownChecker.get()));
 		updateStatus(PipelineStatusTrigger.HALT);
 		applicationEventPublisher.publishEvent(new PipelineShutdownEvent(pipelineName));
 	}
