@@ -18,6 +18,16 @@ public class RequestExecutorProperties {
 	private RequestExecutorProperties() {
 	}
 
+	public static final PropertyDescriptor AUTHORIZATION_STRATEGY = new PropertyDescriptor.Builder()
+			.name("AUTHORIZATION_STRATEGY")
+			.displayName("Authorization strategy")
+			.description("Authorization strategy for the internal http client.")
+			.required(true)
+			.defaultValue(AuthStrategy.NO_AUTH.name())
+			.allowableValues(Arrays.stream(AuthStrategy.values()).map(Enum::name).collect(Collectors.toSet()))
+			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.build();
+
 	public static final PropertyDescriptor API_KEY_HEADER_PROPERTY = new PropertyDescriptor.Builder()
 			.name("API_KEY_HEADER_PROPERTY")
 			.displayName("API-KEY header property")
@@ -25,6 +35,7 @@ public class RequestExecutorProperties {
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
 			.defaultValue("X-API-KEY")
+			.dependsOn(AUTHORIZATION_STRATEGY, AuthStrategy.API_KEY.name())
 			.build();
 
 	public static final PropertyDescriptor API_KEY_PROPERTY = new PropertyDescriptor.Builder()
@@ -33,6 +44,7 @@ public class RequestExecutorProperties {
 			.description("API key that should be used to access the API.")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.dependsOn(AUTHORIZATION_STRATEGY, AuthStrategy.API_KEY.name())
 			.build();
 
 	public static final PropertyDescriptor OAUTH_CLIENT_ID = new PropertyDescriptor.Builder()
@@ -41,6 +53,7 @@ public class RequestExecutorProperties {
 			.description("Client id used for Oauth2 client credentials flow")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.dependsOn(AUTHORIZATION_STRATEGY, AuthStrategy.OAUTH2_CLIENT_CREDENTIALS.name())
 			.build();
 
 	public static final PropertyDescriptor OAUTH_CLIENT_SECRET = new PropertyDescriptor.Builder()
@@ -50,6 +63,7 @@ public class RequestExecutorProperties {
 			.sensitive(true)
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.dependsOn(AUTHORIZATION_STRATEGY, AuthStrategy.OAUTH2_CLIENT_CREDENTIALS.name())
 			.build();
 
 	public static final PropertyDescriptor OAUTH_TOKEN_ENDPOINT = new PropertyDescriptor.Builder()
@@ -58,6 +72,7 @@ public class RequestExecutorProperties {
 			.description("Token endpoint used for Oauth2 client credentials flow.")
 			.required(false)
 			.addValidator(StandardValidators.URL_VALIDATOR)
+			.dependsOn(AUTHORIZATION_STRATEGY, AuthStrategy.OAUTH2_CLIENT_CREDENTIALS.name())
 			.build();
 
 	public static final PropertyDescriptor OAUTH_SCOPE = new PropertyDescriptor.Builder()
@@ -66,16 +81,7 @@ public class RequestExecutorProperties {
 			.description("Scope used for Oauth2 client credentials flow.")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
-			.build();
-
-	public static final PropertyDescriptor AUTHORIZATION_STRATEGY = new PropertyDescriptor.Builder()
-			.name("AUTHORIZATION_STRATEGY")
-			.displayName("Authorization strategy")
-			.description("Authorization strategy for the internal http client.")
-			.required(true)
-			.defaultValue(AuthStrategy.NO_AUTH.name())
-			.allowableValues(Arrays.stream(AuthStrategy.values()).map(Enum::name).collect(Collectors.toSet()))
-			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.dependsOn(AUTHORIZATION_STRATEGY, AuthStrategy.OAUTH2_CLIENT_CREDENTIALS.name())
 			.build();
 
 	public static final PropertyDescriptor RETRIES_ENABLED = new PropertyDescriptor.Builder()
@@ -95,6 +101,7 @@ public class RequestExecutorProperties {
 			.required(false)
 			.defaultValue(String.valueOf(5))
 			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
+			.dependsOn(RETRIES_ENABLED, TRUE.toString())
 			.build();
 
 	public static final PropertyDescriptor STATUSES_TO_RETRY = new PropertyDescriptor.Builder()
@@ -103,6 +110,7 @@ public class RequestExecutorProperties {
 			.description("Custom comma seperated list of http status codes that can trigger a retry in the http client.")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.dependsOn(RETRIES_ENABLED, TRUE.toString())
 			.build();
 
 	public static String getApiKeyHeader(final ProcessContext context) {
