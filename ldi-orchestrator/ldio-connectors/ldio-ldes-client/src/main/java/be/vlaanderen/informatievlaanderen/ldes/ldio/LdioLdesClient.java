@@ -60,7 +60,7 @@ public class LdioLdesClient extends LdioInput {
 			} catch (RuntimeException e) {
 				log.atWarn().log("HALTING pipeline because of an unhandled error");
 				log.atError().log(e.getMessage());
-				updateStatus(PipelineStatusTrigger.HALT);
+				shutdownPipeline();
 				throw e;
 			}
 		});
@@ -117,6 +117,14 @@ public class LdioLdesClient extends LdioInput {
 	}
 
 	private void shutdownPipeline() {
+		try {
+			Thread.ofVirtual().start(this::shutdownPipelineThread).join();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void shutdownPipelineThread() {
 		threadRunning = false;
 		do {
 			try {
