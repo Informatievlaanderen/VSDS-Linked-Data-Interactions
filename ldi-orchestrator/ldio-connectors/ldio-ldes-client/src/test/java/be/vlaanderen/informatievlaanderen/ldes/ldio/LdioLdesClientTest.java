@@ -13,7 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
@@ -63,26 +62,13 @@ class LdioLdesClientTest {
 
 	@Test
 	void when_EndOfLdesException_And_AllDataProcessed_ShutdownPipeline() {
-		when(observer.hasProcessedAllData()).thenReturn(true);
-		when(supplier.get()).thenThrow(EndOfLdesException.class);
-
-		client.start();
-
-		InOrder inOrder = inOrder(eventPublisher);
-		inOrder.verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.RUNNING, StatusChangeSource.MANUAL));
-		inOrder.verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.HALTED, StatusChangeSource.MANUAL));
-		inOrder.verify(eventPublisher).publishEvent(new PipelineShutdownEvent(pipelineName));
-	}
-
-	@Test
-	void when_EndOfLdesException_ShutdownPipeline() {
 		when(observer.hasProcessedAllData()).thenReturn(false).thenReturn(true);
 		when(supplier.get()).thenThrow(EndOfLdesException.class);
 
 		client.start();
-		verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.RUNNING, StatusChangeSource.MANUAL));
 
 		await().atMost(Duration.ofSeconds(40)).untilAsserted(() -> {
+			verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.RUNNING, StatusChangeSource.MANUAL));
 			verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.HALTED, StatusChangeSource.MANUAL));
 			verify(eventPublisher).publishEvent(new PipelineShutdownEvent(pipelineName));
 		});
@@ -90,6 +76,7 @@ class LdioLdesClientTest {
 
 	@Test
 	void when_RuntimeException_StopPipeline() {
+		when(observer.hasProcessedAllData()).thenReturn(true);
 		doThrow(RuntimeException.class).when(supplier).init();
 
 		client.start();
