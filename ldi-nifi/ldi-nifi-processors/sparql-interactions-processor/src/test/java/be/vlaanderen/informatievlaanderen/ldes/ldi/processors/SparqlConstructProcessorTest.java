@@ -1,15 +1,25 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import org.apache.jena.riot.Lang;
 import org.apache.nifi.util.MockFlowFile;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.INCLUDE_ORIGINAL;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.SPARQL_CONSTRUCT_QUERY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,7 +52,7 @@ class SparqlConstructProcessorTest {
 
 		testRunner.run();
 
-		MockFlowFile f = testRunner.getFlowFilesForRelationship(SUCCESS).get(0);
+		MockFlowFile f = testRunner.getFlowFilesForRelationship(SUCCESS).getFirst();
 		assertTrue(f.getContent().contains("Source data!"));
 		assertTrue(f.getContent().contains("Inferred data"));
 	}
@@ -56,7 +66,7 @@ class SparqlConstructProcessorTest {
 
 		testRunner.run();
 
-		MockFlowFile f = testRunner.getFlowFilesForRelationship(SUCCESS).get(0);
+		MockFlowFile f = testRunner.getFlowFilesForRelationship(SUCCESS).getFirst();
 
 		// In replace mode, source data shouldn't be present.
 		assertFalse(f.getContent().contains("Source data!"));
@@ -75,4 +85,17 @@ class SparqlConstructProcessorTest {
 		testRunner.assertAllFlowFilesTransferred(FAILURE);
 	}
 
+	@Test
+	void when_SplitIntoMultipleFlowFiles_then_NoExceptionIsThrown() throws URISyntaxException, IOException {
+		final URL query = Objects.requireNonNull(getClass().getClassLoader().getResource("construct_query.rq"));
+		final String splitQuery = Files.readString(Path.of(query.toURI()));
+		testRunner.setProperty(SPARQL_CONSTRUCT_QUERY, splitQuery);
+		testRunner.setProperty(DATA_SOURCE_FORMAT, Lang.TTL.getHeaderString());
+
+		testRunner.enqueue(getClass().getClassLoader().getResourceAsStream("5-members.ttl"));
+
+		assertThatNoException().isThrownBy(testRunner::run);
+
+		testRunner.assertAllFlowFilesTransferred(SUCCESS, 5);
+	}
 }

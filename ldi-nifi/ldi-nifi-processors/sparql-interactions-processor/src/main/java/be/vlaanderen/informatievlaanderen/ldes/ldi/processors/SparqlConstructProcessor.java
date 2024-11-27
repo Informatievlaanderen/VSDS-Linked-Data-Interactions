@@ -55,10 +55,12 @@ public class SparqlConstructProcessor extends AbstractProcessor {
 				final Model inputModel = receiveDataAsModel(session, flowFile, getDataSourceFormat(context));
 
 				transformer.transform(inputModel).forEach(resultModel ->
-						sendRDFToRelation(session, flowFile, resultModel, SUCCESS, getDataSourceFormat(context)));
+						sendRDFToRelation(session, resultModel, SUCCESS, getDataSourceFormat(context)));
+
+				session.remove(flowFile);
 			} catch (Exception e) {
 				getLogger().error("Error executing SPARQL CONSTRUCT query: {}", e.getMessage());
-				sendRDFToRelation(session, flowFile, FAILURE);
+				session.transfer(flowFile, FAILURE);
 			}
 		}
 	}
