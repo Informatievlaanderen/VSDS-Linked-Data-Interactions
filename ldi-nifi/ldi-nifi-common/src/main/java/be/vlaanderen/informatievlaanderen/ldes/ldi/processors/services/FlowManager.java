@@ -63,30 +63,23 @@ public class FlowManager {
 		sendRDFToRelation(session, flowFile, data, relationship, lang.getContentType().toHeaderString());
 	}
 
-	public static void sendRDFToRelation(ProcessSession session, FlowFile flowFile, Relationship relationship) {
-		sendRDFToRelation(session, flowFile, null, relationship, (String) null);
-	}
-
 	public static void sendRDFToRelation(ProcessSession session, FlowFile flowFile, String data,
 	                                     Relationship relationship, String contentType) {
-
 		if (data != null) {
 			session.write(flowFile, out -> out.write(data.getBytes()));
 			session.putAttribute(flowFile, CoreAttributes.MIME_TYPE.key(), contentType);
+			transferFlowFile(session, flowFile, relationship, contentType);
 		}
-
-		transferFlowFile(session, flowFile, relationship, contentType);
 	}
 
 	public static void sendRDFToRelation(ProcessSession session, FlowFile flowFile, Model model,
 	                                     Relationship relationship, Lang dataDestinationFormat) {
-		final String contentType = dataDestinationFormat.getContentType().toHeaderString();
 		if (model != null) {
+			final String contentType = dataDestinationFormat.getContentType().toHeaderString();
 			session.write(flowFile, out -> RDFDataMgr.write(out, model, dataDestinationFormat));
 			session.putAttribute(flowFile, CoreAttributes.MIME_TYPE.key(), contentType);
+			transferFlowFile(session, flowFile, relationship, contentType);
 		}
-
-		transferFlowFile(session, flowFile, relationship, contentType);
 	}
 
 	private static void transferFlowFile(ProcessSession session, FlowFile flowFile, Relationship relationship, String contentType) {

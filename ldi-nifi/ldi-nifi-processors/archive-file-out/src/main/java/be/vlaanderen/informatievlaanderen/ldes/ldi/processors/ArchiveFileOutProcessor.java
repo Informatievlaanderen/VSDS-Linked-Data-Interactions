@@ -64,7 +64,7 @@ public class ArchiveFileOutProcessor extends AbstractProcessor {
 			archiveFile(context, session, flowFile);
 		} catch (Exception e) {
 			getLogger().error("Failed to write model to file in archive directory: {}", e.getMessage());
-			sendRDFToRelation(session, flowFile, FAILURE);
+			session.transfer(flowFile, FAILURE);
 		}
 	}
 

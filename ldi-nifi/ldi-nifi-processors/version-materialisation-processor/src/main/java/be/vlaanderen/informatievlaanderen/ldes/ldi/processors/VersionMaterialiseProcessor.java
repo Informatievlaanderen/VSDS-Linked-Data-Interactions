@@ -58,7 +58,7 @@ public class VersionMaterialiseProcessor extends AbstractProcessor {
 
 			} catch (Exception e) {
 				getLogger().error("Error executing version materialisation: {}", e.getMessage());
-				sendRDFToRelation(session, flowFile, FAILURE);
+				session.transfer(flowFile, FAILURE);
 			}
 		}
 	}
