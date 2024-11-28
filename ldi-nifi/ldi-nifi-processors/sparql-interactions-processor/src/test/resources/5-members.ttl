@@ -1,0 +1,114 @@
+<https://stad.gent/nl/mobiliteit-openbare-werken/parkeren/park-and-ride-pr/pr-loopexpo>
+        a       <http://schema.mobivoc.org/#ParkingLot>;
+        <https://temp.org/ns/advanced-compose#availablespaces>
+                85;
+        <https://temp.org/ns/advanced-compose#freeparking>
+                1;
+        <https://temp.org/ns/advanced-compose#lastupdate>
+                "2024-07-11T10:07:49+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+        <https://temp.org/ns/advanced-compose#latitude>
+                "51.024483197"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#longitude>
+                "3.69519252261"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#name>
+                "P+R The Loop";
+        <https://temp.org/ns/advanced-compose#numberofspaces>
+                168;
+        <https://temp.org/ns/advanced-compose#occupation>
+                49;
+        <https://temp.org/ns/advanced-compose#openingtimesdescription>
+                "24/7";
+        <https://temp.org/ns/advanced-compose#operatorinformation>
+                "Mobiliteitsbedrijf Gent" .
+
+<https://stad.gent/nl/mobiliteit-openbare-werken/parkeren/park-and-ride-pr/pr-gentbrugge-arsenaal>
+        a       <http://schema.mobivoc.org/#ParkingLot>;
+        <https://temp.org/ns/advanced-compose#availablespaces>
+                0;
+        <https://temp.org/ns/advanced-compose#freeparking>
+                1;
+        <https://temp.org/ns/advanced-compose#lastupdate>
+                "2024-07-11T10:07:49+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+        <https://temp.org/ns/advanced-compose#latitude>
+                "51.0325480691"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#longitude>
+                "3.7583663653"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#name>
+                "P+R Gentbrugge Arsenaal";
+        <https://temp.org/ns/advanced-compose#numberofspaces>
+                280;
+        <https://temp.org/ns/advanced-compose#occupation>
+                100;
+        <https://temp.org/ns/advanced-compose#openingtimesdescription>
+                "24/7";
+        <https://temp.org/ns/advanced-compose#operatorinformation>
+                "Mobiliteitsbedrijf Gent" .
+
+<https://stad.gent/nl/mobiliteit-openbare-werken/parkeren/park-and-ride-pr/pr-wondelgem-industrieweg>
+        a       <http://schema.mobivoc.org/#ParkingLot>;
+        <https://temp.org/ns/advanced-compose#availablespaces>
+                34;
+        <https://temp.org/ns/advanced-compose#freeparking>
+                1;
+        <https://temp.org/ns/advanced-compose#lastupdate>
+                "2024-07-11T10:07:04+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+        <https://temp.org/ns/advanced-compose#latitude>
+                "51.0985019636"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#longitude>
+                "3.71138627257"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#name>
+                "P+R Wondelgem";
+        <https://temp.org/ns/advanced-compose#numberofspaces>
+                62;
+        <https://temp.org/ns/advanced-compose#occupation>
+                45;
+        <https://temp.org/ns/advanced-compose#openingtimesdescription>
+                "24/7";
+        <https://temp.org/ns/advanced-compose#operatorinformation>
+                "Mobiliteitsbedrijf Gent" .
+
+<https://stad.gent/nl/mobiliteit-openbare-werken/parkeren/park-and-ride-pr/pr-oostakker>
+        a       <http://schema.mobivoc.org/#ParkingLot>;
+        <https://temp.org/ns/advanced-compose#availablespaces>
+                191;
+        <https://temp.org/ns/advanced-compose#freeparking>
+                1;
+        <https://temp.org/ns/advanced-compose#lastupdate>
+                "2024-07-11T10:07:49+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+        <https://temp.org/ns/advanced-compose#latitude>
+                "51.0739904088"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#longitude>
+                "3.77726718837"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#name>
+                "P+R Oostakker";
+        <https://temp.org/ns/advanced-compose#numberofspaces>
+                201;
+        <https://temp.org/ns/advanced-compose#occupation>
+                4;
+        <https://temp.org/ns/advanced-compose#openingtimesdescription>
+                "24/7";
+        <https://temp.org/ns/advanced-compose#operatorinformation>
+                "Mobiliteitsbedrijf Gent" .
+
+<https://stad.gent/nl/mobiliteit-openbare-werken/parkeren/park-and-ride-pr/pr-bourgoyen>
+        a       <http://schema.mobivoc.org/#ParkingLot>;
+        <https://temp.org/ns/advanced-compose#availablespaces>
+                0;
+        <https://temp.org/ns/advanced-compose#freeparking>
+                1;
+        <https://temp.org/ns/advanced-compose#lastupdate>
+                "2024-07-11T10:07:49+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+        <https://temp.org/ns/advanced-compose#latitude>
+                "51.0674048936"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#longitude>
+                "3.68175794804"^^<http://www.w3.org/2001/XMLSchema#double>;
+        <https://temp.org/ns/advanced-compose#name>
+                "P+R Bourgoyen";
+        <https://temp.org/ns/advanced-compose#numberofspaces>
+                255;
+        <https://temp.org/ns/advanced-compose#occupation>
+                100;
+        <https://temp.org/ns/advanced-compose#openingtimesdescription>
+                "24/7";
+        <https://temp.org/ns/advanced-compose#operatorinformation>
+                "Mobiliteitsbedrijf Gent" .

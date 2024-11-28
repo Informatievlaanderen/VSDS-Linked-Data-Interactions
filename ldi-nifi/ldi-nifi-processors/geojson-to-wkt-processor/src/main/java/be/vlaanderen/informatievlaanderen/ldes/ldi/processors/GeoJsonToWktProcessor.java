@@ -58,7 +58,7 @@ public class GeoJsonToWktProcessor extends AbstractProcessor {
 				sendRDFToRelation(session, flowFile, result, SUCCESS, dataSourceFormat);
 			} catch (Exception e) {
 				getLogger().error("Error transforming geojson to wkt: {}", e.getMessage());
-				sendRDFToRelation(session, flowFile, FAILURE);
+				session.transfer(flowFile, FAILURE);
 			}
 		}
 	}
