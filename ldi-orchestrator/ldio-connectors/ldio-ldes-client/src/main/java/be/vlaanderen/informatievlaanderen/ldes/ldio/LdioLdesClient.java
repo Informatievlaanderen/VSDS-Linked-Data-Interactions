@@ -81,6 +81,7 @@ public class LdioLdesClient extends LdioInput {
 			log.error("LDES URL unavailable. Client paused: {}", e.getMessage());
 			run();
 		} catch (Exception e) {
+			updateStatus(PipelineStatusTrigger.HALT, StatusChangeSource.AUTO);
 			clientStatusConsumer.accept(ClientStatus.ERROR);
 			log.error("LdesClientRunner FAILURE: {}", e.getMessage());
 		}
