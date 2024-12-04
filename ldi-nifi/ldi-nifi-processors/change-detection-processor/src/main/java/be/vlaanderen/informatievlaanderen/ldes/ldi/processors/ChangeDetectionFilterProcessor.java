@@ -27,7 +27,6 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Chan
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ChangeDetectionFilterRelationships.IGNORED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ChangeDetectionFilterRelationships.NEW_STATE_RECEIVED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.sendRDFToRelation;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
 @Tags({"change-detection-filter", "vsds"})
@@ -78,9 +77,9 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 		final Model filteredModel = changeDetectionFilter.transform(model);
 
 		if (filteredModel.isEmpty()) {
-			sendRDFToRelation(session, flowFile, IGNORED);
+			session.transfer(flowFile, IGNORED);
 		} else {
-			sendRDFToRelation(session, flowFile, NEW_STATE_RECEIVED);
+			session.transfer(flowFile, NEW_STATE_RECEIVED);
 		}
 	}
 

@@ -61,7 +61,7 @@ class PipelineControllerTest {
 								.content(readPipeline("management/yml/missing-adapter.yml"))
 								.accept("application/yaml"))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string("Pipeline \"invalid-pipeline\": Input: \"dummyIn\": Missing LDI Adapter"));
+				.andExpect(content().string("Error while initialising pipeline \"invalid-pipeline\": Pipeline \"invalid-pipeline\": Input: \"dummyIn\": Missing LDI Adapter"));
 	}
 
 	private String readAllPipelinesInJson(String... filenames) {

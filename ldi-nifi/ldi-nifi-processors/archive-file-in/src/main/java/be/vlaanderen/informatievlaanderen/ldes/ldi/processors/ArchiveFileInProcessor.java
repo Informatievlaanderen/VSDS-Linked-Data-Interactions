@@ -80,7 +80,7 @@ public class ArchiveFileInProcessor extends AbstractProcessor {
 			});
 		} catch (Exception e) {
 			getLogger().error("Failed to write model to file in archive directory: {}", e.getMessage());
-			sendRDFToRelation(session, session.create(), FAILURE);
+			session.transfer(session.create(), FAILURE);
 		}
 	}
 

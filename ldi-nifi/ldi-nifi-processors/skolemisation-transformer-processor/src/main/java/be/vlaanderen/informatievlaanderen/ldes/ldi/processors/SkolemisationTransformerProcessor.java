@@ -55,7 +55,7 @@ public class SkolemisationTransformerProcessor extends AbstractProcessor {
 				sendRDFToRelation(session, flowFile, result, SUCCESS, mimeType);
 			} catch (Exception e) {
 				getLogger().error("Error executing skolemisation transformation: {}", e.getMessage());
-				sendRDFToRelation(session, flowFile, FAILURE);
+				session.transfer(flowFile, FAILURE);
 			}
 		}
 	}

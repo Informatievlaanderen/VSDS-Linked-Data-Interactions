@@ -1,0 +1,36 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct:     <http://purl.org/dc/terms/>
+PREFIX schema:  <http://schema.org/>
+PREFIX mv:      <http://schema.mobivoc.org/#>
+PREFIX temp:    <https://temp.org/ns/advanced-compose#>
+PREFIX wgs84:   <http://www.w3.org/2003/01/geo/wgs84_pos#>
+CONSTRUCT {
+  GRAPH ?id {
+    ?id
+      a mv:ParkingLot ;
+      dct:modified ?lastupdate ;
+      rdfs:label ?name ;
+      schema:openingHoursSpecification [a schema:OpeningHoursSpecification; rdfs:label ?openingtimesdescription] ;
+      mv:operatedBy [a schema:Organization, dct:Agent; rdfs:label ?operatorinformation] ;
+      mv:price [a schema:PriceSpecification; mv:freeOfCharge ?freeparking ] ;
+      mv:url ?id ;
+      mv:capacity [a mv:Capacity; mv:totalCapacity ?numberofspaces] ;
+      mv:capacity [a mv:RealTimeCapacity; mv:currentValue ?availablespaces] ;
+      mv:rateOfOccupancy ?occupation ;
+      wgs84:lat ?latitude ;
+      wgs84:long ?longitude .
+    }
+} WHERE {
+  ?id rdf:type mv:ParkingLot .
+  ?id temp:lastupdate ?lastupdate .
+  optional { ?id temp:name ?name . }
+  optional { ?id temp:openingtimesdescription ?openingtimesdescription . }
+  optional { ?id temp:operatorinformation ?operatorinformation . }
+  optional { ?id temp:freeparking ?freeparking . }
+  optional { ?id temp:numberofspaces ?numberofspaces . }
+  optional { ?id temp:availablespaces ?availablespaces . }
+  optional { ?id temp:occupation ?occupation . }
+  optional { ?id temp:latitude ?latitude . }
+  optional { ?id temp:longitude ?longitude . }
+}

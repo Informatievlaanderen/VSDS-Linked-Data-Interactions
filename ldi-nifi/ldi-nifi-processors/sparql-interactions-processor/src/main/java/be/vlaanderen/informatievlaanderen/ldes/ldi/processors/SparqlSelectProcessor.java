@@ -59,7 +59,7 @@ public class SparqlSelectProcessor extends AbstractProcessor {
 				sendRDFToRelation(session, flowFile, queryResult.toString(), SUCCESS, APPLICATION_JSON.getMimeType());
 			} catch (Exception e) {
 				getLogger().error("Error executing SPARQL SELECT query: {}", e.getMessage());
-				sendRDFToRelation(session, flowFile, FAILURE);
+				session.transfer(flowFile, FAILURE);
 			}
 		}
 	}
