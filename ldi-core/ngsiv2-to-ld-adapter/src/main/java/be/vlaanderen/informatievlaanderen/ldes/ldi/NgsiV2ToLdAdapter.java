@@ -4,16 +4,15 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.DeserializationFro
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valuobjects.LinkedDataModel;
-import org.apache.http.entity.ContentType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.rdf.model.Model;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Adapter that will transform a NGSI V2 input into NGSI LD.
@@ -52,21 +51,18 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 			LinkedDataModel[] models = new ObjectMapper()
 					.readerFor(LinkedDataModel[].class)
 					.readValue(data);
-			return Arrays.stream(models)
-					.map(model -> {
-						addContexts(model);
-						return model;
-					});
+			return Arrays.stream(models).map(this::addContexts);
 		} catch (JsonProcessingException e) {
 			throw new DeserializationFromJsonException(e, data);
 		}
 	}
 
-	private void addContexts(LinkedDataModel model) {
+	private LinkedDataModel addContexts(LinkedDataModel model) {
 		model.addContextDeclaration(coreContext);
 		if (ldContext != null) {
 			model.addContextDeclaration(ldContext);
 		}
+		return model;
 	}
 
 	public Stream<Model> translate(String data) {
@@ -86,12 +82,12 @@ public class NgsiV2ToLdAdapter implements LdiAdapter {
 	@Override
 	public Stream<Model> apply(Content content) {
 		if (!validateMimeType(content.mimeType())) {
-			throw new UnsupportedMimeTypeException("application/json", content.mimeType());
+			throw new UnsupportedMimeTypeException(ContentType.APPLICATION_JSON.getMimeType(), content.mimeType());
 		}
 		return translate(content.content());
 	}
 
 	public boolean validateMimeType(String mimeType) {
-		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase("application/json");
+		return ContentType.parse(mimeType).getMimeType().equalsIgnoreCase(ContentType.APPLICATION_JSON.getMimeType());
 	}
 }
