@@ -3,7 +3,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.ParseToJsonException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.exceptions.UnsupportedMimeTypeException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.jena.atlas.json.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -84,8 +84,7 @@ public class JsonToLdAdapter implements LdiAdapter {
 			final var jsonObject = json.getAsObject();
 			addContexts(jsonObject);
 			Model model = ModelFactory.createDefaultModel();
-			RDFParser.fromString(jsonObject.toString())
-					.lang(Lang.JSONLD)
+			RDFParser.fromString(jsonObject.toString(), Lang.JSONLD)
 					.context(jenaContext)
 					.parse(model);
 			return model;

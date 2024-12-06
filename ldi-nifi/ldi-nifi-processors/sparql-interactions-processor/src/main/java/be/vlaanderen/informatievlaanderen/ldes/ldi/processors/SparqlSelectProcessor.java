@@ -21,12 +21,12 @@ import com.google.gson.JsonElement;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.SPARQL_SELECT_QUERY;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
-import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
 @Tags({ "ldes, vsds, SPARQL" })
 @CapabilityDescription("SPARQL construct manipulation of an RDF flowfile.")
 public class SparqlSelectProcessor extends AbstractProcessor {
+	private static final String MIMETYPE = "application/json";
 
 	private SparqlSelectService sparqlSelectService;
 
@@ -56,7 +56,7 @@ public class SparqlSelectProcessor extends AbstractProcessor {
 
 				final Iterable<JsonElement> queryResult = sparqlSelectService.executeSelect(inputModel, queryString);
 
-				sendRDFToRelation(session, flowFile, queryResult.toString(), SUCCESS, APPLICATION_JSON.getMimeType());
+				sendRDFToRelation(session, flowFile, queryResult.toString(), SUCCESS, MIMETYPE);
 			} catch (Exception e) {
 				getLogger().error("Error executing SPARQL SELECT query: {}", e.getMessage());
 				session.transfer(flowFile, FAILURE);
