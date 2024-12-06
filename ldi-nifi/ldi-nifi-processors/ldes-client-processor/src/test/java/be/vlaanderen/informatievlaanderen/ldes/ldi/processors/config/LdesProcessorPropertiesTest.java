@@ -18,17 +18,17 @@ class LdesProcessorPropertiesTest {
 	@Test
 	void test_retriesEnabled() {
 		// default is true
-		assertTrue(LdesProcessorProperties.retriesEnabled(getMockContext(null)));
-		assertTrue(LdesProcessorProperties.retriesEnabled(getMockContext("true")));
-		assertTrue(LdesProcessorProperties.retriesEnabled(getMockContext("trUe")));
-		assertFalse(LdesProcessorProperties.retriesEnabled(getMockContext("false")));
-		assertFalse(LdesProcessorProperties.retriesEnabled(getMockContext("FALSE")));
+		assertTrue(RequestExecutorProperties.retriesEnabled(getMockContext(null)));
+		assertTrue(RequestExecutorProperties.retriesEnabled(getMockContext("true")));
+		assertTrue(RequestExecutorProperties.retriesEnabled(getMockContext("trUe")));
+		assertFalse(RequestExecutorProperties.retriesEnabled(getMockContext("false")));
+		assertFalse(RequestExecutorProperties.retriesEnabled(getMockContext("FALSE")));
 	}
 
 	@Test
 	void test_getStatusesToRetry() {
-		assertTrue(LdesProcessorProperties.getStatusesToRetry(getMockContext(null)).isEmpty());
-		List<Integer> statusesToRetry = LdesProcessorProperties.getStatusesToRetry(getMockContext("200, 204"));
+		assertTrue(RequestExecutorProperties.getStatusesToRetry(getMockContext(null)).isEmpty());
+		List<Integer> statusesToRetry = RequestExecutorProperties.getStatusesToRetry(getMockContext("200, 204"));
 		assertTrue(statusesToRetry.contains(200));
 		assertTrue(statusesToRetry.contains(204));
 		assertFalse(statusesToRetry.contains(500));

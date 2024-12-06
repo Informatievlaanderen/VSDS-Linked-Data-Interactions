@@ -16,7 +16,7 @@ The processors can be imported into a NiFi docker instance via volume binding:
     ````yaml
     services:
       nifi:
-        image: apache/nifi:2.0.0-M2
+        image: apache/nifi:2.0.0
         environment:
           SINGLE_USER_CREDENTIALS_USERNAME: admin
           SINGLE_USER_CREDENTIALS_PASSWORD: ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB

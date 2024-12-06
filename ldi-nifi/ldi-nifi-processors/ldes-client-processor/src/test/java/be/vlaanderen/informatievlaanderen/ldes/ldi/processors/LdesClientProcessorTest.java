@@ -2,6 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -50,6 +51,7 @@ class LdesClientProcessorTest {
 
 	@AfterAll
 	static void afterAll() {
+		WireMock.verify(RequestPatternBuilder.allRequests().withHeader("Accept-Encoding", WireMock.matching("gzip")));
 		postgreSQLContainer.stop();
 	}
 
@@ -67,8 +69,7 @@ class LdesClientProcessorTest {
 	@ArgumentsSource(MatchNumberOfFlowFilesArgumentsProvider.class)
 	void shouldMatchNumberOfFlowFiles(String dataSourceUrl, int numberOfRuns) {
 		testRunner.setProperty("DATA_SOURCE_URLS", dataSourceUrl);
-		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY,
-				"SQLITE");
+		testRunner.setProperty(STATE_PERSISTENCE_STRATEGY, "SQLITE");
 
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 
@@ -186,7 +187,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.FALSE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run();
 
@@ -205,8 +205,7 @@ class LdesClientProcessorTest {
 
 	@Test
 	void when_runningLdesClientWithStreamPropertiesFlags_expectsLdesPropertiesInFlowFile() {
-		testRunner.setProperty("DATA_SOURCE_URLS",
-				"http://localhost:10101/exampleData?scenario=gml-data");
+		testRunner.setProperty("DATA_SOURCE_URLS", "http://localhost:10101/exampleData?scenario=gml-data");
 		testRunner.setProperty("STREAM_SHAPE_PROPERTY", Boolean.TRUE.toString());
 
 		testRunner.run();
@@ -250,7 +249,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run(4);
 
@@ -275,7 +273,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("KEEP_STATE", Boolean.FALSE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.FALSE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run(4);
 
@@ -303,7 +300,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_LATEST_STATE_FILTER", Boolean.TRUE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run(2);
 
@@ -330,7 +326,6 @@ class LdesClientProcessorTest {
 		testRunner.setProperty("USE_VERSION_MATERIALISATION", Boolean.TRUE.toString());
 		testRunner.setProperty("USE_EXACTLY_ONCE_FILTER", Boolean.TRUE.toString());
 		testRunner.setProperty("RESTRICT_TO_MEMBERS", Boolean.FALSE.toString());
-		testRunner.setProperty("VERSION_OF_PROPERTY", VERSION_OF);
 
 		testRunner.run();
 

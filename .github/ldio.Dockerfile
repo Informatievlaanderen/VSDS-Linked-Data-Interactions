@@ -2,11 +2,15 @@
 
 FROM amazoncorretto:21-alpine-jdk
 
+## Dependency for pyroscope
+RUN apk --no-cache add libstdc++
+
 RUN adduser -D -u 2000 ldio
 USER ldio
 WORKDIR /ldio
 
 COPY ./ldi-orchestrator/ldio-application/target/ldio-application.jar ./
+COPY ./ldi-orchestrator/ldio-instrumentation/target/ldio-instrumentation.jar ./lib/
 
 COPY ./ldi-orchestrator/ldio-connectors/ldio-http-in/target/ldio-http-in-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-http-in-poller/target/ldio-http-in-poller-jar-with-dependencies.jar ./lib/
@@ -27,11 +31,13 @@ COPY ./ldi-orchestrator/ldio-connectors/ldio-version-object-creator/target/ldio-
 COPY ./ldi-orchestrator/ldio-connectors/ldio-geojson-to-wkt/target/ldio-geojson-to-wkt-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-http-enricher/target/ldio-http-enricher-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-change-detection-filter/target/ldio-change-detection-filter-jar-with-dependencies.jar ./lib/
+COPY ./ldi-orchestrator/ldio-connectors/ldio-skolemisation-transformer/target/ldio-skolemisation-transformer-jar-with-dependencies.jar ./lib/
 
 COPY ./ldi-orchestrator/ldio-connectors/ldio-console-out/target/ldio-console-out-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-http-out/target/ldio-http-out-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-noop-out/target/ldio-noop-out-jar-with-dependencies.jar ./lib/
 COPY ./ldi-orchestrator/ldio-connectors/ldio-repository-sink/target/ldio-repository-sink-jar-with-dependencies.jar ./lib/
+COPY ./ldi-orchestrator/ldio-connectors/ldio-http-sparql-out/target/ldio-http-sparql-out-jar-with-dependencies.jar ./lib/
 
 
 RUN mkdir "state"

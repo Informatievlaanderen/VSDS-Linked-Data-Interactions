@@ -26,7 +26,7 @@ jobs:
           java-version: '21'
           distribution: 'zulu'
       - name: Cache Maven packages
-        uses: actions/cache@v1
+        uses: actions/cache@v4.1.2
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -47,6 +47,7 @@ jobs:
             **/*with-dependencies.jar
             **/*application.jar
             **/ldes-discoverer.jar
+            **/ldio-instrumentation.jar
 
 
   build-ldio-image:

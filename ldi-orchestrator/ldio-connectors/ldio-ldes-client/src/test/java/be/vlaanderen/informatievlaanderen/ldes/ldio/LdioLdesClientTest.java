@@ -25,60 +25,66 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class LdioLdesClientTest {
 
-    @Mock
-    private ComponentExecutor componentExecutor;
+	@Mock
+	private ComponentExecutor componentExecutor;
 
-    @Mock
-    private LdioObserver observer;
+	@Mock
+	private LdioObserver observer;
 
-    @Mock
-    private MemberSupplier supplier;
+	@Mock
+	private MemberSupplier supplier;
 
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
+	@Mock
+	private ApplicationEventPublisher eventPublisher;
 
-    @Mock
-    private ClientStatusConsumer clientStatusConsumer;
+	@Mock
+	private ClientStatusConsumer clientStatusConsumer;
 
-    private LdioLdesClient client;
-    private final String pipelineName = "pipeline";
+	private LdioLdesClient client;
+	private final String pipelineName = "pipeline";
 
-    @BeforeEach
-    void setUp() {
-        when(observer.getPipelineName()).thenReturn(pipelineName);
-        client = new LdioLdesClient(
-                componentExecutor,
-                observer,
-                supplier,
-                eventPublisher,
-                false,
-                clientStatusConsumer);
-    }
+	@BeforeEach
+	void setUp() {
+		when(observer.getPipelineName()).thenReturn(pipelineName);
+		client = new LdioLdesClient(
+				componentExecutor,
+				observer,
+				supplier,
+				eventPublisher,
+				false,
+				clientStatusConsumer);
+	}
 
-    @AfterEach
-    void tearDown() {
-        client.shutdown();
-    }
+	@AfterEach
+	void tearDown() {
+		client.shutdown();
+	}
 
-    @Test
-    void when_EndOfLdesException_ShutdownPipeline() {
-        when(supplier.get()).thenThrow(EndOfLdesException.class);
+	@Test
+	void when_EndOfLdesException_And_AllDataProcessed_ShutdownPipeline() {
+		when(observer.hasProcessedAllData()).thenReturn(false).thenReturn(true);
+		when(supplier.get()).thenThrow(EndOfLdesException.class);
 
-        client.start();
+		client.start();
 
-        verify(eventPublisher).publishEvent(new PipelineShutdownEvent(pipelineName));
-    }
+		await().atMost(Duration.ofSeconds(40)).untilAsserted(() -> {
+			verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.RUNNING, StatusChangeSource.MANUAL));
+			verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.HALTED, StatusChangeSource.MANUAL));
+			verify(eventPublisher).publishEvent(new PipelineShutdownEvent(pipelineName));
+		});
+	}
 
-    @Test
-    void when_RuntimeException_StopPipeline() {
-        doThrow(RuntimeException.class).when(supplier).init();
+	@Test
+	void when_RuntimeException_StopPipeline() {
+		when(observer.hasProcessedAllData()).thenReturn(true);
+		doThrow(RuntimeException.class).when(supplier).init();
 
-        client.start();
+		client.start();
 
         await().atMost(Duration.ofSeconds(20)).untilAsserted(() -> {
             verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.RUNNING, StatusChangeSource.MANUAL));
             verify(eventPublisher).publishEvent(new PipelineStatusEvent(pipelineName, PipelineStatus.HALTED, StatusChangeSource.MANUAL));
         });
 
-    }
+	}
 }

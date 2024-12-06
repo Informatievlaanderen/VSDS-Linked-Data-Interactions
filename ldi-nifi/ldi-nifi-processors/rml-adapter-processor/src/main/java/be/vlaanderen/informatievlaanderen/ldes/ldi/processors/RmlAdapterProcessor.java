@@ -3,7 +3,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.RmlAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
-import org.apache.jena.riot.RDFWriter;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
@@ -21,7 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_DESTINATION_FORMAT;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.getDataDestinationFormat;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RmlAdapterProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.FAILURE;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.SUCCESS;
@@ -89,7 +89,6 @@ public class RmlAdapterProcessor extends AbstractProcessor {
 
 		try {
 			adapter.apply(LdiAdapter.Content.of(content, mimeType))
-					.map(model -> RDFWriter.source(model).lang(getDataDestinationFormat(context)).asString())
 					.forEach(data -> FlowManager.sendRDFToRelation(session, data, SUCCESS, getDataDestinationFormat(context)));
 			session.remove(flowFile);
 		} catch (Exception e) {

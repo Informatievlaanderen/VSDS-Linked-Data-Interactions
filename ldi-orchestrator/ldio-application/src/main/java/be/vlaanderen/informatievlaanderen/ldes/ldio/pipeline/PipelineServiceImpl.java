@@ -4,6 +4,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.PipelineCr
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.events.PipelineShutdownEvent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineAlreadyExistsException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineException;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.PipelineInitialisationException;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PipelineRepository;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusService;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.web.dto.PipelineTO;
@@ -39,10 +40,14 @@ public class PipelineServiceImpl implements PipelineService {
 		if (pipelineRepository.exists(pipeline.getName())) {
 			throw new PipelineAlreadyExistsException(pipeline.getName());
 		} else {
-			pipelineCreatorService.initialisePipeline(pipeline);
-			pipelineRepository.activateNewPipeline(pipeline);
-			log.atInfo().log("CREATION of pipeline '{}' successfully finished", pipeline.getName().replaceAll("[\n\r]", "_"));
-			return pipeline;
+			try {
+				pipelineCreatorService.initialisePipeline(pipeline);
+				pipelineRepository.activateNewPipeline(pipeline);
+				log.atInfo().log("CREATION of pipeline '{}' successfully finished", formatPipelineName(pipeline.getName()));
+				return pipeline;
+			} catch (RuntimeException e) {
+				throw new PipelineInitialisationException(pipeline.getName(), e);
+			}
 		}
 	}
 
@@ -51,9 +56,14 @@ public class PipelineServiceImpl implements PipelineService {
 		if (pipelineRepository.exists(pipeline.getName())) {
 			throw new PipelineAlreadyExistsException(pipeline.getName());
 		} else {
-			pipelineCreatorService.initialisePipeline(pipeline);
-			pipelineRepository.activateExistingPipeline(pipeline, persistedFile);
-			return pipeline;
+			try {
+				pipelineCreatorService.initialisePipeline(pipeline);
+				pipelineRepository.activateExistingPipeline(pipeline, persistedFile);
+				log.atInfo().log("CREATION of pipeline '{}' successfully finished", formatPipelineName(pipeline.getName()));
+				return pipeline;
+			} catch (RuntimeException e) {
+				throw new PipelineInitialisationException(pipeline.getName(), e);
+			}
 		}
 	}
 
@@ -65,11 +75,11 @@ public class PipelineServiceImpl implements PipelineService {
 	}
 
 	@Override
-	public boolean requestDeletion(String pipeline) {
-		if (pipelineRepository.exists(pipeline)) {
-			pipelineStatusService.stopPipeline(pipeline);
-			deletePipelineFromServices(pipeline);
-			log.atInfo().log("DELETION of pipeline '{}' successfully finished", pipeline.replaceAll("[\n\r]", "_"));
+	public boolean requestDeletion(String pipelineName) {
+		if (pipelineRepository.exists(pipelineName)) {
+			pipelineStatusService.stopPipeline(pipelineName);
+			deletePipelineFromServices(pipelineName);
+			log.atInfo().log("DELETION of pipeline '{}' successfully finished", formatPipelineName(pipelineName));
 			return true;
 		} else {
 			return false;
@@ -79,5 +89,9 @@ public class PipelineServiceImpl implements PipelineService {
 	private void deletePipelineFromServices(String pipeline) {
 		pipelineRepository.delete(pipeline);
 		pipelineCreatorService.removePipeline(pipeline);
+	}
+
+	private String formatPipelineName(String pipelineName) {
+		return pipelineName.replaceAll("[\n\r]", "_");
 	}
 }

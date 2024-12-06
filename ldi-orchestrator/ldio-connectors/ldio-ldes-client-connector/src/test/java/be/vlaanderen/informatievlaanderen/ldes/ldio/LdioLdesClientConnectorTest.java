@@ -39,9 +39,8 @@ class LdioLdesClientConnectorTest {
 	void setup() {
 		transferService = mock(TransferService.class);
 		tokenService = mock(TokenService.class);
-		final LdioLdesClient ldesClient = mock(LdioLdesClient.class);
 
-		eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(endpoint, new LdioLdesClientConnectorApi(transferService, tokenService, ldesClient)));
+		eventPublisher.publishEvent(new LdesClientConnectorApiCreatedEvent(endpoint, new LdioLdesClientConnectorApi(transferService, tokenService)));
 	}
 
 	@Test

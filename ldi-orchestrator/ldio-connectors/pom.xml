@@ -3,7 +3,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
         <artifactId>ldi-orchestrator</artifactId>
-        <version>2.9.0</version>
+        <version>2.11.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -40,6 +40,8 @@
         <module>ldio-file-out</module>
         <module>ldio-repository-sink</module>
         <module>ldio-change-detection-filter</module>
+        <module>ldio-skolemisation-transformer</module>
+        <module>ldio-http-sparql-out</module>
 
     </modules>
 

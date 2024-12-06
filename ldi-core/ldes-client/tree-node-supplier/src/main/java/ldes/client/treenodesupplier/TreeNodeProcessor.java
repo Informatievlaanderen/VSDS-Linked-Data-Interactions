@@ -1,5 +1,6 @@
 package ldes.client.treenodesupplier;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.exceptions.HttpRequestException;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import ldes.client.treenodefetcher.TreeNodeFetcher;
@@ -69,16 +70,22 @@ public class TreeNodeProcessor {
 			treeNodeRecord.markImmutableWithoutUnprocessedMembers();
 			treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
 		} else {
-			waitUntilNextVisit(treeNodeRecord);
-			TreeNodeResponse treeNodeResponse = treeNodeFetcher
-					.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
-			treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
-			saveNewRelations(treeNodeResponse);
-			List<TreeMember> newMembers = getNewMembersFromResponse(treeNodeResponse, treeNodeRecord);
-			saveNewMembers(newMembers);
-			treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
-			treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
-			treeNodeRecordRepository.resetContext();
+			try {
+				waitUntilNextVisit(treeNodeRecord);
+				TreeNodeResponse treeNodeResponse = treeNodeFetcher
+						.fetchTreeNode(ldesMetaData.createRequest(treeNodeRecord.getTreeNodeUrl()));
+				treeNodeRecord.updateStatus(treeNodeResponse.getMutabilityStatus());
+				saveNewRelations(treeNodeResponse);
+				List<TreeMember> newMembers = getNewMembersFromResponse(treeNodeResponse, treeNodeRecord);
+				saveNewMembers(newMembers);
+				treeNodeRecord.addToReceived(newMembers.stream().map(TreeMember::getMemberId).toList());
+				treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+				treeNodeRecordRepository.resetContext();
+			} catch (HttpRequestException e) {
+				treeNodeRecordRepository.saveTreeNodeRecord(treeNodeRecord);
+				throw e;
+			}
+
 		}
 	}
 
@@ -107,18 +114,19 @@ public class TreeNodeProcessor {
 	private TreeNodeRecord getNextTreeNode() {
 		TreeNodeRecord treeNodeRecord = treeNodeRecordRepository
 				.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS)
-				.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.NOT_VISITED)
-						.orElseGet(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE)
-								.orElseThrow(() -> {
-									clientStatusConsumer.accept(COMPLETED);
-									return new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends.");
-								})));
+				.or(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.NOT_VISITED))
+				.or(() -> treeNodeRecordRepository.getTreeNodeRecordWithStatusAndEarliestNextVisit(TreeNodeStatus.MUTABLE_AND_ACTIVE))
+				.orElseThrow(() -> {
+					clientStatusConsumer.accept(COMPLETED);
+					return new EndOfLdesException("No fragments to mutable or new fragments to process -> LDES ends.");
+				});
 
-		if (Objects.requireNonNull(treeNodeRecord.getTreeNodeStatus()) == TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS ||
-		    treeNodeRecord.getTreeNodeStatus() == TreeNodeStatus.IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS ||
-		    treeNodeRecord.getTreeNodeStatus() == TreeNodeStatus.NOT_VISITED) {
+		TreeNodeStatus treeNodeStatus = Objects.requireNonNull(treeNodeRecord.getTreeNodeStatus());
+		if (treeNodeStatus == TreeNodeStatus.IMMUTABLE_WITH_UNPROCESSED_MEMBERS ||
+				treeNodeStatus == TreeNodeStatus.IMMUTABLE_WITHOUT_UNPROCESSED_MEMBERS ||
+				treeNodeStatus == TreeNodeStatus.NOT_VISITED) {
 			clientStatusConsumer.accept(REPLICATING);
-		} else if (treeNodeRecord.getTreeNodeStatus() == TreeNodeStatus.MUTABLE_AND_ACTIVE) {
+		} else if (treeNodeStatus == TreeNodeStatus.MUTABLE_AND_ACTIVE) {
 			clientStatusConsumer.accept(SYNCHRONISING);
 		}
 

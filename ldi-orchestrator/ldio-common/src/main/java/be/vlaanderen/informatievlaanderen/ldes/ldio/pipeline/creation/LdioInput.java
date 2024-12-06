@@ -5,6 +5,7 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiAdapter;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.types.LdiComponent;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatus;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.PipelineStatusTrigger;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.StatusChangeSource;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.status.events.PipelineStatusEvent;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
@@ -65,8 +66,12 @@ public abstract class LdioInput implements LdiComponent {
 
 	public abstract void shutdown();
 
-	@SuppressWarnings("java:S6916")
 	public PipelineStatus updateStatus(PipelineStatusTrigger trigger) {
+		return updateStatus(trigger, MANUAL);
+	}
+
+	@SuppressWarnings("java:S6916")
+	public PipelineStatus updateStatus(PipelineStatusTrigger trigger, StatusChangeSource source) {
 		switch (trigger) {
 			case START -> this.pipelineStatus = RUNNING;
 			case RESUME -> {
@@ -84,7 +89,7 @@ public abstract class LdioInput implements LdiComponent {
 		}
 
 		log.info("UPDATED status for pipeline '{}' to {}", ldioObserver.getPipelineName(), pipelineStatus);
-		applicationEventPublisher.publishEvent(new PipelineStatusEvent(ldioObserver.getPipelineName(), this.pipelineStatus, MANUAL));
+		applicationEventPublisher.publishEvent(new PipelineStatusEvent(ldioObserver.getPipelineName(), this.pipelineStatus, source));
 		return this.pipelineStatus;
 	}
 

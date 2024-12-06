@@ -31,6 +31,7 @@ public class PersistenceProperties {
 			.description("Postgres database url formatted as \"jdbc:postgresql://localhost:5432/postgres\"")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.dependsOn(STATE_PERSISTENCE_STRATEGY, StatePersistenceStrategy.POSTGRES.name())
 			.build();
 
 	public static final PropertyDescriptor POSTGRES_USERNAME = new PropertyDescriptor.Builder()
@@ -39,6 +40,7 @@ public class PersistenceProperties {
 			.description("Username used to connect to the postgres database")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.dependsOn(STATE_PERSISTENCE_STRATEGY, StatePersistenceStrategy.POSTGRES.name())
 			.build();
 
 	public static final PropertyDescriptor POSTGRES_PASSWORD = new PropertyDescriptor.Builder()
@@ -47,6 +49,8 @@ public class PersistenceProperties {
 			.description("Password used to connect to the postgres database")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.sensitive(true)
+			.dependsOn(STATE_PERSISTENCE_STRATEGY, StatePersistenceStrategy.POSTGRES.name())
 			.build();
 
 	public static final PropertyDescriptor SQLITE_DIRECTORY = new PropertyDescriptor.Builder()
@@ -55,12 +59,15 @@ public class PersistenceProperties {
 			.description("Sqlite database directory where the '.db' file can be stored")
 			.required(false)
 			.addValidator(StandardValidators.NON_BLANK_VALIDATOR)
+			.dependsOn(STATE_PERSISTENCE_STRATEGY, StatePersistenceStrategy.SQLITE.name())
 			.build();
 
 	public static final PropertyDescriptor KEEP_STATE = new PropertyDescriptor.Builder()
 			.name("KEEP_STATE")
-			.displayName("Keep state when the processor is removed from the flow")
+			.displayName("Keep state")
+			.description("Keep state when the processor is removed from the flow")
 			.required(false)
+			.allowableValues(TRUE.toString(), FALSE.toString())
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.defaultValue(FALSE.toString())
 			.build();

@@ -1,2 +1,3 @@
 be.vlaanderen.informatievlaanderen.ldes.ldi.processors.SparqlConstructProcessor
 be.vlaanderen.informatievlaanderen.ldes.ldi.processors.SparqlSelectProcessor
+be.vlaanderen.informatievlaanderen.ldes.ldi.processors.SparqlAskProcessor

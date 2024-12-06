@@ -32,4 +32,11 @@ public class SparqlProcessorProperties {
 			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
 			.build();
 
+	public static final PropertyDescriptor SPARQL_ASK_QUERY = new PropertyDescriptor.Builder()
+			.name("SPARQL_ASK_QUERY")
+			.displayName("SPARQL Ask Query")
+			.required(true)
+			.defaultValue("ASK WHERE {?s ?p ?o}")
+			.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+			.build();
 }
