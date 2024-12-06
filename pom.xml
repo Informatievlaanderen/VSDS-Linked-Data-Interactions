@@ -345,6 +345,12 @@
                             <excludes>
                                 <exclude>META-INF/**</exclude>
                                 <exclude>**/CustomHTTPRepositoryConnection.java</exclude>
+                                <exclude>**/GraphExtract.java</exclude>
+                                <exclude>**/TripleBoundary.java</exclude>
+                                <exclude>**/ModelExtract.java</exclude>
+                                <exclude>**/StatementBoundary.java</exclude>
+                                <exclude>**/StatementBoundaryBase.java</exclude>
+                                <exclude>**/StatementTripleBoundary.java</exclude>
                             </excludes>
                         </configuration>
                         <executions>
