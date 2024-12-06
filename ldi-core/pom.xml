@@ -32,10 +32,8 @@
     </modules>
 
     <properties>
-        <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <awaitility.version>4.2.0</awaitility.version>
         <cucumber.version>7.13.0</cucumber.version>
-        <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
     </properties>
 
     <dependencies>
