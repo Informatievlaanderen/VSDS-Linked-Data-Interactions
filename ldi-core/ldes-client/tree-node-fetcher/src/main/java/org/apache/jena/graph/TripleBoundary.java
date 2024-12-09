@@ -19,29 +19,24 @@
 package org.apache.jena.graph;
 
 /**
-     An interface for expressing a stopping condition on triples, such as in 
-     sub-graph extraction.
-  */
-public interface TripleBoundary
-    {
-    /**
-         Answer true if this triple is a stopping triple, and whatever search is using
-         this interface should proceed no further.
-    */
-    boolean stopAt( Triple t );
-    
-    /**
-         A TripleBoundary without limits - stopAt always returns false.
-    */
-    public static final TripleBoundary stopNowhere = new TripleBoundary()
-        { @Override
-        public boolean stopAt( Triple t ) { return false; } };
-    
-    /**
-        A TripleBoundary that stops at triples with anonymous objects.
-    */
-    public static final TripleBoundary stopAtAnonObject = new TripleBoundary()
-        { @Override
-        public boolean stopAt( Triple t ) { return t.getObject().isBlank(); } };
+ An interface for expressing a stopping condition on triples, such as in
+ sub-graph extraction.
+ */
+public interface TripleBoundary {
+	/**
+	 Answer true if this triple is a stopping triple, and whatever search is using
+	 this interface should proceed no further.
+	 */
+	boolean stopAt(Triple t);
 
-    }
+	/**
+	 A TripleBoundary without limits - stopAt always returns false.
+	 */
+	TripleBoundary stopNowhere = t -> false;
+
+	/**
+	 A TripleBoundary that stops at triples with anonymous objects.
+	 */
+	TripleBoundary stopAtAnonObject = t -> t.getObject().isBlank();
+
+}

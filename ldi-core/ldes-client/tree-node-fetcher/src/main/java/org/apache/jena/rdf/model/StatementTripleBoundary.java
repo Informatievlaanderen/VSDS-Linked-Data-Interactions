@@ -18,34 +18,36 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.graph.TripleBoundary ;
+import org.apache.jena.graph.TripleBoundary;
 
 /**
-    StatementTripleBoundary - a StatementBoundary that just wraps a
-    TripleBoundary.
-*/
-public class StatementTripleBoundary implements StatementBoundary
-    {
-    protected TripleBoundary tb;
-    
-    /**
-         Initialise this StatementTripleBoundary with the TripleBoundary <code>tb</code>.
-     * @param tb
-     */
-    public StatementTripleBoundary( TripleBoundary tb )
-        { this.tb = tb; }
+ StatementTripleBoundary - a StatementBoundary that just wraps a
+ TripleBoundary.
+ */
+public class StatementTripleBoundary implements StatementBoundary {
+	protected TripleBoundary tb;
 
-    /**
-         Answer whatever the triple-boundary answers for the triple of <code>s</code>.
-    */
-    @Override
-    public boolean stopAt( Statement s )
-        { return tb.stopAt( s.asTriple() ); }
-    
-    /**
-         Answer the supplied-to-constructor TripleBoundary.
-    */
-    @Override
-    public TripleBoundary asTripleBoundary( Model ignored )
-        { return tb; }
-    }
+	/**
+	 Initialise this StatementTripleBoundary with the TripleBoundary <code>tb</code>.
+	 * @param tb
+	 */
+	public StatementTripleBoundary(TripleBoundary tb) {
+		this.tb = tb;
+	}
+
+	/**
+	 Answer whatever the triple-boundary answers for the triple of <code>s</code>.
+	 */
+	@Override
+	public boolean stopAt(Statement s) {
+		return tb.stopAt(s.asTriple());
+	}
+
+	/**
+	 Answer the supplied-to-constructor TripleBoundary.
+	 */
+	@Override
+	public TripleBoundary asTripleBoundary(Model ignored) {
+		return tb;
+	}
+}

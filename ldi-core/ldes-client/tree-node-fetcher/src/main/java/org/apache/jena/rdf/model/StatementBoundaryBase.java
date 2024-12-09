@@ -18,46 +18,44 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.TripleBoundary ;
+import org.apache.jena.graph.TripleBoundary;
 
 /**
-    StatementBoundaryBase - a base class for StatementBoundarys, with
-    built-in conversation to triples and a continueWith as well as a stopAt.
-*/
-public abstract class StatementBoundaryBase implements StatementBoundary
-    {
-    /**
-         Method to over-ride to define what stops the boundary search; default
-         definition is !continueWith(s). <i>exactly one</i> of these two methods
-         must be defined.
-    */
-    @Override
-    public boolean stopAt( Statement s )
-        { return !continueWith( s ); }
+ StatementBoundaryBase - a base class for StatementBoundarys, with
+ built-in conversation to triples and a continueWith as well as a stopAt.
+ */
+public abstract class StatementBoundaryBase implements StatementBoundary {
+	/**
+	 Method to over-ride to define what stops the boundary search; default
+	 definition is !continueWith(s). <i>exactly one</i> of these two methods
+	 must be defined.
+	 */
+	@Override
+	public boolean stopAt(Statement s) {
+		return !continueWith(s);
+	}
 
-    /**
-         Method to over-ride to define what continues the boundary search; default
-         definition is !stopAt(s). <i>exactly one</i> of these two methods
-         must be defined.
-    */
-    public boolean continueWith( Statement s )
-        { return !stopAt( s ); }
+	/**
+	 Method to over-ride to define what continues the boundary search; default
+	 definition is !stopAt(s). <i>exactly one</i> of these two methods
+	 must be defined.
+	 */
+	public boolean continueWith(Statement s) {
+		return !stopAt(s);
+	}
 
-    /**
-         Expresses this StatementBoundary as a TripleBoundary.
-    */
-    @Override
-    public final TripleBoundary asTripleBoundary( Model m )
-        { return convert( m, this ); }
+	/**
+	 Expresses this StatementBoundary as a TripleBoundary.
+	 */
+	@Override
+	public final TripleBoundary asTripleBoundary(Model m) {
+		return convert(m, this);
+	}
 
-    /**
-         Answer a TripleBoundary that is implemented in terms of a StatementBoundary.
-    */
-    public static TripleBoundary convert( final Model s, final StatementBoundary b )
-        {
-        return new TripleBoundary()
-            { @Override
-            public boolean stopAt( Triple t ) { return b.stopAt( s.asStatement( t ) ); } };
-        }
-    }
+	/**
+	 Answer a TripleBoundary that is implemented in terms of a StatementBoundary.
+	 */
+	public static TripleBoundary convert(final Model s, final StatementBoundary b) {
+		return t -> b.stopAt(s.asStatement(t));
+	}
+}

@@ -18,22 +18,21 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.graph.TripleBoundary ;
+import org.apache.jena.graph.TripleBoundary;
 
 /**
-     An interface for expressing search boundaries in terms of bounding statements.
-*/
+ An interface for expressing search boundaries in terms of bounding statements.
+ */
 
-public interface StatementBoundary
-    {
-    /**
-         Answer true if this statement is a boundary of the search.
-    */
-    boolean stopAt( Statement s );
-    
-    /**
-         Answer a TripleBoundary corresponding to this StatementBoundary,
-         where Triples may be converted to Statements using <code>m</code>.
-    */
-    TripleBoundary asTripleBoundary( Model m );
-    }
+public interface StatementBoundary {
+	/**
+	 Answer true if this statement is a boundary of the search.
+	 */
+	boolean stopAt(Statement s);
+
+	/**
+	 Answer a TripleBoundary corresponding to this StatementBoundary,
+	 where Triples may be converted to Statements using <code>m</code>.
+	 */
+	TripleBoundary asTripleBoundary(Model m);
+}
