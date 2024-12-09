@@ -26,6 +26,12 @@
             <groupId>io.carml</groupId>
             <artifactId>carml-converters-jena</artifactId>
             <version>${carml.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.jena</groupId>
+                    <artifactId>jena-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Limitation of CARML -->
         <dependency>
