@@ -23,7 +23,7 @@
     <developers>
         <developer>
             <name>Yalz</name>
-            <email>Yalz@users.noreply.github.com </email>
+            <email>Yalz@users.noreply.github.com</email>
             <organization>Cegeka</organization>
             <organizationUrl>http://www.sonatype.com</organizationUrl>
         </developer>
@@ -64,11 +64,12 @@
         <hikari.version>5.0.1</hikari.version>
         <postgresql.version>42.6.0</postgresql.version>
 
-        <jena.version>4.10.0</jena.version>
+        <jena.version>5.1.0</jena.version>
         <sis-embedded-db.version>1.4</sis-embedded-db.version>
         <xml-bind.version>4.0.1</xml-bind.version>
         <jackson.version>2.15.3</jackson.version>
         <rdf-urdna.version>1.3</rdf-urdna.version>
+        <apache-httpclient.version>5.3.1</apache-httpclient.version>
 
         <!-- LOGGING -->
         <micrometer-prometheus.version>1.12.0</micrometer-prometheus.version>
@@ -78,13 +79,14 @@
 
         <!-- Testing -->
         <assertj.version>3.24.2</assertj.version>
-        <junit-jupiter.version>5.10.0</junit-jupiter.version>
-        <junit-platform-suite.version>1.9.3</junit-platform-suite.version>
+        <junit-jupiter.version>5.10.2</junit-jupiter.version>
+        <junit-platform-suite.version>1.10.2</junit-platform-suite.version>
         <awaitility.version>4.2.0</awaitility.version>
         <byte-buddy.version>1.14.12</byte-buddy.version>
         <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
-        <mockito-core.version>5.5.0</mockito-core.version>
-        <mockito-junit.version>5.5.0</mockito-junit.version>
+        <mockito-core.version>5.14.2</mockito-core.version>
+        <mockito-junit.version>5.14.2</mockito-junit.version>
+        <cucumber.version>7.15.0</cucumber.version>
         <testcontainers.version>1.19.6</testcontainers.version>
         <testcontainers-postgresql.version>1.20.2</testcontainers-postgresql.version>
         <slf4j.version>2.0.7</slf4j.version>
@@ -236,6 +238,26 @@
                 <artifactId>rdf-urdna</artifactId>
                 <version>${rdf-urdna.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.core5</groupId>
+                <artifactId>httpcore5</artifactId>
+                <version>${apache-httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
             <!-- Logging -->
             <dependency>
@@ -334,6 +356,12 @@
                             <excludes>
                                 <exclude>META-INF/**</exclude>
                                 <exclude>**/CustomHTTPRepositoryConnection.java</exclude>
+                                <exclude>**/GraphExtract.java</exclude>
+                                <exclude>**/TripleBoundary.java</exclude>
+                                <exclude>**/ModelExtract.java</exclude>
+                                <exclude>**/StatementBoundary.java</exclude>
+                                <exclude>**/StatementBoundaryBase.java</exclude>
+                                <exclude>**/StatementTripleBoundary.java</exclude>
                             </excludes>
                         </configuration>
                         <executions>
