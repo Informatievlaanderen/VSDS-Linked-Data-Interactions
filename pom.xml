@@ -86,7 +86,7 @@
         <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
         <mockito-core.version>5.14.2</mockito-core.version>
         <mockito-junit.version>5.14.2</mockito-junit.version>
-        <cucumber.version>7.15.0</cucumber.version>
+        <cucumber.version>7.20.1</cucumber.version>
         <testcontainers.version>1.19.6</testcontainers.version>
         <testcontainers-postgresql.version>1.20.2</testcontainers-postgresql.version>
         <slf4j.version>2.0.7</slf4j.version>
