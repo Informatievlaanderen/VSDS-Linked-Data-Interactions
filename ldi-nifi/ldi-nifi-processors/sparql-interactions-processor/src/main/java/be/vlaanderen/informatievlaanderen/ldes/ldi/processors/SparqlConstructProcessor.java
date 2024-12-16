@@ -44,7 +44,8 @@ public class SparqlConstructProcessor extends AbstractProcessor {
 	public void onScheduled(final ProcessContext context) {
 		Query query = QueryFactory.create(context.getProperty(SPARQL_CONSTRUCT_QUERY).getValue());
 
-		transformer = new SparqlConstructTransformer(query, context.getProperty(INCLUDE_ORIGINAL).asBoolean());
+		// todo: add support for custom dataset splitter
+		transformer = new SparqlConstructTransformer(query, context.getProperty(INCLUDE_ORIGINAL).asBoolean(), dataset -> List.of());
 	}
 
 	@Override

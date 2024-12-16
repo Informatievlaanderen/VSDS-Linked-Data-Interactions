@@ -1,0 +1,11 @@
+prefix geoc: <https://opengis.net/def/function/geosparql/custom#>
+prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+
+CONSTRUCT  {
+    ?s geosparql:asWKT ?value
+}
+WHERE {
+    ?s geosparql:asWKT ?wkt .
+    ?s geoc:offset ?ofs .
+    BIND (geoc:pointAtFromStart(?wkt, ?ofs) as ?value)
+}

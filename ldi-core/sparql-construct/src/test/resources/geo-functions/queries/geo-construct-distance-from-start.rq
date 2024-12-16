@@ -1,0 +1,12 @@
+prefix geoc: <https://opengis.net/def/function/geosparql/custom#>
+prefix geosparql: <http://www.opengis.net/ont/geosparql#>
+prefix : <http://example.org/>
+
+CONSTRUCT  {
+    ?s geoc:distanceFromStart ?value
+}
+WHERE {
+    ?s :geometry ?wkt .
+    ?s :point ?pnt .
+    BIND (geoc:distanceFromStart(?wkt, ?pnt) as ?value)
+}

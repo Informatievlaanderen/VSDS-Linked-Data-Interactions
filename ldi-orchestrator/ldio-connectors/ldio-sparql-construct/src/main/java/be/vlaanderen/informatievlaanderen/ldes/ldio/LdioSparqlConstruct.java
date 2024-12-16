@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.datasetsplitter.DatasetSplitter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer;
 import org.apache.jena.query.Query;
 import org.apache.jena.rdf.model.Model;
@@ -9,8 +10,8 @@ public class LdioSparqlConstruct extends LdioTransformer {
 	public static final String NAME = "Ldio:SparqlConstructTransformer";
 	private final SparqlConstructTransformer transformer;
 
-	public LdioSparqlConstruct(Query query, boolean inferMode) {
-		transformer = new SparqlConstructTransformer(query, inferMode);
+	public LdioSparqlConstruct(Query query, boolean inferMode, DatasetSplitter datasetSplitter) {
+		transformer = new SparqlConstructTransformer(query, inferMode, datasetSplitter);
 	}
 
 	@Override
