@@ -1,6 +1,8 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.SparqlConstructTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.datasetsplitter.DatasetSplitter;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.datasetsplitter.DatasetSplitters;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
@@ -19,8 +21,7 @@ import java.util.Set;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.DATA_SOURCE_FORMAT;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.CommonProperties.getDataSourceFormat;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.INCLUDE_ORIGINAL;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.SPARQL_CONSTRUCT_QUERY;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.SparqlProcessorProperties.*;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager.*;
 
 @SuppressWarnings("java:S2160") // nifi handles equals/hashcode of processors
@@ -37,15 +38,16 @@ public class SparqlConstructProcessor extends AbstractProcessor {
 
 	@Override
 	public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-		return List.of(SPARQL_CONSTRUCT_QUERY, INCLUDE_ORIGINAL, DATA_SOURCE_FORMAT);
+		return List.of(SPARQL_CONSTRUCT_QUERY, INCLUDE_ORIGINAL, SPLIT_BY_NAMED_GRAPH, DATA_SOURCE_FORMAT);
 	}
 
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		Query query = QueryFactory.create(context.getProperty(SPARQL_CONSTRUCT_QUERY).getValue());
+		DatasetSplitter datasetSplitter = Boolean.TRUE.equals(context.getProperty(SPLIT_BY_NAMED_GRAPH).asBoolean()) ?
+				DatasetSplitters.splitByNamedGraph() : DatasetSplitters.preventSplitting();
 
-		// todo: add support for custom dataset splitter
-		transformer = new SparqlConstructTransformer(query, context.getProperty(INCLUDE_ORIGINAL).asBoolean(), dataset -> List.of());
+		transformer = new SparqlConstructTransformer(query, context.getProperty(INCLUDE_ORIGINAL).asBoolean(), datasetSplitter);
 	}
 
 	@Override

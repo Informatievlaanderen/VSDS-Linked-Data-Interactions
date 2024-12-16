@@ -24,6 +24,15 @@ public class SparqlProcessorProperties {
 			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
 			.build();
 
+	public static final PropertyDescriptor SPLIT_BY_NAMED_GRAPH = new PropertyDescriptor.Builder()
+			.name("SPLIT_BY_NAMED_GRAPH")
+			.displayName("Split by named graph")
+			.description("Split the model by named graph if true, or keep it as one model if false")
+			.required(true)
+			.defaultValue(Boolean.TRUE.toString())
+			.addValidator(StandardValidators.BOOLEAN_VALIDATOR)
+			.build();
+
 	public static final PropertyDescriptor SPARQL_CONSTRUCT_QUERY = new PropertyDescriptor.Builder()
 			.name("SPARQL_CONSTRUCT_QUERY")
 			.displayName("SPARQL Construct Query")
