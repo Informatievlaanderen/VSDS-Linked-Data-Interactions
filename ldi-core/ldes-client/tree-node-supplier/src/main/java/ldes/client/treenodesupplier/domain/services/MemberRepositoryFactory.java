@@ -7,6 +7,9 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistence
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlMemberRepository;
+import ldes.client.treenodesupplier.repository.sql.SqlMemberRepositoryAlt;
+
+import javax.persistence.EntityManager;
 
 public class MemberRepositoryFactory {
 
@@ -27,6 +30,13 @@ public class MemberRepositoryFactory {
 			case MEMORY -> new InMemoryMemberRepository();
 			case POSTGRES -> new SqlMemberRepository(instanceName,
 					PostgresEntityManagerFactory.getInstance(instanceName, properties.getProperties()));
+		};
+	}
+
+	public static MemberRepository getMemberRepository(StatePersistenceStrategy statePersistenceStrategy, EntityManager entityManager) {
+		return switch (statePersistenceStrategy) {
+			case SQLITE, POSTGRES -> new SqlMemberRepositoryAlt(entityManager);
+			case MEMORY -> new InMemoryMemberRepository();
 		};
 	}
 }

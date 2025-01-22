@@ -19,12 +19,13 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.opentest4j.AssertionFailedError;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorRelationships.DATA_RELATIONSHIP;
-import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.STATE_PERSISTENCE_STRATEGY;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.apache.jena.rdf.model.ResourceFactory.createProperty;
@@ -61,7 +62,7 @@ class LdesClientProcessorTest {
 	}
 
 	@AfterEach
-	void tearDown() {
+	void tearDown() throws SQLException {
 		((LdesClientProcessor) testRunner.getProcessor()).onRemoved();
 	}
 
@@ -360,10 +361,7 @@ class LdesClientProcessorTest {
 			return Stream.of(
 					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "MEMORY")),
 					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "SQLITE")),
-					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "POSTGRES",
-							POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
-							POSTGRES_USERNAME, postgreSQLContainer.getUsername(),
-							POSTGRES_PASSWORD, postgreSQLContainer.getPassword()))
+					Arguments.of(Map.of(STATE_PERSISTENCE_STRATEGY, "POSTGRES"))
 			);
 		}
 	}

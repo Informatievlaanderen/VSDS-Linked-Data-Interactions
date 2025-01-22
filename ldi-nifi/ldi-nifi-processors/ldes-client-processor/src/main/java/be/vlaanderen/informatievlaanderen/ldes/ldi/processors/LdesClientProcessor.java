@@ -1,12 +1,16 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
+import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateUtil;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.NiFiDBCPDataSource;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.RequestExecutorSupplier;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.wrappers.MemberSupplierWrappersBuilder;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.executor.RequestExecutor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.eventstreamproperties.EventStreamPropertiesFetcher;
 import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
 import ldes.client.eventstreamproperties.valueobjects.PropertiesRequest;
@@ -24,6 +28,7 @@ import org.apache.nifi.annotation.lifecycle.OnRemoved;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.state.Scope;
+import org.apache.nifi.dbcp.DBCPService;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
@@ -66,6 +71,7 @@ public class LdesClientProcessor extends AbstractProcessor {
 				DATA_SOURCE_FORMAT,
 				DATA_DESTINATION_FORMAT,
 				STATE_PERSISTENCE_STRATEGY,
+				DBCP_SERVICE,
 				KEEP_STATE,
 				USE_EXACTLY_ONCE_FILTER,
 				USE_VERSION_MATERIALISATION,
@@ -80,9 +86,6 @@ public class LdesClientProcessor extends AbstractProcessor {
 				RETRIES_ENABLED,
 				MAX_RETRIES,
 				STATUSES_TO_RETRY,
-				POSTGRES_URL,
-				POSTGRES_USERNAME,
-				POSTGRES_PASSWORD,
 				RESTRICT_TO_MEMBERS,
 				STREAM_TIMESTAMP_PATH_PROPERTY,
 				STREAM_VERSION_OF_PROPERTY,
@@ -97,17 +100,20 @@ public class LdesClientProcessor extends AbstractProcessor {
 		final RequestExecutorSupplier requestExecutorSupplier = new RequestExecutorSupplier();
 		final RequestExecutor requestExecutor = requestExecutorSupplier.getRequestExecutor(context);
 		LdesMetaData ldesMetaData = new LdesMetaData(dataSourceUrls, dataSourceFormat);
-		StatePersistence statePersistence = new StatePersistenceFactory().getStatePersistence(context);
+		LdesClientRepositories ldesClientRepositories = getClientRepositories(context);
+
 		eventStreamProperties = fetchEventStreamProperties(ldesMetaData, requestExecutor);
 		TimestampExtractor timestampExtractor = new TimestampFromPathExtractor(createProperty(eventStreamProperties.getTimestampPath()));
-		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor,
+		TreeNodeProcessor treeNodeProcessor = new TreeNodeProcessor(ldesMetaData, ldesClientRepositories, requestExecutor,
 				timestampExtractor, clientStatusConsumer());
 		final MemberSupplier baseMemberSupplier = new MemberSupplierImpl(treeNodeProcessor, stateKept(context));
 		memberSupplier = new MemberSupplierWrappersBuilder()
 				.withContext(context)
 				.withEventStreamProperties(eventStreamProperties)
+				.withClientRepositories(ldesClientRepositories)
 				.build()
 				.wrapMemberSupplier(baseMemberSupplier);
+
 		memberSupplier.init();
 		LOGGER.info("LDES Client processor {} configured to follow (sub)streams {} (expected LDES source format: {})",
 				context.getName(), dataSourceUrls, dataSourceFormat);
@@ -165,6 +171,19 @@ public class LdesClientProcessor extends AbstractProcessor {
 
 	private Consumer<ClientStatus> clientStatusConsumer() {
 		return status -> LOGGER.info("LDES Client is now {}", status);
+	}
+
+	private LdesClientRepositories getClientRepositories(ProcessContext context) {
+		final DBCPService dbcpService = context.getProperty(DBCP_SERVICE).asControllerService(DBCPService.class);
+		final NiFiDBCPDataSource dataSource = new NiFiDBCPDataSource(dbcpService);
+		final StatePersistenceStrategy state = getStatePersistenceStrategy(context);
+
+		boolean keepState = switch (state) {
+			case MEMORY -> false;
+			case SQLITE, POSTGRES -> PersistenceProperties.stateKept(context);
+		};
+		var entityManager = HibernateUtil.createEntityManagerFromDatasource(dataSource, keepState);
+		return LdesClientRepositories.from(state, entityManager);
 	}
 
 }

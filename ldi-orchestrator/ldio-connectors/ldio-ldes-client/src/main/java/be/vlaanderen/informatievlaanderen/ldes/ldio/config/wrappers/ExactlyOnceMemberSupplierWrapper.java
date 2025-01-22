@@ -1,9 +1,9 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config.wrappers;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.StatePersistenceFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdesClientRepositoriesFactory;
 import ldes.client.treenodesupplier.domain.services.MemberSupplierWrapper;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.domain.valueobject.LdesClientRepositories;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
 import ldes.client.treenodesupplier.filters.MemberFilter;
 import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
@@ -27,7 +27,7 @@ public class ExactlyOnceMemberSupplierWrapper extends MemberSupplierWrapper {
 	}
 
 	private MemberFilter createExactlyOnceFilter() {
-		final StatePersistence statePersistence = new StatePersistenceFactory().getStatePersistence(properties.getProperties());
-		return new ExactlyOnceFilter(statePersistence.getMemberIdRepository(), properties.isKeepStateEnabled());
+		final LdesClientRepositories ldesClientRepositories = new LdesClientRepositoriesFactory().getStatePersistence(properties.getProperties());
+		return new ExactlyOnceFilter(ldesClientRepositories.memberIdRepository(), properties.isKeepStateEnabled());
 	}
 }

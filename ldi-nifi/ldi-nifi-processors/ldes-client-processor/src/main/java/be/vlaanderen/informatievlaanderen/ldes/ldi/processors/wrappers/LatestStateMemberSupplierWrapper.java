@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.wrappers;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.StatePersistenceFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
 import ldes.client.treenodesupplier.domain.services.MemberSupplierWrapper;
@@ -16,10 +15,12 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Ldes
 
 public class LatestStateMemberSupplierWrapper extends MemberSupplierWrapper {
 	private final ProcessContext context;
+	private final MemberVersionRepository memberVersionRepository;
 	private final EventStreamProperties eventStreamProperties;
 
-	public LatestStateMemberSupplierWrapper(ProcessContext context, EventStreamProperties eventStreamProperties) {
+	public LatestStateMemberSupplierWrapper(ProcessContext context, MemberVersionRepository memberVersionRepository, EventStreamProperties eventStreamProperties) {
 		this.context = context;
+		this.memberVersionRepository = memberVersionRepository;
 		this.eventStreamProperties = eventStreamProperties;
 	}
 
@@ -34,9 +35,6 @@ public class LatestStateMemberSupplierWrapper extends MemberSupplierWrapper {
 	}
 
 	private MemberFilter createMemberFilter() {
-		final MemberVersionRepository memberVersionRepository = new StatePersistenceFactory()
-				.getStatePersistence(context)
-				.getMemberVersionRepository();
 		final boolean keepState = PersistenceProperties.stateKept(context);
 		return new LatestStateFilter(memberVersionRepository, keepState, eventStreamProperties.getTimestampPath(), eventStreamProperties.getVersionOfPath());
 	}

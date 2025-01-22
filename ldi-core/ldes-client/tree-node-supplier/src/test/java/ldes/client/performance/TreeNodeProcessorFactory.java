@@ -12,8 +12,8 @@ import ldes.client.treenodesupplier.domain.services.MemberIdRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.MemberVersionRepositoryFactory;
 import ldes.client.treenodesupplier.domain.services.TreeNodeRecordRepositoryFactory;
+import ldes.client.treenodesupplier.domain.valueobject.LdesClientRepositories;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
@@ -31,14 +31,14 @@ class TreeNodeProcessorFactory {
 
 	TreeNodeProcessor createTreeNodeProcessor(StatePersistenceStrategy statePersistenceStrategy, List<String> url, Lang sourceFormat) {
 		final LdesMetaData ldesMetaData = new LdesMetaData(url, sourceFormat);
-		final StatePersistence statePersistence = switch (statePersistenceStrategy) {
+		final LdesClientRepositories ldesClientRepositories = switch (statePersistenceStrategy) {
 			case MEMORY -> createInMemoryStatePersistence();
 			case SQLITE -> createSqliteStatePersistence();
 			case POSTGRES -> createPostgresPersistence();
 		};
 		final RequestExecutor requestExecutor = requestExecutorFactory.createNoAuthExecutor();
 		final TimestampExtractor timestampExtractor = new TimestampFromCurrentTimeExtractor();
-		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor, Mockito.mock(Consumer.class));
+		return new TreeNodeProcessor(ldesMetaData, ldesClientRepositories, requestExecutor, timestampExtractor, Mockito.mock(Consumer.class));
 	}
 
 	private PostgreSQLContainer startPostgresContainer() {
@@ -50,7 +50,7 @@ class TreeNodeProcessorFactory {
 		return postgreSQLContainer;
 	}
 
-	private StatePersistence createSqliteStatePersistence() {
+	private LdesClientRepositories createSqliteStatePersistence() {
 		final SqliteProperties sqliteProperties = new SqliteProperties("instanceName", false);
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE,
 				sqliteProperties, "instanceName");
@@ -61,10 +61,10 @@ class TreeNodeProcessorFactory {
 		MemberVersionRepository memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.SQLITE,
 				sqliteProperties, "instanceName");
 
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
+		return new LdesClientRepositories(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
-	private StatePersistence createPostgresPersistence() {
+	private LdesClientRepositories createPostgresPersistence() {
 		final PostgreSQLContainer postgreSQLContainer = startPostgresContainer();
 
 		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
@@ -82,10 +82,10 @@ class TreeNodeProcessorFactory {
 				StatePersistenceStrategy.POSTGRES,
 				postgresProperties, "instanceName");
 
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
+		return new LdesClientRepositories(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
-	private StatePersistence createInMemoryStatePersistence() {
+	private LdesClientRepositories createInMemoryStatePersistence() {
 		final SqliteProperties sqliteProperties = new SqliteProperties("instanceName", false);
 		MemberRepository memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY,
 				sqliteProperties, "instanceName");
@@ -95,7 +95,7 @@ class TreeNodeProcessorFactory {
 				sqliteProperties, "instanceName");
 		MemberVersionRepository memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.MEMORY,
 				sqliteProperties, "instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
+		return new LdesClientRepositories(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 }

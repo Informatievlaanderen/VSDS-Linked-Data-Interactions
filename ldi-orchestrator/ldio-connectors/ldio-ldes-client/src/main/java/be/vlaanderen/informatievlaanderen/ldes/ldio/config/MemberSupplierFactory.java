@@ -10,8 +10,8 @@ import ldes.client.eventstreamproperties.EventStreamPropertiesFetcher;
 import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
 import ldes.client.eventstreamproperties.valueobjects.PropertiesRequest;
 import ldes.client.treenodesupplier.TreeNodeProcessor;
+import ldes.client.treenodesupplier.domain.valueobject.LdesClientRepositories;
 import ldes.client.treenodesupplier.domain.valueobject.LdesMetaData;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplier;
 import ldes.client.treenodesupplier.membersuppliers.MemberSupplierImpl;
 import org.slf4j.Logger;
@@ -51,10 +51,10 @@ public class MemberSupplierFactory {
 	}
 
 	private TreeNodeProcessor getTreeNodeProcessor(EventStreamProperties eventStreamProperties) {
-		final StatePersistence statePersistence = new StatePersistenceFactory().getStatePersistence(clientProperties.getProperties());
+		final LdesClientRepositories ldesClientRepositories = new LdesClientRepositoriesFactory().getStatePersistence(clientProperties.getProperties());
 		LdesMetaData ldesMetaData = new LdesMetaData(clientProperties.getUrls(), clientProperties.getSourceFormat());
 		TimestampExtractor timestampExtractor = new TimestampFromPathExtractor(createProperty(eventStreamProperties.getTimestampPath()));
-		return new TreeNodeProcessor(ldesMetaData, statePersistence, requestExecutor, timestampExtractor, clientStatusConsumer);
+		return new TreeNodeProcessor(ldesMetaData, ldesClientRepositories, requestExecutor, timestampExtractor, clientStatusConsumer);
 	}
 
 }

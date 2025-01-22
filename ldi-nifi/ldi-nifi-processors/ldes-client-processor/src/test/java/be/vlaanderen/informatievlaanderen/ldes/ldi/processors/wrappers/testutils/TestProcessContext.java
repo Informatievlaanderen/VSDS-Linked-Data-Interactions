@@ -14,6 +14,7 @@ public class TestProcessContext extends MockProcessContext {
 
 
 	public TestProcessContext(boolean useExactlyOnceFilter, boolean useVersionMaterialisation, boolean useLatestStateFilter) {
+		super();
 		properties = Map.of(
 				LdesProcessorProperties.USE_EXACTLY_ONCE_FILTER, String.valueOf(useExactlyOnceFilter),
 				LdesProcessorProperties.USE_VERSION_MATERIALISATION, String.valueOf(useVersionMaterialisation),

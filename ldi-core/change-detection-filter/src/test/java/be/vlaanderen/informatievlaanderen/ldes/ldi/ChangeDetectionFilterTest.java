@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,7 +19,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ChangeDetectionFilterTest {
@@ -31,7 +30,7 @@ class ChangeDetectionFilterTest {
 
 	@BeforeEach
 	void setUp() {
-		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository, false);
+		changeDetectionFilter = new ChangeDetectionFilter(hashedStateMemberRepository);
 	}
 
 	@Test
@@ -70,18 +69,6 @@ class ChangeDetectionFilterTest {
 
 		assertThat(filteredModel).isSameAs(modelToFilter);
 	}
-
-	@ParameterizedTest
-	@ValueSource(booleans = {true, false})
-	void given_KeepState_when_DestroyFilterState_then_VerifyRepositoryDestroy(boolean keepState) {
-		final int expectedDestroyRepositoryInvocations = keepState ? 0 : 1;
-		final var filter = new ChangeDetectionFilter(hashedStateMemberRepository, keepState);
-
-		filter.destroyState();
-
-		verify(hashedStateMemberRepository, times(expectedDestroyRepositoryInvocations)).destroyState();
-	}
-
 
 	private static Stream<Arguments> supplyInvalidTriples() {
 		final String twoStateObjects = """

@@ -1,6 +1,7 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.dbcp.DBCPService;
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.junit.jupiter.api.AfterAll;
@@ -23,6 +24,7 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Chan
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.ChangeDetectionFilterRelationships.NEW_STATE_RECEIVED;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class ChangeDetectionFilterProcessorTest {
 	private TestRunner testRunner;
@@ -80,12 +82,10 @@ class ChangeDetectionFilterProcessorTest {
 					Map.of(STATE_PERSISTENCE_STRATEGY, "MEMORY",
 							KEEP_STATE, "false"),
 					Map.of(STATE_PERSISTENCE_STRATEGY, "SQLITE",
-							SQLITE_DIRECTORY, "change-detection-filter",
-							KEEP_STATE, "false"),
+							KEEP_STATE, "false",
+							DBCP_SERVICE, mock(DBCPService.class)),
 					Map.of(STATE_PERSISTENCE_STRATEGY, "POSTGRES",
-							POSTGRES_URL, postgreSQLContainer.getJdbcUrl(),
-							POSTGRES_USERNAME, postgreSQLContainer.getUsername(),
-							POSTGRES_PASSWORD, postgreSQLContainer.getPassword(),
+							DBCP_SERVICE, mock(DBCPService.class),
 							KEEP_STATE, "false")
 					).map(Arguments::of);
 		}

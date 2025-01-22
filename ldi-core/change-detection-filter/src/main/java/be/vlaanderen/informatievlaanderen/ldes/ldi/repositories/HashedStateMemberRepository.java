@@ -18,5 +18,5 @@ public interface HashedStateMemberRepository {
 	/**
 	 * Clean up the resources, should be called when the repository is not used anymore
 	 */
-	void destroyState();
+	void close();
 }

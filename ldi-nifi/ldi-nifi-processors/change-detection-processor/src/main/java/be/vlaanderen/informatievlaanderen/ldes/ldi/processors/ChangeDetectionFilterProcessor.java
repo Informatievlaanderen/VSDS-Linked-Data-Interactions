@@ -44,10 +44,7 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 		return List.of(
 				DATA_SOURCE_FORMAT,
 				STATE_PERSISTENCE_STRATEGY,
-				POSTGRES_URL,
-				POSTGRES_USERNAME,
-				POSTGRES_PASSWORD,
-				SQLITE_DIRECTORY,
+				DBCP_SERVICE,
 				KEEP_STATE
 		);
 	}
@@ -56,7 +53,7 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 	public void onScheduled(final ProcessContext context) {
 		final HashedStateMemberRepository repository = HashedMemberRepositoryFactory.getRepository(context);
 		final boolean keepState = PersistenceProperties.stateKept(context);
-		changeDetectionFilter = new ChangeDetectionFilter(repository, keepState);
+		changeDetectionFilter = new ChangeDetectionFilter(repository);
 	}
 
 	@Override
@@ -85,6 +82,6 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		changeDetectionFilter.destroyState();
+		changeDetectionFilter.close();
 	}
 }

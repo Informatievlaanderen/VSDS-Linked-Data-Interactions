@@ -1,10 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio.config.wrappers;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioLdesClientProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.config.StatePersistenceFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdesClientRepositoriesFactory;
 import ldes.client.eventstreamproperties.valueobjects.EventStreamProperties;
 import ldes.client.treenodesupplier.domain.services.MemberSupplierWrapper;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.domain.valueobject.LdesClientRepositories;
 import ldes.client.treenodesupplier.filters.LatestStateFilter;
 import ldes.client.treenodesupplier.filters.MemberFilter;
 import ldes.client.treenodesupplier.membersuppliers.FilteredMemberSupplier;
@@ -30,7 +30,7 @@ public class LatestStateMemberSupplierWrapper extends MemberSupplierWrapper {
 	}
 
 	private MemberFilter createLatestStateFilter() {
-		final StatePersistence statePersistence = new StatePersistenceFactory().getStatePersistence(ldioLdesClientProperties.getProperties());
-		return new LatestStateFilter(statePersistence.getMemberVersionRepository(), ldioLdesClientProperties.isKeepStateEnabled(), eventStreamProperties.getTimestampPath(), eventStreamProperties.getVersionOfPath());
+		final LdesClientRepositories ldesClientRepositories = new LdesClientRepositoriesFactory().getStatePersistence(ldioLdesClientProperties.getProperties());
+		return new LatestStateFilter(ldesClientRepositories.memberVersionRepository(), ldioLdesClientProperties.isKeepStateEnabled(), eventStreamProperties.getTimestampPath(), eventStreamProperties.getVersionOfPath());
 	}
 }

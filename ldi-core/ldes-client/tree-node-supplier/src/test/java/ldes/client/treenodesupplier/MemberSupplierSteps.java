@@ -103,7 +103,7 @@ public class MemberSupplierSteps {
 	@When("I create a Processor")
 	public void iCreateAProcessor() {
 		treeNodeProcessor = new TreeNodeProcessor(ldesMetaData,
-				new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository),
+				new LdesClientRepositories(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository),
 				requestExecutorFactory.createNoAuthExecutor(),
 				timestampPath.isEmpty() ? new TimestampFromCurrentTimeExtractor() : new TimestampFromPathExtractor(createProperty(timestampPath)),
 				clientStatusConsumer);
@@ -115,7 +115,7 @@ public class MemberSupplierSteps {
 	}
 
 	@And("a StatePersistenceStrategy MEMORY")
-	public StatePersistence aMemoryStatePersistenceStrategy() {
+	public LdesClientRepositories aMemoryStatePersistenceStrategy() {
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.MEMORY, null,
 				"instanceName");
 		memberIdRepository = MemberIdRepositoryFactory.getMemberIdRepository(StatePersistenceStrategy.MEMORY, null,
@@ -124,11 +124,11 @@ public class MemberSupplierSteps {
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.MEMORY, null, "instanceName");
 		memberVersionRepository = MemberVersionRepositoryFactory.getMemberVersionRepositoryFactory(StatePersistenceStrategy.MEMORY, null,
 				"instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
+		return new LdesClientRepositories(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@And("a StatePersistenceStrategy SQLITE")
-	public StatePersistence aSqliteStatePersistenceStrategy() {
+	public LdesClientRepositories aSqliteStatePersistenceStrategy() {
 		final SqliteProperties sqliteProperties = new SqliteProperties("instanceName", false);
 		memberRepository = MemberRepositoryFactory.getMemberRepository(StatePersistenceStrategy.SQLITE, sqliteProperties,
 				"instanceName");
@@ -138,11 +138,11 @@ public class MemberSupplierSteps {
 				.getTreeNodeRecordRepository(StatePersistenceStrategy.SQLITE, sqliteProperties, "instanceName");
 		memberVersionRepository = MemberVersionRepositoryFactory
 				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.SQLITE, sqliteProperties, "instanceName");
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
+		return new LdesClientRepositories(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@And("a StatePersistenceStrategy POSTGRES")
-	public StatePersistence aPostgresStatePersistenceStrategy() {
+	public LdesClientRepositories aPostgresStatePersistenceStrategy() {
 		postgreSQLContainer = new PostgreSQLContainer<>("postgres:11.1")
 				.withDatabaseName("integration-test-client-persistence")
 				.withUsername("sa")
@@ -162,7 +162,7 @@ public class MemberSupplierSteps {
 				.getMemberVersionRepositoryFactory(StatePersistenceStrategy.POSTGRES, postgresProperties,
 				"instanceName");
 
-		return new StatePersistence(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
+		return new LdesClientRepositories(memberRepository, memberIdRepository, treeNodeRecordRepository, memberVersionRepository);
 	}
 
 	@Then("MemberSupplier is destroyed")
@@ -191,7 +191,7 @@ public class MemberSupplierSteps {
 		memberSupplier.init();
 	}
 
-	private StatePersistence defineStatePersistence(String persistenceStrategy) {
+	private LdesClientRepositories defineStatePersistence(String persistenceStrategy) {
 		return switch (persistenceStrategy) {
 			case "POSTGRES" -> aPostgresStatePersistenceStrategy();
 			case "SQLITE" -> aSqliteStatePersistenceStrategy();

@@ -2,7 +2,7 @@ package be.vlaanderen.informatievlaanderen.ldes.ldio.config;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.exception.ConfigPropertyMissingException;
-import ldes.client.treenodesupplier.domain.valueobject.StatePersistence;
+import ldes.client.treenodesupplier.domain.valueobject.LdesClientRepositories;
 import ldes.client.treenodesupplier.repository.MemberRepository;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberRepository;
@@ -26,9 +26,9 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class StatePersistenceFactoryTest {
+class LdesClientRepositoriesFactoryTest {
 
-	private final StatePersistenceFactory statePersistenceFactory = new StatePersistenceFactory();
+	private final LdesClientRepositoriesFactory ldesClientRepositoriesFactory = new LdesClientRepositoriesFactory();
 	private static PostgreSQLContainer postgreSQLContainer;
 
 	@BeforeAll
@@ -50,11 +50,11 @@ class StatePersistenceFactoryTest {
 	void when_stateIsAllowedValue_then_StatePersistenceIsCreated(ComponentProperties componentProperties,
 	                                                             Class<MemberRepository> expectedMemberRepositoryClass,
 	                                                             Class<TreeNodeRecordRepository> expectedTreeNodeRecordRepositoryClass) {
-		StatePersistence statePersistence = statePersistenceFactory.getStatePersistence(componentProperties);
+		LdesClientRepositories ldesClientRepositories = ldesClientRepositoriesFactory.getStatePersistence(componentProperties);
 
-		MemberRepository memberRepository = statePersistence.getMemberRepository();
+		MemberRepository memberRepository = ldesClientRepositories.memberRepository();
 		assertEquals(expectedMemberRepositoryClass, memberRepository.getClass());
-		TreeNodeRecordRepository treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
+		TreeNodeRecordRepository treeNodeRecordRepository = ldesClientRepositories.treeNodeRecordRepository();
 		assertEquals(expectedTreeNodeRecordRepositoryClass, treeNodeRecordRepository.getClass());
 
 		memberRepository.destroyState();
@@ -65,7 +65,7 @@ class StatePersistenceFactoryTest {
 	void when_stateIsPostgres_and_additionalPropertiesAreMissing_then_throwException() {
 		ComponentProperties props = new ComponentProperties("pipelineName", "", Map.of(STATE, "postgres"));
 
-		assertThrows(ConfigPropertyMissingException.class, () -> statePersistenceFactory.getStatePersistence(props));
+		assertThrows(ConfigPropertyMissingException.class, () -> ldesClientRepositoriesFactory.getStatePersistence(props));
 	}
 
 	private static class ComponentPropertiesArgumentsProvider implements ArgumentsProvider {
