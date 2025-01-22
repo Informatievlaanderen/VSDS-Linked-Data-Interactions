@@ -6,7 +6,7 @@
     <parent>
         <groupId>be.vlaanderen.informatievlaanderen.ldes.ldio</groupId>
         <artifactId>ldio-connectors</artifactId>
-        <version>2.12.0-SNAPSHOT</version>
+        <version>2.12.0</version>
     </parent>
 
     <artifactId>ldio-skolemisation-transformer</artifactId>
@@ -22,17 +22,6 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven-jar-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

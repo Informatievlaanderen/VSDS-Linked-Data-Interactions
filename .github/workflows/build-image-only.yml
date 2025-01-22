@@ -70,6 +70,7 @@ jobs:
             **/*with-dependencies.jar
             **/*application.jar
             **/ldes-discoverer.jar
+            **/ldio-instrumentation.jar
   
 
   create-ldio-image:
