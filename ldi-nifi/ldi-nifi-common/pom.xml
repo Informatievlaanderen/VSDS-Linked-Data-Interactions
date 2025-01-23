@@ -25,6 +25,11 @@
             <version>${nifi-dbcp.version}</version>
             <type>nar</type>
         </dependency>
+        <dependency>
+            <groupId>org.apache.nifi</groupId>
+            <artifactId>nifi-dbcp-service</artifactId>
+            <version>${nifi-dbcp.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.jena</groupId>

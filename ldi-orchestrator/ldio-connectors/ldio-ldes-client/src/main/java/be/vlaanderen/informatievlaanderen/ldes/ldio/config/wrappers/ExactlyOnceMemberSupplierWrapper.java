@@ -27,7 +27,7 @@ public class ExactlyOnceMemberSupplierWrapper extends MemberSupplierWrapper {
 	}
 
 	private MemberFilter createExactlyOnceFilter() {
-		final LdesClientRepositories ldesClientRepositories = new LdesClientRepositoriesFactory().getStatePersistence(properties.getProperties());
+		final LdesClientRepositories ldesClientRepositories = LdesClientRepositoriesFactory.getLdesClientRepositories(properties.getProperties());
 		return new ExactlyOnceFilter(ldesClientRepositories.memberIdRepository(), properties.isKeepStateEnabled());
 	}
 }

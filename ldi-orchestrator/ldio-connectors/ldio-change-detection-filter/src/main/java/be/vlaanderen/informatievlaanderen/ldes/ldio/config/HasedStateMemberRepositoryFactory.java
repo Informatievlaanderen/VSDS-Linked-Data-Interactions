@@ -49,6 +49,8 @@ public class HasedStateMemberRepositoryFactory {
 	private static SqliteProperties createSqliteProperties(ComponentProperties properties) {
 		final String pipelineName = properties.getPipelineName();
 		final boolean keepState = properties.getOptionalBoolean(PersistenceProperties.KEEP_STATE).orElse(DEFAULT_KEEP_STATE);
-		return new SqliteProperties(pipelineName, keepState);
+		return properties.getOptionalProperty(PersistenceProperties.SQLITE_DIRECTORY)
+				.map(directory -> new SqliteProperties(directory, pipelineName, keepState))
+				.orElse(new SqliteProperties(pipelineName, keepState));
 	}
 }

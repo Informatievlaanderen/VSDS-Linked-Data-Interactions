@@ -1,8 +1,8 @@
 package ldes.client.treenodesupplier.repository.sql;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.MemberVersionRecordEntity;
 import ldes.client.treenodesupplier.domain.entities.MemberVersionRecord;
+import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.mapper.MemberVersionRecordEntityMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,23 +24,17 @@ import static org.mockito.Mockito.*;
 class SqlMemberVersionRepositoryTest {
 
     @Mock
-    private EntityManagerFactory entityManagerFactory;
-
-    @Mock
     private EntityManager entityManager;
 
-    private final String instanceName = "testInstance";
-
-    private SqlMemberVersionRepository repository;
+	private MemberVersionRepository repository;
 
     @BeforeEach
     void setUp() {
-        repository = new SqlMemberVersionRepository(entityManagerFactory, instanceName);
+	    repository = new SqlMemberVersionRepository(entityManager);
     }
 
     @Test
     void test_addMemberVersion() {
-        when(entityManagerFactory.getEntityManager()).thenReturn(entityManager);
         MemberVersionRecord actual = new MemberVersionRecord("versionOf", LocalDateTime.now());
         MemberVersionRecordEntity entity = MemberVersionRecordEntityMapper.fromMemberVersionRecord(actual);
 
@@ -51,7 +45,6 @@ class SqlMemberVersionRepositoryTest {
 
     @Test
     void whenNoOlderVersionPresent_isVersionAfterTimestampIsTrue() {
-        when(entityManagerFactory.getEntityManager()).thenReturn(entityManager);
         TypedQuery<MemberVersionRecordEntity> mockedQuery = mock();
         when(entityManager.createNamedQuery("MemberVersion.findMemberVersionAfterTimestamp", MemberVersionRecordEntity.class)).thenReturn(mockedQuery);
         when(mockedQuery.setParameter(anyString(), any())).thenReturn(mockedQuery);
@@ -65,7 +58,6 @@ class SqlMemberVersionRepositoryTest {
 
     @Test
     void whenOlderVersionIsPresent_isVersionAfterTimestampIsFalse() {
-        when(entityManagerFactory.getEntityManager()).thenReturn(entityManager);
         final String versionOf = "versionOf";
         MemberVersionRecordEntity olderVersion = new MemberVersionRecordEntity(versionOf, LocalDateTime.now().minusDays(1));
         MemberVersionRecord memberVersion = new MemberVersionRecord(versionOf, LocalDateTime.now());
@@ -78,12 +70,5 @@ class SqlMemberVersionRepositoryTest {
         boolean actual = repository.isVersionAfterTimestamp(memberVersion);
 
         assertThat(actual).isFalse();
-    }
-
-    @Test
-    void test_destroyState() {
-        repository.destroyState();
-
-        verify(entityManagerFactory).destroyState(instanceName);
     }
 }

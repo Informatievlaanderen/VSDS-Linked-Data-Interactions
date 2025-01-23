@@ -51,7 +51,7 @@ public class MemberSupplierFactory {
 	}
 
 	private TreeNodeProcessor getTreeNodeProcessor(EventStreamProperties eventStreamProperties) {
-		final LdesClientRepositories ldesClientRepositories = new LdesClientRepositoriesFactory().getStatePersistence(clientProperties.getProperties());
+		final LdesClientRepositories ldesClientRepositories = LdesClientRepositoriesFactory.getLdesClientRepositories(clientProperties.getProperties());
 		LdesMetaData ldesMetaData = new LdesMetaData(clientProperties.getUrls(), clientProperties.getSourceFormat());
 		TimestampExtractor timestampExtractor = new TimestampFromPathExtractor(createProperty(eventStreamProperties.getTimestampPath()));
 		return new TreeNodeProcessor(ldesMetaData, ldesClientRepositories, requestExecutor, timestampExtractor, clientStatusConsumer);

@@ -27,8 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LdesClientRepositoriesFactoryTest {
-
-	private final LdesClientRepositoriesFactory ldesClientRepositoriesFactory = new LdesClientRepositoriesFactory();
 	private static PostgreSQLContainer postgreSQLContainer;
 
 	@BeforeAll
@@ -50,7 +48,7 @@ class LdesClientRepositoriesFactoryTest {
 	void when_stateIsAllowedValue_then_StatePersistenceIsCreated(ComponentProperties componentProperties,
 	                                                             Class<MemberRepository> expectedMemberRepositoryClass,
 	                                                             Class<TreeNodeRecordRepository> expectedTreeNodeRecordRepositoryClass) {
-		LdesClientRepositories ldesClientRepositories = ldesClientRepositoriesFactory.getStatePersistence(componentProperties);
+		LdesClientRepositories ldesClientRepositories = LdesClientRepositoriesFactory.getLdesClientRepositories(componentProperties);
 
 		MemberRepository memberRepository = ldesClientRepositories.memberRepository();
 		assertEquals(expectedMemberRepositoryClass, memberRepository.getClass());
@@ -65,7 +63,7 @@ class LdesClientRepositoriesFactoryTest {
 	void when_stateIsPostgres_and_additionalPropertiesAreMissing_then_throwException() {
 		ComponentProperties props = new ComponentProperties("pipelineName", "", Map.of(STATE, "postgres"));
 
-		assertThrows(ConfigPropertyMissingException.class, () -> ldesClientRepositoriesFactory.getStatePersistence(props));
+		assertThrows(ConfigPropertyMissingException.class, () -> LdesClientRepositoriesFactory.getLdesClientRepositories(props));
 	}
 
 	private static class ComponentPropertiesArgumentsProvider implements ArgumentsProvider {
@@ -75,7 +73,8 @@ class LdesClientRepositoriesFactoryTest {
 					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "memory")),
 							InMemoryMemberRepository.class,
 							InMemoryTreeNodeRecordRepository.class),
-					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "sqlite")),
+					Arguments.of(new ComponentProperties("pipelineName", "", Map.of(STATE, "sqlite",
+									SQLITE_DIRECTORY, "target")),
 							SqlMemberRepository.class,
 							SqlTreeNodeRepository.class),
 					Arguments.of(

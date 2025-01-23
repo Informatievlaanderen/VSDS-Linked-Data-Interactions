@@ -1,14 +1,15 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config;
 
-import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.components.PropertyValue;
-import org.apache.nifi.mock.MockProcessContext;
-import org.apache.nifi.util.MockPropertyValue;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.LdesClientProcessor;
+import org.apache.nifi.util.MockProcessContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.DATA_SOURCE_URLS;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.LdesProcessorProperties.getDataSourceUrl;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RequestExecutorProperties.RETRIES_ENABLED;
+import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.RequestExecutorProperties.STATUSES_TO_RETRY;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LdesProcessorPropertiesTest {
@@ -16,17 +17,15 @@ class LdesProcessorPropertiesTest {
 	@Test
 	void test_retriesEnabled() {
 		// default is true
-		assertTrue(RequestExecutorProperties.retriesEnabled(getMockContext(null)));
-		assertTrue(RequestExecutorProperties.retriesEnabled(getMockContext("true")));
-		assertTrue(RequestExecutorProperties.retriesEnabled(getMockContext("trUe")));
-		assertFalse(RequestExecutorProperties.retriesEnabled(getMockContext("false")));
-		assertFalse(RequestExecutorProperties.retriesEnabled(getMockContext("FALSE")));
+		assertTrue(RequestExecutorProperties.retriesEnabled(getMockContextRetriesEnabled("true")));
+		assertTrue(RequestExecutorProperties.retriesEnabled(getMockContextRetriesEnabled("trUe")));
+		assertFalse(RequestExecutorProperties.retriesEnabled(getMockContextRetriesEnabled("false")));
+		assertFalse(RequestExecutorProperties.retriesEnabled(getMockContextRetriesEnabled("FALSE")));
 	}
 
 	@Test
 	void test_getStatusesToRetry() {
-		assertTrue(RequestExecutorProperties.getStatusesToRetry(getMockContext(null)).isEmpty());
-		List<Integer> statusesToRetry = RequestExecutorProperties.getStatusesToRetry(getMockContext("200, 204"));
+		List<Integer> statusesToRetry = RequestExecutorProperties.getStatusesToRetry(getMockContextStatuses("200, 204"));
 		assertTrue(statusesToRetry.contains(200));
 		assertTrue(statusesToRetry.contains(204));
 		assertFalse(statusesToRetry.contains(500));
@@ -34,21 +33,33 @@ class LdesProcessorPropertiesTest {
 
 	@Test
 	void test_getDatasourceUrl() {
-		assertDoesNotThrow(() -> getMockContext("http://localhost/endpoint"));
-		assertDoesNotThrow(() -> getMockContext("http://localhost/endpoint,http://localhost/other"));
-		var singleInvalidUri = getMockContext("inv alid");
+		assertDoesNotThrow(() -> getMockContextDatasource("http://localhost/endpoint"));
+		assertDoesNotThrow(() -> getMockContextDatasource("http://localhost/endpoint,http://localhost/other"));
+		var singleInvalidUri = getMockContextDatasource("inv alid");
 		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(singleInvalidUri));
-		var multiInvalidUri = getMockContext("inv alid,http://localhost/other");
+		var multiInvalidUri = getMockContextDatasource("inv alid,http://localhost/other");
 		assertThrows(IllegalArgumentException.class, () -> getDataSourceUrl(multiInvalidUri));
 	}
 
-	private static MockProcessContext getMockContext(String value) {
-		return new MockProcessContext() {
-			@Override
-			public PropertyValue getProperty(PropertyDescriptor descriptor) {
-				return new MockPropertyValue(value);
-			}
-		};
+	private MockProcessContext getMockContextRetriesEnabled(String retriesEnabled) {
+		// Create a MockProcessContext with the TestRunner
+		MockProcessContext context = new MockProcessContext(new LdesClientProcessor());
+		context.setProperty(RETRIES_ENABLED, retriesEnabled);
+		return context;
+	}
+
+	private MockProcessContext getMockContextStatuses(String val) {
+		// Create a MockProcessContext with the TestRunner
+		MockProcessContext context = new MockProcessContext(new LdesClientProcessor());
+		context.setProperty(STATUSES_TO_RETRY, val);
+		return context;
+	}
+
+	private MockProcessContext getMockContextDatasource(String val) {
+		// Create a MockProcessContext with the TestRunner
+		MockProcessContext context = new MockProcessContext(new LdesClientProcessor());
+		context.setProperty(DATA_SOURCE_URLS, val);
+		return context;
 	}
 
 }

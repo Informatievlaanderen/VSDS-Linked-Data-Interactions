@@ -26,7 +26,7 @@ public class HashedMemberRepositoryFactory {
 				final NiFiDBCPDataSource dataSource = new NiFiDBCPDataSource(dbcpService);
 				final boolean keepState = PersistenceProperties.stateKept(context);
 
-				var entityManager = HibernateUtil.createEntityManagerFromDatasource(dataSource, keepState);
+				var entityManager = HibernateUtil.createEntityManagerFromDatasource(dataSource, keepState, state);
 
 				yield new SqlHashedStateMemberRepository(entityManager);
 			}

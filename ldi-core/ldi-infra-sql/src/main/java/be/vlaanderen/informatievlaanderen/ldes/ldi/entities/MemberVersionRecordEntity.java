@@ -1,11 +1,11 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Table(name = "member_version")
+@NamedQuery(name = "MemberVersion.findMemberVersionAfterTimestamp", query = "SELECT m FROM MemberVersionRecordEntity m WHERE versionOf = :versionOf AND timestamp >= :timestamp")
 public class MemberVersionRecordEntity {
     @Id
     private String versionOf;

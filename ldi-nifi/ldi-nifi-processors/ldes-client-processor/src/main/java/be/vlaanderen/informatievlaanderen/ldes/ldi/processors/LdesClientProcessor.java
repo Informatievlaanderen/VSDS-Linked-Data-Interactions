@@ -178,12 +178,13 @@ public class LdesClientProcessor extends AbstractProcessor {
 		final NiFiDBCPDataSource dataSource = new NiFiDBCPDataSource(dbcpService);
 		final StatePersistenceStrategy state = getStatePersistenceStrategy(context);
 
-		boolean keepState = switch (state) {
-			case MEMORY -> false;
-			case SQLITE, POSTGRES -> PersistenceProperties.stateKept(context);
+		return switch (state) {
+			case MEMORY -> LdesClientRepositories.from(state, null);
+			case SQLITE, POSTGRES -> {
+				var keepState = PersistenceProperties.stateKept(context);
+				var entityManager = HibernateUtil.createEntityManagerFromDatasource(dataSource, keepState, state);
+				yield LdesClientRepositories.from(state, entityManager);
+			}
 		};
-		var entityManager = HibernateUtil.createEntityManagerFromDatasource(dataSource, keepState);
-		return LdesClientRepositories.from(state, entityManager);
 	}
-
 }

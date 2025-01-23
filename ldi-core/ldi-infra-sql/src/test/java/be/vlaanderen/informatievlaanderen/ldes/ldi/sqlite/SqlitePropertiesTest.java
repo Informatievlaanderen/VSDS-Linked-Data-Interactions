@@ -40,7 +40,7 @@ class SqlitePropertiesTest {
 		Map<String, String> result = sqliteProperties.getProperties();
 
 		assertThat(result)
-				.containsEntry("javax.persistence.jdbc.url", "jdbc:sqlite:./sqlite/" + INSTANCE_NAME + ".db")
+				.containsEntry("javax.persistence.jdbc.url", "jdbc:sqlite:././" + INSTANCE_NAME + ".db")
 				.containsEntry(SqliteProperties.HIBERNATE_HBM_2_DDL_AUTO, SqliteProperties.UPDATE);
 	}
 }

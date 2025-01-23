@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class MemberRecordEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private int id;
 	@Column(columnDefinition = "text", length = 10485760)
 	private String memberId;

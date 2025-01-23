@@ -30,7 +30,7 @@ public class LatestStateMemberSupplierWrapper extends MemberSupplierWrapper {
 	}
 
 	private MemberFilter createLatestStateFilter() {
-		final LdesClientRepositories ldesClientRepositories = new LdesClientRepositoriesFactory().getStatePersistence(ldioLdesClientProperties.getProperties());
+		final LdesClientRepositories ldesClientRepositories = LdesClientRepositoriesFactory.getLdesClientRepositories(ldioLdesClientProperties.getProperties());
 		return new LatestStateFilter(ldesClientRepositories.memberVersionRepository(), ldioLdesClientProperties.isKeepStateEnabled(), eventStreamProperties.getTimestampPath(), eventStreamProperties.getVersionOfPath());
 	}
 }

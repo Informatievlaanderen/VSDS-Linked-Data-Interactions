@@ -1,13 +1,9 @@
 package ldes.client.treenodesupplier.domain.services;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.postgres.PostgresEntityManagerFactory;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteEntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import ldes.client.treenodesupplier.repository.MemberVersionRepository;
 import ldes.client.treenodesupplier.repository.inmemory.InMemoryMemberVersionRepository;
 import ldes.client.treenodesupplier.repository.sql.SqlMemberVersionRepository;
-import ldes.client.treenodesupplier.repository.sql.SqlMemberVersionRepositoryAlt;
 
 import javax.persistence.EntityManager;
 
@@ -18,24 +14,12 @@ public class MemberVersionRepositoryFactory {
 
 	/**
 	 * @param statePersistenceStrategy via what persistence strategy the repository should work
-	 * @param properties               a representation of the required config properties to set up the persistence unit
-	 * @param instanceName             will be used to be able to more easily keep track of the return repo
+	 * @param entityManager a persistence unit to manage the entities
 	 * @return the memberVersionRepository for a specific instance (could be a NiFi flow or a LDIO pipeline)
 	 */
-	public static MemberVersionRepository getMemberVersionRepositoryFactory(StatePersistenceStrategy statePersistenceStrategy,
-																			HibernateProperties properties, String instanceName) {
-		return switch (statePersistenceStrategy) {
-			case SQLITE ->
-					new SqlMemberVersionRepository(SqliteEntityManagerFactory.getInstance(properties), instanceName);
-			case MEMORY -> new InMemoryMemberVersionRepository();
-			case POSTGRES ->
-					new SqlMemberVersionRepository(PostgresEntityManagerFactory.getInstance(instanceName, properties.getProperties()), instanceName);
-		};
-	}
-
 	public static MemberVersionRepository getMemberVersionRepositoryFactory(StatePersistenceStrategy statePersistenceStrategy, EntityManager entityManager) {
 		return switch (statePersistenceStrategy) {
-			case SQLITE, POSTGRES -> new SqlMemberVersionRepositoryAlt(entityManager);
+			case SQLITE, POSTGRES -> new SqlMemberVersionRepository(entityManager);
 			case MEMORY -> new InMemoryMemberVersionRepository();
 		};
 	}

@@ -12,11 +12,13 @@ import javax.persistence.EntityManager;
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties.*;
 
 public class LdesClientRepositoriesFactory {
-
 	public static final StatePersistenceStrategy DEFAULT_STATE_PERSISTENCE_STRATEGY = StatePersistenceStrategy.MEMORY;
 	public static final boolean DEFAULT_KEEP_STATE = false;
 
-	public LdesClientRepositories getStatePersistence(ComponentProperties properties) {
+	private LdesClientRepositoriesFactory() {
+	}
+
+	public static LdesClientRepositories getLdesClientRepositories(ComponentProperties properties) {
 		StatePersistenceStrategy state = properties.getOptionalProperty(STATE)
 				.flatMap(StatePersistenceStrategy::from)
 				.orElse(DEFAULT_STATE_PERSISTENCE_STRATEGY);
@@ -35,7 +37,7 @@ public class LdesClientRepositoriesFactory {
 		return LdesClientRepositories.from(state, entityManager);
 	}
 
-	private PostgresProperties createPostgresProperties(ComponentProperties properties) {
+	private static PostgresProperties createPostgresProperties(ComponentProperties properties) {
 		String url = properties.getProperty(POSTGRES_URL);
 		String username = properties.getProperty(POSTGRES_USERNAME);
 		String password = properties.getProperty(POSTGRES_PASSWORD);
@@ -44,7 +46,7 @@ public class LdesClientRepositoriesFactory {
 		return new PostgresProperties(url, username, password, keepState);
 	}
 
-	private SqliteProperties createSqliteProperties(ComponentProperties properties) {
+	private static SqliteProperties createSqliteProperties(ComponentProperties properties) {
 		final String pipelineName = properties.getPipelineName();
 		boolean keepState = properties.getOptionalBoolean(KEEP_STATE)
 				.orElse(DEFAULT_KEEP_STATE);

@@ -7,6 +7,7 @@ public interface HibernateProperties {
 	String HIBERNATE_CONNECTION_URL = "hibernate.connection.url";
 	String HIBERNATE_CONNECTION_USERNAME = "hibernate.connection.username";
 	String HIBERNATE_CONNECTION_PASSWORD = "hibernate.connection.password";
+	String HIBERNATE_DATASOURCE = "hibernate.connection.datasource";
 	String HIBERNATE_DIALECT = "hibernate.dialect";
 	String HIBERNATE_HBM_2_DDL_AUTO = "hibernate.hbm2ddl.auto";
 	String UPDATE = "update";

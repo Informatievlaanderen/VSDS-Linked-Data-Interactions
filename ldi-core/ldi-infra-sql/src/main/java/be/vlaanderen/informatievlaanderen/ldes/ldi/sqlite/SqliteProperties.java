@@ -5,8 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
 import java.util.Map;
 
 public class SqliteProperties implements HibernateProperties {
-	public static final String DATABASE_DIRECTORY = "sqlite";
-
+	public static final String DATABASE_DIRECTORY = ".";
+	public static final String DIALECT = "org.sqlite.hibernate.dialect.SQLiteDialect";
 	private final String databaseDirectory;
 	private final String instanceName;
 	private final boolean keepState;
