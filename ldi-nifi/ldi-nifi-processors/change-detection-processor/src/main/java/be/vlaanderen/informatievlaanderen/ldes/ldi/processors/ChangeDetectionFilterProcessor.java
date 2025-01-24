@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.ChangeDetectionFilter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import org.apache.jena.rdf.model.Model;
@@ -44,10 +43,7 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 		return List.of(
 				DATA_SOURCE_FORMAT,
 				STATE_PERSISTENCE_STRATEGY,
-				POSTGRES_URL,
-				POSTGRES_USERNAME,
-				POSTGRES_PASSWORD,
-				SQLITE_DIRECTORY,
+				DBCP_SERVICE,
 				KEEP_STATE
 		);
 	}
@@ -55,8 +51,7 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		final HashedStateMemberRepository repository = HashedMemberRepositoryFactory.getRepository(context);
-		final boolean keepState = PersistenceProperties.stateKept(context);
-		changeDetectionFilter = new ChangeDetectionFilter(repository, keepState);
+		changeDetectionFilter = new ChangeDetectionFilter(repository);
 	}
 
 	@Override
@@ -85,6 +80,6 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 
 	@OnRemoved
 	public void onRemoved() {
-		changeDetectionFilter.destroyState();
+		changeDetectionFilter.close();
 	}
 }

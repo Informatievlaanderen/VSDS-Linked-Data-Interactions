@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table()
+@Table(name = "member_version")
 @NamedQuery(name = "MemberVersion.findMemberVersionAfterTimestamp", query = "SELECT m FROM MemberVersionRecordEntity m WHERE versionOf = :versionOf AND timestamp >= :timestamp")
 public class MemberVersionRecordEntity {
     @Id
@@ -24,4 +24,16 @@ public class MemberVersionRecordEntity {
     public String getVersionOf() {
         return versionOf;
     }
+
+	public void setVersionOf(String versionOf) {
+		this.versionOf = versionOf;
+	}
+
+	public LocalDateTime getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(LocalDateTime timestamp) {
+		this.timestamp = timestamp;
+	}
 }

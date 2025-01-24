@@ -18,7 +18,7 @@ class LatestStateMemberSupplierWrapperTest {
 	@Test
 	void given_LatestStateEnabled_when_wrap_then_ReturnFilteredMemberSupplier() {
 		final ProcessContext context = new TestProcessContext(true, true);
-		wrapper = new LatestStateMemberSupplierWrapper(context, eventStreamProperties);
+		wrapper = new LatestStateMemberSupplierWrapper(context, null, eventStreamProperties);
 
 		final MemberSupplier memberSupplier = wrapper.wrapMemberSupplier(baseSupplier);
 
@@ -28,7 +28,7 @@ class LatestStateMemberSupplierWrapperTest {
 	@Test
 	void given_VersionMaterialisationDisabled_when_wrap_then_ReturnBaseSupplier() {
 		final ProcessContext context = new TestProcessContext(false, true);
-		wrapper = new LatestStateMemberSupplierWrapper(context, eventStreamProperties);
+		wrapper = new LatestStateMemberSupplierWrapper(context, null, eventStreamProperties);
 
 		final MemberSupplier memberSupplier = wrapper.wrapMemberSupplier(baseSupplier);
 
@@ -38,7 +38,7 @@ class LatestStateMemberSupplierWrapperTest {
 	@Test
 	void given_LatestStateDisabled_when_wrap_then_ReturnBaseSupplier() {
 		final ProcessContext context = new TestProcessContext(true, false);
-		wrapper = new LatestStateMemberSupplierWrapper(context, eventStreamProperties);
+		wrapper = new LatestStateMemberSupplierWrapper(context, null, eventStreamProperties);
 
 		final MemberSupplier memberSupplier = wrapper.wrapMemberSupplier(baseSupplier);
 

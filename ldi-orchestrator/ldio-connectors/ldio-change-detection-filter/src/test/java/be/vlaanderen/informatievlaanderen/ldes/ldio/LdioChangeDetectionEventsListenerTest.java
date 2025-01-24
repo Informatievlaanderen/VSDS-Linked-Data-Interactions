@@ -51,7 +51,7 @@ class LdioChangeDetectionEventsListenerTest {
 		eventPublisher.publishEvent(new PipelineDeletedEvent(pipelineName));
 
 		verify(pipelineEventsListener).handlePipelineDeletedEvent(new PipelineDeletedEvent(pipelineName));
-		verify(filter).destroyState();
+		verify(filter).close();
 	}
 
 	@Test

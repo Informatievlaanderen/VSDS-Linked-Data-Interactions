@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.sql;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.HashedStateMember;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.HashedStateMemberEntity;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
@@ -9,14 +8,10 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.mapper.HashedSta
 import javax.persistence.EntityManager;
 
 public class SqlHashedStateMemberRepository implements HashedStateMemberRepository {
-	private final EntityManagerFactory entityManagerFactory;
 	private final EntityManager entityManager;
-	private final String instanceName;
 
-	public SqlHashedStateMemberRepository(EntityManagerFactory entityManagerFactory, String instanceName) {
-		this.entityManagerFactory = entityManagerFactory;
-		this.entityManager = entityManagerFactory.getEntityManager();
-		this.instanceName = instanceName;
+	public SqlHashedStateMemberRepository(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 	@Override
@@ -38,7 +33,7 @@ public class SqlHashedStateMemberRepository implements HashedStateMemberReposito
 	}
 
 	@Override
-	public void destroyState() {
-		entityManagerFactory.destroyState(instanceName);
+	public void close() {
+		entityManager.close();
 	}
 }

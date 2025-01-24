@@ -16,7 +16,7 @@ class ExactlyOnceMemberSupplierWrapperTest {
 	@Test
 	void given_ExactlyOnceEnabled_when_wrap_then_ReturnFilteredMemberSupplier() {
 		final ProcessContext context = new TestProcessContext(true);
-		wrapper = new ExactlyOnceMemberSupplierWrapper(context);
+		wrapper = new ExactlyOnceMemberSupplierWrapper(context, null);
 
 		final MemberSupplier memberSupplier = wrapper.wrapMemberSupplier(baseSupplier);
 
@@ -26,7 +26,7 @@ class ExactlyOnceMemberSupplierWrapperTest {
 	@Test
 	void given_ExactlyOnceAndVersionMaterialisationEnabled_when_wrap_then_ReturnBaseMemberSupplier() {
 		final ProcessContext context = new TestProcessContext(true, true, true);
-		wrapper = new ExactlyOnceMemberSupplierWrapper(context);
+		wrapper = new ExactlyOnceMemberSupplierWrapper(context, null);
 
 		final MemberSupplier memberSupplier = wrapper.wrapMemberSupplier(baseSupplier);
 
@@ -36,7 +36,7 @@ class ExactlyOnceMemberSupplierWrapperTest {
 	@Test
 	void given_ExactlyOnceDisabled_when_wrap_then_ReturnBaseMemberSupplier() {
 		final ProcessContext context = new TestProcessContext(false);
-		wrapper = new ExactlyOnceMemberSupplierWrapper(context);
+		wrapper = new ExactlyOnceMemberSupplierWrapper(context, null);
 
 		final MemberSupplier memberSupplier = wrapper.wrapMemberSupplier(baseSupplier);
 
