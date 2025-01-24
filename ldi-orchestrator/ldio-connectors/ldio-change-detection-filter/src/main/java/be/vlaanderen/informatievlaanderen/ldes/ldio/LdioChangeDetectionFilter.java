@@ -27,7 +27,7 @@ public class LdioChangeDetectionFilter extends LdioTransformer {
 	}
 
 	public void shutdown() {
-		changeDetectionFilter.destroyState();
+		changeDetectionFilter.close();
 	}
 
 	private String extractSubjectFromModel(Model model) {

@@ -1,23 +1,24 @@
 package ldes.client.treenodesupplier.repository.sql;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
+import be.vlaanderen.informatievlaanderen.ldes.ldi.StatelessQueryExecutor;
 import ldes.client.treenodesupplier.repository.MemberIdRepository;
+import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 public class SqlMemberIdRepository implements MemberIdRepository {
-	private final EntityManagerFactory entityManagerFactory;
-	private final String instanceName;
+	private final EntityManager entityManager;
 
-	public SqlMemberIdRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
-		this.instanceName = instanceName;
+	public SqlMemberIdRepository(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 	@Transactional
 	@Override
 	public boolean addMemberIdIfNotExists(String memberId) {
-		return entityManagerFactory.executeStatelessQuery(session -> session
+		return executeStatelessQuery(session -> session
 				.createNamedQuery("MemberId.insert")
 				.setParameter("memberId", memberId)
 				.executeUpdate()) > 0;
@@ -25,6 +26,17 @@ public class SqlMemberIdRepository implements MemberIdRepository {
 
 	@Override
 	public void destroyState() {
-		entityManagerFactory.destroyState(instanceName);
+		if (entityManager.isOpen()) {
+			entityManager.close();
+		}
+	}
+
+	private int executeStatelessQuery(StatelessQueryExecutor queryExecutor) {
+		final Session session = entityManager.unwrap(Session.class);
+		return session.doReturningWork(connection -> {
+			try (final StatelessSession statelessSession = session.getSessionFactory().openStatelessSession(connection)) {
+				return queryExecutor.execute(statelessSession);
+			}
+		});
 	}
 }

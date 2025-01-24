@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(indexes = {
+@Table(name = "member", indexes = {
 		@Index(name = "idx_members_created_at", columnList = "createdAt"),
 		@Index(name = "idx_members_member_id", columnList = "memberId")
 })
@@ -18,11 +18,17 @@ public class MemberRecordEntity {
 	@Column(columnDefinition = "text", length = 10485760)
 	private String memberId;
 	private LocalDateTime createdAt;
-
 	@Column(name = "model", columnDefinition = "bytea", nullable = false)
 	private byte[] bytes;
 
 	public MemberRecordEntity() {
+	}
+
+	public MemberRecordEntity(int id, String memberId, LocalDateTime dateCreated, byte[] bytes) {
+		this.id = id;
+		this.memberId = memberId;
+		this.createdAt = dateCreated;
+		this.bytes = bytes;
 	}
 
 	public MemberRecordEntity(String memberId, LocalDateTime dateCreated, byte[] bytes) {
@@ -33,6 +39,10 @@ public class MemberRecordEntity {
 
 	public int getId() {
 		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getMemberId() {

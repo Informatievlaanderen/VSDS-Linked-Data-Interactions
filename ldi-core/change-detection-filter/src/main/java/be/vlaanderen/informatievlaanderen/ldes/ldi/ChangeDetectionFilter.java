@@ -27,11 +27,9 @@ public class ChangeDetectionFilter implements LdiOneToOneTransformer {
 	private static final Lang NORMALIZING_LANG = Lang.NQUADS;
 	private static final MediaType NORMALIZING_MEDIA_TYPE = MediaType.N_QUADS;
 	private final HashedStateMemberRepository hashedStateMemberRepository;
-	private final boolean keepState;
 
-	public ChangeDetectionFilter(HashedStateMemberRepository hashedStateMemberRepository, boolean keepState) {
+	public ChangeDetectionFilter(HashedStateMemberRepository hashedStateMemberRepository) {
 		this.hashedStateMemberRepository = hashedStateMemberRepository;
-		this.keepState = keepState;
 	}
 
 	/**
@@ -54,15 +52,9 @@ public class ChangeDetectionFilter implements LdiOneToOneTransformer {
 		return model;
 	}
 
-	/**
-	 * Clean up the resources, should be called when the component is not used anymore
-	 */
-	public void destroyState() {
-		if (!keepState) {
-			hashedStateMemberRepository.destroyState();
-		}
+	public void close() {
+		hashedStateMemberRepository.close();
 	}
-
 
 	private Resource getSingleNamedNodeFromStateObject(Model model) {
 		final List<Resource> namedNodes = model.listSubjects().filterDrop(RDFNode::isAnon).toList();

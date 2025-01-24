@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(indexes = {
-		@Index(name="treenoderecordentity_treenodeurl_treenodestatus", columnList = "treeNodeUrl,treeNodeStatus"),
-		@Index(name="treenoderecordentity_treenodestatus_earliestnextvisit", columnList = "treeNodeStatus,earliestNextVisit")
+@Table(name = "treenode", indexes = {
+		@Index(name = "treenoderecordentity_treenodeurl_treenodestatus", columnList = "treeNodeUrl,treeNodeStatus"),
+		@Index(name = "treenoderecordentity_treenodestatus_earliestnextvisit", columnList = "treeNodeStatus,earliestNextVisit")
 })
 @NamedQuery(name = "TreeNode.getAll", query = "SELECT t FROM TreeNodeRecordEntity t")
 @NamedQuery(name = "TreeNode.getById", query = "SELECT t FROM TreeNodeRecordEntity t WHERE t.id = :id")
@@ -21,7 +21,7 @@ public class TreeNodeRecordEntity {
 	private String treeNodeStatus;
 	private LocalDateTime earliestNextVisit;
 	@Column
-	@ElementCollection(targetClass=String.class)
+	@ElementCollection(targetClass = String.class)
 	private List<String> members;
 
 	public TreeNodeRecordEntity() {
@@ -48,5 +48,21 @@ public class TreeNodeRecordEntity {
 
 	public List<String> getMembers() {
 		return members;
+	}
+
+	public void setTreeNodeUrl(String treeNodeUrl) {
+		this.treeNodeUrl = treeNodeUrl;
+	}
+
+	public void setTreeNodeStatus(String treeNodeStatus) {
+		this.treeNodeStatus = treeNodeStatus;
+	}
+
+	public void setEarliestNextVisit(LocalDateTime earliestNextVisit) {
+		this.earliestNextVisit = earliestNextVisit;
+	}
+
+	public void setMembers(List<String> members) {
+		this.members = members;
 	}
 }

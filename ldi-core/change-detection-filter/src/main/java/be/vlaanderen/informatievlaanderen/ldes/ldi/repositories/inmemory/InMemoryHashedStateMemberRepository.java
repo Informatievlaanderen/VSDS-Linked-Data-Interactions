@@ -3,7 +3,8 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.inmemory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.HashedStateMember;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InMemoryHashedStateMemberRepository implements HashedStateMemberRepository {
 	private final Map<String, HashedStateMember> members;
@@ -24,7 +25,7 @@ public class InMemoryHashedStateMemberRepository implements HashedStateMemberRep
 	}
 
 	@Override
-	public void destroyState() {
+	public void close() {
 		members.clear();
 	}
 }

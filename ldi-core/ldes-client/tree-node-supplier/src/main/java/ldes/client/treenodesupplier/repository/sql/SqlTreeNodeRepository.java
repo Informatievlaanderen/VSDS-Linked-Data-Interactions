@@ -1,26 +1,19 @@
 package ldes.client.treenodesupplier.repository.sql;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.EntityManagerFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.entities.TreeNodeRecordEntity;
 import ldes.client.treenodesupplier.domain.entities.TreeNodeRecord;
 import ldes.client.treenodesupplier.domain.valueobject.TreeNodeStatus;
 import ldes.client.treenodesupplier.repository.TreeNodeRecordRepository;
 import ldes.client.treenodesupplier.repository.mapper.TreeNodeRecordEntityMapper;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
-
-	final EntityManagerFactory entityManagerFactory;
 	private final EntityManager entityManager;
-	private final String instanceName;
 
-	public SqlTreeNodeRepository(String instanceName, EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
-		this.entityManager = entityManagerFactory.getEntityManager();
-		this.instanceName = instanceName;
+	public SqlTreeNodeRepository(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 	@Override
@@ -67,7 +60,9 @@ public class SqlTreeNodeRepository implements TreeNodeRecordRepository {
 
 	@Override
 	public void destroyState() {
-		entityManagerFactory.destroyState(instanceName);
+		if (entityManager.isOpen()) {
+			entityManager.close();
+		}
 	}
 
 	@Override

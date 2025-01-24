@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class StatePersistenceStrategyTest {
+class LdesClientRepositoriesStrategyTest {
 
 	@ParameterizedTest
 	@EnumSource(StatePersistenceStrategy.class)

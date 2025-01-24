@@ -1,9 +1,10 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldio;
 
 import be.vlaanderen.informatievlaanderen.ldes.ldio.config.LdioChangeDetectionFilterAutoConfig;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioVaultTransformer;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
+import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -65,9 +66,12 @@ public class LdioChangeDetectionFilterSteps {
 			final var postgresProperties = startPostgresContainer();
 			properties.putAll(postgresProperties);
 		}
+		if (persistenceStrategy.equals("SQLITE")) {
+			properties.put(PersistenceProperties.SQLITE_DIRECTORY, "target");
+		}
 		vault = new LdioVaultTransformer();
 		final LdioTransformerConfigurator configurator = new LdioChangeDetectionFilterAutoConfig.LdioChangeDetectionFilterConfigurator();
-		final ComponentProperties componentProperties = new ComponentProperties(PIPELINE_NAME, "Ldio:ChangeDetectionFitler", properties);
+		final ComponentProperties componentProperties = new ComponentProperties(PIPELINE_NAME, "Ldio:ChangeDetectionFilter", properties);
 		ldioChangeDetectionFilter = (LdioChangeDetectionFilter) link(configurator.configure(componentProperties), List.of(vault));
 	}
 

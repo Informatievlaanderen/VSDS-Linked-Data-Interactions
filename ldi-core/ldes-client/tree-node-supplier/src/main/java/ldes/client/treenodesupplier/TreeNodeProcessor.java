@@ -32,11 +32,11 @@ public class TreeNodeProcessor {
 	private final Consumer<ClientStatus> clientStatusConsumer;
 	private MemberRecord memberRecord;
 
-	public TreeNodeProcessor(LdesMetaData ldesMetaData, StatePersistence statePersistence,
+	public TreeNodeProcessor(LdesMetaData ldesMetaData, LdesClientRepositories ldesClientRepositories,
 	                         RequestExecutor requestExecutor, TimestampExtractor timestampExtractor,
 	                         Consumer<ClientStatus> clientStatusConsumer) {
-		this.treeNodeRecordRepository = statePersistence.getTreeNodeRecordRepository();
-		this.memberRepository = statePersistence.getMemberRepository();
+		this.treeNodeRecordRepository = ldesClientRepositories.treeNodeRecordRepository();
+		this.memberRepository = ldesClientRepositories.memberRepository();
 		this.requestExecutor = requestExecutor;
 		this.clientStatusConsumer = clientStatusConsumer;
 		this.treeNodeFetcher = new TreeNodeFetcher(requestExecutor, timestampExtractor);

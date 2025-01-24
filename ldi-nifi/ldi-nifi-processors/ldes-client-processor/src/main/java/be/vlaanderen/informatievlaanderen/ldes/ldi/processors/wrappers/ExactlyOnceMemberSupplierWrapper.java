@@ -1,6 +1,5 @@
 package be.vlaanderen.informatievlaanderen.ldes.ldi.processors.wrappers;
 
-import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.StatePersistenceFactory;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import ldes.client.treenodesupplier.domain.services.MemberSupplierWrapper;
 import ldes.client.treenodesupplier.filters.ExactlyOnceFilter;
@@ -15,9 +14,11 @@ import static be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.Ldes
 
 public class ExactlyOnceMemberSupplierWrapper extends MemberSupplierWrapper {
 	private final ProcessContext context;
+	private final MemberIdRepository memberIdRepository;
 
-	public ExactlyOnceMemberSupplierWrapper(ProcessContext context) {
+	public ExactlyOnceMemberSupplierWrapper(ProcessContext context, MemberIdRepository memberIdRepository) {
 		this.context = context;
+		this.memberIdRepository = memberIdRepository;
 	}
 
 	@Override
@@ -31,9 +32,6 @@ public class ExactlyOnceMemberSupplierWrapper extends MemberSupplierWrapper {
 	}
 
 	private MemberFilter createMemberFilter() {
-		final MemberIdRepository memberIdRepository = new StatePersistenceFactory()
-				.getStatePersistence(context)
-				.getMemberIdRepository();
 		final boolean keepState = PersistenceProperties.stateKept(context);
 		return new ExactlyOnceFilter(memberIdRepository, keepState);
 	}

@@ -5,8 +5,8 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties;
 import java.util.Map;
 
 public class SqliteProperties implements HibernateProperties {
-	public static final String DATABASE_DIRECTORY = "sqlite";
-
+	public static final String DATABASE_DIRECTORY = ".";
+	public static final String DIALECT = "org.sqlite.hibernate.dialect.SQLiteDialect";
 	private final String databaseDirectory;
 	private final String instanceName;
 	private final boolean keepState;
@@ -37,6 +37,9 @@ public class SqliteProperties implements HibernateProperties {
 	public Map<String, String> getProperties() {
 		return Map.of("javax.persistence.jdbc.url",
 				"jdbc:sqlite:./%s/%s".formatted(databaseDirectory, getDatabaseName()),
+				HIBERNATE_DIALECT, DIALECT,
+				"javax.persistence.jdbc.driver", "org.sqlite.JDBC",
+				"hibernate.connection.provider_class", "com.zaxxer.hikari.hibernate.HikariConnectionProvider",
 				HIBERNATE_HBM_2_DDL_AUTO, keepState ? UPDATE : CREATE_DROP);
 	}
 }
