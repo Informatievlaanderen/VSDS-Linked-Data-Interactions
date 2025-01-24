@@ -16,26 +16,26 @@ The processors can be imported into a NiFi docker instance via volume binding:
     ````yaml
     services:
         nifi:
-    image: apache/nifi:2.0.0
-    environment:
-      SINGLE_USER_CREDENTIALS_USERNAME: admin
-      SINGLE_USER_CREDENTIALS_PASSWORD: ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
-    ports:
-      - 8443:8443
-    volumes:
-      - ./nifi-ext:/opt/nifi/nifi-current/nar_extensions:rw
-      - ./nifi-drivers:/opt/nifi/nifi-current/lib_temp:rw
-    entrypoint: [ "/bin/bash",
-                  "-c",
-                  "cp -r /opt/nifi/nifi-current/lib_temp/* /opt/nifi/nifi-current/lib/ && exec /opt/nifi/scripts/start.sh" ]
+            image: apache/nifi:2.0.0
+            environment:
+              SINGLE_USER_CREDENTIALS_USERNAME: admin
+              SINGLE_USER_CREDENTIALS_PASSWORD: ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
+            ports:
+              - 8443:8443
+            volumes:
+              - ./nifi-ext:/opt/nifi/nifi-current/nar_extensions:rw
+              - ./nifi-drivers:/opt/nifi/nifi-current/lib_temp:rw
+            entrypoint: [ "/bin/bash",
+                          "-c",
+                          "cp -r /opt/nifi/nifi-current/lib_temp/* /opt/nifi/nifi-current/lib/ && exec /opt/nifi/scripts/start.sh" ]
     ````
 2. Create a directory `nifi-ext` in your current directory.
 3. Download either the `...-nar-bundle.jar` and unpack this or download the individual required processors (.nar extension) from the [nexus repository].
    Next, place the required processors in the `nifi-ext` directory.
 4. Additionally, for using any processor with a persistence layer, you will need to download the needed drivers.
-   Place these in the `nifi-drivers` directory.
+   Create a `nifi-drivers` directory and place these drivers inside.
    Possible drivers are:
-   - [PostgreSQL driver](https://jdbc.postgresql.org/download.html)
+    - [PostgreSQL driver](https://jdbc.postgresql.org/download)
    - [SQLite driver](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc)
 5. Finally, start your instance.
     ````shell
