@@ -37,7 +37,7 @@ public class SqliteProperties implements HibernateProperties {
 	public Map<String, String> getProperties() {
 		return Map.of("javax.persistence.jdbc.url",
 				"jdbc:sqlite:./%s/%s".formatted(databaseDirectory, getDatabaseName()),
-				HIBERNATE_DIALECT, "org.sqlite.hibernate.dialect.SQLiteDialect",
+				HIBERNATE_DIALECT, DIALECT,
 				"javax.persistence.jdbc.driver", "org.sqlite.JDBC",
 				"hibernate.connection.provider_class", "com.zaxxer.hikari.hibernate.HikariConnectionProvider",
 				HIBERNATE_HBM_2_DDL_AUTO, keepState ? UPDATE : CREATE_DROP);

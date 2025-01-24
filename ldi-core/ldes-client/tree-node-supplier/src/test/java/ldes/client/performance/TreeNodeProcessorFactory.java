@@ -45,7 +45,7 @@ class TreeNodeProcessorFactory {
 
 	private LdesClientRepositories createSqliteStatePersistence() {
 		final SqliteProperties sqliteProperties = new SqliteProperties("instanceName", false);
-		LdesClientRepositories clientRepositories = LdesClientRepositories.from(StatePersistenceStrategy.SQLITE,
+		LdesClientRepositories clientRepositories = LdesClientRepositories.sqlBased(
 				HibernateUtil.createEntityManagerFromProperties(sqliteProperties.getProperties()));
 
 		return new LdesClientRepositories(clientRepositories.memberRepository(), clientRepositories.memberIdRepository(),
@@ -58,7 +58,7 @@ class TreeNodeProcessorFactory {
 		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
 
-		LdesClientRepositories clientRepositories = LdesClientRepositories.from(StatePersistenceStrategy.SQLITE,
+		LdesClientRepositories clientRepositories = LdesClientRepositories.sqlBased(
 				HibernateUtil.createEntityManagerFromProperties(postgresProperties.getProperties()));
 
 		return new LdesClientRepositories(clientRepositories.memberRepository(), clientRepositories.memberIdRepository(),
@@ -66,7 +66,7 @@ class TreeNodeProcessorFactory {
 	}
 
 	private LdesClientRepositories createInMemoryStatePersistence() {
-		LdesClientRepositories clientRepositories = LdesClientRepositories.from(StatePersistenceStrategy.MEMORY, null);
+		LdesClientRepositories clientRepositories = LdesClientRepositories.memoryBased();
 
 		return new LdesClientRepositories(clientRepositories.memberRepository(), clientRepositories.memberIdRepository(),
 				clientRepositories.treeNodeRecordRepository(), clientRepositories.memberVersionRepository());

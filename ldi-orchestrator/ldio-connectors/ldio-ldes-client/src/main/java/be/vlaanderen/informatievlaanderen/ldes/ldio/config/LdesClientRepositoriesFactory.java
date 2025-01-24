@@ -7,8 +7,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistence
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import ldes.client.treenodesupplier.domain.valueobject.LdesClientRepositories;
 
-import javax.persistence.EntityManager;
-
 import static be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties.*;
 
 public class LdesClientRepositoriesFactory {
@@ -22,19 +20,19 @@ public class LdesClientRepositoriesFactory {
 		StatePersistenceStrategy state = properties.getOptionalProperty(STATE)
 				.flatMap(StatePersistenceStrategy::from)
 				.orElse(DEFAULT_STATE_PERSISTENCE_STRATEGY);
-		EntityManager entityManager = switch (state) {
+		return switch (state) {
 			case POSTGRES -> {
 				var hibernateProperties = createPostgresProperties(properties);
-				yield HibernateUtil.createEntityManagerFromProperties(hibernateProperties.getProperties());
+				var entityManager = HibernateUtil.createEntityManagerFromProperties(hibernateProperties.getProperties());
+				yield LdesClientRepositories.sqlBased(entityManager);
 			}
 			case SQLITE -> {
 				var hibernateProperties = createSqliteProperties(properties);
-				yield HibernateUtil.createEntityManagerFromProperties(hibernateProperties.getProperties());
+				var entityManager = HibernateUtil.createEntityManagerFromProperties(hibernateProperties.getProperties());
+				yield LdesClientRepositories.sqlBased(entityManager);
 			}
-			default -> null;
+			case MEMORY -> LdesClientRepositories.memoryBased();
 		};
-
-		return LdesClientRepositories.from(state, entityManager);
 	}
 
 	private static PostgresProperties createPostgresProperties(ComponentProperties properties) {

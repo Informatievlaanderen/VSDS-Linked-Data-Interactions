@@ -6,7 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldio.LdioChangeDetectionFilter;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformer;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.LdioTransformerConfigurator;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
-import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,7 +24,6 @@ public class LdioChangeDetectionFilterAutoConfig {
 		@Override
 		public LdioTransformer configure(ComponentProperties properties) {
 			final HashedStateMemberRepository repository = HasedStateMemberRepositoryFactory.getHashedStateMemberRepository(properties);
-			final boolean keepState = properties.getOptionalBoolean(PersistenceProperties.KEEP_STATE).orElse(false);
 			final ChangeDetectionFilter changeDetectionFilter = new ChangeDetectionFilter(repository);
 			return new LdioChangeDetectionFilter(changeDetectionFilter);
 		}

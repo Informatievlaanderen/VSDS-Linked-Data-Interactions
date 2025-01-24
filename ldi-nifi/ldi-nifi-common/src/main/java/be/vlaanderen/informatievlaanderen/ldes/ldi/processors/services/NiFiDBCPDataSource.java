@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class NiFiDBCPDataSource implements DataSource {
+	private static final String NOT_SUPPORTED = "Not supported";
 
 	private final DBCPService dbcpService;
 
@@ -28,27 +29,27 @@ public class NiFiDBCPDataSource implements DataSource {
 
 	@Override
 	public PrintWriter getLogWriter() {
-		throw new UnsupportedOperationException("Not supported");
+		throw new UnsupportedOperationException(NOT_SUPPORTED);
 	}
 
 	@Override
 	public void setLogWriter(PrintWriter out) {
-		throw new UnsupportedOperationException("Not supported");
+		throw new UnsupportedOperationException(NOT_SUPPORTED);
 	}
 
 	@Override
 	public int getLoginTimeout() {
-		throw new UnsupportedOperationException("Not supported");
+		throw new UnsupportedOperationException(NOT_SUPPORTED);
 	}
 
 	@Override
 	public void setLoginTimeout(int seconds) {
-		throw new UnsupportedOperationException("Not supported");
+		throw new UnsupportedOperationException(NOT_SUPPORTED);
 	}
 
 	@Override
 	public Logger getParentLogger() {
-		throw new UnsupportedOperationException("Not supported");
+		throw new UnsupportedOperationException(NOT_SUPPORTED);
 	}
 
 	@Override

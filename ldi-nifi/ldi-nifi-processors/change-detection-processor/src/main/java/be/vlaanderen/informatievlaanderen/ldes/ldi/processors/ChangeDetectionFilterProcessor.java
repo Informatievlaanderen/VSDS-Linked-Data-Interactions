@@ -2,7 +2,6 @@ package be.vlaanderen.informatievlaanderen.ldes.ldi.processors;
 
 
 import be.vlaanderen.informatievlaanderen.ldes.ldi.ChangeDetectionFilter;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.config.PersistenceProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.processors.services.FlowManager;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.repositories.HashedStateMemberRepository;
 import org.apache.jena.rdf.model.Model;
@@ -52,7 +51,6 @@ public class ChangeDetectionFilterProcessor extends AbstractProcessor {
 	@OnScheduled
 	public void onScheduled(final ProcessContext context) {
 		final HashedStateMemberRepository repository = HashedMemberRepositoryFactory.getRepository(context);
-		final boolean keepState = PersistenceProperties.stateKept(context);
 		changeDetectionFilter = new ChangeDetectionFilter(repository);
 	}
 

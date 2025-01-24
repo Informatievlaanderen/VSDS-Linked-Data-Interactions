@@ -103,6 +103,8 @@ class ChangeDetectionFilterProcessorTest {
 				testRunner.enableControllerService(dbcpService);
 				testRunner.setProperty(DBCP_SERVICE, "dbcpService");
 				break;
+			default:
+				// No need to setup DBCPService for MEMORY state
 		}
 	}
 

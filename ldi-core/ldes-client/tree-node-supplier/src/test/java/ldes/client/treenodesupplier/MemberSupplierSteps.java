@@ -6,7 +6,6 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.requestexecutor.services.Requ
 import be.vlaanderen.informatievlaanderen.ldes.ldi.sqlite.SqliteProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromCurrentTimeExtractor;
 import be.vlaanderen.informatievlaanderen.ldes.ldi.timestampextractor.TimestampFromPathExtractor;
-import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistenceStrategy;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -107,7 +106,7 @@ public class MemberSupplierSteps {
 
 	@And("a StatePersistenceStrategy MEMORY")
 	public LdesClientRepositories aMemoryStatePersistenceStrategy() {
-		LdesClientRepositories clientRepositories = LdesClientRepositories.from(StatePersistenceStrategy.MEMORY, null);
+		LdesClientRepositories clientRepositories = LdesClientRepositories.memoryBased();
 
 		ldesClientRepositories = new LdesClientRepositories(clientRepositories.memberRepository(), clientRepositories.memberIdRepository(),
 				clientRepositories.treeNodeRecordRepository(), clientRepositories.memberVersionRepository());
@@ -117,7 +116,7 @@ public class MemberSupplierSteps {
 	@And("a StatePersistenceStrategy SQLITE")
 	public LdesClientRepositories aSqliteStatePersistenceStrategy() {
 		final SqliteProperties sqliteProperties = new SqliteProperties("target", UUID.randomUUID().toString(), false);
-		LdesClientRepositories clientRepositories = LdesClientRepositories.from(StatePersistenceStrategy.SQLITE,
+		LdesClientRepositories clientRepositories = LdesClientRepositories.sqlBased(
 				HibernateUtil.createEntityManagerFromProperties(sqliteProperties.getProperties()));
 		ldesClientRepositories = new LdesClientRepositories(clientRepositories.memberRepository(), clientRepositories.memberIdRepository(),
 				clientRepositories.treeNodeRecordRepository(), clientRepositories.memberVersionRepository());
@@ -134,7 +133,7 @@ public class MemberSupplierSteps {
 
 		PostgresProperties postgresProperties = new PostgresProperties(postgreSQLContainer.getJdbcUrl(),
 				postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword(), false);
-		LdesClientRepositories clientRepositories = LdesClientRepositories.from(StatePersistenceStrategy.POSTGRES,
+		LdesClientRepositories clientRepositories = LdesClientRepositories.sqlBased(
 				HibernateUtil.createEntityManagerFromProperties(postgresProperties.getProperties()));
 
 		ldesClientRepositories = new LdesClientRepositories(clientRepositories.memberRepository(), clientRepositories.memberIdRepository(),

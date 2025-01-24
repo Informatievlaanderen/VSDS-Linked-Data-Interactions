@@ -22,7 +22,6 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.opentest4j.AssertionFailedError;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -66,7 +65,7 @@ class LdesClientProcessorTest {
 	}
 
 	@AfterEach
-	void tearDown() throws SQLException {
+	void tearDown() {
 		((LdesClientProcessor) testRunner.getProcessor()).onRemoved();
 	}
 
@@ -383,6 +382,8 @@ class LdesClientProcessorTest {
 				testRunner.enableControllerService(dbcpService);
 				testRunner.setProperty(DBCP_SERVICE, "dbcpService");
 				break;
+			default:
+				// No need to setup DBCPService for MEMORY state
 		}
 	}
 

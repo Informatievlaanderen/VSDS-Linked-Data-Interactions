@@ -13,6 +13,7 @@ public class MemberIdEntity {
 	private String id;
 
 	public MemberIdEntity() {
+		// Default constructor needed for JPA
 	}
 
 	public String getId() {

@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tree-node-supplier</artifactId>
 
+    <properties>
+        <javax.persistence-api.version>2.2</javax.persistence-api.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>be.vlaanderen.informatievlaanderen.ldes.ldi</groupId>
@@ -72,12 +76,12 @@
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
+            <version>${javax.persistence-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.6.15.Final</version>
+            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>

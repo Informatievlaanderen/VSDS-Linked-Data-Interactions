@@ -12,6 +12,8 @@ import java.util.Map;
 import static be.vlaanderen.informatievlaanderen.ldes.ldi.HibernateProperties.*;
 
 public class HibernateUtil {
+	private HibernateUtil() {
+	}
 
 	public static EntityManager createEntityManagerFromDatasource(DataSource dataSource, boolean keepState, StatePersistenceStrategy state) {
 		var entityManagerFactory = Persistence.createEntityManagerFactory("pu-sql-jpa",

@@ -179,11 +179,11 @@ public class LdesClientProcessor extends AbstractProcessor {
 		final StatePersistenceStrategy state = getStatePersistenceStrategy(context);
 
 		return switch (state) {
-			case MEMORY -> LdesClientRepositories.from(state, null);
+			case MEMORY -> LdesClientRepositories.memoryBased();
 			case SQLITE, POSTGRES -> {
 				var keepState = PersistenceProperties.stateKept(context);
 				var entityManager = HibernateUtil.createEntityManagerFromDatasource(dataSource, keepState, state);
-				yield LdesClientRepositories.from(state, entityManager);
+				yield LdesClientRepositories.sqlBased(entityManager);
 			}
 		};
 	}
