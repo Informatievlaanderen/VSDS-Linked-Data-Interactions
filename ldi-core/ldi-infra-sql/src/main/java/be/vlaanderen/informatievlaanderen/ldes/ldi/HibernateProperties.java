@@ -9,6 +9,7 @@ public interface HibernateProperties {
 	String HIBERNATE_CONNECTION_PASSWORD = "hibernate.connection.password";
 	String HIBERNATE_DATASOURCE = "hibernate.connection.datasource";
 	String HIBERNATE_DIALECT = "hibernate.dialect";
+	String HIBERNATE_DRIVER_CLASS = "hibernate.connection.driver_class";
 	String HIBERNATE_HBM_2_DDL_AUTO = "hibernate.hbm2ddl.auto";
 	String UPDATE = "update";
 	String CREATE_DROP = "create-drop";

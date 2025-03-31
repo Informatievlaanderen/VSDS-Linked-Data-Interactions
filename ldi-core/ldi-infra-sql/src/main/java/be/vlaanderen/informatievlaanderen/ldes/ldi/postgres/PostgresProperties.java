@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class PostgresProperties implements HibernateProperties {
 	public static final String DIALECT = "org.hibernate.dialect.PostgreSQLDialect";
+	public static final String DRIVER = "org.postgresql.Driver";
 	private final String url;
 	private final String username;
 	private final String password;
@@ -23,6 +24,7 @@ public class PostgresProperties implements HibernateProperties {
 				HIBERNATE_CONNECTION_USERNAME, username,
 				HIBERNATE_CONNECTION_PASSWORD, password,
 				HIBERNATE_DIALECT, DIALECT,
+				HIBERNATE_DRIVER_CLASS, DRIVER,
 				HIBERNATE_HBM_2_DDL_AUTO, keepState ? UPDATE : CREATE_DROP);
 	}
 
