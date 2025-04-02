@@ -23,7 +23,7 @@ public class LdioChangeDetectionFilterAutoConfig {
 	public static class LdioChangeDetectionFilterConfigurator implements LdioTransformerConfigurator {
 		@Override
 		public LdioTransformer configure(ComponentProperties properties) {
-			final HashedStateMemberRepository repository = HasedStateMemberRepositoryFactory.getHashedStateMemberRepository(properties);
+			final HashedStateMemberRepository repository = HashedStateMemberRepositoryFactory.getHashedStateMemberRepository(properties);
 			final ChangeDetectionFilter changeDetectionFilter = new ChangeDetectionFilter(repository);
 			return new LdioChangeDetectionFilter(changeDetectionFilter);
 		}

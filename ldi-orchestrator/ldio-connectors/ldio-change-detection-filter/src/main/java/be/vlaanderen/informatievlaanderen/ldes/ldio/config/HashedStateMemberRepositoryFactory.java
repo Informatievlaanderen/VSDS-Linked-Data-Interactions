@@ -10,11 +10,11 @@ import be.vlaanderen.informatievlaanderen.ldes.ldi.valueobjects.StatePersistence
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.creation.valueobjects.ComponentProperties;
 import be.vlaanderen.informatievlaanderen.ldes.ldio.pipeline.persistence.PersistenceProperties;
 
-public class HasedStateMemberRepositoryFactory {
+public class HashedStateMemberRepositoryFactory {
 	public static final StatePersistenceStrategy DEFAULT_PERSISTENCE_STRATEGY = StatePersistenceStrategy.MEMORY;
 	public static final boolean DEFAULT_KEEP_STATE = false;
 
-	private HasedStateMemberRepositoryFactory() {
+	private HashedStateMemberRepositoryFactory() {
 	}
 
 	public static HashedStateMemberRepository getHashedStateMemberRepository(ComponentProperties properties) {
