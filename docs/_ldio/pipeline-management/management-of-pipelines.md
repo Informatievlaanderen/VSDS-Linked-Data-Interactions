@@ -101,3 +101,23 @@ The endpoints to manage pipelines can be found [here](pipeline-api.md)
 
 The exact behaviour of a paused pipeline depends on its input component and can be found in the [documentation of these components](docs/_ldio/ldio-inputs/index.md).
 However, it will always complete its current run through the pipeline and then seize sending any output.
+
+## Using properties in pipelines
+
+You can externalize configuration from your pipelines. This is especially handy when you're using infrastructure configuration.
+This works in the same way as you can externalize configuration in [Spring boot](https://docs.spring.io/spring-boot/reference/features/external-config.html).
+The property placeholders will be resolved when you initialize your pipeline. 
+
+* Note that you can only use property placeholders in the config objects of your input, adapters, transformers and outputs.
+
+For example,
+
+```yaml
+  name: my-first-pipeline
+  input:
+    name: name of LDI Input
+    config:
+      password: ${DB_PASSWORD:postgres}
+```
+
+lets you make use of the value of the DB_PASSWORD environment variable. When this variable is not specified, the default value (in our example "postgres") will be used.
