@@ -14,6 +14,7 @@ on:
 
 env:
   SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY || 'Informatievlaanderen_VSDS-Linked-Data-Interactions' }}
+  SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION || 'informatievlaanderen' }}
 
 jobs:
   build:
@@ -38,7 +39,7 @@ jobs:
         if: ${{ github.actor != 'dependabot[bot]' && !github.event.pull_request.head.repo.fork }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Pcoverage
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Pcoverage -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
       - name: Build (Forks) # https://portal.productboard.com/sonarsource/1-sonarcloud/c/50-sonarcloud-analyzes-external-pull-request
         if: ${{ github.actor == 'dependabot[bot]' || github.event.pull_request.head.repo.fork }}
         run: mvn -B verify
