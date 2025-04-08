@@ -14,6 +14,7 @@ env:
   REGISTRY: ghcr.io
   LDIO_IMAGE_NAME: ldi-orchestrator
   DISCOVERER_IMAGE_NAME: ldes-discoverer
+  SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY || 'Informatievlaanderen_VSDS-Linked-Data-Interactions' }}
 
 jobs:
   build:
@@ -61,7 +62,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Analyse package
         run: |
-          mvn -B install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Informatievlaanderen_VSDS-Linked-Data-Interactions -Pcoverage,release -Dparallel=all -DperCoreThreadCount=true
+          mvn -B install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Pcoverage,release -Dparallel=all -DperCoreThreadCount=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -110,7 +111,7 @@ jobs:
             fi
           else
             echo "IMAGE_TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-            echo "IMAGES=${{ env.REGISTRY }}/Informatievlaanderen/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.REGISTRY }}/${{ env.GITHUB_REPOSITORY_OWNER }}/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
             echo "LATEST=latest" >> $GITHUB_ENV
           fi
       - name: Log in to the DockerHub Container registry
@@ -124,7 +125,7 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
-          username: Informatievlaanderen
+          username: ${{ env.GITHUB_REPOSITORY_OWNER }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
@@ -171,7 +172,7 @@ jobs:
             fi
           else
             echo "IMAGE_TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-            echo "IMAGES=${{ env.REGISTRY }}/Informatievlaanderen/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.REGISTRY }}/${{ env.GITHUB_REPOSITORY_OWNER }}/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
             echo "LATEST=latest" >> $GITHUB_ENV
           fi
       - name: Log in to the DockerHub Container registry
@@ -185,7 +186,7 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
-          username: Informatievlaanderen
+          username: ${{ env.GITHUB_REPOSITORY_OWNER }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
