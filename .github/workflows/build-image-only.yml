@@ -9,7 +9,7 @@ env:
   DISCOVERER_IMAGE_NAME: ldes-discoverer
   SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION || 'informatievlaanderen' }}
   SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY || 'Informatievlaanderen_VSDS-Linked-Data-Interactions' }}
-  DOCKER_USER_ACCOUNT: ${{ vars.DOCKER_USER_ACCOUNT || 'ldes' }}
+  DOCKER_NAMESPACE: ${{ vars.DOCKER_NAMESPACE || 'ldes' }}
 
 jobs:
   build:
@@ -96,7 +96,7 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "IMAGE_TAG=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
-            echo "IMAGES=${{ env.DOCKER_USER_ACCOUNT }}/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.DOCKER_NAMESPACE }}/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
             if [[ "${{ needs.build.outputs.version }}" != *"SNAPSHOT"* ]]; then
               echo "LATEST=latest" >> $GITHUB_ENV
             fi
@@ -157,7 +157,7 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "IMAGE_TAG=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
-            echo "IMAGES=${{ env.DOCKER_USER_ACCOUNT }}/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.DOCKER_NAMESPACE }}/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
             if [[ "${{ needs.build.outputs.version }}" != *"SNAPSHOT"* ]]; then
               echo "LATEST=latest" >> $GITHUB_ENV
             fi
