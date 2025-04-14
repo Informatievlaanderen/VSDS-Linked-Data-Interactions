@@ -916,118 +916,125 @@
     
     "relUrl": "/ldio/pipeline-management/management-of-pipelines#pausing--resuming-ldio"
   },"131": {
+    "doc": "Management of Pipelines",
+    "title": "Using properties in pipelines",
+    "content": "You can externalize configuration from your pipelines. This is especially handy when you’re using infrastructure configuration. This works in the same way as you can externalize configuration in Spring boot. The property placeholders will be resolved when you initialize your pipeline. | Note that you can only use property placeholders in the config objects of your input, adapters, transformers and outputs. | . For example, . name: my-first-pipeline input: name: name of LDI Input config: password: ${DB_PASSWORD:postgres} . lets you make use of the value of the DB_PASSWORD environment variable. When this variable is not specified, the default value (in our example “postgres”) will be used. ",
+    "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/management-of-pipelines#using-properties-in-pipelines",
+    
+    "relUrl": "/ldio/pipeline-management/management-of-pipelines#using-properties-in-pipelines"
+  },"132": {
     "doc": "Pipeline Management API",
     "title": "Pipeline Management API",
     "content": "Swagger UI | . ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/pipeline-api",
     
     "relUrl": "/ldio/pipeline-management/pipeline-api"
-  },"132": {
+  },"133": {
     "doc": "Pipeline Status",
     "title": "Pipeline Status",
     "content": "An individual ldio-pipeline can be in one of several different statuses. These different statuses and their behaviour are dependent on the input component of the pipeline. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/pipeline-status",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status"
-  },"133": {
+  },"134": {
     "doc": "Pipeline Status",
     "title": "Overview Of The Status Flow",
     "content": "graph LR ; INIT --&gt; RUNNING; INIT --&gt; STOPPED; RUNNING --&gt; STOPPED; RUNNING --&gt; HALTED; HALTED --&gt; RUNNING; HALTED --&gt; STOPPED; . The above diagram shows the flow between the different statuses of the pipeline. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#overview-of-the-status-flow",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#overview-of-the-status-flow"
-  },"134": {
+  },"135": {
     "doc": "Pipeline Status",
     "title": "INIT",
     "content": "The startup step of the ldio pipeline. This is the preparation step before the input component can receive data and pass it on to the rest of the pipeline. In most components this step will take little time. The only exception for now is the client-connector. It is not possible to pause the pipeline while in this state. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#init",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#init"
-  },"135": {
+  },"136": {
     "doc": "Pipeline Status",
     "title": "RUNNING",
     "content": "This status indicates that the ldio pipeline is running and that the input component is ready to or currently receiving or fetching data. This is the only state in which the pipeline can be paused. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#running",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#running"
-  },"136": {
+  },"137": {
     "doc": "Pipeline Status",
     "title": "HALTED",
     "content": "Every ldio pipeline can be paused, the exact behavior of which depends on the ldio input component used. A more in depth explanation can be found on the pages for the individual input components. Currently, the HALTED status can only be reached through manually pausing the pipeline through the pipeline-api. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#halted",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#halted"
-  },"137": {
+  },"138": {
     "doc": "Pipeline Status",
     "title": "STOPPED",
     "content": "When a pipeline is deleted, it will first change to the STOPPED status, this ensures the state is correctly saved in stateful components and that the entire pipeline can be gracefully shutdown. This status will only last a short while before the pipeline is deleted and the status can no longer be queried. The pipeline can be stopped from any other status. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#stopped",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#stopped"
-  },"138": {
+  },"139": {
     "doc": "Pipeline Status",
     "title": "Status Change Source",
     "content": "The ldio pipeline keeps track of if the last status change was triggered manually or automatic. Manually changing the status can be done through the pipeline-api. When in the RUNNING state, this indicates if the pipeline has been started (automatic) or unpaused (manual). ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/pipeline-status#status-change-source",
     
     "relUrl": "/ldio/pipeline-management/pipeline-status#status-change-source"
-  },"139": {
+  },"140": {
     "doc": "Startup Configuration",
     "title": "Startup Configuration",
     "content": "On startup, pipelines can be defined by creating an application YAML file in the LDIO directory (in docker, this correlates to /ldio/application.yml) that looks as follows: . orchestrator: pipelines: - name: my-first-pipeline input: name: name of LDI Input config: foo: bar adapter: name: name of LDI Adapter config: foo: bar transformers: - name: name of LDI Transformer config: foo: bar outputs: - name: name of LDI Output config: foo: bar . Since the introduction of dynamic pipelines . Since version 2.1.0, it is possible to manage pipelines on the fly. If pipelines must be instantiated on startup, those pipelines can be added to a configured directory. First of all, to configure the directory, the /ldio/application.yml should look like this: . orchestrator: directory: &lt;PIPELINE_DIRECTORY&gt; . The folder contains a yaml file for each pipeline. It is the preferred way to call the file the same way as the name of the pipeline, in this case, that would be my-first-pipeline.yml: . name: my-first-pipeline input: name: name of LDI Input config: foo: bar adapter: name: name of LDI Adapter config: foo: bar transformers: - name: name of LDI Transformer config: foo: bar outputs: - name: name of LDI Output config: foo: bar . ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldio/pipeline-management/startup-config",
     
     "relUrl": "/ldio/pipeline-management/startup-config"
-  },"140": {
+  },"141": {
     "doc": "Linked Data Interactions For Apache NiFi",
     "title": "Linked Data Interactions For Apache NiFi",
     "content": "Apache Nifi is an easy to use, powerful, and reliable system to process and distribute data. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldi-nifi/index",
     
     "relUrl": "/ldi-nifi/index"
-  },"141": {
+  },"142": {
     "doc": "Linked Data Interactions For Apache NiFi",
     "title": "Set up NiFi instance with LDI processors",
     "content": "The processors can be imported into a NiFi docker instance via volume binding: . | Create a docker-compose.yml file with the following content in a new directory services: nifi: image: apache/nifi:2.0.0 environment: SINGLE_USER_CREDENTIALS_USERNAME: admin SINGLE_USER_CREDENTIALS_PASSWORD: ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB ports: - 8443:8443 volumes: - ./nifi-ext:/opt/nifi/nifi-current/nar_extensions:rw - ./nifi-drivers:/opt/nifi/nifi-current/lib_temp:rw entrypoint: [ \"/bin/bash\", \"-c\", \"cp -r /opt/nifi/nifi-current/lib_temp/* /opt/nifi/nifi-current/lib/ &amp;&amp; exec /opt/nifi/scripts/start.sh\" ] . | Create a directory nifi-ext in your current directory. | Download either the ...-nar-bundle.jar and unpack this or download the individual required processors (.nar extension) from the nexus repository. Next, place the required processors in the nifi-ext directory. | Additionally, for using any processor with a persistence layer, you will need to download the needed drivers. Create a nifi-drivers directory and place these drivers inside. Possible drivers are: . | PostgreSQL driver | SQLite driver | . | Finally, start your instance. docker compose up . | Log in at https://localhost:8443/nifi with the credentials mentioned in step 1 | All downloaded extensions are available under the be.vlaanderen.informatievlaanderen.ldes.ldi.nifi group. | . All documentation and notes about configuration are available in the NiFi component itself. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldi-nifi/index#set-up-nifi-instance-with-ldi-processors",
     
     "relUrl": "/ldi-nifi/index#set-up-nifi-instance-with-ldi-processors"
-  },"142": {
+  },"143": {
     "doc": "Linked Data Interactions For Apache NiFi",
     "title": "Setting up Database Connection Pools",
     "content": "As of LDI 2.13.0, some processors require a database connection pool to be set up. Although this is a pure NiFi configuration, a minimal explanation will be mentioned here. For more details, please refer to the NiFi documentation on DBCP. This can be done by following these steps: . | Go to the Controller Services tab in the NiFi UI. | Click on the Create new service button. | Select the DBCPConnectionPool service. | Configure the service with the required properties: . | Database Connection URL, . | jdbc:sqlite:/path/to/database.db for SQLite | jdbc:postgresql://localhost:5432/database for PostgreSQL, | . | Database Driver Class Name . | org.sqlite.JDBC for SQLite | org.postgresql.Driver for PostgreSQL, | . | Database User, | Password, | . | Save the service. | Enable the service. | Use the service in the processors that require it. | . ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldi-nifi/index#setting-up-database-connection-pools",
     
     "relUrl": "/ldi-nifi/index#setting-up-database-connection-pools"
-  },"143": {
+  },"144": {
     "doc": "LDI NiFi Processors",
     "title": "LDI NiFi Processors",
     "content": "Due to special requests, non conformance to the LDI APIs or extra complexity, a few processors were only implemented in NiFi. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldi-nifi/processors/index",
     
     "relUrl": "/ldi-nifi/processors/index"
-  },"144": {
+  },"145": {
     "doc": "SPARQL Interactions Processors",
     "title": "SPARQL Interactions Processors",
     "content": "The SPARQL Interactions Processors is a bundle of the LDI SPARQL Construct and also a SPARQL SELECT Processor. The SPARQL SELECT provides the option to query your dataset. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldi-nifi/processors/sparql-interactions",
     
     "relUrl": "/ldi-nifi/processors/sparql-interactions"
-  },"145": {
+  },"146": {
     "doc": "Linked Data Interactions LDES Discoverer",
     "title": "Linked Data Interactions LDES Discoverer",
     "content": "A lightweight application that discovers the structure of an LDES or a view by retrieving all the tree node relations of that LDES or view. A use case for this could be when you are only interested in a part of the event stream. To know what part you can follow, the structure can be discovered first. ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldi-standalones/ldes-discoverer",
     
     "relUrl": "/ldi-standalones/ldes-discoverer"
-  },"146": {
+  },"147": {
     "doc": "Linked Data Interactions LDES Discoverer",
     "title": "Config",
     "content": "Base configuration . | Property | Description | Required | Default | Example | Supported values | . | url | Url where from the discoverer needs to start | true | N/A | http://example.com/my-api | HTTP and HTTPS url | . | source-format | The ‘Content-Type’ that should be requested to the server. | false | text/turtle | application/n-quads | Any type supported by Apache Jena | . Optional config . Authentication . | Property | Description | Default | Example | Supported values | . | auth-type | The type of authentication required by the LDES server | NO_AUTH | OAUTH2_CLIENT_CREDENTIALS | NO_AUTH, API_KEY or OAUTH2_CLIENT_CREDENTIALS | . | api-key | The api key when using auth-type ‘API_KEY’ | N/A | myKey | String | . | api-key-header | The header for the api key when using auth-type ‘API_KEY’ | X-API-KEY | X-API-KEY | String | . | client-id | The client identifier when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | myId | String | . | client-secret | The client secret when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | mySecret | String | . | token-endpoint | The token endpoint when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | http://localhost:8000/token | HTTP and HTTPS urls | . | scope | The Oauth2 scope when using auth-type ‘OAUTH2_CLIENT_CREDENTIALS’ | N/A | http://localhost:8000/token | HTTP and HTTPS urls | . Further customization . | Property | Description | Default | Example | Supported values | . | disable-retry | Boolean flag that disables retrying to send http requests when the server cannot be reached. (enabled when omitted) | N/A | N/A | N/A | . | retry-limit | Max number of retries the http client should do (only on absence of disable-retry) | 5 | 100 | Integer | . | retry-statuses | Custom comma seperated list of http status codes that can trigger a retry in the http client. | N/A | 410,451 | Comma seperated list of Integers | . | rate-limit | Limit of requests per period, which is defined below, that the http client should do | N/A | 500 | Integer | . | rate-limit-period | Period in which the limit of requests, which is defined above, can be reached by the http client | PT1M | PT1H | ISO 8601 Duration | . | header | Parameter for each individual header that is required | N/A | Connection: keep-alive | String | . ",
     "url": "/VSDS-Linked-Data-Interactions/2.14.0-SNAPSHOT/ldi-standalones/ldes-discoverer#config",
     
     "relUrl": "/ldi-standalones/ldes-discoverer#config"
-  },"147": {
+  },"148": {
     "doc": "Linked Data Interactions LDES Discoverer",
     "title": "How to run",
     "content": "This tutorial will show how to use the discoverer in Docker. In this example, we will try to discover the structure of an event stream called observations. For simplicity, we recommend passing the config as arguments. Run the ldes-discoverer with minimal config . docker run ldes/ldes-discoverer --url=\"http://ldes-server/observations\" . Run the ldes-discoverer with rate-limit, authentication and two additional headers . docker run ldes/ldes-discoverer --url=\"http://ldes-server/observations\" --retry-limit=3 --rate-limit=400 \\ --header=\"Connection: keep alive\" --header=\"X-Source-App: ldes-discoverer\" \\ --auth-type=API_KEY --api-key=\"my-secret-api-key\" . NOTE: when an url contains a &amp; symbol, which will be picked up by the shell as an operator. For instance, running docker run ldes/ldes-discoverer --url=http://ldes-server/observations?year=2023&amp;month=05&amp;day=11 will result in the shell trying to execute three different command, where the last two will be month=05 and day=11, which will fail of course. To resolve this, make sure the url is encapsulated in quotation marks. Example output . In the logging of the application, both the total number of relations and the relations itself will be displayed. This will be present as the last logging statement of the app and would look something like this: . 2024-02-08T14:26:25.279+01:00 INFO 48176 --- [ main] b.v.i.l.l.d.common.LdesDiscovererExecutor : http://ldes-server/observations contains a total of 10 relations: http://ldes-server/observations +- http://ldes-server/observations/by-time | +- http://ldes-server/observations/by-time?year=2022 | +- http://ldes-server/observations/by-time?year=2022&amp;month=08 | +- http://ldes-server/observations/by-time?year=2023 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=07 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=16 | +- http://ldes-server/observations/by-time?year=2023&amp;month=05&amp;day=20 +- http://ldes-server/observations/paged +- http://ldes-server/observations/paged?pageNumber=1 . ",
