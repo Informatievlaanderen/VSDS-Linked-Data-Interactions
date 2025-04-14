@@ -85,7 +85,7 @@ public class PipelineCreatorService {
             inputConfig.put(ORCHESTRATOR_NAME, orchestratorName);
             verifyAdapter(config, configurator);
 
-            resolvePropertyPlaceHolders(config, inputConfig);
+            resolvePropertyPlaceholders(config, inputConfig);
             LdioInput ldiInput = configurator.configure(adapter, executor, eventPublisher, new ComponentProperties(pipeLineName, inputName, inputConfig));
 
             registerBean(pipeLineName, ldiInput);
