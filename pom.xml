@@ -79,7 +79,7 @@
 
         <!-- Testing -->
         <assertj.version>3.24.2</assertj.version>
-        <junit-jupiter.version>5.10.2</junit-jupiter.version>
+        <junit-jupiter.version>5.12.2</junit-jupiter.version>
         <junit-platform-suite.version>1.10.2</junit-platform-suite.version>
         <awaitility.version>4.2.2</awaitility.version>
         <byte-buddy.version>1.14.12</byte-buddy.version>
