@@ -211,7 +211,7 @@ public class PipelineCreatorService {
         return input.replaceAll("[\n\r]", "_");
     }
 
-    private void resolvePropertyPlacerholders(PipelineConfig config, Map<String, String> inputConfig) {
+    private void resolvePropertyPlaceholders(PipelineConfig config, Map<String, String> inputConfig) {
         var propertySourcesPlaceholderConfigurer = configContext.getBean(PropertySourcesPlaceholderConfigurer.class);
         var resolver = new PropertySourcesPlaceholdersResolver(propertySourcesPlaceholderConfigurer.getAppliedPropertySources());
         resolvePropertyPlaceHolders(resolver, inputConfig);
