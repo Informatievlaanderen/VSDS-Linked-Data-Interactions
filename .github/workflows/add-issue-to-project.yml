@@ -5,6 +5,9 @@ on:
     types:
       - opened
 
+env:
+  PROJECT_URL: ${{ vars.PROJECT_URL || 'https://github.com/orgs/Informatievlaanderen/projects/4' }}
+
 jobs:
   add-to-project:
     name: Add issue to project
@@ -12,5 +15,5 @@ jobs:
     steps:
       - uses: actions/add-to-project@v0.4.0
         with:
-          project-url: https://github.com/orgs/Informatievlaanderen/projects/4
+          project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
