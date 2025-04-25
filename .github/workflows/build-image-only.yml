@@ -7,6 +7,9 @@ env:
   REGISTRY: ghcr.io
   LDIO_IMAGE_NAME: ldi-orchestrator
   DISCOVERER_IMAGE_NAME: ldes-discoverer
+  SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION || 'informatievlaanderen' }}
+  SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY || 'Informatievlaanderen_VSDS-Linked-Data-Interactions' }}
+  DOCKER_NAMESPACE: ${{ vars.DOCKER_NAMESPACE || 'ldes' }}
 
 jobs:
   build:
@@ -54,7 +57,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Analyse & publish package
         run: |
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Informatievlaanderen_VSDS-Linked-Data-Interactions -Pcoverage,release -Dparallel=all -DperCoreThreadCount=true
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ SONAR_PROJECT_KEY }} -Dsonar.organization=${{ env.SONAR_ORGANIZATION }} -Pcoverage,release -Dparallel=all -DperCoreThreadCount=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -93,7 +96,7 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "IMAGE_TAG=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
-            echo "IMAGES=ldes/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.DOCKER_NAMESPACE }}/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
             if [[ "${{ needs.build.outputs.version }}" != *"SNAPSHOT"* ]]; then
               echo "LATEST=latest" >> $GITHUB_ENV
             fi
@@ -154,7 +157,7 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "IMAGE_TAG=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
-            echo "IMAGES=ldes/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.DOCKER_NAMESPACE }}/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
             if [[ "${{ needs.build.outputs.version }}" != *"SNAPSHOT"* ]]; then
               echo "LATEST=latest" >> $GITHUB_ENV
             fi
