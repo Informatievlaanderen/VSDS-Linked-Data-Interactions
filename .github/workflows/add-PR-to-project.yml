@@ -6,6 +6,9 @@ on:
       - opened
       - reopened
 
+env:
+  PROJECT_URL: ${{ vars.PROJECT_URL || 'https://github.com/orgs/Informatievlaanderen/projects/4' }}
+
 jobs:
   add-to-project:
     runs-on: ubuntu-latest
@@ -13,5 +16,5 @@ jobs:
       - uses: actions/add-to-project@v0.4.0
         if: ${{ github.event.pull_request.head.repo.full_name != 'Informatievlaanderen/VSDS-Linked-Data-Interactions' || github.actor == 'dependabot[bot]' }}
         with:
-          project-url: https://github.com/orgs/Informatievlaanderen/projects/4
+          project-url: ${{ env.PROJECT_URL }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}

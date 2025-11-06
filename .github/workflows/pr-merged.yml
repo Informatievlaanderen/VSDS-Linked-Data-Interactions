@@ -14,6 +14,11 @@ env:
   REGISTRY: ghcr.io
   LDIO_IMAGE_NAME: ldi-orchestrator
   DISCOVERER_IMAGE_NAME: ldes-discoverer
+  SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION || 'informatievlaanderen' }}
+  SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY || 'Informatievlaanderen_VSDS-Linked-Data-Interactions' }}
+  DOCKER_NAMESPACE: ${{ vars.DOCKER_NAMESPACE || 'ldes' }}
+  DEPLOY_PACKAGE_TO_OSSRH: ${{ vars.DEPLOY_PACKAGE_TO_OSSRH || true }}
+  ANALYSE_PACKAGE: ${{ vars.ANALYSE_PACKAGE || true }}
 
 jobs:
   build:
@@ -31,13 +36,13 @@ jobs:
           distribution: zulu
           java-version: 21
       - name: Cache SonarCloud packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -59,12 +64,27 @@ jobs:
         run: |
           export VERSION=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-      - name: Analyse & publish package
+
+      - name: Analyse package
+        if: ${{ env.ANALYSE_PACKAGE == true }}
         run: |
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar deploy -Dsonar.projectKey=Informatievlaanderen_VSDS-Linked-Data-Interactions -Pcoverage,release -Dparallel=all -DperCoreThreadCount=true
+          mvn -B install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ env.SONAR_ORGANIZATION }} -Pcoverage,release -Dparallel=all -DperCoreThreadCount=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Create package
+        if: ${{ env.ANALYSE_PACKAGE != true }}
+        run: |
+          mvn -B install -Dparallel=all -DperCoreThreadCount=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Publish Package
+        if: ${{ env.DEPLOY_PACKAGE_TO_OSSRH == true }}
+        run: mvn deploy -DskipTests -Dmaven.javadoc.skip=true -B -V
+        env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
@@ -100,7 +120,7 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "IMAGE_TAG=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
-            echo "IMAGES=ldes/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.DOCKER_NAMESPACE }}/${{ env.LDIO_IMAGE_NAME }}" >> $GITHUB_ENV
             if [[ "${{ needs.build.outputs.version }}" != *"SNAPSHOT"* ]]; then
               echo "LATEST=latest" >> $GITHUB_ENV
             fi
@@ -161,7 +181,7 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "IMAGE_TAG=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
-            echo "IMAGES=ldes/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
+            echo "IMAGES=${{ env.DOCKER_NAMESPACE }}/${{ env.DISCOVERER_IMAGE_NAME }}" >> $GITHUB_ENV
             if [[ "${{ needs.build.outputs.version }}" != *"SNAPSHOT"* ]]; then
               echo "LATEST=latest" >> $GITHUB_ENV
             fi

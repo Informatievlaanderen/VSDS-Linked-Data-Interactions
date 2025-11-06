@@ -15,8 +15,8 @@ env:
   title: "Linked Data Interactions"
 
 jobs:
-
   build:
+    if: ${{ vars.DEPLOY_DOCUMENTATION != 'false' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
