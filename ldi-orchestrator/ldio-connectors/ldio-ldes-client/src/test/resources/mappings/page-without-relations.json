@@ -16,7 +16,7 @@
         "status": 200,
         "jsonBody": {
           "@context": [
-            "https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld"
+            "https://gipod.api.vlaanderen.be/api/v1/context/gipod.jsonld"
           ],
           "@id": "http://localhost:10101/page-without-relations",
           "@type": "Node",
@@ -132,7 +132,7 @@
         "status": 200,
         "jsonBody": {
           "@context": [
-            "https://private-api.gipod.beta-vlaanderen.be/api/v1/context/gipod.jsonld"
+            "https://gipod.api.vlaanderen.be/api/v1/context/gipod.jsonld"
           ],
           "@id": "http://localhost:10101/page-without-relations",
           "@type": "Node",
