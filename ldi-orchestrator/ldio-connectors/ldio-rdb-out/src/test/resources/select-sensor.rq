@@ -1,0 +1,20 @@
+PREFIX ldes: <https://w3id.org/ldes#>
+PREFIX meetpunt: <https://test.org/id/meetpunt/>
+PREFIX ns: <https://test.org/ns#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sensor: <https://test.org/id/sensor/>
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX terms: <http://purl.org/dc/terms/>
+PREFIX tree: <https://w3id.org/tree#>
+PREFIX wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+SELECT
+    ?SensorId ?lat_WGS84 ?long_WGS84 ?GeneratedAtTime
+WHERE {
+    ?sensor
+        ns:SensorId ?SensorId ;
+        wgs84_pos:lat_WGS84 ?lat_WGS84 ;
+        wgs84_pos:long_WGS84 ?long_WGS84 ;
+        prov:generatedAtTime ?GeneratedAtTime ;
+}

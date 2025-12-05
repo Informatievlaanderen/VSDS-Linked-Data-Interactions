@@ -42,7 +42,7 @@
         <module>ldio-change-detection-filter</module>
         <module>ldio-skolemisation-transformer</module>
         <module>ldio-http-sparql-out</module>
-
+        <module>ldio-rdb-out</module>
     </modules>
 
     <dependencies>

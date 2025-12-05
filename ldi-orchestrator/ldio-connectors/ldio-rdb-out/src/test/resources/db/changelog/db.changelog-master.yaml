@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: v1.0/01_create_table_sensor.sql
+      relativeToChangelogFile: true
+  - include:
+      file: v1.0/02_create_table_event_cleansed.sql
+      relativeToChangelogFile: true
+  - include:
+      file: v1.0/03_alter_table_event_cleansed_add_is_deleted.sql
+      relativeToChangelogFile: true
+  - include:
+      file: v1.0/04_alter_table_uniques.sql
+      relativeToChangelogFile: true

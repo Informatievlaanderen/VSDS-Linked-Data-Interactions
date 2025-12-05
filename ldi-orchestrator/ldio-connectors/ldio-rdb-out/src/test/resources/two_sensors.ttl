@@ -1,0 +1,41 @@
+@prefix ns: <https://test.org/ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sensor: <https://test.org/id/sensor/> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix terms: <http://purl.org/dc/terms/> .
+@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+
+<https://test.org/id/sensor/329fe5af-6656-f13e-0a81-1898a6bf5f6a/2024-12-18T13:00:40.575946683>
+    rdf:type sosa:Device, sosa:Sensor ;
+    terms:isVersionOf sensor:329fe5af-6656-f13e-0a81-1898a6bf5f6a ;
+    wgs84_pos:lat_Lambert72 "132776" ;
+    wgs84_pos:lat_WGS84 "50.987654" ;
+    wgs84_pos:long_Lambert72 "186408" ;
+    wgs84_pos:long_WGS84 "4.123456" ;
+    prov:generatedAtTime "2024-12-18T13:00:40.575Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+    sosa:hasFeatureOfInterest "K_000000123456" ;
+    ns:SensorId "123456" ;
+    ns:brand "Acme" ;
+    ns:deviceState "Active" ;
+    ns:name "Acme-123456" ;
+    ns:owner "Trunyx" ;
+    ns:serialNumber "123456789123" ;
+    ns:supplier "Quatz" .
+
+<https://test.org/id/sensor/b38fdbda-2cbe-c56f-e79f-9ae549a80c66/2024-12-18T13:00:40.575946683>
+    rdf:type sosa:Device, sosa:Sensor ;
+    terms:isVersionOf sensor:b38fdbda-2cbe-c56f-e79f-9ae549a80c66 ;
+    wgs84_pos:lat_Lambert72 "140556" ;
+    wgs84_pos:lat_WGS84 "50.876543" ;
+    wgs84_pos:long_Lambert72 "174028" ;
+    wgs84_pos:long_WGS84 "4.234567" ;
+    prov:generatedAtTime "2024-12-18T13:00:40.575Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+    sosa:hasFeatureOfInterest "A_000000123456" ;
+    ns:SensorId "654321" ;
+    ns:brand "Acme" ;
+    ns:deviceState "Active" ;
+    ns:name "Acme-654321" ;
+    ns:owner "Trunyx" ;
+    ns:serialNumber "987654321987" ;
+    ns:supplier "Quatz" .

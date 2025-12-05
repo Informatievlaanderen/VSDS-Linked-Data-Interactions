@@ -1,0 +1,4 @@
+@prefix ns: <https://test.org/ns#> .
+
+<https://test.org/id/sensor/70d-2977-468e-82ec-86343de32082/2024-12-18T13:00:40.575946683>
+    ns:SensorId "123456" .
