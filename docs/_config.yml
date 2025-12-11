@@ -19,37 +19,17 @@ ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (t
 
 # Define Jekyll collections
 collections:
-  core:
-    permalink: "/:collection/:path"
-    output: true
-  ldio:
-    permalink: "/:collection/:path"
-    output: true
-  ldi-nifi:
-    permalink: "/:collection/:path"
-    output: true
-  ldi-standalones:
-    permalink: "/:collection/:path"
-    output: true
+
 
 just_the_docs:
   collections:
-    ldio:
-      name: Linked Data Interactions Orchestrator
-    ldi-nifi:
-      name: Linked Data Interactions for Apache NiFi
-    ldi-standalones:
-      name: Linked Data Interactions Standalones
 
 nav_external_links:
-  - title: VSDS Technical Docs
-    url: https://informatievlaanderen.github.io/VSDS-Tech-Docs/
-    hide_icon: false # set to true to hide the external link icon - defaults to false
 
-enable_copy_code_button: true
+enable_copy_code_button: false
 
 # Footer "Edit this page on GitHub" link text
-gh_edit_link: true # show or hide edit this page link
+gh_edit_link: false # show or hide edit this page link
 gh_edit_link_text: "Contribute on GitHub"
 gh_edit_repository: "https://github.com/Informatievlaanderen/VSDS-Linked-Data-Interactions" # the github URL for your repo
 gh_edit_branch: "develop" # the branch that your docs is served from
